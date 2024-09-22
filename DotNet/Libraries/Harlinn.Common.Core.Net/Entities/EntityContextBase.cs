@@ -188,16 +188,19 @@ namespace Harlinn.Common.Core.Net.Entities
             for (int i = 0; i < count; i++)
             {
                 var dataItem = dataItems[i];
-                var entity = (TEntity?)GetEntityFromCache(dataItem.Id);
-                if(entity == null)
+                if ( IsDeleted( dataItem.Id ) == false)
                 {
-                    entity = (TEntity)AddToContext(dataItem);
+                    var entity = (TEntity?)GetEntityFromCache(dataItem.Id);
+                    if (entity == null)
+                    {
+                        entity = (TEntity)AddToContext(dataItem);
+                    }
+                    else
+                    {
+                        entity.Update(dataItem);
+                    }
+                    list.Add(entity);
                 }
-                else
-                {
-                    entity.Update(dataItem);
-                }
-                list.Add(entity);
             }
             var result = new BindingList<TEntity>(list);
             return result;
@@ -303,7 +306,7 @@ namespace Harlinn.Common.Core.Net.Entities
             _changedEntities.Remove(entity.Id);
         }
 
-        internal bool IsDeleted(Guid id)
+        protected internal bool IsDeleted(Guid id)
         {
             return _deletedEntities.ContainsKey(id);
         }

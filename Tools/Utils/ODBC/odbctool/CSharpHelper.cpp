@@ -626,6 +626,11 @@ namespace Harlinn::ODBC::Tool
         return Format( L"{}EntityCollection", classInfo.Name( ).FirstToUpper( ) );
     }
 
+    WideString CSharpHelper::GetUpdateNode( const ClassInfo& classInfo )
+    {
+        return Format( L"{}UpdateNode", classInfo.Name( ).FirstToUpper( ) );
+    }
+
     WideString CSharpHelper::GetMemberFieldType( const MemberInfo& member )
     {
         WideString result = GetBaseType( member );
@@ -1049,9 +1054,22 @@ namespace Harlinn::ODBC::Tool
     {
         return Format( L"Insert{}", classInfo.Name( ) );
     }
+    WideString CSharpHelper::GetInsertFunctionName1( const ClassInfo& classInfo )
+    {
+        return Format( L"Insert1{}", classInfo.Name( ) );
+    }
+
     WideString CSharpHelper::GetUpdateFunctionName( const ClassInfo& classInfo )
     {
         return Format( L"Update{}", classInfo.Name( ) );
+    }
+    WideString CSharpHelper::GetUpdateFunctionName1( const ClassInfo& classInfo )
+    {
+        return Format( L"Update1{}", classInfo.Name( ) );
+    }
+    WideString CSharpHelper::GetUpdateFunctionName2( const ClassInfo& classInfo )
+    {
+        return Format( L"Update2{}", classInfo.Name( ) );
     }
     WideString CSharpHelper::GetDeleteFunctionName( const ClassInfo& classInfo )
     {
@@ -1118,6 +1136,67 @@ namespace Harlinn::ODBC::Tool
         return parameters.ToString( );
     }
 
+    WideString CSharpHelper::GetInsertFunctionParameters1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"ref {} {}", primaryKeyArgumentType, primaryKeyName );
+
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    auto variableName = GetInputArgumentName( member );
+                    auto variableType = GetInputArgumentType( member );
+
+                    parameters.Append( L", {} {}", variableType, variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+    WideString CSharpHelper::GetInsertFunctionCallParameters1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"ref {}", primaryKeyName );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    auto variableName = GetInputArgumentName( member );
+                    auto variableType = GetInputArgumentType( member );
+
+                    parameters.Append( L", {}", variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+
+
     WideString CSharpHelper::GetUpdateFunctionParameters( const ClassInfo& classInfo )
     {
         const auto& members = classInfo.PersistentMembers( );
@@ -1154,6 +1233,137 @@ namespace Harlinn::ODBC::Tool
     WideString CSharpHelper::GetUpdateFunctionCallParameters( const ClassInfo& classInfo )
     {
         const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{}", primaryKeyName );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto variableName = GetInputArgumentName( member );
+                auto memberType = member.Type( );
+
+                if ( memberType == MemberInfoType::RowVersion )
+                {
+                    parameters.Append( L", ref {}", variableName );
+                }
+                else
+                {
+                    parameters.Append( L", {}", variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+
+
+    WideString CSharpHelper::GetUpdateFunctionParameters1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{} {}", primaryKeyArgumentType, primaryKeyName );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                auto variableName = GetInputArgumentName( member );
+                auto variableType = GetInputArgumentType( member );
+
+                if ( memberType == MemberInfoType::RowVersion )
+                {
+                    parameters.Append( L", ref {} {}", variableType, variableName );
+                }
+                else
+                {
+                    parameters.Append( L", {} {}", variableType, variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+    WideString CSharpHelper::GetUpdateFunctionCallParameters1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{}", primaryKeyName );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto variableName = GetInputArgumentName( member );
+                auto memberType = member.Type( );
+
+                if ( memberType == MemberInfoType::RowVersion )
+                {
+                    parameters.Append( L", ref {}", variableName );
+                }
+                else
+                {
+                    parameters.Append( L", {}", variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+
+    WideString CSharpHelper::GetUpdateFunctionParameters2( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.Update2Members( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{} {}", primaryKeyArgumentType, primaryKeyName );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                auto variableName = GetInputArgumentName( member );
+                auto variableType = GetInputArgumentType( member );
+
+                if ( memberType == MemberInfoType::RowVersion )
+                {
+                    parameters.Append( L", ref {} {}", variableType, variableName );
+                }
+                else
+                {
+                    parameters.Append( L", {} {}", variableType, variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+    WideString CSharpHelper::GetUpdateFunctionCallParameters2( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.Update2Members( );
         size_t membersCount = members.size( );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = GetInputArgumentName( *primaryKey );

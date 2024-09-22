@@ -145,11 +145,17 @@ namespace Harlinn::ODBC::Tool
         void Run( );
     private:
         static WideString GetProcedureParameters( const ClassInfo& classInfo );
+        static WideString GetProcedureParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& persistentMembers );
         static WideString GetInsertStatement( const ClassInfo& classInfo );
+        static WideString GetInsertStatement( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& ownPersistentMembers );
         static WideString GetInsertProcedure( const ClassInfo& classInfo );
+        static WideString GetInsertProcedure1( const ClassInfo& classInfo );
         static WideString GetInsertTrigger( const ClassInfo& classInfo );
         void CreateInsertProcedure( const ClassInfo& classInfo );
         void CreateInsertTrigger( const ClassInfo& classInfo );
+
+        void CreateInsertProcedure1( const ClassInfo& classInfo );
+
     };
 
 
@@ -165,6 +171,17 @@ namespace Harlinn::ODBC::Tool
         static WideString GetTopLevelUpdateStatement( const ClassInfo& classInfo );
         static WideString GetUpdateStatement( const ClassInfo& classInfo );
         void CreateUpdateStatement( const ClassInfo& classInfo );
+
+        static WideString GetProcedureParameters1( const ClassInfo& classInfo );
+        static WideString GetTopLevelUpdateStatement1( const ClassInfo& classInfo );
+        static WideString GetUpdateStatement1( const ClassInfo& classInfo );
+        void CreateUpdateStatement1( const ClassInfo& classInfo );
+
+        static WideString GetProcedureParameters2( const ClassInfo& classInfo );
+        static WideString GetTopLevelUpdateStatement2( const ClassInfo& classInfo );
+        static WideString GetUpdateStatement2( const ClassInfo& classInfo );
+        void CreateUpdateStatement2( const ClassInfo& classInfo );
+
 
     };
 
@@ -636,9 +653,15 @@ namespace Harlinn::ODBC::Tool
         void Run( );
     private:
         void CreateInsert( const ClassInfo& classInfo );
+        void CreateInsert1( const ClassInfo& classInfo );
         void CreateInsertObject( const ClassInfo& classInfo );
+        void CreateInsertObject1( const ClassInfo& classInfo );
         void CreateUpdate( const ClassInfo& classInfo );
+        void CreateUpdate1( const ClassInfo& classInfo );
+        void CreateUpdate2( const ClassInfo& classInfo );
         void CreateUpdateObject( const ClassInfo& classInfo );
+        void CreateUpdateObject1( const ClassInfo& classInfo );
+        void CreateUpdateObject2( const ClassInfo& classInfo );
         void CreateDelete( const ClassInfo& classInfo );
         void CreateDeleteObject( const ClassInfo& classInfo );
         void AddInsertParameter( const MemberInfo& memberInfo );
@@ -688,6 +711,27 @@ namespace Harlinn::ODBC::Tool
         void AddParameter( const MemberInfo& memberInfo, const WideString& argumentName, const WideString& sqlArgumentName );
     };
 
+    class CSharpSqlServerUpdateNodesGenerator : public CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerUpdateNodesOptions>
+    {
+    public:
+        using Base = CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerUpdateNodesOptions>;
+
+        inline CSharpSqlServerUpdateNodesGenerator( const CSharpSqlServerDatabaseGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateUpdateNode( const ClassInfo& classInfo );
+        void CreateCollectDependencies( const ClassInfo& classInfo );
+        void CreateInsert( const ClassInfo& classInfo );
+        void CreateInsert1( const ClassInfo& classInfo );
+        void CreateUpdate( const ClassInfo& classInfo );
+        void CreateUpdate1( const ClassInfo& classInfo );
+        void CreateUpdate2( const ClassInfo& classInfo );
+        void CreateDelete( const ClassInfo& classInfo );
+        void CreateFactory( );
+        void CreateUpdateHandler( );
+    };
+
 
     class CSharpSqlServerDatabaseGenerator : public GeneratorContainer<CSharpGenerator, CSharpSqlServerDatabaseOptions>
     {
@@ -695,6 +739,7 @@ namespace Harlinn::ODBC::Tool
         CSharpSqlServerComplexDatabaseReadersGenerator complexDatabaseReaders_;
         CSharpSqlServerStoredProceduresGenerator storedProcedures_;
         CSharpSqlServerDataContextGenerator dataContext_;
+        CSharpSqlServerUpdateNodesGenerator updateNodes_;
     public:
         using Base = GeneratorContainer<CSharpGenerator, CSharpSqlServerDatabaseOptions>;
 
@@ -706,6 +751,7 @@ namespace Harlinn::ODBC::Tool
             complexDatabaseReaders_.Run( );
             storedProcedures_.Run( );
             dataContext_.Run( );
+            updateNodes_.Run( );
         }
 
     };
@@ -725,6 +771,11 @@ namespace Harlinn::ODBC::Tool
 
     inline CSharpSqlServerDataContextGenerator::CSharpSqlServerDataContextGenerator( const CSharpSqlServerDatabaseGenerator& owner )
         : Base( owner, owner.Options( ).DataContext( ) )
+    {
+    }
+
+    inline CSharpSqlServerUpdateNodesGenerator::CSharpSqlServerUpdateNodesGenerator( const CSharpSqlServerDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).UpdateNodes( ) )
     {
     }
 
@@ -904,7 +955,7 @@ namespace Harlinn::ODBC::Tool
     };
 
     inline CSharpSqlServerDatabaseGenerator::CSharpSqlServerDatabaseGenerator( const CSharpGenerator& owner )
-        : Base( owner, owner.Options( ).SqlServerDatabase( ) ), databaseReaders_(*this), complexDatabaseReaders_(*this), storedProcedures_(*this), dataContext_( *this )
+        : Base( owner, owner.Options( ).SqlServerDatabase( ) ), databaseReaders_(*this), complexDatabaseReaders_(*this), storedProcedures_(*this), dataContext_( *this ), updateNodes_( *this )
     {
     }
 

@@ -502,6 +502,10 @@ namespace Harlinn::ODBC::Tool
     {
         return classInfo.Name( ) + L"Insert";
     }
+    WideString SqlServerHelper::GetInsertProcedureName1( const ClassInfo& classInfo )
+    {
+        return classInfo.Name( ) + L"Insert1";
+    }
     WideString SqlServerHelper::GetInsertTriggerName( const ClassInfo& classInfo )
     {
         return classInfo.Name( ) + L"InsertTrigger";
@@ -510,6 +514,14 @@ namespace Harlinn::ODBC::Tool
     WideString SqlServerHelper::GetUpdateProcedureName( const ClassInfo& classInfo )
     {
         return classInfo.Name( ) + L"Update";
+    }
+    WideString SqlServerHelper::GetUpdateProcedureName1( const ClassInfo& classInfo )
+    {
+        return classInfo.Name( ) + L"Update1";
+    }
+    WideString SqlServerHelper::GetUpdateProcedureName2( const ClassInfo& classInfo )
+    {
+        return classInfo.Name( ) + L"Update2";
     }
     WideString SqlServerHelper::GetDeleteProcedureName( const ClassInfo& classInfo )
     {

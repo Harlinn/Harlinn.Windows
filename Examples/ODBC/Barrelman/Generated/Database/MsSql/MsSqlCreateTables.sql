@@ -9089,7 +9089,7 @@ CREATE INDEX [IDX_ZoneTrackAlarm_Timestamp] ON [dbo].[ZoneTrackAlarm]([Timestamp
 go
 
 ALTER TABLE [dbo].[AisDeviceCommand]
-  ADD CONSTRAINT [FK_AisDeviceCommand_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_AisDeviceCommand_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
 go
 
 ALTER TABLE [dbo].[AisDeviceCommand]
@@ -9097,7 +9097,7 @@ ALTER TABLE [dbo].[AisDeviceCommand]
 go
 
 ALTER TABLE [dbo].[AisDeviceCommandReply]
-  ADD CONSTRAINT [FK_AisDeviceCommandReply_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_AisDeviceCommandReply_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
 go
 
 ALTER TABLE [dbo].[AisDeviceCommandReply]
@@ -9105,19 +9105,19 @@ ALTER TABLE [dbo].[AisDeviceCommandReply]
 go
 
 ALTER TABLE [dbo].[AisDeviceConfiguration]
-  ADD CONSTRAINT [FK_AisDeviceConfiguration_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_AisDeviceConfiguration_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
 go
 
 ALTER TABLE [dbo].[AisDeviceRawMessage]
-  ADD CONSTRAINT [FK_AisDeviceRawMessage_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_AisDeviceRawMessage_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
 go
 
 ALTER TABLE [dbo].[AisDeviceRawSentence]
-  ADD CONSTRAINT [FK_AisDeviceRawSentence_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_AisDeviceRawSentence_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
 go
 
 ALTER TABLE [dbo].[AisMessage]
-  ADD CONSTRAINT [FK_AisMessage_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_AisMessage_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
 go
 
 ALTER TABLE [dbo].[AisMessage]
@@ -9205,27 +9205,27 @@ ALTER TABLE [dbo].[AisUtcAndDateInquiryMessage]
 go
 
 ALTER TABLE [dbo].[AlarmStateChange]
-  ADD CONSTRAINT [FK_AlarmStateChange_Alarm] FOREIGN KEY([Alarm]) REFERENCES [dbo].[ZoneTrackAlarm]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_AlarmStateChange_Alarm] FOREIGN KEY([Alarm]) REFERENCES [dbo].[ZoneTrackAlarm]([Id])
 go
 
 ALTER TABLE [dbo].[BinaryTimeseriesValue]
-  ADD CONSTRAINT [FK_BinaryTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[BinaryTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_BinaryTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[BinaryTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[Bookmark]
-  ADD CONSTRAINT [FK_Bookmark_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Bookmark_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id])
 go
 
 ALTER TABLE [dbo].[BooleanTimeseriesValue]
-  ADD CONSTRAINT [FK_BooleanTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[BooleanTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_BooleanTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[BooleanTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[ByteTimeseriesValue]
-  ADD CONSTRAINT [FK_ByteTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[ByteTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ByteTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[ByteTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[CameraCommand]
-  ADD CONSTRAINT [FK_CameraCommand_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraCommand_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraCommand]
@@ -9233,7 +9233,7 @@ ALTER TABLE [dbo].[CameraCommand]
 go
 
 ALTER TABLE [dbo].[CameraCommandReply]
-  ADD CONSTRAINT [FK_CameraCommandReply_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraCommandReply_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraCommandReply]
@@ -9241,19 +9241,19 @@ ALTER TABLE [dbo].[CameraCommandReply]
 go
 
 ALTER TABLE [dbo].[CameraConfiguration]
-  ADD CONSTRAINT [FK_CameraConfiguration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraConfiguration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraPanCalibration]
-  ADD CONSTRAINT [FK_CameraPanCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraPanCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraPanCalibrationValue]
-  ADD CONSTRAINT [FK_CameraPanCalibrationValue_PanCalibration] FOREIGN KEY([PanCalibration]) REFERENCES [dbo].[CameraPanCalibration]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraPanCalibrationValue_PanCalibration] FOREIGN KEY([PanCalibration]) REFERENCES [dbo].[CameraPanCalibration]([Id])
 go
 
 ALTER TABLE [dbo].[CameraStatus]
-  ADD CONSTRAINT [FK_CameraStatus_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraStatus_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraStatus]
@@ -9261,51 +9261,51 @@ ALTER TABLE [dbo].[CameraStatus]
 go
 
 ALTER TABLE [dbo].[CameraTiltCalibration]
-  ADD CONSTRAINT [FK_CameraTiltCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraTiltCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraTiltCalibrationValue]
-  ADD CONSTRAINT [FK_CameraTiltCalibrationValue_TiltCalibration] FOREIGN KEY([TiltCalibration]) REFERENCES [dbo].[CameraTiltCalibration]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraTiltCalibrationValue_TiltCalibration] FOREIGN KEY([TiltCalibration]) REFERENCES [dbo].[CameraTiltCalibration]([Id])
 go
 
 ALTER TABLE [dbo].[CameraZoomCalibration]
-  ADD CONSTRAINT [FK_CameraZoomCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraZoomCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraZoomCalibrationValue]
-  ADD CONSTRAINT [FK_CameraZoomCalibrationValue_ZoomCalibration] FOREIGN KEY([ZoomCalibration]) REFERENCES [dbo].[CameraZoomCalibration]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CameraZoomCalibrationValue_ZoomCalibration] FOREIGN KEY([ZoomCalibration]) REFERENCES [dbo].[CameraZoomCalibration]([Id])
 go
 
 ALTER TABLE [dbo].[CatalogElement]
-  ADD CONSTRAINT [FK_CatalogElement_Catalog] FOREIGN KEY([Catalog]) REFERENCES [dbo].[Catalog]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_CatalogElement_Catalog] FOREIGN KEY([Catalog]) REFERENCES [dbo].[Catalog]([Id])
 go
 
 ALTER TABLE [dbo].[Element]
-  ADD CONSTRAINT [FK_Element_ElementType] FOREIGN KEY([ElementType]) REFERENCES [dbo].[ElementType]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Element_ElementType] FOREIGN KEY([ElementType]) REFERENCES [dbo].[ElementType]([Id])
 go
 
 ALTER TABLE [dbo].[DateTimeTimeseriesValue]
-  ADD CONSTRAINT [FK_DateTimeTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[DateTimeTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_DateTimeTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[DateTimeTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[DeviceHostConfiguration]
-  ADD CONSTRAINT [FK_DeviceHostConfiguration_Host] FOREIGN KEY([Host]) REFERENCES [dbo].[DeviceHost]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_DeviceHostConfiguration_Host] FOREIGN KEY([Host]) REFERENCES [dbo].[DeviceHost]([Id])
 go
 
 ALTER TABLE [dbo].[DoubleTimeseriesValue]
-  ADD CONSTRAINT [FK_DoubleTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[DoubleTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_DoubleTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[DoubleTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[GeoPosition2DTimeseriesValue]
-  ADD CONSTRAINT [FK_GeoPosition2DTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[GeoPosition2DTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GeoPosition2DTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[GeoPosition2DTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[GeoPosition3DTimeseriesValue]
-  ADD CONSTRAINT [FK_GeoPosition3DTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[GeoPosition3DTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GeoPosition3DTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[GeoPosition3DTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[GNSSDeviceCommand]
-  ADD CONSTRAINT [FK_GNSSDeviceCommand_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GNSSDeviceCommand_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id])
 go
 
 ALTER TABLE [dbo].[GNSSDeviceCommand]
@@ -9313,7 +9313,7 @@ ALTER TABLE [dbo].[GNSSDeviceCommand]
 go
 
 ALTER TABLE [dbo].[GNSSDeviceCommandReply]
-  ADD CONSTRAINT [FK_GNSSDeviceCommandReply_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GNSSDeviceCommandReply_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id])
 go
 
 ALTER TABLE [dbo].[GNSSDeviceCommandReply]
@@ -9321,15 +9321,15 @@ ALTER TABLE [dbo].[GNSSDeviceCommandReply]
 go
 
 ALTER TABLE [dbo].[GNSSDeviceConfiguration]
-  ADD CONSTRAINT [FK_GNSSDeviceConfiguration_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GNSSDeviceConfiguration_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id])
 go
 
 ALTER TABLE [dbo].[GuidTimeseriesValue]
-  ADD CONSTRAINT [FK_GuidTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[GuidTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GuidTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[GuidTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[GyroDeviceCommand]
-  ADD CONSTRAINT [FK_GyroDeviceCommand_GyroDevice] FOREIGN KEY([GyroDevice]) REFERENCES [dbo].[GyroDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GyroDeviceCommand_GyroDevice] FOREIGN KEY([GyroDevice]) REFERENCES [dbo].[GyroDevice]([Id])
 go
 
 ALTER TABLE [dbo].[GyroDeviceCommand]
@@ -9337,7 +9337,7 @@ ALTER TABLE [dbo].[GyroDeviceCommand]
 go
 
 ALTER TABLE [dbo].[GyroDeviceCommandReply]
-  ADD CONSTRAINT [FK_GyroDeviceCommandReply_GyroDevice] FOREIGN KEY([GyroDevice]) REFERENCES [dbo].[GyroDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GyroDeviceCommandReply_GyroDevice] FOREIGN KEY([GyroDevice]) REFERENCES [dbo].[GyroDevice]([Id])
 go
 
 ALTER TABLE [dbo].[GyroDeviceCommandReply]
@@ -9345,19 +9345,19 @@ ALTER TABLE [dbo].[GyroDeviceCommandReply]
 go
 
 ALTER TABLE [dbo].[GyroDeviceConfiguration]
-  ADD CONSTRAINT [FK_GyroDeviceConfiguration_GyroDevice] FOREIGN KEY([GyroDevice]) REFERENCES [dbo].[GyroDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_GyroDeviceConfiguration_GyroDevice] FOREIGN KEY([GyroDevice]) REFERENCES [dbo].[GyroDevice]([Id])
 go
 
 ALTER TABLE [dbo].[Int16TimeseriesValue]
-  ADD CONSTRAINT [FK_Int16TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Int16Timeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Int16TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Int16Timeseries]([Id])
 go
 
 ALTER TABLE [dbo].[Int32TimeseriesValue]
-  ADD CONSTRAINT [FK_Int32TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Int32Timeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Int32TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Int32Timeseries]([Id])
 go
 
 ALTER TABLE [dbo].[Int64TimeseriesValue]
-  ADD CONSTRAINT [FK_Int64TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Int64Timeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Int64TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Int64Timeseries]([Id])
 go
 
 ALTER TABLE [dbo].[BaseStation]
@@ -9365,7 +9365,7 @@ ALTER TABLE [dbo].[BaseStation]
 go
 
 ALTER TABLE [dbo].[Device]
-  ADD CONSTRAINT [FK_Device_Host] FOREIGN KEY([Host]) REFERENCES [dbo].[DeviceHost]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Device_Host] FOREIGN KEY([Host]) REFERENCES [dbo].[DeviceHost]([Id])
 go
 
 ALTER TABLE [dbo].[Device]
@@ -9601,23 +9601,23 @@ ALTER TABLE [dbo].[Vessel]
 go
 
 ALTER TABLE [dbo].[ItemIdentityLink]
-  ADD CONSTRAINT [FK_ItemIdentityLink_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[Item]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ItemIdentityLink_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[Item]([Id])
 go
 
 ALTER TABLE [dbo].[ItemIdentityLink]
-  ADD CONSTRAINT [FK_ItemIdentityLink_Identity] FOREIGN KEY([Identity]) REFERENCES [dbo].[Identity]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ItemIdentityLink_Identity] FOREIGN KEY([Identity]) REFERENCES [dbo].[Identity]([Id])
 go
 
 ALTER TABLE [dbo].[ItemParentChildLink]
-  ADD CONSTRAINT [FK_ItemParentChildLink_Parent] FOREIGN KEY([Parent]) REFERENCES [dbo].[Item]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ItemParentChildLink_Parent] FOREIGN KEY([Parent]) REFERENCES [dbo].[Item]([Id])
 go
 
 ALTER TABLE [dbo].[ItemParentChildLink]
-  ADD CONSTRAINT [FK_ItemParentChildLink_Child] FOREIGN KEY([Child]) REFERENCES [dbo].[Item]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ItemParentChildLink_Child] FOREIGN KEY([Child]) REFERENCES [dbo].[Item]([Id])
 go
 
 ALTER TABLE [dbo].[LineInputDeviceCommand]
-  ADD CONSTRAINT [FK_LineInputDeviceCommand_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LineInputDeviceCommand_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id])
 go
 
 ALTER TABLE [dbo].[LineInputDeviceCommand]
@@ -9625,7 +9625,7 @@ ALTER TABLE [dbo].[LineInputDeviceCommand]
 go
 
 ALTER TABLE [dbo].[LineInputDeviceCommandReply]
-  ADD CONSTRAINT [FK_LineInputDeviceCommandReply_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LineInputDeviceCommandReply_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id])
 go
 
 ALTER TABLE [dbo].[LineInputDeviceCommandReply]
@@ -9633,35 +9633,35 @@ ALTER TABLE [dbo].[LineInputDeviceCommandReply]
 go
 
 ALTER TABLE [dbo].[LineInputDeviceConfiguration]
-  ADD CONSTRAINT [FK_LineInputDeviceConfiguration_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LineInputDeviceConfiguration_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id])
 go
 
 ALTER TABLE [dbo].[LineInputMessageRouting]
-  ADD CONSTRAINT [FK_LineInputMessageRouting_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LineInputMessageRouting_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id])
 go
 
 ALTER TABLE [dbo].[LineInputMessageRoutingDestination]
-  ADD CONSTRAINT [FK_LineInputMessageRoutingDestination_Routing] FOREIGN KEY([Routing]) REFERENCES [dbo].[LineInputMessageRouting]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LineInputMessageRoutingDestination_Routing] FOREIGN KEY([Routing]) REFERENCES [dbo].[LineInputMessageRouting]([Id])
 go
 
 ALTER TABLE [dbo].[LineInputMessageRoutingDestination]
-  ADD CONSTRAINT [FK_LineInputMessageRoutingDestination_Listener] FOREIGN KEY([Listener]) REFERENCES [dbo].[Device]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LineInputMessageRoutingDestination_Listener] FOREIGN KEY([Listener]) REFERENCES [dbo].[Device]([Id])
 go
 
 ALTER TABLE [dbo].[LineInputWhiteListEntry]
-  ADD CONSTRAINT [FK_LineInputWhiteListEntry_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LineInputWhiteListEntry_LineInputDevice] FOREIGN KEY([LineInputDevice]) REFERENCES [dbo].[LineInputDevice]([Id])
 go
 
 ALTER TABLE [dbo].[LogApplicationConfiguration]
-  ADD CONSTRAINT [FK_LogApplicationConfiguration_Application] FOREIGN KEY([Application]) REFERENCES [dbo].[LogApplication]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LogApplicationConfiguration_Application] FOREIGN KEY([Application]) REFERENCES [dbo].[LogApplication]([Id])
 go
 
 ALTER TABLE [dbo].[LogHostConfiguration]
-  ADD CONSTRAINT [FK_LogHostConfiguration_Host] FOREIGN KEY([Host]) REFERENCES [dbo].[LogHost]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LogHostConfiguration_Host] FOREIGN KEY([Host]) REFERENCES [dbo].[LogHost]([Id])
 go
 
 ALTER TABLE [dbo].[LogProcess]
-  ADD CONSTRAINT [FK_LogProcess_Application] FOREIGN KEY([Application]) REFERENCES [dbo].[LogApplication]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LogProcess_Application] FOREIGN KEY([Application]) REFERENCES [dbo].[LogApplication]([Id])
 go
 
 ALTER TABLE [dbo].[LogProcess]
@@ -9669,35 +9669,35 @@ ALTER TABLE [dbo].[LogProcess]
 go
 
 ALTER TABLE [dbo].[LogRecord]
-  ADD CONSTRAINT [FK_LogRecord_Thread] FOREIGN KEY([Thread]) REFERENCES [dbo].[LogThread]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LogRecord_Thread] FOREIGN KEY([Thread]) REFERENCES [dbo].[LogThread]([Id])
 go
 
 ALTER TABLE [dbo].[LogRecord]
-  ADD CONSTRAINT [FK_LogRecord_Location] FOREIGN KEY([Location]) REFERENCES [dbo].[LogLocation]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LogRecord_Location] FOREIGN KEY([Location]) REFERENCES [dbo].[LogLocation]([Id])
 go
 
 ALTER TABLE [dbo].[LogThread]
-  ADD CONSTRAINT [FK_LogThread_Process] FOREIGN KEY([Process]) REFERENCES [dbo].[LogProcess]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LogThread_Process] FOREIGN KEY([Process]) REFERENCES [dbo].[LogProcess]([Id])
 go
 
 ALTER TABLE [dbo].[LogTraceEntry]
-  ADD CONSTRAINT [FK_LogTraceEntry_Thread] FOREIGN KEY([Thread]) REFERENCES [dbo].[LogThread]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LogTraceEntry_Thread] FOREIGN KEY([Thread]) REFERENCES [dbo].[LogThread]([Id])
 go
 
 ALTER TABLE [dbo].[LogTraceEntry]
-  ADD CONSTRAINT [FK_LogTraceEntry_Location] FOREIGN KEY([Location]) REFERENCES [dbo].[LogLocation]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_LogTraceEntry_Location] FOREIGN KEY([Location]) REFERENCES [dbo].[LogLocation]([Id])
 go
 
 ALTER TABLE [dbo].[MapElement]
-  ADD CONSTRAINT [FK_MapElement_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[Item]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_MapElement_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[Item]([Id])
 go
 
 ALTER TABLE [dbo].[MaritimeIdentificationDigits]
-  ADD CONSTRAINT [FK_MaritimeIdentificationDigits_Country] FOREIGN KEY([Country]) REFERENCES [dbo].[Country]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_MaritimeIdentificationDigits_Country] FOREIGN KEY([Country]) REFERENCES [dbo].[Country]([Id])
 go
 
 ALTER TABLE [dbo].[MediaProxySession]
-  ADD CONSTRAINT [FK_MediaProxySession_Service] FOREIGN KEY([Service]) REFERENCES [dbo].[MediaService]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_MediaProxySession_Service] FOREIGN KEY([Service]) REFERENCES [dbo].[MediaService]([Id])
 go
 
 ALTER TABLE [dbo].[MediaProxySession]
@@ -9705,11 +9705,11 @@ ALTER TABLE [dbo].[MediaProxySession]
 go
 
 ALTER TABLE [dbo].[MediaProxySessionFile]
-  ADD CONSTRAINT [FK_MediaProxySessionFile_ProxySession] FOREIGN KEY([ProxySession]) REFERENCES [dbo].[MediaProxySession]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_MediaProxySessionFile_ProxySession] FOREIGN KEY([ProxySession]) REFERENCES [dbo].[MediaProxySession]([Id])
 go
 
 ALTER TABLE [dbo].[MediaProxySessionOptions]
-  ADD CONSTRAINT [FK_MediaProxySessionOptions_ProxySession] FOREIGN KEY([ProxySession]) REFERENCES [dbo].[MediaProxySession]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_MediaProxySessionOptions_ProxySession] FOREIGN KEY([ProxySession]) REFERENCES [dbo].[MediaProxySession]([Id])
 go
 
 ALTER TABLE [dbo].[MediaService]
@@ -9717,19 +9717,19 @@ ALTER TABLE [dbo].[MediaService]
 go
 
 ALTER TABLE [dbo].[MediaServiceOptions]
-  ADD CONSTRAINT [FK_MediaServiceOptions_MediaService] FOREIGN KEY([MediaService]) REFERENCES [dbo].[MediaService]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_MediaServiceOptions_MediaService] FOREIGN KEY([MediaService]) REFERENCES [dbo].[MediaService]([Id])
 go
 
 ALTER TABLE [dbo].[NamespaceElement]
-  ADD CONSTRAINT [FK_NamespaceElement_Namespace] FOREIGN KEY([Namespace]) REFERENCES [dbo].[Namespace]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_NamespaceElement_Namespace] FOREIGN KEY([Namespace]) REFERENCES [dbo].[Namespace]([Id])
 go
 
 ALTER TABLE [dbo].[OilSpill]
-  ADD CONSTRAINT [FK_OilSpill_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_OilSpill_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id])
 go
 
 ALTER TABLE [dbo].[OilSpillDetectorCommand]
-  ADD CONSTRAINT [FK_OilSpillDetectorCommand_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_OilSpillDetectorCommand_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id])
 go
 
 ALTER TABLE [dbo].[OilSpillDetectorCommand]
@@ -9737,7 +9737,7 @@ ALTER TABLE [dbo].[OilSpillDetectorCommand]
 go
 
 ALTER TABLE [dbo].[OilSpillDetectorCommandReply]
-  ADD CONSTRAINT [FK_OilSpillDetectorCommandReply_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_OilSpillDetectorCommandReply_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id])
 go
 
 ALTER TABLE [dbo].[OilSpillDetectorCommandReply]
@@ -9745,7 +9745,7 @@ ALTER TABLE [dbo].[OilSpillDetectorCommandReply]
 go
 
 ALTER TABLE [dbo].[OilSpillDetectorConfiguration]
-  ADD CONSTRAINT [FK_OilSpillDetectorConfiguration_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_OilSpillDetectorConfiguration_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id])
 go
 
 ALTER TABLE [dbo].[OilSpillDetectorConfiguration]
@@ -9753,19 +9753,19 @@ ALTER TABLE [dbo].[OilSpillDetectorConfiguration]
 go
 
 ALTER TABLE [dbo].[Position2DTimeseriesValue]
-  ADD CONSTRAINT [FK_Position2DTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Position2DTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Position2DTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Position2DTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[Position3DTimeseriesValue]
-  ADD CONSTRAINT [FK_Position3DTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Position3DTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Position3DTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[Position3DTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[Property]
-  ADD CONSTRAINT [FK_Property_Element] FOREIGN KEY([Element]) REFERENCES [dbo].[Element]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Property_Element] FOREIGN KEY([Element]) REFERENCES [dbo].[Element]([Id])
 go
 
 ALTER TABLE [dbo].[Property]
-  ADD CONSTRAINT [FK_Property_Definition] FOREIGN KEY([Definition]) REFERENCES [dbo].[PropertyDefinition]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_Property_Definition] FOREIGN KEY([Definition]) REFERENCES [dbo].[PropertyDefinition]([Id])
 go
 
 ALTER TABLE [dbo].[ReferenceProperty]
@@ -9841,7 +9841,7 @@ ALTER TABLE [dbo].[UInt64TimeseriesProperty]
 go
 
 ALTER TABLE [dbo].[PropertyDefinition]
-  ADD CONSTRAINT [FK_PropertyDefinition_ElementType] FOREIGN KEY([ElementType]) REFERENCES [dbo].[ElementType]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_PropertyDefinition_ElementType] FOREIGN KEY([ElementType]) REFERENCES [dbo].[ElementType]([Id])
 go
 
 ALTER TABLE [dbo].[ReferencePropertyDefinition]
@@ -9857,11 +9857,11 @@ ALTER TABLE [dbo].[ReferenceTimeseriesPropertyDefinition]
 go
 
 ALTER TABLE [dbo].[RadarAlarmStatus]
-  ADD CONSTRAINT [FK_RadarAlarmStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadarAlarmStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarCommand]
-  ADD CONSTRAINT [FK_RadarCommand_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadarCommand_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarCommand]
@@ -9869,7 +9869,7 @@ ALTER TABLE [dbo].[RadarCommand]
 go
 
 ALTER TABLE [dbo].[RadarCommandReply]
-  ADD CONSTRAINT [FK_RadarCommandReply_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadarCommandReply_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarCommandReply]
@@ -9877,23 +9877,23 @@ ALTER TABLE [dbo].[RadarCommandReply]
 go
 
 ALTER TABLE [dbo].[RadarConfiguration]
-  ADD CONSTRAINT [FK_RadarConfiguration_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadarConfiguration_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarImage]
-  ADD CONSTRAINT [FK_RadarImage_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadarImage_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarRawTrackTable]
-  ADD CONSTRAINT [FK_RadarRawTrackTable_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadarRawTrackTable_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarStatus]
-  ADD CONSTRAINT [FK_RadarStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadarStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadioCommand]
-  ADD CONSTRAINT [FK_RadioCommand_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadioCommand_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadioCommand]
@@ -9901,7 +9901,7 @@ ALTER TABLE [dbo].[RadioCommand]
 go
 
 ALTER TABLE [dbo].[RadioCommandReply]
-  ADD CONSTRAINT [FK_RadioCommandReply_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadioCommandReply_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadioCommandReply]
@@ -9909,11 +9909,11 @@ ALTER TABLE [dbo].[RadioCommandReply]
 go
 
 ALTER TABLE [dbo].[RadioConfiguration]
-  ADD CONSTRAINT [FK_RadioConfiguration_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadioConfiguration_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomeCommand]
-  ADD CONSTRAINT [FK_RadomeCommand_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadomeCommand_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomeCommand]
@@ -9921,7 +9921,7 @@ ALTER TABLE [dbo].[RadomeCommand]
 go
 
 ALTER TABLE [dbo].[RadomeCommandReply]
-  ADD CONSTRAINT [FK_RadomeCommandReply_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadomeCommandReply_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomeCommandReply]
@@ -9929,51 +9929,51 @@ ALTER TABLE [dbo].[RadomeCommandReply]
 go
 
 ALTER TABLE [dbo].[RadomeConfiguration]
-  ADD CONSTRAINT [FK_RadomeConfiguration_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_RadomeConfiguration_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[ReferenceTimeseriesValue]
-  ADD CONSTRAINT [FK_ReferenceTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[ReferenceTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ReferenceTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[ReferenceTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[ReferenceTimeseriesValue]
-  ADD CONSTRAINT [FK_ReferenceTimeseriesValue_Value] FOREIGN KEY([Value]) REFERENCES [dbo].[Element]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ReferenceTimeseriesValue_Value] FOREIGN KEY([Value]) REFERENCES [dbo].[Element]([Id])
 go
 
 ALTER TABLE [dbo].[SByteTimeseriesValue]
-  ADD CONSTRAINT [FK_SByteTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[SByteTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_SByteTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[SByteTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[SecurityIdentifier]
-  ADD CONSTRAINT [FK_SecurityIdentifier_Domain] FOREIGN KEY([Domain]) REFERENCES [dbo].[SecurityDomain]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_SecurityIdentifier_Domain] FOREIGN KEY([Domain]) REFERENCES [dbo].[SecurityDomain]([Id])
 go
 
 ALTER TABLE [dbo].[SecurityIdentifierRoleLink]
-  ADD CONSTRAINT [FK_SecurityIdentifierRoleLink_Member] FOREIGN KEY([Member]) REFERENCES [dbo].[SecurityIdentifier]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_SecurityIdentifierRoleLink_Member] FOREIGN KEY([Member]) REFERENCES [dbo].[SecurityIdentifier]([Id])
 go
 
 ALTER TABLE [dbo].[SecurityIdentifierRoleLink]
-  ADD CONSTRAINT [FK_SecurityIdentifierRoleLink_Role] FOREIGN KEY([Role]) REFERENCES [dbo].[SecurityRole]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_SecurityIdentifierRoleLink_Role] FOREIGN KEY([Role]) REFERENCES [dbo].[SecurityRole]([Id])
 go
 
 ALTER TABLE [dbo].[SecurityLoginSession]
-  ADD CONSTRAINT [FK_SecurityLoginSession_Login] FOREIGN KEY([Login]) REFERENCES [dbo].[SecurityLogin]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_SecurityLoginSession_Login] FOREIGN KEY([Login]) REFERENCES [dbo].[SecurityLogin]([Id])
 go
 
 ALTER TABLE [dbo].[SecurityPermission]
-  ADD CONSTRAINT [FK_SecurityPermission_Identifier] FOREIGN KEY([Identifier]) REFERENCES [dbo].[SecurityIdentifier]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_SecurityPermission_Identifier] FOREIGN KEY([Identifier]) REFERENCES [dbo].[SecurityIdentifier]([Id])
 go
 
 ALTER TABLE [dbo].[SingleTimeseriesValue]
-  ADD CONSTRAINT [FK_SingleTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[SingleTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_SingleTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[SingleTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[StringTimeseriesValue]
-  ADD CONSTRAINT [FK_StringTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[StringTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_StringTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[StringTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[TimeseriesCatalogElement]
-  ADD CONSTRAINT [FK_TimeseriesCatalogElement_Catalog] FOREIGN KEY([Catalog]) REFERENCES [dbo].[TimeseriesCatalog]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TimeseriesCatalogElement_Catalog] FOREIGN KEY([Catalog]) REFERENCES [dbo].[TimeseriesCatalog]([Id])
 go
 
 ALTER TABLE [dbo].[AisAidToNavigationOffPositionTimeseries]
@@ -10189,55 +10189,55 @@ ALTER TABLE [dbo].[RadomeStatusTimeseries]
 go
 
 ALTER TABLE [dbo].[TimeSpanTimeseriesValue]
-  ADD CONSTRAINT [FK_TimeSpanTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[TimeSpanTimeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TimeSpanTimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[TimeSpanTimeseries]([Id])
 go
 
 ALTER TABLE [dbo].[TrackableItemTrackLink]
-  ADD CONSTRAINT [FK_TrackableItemTrackLink_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[TrackableItem]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackableItemTrackLink_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[TrackableItem]([Id])
 go
 
 ALTER TABLE [dbo].[TrackableItemTrackLink]
-  ADD CONSTRAINT [FK_TrackableItemTrackLink_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[TrackBase]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackableItemTrackLink_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[TrackBase]([Id])
 go
 
 ALTER TABLE [dbo].[TrackBase]
-  ADD CONSTRAINT [FK_TrackBase_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackBase_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id])
 go
 
 ALTER TABLE [dbo].[TrackerFilterParameters]
-  ADD CONSTRAINT [FK_TrackerFilterParameters_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackerFilterParameters_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id])
 go
 
 ALTER TABLE [dbo].[TrackerFilterParametersConfiguration]
-  ADD CONSTRAINT [FK_TrackerFilterParametersConfiguration_Parameters] FOREIGN KEY([Parameters]) REFERENCES [dbo].[TrackerFilterParameters]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackerFilterParametersConfiguration_Parameters] FOREIGN KEY([Parameters]) REFERENCES [dbo].[TrackerFilterParameters]([Id])
 go
 
 ALTER TABLE [dbo].[TrackLink]
-  ADD CONSTRAINT [FK_TrackLink_Primary] FOREIGN KEY([Primary]) REFERENCES [dbo].[TrackBase]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackLink_Primary] FOREIGN KEY([Primary]) REFERENCES [dbo].[TrackBase]([Id])
 go
 
 ALTER TABLE [dbo].[TrackLink]
-  ADD CONSTRAINT [FK_TrackLink_Secondary] FOREIGN KEY([Secondary]) REFERENCES [dbo].[TrackBase]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackLink_Secondary] FOREIGN KEY([Secondary]) REFERENCES [dbo].[TrackBase]([Id])
 go
 
 ALTER TABLE [dbo].[TrackValue]
-  ADD CONSTRAINT [FK_TrackValue_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[Track]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackValue_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[Track]([Id])
 go
 
 ALTER TABLE [dbo].[TrackValue3D]
-  ADD CONSTRAINT [FK_TrackValue3D_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[Track3D]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_TrackValue3D_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[Track3D]([Id])
 go
 
 ALTER TABLE [dbo].[UInt16TimeseriesValue]
-  ADD CONSTRAINT [FK_UInt16TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[UInt16Timeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_UInt16TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[UInt16Timeseries]([Id])
 go
 
 ALTER TABLE [dbo].[UInt32TimeseriesValue]
-  ADD CONSTRAINT [FK_UInt32TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[UInt32Timeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_UInt32TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[UInt32Timeseries]([Id])
 go
 
 ALTER TABLE [dbo].[UInt64TimeseriesValue]
-  ADD CONSTRAINT [FK_UInt64TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[UInt64Timeseries]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_UInt64TimeseriesValue_Timeseries] FOREIGN KEY([Timeseries]) REFERENCES [dbo].[UInt64Timeseries]([Id])
 go
 
 ALTER TABLE [dbo].[View]
@@ -10253,23 +10253,23 @@ ALTER TABLE [dbo].[View]
 go
 
 ALTER TABLE [dbo].[ViewCameraLink]
-  ADD CONSTRAINT [FK_ViewCameraLink_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ViewCameraLink_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id])
 go
 
 ALTER TABLE [dbo].[ViewCameraLink]
-  ADD CONSTRAINT [FK_ViewCameraLink_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ViewCameraLink_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[ViewTrackerLink]
-  ADD CONSTRAINT [FK_ViewTrackerLink_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ViewTrackerLink_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id])
 go
 
 ALTER TABLE [dbo].[ViewTrackerLink]
-  ADD CONSTRAINT [FK_ViewTrackerLink_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ViewTrackerLink_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationCommand]
-  ADD CONSTRAINT [FK_WeatherStationCommand_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_WeatherStationCommand_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationCommand]
@@ -10277,7 +10277,7 @@ ALTER TABLE [dbo].[WeatherStationCommand]
 go
 
 ALTER TABLE [dbo].[WeatherStationCommandReply]
-  ADD CONSTRAINT [FK_WeatherStationCommandReply_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_WeatherStationCommandReply_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationCommandReply]
@@ -10285,27 +10285,27 @@ ALTER TABLE [dbo].[WeatherStationCommandReply]
 go
 
 ALTER TABLE [dbo].[WeatherStationConfiguration]
-  ADD CONSTRAINT [FK_WeatherStationConfiguration_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_WeatherStationConfiguration_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[ZoneExceptions]
-  ADD CONSTRAINT [FK_ZoneExceptions_Zone] FOREIGN KEY([Zone]) REFERENCES [dbo].[Zone]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ZoneExceptions_Zone] FOREIGN KEY([Zone]) REFERENCES [dbo].[Zone]([Id])
 go
 
 ALTER TABLE [dbo].[ZoneExceptionsVesselLink]
-  ADD CONSTRAINT [FK_ZoneExceptionsVesselLink_ZoneExceptions] FOREIGN KEY([ZoneExceptions]) REFERENCES [dbo].[ZoneExceptions]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ZoneExceptionsVesselLink_ZoneExceptions] FOREIGN KEY([ZoneExceptions]) REFERENCES [dbo].[ZoneExceptions]([Id])
 go
 
 ALTER TABLE [dbo].[ZoneExceptionsVesselLink]
-  ADD CONSTRAINT [FK_ZoneExceptionsVesselLink_Vessel] FOREIGN KEY([Vessel]) REFERENCES [dbo].[Vessel]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ZoneExceptionsVesselLink_Vessel] FOREIGN KEY([Vessel]) REFERENCES [dbo].[Vessel]([Id])
 go
 
 ALTER TABLE [dbo].[ZoneTrackAlarm]
-  ADD CONSTRAINT [FK_ZoneTrackAlarm_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[Track]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ZoneTrackAlarm_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[Track]([Id])
 go
 
 ALTER TABLE [dbo].[ZoneTrackAlarm]
-  ADD CONSTRAINT [FK_ZoneTrackAlarm_Zone] FOREIGN KEY([Zone]) REFERENCES [dbo].[Zone]([Id]) ON DELETE CASCADE
+  ADD CONSTRAINT [FK_ZoneTrackAlarm_Zone] FOREIGN KEY([Zone]) REFERENCES [dbo].[Zone]([Id])
 go
 
 ALTER TABLE [dbo].[ZoneTrackAlarm]

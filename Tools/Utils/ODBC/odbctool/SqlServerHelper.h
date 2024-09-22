@@ -50,9 +50,12 @@ namespace Harlinn::ODBC::Tool
         static std::vector<std::shared_ptr<MemberInfo>> GetUnboundColumnsForComplexSelect( const ClassInfo& classInfo );
 
         static WideString GetInsertProcedureName( const ClassInfo& classInfo );
+        static WideString GetInsertProcedureName1( const ClassInfo& classInfo );
         static WideString GetInsertTriggerName( const ClassInfo& classInfo );
 
         static WideString GetUpdateProcedureName( const ClassInfo& classInfo );
+        static WideString GetUpdateProcedureName1( const ClassInfo& classInfo );
+        static WideString GetUpdateProcedureName2( const ClassInfo& classInfo );
         static WideString GetDeleteProcedureName( const ClassInfo& classInfo );
 
 

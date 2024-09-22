@@ -645,6 +645,16 @@ namespace Harlinn::ODBC::Tool
         }
     };
 
+    class CSharpSqlServerUpdateNodesOptions : public OptionsFile<CSharpSqlServerDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpSqlServerDatabaseOptions>;
+        CSharpSqlServerUpdateNodesOptions( const CSharpSqlServerDatabaseOptions& owner )
+            : Base( owner, L"SqlServerUpdateNodes.cs" )
+        {
+        }
+    };
+
 
 
     class CSharpSqlServerDatabaseOptions : public OptionsContainer<CSharpOptions>
@@ -653,10 +663,11 @@ namespace Harlinn::ODBC::Tool
         CSharpSqlServerComplexDatabaseReadersOptions complexDatabaseReaders_;
         CSharpSqlServerStoredProceduresOptions storedProcedures_;
         CSharpSqlServerDataContextOptions dataContext_;
+        CSharpSqlServerUpdateNodesOptions updateNodes_;
     public:
         using Base = OptionsContainer<CSharpOptions>;
         CSharpSqlServerDatabaseOptions( const CSharpOptions& owner )
-            : Base( owner, L"Database" ), simpleDatabaseReaders_( *this ), complexDatabaseReaders_( *this ), storedProcedures_( *this ), dataContext_( *this )
+            : Base( owner, L"Database" ), simpleDatabaseReaders_( *this ), complexDatabaseReaders_( *this ), storedProcedures_( *this ), dataContext_( *this ), updateNodes_( *this )
         {
         }
 
@@ -678,6 +689,11 @@ namespace Harlinn::ODBC::Tool
         const CSharpSqlServerDataContextOptions& DataContext( ) const
         {
             return dataContext_;
+        }
+
+        const CSharpSqlServerUpdateNodesOptions& UpdateNodes( ) const
+        {
+            return updateNodes_;
         }
 
     };

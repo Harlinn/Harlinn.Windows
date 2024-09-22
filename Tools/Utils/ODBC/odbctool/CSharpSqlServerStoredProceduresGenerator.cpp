@@ -41,13 +41,14 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"using Harlinn.Common.Core.Net;" );
         WriteLine( L"using Harlinn.Common.Core.Net.Data;" );
         WriteLine( L"using Harlinn.Common.Core.Net.Data.SqlClient;" );
+        WriteLine( L"using Harlinn.Common.Core.Net.Data.Updates;" );
         WriteLine( L"using Harlinn.Common.Core.Net.IO;" );
         WriteLine( );
         WriteLine( L"using {};", dataTypesNamespace );
         WriteLine( );
         WriteLine( L"namespace {}", nspace );
         WriteLine( L"{" );
-        WriteLine( L"    public partial class StoredProcedures" );
+        WriteLine( L"    public partial class StoredProcedures : IStoredProcedures" );
         WriteLine( L"    {" );
         WriteLine( L"        private ILogger _logger;" );
         WriteLine( L"        SqlConnection _connection;" );
@@ -79,9 +80,27 @@ namespace Harlinn::ODBC::Tool
             if ( classInfo.Abstract( ) == false )
             {
                 CreateInsert( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateInsert1( classInfo );
+                }
                 CreateInsertObject( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateInsertObject1( classInfo );
+                }
                 CreateUpdate( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateUpdate1( classInfo );
+                    CreateUpdate2( classInfo );
+                }
                 CreateUpdateObject( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateUpdateObject1( classInfo );
+                    CreateUpdateObject2( classInfo );
+                }
                 CreateDelete( classInfo );
                 CreateDeleteObject( classInfo );
             }
@@ -156,6 +175,65 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
+    void CSharpSqlServerStoredProceduresGenerator::CreateInsert1( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetInsertFunctionName1( classInfo );
+        auto functionParameters = CSharpHelper::GetInsertFunctionParameters1( classInfo );
+        auto storedProcedureName = SqlServerHelper::GetInsertProcedureName1( classInfo );
+
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyArgumentName = CSharpHelper::GetInputArgumentName( *primaryKey );
+        auto primaryKeySqlCommandParameterName = primaryKey->Name( ).FirstToLower( ) + L"Parameter";
+
+        WriteLine( L"        public bool {}( {} )", functionName, functionParameters );
+        WriteLine( L"        {" );
+        WriteLine( L"            bool result = false;" );
+        WriteLine( L"            try" );
+        WriteLine( L"            {" );
+        WriteLine( L"                var sqlCommand = _connection.CreateCommand( );" );
+        WriteLine( L"                sqlCommand.CommandText = \"{}\";", storedProcedureName );
+        WriteLine( L"                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;" );
+        WriteLine( L"                var sqlCommandParameters = sqlCommand.Parameters;" );
+        AddInsertParameter( *primaryKey );
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    AddInsertParameter( member );
+                }
+            }
+        }
+        WriteLine( L"                int rowsAffected = sqlCommand.ExecuteNonQuery( );" );
+        WriteLine( L"                if(rowsAffected > 0)" );
+        WriteLine( L"                {" );
+        if ( primaryKey->Type( ) == MemberInfoType::Guid )
+        {
+            WriteLine( L"                    {} = (Guid){}.Value;", primaryKeyArgumentName, primaryKeySqlCommandParameterName );
+        }
+        else
+        {
+            WriteLine( L"                    {} = (long){}.Value;", primaryKeyArgumentName, primaryKeySqlCommandParameterName );
+        }
+        WriteLine( L"                    result = true;" );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( L"            catch ( Exception exc )" );
+        WriteLine( L"            {" );
+        WriteLine( L"                LogException( exc );" );
+        WriteLine( L"                throw;" );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+
     void CSharpSqlServerStoredProceduresGenerator::CreateInsertObject( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetInsertFunctionName( classInfo );
@@ -181,6 +259,50 @@ namespace Harlinn::ODBC::Tool
             }
         }
         
+        WriteLine( L"            var result = {}( {} );", functionName, functionParameters );
+        WriteLine( L"            if( result )" );
+        WriteLine( L"            {" );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyVariableName = CSharpHelper::GetInputArgumentName( *primaryKey );
+        WriteLine( L"                {}.Id = {};", argumentName, primaryKeyVariableName );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto propertyName = rowVersion->Name( ).FirstToUpper( );
+            WriteLine( L"                {}.{} = 0;", argumentName, propertyName );
+        }
+        WriteLine( L"                {}.ObjectState = ObjectState.Stored;", argumentName );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+
+    void CSharpSqlServerStoredProceduresGenerator::CreateInsertObject1( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetInsertFunctionName1( classInfo );
+        auto functionParameters = CSharpHelper::GetInsertFunctionCallParameters1( classInfo );
+
+        auto dataTypeName = CSharpHelper::GetDataType( classInfo );
+        auto argumentName = dataTypeName.FirstToLower( );
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        auto memberCount = members.size( );
+
+        WriteLine( L"        public bool {}( {} {} )", functionName, dataTypeName, argumentName );
+        WriteLine( L"        {" );
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            auto memberType = member.Type( );
+            if ( memberType != MemberInfoType::RowVersion )
+            {
+                auto variableType = CSharpHelper::GetMemberFieldType( member );
+                auto variableName = CSharpHelper::GetInputArgumentName( member );
+                auto propertyName = member.Name( ).FirstToUpper( );
+                WriteLine( L"            {} {} = {}.{};", variableType, variableName, argumentName, propertyName );
+            }
+        }
+
         WriteLine( L"            var result = {}( {} );", functionName, functionParameters );
         WriteLine( L"            if( result )" );
         WriteLine( L"            {" );
@@ -253,6 +375,113 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
+    void CSharpSqlServerStoredProceduresGenerator::CreateUpdate1( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetUpdateFunctionName1( classInfo );
+        auto functionParameters = CSharpHelper::GetUpdateFunctionParameters1( classInfo );
+        auto storedProcedureName = SqlServerHelper::GetUpdateProcedureName1( classInfo );
+
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+
+
+        WriteLine( L"        public bool {}( {} )", functionName, functionParameters );
+        WriteLine( L"        {" );
+        WriteLine( L"            bool result = false;" );
+        WriteLine( L"            try" );
+        WriteLine( L"            {" );
+        WriteLine( L"                var sqlCommand = _connection.CreateCommand( );" );
+        WriteLine( L"                sqlCommand.CommandText = \"{}\";", storedProcedureName );
+        WriteLine( L"                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;" );
+        WriteLine( L"                var sqlCommandParameters = sqlCommand.Parameters;" );
+        AddUpdateParameter( *primaryKey );
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                AddUpdateParameter( member );
+            }
+        }
+        WriteLine( L"                int rowsAffected = sqlCommand.ExecuteNonQuery( );" );
+        WriteLine( L"                if(rowsAffected > 0)" );
+        WriteLine( L"                {" );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionArgumentName = CSharpHelper::GetInputArgumentName( *rowVersion );
+            auto rowVersionSqlCommandParameterName = rowVersion->Name( ).FirstToLower( ) + L"Parameter";
+            WriteLine( L"                    {} = (long){}.Value;", rowVersionArgumentName, rowVersionSqlCommandParameterName );
+        }
+        WriteLine( L"                    result = true;" );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( L"            catch ( Exception exc )" );
+        WriteLine( L"            {" );
+        WriteLine( L"                LogException( exc );" );
+        WriteLine( L"                throw;" );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+
+    void CSharpSqlServerStoredProceduresGenerator::CreateUpdate2( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetUpdateFunctionName2( classInfo );
+        auto functionParameters = CSharpHelper::GetUpdateFunctionParameters2( classInfo );
+        auto storedProcedureName = SqlServerHelper::GetUpdateProcedureName2( classInfo );
+
+        const auto& members = classInfo.Update2Members( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+
+
+        WriteLine( L"        public bool {}( {} )", functionName, functionParameters );
+        WriteLine( L"        {" );
+        WriteLine( L"            bool result = false;" );
+        WriteLine( L"            try" );
+        WriteLine( L"            {" );
+        WriteLine( L"                var sqlCommand = _connection.CreateCommand( );" );
+        WriteLine( L"                sqlCommand.CommandText = \"{}\";", storedProcedureName );
+        WriteLine( L"                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;" );
+        WriteLine( L"                var sqlCommandParameters = sqlCommand.Parameters;" );
+        AddUpdateParameter( *primaryKey );
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                AddUpdateParameter( member );
+            }
+        }
+        WriteLine( L"                int rowsAffected = sqlCommand.ExecuteNonQuery( );" );
+        WriteLine( L"                if(rowsAffected > 0)" );
+        WriteLine( L"                {" );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionArgumentName = CSharpHelper::GetInputArgumentName( *rowVersion );
+            auto rowVersionSqlCommandParameterName = rowVersion->Name( ).FirstToLower( ) + L"Parameter";
+            WriteLine( L"                    {} = (long){}.Value;", rowVersionArgumentName, rowVersionSqlCommandParameterName );
+        }
+        WriteLine( L"                    result = true;" );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( L"            catch ( Exception exc )" );
+        WriteLine( L"            {" );
+        WriteLine( L"                LogException( exc );" );
+        WriteLine( L"                throw;" );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+
+
     void CSharpSqlServerStoredProceduresGenerator::CreateUpdateObject( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetUpdateFunctionName( classInfo );
@@ -292,6 +521,87 @@ namespace Harlinn::ODBC::Tool
 
         WriteLine( L"        }" );
     }
+
+    void CSharpSqlServerStoredProceduresGenerator::CreateUpdateObject1( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetUpdateFunctionName1( classInfo );
+        auto functionParameters = CSharpHelper::GetUpdateFunctionCallParameters1( classInfo );
+
+        auto dataTypeName = CSharpHelper::GetDataType( classInfo );
+        auto argumentName = dataTypeName.FirstToLower( );
+
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        auto memberCount = members.size( );
+
+        WriteLine( L"        public bool {}( {} {} )", functionName, dataTypeName, argumentName );
+        WriteLine( L"        {" );
+
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            auto variableType = CSharpHelper::GetMemberFieldType( member );
+            auto variableName = CSharpHelper::GetInputArgumentName( member );
+            auto propertyName = member.Name( ).FirstToUpper( );
+            WriteLine( L"            {} {} = {}.{};", variableType, variableName, argumentName, propertyName );
+        }
+
+        WriteLine( L"            var result = {}( {} );", functionName, functionParameters );
+        WriteLine( L"            if( result )" );
+        WriteLine( L"            {" );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionVariableName = CSharpHelper::GetInputArgumentName( *rowVersion );
+            auto propertyName = rowVersion->Name( ).FirstToUpper( );
+            WriteLine( L"                {}.{} = {};", argumentName, propertyName, rowVersionVariableName );
+        }
+        WriteLine( L"                {}.ObjectState = ObjectState.Stored;", argumentName );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+
+        WriteLine( L"        }" );
+    }
+
+    void CSharpSqlServerStoredProceduresGenerator::CreateUpdateObject2( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetUpdateFunctionName2( classInfo );
+        auto functionParameters = CSharpHelper::GetUpdateFunctionCallParameters2( classInfo );
+
+        auto dataTypeName = CSharpHelper::GetDataType( classInfo );
+        auto argumentName = dataTypeName.FirstToLower( );
+
+        const auto& members = classInfo.Update2Members( );
+        auto memberCount = members.size( );
+
+        WriteLine( L"        public bool {}( {} {} )", functionName, dataTypeName, argumentName );
+        WriteLine( L"        {" );
+
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            auto variableType = CSharpHelper::GetMemberFieldType( member );
+            auto variableName = CSharpHelper::GetInputArgumentName( member );
+            auto propertyName = member.Name( ).FirstToUpper( );
+            WriteLine( L"            {} {} = {}.{};", variableType, variableName, argumentName, propertyName );
+        }
+
+        WriteLine( L"            var result = {}( {} );", functionName, functionParameters );
+        WriteLine( L"            if( result )" );
+        WriteLine( L"            {" );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionVariableName = CSharpHelper::GetInputArgumentName( *rowVersion );
+            auto propertyName = rowVersion->Name( ).FirstToUpper( );
+            WriteLine( L"                {}.{} = {};", argumentName, propertyName, rowVersionVariableName );
+        }
+        WriteLine( L"                {}.ObjectState = ObjectState.Stored;", argumentName );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+
+        WriteLine( L"        }" );
+    }
+
 
     void CSharpSqlServerStoredProceduresGenerator::CreateDelete( const ClassInfo& classInfo )
     {

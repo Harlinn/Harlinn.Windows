@@ -154,7 +154,9 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
         WriteLine( L"        public bool Update( UpdateData<Kind> updateData )" );
         WriteLine( L"        {" );
-        WriteLine( L"            return false;" );
+        WriteLine( L"            var UpdateHandler = new SqlServerUpdateHandler( _loggerFactory, _storedProcedures, updateData, new SqlServerUpdateNodeFactory( ) );" );
+        WriteLine( L"            UpdateHandler.Execute( );" );
+        WriteLine( L"            return true;" );
         WriteLine( L"        }" );
         WriteLine( );
         WriteLine( L"        public bool Update( BaseDataGuid<Kind> dataObject )");

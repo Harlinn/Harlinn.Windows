@@ -37,6 +37,10 @@ namespace Harlinn::ODBC::Tool
             if ( classInfo.Abstract( ) == false )
             {
                 CreateInsertProcedure( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateInsertProcedure1( classInfo );
+                }
                 CreateInsertTrigger( classInfo );
             }
         }
@@ -47,16 +51,23 @@ namespace Harlinn::ODBC::Tool
     WideString SqlServerCreateInsertProceduresGenerator::GetProcedureParameters( const ClassInfo& classInfo )
     {
         const auto& members = classInfo.PersistentMembers( );
-        size_t membersCount = members.size( );
+        return GetProcedureParameters( classInfo, members );
+    }
+
+    WideString SqlServerCreateInsertProceduresGenerator::GetProcedureParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& persistentMembers )
+    {
+        size_t membersCount = persistentMembers.size( );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = primaryKey->Name( );
         auto primaryKeyType = SqlServerHelper::GetColumnType( *primaryKey );
+
+        auto rowVersion = classInfo.RowVersion( );
 
         StringBuilder<wchar_t> parameters;
 
         parameters.Append( L"  @{} {} OUTPUT", primaryKeyName, primaryKeyType );
 
-        if ( membersCount > 0 )
+        if ( (rowVersion == nullptr && membersCount > 1) || ( rowVersion != nullptr && membersCount > 2 ) )
         {
             parameters.AppendLine( L"," );
         }
@@ -68,7 +79,7 @@ namespace Harlinn::ODBC::Tool
 
         for ( size_t i = 0; i < membersCount; i++ )
         {
-            const auto& member = *members[ i ];
+            const auto& member = *persistentMembers[ i ];
             if ( member.PrimaryKey( ) == false )
             {
                 auto memberType = member.Type( );
@@ -91,12 +102,18 @@ namespace Harlinn::ODBC::Tool
         
         return parameters.ToString( );
     }
+
     WideString SqlServerCreateInsertProceduresGenerator::GetInsertStatement( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.OwnPersistentMembers( );
+        return GetInsertStatement( classInfo, members );
+    }
+
+    WideString SqlServerCreateInsertProceduresGenerator::GetInsertStatement( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& ownPersistentMembers )
     {
         StringBuilder<wchar_t> statement;
 
-        const auto& members = classInfo.OwnPersistentMembers( );
-        size_t membersCount = members.size( );
+        size_t membersCount = ownPersistentMembers.size( );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = primaryKey->Name( );
 
@@ -114,7 +131,7 @@ namespace Harlinn::ODBC::Tool
 
         for ( size_t i = 0; i < membersCount; i++ )
         {
-            const auto& member = *members[ i ];
+            const auto& member = *ownPersistentMembers[ i ];
             if ( member.PrimaryKey( ) == false )
             {
                 auto memberType = member.Type( );
@@ -335,5 +352,89 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
+    
+    WideString SqlServerCreateInsertProceduresGenerator::GetInsertProcedure1( const ClassInfo& classInfo )
+    {
+        StringBuilder<wchar_t> procedure;
 
+        auto procedureName = SqlServerHelper::GetInsertProcedureName1( classInfo );
+
+        auto members = classInfo.PersistentMembersExceptNullableReferences( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = primaryKey->Name( );
+        auto primaryKeyType = SqlServerHelper::GetColumnType( *primaryKey );
+
+        procedure.AppendLine( L"CREATE OR ALTER PROCEDURE [{}]", procedureName );
+
+        auto parameters = GetProcedureParameters( classInfo, members );
+        procedure.Append( parameters );
+
+
+        auto savePointName = Format( L"SavePoint{}", classInfo.Id( ) );
+
+
+        procedure.AppendLine( L"AS" );
+        procedure.AppendLine( L"  BEGIN" );
+        procedure.AppendLine( L"    IF @{} IS NULL", primaryKeyName );
+        procedure.AppendLine( L"    BEGIN" );
+        procedure.AppendLine( L"      SET @{} = NEWID()", primaryKeyName );
+        procedure.AppendLine( L"    END" );
+        if ( classInfo.IsTopLevel( ) == false || classInfo.HasDescendants( ) )
+        {
+            procedure.AppendLine( L"    DECLARE @EntityType INT;" );
+            procedure.AppendLine( L"    SET @EntityType = {};", classInfo.Id( ) );
+        }
+        procedure.AppendLine( L"    DECLARE @TranCounter INT;" );
+        procedure.AppendLine( L"    SET @TranCounter = @@TRANCOUNT;" );
+        procedure.AppendLine( L"    IF @TranCounter > 0" );
+        procedure.AppendLine( L"      SAVE TRANSACTION {};", savePointName );
+        procedure.AppendLine( L"    ELSE" );
+        procedure.AppendLine( L"      BEGIN TRANSACTION;" );
+        procedure.AppendLine( L"    BEGIN TRY" );
+
+        auto classInfos = classInfo.BaseClassesAndSelf( );
+        auto classInfoCount = classInfos.size( );
+
+        for ( size_t i = 0; i < classInfoCount; i++ )
+        {
+            const auto& currentClassInfo = *classInfos[ i ];
+            auto ownPersistentMembersExceptNullableReferences = currentClassInfo.OwnPersistentMembersExceptNullableReferences( );
+            auto insertStatement = GetInsertStatement( currentClassInfo, ownPersistentMembersExceptNullableReferences );
+            procedure.Append( insertStatement );
+        }
+
+
+        procedure.AppendLine( L"      IF @TranCounter = 0" );
+        procedure.AppendLine( L"          COMMIT TRANSACTION;" );
+        procedure.AppendLine( L"    END TRY" );
+        procedure.AppendLine( L"    BEGIN CATCH" );
+        procedure.AppendLine( L"        DECLARE @ErrorMessage NVARCHAR(4000);" );
+        procedure.AppendLine( L"        DECLARE @ErrorSeverity INT;" );
+        procedure.AppendLine( L"        DECLARE @ErrorState INT;" );
+        procedure.AppendLine( L"        SELECT @ErrorMessage = ERROR_MESSAGE()," );
+        procedure.AppendLine( L"            @ErrorSeverity = ERROR_SEVERITY()," );
+        procedure.AppendLine( L"            @ErrorState = ERROR_STATE();" );
+        procedure.AppendLine( L"        IF @TranCounter = 0" );
+        procedure.AppendLine( L"          ROLLBACK TRANSACTION;" );
+        procedure.AppendLine( L"        ELSE" );
+        procedure.AppendLine( L"          IF XACT_STATE() <> -1" );
+        procedure.AppendLine( L"            ROLLBACK TRANSACTION {};", savePointName );
+        procedure.AppendLine( L"        RAISERROR(" );
+        procedure.AppendLine( L"            @ErrorMessage," );
+        procedure.AppendLine( L"            @ErrorSeverity," );
+        procedure.AppendLine( L"            @ErrorState);" );
+        procedure.AppendLine( L"    END CATCH" );
+        procedure.AppendLine( L"  END" );
+
+        return procedure.ToString( );
+    }
+
+    void SqlServerCreateInsertProceduresGenerator::CreateInsertProcedure1( const ClassInfo& classInfo )
+    {
+        auto insertProcedure = GetInsertProcedure1( classInfo );
+        WriteLine( insertProcedure );
+        WriteLine( "GO" );
+        WriteLine( );
+    }
 }

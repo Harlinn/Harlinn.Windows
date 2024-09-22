@@ -209,22 +209,13 @@ namespace Harlinn::ODBC::Tool
     {
         auto tableName = GetTableName( classInfo );
         
-        auto collectionMember = reference.ReferencingCollectionMember( );
-
         auto referencedClassInfo = reference.ReferencedType( );
         auto referencedPrimaryKey = referencedClassInfo->PrimaryKey( );
         auto referencedPrimaryKeyName = referencedPrimaryKey->Name( );
         auto referencedTableName = GetTableName( *referencedClassInfo );
 
         WriteLine( L"ALTER TABLE [dbo].[{}]", tableName );
-        if ( collectionMember && collectionMember->Aggregated( ) )
-        {
-            WriteLine( L"  ADD CONSTRAINT [FK_{}_{}] FOREIGN KEY([{}]) REFERENCES [dbo].[{}]([{}]) ON DELETE CASCADE", tableName, reference.Name( ), reference.Name( ), referencedTableName, referencedPrimaryKeyName );
-        }
-        else
-        {
-            WriteLine( L"  ADD CONSTRAINT [FK_{}_{}] FOREIGN KEY([{}]) REFERENCES [dbo].[{}]([{}])", tableName, reference.Name( ), reference.Name( ), referencedTableName, referencedPrimaryKeyName );
-        }
+        WriteLine( L"  ADD CONSTRAINT [FK_{}_{}] FOREIGN KEY([{}]) REFERENCES [dbo].[{}]([{}])", tableName, reference.Name( ), reference.Name( ), referencedTableName, referencedPrimaryKeyName );
         WriteLine( L"go" );
         WriteLine( );
     }

@@ -90,17 +90,21 @@ namespace Harlinn::ODBC::Tool
 
         WriteLine( L"        public {}? {}( {} id )", className, functionName, primaryKeyType );
         WriteLine( L"        {" );
-        WriteLine( L"            var entity = ({}?)GetEntityFromCache( id );", className );
-        WriteLine( L"            if( entity == null )" );
+        WriteLine( L"            if( IsDeleted( id ) == false )" );
         WriteLine( L"            {" );
-        WriteLine( L"                var dataContext = DataContext;" );
-        WriteLine( L"                var dataObject = dataContext.{}( id );", functionName );
-        WriteLine( L"                if( dataObject != null )" );
+        WriteLine( L"                var entity = ({}?)GetEntityFromCache( id );", className );
+        WriteLine( L"                if( entity == null )" );
         WriteLine( L"                {" );
-        WriteLine( L"                    entity = ({})AddToContext( dataObject );", className );
+        WriteLine( L"                    var dataContext = DataContext;" );
+        WriteLine( L"                    var dataObject = dataContext.{}( id );", functionName );
+        WriteLine( L"                    if( dataObject != null )" );
+        WriteLine( L"                    {" );
+        WriteLine( L"                        entity = ({})AddToContext( dataObject );", className );
+        WriteLine( L"                    }" );
         WriteLine( L"                }" );
+        WriteLine( L"                return entity;" );
         WriteLine( L"            }" );
-        WriteLine( L"            return entity;" );
+        WriteLine( L"            return null;" );
         WriteLine( L"        }" );
         WriteLine( );
     }
@@ -167,8 +171,11 @@ namespace Harlinn::ODBC::Tool
                 WriteLine( L"            var dataObject = dataContext.{}( {} );", functionName, callArguments );
                 WriteLine( L"            if( dataObject != null )" );
                 WriteLine( L"            {" );
-                WriteLine( L"                var result = ({})AddToContext( dataObject );", entityClassName );
-                WriteLine( L"                return result;" );
+                WriteLine( L"                if( IsDeleted( dataObject.Id ) == false )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    var result = ({})AddToContext( dataObject );", entityClassName );
+                WriteLine( L"                    return result;" );
+                WriteLine( L"                }" );
                 WriteLine( L"            }" );
                 WriteLine( L"            return null;" );
                 WriteLine( L"        }" );
@@ -210,8 +217,11 @@ namespace Harlinn::ODBC::Tool
                 WriteLine( L"            var dataObject = dataContext.{}( {} );", functionName, callArguments );
                 WriteLine( L"            if( dataObject != null )" );
                 WriteLine( L"            {" );
-                WriteLine( L"                var result = ({})AddToContext( dataObject );", entityClassName );
-                WriteLine( L"                return result;" );
+                WriteLine( L"                if( IsDeleted( dataObject.Id ) == false )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    var result = ({})AddToContext( dataObject );", entityClassName );
+                WriteLine( L"                    return result;" );
+                WriteLine( L"                }" );
                 WriteLine( L"            }" );
                 WriteLine( L"            return null;" );
                 WriteLine( L"        }" );

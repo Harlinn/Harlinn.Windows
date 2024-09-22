@@ -37,11 +37,13 @@ namespace Harlinn::ODBC::Tool
         std::vector<std::shared_ptr<MemberInfo>> ownMembers_;
         std::unordered_map<WideString,std::shared_ptr<MemberInfo>> ownMembersByName_;
         std::vector<std::shared_ptr<MemberInfo>> ownPersistentMembers_;
+        mutable std::optional<bool> hasOwnNullableReferences_;
         std::unordered_map<WideString, std::shared_ptr<MemberInfo>> ownPersistentMembersByName_;
 
         std::vector<std::shared_ptr<MemberInfo>> members_;
         std::unordered_map<WideString, std::shared_ptr<MemberInfo>> membersByName_;
         std::vector<std::shared_ptr<MemberInfo>> persistentMembers_;
+        mutable std::optional<bool> hasNullableReferences_;
         std::unordered_map<WideString, std::shared_ptr<MemberInfo>> persistentMembersByName_;
 
         std::vector<std::shared_ptr<MemberInfo>> viewMembers_;
@@ -119,10 +121,60 @@ namespace Harlinn::ODBC::Tool
             return description_;
         }
 
+        static std::vector<std::shared_ptr<MemberInfo>> FilterExceptNullableReferences( const std::vector<std::shared_ptr<MemberInfo>>& members )
+        {
+            std::vector<std::shared_ptr<MemberInfo>> result;
+            for ( const auto& member : members )
+            {
+                auto memberType = member->Type( );
+                if ( memberType == MemberInfoType::Reference || memberType == MemberInfoType::TimeSeries )
+                {
+                    if ( member->Nullable( ) == false )
+                    {
+                        result.emplace_back( member );
+                    }
+                }
+                else
+                {
+                    result.emplace_back( member );
+                }
+            }
+            return result;
+        }
+        static std::vector<std::shared_ptr<MemberInfo>> FilterNullableReferences( const std::vector<std::shared_ptr<MemberInfo>>& members )
+        {
+            std::vector<std::shared_ptr<MemberInfo>> result;
+            for ( const auto& member : members )
+            {
+                auto memberType = member->Type( );
+                if ( memberType == MemberInfoType::Reference || memberType == MemberInfoType::TimeSeries )
+                {
+                    if ( member->Nullable( ) )
+                    {
+                        result.emplace_back( member );
+                    }
+                }
+            }
+            return result;
+        }
+
         const std::vector<std::shared_ptr<MemberInfo>>& OwnMembers( ) const
         {
             return ownMembers_;
         }
+
+        const std::vector<std::shared_ptr<MemberInfo>> OwnMembersExceptNullableReferences( ) const
+        {
+            return FilterExceptNullableReferences( ownMembers_ );
+        }
+        const std::vector<std::shared_ptr<MemberInfo>> OwnNullableReferences( ) const
+        {
+            return FilterNullableReferences( ownMembers_ );
+        }
+
+        
+
+        
 
         std::shared_ptr<MemberInfo> FindOwnMember( const WideString& memberName ) const
         {
@@ -140,6 +192,47 @@ namespace Harlinn::ODBC::Tool
             return ownPersistentMembers_;
         }
 
+        const std::vector<std::shared_ptr<MemberInfo>> OwnPersistentMembersExceptNullableReferences( ) const
+        {
+            return FilterExceptNullableReferences( ownPersistentMembers_ );
+        }
+
+        std::vector<std::shared_ptr<MemberInfo>> OwnUpdate2Members( ) const
+        {
+            auto result = FilterNullableReferences( ownPersistentMembers_ );
+            if ( IsTopLevel( ) )
+            {
+                result.insert( result.begin( ), PrimaryKey( ) );
+                auto rowVersion = RowVersion( );
+                if ( rowVersion )
+                {
+                    result.insert( result.begin( ) + 1, rowVersion );
+                }
+            }
+            return result;
+        }
+
+        bool HasOwnNullableReferences( ) const
+        {
+            if ( hasOwnNullableReferences_.has_value( ) )
+            {
+                return hasOwnNullableReferences_.value( );
+            }
+            auto count = ownPersistentMembers_.size( );
+            for ( size_t i = 0; i < count; i++ )
+            {
+                const auto& member = *ownPersistentMembers_[ i ];
+                auto memberType = member.Type( );
+                if ( ( memberType == MemberInfoType::Reference || memberType == MemberInfoType::TimeSeries ) && member.Nullable( ) )
+                {
+                    hasOwnNullableReferences_ = true;
+                    return true;
+                }
+            }
+            hasOwnNullableReferences_ = false;
+            return false;
+        }
+
         std::shared_ptr<MemberInfo> FindOwnPersistentMember( const WideString& memberName ) const
         {
             auto it = ownPersistentMembersByName_.find( memberName );
@@ -155,6 +248,42 @@ namespace Harlinn::ODBC::Tool
         {
             return members_;
         }
+
+        std::vector<std::shared_ptr<MemberInfo>> MembersExceptNullableReferences( ) const
+        {
+            return FilterExceptNullableReferences( members_ );
+        }
+        std::vector<std::shared_ptr<MemberInfo>> NullableReferences( ) const
+        {
+            return FilterNullableReferences( members_ );
+        }
+
+        std::vector<std::shared_ptr<ReferenceMemberInfo>> References( ) const
+        {
+            std::vector<std::shared_ptr<ReferenceMemberInfo>> result;
+            for ( const auto& member : persistentMembers_ )
+            {
+                auto memberType = member->Type( );
+                if ( memberType == MemberInfoType::Reference || memberType == MemberInfoType::TimeSeries )
+                {
+                    result.emplace_back( std::static_pointer_cast< ReferenceMemberInfo >( member ) );
+                }
+            }
+            return result;
+        }
+
+        std::vector<std::shared_ptr<MemberInfo>> Update2Members( ) const
+        {
+            auto result = FilterNullableReferences( persistentMembers_ );
+            result.insert( result.begin( ), PrimaryKey( ) );
+            auto rowVersion = RowVersion( );
+            if ( rowVersion )
+            {
+                result.insert( result.begin( ) + 1, rowVersion );
+            }
+            return result;
+        }
+
         const std::unordered_map<WideString, std::shared_ptr<MemberInfo>>& MembersByName( ) const
         {
             return membersByName_;
@@ -163,6 +292,33 @@ namespace Harlinn::ODBC::Tool
         {
             return persistentMembers_;
         }
+
+        bool HasNullableReferences( ) const
+        {
+            if ( hasNullableReferences_.has_value( ) )
+            {
+                return hasNullableReferences_.value( );
+            }
+            auto count = persistentMembers_.size( );
+            for ( size_t i = 0; i < count; i++ )
+            {
+                const auto& member = *persistentMembers_[ i ];
+                auto memberType = member.Type( );
+                if ( ( memberType == MemberInfoType::Reference || memberType == MemberInfoType::TimeSeries ) && member.Nullable( ) )
+                {
+                    hasNullableReferences_ = true;
+                    return true;
+                }
+            }
+            hasNullableReferences_ = false;
+            return false;
+        }
+
+        const std::vector<std::shared_ptr<MemberInfo>> PersistentMembersExceptNullableReferences( ) const
+        {
+            return FilterExceptNullableReferences( persistentMembers_ );
+        }
+
         const std::unordered_map<WideString, std::shared_ptr<MemberInfo>>& PersistentMembersByName( ) const
         {
             return persistentMembersByName_;

@@ -29,17 +29,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AircraftTypeEntity? GetAircraftTypeById( Guid id )
         {
-            var entity = (AircraftTypeEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAircraftTypeById( id );
-                if( dataObject != null )
+                var entity = (AircraftTypeEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AircraftTypeEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAircraftTypeById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AircraftTypeEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AircraftTypeEntity> GetAircraftTypeCollection( )
@@ -55,8 +59,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAircraftTypeByName( name );
             if( dataObject != null )
             {
-                var result = (AircraftTypeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AircraftTypeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -66,17 +73,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisDeviceCommandEntity? GetAisDeviceCommandById( Guid id )
         {
-            var entity = (AisDeviceCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisDeviceCommandById( id );
-                if( dataObject != null )
+                var entity = (AisDeviceCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisDeviceCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisDeviceCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisDeviceCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisDeviceCommandEntity> GetAisDeviceCommandCollection( )
@@ -187,17 +198,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisDeviceCommandReplyEntity? GetAisDeviceCommandReplyById( Guid id )
         {
-            var entity = (AisDeviceCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisDeviceCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (AisDeviceCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisDeviceCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisDeviceCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisDeviceCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisDeviceCommandReplyEntity> GetAisDeviceCommandReplyCollection( )
@@ -301,8 +316,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisDeviceCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (AisDeviceCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisDeviceCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -312,17 +330,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisDeviceConfigurationEntity? GetAisDeviceConfigurationById( Guid id )
         {
-            var entity = (AisDeviceConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisDeviceConfigurationById( id );
-                if( dataObject != null )
+                var entity = (AisDeviceConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisDeviceConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisDeviceConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisDeviceConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisDeviceConfigurationEntity> GetAisDeviceConfigurationCollection( )
@@ -346,8 +368,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisDeviceConfigurationByAisDeviceAndTimestamp( aisDevice, timestamp );
             if( dataObject != null )
             {
-                var result = (AisDeviceConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisDeviceConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -358,8 +383,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisDeviceConfigurationByAisDeviceAtTimestamp( aisDevice, timestamp );
             if( dataObject != null )
             {
-                var result = (AisDeviceConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisDeviceConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -433,17 +461,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisDeviceRawMessageEntity? GetAisDeviceRawMessageById( Guid id )
         {
-            var entity = (AisDeviceRawMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisDeviceRawMessageById( id );
-                if( dataObject != null )
+                var entity = (AisDeviceRawMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisDeviceRawMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisDeviceRawMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisDeviceRawMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisDeviceRawMessageEntity> GetAisDeviceRawMessageCollection( )
@@ -546,17 +578,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisDeviceRawSentenceEntity? GetAisDeviceRawSentenceById( Guid id )
         {
-            var entity = (AisDeviceRawSentenceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisDeviceRawSentenceById( id );
-                if( dataObject != null )
+                var entity = (AisDeviceRawSentenceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisDeviceRawSentenceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisDeviceRawSentenceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisDeviceRawSentenceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisDeviceRawSentenceEntity> GetAisDeviceRawSentenceCollection( )
@@ -659,17 +695,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisMessageEntity? GetAisMessageById( Guid id )
         {
-            var entity = (AisMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisMessageById( id );
-                if( dataObject != null )
+                var entity = (AisMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisMessageEntity> GetAisMessageCollection( )
@@ -693,8 +733,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -705,8 +748,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -820,17 +866,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AidToNavigationReportMessageEntity? GetAidToNavigationReportMessageById( Guid id )
         {
-            var entity = (AidToNavigationReportMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAidToNavigationReportMessageById( id );
-                if( dataObject != null )
+                var entity = (AidToNavigationReportMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AidToNavigationReportMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAidToNavigationReportMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AidToNavigationReportMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollection( )
@@ -854,8 +904,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAidToNavigationReportMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AidToNavigationReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AidToNavigationReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -866,8 +919,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAidToNavigationReportMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AidToNavigationReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AidToNavigationReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -981,17 +1037,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisAddressedSafetyRelatedMessageEntity? GetAisAddressedSafetyRelatedMessageById( Guid id )
         {
-            var entity = (AisAddressedSafetyRelatedMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisAddressedSafetyRelatedMessageById( id );
-                if( dataObject != null )
+                var entity = (AisAddressedSafetyRelatedMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisAddressedSafetyRelatedMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisAddressedSafetyRelatedMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisAddressedSafetyRelatedMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollection( )
@@ -1015,8 +1075,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisAddressedSafetyRelatedMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisAddressedSafetyRelatedMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisAddressedSafetyRelatedMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1027,8 +1090,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisAddressedSafetyRelatedMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisAddressedSafetyRelatedMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisAddressedSafetyRelatedMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1150,17 +1216,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisBaseStationReportMessageEntity? GetAisBaseStationReportMessageById( Guid id )
         {
-            var entity = (AisBaseStationReportMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisBaseStationReportMessageById( id );
-                if( dataObject != null )
+                var entity = (AisBaseStationReportMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisBaseStationReportMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisBaseStationReportMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisBaseStationReportMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollection( )
@@ -1184,8 +1254,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisBaseStationReportMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisBaseStationReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisBaseStationReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1196,8 +1269,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisBaseStationReportMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisBaseStationReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisBaseStationReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1311,17 +1387,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisBinaryAcknowledgeMessageEntity? GetAisBinaryAcknowledgeMessageById( Guid id )
         {
-            var entity = (AisBinaryAcknowledgeMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisBinaryAcknowledgeMessageById( id );
-                if( dataObject != null )
+                var entity = (AisBinaryAcknowledgeMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisBinaryAcknowledgeMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisBinaryAcknowledgeMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisBinaryAcknowledgeMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollection( )
@@ -1345,8 +1425,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisBinaryAcknowledgeMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisBinaryAcknowledgeMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisBinaryAcknowledgeMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1357,8 +1440,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisBinaryAcknowledgeMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisBinaryAcknowledgeMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisBinaryAcknowledgeMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1472,17 +1558,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisBinaryAddressedMessageEntity? GetAisBinaryAddressedMessageById( Guid id )
         {
-            var entity = (AisBinaryAddressedMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisBinaryAddressedMessageById( id );
-                if( dataObject != null )
+                var entity = (AisBinaryAddressedMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisBinaryAddressedMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisBinaryAddressedMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisBinaryAddressedMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollection( )
@@ -1506,8 +1596,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisBinaryAddressedMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisBinaryAddressedMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisBinaryAddressedMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1518,8 +1611,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisBinaryAddressedMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisBinaryAddressedMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisBinaryAddressedMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1641,17 +1737,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisBinaryBroadcastMessageEntity? GetAisBinaryBroadcastMessageById( Guid id )
         {
-            var entity = (AisBinaryBroadcastMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisBinaryBroadcastMessageById( id );
-                if( dataObject != null )
+                var entity = (AisBinaryBroadcastMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisBinaryBroadcastMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisBinaryBroadcastMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisBinaryBroadcastMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollection( )
@@ -1675,8 +1775,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisBinaryBroadcastMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisBinaryBroadcastMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisBinaryBroadcastMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1687,8 +1790,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisBinaryBroadcastMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisBinaryBroadcastMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisBinaryBroadcastMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1802,17 +1908,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisDataLinkManagementMessageEntity? GetAisDataLinkManagementMessageById( Guid id )
         {
-            var entity = (AisDataLinkManagementMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisDataLinkManagementMessageById( id );
-                if( dataObject != null )
+                var entity = (AisDataLinkManagementMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisDataLinkManagementMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisDataLinkManagementMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisDataLinkManagementMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollection( )
@@ -1836,8 +1946,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisDataLinkManagementMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisDataLinkManagementMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisDataLinkManagementMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1848,8 +1961,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisDataLinkManagementMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisDataLinkManagementMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisDataLinkManagementMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -1963,17 +2079,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisExtendedClassBCsPositionReportMessageEntity? GetAisExtendedClassBCsPositionReportMessageById( Guid id )
         {
-            var entity = (AisExtendedClassBCsPositionReportMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisExtendedClassBCsPositionReportMessageById( id );
-                if( dataObject != null )
+                var entity = (AisExtendedClassBCsPositionReportMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisExtendedClassBCsPositionReportMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisExtendedClassBCsPositionReportMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisExtendedClassBCsPositionReportMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollection( )
@@ -1997,8 +2117,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisExtendedClassBCsPositionReportMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisExtendedClassBCsPositionReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisExtendedClassBCsPositionReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2009,8 +2132,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisExtendedClassBCsPositionReportMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisExtendedClassBCsPositionReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisExtendedClassBCsPositionReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2132,17 +2258,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisInterrogationMessageEntity? GetAisInterrogationMessageById( Guid id )
         {
-            var entity = (AisInterrogationMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisInterrogationMessageById( id );
-                if( dataObject != null )
+                var entity = (AisInterrogationMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisInterrogationMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisInterrogationMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisInterrogationMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollection( )
@@ -2166,8 +2296,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisInterrogationMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisInterrogationMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisInterrogationMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2178,8 +2311,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisInterrogationMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisInterrogationMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisInterrogationMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2293,17 +2429,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisPositionReportClassAMessageBaseEntity? GetAisPositionReportClassAMessageBaseById( Guid id )
         {
-            var entity = (AisPositionReportClassAMessageBaseEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisPositionReportClassAMessageBaseById( id );
-                if( dataObject != null )
+                var entity = (AisPositionReportClassAMessageBaseEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisPositionReportClassAMessageBaseEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisPositionReportClassAMessageBaseById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisPositionReportClassAMessageBaseEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollection( )
@@ -2327,8 +2467,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportClassAMessageBaseByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportClassAMessageBaseEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportClassAMessageBaseEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2339,8 +2482,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportClassAMessageBaseByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportClassAMessageBaseEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportClassAMessageBaseEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2454,17 +2600,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisPositionReportClassAAssignedScheduleMessageEntity? GetAisPositionReportClassAAssignedScheduleMessageById( Guid id )
         {
-            var entity = (AisPositionReportClassAAssignedScheduleMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisPositionReportClassAAssignedScheduleMessageById( id );
-                if( dataObject != null )
+                var entity = (AisPositionReportClassAAssignedScheduleMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisPositionReportClassAAssignedScheduleMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisPositionReportClassAAssignedScheduleMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisPositionReportClassAAssignedScheduleMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollection( )
@@ -2488,8 +2638,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportClassAAssignedScheduleMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportClassAAssignedScheduleMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2500,8 +2653,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportClassAAssignedScheduleMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportClassAAssignedScheduleMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2615,17 +2771,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisPositionReportClassAMessageEntity? GetAisPositionReportClassAMessageById( Guid id )
         {
-            var entity = (AisPositionReportClassAMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisPositionReportClassAMessageById( id );
-                if( dataObject != null )
+                var entity = (AisPositionReportClassAMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisPositionReportClassAMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisPositionReportClassAMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisPositionReportClassAMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollection( )
@@ -2649,8 +2809,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportClassAMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportClassAMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportClassAMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2661,8 +2824,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportClassAMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportClassAMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportClassAMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2776,17 +2942,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisPositionReportClassAResponseToInterrogationMessageEntity? GetAisPositionReportClassAResponseToInterrogationMessageById( Guid id )
         {
-            var entity = (AisPositionReportClassAResponseToInterrogationMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisPositionReportClassAResponseToInterrogationMessageById( id );
-                if( dataObject != null )
+                var entity = (AisPositionReportClassAResponseToInterrogationMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisPositionReportClassAResponseToInterrogationMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisPositionReportClassAResponseToInterrogationMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisPositionReportClassAResponseToInterrogationMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollection( )
@@ -2810,8 +2980,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportClassAResponseToInterrogationMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportClassAResponseToInterrogationMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2822,8 +2995,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportClassAResponseToInterrogationMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportClassAResponseToInterrogationMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2937,17 +3113,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisPositionReportForLongRangeApplicationsMessageEntity? GetAisPositionReportForLongRangeApplicationsMessageById( Guid id )
         {
-            var entity = (AisPositionReportForLongRangeApplicationsMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisPositionReportForLongRangeApplicationsMessageById( id );
-                if( dataObject != null )
+                var entity = (AisPositionReportForLongRangeApplicationsMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisPositionReportForLongRangeApplicationsMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisPositionReportForLongRangeApplicationsMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisPositionReportForLongRangeApplicationsMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollection( )
@@ -2971,8 +3151,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportForLongRangeApplicationsMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportForLongRangeApplicationsMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -2983,8 +3166,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisPositionReportForLongRangeApplicationsMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisPositionReportForLongRangeApplicationsMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3098,17 +3284,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisSafetyRelatedAcknowledgmentMessageEntity? GetAisSafetyRelatedAcknowledgmentMessageById( Guid id )
         {
-            var entity = (AisSafetyRelatedAcknowledgmentMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisSafetyRelatedAcknowledgmentMessageById( id );
-                if( dataObject != null )
+                var entity = (AisSafetyRelatedAcknowledgmentMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisSafetyRelatedAcknowledgmentMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisSafetyRelatedAcknowledgmentMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisSafetyRelatedAcknowledgmentMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollection( )
@@ -3132,8 +3322,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisSafetyRelatedAcknowledgmentMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisSafetyRelatedAcknowledgmentMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3144,8 +3337,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisSafetyRelatedAcknowledgmentMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisSafetyRelatedAcknowledgmentMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3259,17 +3455,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisStandardClassBCsPositionReportMessageEntity? GetAisStandardClassBCsPositionReportMessageById( Guid id )
         {
-            var entity = (AisStandardClassBCsPositionReportMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisStandardClassBCsPositionReportMessageById( id );
-                if( dataObject != null )
+                var entity = (AisStandardClassBCsPositionReportMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisStandardClassBCsPositionReportMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisStandardClassBCsPositionReportMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisStandardClassBCsPositionReportMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollection( )
@@ -3293,8 +3493,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStandardClassBCsPositionReportMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStandardClassBCsPositionReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStandardClassBCsPositionReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3305,8 +3508,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStandardClassBCsPositionReportMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStandardClassBCsPositionReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStandardClassBCsPositionReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3420,17 +3626,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisStandardSarAircraftPositionReportMessageEntity? GetAisStandardSarAircraftPositionReportMessageById( Guid id )
         {
-            var entity = (AisStandardSarAircraftPositionReportMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisStandardSarAircraftPositionReportMessageById( id );
-                if( dataObject != null )
+                var entity = (AisStandardSarAircraftPositionReportMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisStandardSarAircraftPositionReportMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisStandardSarAircraftPositionReportMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisStandardSarAircraftPositionReportMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollection( )
@@ -3454,8 +3664,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStandardSarAircraftPositionReportMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStandardSarAircraftPositionReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStandardSarAircraftPositionReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3466,8 +3679,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStandardSarAircraftPositionReportMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStandardSarAircraftPositionReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStandardSarAircraftPositionReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3581,17 +3797,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisStaticAndVoyageRelatedDataMessageEntity? GetAisStaticAndVoyageRelatedDataMessageById( Guid id )
         {
-            var entity = (AisStaticAndVoyageRelatedDataMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisStaticAndVoyageRelatedDataMessageById( id );
-                if( dataObject != null )
+                var entity = (AisStaticAndVoyageRelatedDataMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisStaticAndVoyageRelatedDataMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisStaticAndVoyageRelatedDataMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisStaticAndVoyageRelatedDataMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollection( )
@@ -3615,8 +3835,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStaticAndVoyageRelatedDataMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStaticAndVoyageRelatedDataMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStaticAndVoyageRelatedDataMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3627,8 +3850,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStaticAndVoyageRelatedDataMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStaticAndVoyageRelatedDataMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStaticAndVoyageRelatedDataMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3766,17 +3992,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisStaticDataReportMessageEntity? GetAisStaticDataReportMessageById( Guid id )
         {
-            var entity = (AisStaticDataReportMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisStaticDataReportMessageById( id );
-                if( dataObject != null )
+                var entity = (AisStaticDataReportMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisStaticDataReportMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisStaticDataReportMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisStaticDataReportMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollection( )
@@ -3800,8 +4030,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStaticDataReportMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStaticDataReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStaticDataReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3812,8 +4045,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStaticDataReportMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStaticDataReportMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStaticDataReportMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3927,17 +4163,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisStaticDataReportPartAMessageEntity? GetAisStaticDataReportPartAMessageById( Guid id )
         {
-            var entity = (AisStaticDataReportPartAMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisStaticDataReportPartAMessageById( id );
-                if( dataObject != null )
+                var entity = (AisStaticDataReportPartAMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisStaticDataReportPartAMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisStaticDataReportPartAMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisStaticDataReportPartAMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollection( )
@@ -3961,8 +4201,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStaticDataReportPartAMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStaticDataReportPartAMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStaticDataReportPartAMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -3973,8 +4216,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStaticDataReportPartAMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStaticDataReportPartAMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStaticDataReportPartAMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4096,17 +4342,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisStaticDataReportPartBMessageEntity? GetAisStaticDataReportPartBMessageById( Guid id )
         {
-            var entity = (AisStaticDataReportPartBMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisStaticDataReportPartBMessageById( id );
-                if( dataObject != null )
+                var entity = (AisStaticDataReportPartBMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisStaticDataReportPartBMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisStaticDataReportPartBMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisStaticDataReportPartBMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollection( )
@@ -4130,8 +4380,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStaticDataReportPartBMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStaticDataReportPartBMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStaticDataReportPartBMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4142,8 +4395,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisStaticDataReportPartBMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisStaticDataReportPartBMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisStaticDataReportPartBMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4273,17 +4529,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisUtcAndDateInquiryMessageEntity? GetAisUtcAndDateInquiryMessageById( Guid id )
         {
-            var entity = (AisUtcAndDateInquiryMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisUtcAndDateInquiryMessageById( id );
-                if( dataObject != null )
+                var entity = (AisUtcAndDateInquiryMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisUtcAndDateInquiryMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisUtcAndDateInquiryMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisUtcAndDateInquiryMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollection( )
@@ -4307,8 +4567,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisUtcAndDateInquiryMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisUtcAndDateInquiryMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisUtcAndDateInquiryMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4319,8 +4582,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisUtcAndDateInquiryMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisUtcAndDateInquiryMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisUtcAndDateInquiryMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4434,17 +4700,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisUtcAndDateResponseMessageEntity? GetAisUtcAndDateResponseMessageById( Guid id )
         {
-            var entity = (AisUtcAndDateResponseMessageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisUtcAndDateResponseMessageById( id );
-                if( dataObject != null )
+                var entity = (AisUtcAndDateResponseMessageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisUtcAndDateResponseMessageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisUtcAndDateResponseMessageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisUtcAndDateResponseMessageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollection( )
@@ -4468,8 +4738,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisUtcAndDateResponseMessageByAisDeviceAndReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisUtcAndDateResponseMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisUtcAndDateResponseMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4480,8 +4753,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisUtcAndDateResponseMessageByAisDeviceAtReceivedTimestamp( aisDevice, receivedTimestamp );
             if( dataObject != null )
             {
-                var result = (AisUtcAndDateResponseMessageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisUtcAndDateResponseMessageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4595,17 +4871,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AlarmStateChangeEntity? GetAlarmStateChangeById( Guid id )
         {
-            var entity = (AlarmStateChangeEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAlarmStateChangeById( id );
-                if( dataObject != null )
+                var entity = (AlarmStateChangeEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AlarmStateChangeEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAlarmStateChangeById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AlarmStateChangeEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AlarmStateChangeEntity> GetAlarmStateChangeCollection( )
@@ -4629,8 +4909,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAlarmStateChangeByAlarmAndTimestamp( alarm, timestamp );
             if( dataObject != null )
             {
-                var result = (AlarmStateChangeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AlarmStateChangeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4641,8 +4924,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAlarmStateChangeByAlarmAtTimestamp( alarm, timestamp );
             if( dataObject != null )
             {
-                var result = (AlarmStateChangeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AlarmStateChangeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4716,17 +5002,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BaseStationTypeEntity? GetBaseStationTypeById( Guid id )
         {
-            var entity = (BaseStationTypeEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBaseStationTypeById( id );
-                if( dataObject != null )
+                var entity = (BaseStationTypeEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BaseStationTypeEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBaseStationTypeById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BaseStationTypeEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BaseStationTypeEntity> GetBaseStationTypeCollection( )
@@ -4742,8 +5032,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBaseStationTypeByName( name );
             if( dataObject != null )
             {
-                var result = (BaseStationTypeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BaseStationTypeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4753,17 +5046,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BinaryTimeseriesValueEntity? GetBinaryTimeseriesValueById( Guid id )
         {
-            var entity = (BinaryTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBinaryTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (BinaryTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BinaryTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBinaryTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BinaryTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BinaryTimeseriesValueEntity> GetBinaryTimeseriesValueCollection( )
@@ -4787,8 +5084,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBinaryTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (BinaryTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BinaryTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4799,8 +5099,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBinaryTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (BinaryTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BinaryTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4874,17 +5177,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BookmarkEntity? GetBookmarkById( Guid id )
         {
-            var entity = (BookmarkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBookmarkById( id );
-                if( dataObject != null )
+                var entity = (BookmarkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BookmarkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBookmarkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BookmarkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BookmarkEntity> GetBookmarkCollection( )
@@ -4907,17 +5214,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BooleanTimeseriesValueEntity? GetBooleanTimeseriesValueById( Guid id )
         {
-            var entity = (BooleanTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBooleanTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (BooleanTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BooleanTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBooleanTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BooleanTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BooleanTimeseriesValueEntity> GetBooleanTimeseriesValueCollection( )
@@ -4941,8 +5252,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBooleanTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (BooleanTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BooleanTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -4953,8 +5267,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBooleanTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (BooleanTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BooleanTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -5028,17 +5345,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ByteTimeseriesValueEntity? GetByteTimeseriesValueById( Guid id )
         {
-            var entity = (ByteTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetByteTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (ByteTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ByteTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetByteTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ByteTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ByteTimeseriesValueEntity> GetByteTimeseriesValueCollection( )
@@ -5062,8 +5383,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetByteTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (ByteTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ByteTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -5074,8 +5398,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetByteTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (ByteTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ByteTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -5149,17 +5476,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandEntity? GetCameraCommandById( Guid id )
         {
-            var entity = (CameraCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandEntity> GetCameraCommandCollection( )
@@ -5270,17 +5601,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandAbsoluteMoveEntity? GetCameraCommandAbsoluteMoveById( Guid id )
         {
-            var entity = (CameraCommandAbsoluteMoveEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandAbsoluteMoveById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandAbsoluteMoveEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandAbsoluteMoveEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandAbsoluteMoveById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandAbsoluteMoveEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandAbsoluteMoveEntity> GetCameraCommandAbsoluteMoveCollection( )
@@ -5391,17 +5726,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandAdjustPanTiltZoomEntity? GetCameraCommandAdjustPanTiltZoomById( Guid id )
         {
-            var entity = (CameraCommandAdjustPanTiltZoomEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandAdjustPanTiltZoomById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandAdjustPanTiltZoomEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandAdjustPanTiltZoomEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandAdjustPanTiltZoomById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandAdjustPanTiltZoomEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandAdjustPanTiltZoomEntity> GetCameraCommandAdjustPanTiltZoomCollection( )
@@ -5512,17 +5851,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandContinuousMoveEntity? GetCameraCommandContinuousMoveById( Guid id )
         {
-            var entity = (CameraCommandContinuousMoveEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandContinuousMoveById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandContinuousMoveEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandContinuousMoveEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandContinuousMoveById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandContinuousMoveEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandContinuousMoveEntity> GetCameraCommandContinuousMoveCollection( )
@@ -5633,17 +5976,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandGeoMoveEntity? GetCameraCommandGeoMoveById( Guid id )
         {
-            var entity = (CameraCommandGeoMoveEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandGeoMoveById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandGeoMoveEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandGeoMoveEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandGeoMoveById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandGeoMoveEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandGeoMoveEntity> GetCameraCommandGeoMoveCollection( )
@@ -5754,17 +6101,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandRelativeMoveEntity? GetCameraCommandRelativeMoveById( Guid id )
         {
-            var entity = (CameraCommandRelativeMoveEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandRelativeMoveById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandRelativeMoveEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandRelativeMoveEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandRelativeMoveById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandRelativeMoveEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandRelativeMoveEntity> GetCameraCommandRelativeMoveCollection( )
@@ -5875,17 +6226,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandReleasePTZOwnershipEntity? GetCameraCommandReleasePTZOwnershipById( Guid id )
         {
-            var entity = (CameraCommandReleasePTZOwnershipEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandReleasePTZOwnershipById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandReleasePTZOwnershipEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandReleasePTZOwnershipEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandReleasePTZOwnershipById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandReleasePTZOwnershipEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandReleasePTZOwnershipEntity> GetCameraCommandReleasePTZOwnershipCollection( )
@@ -5996,17 +6351,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandRequestPTZOwnershipEntity? GetCameraCommandRequestPTZOwnershipById( Guid id )
         {
-            var entity = (CameraCommandRequestPTZOwnershipEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandRequestPTZOwnershipById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandRequestPTZOwnershipEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandRequestPTZOwnershipEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandRequestPTZOwnershipById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandRequestPTZOwnershipEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandRequestPTZOwnershipEntity> GetCameraCommandRequestPTZOwnershipCollection( )
@@ -6117,17 +6476,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandSetAutoFocusEntity? GetCameraCommandSetAutoFocusById( Guid id )
         {
-            var entity = (CameraCommandSetAutoFocusEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandSetAutoFocusById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandSetAutoFocusEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandSetAutoFocusEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandSetAutoFocusById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandSetAutoFocusEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandSetAutoFocusEntity> GetCameraCommandSetAutoFocusCollection( )
@@ -6238,17 +6601,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandSetBlackAndWhiteEntity? GetCameraCommandSetBlackAndWhiteById( Guid id )
         {
-            var entity = (CameraCommandSetBlackAndWhiteEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandSetBlackAndWhiteById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandSetBlackAndWhiteEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandSetBlackAndWhiteEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandSetBlackAndWhiteById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandSetBlackAndWhiteEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandSetBlackAndWhiteEntity> GetCameraCommandSetBlackAndWhiteCollection( )
@@ -6359,17 +6726,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandSetFollowedEntity? GetCameraCommandSetFollowedById( Guid id )
         {
-            var entity = (CameraCommandSetFollowedEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandSetFollowedById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandSetFollowedEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandSetFollowedEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandSetFollowedById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandSetFollowedEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandSetFollowedEntity> GetCameraCommandSetFollowedCollection( )
@@ -6480,17 +6851,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandSetInfraRedLampEntity? GetCameraCommandSetInfraRedLampById( Guid id )
         {
-            var entity = (CameraCommandSetInfraRedLampEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandSetInfraRedLampById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandSetInfraRedLampEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandSetInfraRedLampEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandSetInfraRedLampById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandSetInfraRedLampEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandSetInfraRedLampEntity> GetCameraCommandSetInfraRedLampCollection( )
@@ -6601,17 +6976,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandSetWasherEntity? GetCameraCommandSetWasherById( Guid id )
         {
-            var entity = (CameraCommandSetWasherEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandSetWasherById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandSetWasherEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandSetWasherEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandSetWasherById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandSetWasherEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandSetWasherEntity> GetCameraCommandSetWasherCollection( )
@@ -6722,17 +7101,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandSetWiperEntity? GetCameraCommandSetWiperById( Guid id )
         {
-            var entity = (CameraCommandSetWiperEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandSetWiperById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandSetWiperEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandSetWiperEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandSetWiperById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandSetWiperEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandSetWiperEntity> GetCameraCommandSetWiperCollection( )
@@ -6843,17 +7226,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandStopEntity? GetCameraCommandStopById( Guid id )
         {
-            var entity = (CameraCommandStopEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandStopById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandStopEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandStopEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandStopById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandStopEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandStopEntity> GetCameraCommandStopCollection( )
@@ -6964,17 +7351,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraCommandReplyEntity? GetCameraCommandReplyById( Guid id )
         {
-            var entity = (CameraCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (CameraCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraCommandReplyEntity> GetCameraCommandReplyCollection( )
@@ -7078,8 +7469,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (CameraCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7089,17 +7483,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraConfigurationEntity? GetCameraConfigurationById( Guid id )
         {
-            var entity = (CameraConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraConfigurationById( id );
-                if( dataObject != null )
+                var entity = (CameraConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraConfigurationEntity> GetCameraConfigurationCollection( )
@@ -7123,8 +7521,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraConfigurationByCameraAndTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7135,8 +7536,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraConfigurationByCameraAtTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7210,17 +7614,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraPanCalibrationEntity? GetCameraPanCalibrationById( Guid id )
         {
-            var entity = (CameraPanCalibrationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraPanCalibrationById( id );
-                if( dataObject != null )
+                var entity = (CameraPanCalibrationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraPanCalibrationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraPanCalibrationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraPanCalibrationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraPanCalibrationEntity> GetCameraPanCalibrationCollection( )
@@ -7244,8 +7652,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraPanCalibrationByCameraAndTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraPanCalibrationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraPanCalibrationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7256,8 +7667,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraPanCalibrationByCameraAtTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraPanCalibrationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraPanCalibrationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7331,17 +7745,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraPanCalibrationValueEntity? GetCameraPanCalibrationValueById( Guid id )
         {
-            var entity = (CameraPanCalibrationValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraPanCalibrationValueById( id );
-                if( dataObject != null )
+                var entity = (CameraPanCalibrationValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraPanCalibrationValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraPanCalibrationValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraPanCalibrationValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraPanCalibrationValueEntity> GetCameraPanCalibrationValueCollection( )
@@ -7365,8 +7783,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraPanCalibrationValueByPanCalibrationAndPanAngle( panCalibration, panAngle );
             if( dataObject != null )
             {
-                var result = (CameraPanCalibrationValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraPanCalibrationValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7400,17 +7821,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraStatusEntity? GetCameraStatusById( Guid id )
         {
-            var entity = (CameraStatusEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraStatusById( id );
-                if( dataObject != null )
+                var entity = (CameraStatusEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraStatusEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraStatusById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraStatusEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraStatusEntity> GetCameraStatusCollection( )
@@ -7434,8 +7859,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraStatusByCameraAndTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7446,8 +7874,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraStatusByCameraAtTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7490,8 +7921,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraStatusByTrackAndTimestamp( track, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7502,8 +7936,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraStatusByTrackAtTimestamp( track, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7577,17 +8014,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraTiltCalibrationEntity? GetCameraTiltCalibrationById( Guid id )
         {
-            var entity = (CameraTiltCalibrationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraTiltCalibrationById( id );
-                if( dataObject != null )
+                var entity = (CameraTiltCalibrationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraTiltCalibrationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraTiltCalibrationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraTiltCalibrationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraTiltCalibrationEntity> GetCameraTiltCalibrationCollection( )
@@ -7611,8 +8052,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraTiltCalibrationByCameraAndTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraTiltCalibrationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraTiltCalibrationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7623,8 +8067,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraTiltCalibrationByCameraAtTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraTiltCalibrationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraTiltCalibrationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7698,17 +8145,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraTiltCalibrationValueEntity? GetCameraTiltCalibrationValueById( Guid id )
         {
-            var entity = (CameraTiltCalibrationValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraTiltCalibrationValueById( id );
-                if( dataObject != null )
+                var entity = (CameraTiltCalibrationValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraTiltCalibrationValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraTiltCalibrationValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraTiltCalibrationValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraTiltCalibrationValueEntity> GetCameraTiltCalibrationValueCollection( )
@@ -7732,8 +8183,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraTiltCalibrationValueByTiltCalibrationAndPanAngle( tiltCalibration, panAngle );
             if( dataObject != null )
             {
-                var result = (CameraTiltCalibrationValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraTiltCalibrationValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7767,17 +8221,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraZoomCalibrationEntity? GetCameraZoomCalibrationById( Guid id )
         {
-            var entity = (CameraZoomCalibrationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraZoomCalibrationById( id );
-                if( dataObject != null )
+                var entity = (CameraZoomCalibrationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraZoomCalibrationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraZoomCalibrationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraZoomCalibrationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraZoomCalibrationEntity> GetCameraZoomCalibrationCollection( )
@@ -7801,8 +8259,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraZoomCalibrationByCameraAndTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraZoomCalibrationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraZoomCalibrationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7813,8 +8274,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraZoomCalibrationByCameraAtTimestamp( camera, timestamp );
             if( dataObject != null )
             {
-                var result = (CameraZoomCalibrationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraZoomCalibrationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7888,17 +8352,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraZoomCalibrationValueEntity? GetCameraZoomCalibrationValueById( Guid id )
         {
-            var entity = (CameraZoomCalibrationValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraZoomCalibrationValueById( id );
-                if( dataObject != null )
+                var entity = (CameraZoomCalibrationValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraZoomCalibrationValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraZoomCalibrationValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraZoomCalibrationValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraZoomCalibrationValueEntity> GetCameraZoomCalibrationValueCollection( )
@@ -7922,8 +8390,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraZoomCalibrationValueByZoomCalibrationAndFocalLength( zoomCalibration, focalLength );
             if( dataObject != null )
             {
-                var result = (CameraZoomCalibrationValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraZoomCalibrationValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -7957,17 +8428,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CatalogElementEntity? GetCatalogElementById( Guid id )
         {
-            var entity = (CatalogElementEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCatalogElementById( id );
-                if( dataObject != null )
+                var entity = (CatalogElementEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CatalogElementEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCatalogElementById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CatalogElementEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CatalogElementEntity> GetCatalogElementCollection( )
@@ -7991,8 +8466,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCatalogElementByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (CatalogElementEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CatalogElementEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8002,17 +8480,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CatalogEntity? GetCatalogById( Guid id )
         {
-            var entity = (CatalogEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCatalogById( id );
-                if( dataObject != null )
+                var entity = (CatalogEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CatalogEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCatalogById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CatalogEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CatalogEntity> GetCatalogCollection( )
@@ -8036,8 +8518,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCatalogByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (CatalogEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CatalogEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8047,17 +8532,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ElementEntity? GetElementById( Guid id )
         {
-            var entity = (ElementEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetElementById( id );
-                if( dataObject != null )
+                var entity = (ElementEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ElementEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetElementById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ElementEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ElementEntity> GetElementCollection( )
@@ -8081,8 +8570,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetElementByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (ElementEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ElementEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8100,17 +8592,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CollectionInfoEntity? GetCollectionInfoById( Guid id )
         {
-            var entity = (CollectionInfoEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCollectionInfoById( id );
-                if( dataObject != null )
+                var entity = (CollectionInfoEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CollectionInfoEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCollectionInfoById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CollectionInfoEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CollectionInfoEntity> GetCollectionInfoCollection( )
@@ -8125,17 +8621,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CountryEntity? GetCountryById( Guid id )
         {
-            var entity = (CountryEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCountryById( id );
-                if( dataObject != null )
+                var entity = (CountryEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CountryEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCountryById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CountryEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CountryEntity> GetCountryCollection( )
@@ -8151,8 +8651,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCountryByName( name );
             if( dataObject != null )
             {
-                var result = (CountryEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CountryEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8163,8 +8666,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCountryByCode( code );
             if( dataObject != null )
             {
-                var result = (CountryEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CountryEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8199,8 +8705,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCountryByAlpha2( alpha2 );
             if( dataObject != null )
             {
-                var result = (CountryEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CountryEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8211,8 +8720,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCountryByAlpha3( alpha3 );
             if( dataObject != null )
             {
-                var result = (CountryEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CountryEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8222,17 +8734,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CursorInfoEntity? GetCursorInfoById( Guid id )
         {
-            var entity = (CursorInfoEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCursorInfoById( id );
-                if( dataObject != null )
+                var entity = (CursorInfoEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CursorInfoEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCursorInfoById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CursorInfoEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CursorInfoEntity> GetCursorInfoCollection( )
@@ -8247,17 +8763,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DateTimeTimeseriesValueEntity? GetDateTimeTimeseriesValueById( Guid id )
         {
-            var entity = (DateTimeTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDateTimeTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (DateTimeTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DateTimeTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDateTimeTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DateTimeTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DateTimeTimeseriesValueEntity> GetDateTimeTimeseriesValueCollection( )
@@ -8281,8 +8801,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDateTimeTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (DateTimeTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DateTimeTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8293,8 +8816,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDateTimeTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (DateTimeTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DateTimeTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8368,17 +8894,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DeviceHostEntity? GetDeviceHostById( Guid id )
         {
-            var entity = (DeviceHostEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDeviceHostById( id );
-                if( dataObject != null )
+                var entity = (DeviceHostEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DeviceHostEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDeviceHostById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DeviceHostEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DeviceHostEntity> GetDeviceHostCollection( )
@@ -8394,8 +8924,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDeviceHostByName( name );
             if( dataObject != null )
             {
-                var result = (DeviceHostEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DeviceHostEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8405,17 +8938,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DeviceHostConfigurationEntity? GetDeviceHostConfigurationById( Guid id )
         {
-            var entity = (DeviceHostConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDeviceHostConfigurationById( id );
-                if( dataObject != null )
+                var entity = (DeviceHostConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DeviceHostConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDeviceHostConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DeviceHostConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DeviceHostConfigurationEntity> GetDeviceHostConfigurationCollection( )
@@ -8439,8 +8976,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDeviceHostConfigurationByHostAndTimestamp( host, timestamp );
             if( dataObject != null )
             {
-                var result = (DeviceHostConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DeviceHostConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8451,8 +8991,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDeviceHostConfigurationByHostAtTimestamp( host, timestamp );
             if( dataObject != null )
             {
-                var result = (DeviceHostConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DeviceHostConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8526,17 +9069,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DoubleTimeseriesValueEntity? GetDoubleTimeseriesValueById( Guid id )
         {
-            var entity = (DoubleTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDoubleTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (DoubleTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DoubleTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDoubleTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DoubleTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DoubleTimeseriesValueEntity> GetDoubleTimeseriesValueCollection( )
@@ -8560,8 +9107,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDoubleTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (DoubleTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DoubleTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8572,8 +9122,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDoubleTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (DoubleTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DoubleTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8647,17 +9200,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public FacilityTypeEntity? GetFacilityTypeById( Guid id )
         {
-            var entity = (FacilityTypeEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetFacilityTypeById( id );
-                if( dataObject != null )
+                var entity = (FacilityTypeEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (FacilityTypeEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetFacilityTypeById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (FacilityTypeEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<FacilityTypeEntity> GetFacilityTypeCollection( )
@@ -8673,8 +9230,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetFacilityTypeByName( name );
             if( dataObject != null )
             {
-                var result = (FacilityTypeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (FacilityTypeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8684,17 +9244,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GeoPosition2DTimeseriesValueEntity? GetGeoPosition2DTimeseriesValueById( Guid id )
         {
-            var entity = (GeoPosition2DTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGeoPosition2DTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (GeoPosition2DTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GeoPosition2DTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGeoPosition2DTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GeoPosition2DTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GeoPosition2DTimeseriesValueEntity> GetGeoPosition2DTimeseriesValueCollection( )
@@ -8718,8 +9282,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGeoPosition2DTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (GeoPosition2DTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GeoPosition2DTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8730,8 +9297,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGeoPosition2DTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (GeoPosition2DTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GeoPosition2DTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8805,17 +9375,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GeoPosition3DTimeseriesValueEntity? GetGeoPosition3DTimeseriesValueById( Guid id )
         {
-            var entity = (GeoPosition3DTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGeoPosition3DTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (GeoPosition3DTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GeoPosition3DTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGeoPosition3DTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GeoPosition3DTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GeoPosition3DTimeseriesValueEntity> GetGeoPosition3DTimeseriesValueCollection( )
@@ -8839,8 +9413,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGeoPosition3DTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (GeoPosition3DTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GeoPosition3DTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8851,8 +9428,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGeoPosition3DTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (GeoPosition3DTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GeoPosition3DTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -8926,17 +9506,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GNSSDeviceCommandEntity? GetGNSSDeviceCommandById( Guid id )
         {
-            var entity = (GNSSDeviceCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGNSSDeviceCommandById( id );
-                if( dataObject != null )
+                var entity = (GNSSDeviceCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GNSSDeviceCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGNSSDeviceCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GNSSDeviceCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GNSSDeviceCommandEntity> GetGNSSDeviceCommandCollection( )
@@ -9047,17 +9631,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GNSSDeviceCommandReplyEntity? GetGNSSDeviceCommandReplyById( Guid id )
         {
-            var entity = (GNSSDeviceCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGNSSDeviceCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (GNSSDeviceCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GNSSDeviceCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGNSSDeviceCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GNSSDeviceCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GNSSDeviceCommandReplyEntity> GetGNSSDeviceCommandReplyCollection( )
@@ -9161,8 +9749,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGNSSDeviceCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (GNSSDeviceCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GNSSDeviceCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9172,17 +9763,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GNSSDeviceConfigurationEntity? GetGNSSDeviceConfigurationById( Guid id )
         {
-            var entity = (GNSSDeviceConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGNSSDeviceConfigurationById( id );
-                if( dataObject != null )
+                var entity = (GNSSDeviceConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GNSSDeviceConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGNSSDeviceConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GNSSDeviceConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GNSSDeviceConfigurationEntity> GetGNSSDeviceConfigurationCollection( )
@@ -9206,8 +9801,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGNSSDeviceConfigurationByGNSSDeviceAndTimestamp( gNSSDevice, timestamp );
             if( dataObject != null )
             {
-                var result = (GNSSDeviceConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GNSSDeviceConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9218,8 +9816,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGNSSDeviceConfigurationByGNSSDeviceAtTimestamp( gNSSDevice, timestamp );
             if( dataObject != null )
             {
-                var result = (GNSSDeviceConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GNSSDeviceConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9293,17 +9894,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GuidTimeseriesValueEntity? GetGuidTimeseriesValueById( Guid id )
         {
-            var entity = (GuidTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGuidTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (GuidTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GuidTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGuidTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GuidTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GuidTimeseriesValueEntity> GetGuidTimeseriesValueCollection( )
@@ -9327,8 +9932,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGuidTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (GuidTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GuidTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9339,8 +9947,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGuidTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (GuidTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GuidTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9414,17 +10025,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroDeviceCommandEntity? GetGyroDeviceCommandById( Guid id )
         {
-            var entity = (GyroDeviceCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroDeviceCommandById( id );
-                if( dataObject != null )
+                var entity = (GyroDeviceCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroDeviceCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroDeviceCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroDeviceCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroDeviceCommandEntity> GetGyroDeviceCommandCollection( )
@@ -9535,17 +10150,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroDeviceCommandReplyEntity? GetGyroDeviceCommandReplyById( Guid id )
         {
-            var entity = (GyroDeviceCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroDeviceCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (GyroDeviceCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroDeviceCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroDeviceCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroDeviceCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroDeviceCommandReplyEntity> GetGyroDeviceCommandReplyCollection( )
@@ -9649,8 +10268,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroDeviceCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (GyroDeviceCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroDeviceCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9660,17 +10282,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroDeviceConfigurationEntity? GetGyroDeviceConfigurationById( Guid id )
         {
-            var entity = (GyroDeviceConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroDeviceConfigurationById( id );
-                if( dataObject != null )
+                var entity = (GyroDeviceConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroDeviceConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroDeviceConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroDeviceConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroDeviceConfigurationEntity> GetGyroDeviceConfigurationCollection( )
@@ -9694,8 +10320,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroDeviceConfigurationByGyroDeviceAndTimestamp( gyroDevice, timestamp );
             if( dataObject != null )
             {
-                var result = (GyroDeviceConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroDeviceConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9706,8 +10335,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroDeviceConfigurationByGyroDeviceAtTimestamp( gyroDevice, timestamp );
             if( dataObject != null )
             {
-                var result = (GyroDeviceConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroDeviceConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9781,17 +10413,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public IdentityEntity? GetIdentityById( Guid id )
         {
-            var entity = (IdentityEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetIdentityById( id );
-                if( dataObject != null )
+                var entity = (IdentityEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (IdentityEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetIdentityById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (IdentityEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<IdentityEntity> GetIdentityCollection( )
@@ -9806,17 +10442,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CallsignEntity? GetCallsignById( Guid id )
         {
-            var entity = (CallsignEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCallsignById( id );
-                if( dataObject != null )
+                var entity = (CallsignEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CallsignEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCallsignById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CallsignEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CallsignEntity> GetCallsignCollection( )
@@ -9832,8 +10472,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCallsignByIdentifier( identifier );
             if( dataObject != null )
             {
-                var result = (CallsignEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CallsignEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9843,17 +10486,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public InternationalMaritimeOrganizationNumberEntity? GetInternationalMaritimeOrganizationNumberById( Guid id )
         {
-            var entity = (InternationalMaritimeOrganizationNumberEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInternationalMaritimeOrganizationNumberById( id );
-                if( dataObject != null )
+                var entity = (InternationalMaritimeOrganizationNumberEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (InternationalMaritimeOrganizationNumberEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInternationalMaritimeOrganizationNumberById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (InternationalMaritimeOrganizationNumberEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<InternationalMaritimeOrganizationNumberEntity> GetInternationalMaritimeOrganizationNumberCollection( )
@@ -9869,8 +10516,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInternationalMaritimeOrganizationNumberByIdentifier( identifier );
             if( dataObject != null )
             {
-                var result = (InternationalMaritimeOrganizationNumberEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (InternationalMaritimeOrganizationNumberEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9904,17 +10554,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MaritimeMobileServiceIdentityEntity? GetMaritimeMobileServiceIdentityById( Guid id )
         {
-            var entity = (MaritimeMobileServiceIdentityEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMaritimeMobileServiceIdentityById( id );
-                if( dataObject != null )
+                var entity = (MaritimeMobileServiceIdentityEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MaritimeMobileServiceIdentityEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMaritimeMobileServiceIdentityById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MaritimeMobileServiceIdentityEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MaritimeMobileServiceIdentityEntity> GetMaritimeMobileServiceIdentityCollection( )
@@ -9930,8 +10584,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMaritimeMobileServiceIdentityByIdentifier( identifier );
             if( dataObject != null )
             {
-                var result = (MaritimeMobileServiceIdentityEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MaritimeMobileServiceIdentityEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -9965,17 +10622,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public NameEntity? GetNameById( Guid id )
         {
-            var entity = (NameEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetNameById( id );
-                if( dataObject != null )
+                var entity = (NameEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (NameEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetNameById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (NameEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<NameEntity> GetNameCollection( )
@@ -9991,8 +10652,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetNameByText( text );
             if( dataObject != null )
             {
-                var result = (NameEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (NameEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10002,17 +10666,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int16TimeseriesValueEntity? GetInt16TimeseriesValueById( Guid id )
         {
-            var entity = (Int16TimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt16TimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (Int16TimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int16TimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt16TimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int16TimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int16TimeseriesValueEntity> GetInt16TimeseriesValueCollection( )
@@ -10036,8 +10704,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt16TimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Int16TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int16TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10048,8 +10719,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt16TimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Int16TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int16TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10123,17 +10797,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int32TimeseriesValueEntity? GetInt32TimeseriesValueById( Guid id )
         {
-            var entity = (Int32TimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt32TimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (Int32TimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int32TimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt32TimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int32TimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int32TimeseriesValueEntity> GetInt32TimeseriesValueCollection( )
@@ -10157,8 +10835,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt32TimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Int32TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int32TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10169,8 +10850,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt32TimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Int32TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int32TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10244,17 +10928,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int64TimeseriesValueEntity? GetInt64TimeseriesValueById( Guid id )
         {
-            var entity = (Int64TimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt64TimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (Int64TimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int64TimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt64TimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int64TimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int64TimeseriesValueEntity> GetInt64TimeseriesValueCollection( )
@@ -10278,8 +10966,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt64TimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Int64TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int64TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10290,8 +10981,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt64TimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Int64TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int64TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10365,17 +11059,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ItemEntity? GetItemById( Guid id )
         {
-            var entity = (ItemEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetItemById( id );
-                if( dataObject != null )
+                var entity = (ItemEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ItemEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetItemById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ItemEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ItemEntity> GetItemCollection( )
@@ -10390,17 +11088,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BaseStationEntity? GetBaseStationById( Guid id )
         {
-            var entity = (BaseStationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBaseStationById( id );
-                if( dataObject != null )
+                var entity = (BaseStationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BaseStationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBaseStationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BaseStationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BaseStationEntity> GetBaseStationCollection( )
@@ -10416,8 +11118,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBaseStationByName( name );
             if( dataObject != null )
             {
-                var result = (BaseStationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BaseStationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10435,17 +11140,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DeviceEntity? GetDeviceById( Guid id )
         {
-            var entity = (DeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDeviceById( id );
-                if( dataObject != null )
+                var entity = (DeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DeviceEntity> GetDeviceCollection( )
@@ -10469,8 +11178,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (DeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10480,17 +11192,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CameraDeviceEntity? GetCameraDeviceById( Guid id )
         {
-            var entity = (CameraDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCameraDeviceById( id );
-                if( dataObject != null )
+                var entity = (CameraDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CameraDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCameraDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CameraDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CameraDeviceEntity> GetCameraDeviceCollection( )
@@ -10514,8 +11230,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCameraDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (CameraDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CameraDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10525,17 +11244,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GNSSDeviceEntity? GetGNSSDeviceById( Guid id )
         {
-            var entity = (GNSSDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGNSSDeviceById( id );
-                if( dataObject != null )
+                var entity = (GNSSDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GNSSDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGNSSDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GNSSDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GNSSDeviceEntity> GetGNSSDeviceCollection( )
@@ -10559,8 +11282,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGNSSDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (GNSSDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GNSSDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10570,17 +11296,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroDeviceEntity? GetGyroDeviceById( Guid id )
         {
-            var entity = (GyroDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroDeviceById( id );
-                if( dataObject != null )
+                var entity = (GyroDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroDeviceEntity> GetGyroDeviceCollection( )
@@ -10604,8 +11334,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (GyroDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10623,17 +11356,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LineInputDeviceEntity? GetLineInputDeviceById( Guid id )
         {
-            var entity = (LineInputDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLineInputDeviceById( id );
-                if( dataObject != null )
+                var entity = (LineInputDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LineInputDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLineInputDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LineInputDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LineInputDeviceEntity> GetLineInputDeviceCollection( )
@@ -10657,8 +11394,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLineInputDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (LineInputDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LineInputDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10668,17 +11408,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public OilSpillDetectorDeviceEntity? GetOilSpillDetectorDeviceById( Guid id )
         {
-            var entity = (OilSpillDetectorDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetOilSpillDetectorDeviceById( id );
-                if( dataObject != null )
+                var entity = (OilSpillDetectorDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (OilSpillDetectorDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetOilSpillDetectorDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (OilSpillDetectorDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<OilSpillDetectorDeviceEntity> GetOilSpillDetectorDeviceCollection( )
@@ -10702,8 +11446,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetOilSpillDetectorDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (OilSpillDetectorDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (OilSpillDetectorDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10713,17 +11460,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadioDeviceEntity? GetRadioDeviceById( Guid id )
         {
-            var entity = (RadioDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadioDeviceById( id );
-                if( dataObject != null )
+                var entity = (RadioDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadioDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadioDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadioDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadioDeviceEntity> GetRadioDeviceCollection( )
@@ -10747,8 +11498,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadioDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (RadioDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadioDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10758,17 +11512,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadomeDeviceEntity? GetRadomeDeviceById( Guid id )
         {
-            var entity = (RadomeDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadomeDeviceById( id );
-                if( dataObject != null )
+                var entity = (RadomeDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadomeDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadomeDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadomeDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadomeDeviceEntity> GetRadomeDeviceCollection( )
@@ -10792,8 +11550,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadomeDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (RadomeDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadomeDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10811,17 +11572,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackerDeviceEntity? GetTrackerDeviceById( Guid id )
         {
-            var entity = (TrackerDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackerDeviceById( id );
-                if( dataObject != null )
+                var entity = (TrackerDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackerDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackerDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackerDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackerDeviceEntity> GetTrackerDeviceCollection( )
@@ -10845,8 +11610,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackerDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (TrackerDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackerDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10856,17 +11624,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisDeviceEntity? GetAisDeviceById( Guid id )
         {
-            var entity = (AisDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisDeviceById( id );
-                if( dataObject != null )
+                var entity = (AisDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisDeviceEntity> GetAisDeviceCollection( )
@@ -10890,8 +11662,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (AisDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10901,17 +11676,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarDeviceEntity? GetRadarDeviceById( Guid id )
         {
-            var entity = (RadarDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarDeviceById( id );
-                if( dataObject != null )
+                var entity = (RadarDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarDeviceEntity> GetRadarDeviceCollection( )
@@ -10935,8 +11714,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (RadarDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -10962,17 +11744,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationDeviceEntity? GetWeatherStationDeviceById( Guid id )
         {
-            var entity = (WeatherStationDeviceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationDeviceById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationDeviceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationDeviceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationDeviceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationDeviceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationDeviceEntity> GetWeatherStationDeviceCollection( )
@@ -10996,8 +11782,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationDeviceByName( name );
             if( dataObject != null )
             {
-                var result = (WeatherStationDeviceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationDeviceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11015,17 +11804,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public FacilityEntity? GetFacilityById( Guid id )
         {
-            var entity = (FacilityEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetFacilityById( id );
-                if( dataObject != null )
+                var entity = (FacilityEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (FacilityEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetFacilityById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (FacilityEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<FacilityEntity> GetFacilityCollection( )
@@ -11041,8 +11834,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetFacilityByName( name );
             if( dataObject != null )
             {
-                var result = (FacilityEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (FacilityEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11060,17 +11856,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackableItemEntity? GetTrackableItemById( Guid id )
         {
-            var entity = (TrackableItemEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackableItemById( id );
-                if( dataObject != null )
+                var entity = (TrackableItemEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackableItemEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackableItemById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackableItemEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackableItemEntity> GetTrackableItemCollection( )
@@ -11085,17 +11885,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AircraftEntity? GetAircraftById( Guid id )
         {
-            var entity = (AircraftEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAircraftById( id );
-                if( dataObject != null )
+                var entity = (AircraftEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AircraftEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAircraftById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AircraftEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AircraftEntity> GetAircraftCollection( )
@@ -11126,17 +11930,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisAidToNavigationEntity? GetAisAidToNavigationById( Guid id )
         {
-            var entity = (AisAidToNavigationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisAidToNavigationById( id );
-                if( dataObject != null )
+                var entity = (AisAidToNavigationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisAidToNavigationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisAidToNavigationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisAidToNavigationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisAidToNavigationEntity> GetAisAidToNavigationCollection( )
@@ -11152,8 +11960,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisAidToNavigationByName( name );
             if( dataObject != null )
             {
-                var result = (AisAidToNavigationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisAidToNavigationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11171,17 +11982,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public VehicleEntity? GetVehicleById( Guid id )
         {
-            var entity = (VehicleEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetVehicleById( id );
-                if( dataObject != null )
+                var entity = (VehicleEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (VehicleEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetVehicleById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (VehicleEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<VehicleEntity> GetVehicleCollection( )
@@ -11197,8 +12012,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetVehicleByName( name );
             if( dataObject != null )
             {
-                var result = (VehicleEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (VehicleEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11216,17 +12034,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public VesselEntity? GetVesselById( Guid id )
         {
-            var entity = (VesselEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetVesselById( id );
-                if( dataObject != null )
+                var entity = (VesselEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (VesselEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetVesselById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (VesselEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<VesselEntity> GetVesselCollection( )
@@ -11257,17 +12079,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ItemIdentityLinkEntity? GetItemIdentityLinkById( Guid id )
         {
-            var entity = (ItemIdentityLinkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetItemIdentityLinkById( id );
-                if( dataObject != null )
+                var entity = (ItemIdentityLinkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ItemIdentityLinkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetItemIdentityLinkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ItemIdentityLinkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ItemIdentityLinkEntity> GetItemIdentityLinkCollection( )
@@ -11538,17 +12364,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ItemParentChildLinkEntity? GetItemParentChildLinkById( Guid id )
         {
-            var entity = (ItemParentChildLinkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetItemParentChildLinkById( id );
-                if( dataObject != null )
+                var entity = (ItemParentChildLinkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ItemParentChildLinkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetItemParentChildLinkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ItemParentChildLinkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ItemParentChildLinkEntity> GetItemParentChildLinkCollection( )
@@ -11572,8 +12402,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetItemParentChildLinkByParentAndTimestamp( parent, timestamp );
             if( dataObject != null )
             {
-                var result = (ItemParentChildLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ItemParentChildLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11584,8 +12417,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetItemParentChildLinkByParentAtTimestamp( parent, timestamp );
             if( dataObject != null )
             {
-                var result = (ItemParentChildLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ItemParentChildLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11628,8 +12464,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetItemParentChildLinkByChildAndTimestamp( child, timestamp );
             if( dataObject != null )
             {
-                var result = (ItemParentChildLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ItemParentChildLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11640,8 +12479,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetItemParentChildLinkByChildAtTimestamp( child, timestamp );
             if( dataObject != null )
             {
-                var result = (ItemParentChildLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ItemParentChildLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11715,17 +12557,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LineInputDeviceCommandEntity? GetLineInputDeviceCommandById( Guid id )
         {
-            var entity = (LineInputDeviceCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLineInputDeviceCommandById( id );
-                if( dataObject != null )
+                var entity = (LineInputDeviceCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LineInputDeviceCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLineInputDeviceCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LineInputDeviceCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LineInputDeviceCommandEntity> GetLineInputDeviceCommandCollection( )
@@ -11836,17 +12682,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LineInputDeviceCommandReplyEntity? GetLineInputDeviceCommandReplyById( Guid id )
         {
-            var entity = (LineInputDeviceCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLineInputDeviceCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (LineInputDeviceCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LineInputDeviceCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLineInputDeviceCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LineInputDeviceCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LineInputDeviceCommandReplyEntity> GetLineInputDeviceCommandReplyCollection( )
@@ -11950,8 +12800,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLineInputDeviceCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (LineInputDeviceCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LineInputDeviceCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -11961,17 +12814,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LineInputDeviceConfigurationEntity? GetLineInputDeviceConfigurationById( Guid id )
         {
-            var entity = (LineInputDeviceConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLineInputDeviceConfigurationById( id );
-                if( dataObject != null )
+                var entity = (LineInputDeviceConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LineInputDeviceConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLineInputDeviceConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LineInputDeviceConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LineInputDeviceConfigurationEntity> GetLineInputDeviceConfigurationCollection( )
@@ -11995,8 +12852,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLineInputDeviceConfigurationByLineInputDeviceAndTimestamp( lineInputDevice, timestamp );
             if( dataObject != null )
             {
-                var result = (LineInputDeviceConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LineInputDeviceConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12007,8 +12867,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLineInputDeviceConfigurationByLineInputDeviceAtTimestamp( lineInputDevice, timestamp );
             if( dataObject != null )
             {
-                var result = (LineInputDeviceConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LineInputDeviceConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12082,17 +12945,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LineInputMessageRoutingEntity? GetLineInputMessageRoutingById( Guid id )
         {
-            var entity = (LineInputMessageRoutingEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLineInputMessageRoutingById( id );
-                if( dataObject != null )
+                var entity = (LineInputMessageRoutingEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LineInputMessageRoutingEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLineInputMessageRoutingById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LineInputMessageRoutingEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LineInputMessageRoutingEntity> GetLineInputMessageRoutingCollection( )
@@ -12116,8 +12983,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLineInputMessageRoutingByLineInputDeviceAndType( lineInputDevice, type );
             if( dataObject != null )
             {
-                var result = (LineInputMessageRoutingEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LineInputMessageRoutingEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12127,17 +12997,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LineInputMessageRoutingDestinationEntity? GetLineInputMessageRoutingDestinationById( Guid id )
         {
-            var entity = (LineInputMessageRoutingDestinationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLineInputMessageRoutingDestinationById( id );
-                if( dataObject != null )
+                var entity = (LineInputMessageRoutingDestinationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LineInputMessageRoutingDestinationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLineInputMessageRoutingDestinationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LineInputMessageRoutingDestinationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LineInputMessageRoutingDestinationEntity> GetLineInputMessageRoutingDestinationCollection( )
@@ -12161,8 +13035,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLineInputMessageRoutingDestinationByRoutingAndListener( routing, listener );
             if( dataObject != null )
             {
-                var result = (LineInputMessageRoutingDestinationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LineInputMessageRoutingDestinationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12180,17 +13057,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LineInputWhiteListEntryEntity? GetLineInputWhiteListEntryById( Guid id )
         {
-            var entity = (LineInputWhiteListEntryEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLineInputWhiteListEntryById( id );
-                if( dataObject != null )
+                var entity = (LineInputWhiteListEntryEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LineInputWhiteListEntryEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLineInputWhiteListEntryById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LineInputWhiteListEntryEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LineInputWhiteListEntryEntity> GetLineInputWhiteListEntryCollection( )
@@ -12222,8 +13103,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLineInputWhiteListEntryByLineInputDeviceHostNameAndPort( lineInputDevice, hostName, port );
             if( dataObject != null )
             {
-                var result = (LineInputWhiteListEntryEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LineInputWhiteListEntryEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12257,17 +13141,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogApplicationEntity? GetLogApplicationById( Guid id )
         {
-            var entity = (LogApplicationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogApplicationById( id );
-                if( dataObject != null )
+                var entity = (LogApplicationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogApplicationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogApplicationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogApplicationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogApplicationEntity> GetLogApplicationCollection( )
@@ -12283,8 +13171,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLogApplicationByName( name );
             if( dataObject != null )
             {
-                var result = (LogApplicationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LogApplicationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12294,17 +13185,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogApplicationConfigurationEntity? GetLogApplicationConfigurationById( Guid id )
         {
-            var entity = (LogApplicationConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogApplicationConfigurationById( id );
-                if( dataObject != null )
+                var entity = (LogApplicationConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogApplicationConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogApplicationConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogApplicationConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogApplicationConfigurationEntity> GetLogApplicationConfigurationCollection( )
@@ -12328,8 +13223,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLogApplicationConfigurationByApplicationAndTimestamp( application, timestamp );
             if( dataObject != null )
             {
-                var result = (LogApplicationConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LogApplicationConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12340,8 +13238,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLogApplicationConfigurationByApplicationAtTimestamp( application, timestamp );
             if( dataObject != null )
             {
-                var result = (LogApplicationConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LogApplicationConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12415,17 +13316,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogHostEntity? GetLogHostById( Guid id )
         {
-            var entity = (LogHostEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogHostById( id );
-                if( dataObject != null )
+                var entity = (LogHostEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogHostEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogHostById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogHostEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogHostEntity> GetLogHostCollection( )
@@ -12441,8 +13346,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLogHostByComputerName( computerName );
             if( dataObject != null )
             {
-                var result = (LogHostEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LogHostEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12452,17 +13360,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogHostConfigurationEntity? GetLogHostConfigurationById( Guid id )
         {
-            var entity = (LogHostConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogHostConfigurationById( id );
-                if( dataObject != null )
+                var entity = (LogHostConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogHostConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogHostConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogHostConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogHostConfigurationEntity> GetLogHostConfigurationCollection( )
@@ -12486,8 +13398,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLogHostConfigurationByHostAndTimestamp( host, timestamp );
             if( dataObject != null )
             {
-                var result = (LogHostConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LogHostConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12498,8 +13413,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLogHostConfigurationByHostAtTimestamp( host, timestamp );
             if( dataObject != null )
             {
-                var result = (LogHostConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LogHostConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12573,17 +13491,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogLocationEntity? GetLogLocationById( Guid id )
         {
-            var entity = (LogLocationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogLocationById( id );
-                if( dataObject != null )
+                var entity = (LogLocationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogLocationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogLocationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogLocationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogLocationEntity> GetLogLocationCollection( )
@@ -12607,8 +13529,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetLogLocationByFileNameAndLineNumber( fileName, lineNumber );
             if( dataObject != null )
             {
-                var result = (LogLocationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (LogLocationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -12642,17 +13567,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogProcessEntity? GetLogProcessById( Guid id )
         {
-            var entity = (LogProcessEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogProcessById( id );
-                if( dataObject != null )
+                var entity = (LogProcessEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogProcessEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogProcessById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogProcessEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogProcessEntity> GetLogProcessCollection( )
@@ -12803,17 +13732,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogRecordEntity? GetLogRecordById( Guid id )
         {
-            var entity = (LogRecordEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogRecordById( id );
-                if( dataObject != null )
+                var entity = (LogRecordEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogRecordEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogRecordById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogRecordEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogRecordEntity> GetLogRecordCollection( )
@@ -12924,17 +13857,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogThreadEntity? GetLogThreadById( Guid id )
         {
-            var entity = (LogThreadEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogThreadById( id );
-                if( dataObject != null )
+                var entity = (LogThreadEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogThreadEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogThreadById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogThreadEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogThreadEntity> GetLogThreadCollection( )
@@ -13037,17 +13974,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public LogTraceEntryEntity? GetLogTraceEntryById( Guid id )
         {
-            var entity = (LogTraceEntryEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetLogTraceEntryById( id );
-                if( dataObject != null )
+                var entity = (LogTraceEntryEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (LogTraceEntryEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetLogTraceEntryById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (LogTraceEntryEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<LogTraceEntryEntity> GetLogTraceEntryCollection( )
@@ -13198,17 +14139,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MapElementEntity? GetMapElementById( Guid id )
         {
-            var entity = (MapElementEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMapElementById( id );
-                if( dataObject != null )
+                var entity = (MapElementEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MapElementEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMapElementById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MapElementEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MapElementEntity> GetMapElementCollection( )
@@ -13231,17 +14176,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MapInfoEntity? GetMapInfoById( Guid id )
         {
-            var entity = (MapInfoEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMapInfoById( id );
-                if( dataObject != null )
+                var entity = (MapInfoEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MapInfoEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMapInfoById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MapInfoEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MapInfoEntity> GetMapInfoCollection( )
@@ -13256,17 +14205,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MapServiceOptionsEntity? GetMapServiceOptionsById( Guid id )
         {
-            var entity = (MapServiceOptionsEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMapServiceOptionsById( id );
-                if( dataObject != null )
+                var entity = (MapServiceOptionsEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MapServiceOptionsEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMapServiceOptionsById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MapServiceOptionsEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MapServiceOptionsEntity> GetMapServiceOptionsCollection( )
@@ -13282,8 +14235,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMapServiceOptionsByTimestamp( timestamp );
             if( dataObject != null )
             {
-                var result = (MapServiceOptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MapServiceOptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13294,8 +14250,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMapServiceOptionsAtTimestamp( timestamp );
             if( dataObject != null )
             {
-                var result = (MapServiceOptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MapServiceOptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13329,17 +14288,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MaritimeIdentificationDigitsEntity? GetMaritimeIdentificationDigitsById( Guid id )
         {
-            var entity = (MaritimeIdentificationDigitsEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMaritimeIdentificationDigitsById( id );
-                if( dataObject != null )
+                var entity = (MaritimeIdentificationDigitsEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MaritimeIdentificationDigitsEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMaritimeIdentificationDigitsById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MaritimeIdentificationDigitsEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MaritimeIdentificationDigitsEntity> GetMaritimeIdentificationDigitsCollection( )
@@ -13355,8 +14318,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMaritimeIdentificationDigitsByCode( code );
             if( dataObject != null )
             {
-                var result = (MaritimeIdentificationDigitsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MaritimeIdentificationDigitsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13398,17 +14364,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MediaProxySessionEntity? GetMediaProxySessionById( Guid id )
         {
-            var entity = (MediaProxySessionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMediaProxySessionById( id );
-                if( dataObject != null )
+                var entity = (MediaProxySessionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MediaProxySessionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMediaProxySessionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MediaProxySessionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MediaProxySessionEntity> GetMediaProxySessionCollection( )
@@ -13432,8 +14402,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaProxySessionByServiceAndName( service, name );
             if( dataObject != null )
             {
-                var result = (MediaProxySessionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaProxySessionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13443,17 +14416,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MediaProxySessionFileEntity? GetMediaProxySessionFileById( Guid id )
         {
-            var entity = (MediaProxySessionFileEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMediaProxySessionFileById( id );
-                if( dataObject != null )
+                var entity = (MediaProxySessionFileEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MediaProxySessionFileEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMediaProxySessionFileById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MediaProxySessionFileEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MediaProxySessionFileEntity> GetMediaProxySessionFileCollection( )
@@ -13477,8 +14454,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaProxySessionFileByProxySessionAndTimestamp( proxySession, timestamp );
             if( dataObject != null )
             {
-                var result = (MediaProxySessionFileEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaProxySessionFileEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13489,8 +14469,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaProxySessionFileByProxySessionAtTimestamp( proxySession, timestamp );
             if( dataObject != null )
             {
-                var result = (MediaProxySessionFileEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaProxySessionFileEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13524,17 +14507,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MediaProxySessionOptionsEntity? GetMediaProxySessionOptionsById( Guid id )
         {
-            var entity = (MediaProxySessionOptionsEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMediaProxySessionOptionsById( id );
-                if( dataObject != null )
+                var entity = (MediaProxySessionOptionsEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MediaProxySessionOptionsEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMediaProxySessionOptionsById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MediaProxySessionOptionsEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MediaProxySessionOptionsEntity> GetMediaProxySessionOptionsCollection( )
@@ -13558,8 +14545,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaProxySessionOptionsByProxySessionAndTimestamp( proxySession, timestamp );
             if( dataObject != null )
             {
-                var result = (MediaProxySessionOptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaProxySessionOptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13570,8 +14560,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaProxySessionOptionsByProxySessionAtTimestamp( proxySession, timestamp );
             if( dataObject != null )
             {
-                var result = (MediaProxySessionOptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaProxySessionOptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13605,17 +14598,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MediaServiceEntity? GetMediaServiceById( Guid id )
         {
-            var entity = (MediaServiceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMediaServiceById( id );
-                if( dataObject != null )
+                var entity = (MediaServiceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MediaServiceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMediaServiceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MediaServiceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MediaServiceEntity> GetMediaServiceCollection( )
@@ -13630,17 +14627,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MediaServiceOptionsEntity? GetMediaServiceOptionsById( Guid id )
         {
-            var entity = (MediaServiceOptionsEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMediaServiceOptionsById( id );
-                if( dataObject != null )
+                var entity = (MediaServiceOptionsEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MediaServiceOptionsEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMediaServiceOptionsById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MediaServiceOptionsEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MediaServiceOptionsEntity> GetMediaServiceOptionsCollection( )
@@ -13664,8 +14665,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaServiceOptionsByMediaServiceAndTimestamp( mediaService, timestamp );
             if( dataObject != null )
             {
-                var result = (MediaServiceOptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaServiceOptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13676,8 +14680,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaServiceOptionsByMediaServiceAtTimestamp( mediaService, timestamp );
             if( dataObject != null )
             {
-                var result = (MediaServiceOptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaServiceOptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13711,17 +14718,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public NamespaceElementEntity? GetNamespaceElementById( Guid id )
         {
-            var entity = (NamespaceElementEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetNamespaceElementById( id );
-                if( dataObject != null )
+                var entity = (NamespaceElementEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (NamespaceElementEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetNamespaceElementById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (NamespaceElementEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<NamespaceElementEntity> GetNamespaceElementCollection( )
@@ -13745,8 +14756,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetNamespaceElementByNamespaceAndName( namespace__, name );
             if( dataObject != null )
             {
-                var result = (NamespaceElementEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (NamespaceElementEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13756,17 +14770,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ElementTypeEntity? GetElementTypeById( Guid id )
         {
-            var entity = (ElementTypeEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetElementTypeById( id );
-                if( dataObject != null )
+                var entity = (ElementTypeEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ElementTypeEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetElementTypeById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ElementTypeEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ElementTypeEntity> GetElementTypeCollection( )
@@ -13790,8 +14808,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetElementTypeByNamespaceAndName( namespace__, name );
             if( dataObject != null )
             {
-                var result = (ElementTypeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ElementTypeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13801,17 +14822,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public NamespaceEntity? GetNamespaceById( Guid id )
         {
-            var entity = (NamespaceEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetNamespaceById( id );
-                if( dataObject != null )
+                var entity = (NamespaceEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (NamespaceEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetNamespaceById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (NamespaceEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<NamespaceEntity> GetNamespaceCollection( )
@@ -13835,8 +14860,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetNamespaceByNamespaceAndName( namespace__, name );
             if( dataObject != null )
             {
-                var result = (NamespaceEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (NamespaceEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -13846,17 +14874,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public OilSpillEntity? GetOilSpillById( Guid id )
         {
-            var entity = (OilSpillEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetOilSpillById( id );
-                if( dataObject != null )
+                var entity = (OilSpillEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (OilSpillEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetOilSpillById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (OilSpillEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<OilSpillEntity> GetOilSpillCollection( )
@@ -13959,17 +14991,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public OilSpillDetectorCommandEntity? GetOilSpillDetectorCommandById( Guid id )
         {
-            var entity = (OilSpillDetectorCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetOilSpillDetectorCommandById( id );
-                if( dataObject != null )
+                var entity = (OilSpillDetectorCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (OilSpillDetectorCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetOilSpillDetectorCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (OilSpillDetectorCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<OilSpillDetectorCommandEntity> GetOilSpillDetectorCommandCollection( )
@@ -14080,17 +15116,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public OilSpillDetectorCommandReplyEntity? GetOilSpillDetectorCommandReplyById( Guid id )
         {
-            var entity = (OilSpillDetectorCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetOilSpillDetectorCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (OilSpillDetectorCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (OilSpillDetectorCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetOilSpillDetectorCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (OilSpillDetectorCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<OilSpillDetectorCommandReplyEntity> GetOilSpillDetectorCommandReplyCollection( )
@@ -14194,8 +15234,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetOilSpillDetectorCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (OilSpillDetectorCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (OilSpillDetectorCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14205,17 +15248,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public OilSpillDetectorConfigurationEntity? GetOilSpillDetectorConfigurationById( Guid id )
         {
-            var entity = (OilSpillDetectorConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetOilSpillDetectorConfigurationById( id );
-                if( dataObject != null )
+                var entity = (OilSpillDetectorConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (OilSpillDetectorConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetOilSpillDetectorConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (OilSpillDetectorConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<OilSpillDetectorConfigurationEntity> GetOilSpillDetectorConfigurationCollection( )
@@ -14239,8 +15286,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetOilSpillDetectorConfigurationByOilSpillDetectorAndTimestamp( oilSpillDetector, timestamp );
             if( dataObject != null )
             {
-                var result = (OilSpillDetectorConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (OilSpillDetectorConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14251,8 +15301,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetOilSpillDetectorConfigurationByOilSpillDetectorAtTimestamp( oilSpillDetector, timestamp );
             if( dataObject != null )
             {
-                var result = (OilSpillDetectorConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (OilSpillDetectorConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14334,17 +15387,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Position2DTimeseriesValueEntity? GetPosition2DTimeseriesValueById( Guid id )
         {
-            var entity = (Position2DTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetPosition2DTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (Position2DTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Position2DTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetPosition2DTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Position2DTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Position2DTimeseriesValueEntity> GetPosition2DTimeseriesValueCollection( )
@@ -14368,8 +15425,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPosition2DTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Position2DTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Position2DTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14380,8 +15440,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPosition2DTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Position2DTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Position2DTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14455,17 +15518,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Position3DTimeseriesValueEntity? GetPosition3DTimeseriesValueById( Guid id )
         {
-            var entity = (Position3DTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetPosition3DTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (Position3DTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Position3DTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetPosition3DTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Position3DTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Position3DTimeseriesValueEntity> GetPosition3DTimeseriesValueCollection( )
@@ -14489,8 +15556,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPosition3DTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Position3DTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Position3DTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14501,8 +15571,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPosition3DTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (Position3DTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Position3DTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14576,17 +15649,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ProcessTrackValueResultEntity? GetProcessTrackValueResultById( Guid id )
         {
-            var entity = (ProcessTrackValueResultEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetProcessTrackValueResultById( id );
-                if( dataObject != null )
+                var entity = (ProcessTrackValueResultEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ProcessTrackValueResultEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetProcessTrackValueResultById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ProcessTrackValueResultEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ProcessTrackValueResultEntity> GetProcessTrackValueResultCollection( )
@@ -14601,17 +15678,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public PropertyEntity? GetPropertyById( Guid id )
         {
-            var entity = (PropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetPropertyById( id );
-                if( dataObject != null )
+                var entity = (PropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (PropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (PropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<PropertyEntity> GetPropertyCollection( )
@@ -14635,8 +15716,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (PropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (PropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14654,17 +15738,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BinaryPropertyEntity? GetBinaryPropertyById( Guid id )
         {
-            var entity = (BinaryPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBinaryPropertyById( id );
-                if( dataObject != null )
+                var entity = (BinaryPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BinaryPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBinaryPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BinaryPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BinaryPropertyEntity> GetBinaryPropertyCollection( )
@@ -14688,8 +15776,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBinaryPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (BinaryPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BinaryPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14707,17 +15798,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BooleanPropertyEntity? GetBooleanPropertyById( Guid id )
         {
-            var entity = (BooleanPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBooleanPropertyById( id );
-                if( dataObject != null )
+                var entity = (BooleanPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BooleanPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBooleanPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BooleanPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BooleanPropertyEntity> GetBooleanPropertyCollection( )
@@ -14741,8 +15836,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBooleanPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (BooleanPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BooleanPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14760,17 +15858,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BytePropertyEntity? GetBytePropertyById( Guid id )
         {
-            var entity = (BytePropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBytePropertyById( id );
-                if( dataObject != null )
+                var entity = (BytePropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BytePropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBytePropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BytePropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BytePropertyEntity> GetBytePropertyCollection( )
@@ -14794,8 +15896,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBytePropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (BytePropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BytePropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14813,17 +15918,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DateTimePropertyEntity? GetDateTimePropertyById( Guid id )
         {
-            var entity = (DateTimePropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDateTimePropertyById( id );
-                if( dataObject != null )
+                var entity = (DateTimePropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DateTimePropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDateTimePropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DateTimePropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DateTimePropertyEntity> GetDateTimePropertyCollection( )
@@ -14847,8 +15956,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDateTimePropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (DateTimePropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DateTimePropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14866,17 +15978,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DoublePropertyEntity? GetDoublePropertyById( Guid id )
         {
-            var entity = (DoublePropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDoublePropertyById( id );
-                if( dataObject != null )
+                var entity = (DoublePropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DoublePropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDoublePropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DoublePropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DoublePropertyEntity> GetDoublePropertyCollection( )
@@ -14900,8 +16016,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDoublePropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (DoublePropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DoublePropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14919,17 +16038,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GuidPropertyEntity? GetGuidPropertyById( Guid id )
         {
-            var entity = (GuidPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGuidPropertyById( id );
-                if( dataObject != null )
+                var entity = (GuidPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GuidPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGuidPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GuidPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GuidPropertyEntity> GetGuidPropertyCollection( )
@@ -14953,8 +16076,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGuidPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (GuidPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GuidPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -14972,17 +16098,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int16PropertyEntity? GetInt16PropertyById( Guid id )
         {
-            var entity = (Int16PropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt16PropertyById( id );
-                if( dataObject != null )
+                var entity = (Int16PropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int16PropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt16PropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int16PropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int16PropertyEntity> GetInt16PropertyCollection( )
@@ -15006,8 +16136,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt16PropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (Int16PropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int16PropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15025,17 +16158,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int32PropertyEntity? GetInt32PropertyById( Guid id )
         {
-            var entity = (Int32PropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt32PropertyById( id );
-                if( dataObject != null )
+                var entity = (Int32PropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int32PropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt32PropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int32PropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int32PropertyEntity> GetInt32PropertyCollection( )
@@ -15059,8 +16196,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt32PropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (Int32PropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int32PropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15078,17 +16218,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int64PropertyEntity? GetInt64PropertyById( Guid id )
         {
-            var entity = (Int64PropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt64PropertyById( id );
-                if( dataObject != null )
+                var entity = (Int64PropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int64PropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt64PropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int64PropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int64PropertyEntity> GetInt64PropertyCollection( )
@@ -15112,8 +16256,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt64PropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (Int64PropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int64PropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15131,17 +16278,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ReferencePropertyEntity? GetReferencePropertyById( Guid id )
         {
-            var entity = (ReferencePropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetReferencePropertyById( id );
-                if( dataObject != null )
+                var entity = (ReferencePropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ReferencePropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetReferencePropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ReferencePropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ReferencePropertyEntity> GetReferencePropertyCollection( )
@@ -15165,8 +16316,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetReferencePropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (ReferencePropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ReferencePropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15192,17 +16346,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SBytePropertyEntity? GetSBytePropertyById( Guid id )
         {
-            var entity = (SBytePropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSBytePropertyById( id );
-                if( dataObject != null )
+                var entity = (SBytePropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SBytePropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSBytePropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SBytePropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SBytePropertyEntity> GetSBytePropertyCollection( )
@@ -15226,8 +16384,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSBytePropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (SBytePropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SBytePropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15245,17 +16406,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SinglePropertyEntity? GetSinglePropertyById( Guid id )
         {
-            var entity = (SinglePropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSinglePropertyById( id );
-                if( dataObject != null )
+                var entity = (SinglePropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SinglePropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSinglePropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SinglePropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SinglePropertyEntity> GetSinglePropertyCollection( )
@@ -15279,8 +16444,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSinglePropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (SinglePropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SinglePropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15298,17 +16466,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public StringPropertyEntity? GetStringPropertyById( Guid id )
         {
-            var entity = (StringPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetStringPropertyById( id );
-                if( dataObject != null )
+                var entity = (StringPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (StringPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetStringPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (StringPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<StringPropertyEntity> GetStringPropertyCollection( )
@@ -15332,8 +16504,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetStringPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (StringPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (StringPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15351,17 +16526,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeseriesPropertyEntity? GetTimeseriesPropertyById( Guid id )
         {
-            var entity = (TimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (TimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeseriesPropertyEntity> GetTimeseriesPropertyCollection( )
@@ -15385,8 +16564,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (TimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15404,17 +16586,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BinaryTimeseriesPropertyEntity? GetBinaryTimeseriesPropertyById( Guid id )
         {
-            var entity = (BinaryTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBinaryTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (BinaryTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BinaryTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBinaryTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BinaryTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BinaryTimeseriesPropertyEntity> GetBinaryTimeseriesPropertyCollection( )
@@ -15438,8 +16624,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBinaryTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (BinaryTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BinaryTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15465,17 +16654,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BooleanTimeseriesPropertyEntity? GetBooleanTimeseriesPropertyById( Guid id )
         {
-            var entity = (BooleanTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBooleanTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (BooleanTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BooleanTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBooleanTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BooleanTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BooleanTimeseriesPropertyEntity> GetBooleanTimeseriesPropertyCollection( )
@@ -15499,8 +16692,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBooleanTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (BooleanTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BooleanTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15526,17 +16722,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ByteTimeseriesPropertyEntity? GetByteTimeseriesPropertyById( Guid id )
         {
-            var entity = (ByteTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetByteTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (ByteTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ByteTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetByteTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ByteTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ByteTimeseriesPropertyEntity> GetByteTimeseriesPropertyCollection( )
@@ -15560,8 +16760,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetByteTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (ByteTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ByteTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15587,17 +16790,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DateTimeTimeseriesPropertyEntity? GetDateTimeTimeseriesPropertyById( Guid id )
         {
-            var entity = (DateTimeTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDateTimeTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (DateTimeTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DateTimeTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDateTimeTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DateTimeTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DateTimeTimeseriesPropertyEntity> GetDateTimeTimeseriesPropertyCollection( )
@@ -15621,8 +16828,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDateTimeTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (DateTimeTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DateTimeTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15648,17 +16858,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DoubleTimeseriesPropertyEntity? GetDoubleTimeseriesPropertyById( Guid id )
         {
-            var entity = (DoubleTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDoubleTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (DoubleTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DoubleTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDoubleTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DoubleTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DoubleTimeseriesPropertyEntity> GetDoubleTimeseriesPropertyCollection( )
@@ -15682,8 +16896,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDoubleTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (DoubleTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DoubleTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15709,17 +16926,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GuidTimeseriesPropertyEntity? GetGuidTimeseriesPropertyById( Guid id )
         {
-            var entity = (GuidTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGuidTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (GuidTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GuidTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGuidTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GuidTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GuidTimeseriesPropertyEntity> GetGuidTimeseriesPropertyCollection( )
@@ -15743,8 +16964,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGuidTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (GuidTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GuidTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15770,17 +16994,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int16TimeseriesPropertyEntity? GetInt16TimeseriesPropertyById( Guid id )
         {
-            var entity = (Int16TimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt16TimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (Int16TimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int16TimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt16TimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int16TimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int16TimeseriesPropertyEntity> GetInt16TimeseriesPropertyCollection( )
@@ -15804,8 +17032,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt16TimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (Int16TimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int16TimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15831,17 +17062,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int32TimeseriesPropertyEntity? GetInt32TimeseriesPropertyById( Guid id )
         {
-            var entity = (Int32TimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt32TimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (Int32TimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int32TimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt32TimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int32TimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int32TimeseriesPropertyEntity> GetInt32TimeseriesPropertyCollection( )
@@ -15865,8 +17100,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt32TimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (Int32TimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int32TimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15892,17 +17130,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int64TimeseriesPropertyEntity? GetInt64TimeseriesPropertyById( Guid id )
         {
-            var entity = (Int64TimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt64TimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (Int64TimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int64TimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt64TimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int64TimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int64TimeseriesPropertyEntity> GetInt64TimeseriesPropertyCollection( )
@@ -15926,8 +17168,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt64TimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (Int64TimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int64TimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -15953,17 +17198,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ReferenceTimeseriesPropertyEntity? GetReferenceTimeseriesPropertyById( Guid id )
         {
-            var entity = (ReferenceTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetReferenceTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (ReferenceTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ReferenceTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetReferenceTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ReferenceTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ReferenceTimeseriesPropertyEntity> GetReferenceTimeseriesPropertyCollection( )
@@ -15987,8 +17236,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetReferenceTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (ReferenceTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ReferenceTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16014,17 +17266,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SByteTimeseriesPropertyEntity? GetSByteTimeseriesPropertyById( Guid id )
         {
-            var entity = (SByteTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSByteTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (SByteTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SByteTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSByteTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SByteTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SByteTimeseriesPropertyEntity> GetSByteTimeseriesPropertyCollection( )
@@ -16048,8 +17304,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSByteTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (SByteTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SByteTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16075,17 +17334,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SingleTimeseriesPropertyEntity? GetSingleTimeseriesPropertyById( Guid id )
         {
-            var entity = (SingleTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSingleTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (SingleTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SingleTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSingleTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SingleTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SingleTimeseriesPropertyEntity> GetSingleTimeseriesPropertyCollection( )
@@ -16109,8 +17372,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSingleTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (SingleTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SingleTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16136,17 +17402,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public StringTimeseriesPropertyEntity? GetStringTimeseriesPropertyById( Guid id )
         {
-            var entity = (StringTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetStringTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (StringTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (StringTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetStringTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (StringTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<StringTimeseriesPropertyEntity> GetStringTimeseriesPropertyCollection( )
@@ -16170,8 +17440,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetStringTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (StringTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (StringTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16197,17 +17470,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeSpanTimeseriesPropertyEntity? GetTimeSpanTimeseriesPropertyById( Guid id )
         {
-            var entity = (TimeSpanTimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeSpanTimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (TimeSpanTimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeSpanTimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeSpanTimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeSpanTimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeSpanTimeseriesPropertyEntity> GetTimeSpanTimeseriesPropertyCollection( )
@@ -16231,8 +17508,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeSpanTimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (TimeSpanTimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeSpanTimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16258,17 +17538,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt16TimeseriesPropertyEntity? GetUInt16TimeseriesPropertyById( Guid id )
         {
-            var entity = (UInt16TimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt16TimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (UInt16TimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt16TimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt16TimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt16TimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt16TimeseriesPropertyEntity> GetUInt16TimeseriesPropertyCollection( )
@@ -16292,8 +17576,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt16TimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (UInt16TimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt16TimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16319,17 +17606,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt32TimeseriesPropertyEntity? GetUInt32TimeseriesPropertyById( Guid id )
         {
-            var entity = (UInt32TimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt32TimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (UInt32TimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt32TimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt32TimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt32TimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt32TimeseriesPropertyEntity> GetUInt32TimeseriesPropertyCollection( )
@@ -16353,8 +17644,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt32TimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (UInt32TimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt32TimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16380,17 +17674,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt64TimeseriesPropertyEntity? GetUInt64TimeseriesPropertyById( Guid id )
         {
-            var entity = (UInt64TimeseriesPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt64TimeseriesPropertyById( id );
-                if( dataObject != null )
+                var entity = (UInt64TimeseriesPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt64TimeseriesPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt64TimeseriesPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt64TimeseriesPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt64TimeseriesPropertyEntity> GetUInt64TimeseriesPropertyCollection( )
@@ -16414,8 +17712,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt64TimeseriesPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (UInt64TimeseriesPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt64TimeseriesPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16441,17 +17742,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeSpanPropertyEntity? GetTimeSpanPropertyById( Guid id )
         {
-            var entity = (TimeSpanPropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeSpanPropertyById( id );
-                if( dataObject != null )
+                var entity = (TimeSpanPropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeSpanPropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeSpanPropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeSpanPropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeSpanPropertyEntity> GetTimeSpanPropertyCollection( )
@@ -16475,8 +17780,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeSpanPropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (TimeSpanPropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeSpanPropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16494,17 +17802,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt16PropertyEntity? GetUInt16PropertyById( Guid id )
         {
-            var entity = (UInt16PropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt16PropertyById( id );
-                if( dataObject != null )
+                var entity = (UInt16PropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt16PropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt16PropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt16PropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt16PropertyEntity> GetUInt16PropertyCollection( )
@@ -16528,8 +17840,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt16PropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (UInt16PropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt16PropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16547,17 +17862,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt32PropertyEntity? GetUInt32PropertyById( Guid id )
         {
-            var entity = (UInt32PropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt32PropertyById( id );
-                if( dataObject != null )
+                var entity = (UInt32PropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt32PropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt32PropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt32PropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt32PropertyEntity> GetUInt32PropertyCollection( )
@@ -16581,8 +17900,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt32PropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (UInt32PropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt32PropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16600,17 +17922,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt64PropertyEntity? GetUInt64PropertyById( Guid id )
         {
-            var entity = (UInt64PropertyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt64PropertyById( id );
-                if( dataObject != null )
+                var entity = (UInt64PropertyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt64PropertyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt64PropertyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt64PropertyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt64PropertyEntity> GetUInt64PropertyCollection( )
@@ -16634,8 +17960,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt64PropertyByElementAndDefinition( element, definition );
             if( dataObject != null )
             {
-                var result = (UInt64PropertyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt64PropertyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16653,17 +17982,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public PropertyDefinitionEntity? GetPropertyDefinitionById( Guid id )
         {
-            var entity = (PropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (PropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (PropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (PropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<PropertyDefinitionEntity> GetPropertyDefinitionCollection( )
@@ -16687,8 +18020,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (PropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (PropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16698,17 +18034,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BinaryPropertyDefinitionEntity? GetBinaryPropertyDefinitionById( Guid id )
         {
-            var entity = (BinaryPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBinaryPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (BinaryPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BinaryPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBinaryPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BinaryPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BinaryPropertyDefinitionEntity> GetBinaryPropertyDefinitionCollection( )
@@ -16732,8 +18072,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBinaryPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (BinaryPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BinaryPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16743,17 +18086,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BooleanPropertyDefinitionEntity? GetBooleanPropertyDefinitionById( Guid id )
         {
-            var entity = (BooleanPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBooleanPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (BooleanPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BooleanPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBooleanPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BooleanPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BooleanPropertyDefinitionEntity> GetBooleanPropertyDefinitionCollection( )
@@ -16777,8 +18124,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBooleanPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (BooleanPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BooleanPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16788,17 +18138,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BytePropertyDefinitionEntity? GetBytePropertyDefinitionById( Guid id )
         {
-            var entity = (BytePropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBytePropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (BytePropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BytePropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBytePropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BytePropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BytePropertyDefinitionEntity> GetBytePropertyDefinitionCollection( )
@@ -16822,8 +18176,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBytePropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (BytePropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BytePropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16833,17 +18190,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DateTimePropertyDefinitionEntity? GetDateTimePropertyDefinitionById( Guid id )
         {
-            var entity = (DateTimePropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDateTimePropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (DateTimePropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DateTimePropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDateTimePropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DateTimePropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DateTimePropertyDefinitionEntity> GetDateTimePropertyDefinitionCollection( )
@@ -16867,8 +18228,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDateTimePropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (DateTimePropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DateTimePropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16878,17 +18242,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DoublePropertyDefinitionEntity? GetDoublePropertyDefinitionById( Guid id )
         {
-            var entity = (DoublePropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDoublePropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (DoublePropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DoublePropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDoublePropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DoublePropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DoublePropertyDefinitionEntity> GetDoublePropertyDefinitionCollection( )
@@ -16912,8 +18280,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDoublePropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (DoublePropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DoublePropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16923,17 +18294,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GuidPropertyDefinitionEntity? GetGuidPropertyDefinitionById( Guid id )
         {
-            var entity = (GuidPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGuidPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (GuidPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GuidPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGuidPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GuidPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GuidPropertyDefinitionEntity> GetGuidPropertyDefinitionCollection( )
@@ -16957,8 +18332,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGuidPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (GuidPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GuidPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -16968,17 +18346,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int16PropertyDefinitionEntity? GetInt16PropertyDefinitionById( Guid id )
         {
-            var entity = (Int16PropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt16PropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (Int16PropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int16PropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt16PropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int16PropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int16PropertyDefinitionEntity> GetInt16PropertyDefinitionCollection( )
@@ -17002,8 +18384,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt16PropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (Int16PropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int16PropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17013,17 +18398,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int32PropertyDefinitionEntity? GetInt32PropertyDefinitionById( Guid id )
         {
-            var entity = (Int32PropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt32PropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (Int32PropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int32PropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt32PropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int32PropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int32PropertyDefinitionEntity> GetInt32PropertyDefinitionCollection( )
@@ -17047,8 +18436,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt32PropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (Int32PropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int32PropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17058,17 +18450,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int64PropertyDefinitionEntity? GetInt64PropertyDefinitionById( Guid id )
         {
-            var entity = (Int64PropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt64PropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (Int64PropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int64PropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt64PropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int64PropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int64PropertyDefinitionEntity> GetInt64PropertyDefinitionCollection( )
@@ -17092,8 +18488,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt64PropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (Int64PropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int64PropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17103,17 +18502,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ReferencePropertyDefinitionEntity? GetReferencePropertyDefinitionById( Guid id )
         {
-            var entity = (ReferencePropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetReferencePropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (ReferencePropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ReferencePropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetReferencePropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ReferencePropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ReferencePropertyDefinitionEntity> GetReferencePropertyDefinitionCollection( )
@@ -17137,8 +18540,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetReferencePropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (ReferencePropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ReferencePropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17164,17 +18570,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SBytePropertyDefinitionEntity? GetSBytePropertyDefinitionById( Guid id )
         {
-            var entity = (SBytePropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSBytePropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (SBytePropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SBytePropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSBytePropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SBytePropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SBytePropertyDefinitionEntity> GetSBytePropertyDefinitionCollection( )
@@ -17198,8 +18608,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSBytePropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (SBytePropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SBytePropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17209,17 +18622,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SinglePropertyDefinitionEntity? GetSinglePropertyDefinitionById( Guid id )
         {
-            var entity = (SinglePropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSinglePropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (SinglePropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SinglePropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSinglePropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SinglePropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SinglePropertyDefinitionEntity> GetSinglePropertyDefinitionCollection( )
@@ -17243,8 +18660,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSinglePropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (SinglePropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SinglePropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17254,17 +18674,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public StringPropertyDefinitionEntity? GetStringPropertyDefinitionById( Guid id )
         {
-            var entity = (StringPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetStringPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (StringPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (StringPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetStringPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (StringPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<StringPropertyDefinitionEntity> GetStringPropertyDefinitionCollection( )
@@ -17288,8 +18712,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetStringPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (StringPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (StringPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17299,17 +18726,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeseriesPropertyDefinitionEntity? GetTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeseriesPropertyDefinitionEntity> GetTimeseriesPropertyDefinitionCollection( )
@@ -17333,8 +18764,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17344,17 +18778,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BinaryTimeseriesPropertyDefinitionEntity? GetBinaryTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (BinaryTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBinaryTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (BinaryTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BinaryTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBinaryTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BinaryTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BinaryTimeseriesPropertyDefinitionEntity> GetBinaryTimeseriesPropertyDefinitionCollection( )
@@ -17378,8 +18816,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBinaryTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (BinaryTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BinaryTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17389,17 +18830,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BooleanTimeseriesPropertyDefinitionEntity? GetBooleanTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (BooleanTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBooleanTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (BooleanTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BooleanTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBooleanTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BooleanTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BooleanTimeseriesPropertyDefinitionEntity> GetBooleanTimeseriesPropertyDefinitionCollection( )
@@ -17423,8 +18868,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBooleanTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (BooleanTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BooleanTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17434,17 +18882,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ByteTimeseriesPropertyDefinitionEntity? GetByteTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (ByteTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetByteTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (ByteTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ByteTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetByteTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ByteTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ByteTimeseriesPropertyDefinitionEntity> GetByteTimeseriesPropertyDefinitionCollection( )
@@ -17468,8 +18920,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetByteTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (ByteTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ByteTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17479,17 +18934,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DateTimeTimeseriesPropertyDefinitionEntity? GetDateTimeTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (DateTimeTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDateTimeTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (DateTimeTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DateTimeTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDateTimeTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DateTimeTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DateTimeTimeseriesPropertyDefinitionEntity> GetDateTimeTimeseriesPropertyDefinitionCollection( )
@@ -17513,8 +18972,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDateTimeTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (DateTimeTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DateTimeTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17524,17 +18986,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DoubleTimeseriesPropertyDefinitionEntity? GetDoubleTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (DoubleTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDoubleTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (DoubleTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DoubleTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDoubleTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DoubleTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DoubleTimeseriesPropertyDefinitionEntity> GetDoubleTimeseriesPropertyDefinitionCollection( )
@@ -17558,8 +19024,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDoubleTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (DoubleTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DoubleTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17569,17 +19038,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GuidTimeseriesPropertyDefinitionEntity? GetGuidTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (GuidTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGuidTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (GuidTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GuidTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGuidTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GuidTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GuidTimeseriesPropertyDefinitionEntity> GetGuidTimeseriesPropertyDefinitionCollection( )
@@ -17603,8 +19076,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGuidTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (GuidTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GuidTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17614,17 +19090,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int16TimeseriesPropertyDefinitionEntity? GetInt16TimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (Int16TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt16TimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (Int16TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int16TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt16TimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int16TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int16TimeseriesPropertyDefinitionEntity> GetInt16TimeseriesPropertyDefinitionCollection( )
@@ -17648,8 +19128,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt16TimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (Int16TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int16TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17659,17 +19142,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int32TimeseriesPropertyDefinitionEntity? GetInt32TimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (Int32TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt32TimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (Int32TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int32TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt32TimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int32TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int32TimeseriesPropertyDefinitionEntity> GetInt32TimeseriesPropertyDefinitionCollection( )
@@ -17693,8 +19180,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt32TimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (Int32TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int32TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17704,17 +19194,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int64TimeseriesPropertyDefinitionEntity? GetInt64TimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (Int64TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt64TimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (Int64TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int64TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt64TimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int64TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int64TimeseriesPropertyDefinitionEntity> GetInt64TimeseriesPropertyDefinitionCollection( )
@@ -17738,8 +19232,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt64TimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (Int64TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int64TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17749,17 +19246,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ReferenceTimeseriesPropertyDefinitionEntity? GetReferenceTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (ReferenceTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetReferenceTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (ReferenceTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ReferenceTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetReferenceTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ReferenceTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ReferenceTimeseriesPropertyDefinitionEntity> GetReferenceTimeseriesPropertyDefinitionCollection( )
@@ -17783,8 +19284,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetReferenceTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (ReferenceTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ReferenceTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17802,17 +19306,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SByteTimeseriesPropertyDefinitionEntity? GetSByteTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (SByteTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSByteTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (SByteTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SByteTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSByteTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SByteTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SByteTimeseriesPropertyDefinitionEntity> GetSByteTimeseriesPropertyDefinitionCollection( )
@@ -17836,8 +19344,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSByteTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (SByteTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SByteTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17847,17 +19358,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SingleTimeseriesPropertyDefinitionEntity? GetSingleTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (SingleTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSingleTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (SingleTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SingleTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSingleTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SingleTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SingleTimeseriesPropertyDefinitionEntity> GetSingleTimeseriesPropertyDefinitionCollection( )
@@ -17881,8 +19396,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSingleTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (SingleTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SingleTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17892,17 +19410,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public StringTimeseriesPropertyDefinitionEntity? GetStringTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (StringTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetStringTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (StringTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (StringTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetStringTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (StringTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<StringTimeseriesPropertyDefinitionEntity> GetStringTimeseriesPropertyDefinitionCollection( )
@@ -17926,8 +19448,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetStringTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (StringTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (StringTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17937,17 +19462,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeSpanTimeseriesPropertyDefinitionEntity? GetTimeSpanTimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (TimeSpanTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeSpanTimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (TimeSpanTimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeSpanTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeSpanTimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeSpanTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeSpanTimeseriesPropertyDefinitionEntity> GetTimeSpanTimeseriesPropertyDefinitionCollection( )
@@ -17971,8 +19500,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeSpanTimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (TimeSpanTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeSpanTimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -17982,17 +19514,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt16TimeseriesPropertyDefinitionEntity? GetUInt16TimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (UInt16TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt16TimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (UInt16TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt16TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt16TimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt16TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt16TimeseriesPropertyDefinitionEntity> GetUInt16TimeseriesPropertyDefinitionCollection( )
@@ -18016,8 +19552,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt16TimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (UInt16TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt16TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18027,17 +19566,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt32TimeseriesPropertyDefinitionEntity? GetUInt32TimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (UInt32TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt32TimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (UInt32TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt32TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt32TimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt32TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt32TimeseriesPropertyDefinitionEntity> GetUInt32TimeseriesPropertyDefinitionCollection( )
@@ -18061,8 +19604,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt32TimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (UInt32TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt32TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18072,17 +19618,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt64TimeseriesPropertyDefinitionEntity? GetUInt64TimeseriesPropertyDefinitionById( Guid id )
         {
-            var entity = (UInt64TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt64TimeseriesPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (UInt64TimeseriesPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt64TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt64TimeseriesPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt64TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt64TimeseriesPropertyDefinitionEntity> GetUInt64TimeseriesPropertyDefinitionCollection( )
@@ -18106,8 +19656,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt64TimeseriesPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (UInt64TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt64TimeseriesPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18117,17 +19670,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeSpanPropertyDefinitionEntity? GetTimeSpanPropertyDefinitionById( Guid id )
         {
-            var entity = (TimeSpanPropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeSpanPropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (TimeSpanPropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeSpanPropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeSpanPropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeSpanPropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeSpanPropertyDefinitionEntity> GetTimeSpanPropertyDefinitionCollection( )
@@ -18151,8 +19708,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeSpanPropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (TimeSpanPropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeSpanPropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18162,17 +19722,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt16PropertyDefinitionEntity? GetUInt16PropertyDefinitionById( Guid id )
         {
-            var entity = (UInt16PropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt16PropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (UInt16PropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt16PropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt16PropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt16PropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt16PropertyDefinitionEntity> GetUInt16PropertyDefinitionCollection( )
@@ -18196,8 +19760,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt16PropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (UInt16PropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt16PropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18207,17 +19774,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt32PropertyDefinitionEntity? GetUInt32PropertyDefinitionById( Guid id )
         {
-            var entity = (UInt32PropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt32PropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (UInt32PropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt32PropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt32PropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt32PropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt32PropertyDefinitionEntity> GetUInt32PropertyDefinitionCollection( )
@@ -18241,8 +19812,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt32PropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (UInt32PropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt32PropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18252,17 +19826,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt64PropertyDefinitionEntity? GetUInt64PropertyDefinitionById( Guid id )
         {
-            var entity = (UInt64PropertyDefinitionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt64PropertyDefinitionById( id );
-                if( dataObject != null )
+                var entity = (UInt64PropertyDefinitionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt64PropertyDefinitionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt64PropertyDefinitionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt64PropertyDefinitionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt64PropertyDefinitionEntity> GetUInt64PropertyDefinitionCollection( )
@@ -18286,8 +19864,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt64PropertyDefinitionByElementTypeAndName( elementType, name );
             if( dataObject != null )
             {
-                var result = (UInt64PropertyDefinitionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt64PropertyDefinitionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18297,17 +19878,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarAlarmStatusEntity? GetRadarAlarmStatusById( Guid id )
         {
-            var entity = (RadarAlarmStatusEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarAlarmStatusById( id );
-                if( dataObject != null )
+                var entity = (RadarAlarmStatusEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarAlarmStatusEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarAlarmStatusById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarAlarmStatusEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarAlarmStatusEntity> GetRadarAlarmStatusCollection( )
@@ -18331,8 +19916,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarAlarmStatusByRadarAndTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarAlarmStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarAlarmStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18343,8 +19931,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarAlarmStatusByRadarAtTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarAlarmStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarAlarmStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18418,17 +20009,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarCommandEntity? GetRadarCommandById( Guid id )
         {
-            var entity = (RadarCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarCommandById( id );
-                if( dataObject != null )
+                var entity = (RadarCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarCommandEntity> GetRadarCommandCollection( )
@@ -18539,17 +20134,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarCommandGetStatusEntity? GetRadarCommandGetStatusById( Guid id )
         {
-            var entity = (RadarCommandGetStatusEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarCommandGetStatusById( id );
-                if( dataObject != null )
+                var entity = (RadarCommandGetStatusEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarCommandGetStatusEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarCommandGetStatusById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarCommandGetStatusEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarCommandGetStatusEntity> GetRadarCommandGetStatusCollection( )
@@ -18660,17 +20259,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarCommandReplyEntity? GetRadarCommandReplyById( Guid id )
         {
-            var entity = (RadarCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (RadarCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarCommandReplyEntity> GetRadarCommandReplyCollection( )
@@ -18774,8 +20377,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (RadarCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18785,17 +20391,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarCommandReplyGetStatusEntity? GetRadarCommandReplyGetStatusById( Guid id )
         {
-            var entity = (RadarCommandReplyGetStatusEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarCommandReplyGetStatusById( id );
-                if( dataObject != null )
+                var entity = (RadarCommandReplyGetStatusEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarCommandReplyGetStatusEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarCommandReplyGetStatusById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarCommandReplyGetStatusEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarCommandReplyGetStatusEntity> GetRadarCommandReplyGetStatusCollection( )
@@ -18899,8 +20509,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarCommandReplyGetStatusByCommand( command );
             if( dataObject != null )
             {
-                var result = (RadarCommandReplyGetStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarCommandReplyGetStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18910,17 +20523,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarConfigurationEntity? GetRadarConfigurationById( Guid id )
         {
-            var entity = (RadarConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarConfigurationById( id );
-                if( dataObject != null )
+                var entity = (RadarConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarConfigurationEntity> GetRadarConfigurationCollection( )
@@ -18944,8 +20561,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarConfigurationByRadarAndTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -18956,8 +20576,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarConfigurationByRadarAtTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19031,17 +20654,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarImageEntity? GetRadarImageById( Guid id )
         {
-            var entity = (RadarImageEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarImageById( id );
-                if( dataObject != null )
+                var entity = (RadarImageEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarImageEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarImageById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarImageEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarImageEntity> GetRadarImageCollection( )
@@ -19065,8 +20692,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarImageByRadarAndTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarImageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarImageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19077,8 +20707,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarImageByRadarAtTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarImageEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarImageEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19152,17 +20785,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarRawTrackTableEntity? GetRadarRawTrackTableById( Guid id )
         {
-            var entity = (RadarRawTrackTableEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarRawTrackTableById( id );
-                if( dataObject != null )
+                var entity = (RadarRawTrackTableEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarRawTrackTableEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarRawTrackTableById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarRawTrackTableEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarRawTrackTableEntity> GetRadarRawTrackTableCollection( )
@@ -19186,8 +20823,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarRawTrackTableByRadarAndTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarRawTrackTableEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarRawTrackTableEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19198,8 +20838,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarRawTrackTableByRadarAtTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarRawTrackTableEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarRawTrackTableEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19273,17 +20916,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarStatusEntity? GetRadarStatusById( Guid id )
         {
-            var entity = (RadarStatusEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarStatusById( id );
-                if( dataObject != null )
+                var entity = (RadarStatusEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarStatusEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarStatusById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarStatusEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarStatusEntity> GetRadarStatusCollection( )
@@ -19307,8 +20954,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarStatusByRadarAndTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19319,8 +20969,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarStatusByRadarAtTimestamp( radar, timestamp );
             if( dataObject != null )
             {
-                var result = (RadarStatusEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarStatusEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19394,17 +21047,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadioCommandEntity? GetRadioCommandById( Guid id )
         {
-            var entity = (RadioCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadioCommandById( id );
-                if( dataObject != null )
+                var entity = (RadioCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadioCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadioCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadioCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadioCommandEntity> GetRadioCommandCollection( )
@@ -19515,17 +21172,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadioCommandReplyEntity? GetRadioCommandReplyById( Guid id )
         {
-            var entity = (RadioCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadioCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (RadioCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadioCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadioCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadioCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadioCommandReplyEntity> GetRadioCommandReplyCollection( )
@@ -19629,8 +21290,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadioCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (RadioCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadioCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19640,17 +21304,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadioConfigurationEntity? GetRadioConfigurationById( Guid id )
         {
-            var entity = (RadioConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadioConfigurationById( id );
-                if( dataObject != null )
+                var entity = (RadioConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadioConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadioConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadioConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadioConfigurationEntity> GetRadioConfigurationCollection( )
@@ -19674,8 +21342,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadioConfigurationByRadioAndTimestamp( radio, timestamp );
             if( dataObject != null )
             {
-                var result = (RadioConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadioConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19686,8 +21357,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadioConfigurationByRadioAtTimestamp( radio, timestamp );
             if( dataObject != null )
             {
-                var result = (RadioConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadioConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -19761,17 +21435,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadomeCommandEntity? GetRadomeCommandById( Guid id )
         {
-            var entity = (RadomeCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadomeCommandById( id );
-                if( dataObject != null )
+                var entity = (RadomeCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadomeCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadomeCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadomeCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadomeCommandEntity> GetRadomeCommandCollection( )
@@ -19882,17 +21560,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadomeCommandReplyEntity? GetRadomeCommandReplyById( Guid id )
         {
-            var entity = (RadomeCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadomeCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (RadomeCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadomeCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadomeCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadomeCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadomeCommandReplyEntity> GetRadomeCommandReplyCollection( )
@@ -19996,8 +21678,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadomeCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (RadomeCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadomeCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20007,17 +21692,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadomeConfigurationEntity? GetRadomeConfigurationById( Guid id )
         {
-            var entity = (RadomeConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadomeConfigurationById( id );
-                if( dataObject != null )
+                var entity = (RadomeConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadomeConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadomeConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadomeConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadomeConfigurationEntity> GetRadomeConfigurationCollection( )
@@ -20041,8 +21730,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadomeConfigurationByRadomeAndTimestamp( radome, timestamp );
             if( dataObject != null )
             {
-                var result = (RadomeConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadomeConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20053,8 +21745,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadomeConfigurationByRadomeAtTimestamp( radome, timestamp );
             if( dataObject != null )
             {
-                var result = (RadomeConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadomeConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20128,17 +21823,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ReferenceTimeseriesValueEntity? GetReferenceTimeseriesValueById( Guid id )
         {
-            var entity = (ReferenceTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetReferenceTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (ReferenceTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ReferenceTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetReferenceTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ReferenceTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ReferenceTimeseriesValueEntity> GetReferenceTimeseriesValueCollection( )
@@ -20162,8 +21861,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetReferenceTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (ReferenceTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ReferenceTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20174,8 +21876,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetReferenceTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (ReferenceTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ReferenceTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20257,17 +21962,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SByteTimeseriesValueEntity? GetSByteTimeseriesValueById( Guid id )
         {
-            var entity = (SByteTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSByteTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (SByteTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SByteTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSByteTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SByteTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SByteTimeseriesValueEntity> GetSByteTimeseriesValueCollection( )
@@ -20291,8 +22000,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSByteTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (SByteTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SByteTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20303,8 +22015,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSByteTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (SByteTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SByteTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20378,17 +22093,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SecurityDomainEntity? GetSecurityDomainById( Guid id )
         {
-            var entity = (SecurityDomainEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSecurityDomainById( id );
-                if( dataObject != null )
+                var entity = (SecurityDomainEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SecurityDomainEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSecurityDomainById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SecurityDomainEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SecurityDomainEntity> GetSecurityDomainCollection( )
@@ -20404,8 +22123,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSecurityDomainByName( name );
             if( dataObject != null )
             {
-                var result = (SecurityDomainEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SecurityDomainEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20415,17 +22137,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SecurityIdentifierEntity? GetSecurityIdentifierById( Guid id )
         {
-            var entity = (SecurityIdentifierEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSecurityIdentifierById( id );
-                if( dataObject != null )
+                var entity = (SecurityIdentifierEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SecurityIdentifierEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSecurityIdentifierById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SecurityIdentifierEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SecurityIdentifierEntity> GetSecurityIdentifierCollection( )
@@ -20449,8 +22175,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSecurityIdentifierByDomainAndIdentity( domain, identity );
             if( dataObject != null )
             {
-                var result = (SecurityIdentifierEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SecurityIdentifierEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20460,17 +22189,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SecurityLoginEntity? GetSecurityLoginById( Guid id )
         {
-            var entity = (SecurityLoginEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSecurityLoginById( id );
-                if( dataObject != null )
+                var entity = (SecurityLoginEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SecurityLoginEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSecurityLoginById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SecurityLoginEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SecurityLoginEntity> GetSecurityLoginCollection( )
@@ -20494,8 +22227,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSecurityLoginByDomainAndIdentity( domain, identity );
             if( dataObject != null )
             {
-                var result = (SecurityLoginEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SecurityLoginEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20505,17 +22241,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SecurityRoleEntity? GetSecurityRoleById( Guid id )
         {
-            var entity = (SecurityRoleEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSecurityRoleById( id );
-                if( dataObject != null )
+                var entity = (SecurityRoleEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SecurityRoleEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSecurityRoleById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SecurityRoleEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SecurityRoleEntity> GetSecurityRoleCollection( )
@@ -20539,8 +22279,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSecurityRoleByDomainAndIdentity( domain, identity );
             if( dataObject != null )
             {
-                var result = (SecurityRoleEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SecurityRoleEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20551,8 +22294,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSecurityRoleByName( name );
             if( dataObject != null )
             {
-                var result = (SecurityRoleEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SecurityRoleEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20562,17 +22308,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SecurityIdentifierRoleLinkEntity? GetSecurityIdentifierRoleLinkById( Guid id )
         {
-            var entity = (SecurityIdentifierRoleLinkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSecurityIdentifierRoleLinkById( id );
-                if( dataObject != null )
+                var entity = (SecurityIdentifierRoleLinkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SecurityIdentifierRoleLinkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSecurityIdentifierRoleLinkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SecurityIdentifierRoleLinkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SecurityIdentifierRoleLinkEntity> GetSecurityIdentifierRoleLinkCollection( )
@@ -20723,17 +22473,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SecurityLoginSessionEntity? GetSecurityLoginSessionById( Guid id )
         {
-            var entity = (SecurityLoginSessionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSecurityLoginSessionById( id );
-                if( dataObject != null )
+                var entity = (SecurityLoginSessionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SecurityLoginSessionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSecurityLoginSessionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SecurityLoginSessionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SecurityLoginSessionEntity> GetSecurityLoginSessionCollection( )
@@ -20836,17 +22590,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SecurityPermissionEntity? GetSecurityPermissionById( Guid id )
         {
-            var entity = (SecurityPermissionEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSecurityPermissionById( id );
-                if( dataObject != null )
+                var entity = (SecurityPermissionEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SecurityPermissionEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSecurityPermissionById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SecurityPermissionEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SecurityPermissionEntity> GetSecurityPermissionCollection( )
@@ -20902,8 +22660,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSecurityPermissionByIdentifierTypeCodeAndTimestamp( identifier, typeCode, timestamp );
             if( dataObject != null )
             {
-                var result = (SecurityPermissionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SecurityPermissionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20914,8 +22675,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSecurityPermissionByIdentifierTypeCodeAtTimestamp( identifier, typeCode, timestamp );
             if( dataObject != null )
             {
-                var result = (SecurityPermissionEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SecurityPermissionEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -20989,17 +22753,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SingleTimeseriesValueEntity? GetSingleTimeseriesValueById( Guid id )
         {
-            var entity = (SingleTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSingleTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (SingleTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SingleTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSingleTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SingleTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SingleTimeseriesValueEntity> GetSingleTimeseriesValueCollection( )
@@ -21023,8 +22791,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSingleTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (SingleTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SingleTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21035,8 +22806,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSingleTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (SingleTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SingleTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21110,17 +22884,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public StringTimeseriesValueEntity? GetStringTimeseriesValueById( Guid id )
         {
-            var entity = (StringTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetStringTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (StringTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (StringTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetStringTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (StringTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<StringTimeseriesValueEntity> GetStringTimeseriesValueCollection( )
@@ -21144,8 +22922,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetStringTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (StringTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (StringTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21156,8 +22937,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetStringTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (StringTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (StringTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21231,17 +23015,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeseriesCatalogElementEntity? GetTimeseriesCatalogElementById( Guid id )
         {
-            var entity = (TimeseriesCatalogElementEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeseriesCatalogElementById( id );
-                if( dataObject != null )
+                var entity = (TimeseriesCatalogElementEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeseriesCatalogElementEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeseriesCatalogElementById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeseriesCatalogElementEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeseriesCatalogElementEntity> GetTimeseriesCatalogElementCollection( )
@@ -21265,8 +23053,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeseriesCatalogElementByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (TimeseriesCatalogElementEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeseriesCatalogElementEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21276,17 +23067,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeseriesEntity? GetTimeseriesById( Guid id )
         {
-            var entity = (TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeseriesEntity> GetTimeseriesCollection( )
@@ -21310,8 +23105,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21321,17 +23119,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BinaryTimeseriesEntity? GetBinaryTimeseriesById( Guid id )
         {
-            var entity = (BinaryTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBinaryTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (BinaryTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BinaryTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBinaryTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BinaryTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BinaryTimeseriesEntity> GetBinaryTimeseriesCollection( )
@@ -21355,8 +23157,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBinaryTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (BinaryTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BinaryTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21366,17 +23171,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public BooleanTimeseriesEntity? GetBooleanTimeseriesById( Guid id )
         {
-            var entity = (BooleanTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetBooleanTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (BooleanTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (BooleanTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetBooleanTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (BooleanTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<BooleanTimeseriesEntity> GetBooleanTimeseriesCollection( )
@@ -21400,8 +23209,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetBooleanTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (BooleanTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (BooleanTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21411,17 +23223,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisAidToNavigationOffPositionTimeseriesEntity? GetAisAidToNavigationOffPositionTimeseriesById( Guid id )
         {
-            var entity = (AisAidToNavigationOffPositionTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisAidToNavigationOffPositionTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (AisAidToNavigationOffPositionTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisAidToNavigationOffPositionTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisAidToNavigationOffPositionTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisAidToNavigationOffPositionTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisAidToNavigationOffPositionTimeseriesEntity> GetAisAidToNavigationOffPositionTimeseriesCollection( )
@@ -21445,8 +23261,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisAidToNavigationOffPositionTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (AisAidToNavigationOffPositionTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisAidToNavigationOffPositionTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21464,17 +23283,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DeviceEnabledTimeseriesEntity? GetDeviceEnabledTimeseriesById( Guid id )
         {
-            var entity = (DeviceEnabledTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDeviceEnabledTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (DeviceEnabledTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DeviceEnabledTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDeviceEnabledTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DeviceEnabledTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DeviceEnabledTimeseriesEntity> GetDeviceEnabledTimeseriesCollection( )
@@ -21498,8 +23321,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDeviceEnabledTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (DeviceEnabledTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DeviceEnabledTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21509,17 +23335,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarAutomaticSensitivityTimeControlTimeseriesEntity? GetRadarAutomaticSensitivityTimeControlTimeseriesById( Guid id )
         {
-            var entity = (RadarAutomaticSensitivityTimeControlTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarAutomaticSensitivityTimeControlTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarAutomaticSensitivityTimeControlTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarAutomaticSensitivityTimeControlTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarAutomaticSensitivityTimeControlTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarAutomaticSensitivityTimeControlTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarAutomaticSensitivityTimeControlTimeseriesEntity> GetRadarAutomaticSensitivityTimeControlTimeseriesCollection( )
@@ -21543,8 +23373,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarAutomaticSensitivityTimeControlTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarAutomaticSensitivityTimeControlTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarAutomaticSensitivityTimeControlTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21554,17 +23387,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarBlankSector1TimeseriesEntity? GetRadarBlankSector1TimeseriesById( Guid id )
         {
-            var entity = (RadarBlankSector1TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarBlankSector1TimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarBlankSector1TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarBlankSector1TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarBlankSector1TimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarBlankSector1TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarBlankSector1TimeseriesEntity> GetRadarBlankSector1TimeseriesCollection( )
@@ -21588,8 +23425,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarBlankSector1TimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarBlankSector1TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarBlankSector1TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21599,17 +23439,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarBlankSector2TimeseriesEntity? GetRadarBlankSector2TimeseriesById( Guid id )
         {
-            var entity = (RadarBlankSector2TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarBlankSector2TimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarBlankSector2TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarBlankSector2TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarBlankSector2TimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarBlankSector2TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarBlankSector2TimeseriesEntity> GetRadarBlankSector2TimeseriesCollection( )
@@ -21633,8 +23477,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarBlankSector2TimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarBlankSector2TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarBlankSector2TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21644,17 +23491,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarEnableAutomaticFrequencyControlTimeseriesEntity? GetRadarEnableAutomaticFrequencyControlTimeseriesById( Guid id )
         {
-            var entity = (RadarEnableAutomaticFrequencyControlTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarEnableAutomaticFrequencyControlTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarEnableAutomaticFrequencyControlTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarEnableAutomaticFrequencyControlTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarEnableAutomaticFrequencyControlTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarEnableAutomaticFrequencyControlTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarEnableAutomaticFrequencyControlTimeseriesEntity> GetRadarEnableAutomaticFrequencyControlTimeseriesCollection( )
@@ -21678,8 +23529,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarEnableAutomaticFrequencyControlTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarEnableAutomaticFrequencyControlTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarEnableAutomaticFrequencyControlTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21689,17 +23543,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarEnableFastTimeConstantTimeseriesEntity? GetRadarEnableFastTimeConstantTimeseriesById( Guid id )
         {
-            var entity = (RadarEnableFastTimeConstantTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarEnableFastTimeConstantTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarEnableFastTimeConstantTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarEnableFastTimeConstantTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarEnableFastTimeConstantTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarEnableFastTimeConstantTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarEnableFastTimeConstantTimeseriesEntity> GetRadarEnableFastTimeConstantTimeseriesCollection( )
@@ -21723,8 +23581,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarEnableFastTimeConstantTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarEnableFastTimeConstantTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarEnableFastTimeConstantTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21734,17 +23595,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarEnableSensitivityTimeControlTimeseriesEntity? GetRadarEnableSensitivityTimeControlTimeseriesById( Guid id )
         {
-            var entity = (RadarEnableSensitivityTimeControlTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarEnableSensitivityTimeControlTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarEnableSensitivityTimeControlTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarEnableSensitivityTimeControlTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarEnableSensitivityTimeControlTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarEnableSensitivityTimeControlTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarEnableSensitivityTimeControlTimeseriesEntity> GetRadarEnableSensitivityTimeControlTimeseriesCollection( )
@@ -21768,8 +23633,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarEnableSensitivityTimeControlTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarEnableSensitivityTimeControlTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarEnableSensitivityTimeControlTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21779,17 +23647,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarPowerOnTimeseriesEntity? GetRadarPowerOnTimeseriesById( Guid id )
         {
-            var entity = (RadarPowerOnTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarPowerOnTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarPowerOnTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarPowerOnTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarPowerOnTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarPowerOnTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarPowerOnTimeseriesEntity> GetRadarPowerOnTimeseriesCollection( )
@@ -21813,8 +23685,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarPowerOnTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarPowerOnTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarPowerOnTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21824,17 +23699,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarSaveSettingsTimeseriesEntity? GetRadarSaveSettingsTimeseriesById( Guid id )
         {
-            var entity = (RadarSaveSettingsTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarSaveSettingsTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarSaveSettingsTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarSaveSettingsTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarSaveSettingsTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarSaveSettingsTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarSaveSettingsTimeseriesEntity> GetRadarSaveSettingsTimeseriesCollection( )
@@ -21858,8 +23737,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarSaveSettingsTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarSaveSettingsTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarSaveSettingsTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21869,17 +23751,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarTrackingTimeseriesEntity? GetRadarTrackingTimeseriesById( Guid id )
         {
-            var entity = (RadarTrackingTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarTrackingTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarTrackingTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarTrackingTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarTrackingTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarTrackingTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarTrackingTimeseriesEntity> GetRadarTrackingTimeseriesCollection( )
@@ -21903,8 +23789,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarTrackingTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarTrackingTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarTrackingTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21914,17 +23803,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MediaProxySessionEnabledTimeseriesEntity? GetMediaProxySessionEnabledTimeseriesById( Guid id )
         {
-            var entity = (MediaProxySessionEnabledTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMediaProxySessionEnabledTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (MediaProxySessionEnabledTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MediaProxySessionEnabledTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMediaProxySessionEnabledTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MediaProxySessionEnabledTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MediaProxySessionEnabledTimeseriesEntity> GetMediaProxySessionEnabledTimeseriesCollection( )
@@ -21948,8 +23841,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaProxySessionEnabledTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (MediaProxySessionEnabledTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaProxySessionEnabledTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -21959,17 +23855,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public MediaServiceEnabledTimeseriesEntity? GetMediaServiceEnabledTimeseriesById( Guid id )
         {
-            var entity = (MediaServiceEnabledTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetMediaServiceEnabledTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (MediaServiceEnabledTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (MediaServiceEnabledTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetMediaServiceEnabledTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (MediaServiceEnabledTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<MediaServiceEnabledTimeseriesEntity> GetMediaServiceEnabledTimeseriesCollection( )
@@ -21993,8 +23893,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetMediaServiceEnabledTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (MediaServiceEnabledTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (MediaServiceEnabledTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22004,17 +23907,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ByteTimeseriesEntity? GetByteTimeseriesById( Guid id )
         {
-            var entity = (ByteTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetByteTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (ByteTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ByteTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetByteTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ByteTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ByteTimeseriesEntity> GetByteTimeseriesCollection( )
@@ -22038,8 +23945,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetByteTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (ByteTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ByteTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22049,17 +23959,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DateTimeTimeseriesEntity? GetDateTimeTimeseriesById( Guid id )
         {
-            var entity = (DateTimeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDateTimeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (DateTimeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DateTimeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDateTimeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DateTimeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DateTimeTimeseriesEntity> GetDateTimeTimeseriesCollection( )
@@ -22083,8 +23997,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDateTimeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (DateTimeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DateTimeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22094,17 +24011,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public DoubleTimeseriesEntity? GetDoubleTimeseriesById( Guid id )
         {
-            var entity = (DoubleTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetDoubleTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (DoubleTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (DoubleTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetDoubleTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (DoubleTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<DoubleTimeseriesEntity> GetDoubleTimeseriesCollection( )
@@ -22128,8 +24049,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetDoubleTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (DoubleTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (DoubleTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22139,17 +24063,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GNSSAltitudeTimeseriesEntity? GetGNSSAltitudeTimeseriesById( Guid id )
         {
-            var entity = (GNSSAltitudeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGNSSAltitudeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GNSSAltitudeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GNSSAltitudeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGNSSAltitudeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GNSSAltitudeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GNSSAltitudeTimeseriesEntity> GetGNSSAltitudeTimeseriesCollection( )
@@ -22173,8 +24101,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGNSSAltitudeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GNSSAltitudeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GNSSAltitudeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22184,17 +24115,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GNSSLatitudeTimeseriesEntity? GetGNSSLatitudeTimeseriesById( Guid id )
         {
-            var entity = (GNSSLatitudeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGNSSLatitudeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GNSSLatitudeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GNSSLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGNSSLatitudeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GNSSLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GNSSLatitudeTimeseriesEntity> GetGNSSLatitudeTimeseriesCollection( )
@@ -22218,8 +24153,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGNSSLatitudeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GNSSLatitudeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GNSSLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22229,17 +24167,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GNSSLongitudeTimeseriesEntity? GetGNSSLongitudeTimeseriesById( Guid id )
         {
-            var entity = (GNSSLongitudeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGNSSLongitudeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GNSSLongitudeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GNSSLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGNSSLongitudeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GNSSLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GNSSLongitudeTimeseriesEntity> GetGNSSLongitudeTimeseriesCollection( )
@@ -22263,8 +24205,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGNSSLongitudeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GNSSLongitudeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GNSSLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22274,17 +24219,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroCourseTimeseriesEntity? GetGyroCourseTimeseriesById( Guid id )
         {
-            var entity = (GyroCourseTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroCourseTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GyroCourseTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroCourseTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroCourseTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroCourseTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroCourseTimeseriesEntity> GetGyroCourseTimeseriesCollection( )
@@ -22308,8 +24257,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroCourseTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GyroCourseTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroCourseTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22320,8 +24272,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroCourseTimeseriesByGyroDevice( gyroDevice );
             if( dataObject != null )
             {
-                var result = (GyroCourseTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroCourseTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22331,17 +24286,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroHeadingMagneticNorthTimeseriesEntity? GetGyroHeadingMagneticNorthTimeseriesById( Guid id )
         {
-            var entity = (GyroHeadingMagneticNorthTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroHeadingMagneticNorthTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GyroHeadingMagneticNorthTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroHeadingMagneticNorthTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroHeadingMagneticNorthTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroHeadingMagneticNorthTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroHeadingMagneticNorthTimeseriesEntity> GetGyroHeadingMagneticNorthTimeseriesCollection( )
@@ -22365,8 +24324,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroHeadingMagneticNorthTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GyroHeadingMagneticNorthTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroHeadingMagneticNorthTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22377,8 +24339,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroHeadingMagneticNorthTimeseriesByGyroDevice( gyroDevice );
             if( dataObject != null )
             {
-                var result = (GyroHeadingMagneticNorthTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroHeadingMagneticNorthTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22388,17 +24353,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroHeadingTrueNorthTimeseriesEntity? GetGyroHeadingTrueNorthTimeseriesById( Guid id )
         {
-            var entity = (GyroHeadingTrueNorthTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroHeadingTrueNorthTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GyroHeadingTrueNorthTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroHeadingTrueNorthTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroHeadingTrueNorthTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroHeadingTrueNorthTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroHeadingTrueNorthTimeseriesEntity> GetGyroHeadingTrueNorthTimeseriesCollection( )
@@ -22422,8 +24391,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroHeadingTrueNorthTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GyroHeadingTrueNorthTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroHeadingTrueNorthTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22434,8 +24406,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroHeadingTrueNorthTimeseriesByGyroDevice( gyroDevice );
             if( dataObject != null )
             {
-                var result = (GyroHeadingTrueNorthTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroHeadingTrueNorthTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22445,17 +24420,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroPitchTimeseriesEntity? GetGyroPitchTimeseriesById( Guid id )
         {
-            var entity = (GyroPitchTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroPitchTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GyroPitchTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroPitchTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroPitchTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroPitchTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroPitchTimeseriesEntity> GetGyroPitchTimeseriesCollection( )
@@ -22479,8 +24458,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroPitchTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GyroPitchTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroPitchTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22491,8 +24473,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroPitchTimeseriesByGyroDevice( gyroDevice );
             if( dataObject != null )
             {
-                var result = (GyroPitchTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroPitchTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22502,17 +24487,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroRateOfTurnTimeseriesEntity? GetGyroRateOfTurnTimeseriesById( Guid id )
         {
-            var entity = (GyroRateOfTurnTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroRateOfTurnTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GyroRateOfTurnTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroRateOfTurnTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroRateOfTurnTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroRateOfTurnTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroRateOfTurnTimeseriesEntity> GetGyroRateOfTurnTimeseriesCollection( )
@@ -22536,8 +24525,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroRateOfTurnTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GyroRateOfTurnTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroRateOfTurnTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22548,8 +24540,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroRateOfTurnTimeseriesByGyroDevice( gyroDevice );
             if( dataObject != null )
             {
-                var result = (GyroRateOfTurnTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroRateOfTurnTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22559,17 +24554,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroRollTimeseriesEntity? GetGyroRollTimeseriesById( Guid id )
         {
-            var entity = (GyroRollTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroRollTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GyroRollTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroRollTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroRollTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroRollTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroRollTimeseriesEntity> GetGyroRollTimeseriesCollection( )
@@ -22593,8 +24592,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroRollTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GyroRollTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroRollTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22605,8 +24607,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroRollTimeseriesByGyroDevice( gyroDevice );
             if( dataObject != null )
             {
-                var result = (GyroRollTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroRollTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22616,17 +24621,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GyroSpeedTimeseriesEntity? GetGyroSpeedTimeseriesById( Guid id )
         {
-            var entity = (GyroSpeedTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGyroSpeedTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GyroSpeedTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GyroSpeedTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGyroSpeedTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GyroSpeedTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GyroSpeedTimeseriesEntity> GetGyroSpeedTimeseriesCollection( )
@@ -22650,8 +24659,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroSpeedTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GyroSpeedTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroSpeedTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22662,8 +24674,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGyroSpeedTimeseriesByGyroDevice( gyroDevice );
             if( dataObject != null )
             {
-                var result = (GyroSpeedTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GyroSpeedTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22673,17 +24688,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarLatitudeTimeseriesEntity? GetRadarLatitudeTimeseriesById( Guid id )
         {
-            var entity = (RadarLatitudeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarLatitudeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarLatitudeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarLatitudeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarLatitudeTimeseriesEntity> GetRadarLatitudeTimeseriesCollection( )
@@ -22707,8 +24726,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarLatitudeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarLatitudeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22718,17 +24740,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarLongitudeTimeseriesEntity? GetRadarLongitudeTimeseriesById( Guid id )
         {
-            var entity = (RadarLongitudeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarLongitudeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarLongitudeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarLongitudeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarLongitudeTimeseriesEntity> GetRadarLongitudeTimeseriesCollection( )
@@ -22752,8 +24778,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarLongitudeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarLongitudeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22763,17 +24792,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadomeDewPointTimeseriesEntity? GetRadomeDewPointTimeseriesById( Guid id )
         {
-            var entity = (RadomeDewPointTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadomeDewPointTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadomeDewPointTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadomeDewPointTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadomeDewPointTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadomeDewPointTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadomeDewPointTimeseriesEntity> GetRadomeDewPointTimeseriesCollection( )
@@ -22797,8 +24830,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadomeDewPointTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadomeDewPointTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadomeDewPointTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22808,17 +24844,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadomePressureTimeseriesEntity? GetRadomePressureTimeseriesById( Guid id )
         {
-            var entity = (RadomePressureTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadomePressureTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadomePressureTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadomePressureTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadomePressureTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadomePressureTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadomePressureTimeseriesEntity> GetRadomePressureTimeseriesCollection( )
@@ -22842,8 +24882,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadomePressureTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadomePressureTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadomePressureTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22853,17 +24896,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadomeTemperatureTimeseriesEntity? GetRadomeTemperatureTimeseriesById( Guid id )
         {
-            var entity = (RadomeTemperatureTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadomeTemperatureTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadomeTemperatureTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadomeTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadomeTemperatureTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadomeTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadomeTemperatureTimeseriesEntity> GetRadomeTemperatureTimeseriesCollection( )
@@ -22887,8 +24934,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadomeTemperatureTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadomeTemperatureTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadomeTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22898,17 +24948,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public VesselDraughtTimeseriesEntity? GetVesselDraughtTimeseriesById( Guid id )
         {
-            var entity = (VesselDraughtTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetVesselDraughtTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (VesselDraughtTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (VesselDraughtTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetVesselDraughtTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (VesselDraughtTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<VesselDraughtTimeseriesEntity> GetVesselDraughtTimeseriesCollection( )
@@ -22932,8 +24986,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetVesselDraughtTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (VesselDraughtTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (VesselDraughtTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22943,17 +25000,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ViewLatitudeTimeseriesEntity? GetViewLatitudeTimeseriesById( Guid id )
         {
-            var entity = (ViewLatitudeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetViewLatitudeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (ViewLatitudeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ViewLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetViewLatitudeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ViewLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ViewLatitudeTimeseriesEntity> GetViewLatitudeTimeseriesCollection( )
@@ -22977,8 +25038,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewLatitudeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (ViewLatitudeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewLatitudeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -22988,17 +25052,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ViewLongitudeTimeseriesEntity? GetViewLongitudeTimeseriesById( Guid id )
         {
-            var entity = (ViewLongitudeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetViewLongitudeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (ViewLongitudeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ViewLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetViewLongitudeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ViewLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ViewLongitudeTimeseriesEntity> GetViewLongitudeTimeseriesCollection( )
@@ -23022,8 +25090,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewLongitudeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (ViewLongitudeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewLongitudeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23033,17 +25104,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ViewZoomLevelTimeseriesEntity? GetViewZoomLevelTimeseriesById( Guid id )
         {
-            var entity = (ViewZoomLevelTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetViewZoomLevelTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (ViewZoomLevelTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ViewZoomLevelTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetViewZoomLevelTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ViewZoomLevelTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ViewZoomLevelTimeseriesEntity> GetViewZoomLevelTimeseriesCollection( )
@@ -23067,8 +25142,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewZoomLevelTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (ViewZoomLevelTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewZoomLevelTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23078,17 +25156,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationAbsoluteHumidityTimeseriesEntity? GetWeatherStationAbsoluteHumidityTimeseriesById( Guid id )
         {
-            var entity = (WeatherStationAbsoluteHumidityTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationAbsoluteHumidityTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationAbsoluteHumidityTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationAbsoluteHumidityTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationAbsoluteHumidityTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationAbsoluteHumidityTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationAbsoluteHumidityTimeseriesEntity> GetWeatherStationAbsoluteHumidityTimeseriesCollection( )
@@ -23112,8 +25194,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationAbsoluteHumidityTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (WeatherStationAbsoluteHumidityTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationAbsoluteHumidityTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23124,8 +25209,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationAbsoluteHumidityTimeseriesByWeatherStation( weatherStation );
             if( dataObject != null )
             {
-                var result = (WeatherStationAbsoluteHumidityTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationAbsoluteHumidityTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23135,17 +25223,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationAirTemperatureTimeseriesEntity? GetWeatherStationAirTemperatureTimeseriesById( Guid id )
         {
-            var entity = (WeatherStationAirTemperatureTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationAirTemperatureTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationAirTemperatureTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationAirTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationAirTemperatureTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationAirTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationAirTemperatureTimeseriesEntity> GetWeatherStationAirTemperatureTimeseriesCollection( )
@@ -23169,8 +25261,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationAirTemperatureTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (WeatherStationAirTemperatureTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationAirTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23181,8 +25276,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationAirTemperatureTimeseriesByWeatherStation( weatherStation );
             if( dataObject != null )
             {
-                var result = (WeatherStationAirTemperatureTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationAirTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23192,17 +25290,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationBarometricPressureTimeseriesEntity? GetWeatherStationBarometricPressureTimeseriesById( Guid id )
         {
-            var entity = (WeatherStationBarometricPressureTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationBarometricPressureTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationBarometricPressureTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationBarometricPressureTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationBarometricPressureTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationBarometricPressureTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationBarometricPressureTimeseriesEntity> GetWeatherStationBarometricPressureTimeseriesCollection( )
@@ -23226,8 +25328,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationBarometricPressureTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (WeatherStationBarometricPressureTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationBarometricPressureTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23238,8 +25343,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationBarometricPressureTimeseriesByWeatherStation( weatherStation );
             if( dataObject != null )
             {
-                var result = (WeatherStationBarometricPressureTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationBarometricPressureTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23249,17 +25357,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationDewPointTimeseriesEntity? GetWeatherStationDewPointTimeseriesById( Guid id )
         {
-            var entity = (WeatherStationDewPointTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationDewPointTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationDewPointTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationDewPointTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationDewPointTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationDewPointTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationDewPointTimeseriesEntity> GetWeatherStationDewPointTimeseriesCollection( )
@@ -23283,8 +25395,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationDewPointTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (WeatherStationDewPointTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationDewPointTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23295,8 +25410,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationDewPointTimeseriesByWeatherStation( weatherStation );
             if( dataObject != null )
             {
-                var result = (WeatherStationDewPointTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationDewPointTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23306,17 +25424,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationRelativeHumidityTimeseriesEntity? GetWeatherStationRelativeHumidityTimeseriesById( Guid id )
         {
-            var entity = (WeatherStationRelativeHumidityTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationRelativeHumidityTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationRelativeHumidityTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationRelativeHumidityTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationRelativeHumidityTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationRelativeHumidityTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationRelativeHumidityTimeseriesEntity> GetWeatherStationRelativeHumidityTimeseriesCollection( )
@@ -23340,8 +25462,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationRelativeHumidityTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (WeatherStationRelativeHumidityTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationRelativeHumidityTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23352,8 +25477,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationRelativeHumidityTimeseriesByWeatherStation( weatherStation );
             if( dataObject != null )
             {
-                var result = (WeatherStationRelativeHumidityTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationRelativeHumidityTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23363,17 +25491,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationWaterTemperatureTimeseriesEntity? GetWeatherStationWaterTemperatureTimeseriesById( Guid id )
         {
-            var entity = (WeatherStationWaterTemperatureTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationWaterTemperatureTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationWaterTemperatureTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationWaterTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationWaterTemperatureTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationWaterTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationWaterTemperatureTimeseriesEntity> GetWeatherStationWaterTemperatureTimeseriesCollection( )
@@ -23397,8 +25529,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationWaterTemperatureTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (WeatherStationWaterTemperatureTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationWaterTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23409,8 +25544,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationWaterTemperatureTimeseriesByWeatherStation( weatherStation );
             if( dataObject != null )
             {
-                var result = (WeatherStationWaterTemperatureTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationWaterTemperatureTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23420,17 +25558,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationWindDirectionTimeseriesEntity? GetWeatherStationWindDirectionTimeseriesById( Guid id )
         {
-            var entity = (WeatherStationWindDirectionTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationWindDirectionTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationWindDirectionTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationWindDirectionTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationWindDirectionTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationWindDirectionTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationWindDirectionTimeseriesEntity> GetWeatherStationWindDirectionTimeseriesCollection( )
@@ -23454,8 +25596,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationWindDirectionTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (WeatherStationWindDirectionTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationWindDirectionTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23466,8 +25611,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationWindDirectionTimeseriesByWeatherStation( weatherStation );
             if( dataObject != null )
             {
-                var result = (WeatherStationWindDirectionTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationWindDirectionTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23477,17 +25625,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationWindSpeedTimeseriesEntity? GetWeatherStationWindSpeedTimeseriesById( Guid id )
         {
-            var entity = (WeatherStationWindSpeedTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationWindSpeedTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationWindSpeedTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationWindSpeedTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationWindSpeedTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationWindSpeedTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationWindSpeedTimeseriesEntity> GetWeatherStationWindSpeedTimeseriesCollection( )
@@ -23511,8 +25663,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationWindSpeedTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (WeatherStationWindSpeedTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationWindSpeedTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23523,8 +25678,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationWindSpeedTimeseriesByWeatherStation( weatherStation );
             if( dataObject != null )
             {
-                var result = (WeatherStationWindSpeedTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationWindSpeedTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23534,17 +25692,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GeoPosition2DTimeseriesEntity? GetGeoPosition2DTimeseriesById( Guid id )
         {
-            var entity = (GeoPosition2DTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGeoPosition2DTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GeoPosition2DTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GeoPosition2DTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGeoPosition2DTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GeoPosition2DTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GeoPosition2DTimeseriesEntity> GetGeoPosition2DTimeseriesCollection( )
@@ -23568,8 +25730,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGeoPosition2DTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GeoPosition2DTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GeoPosition2DTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23579,17 +25744,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public AisAidToNavigationPositionTimeseriesEntity? GetAisAidToNavigationPositionTimeseriesById( Guid id )
         {
-            var entity = (AisAidToNavigationPositionTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetAisAidToNavigationPositionTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (AisAidToNavigationPositionTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (AisAidToNavigationPositionTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetAisAidToNavigationPositionTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (AisAidToNavigationPositionTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<AisAidToNavigationPositionTimeseriesEntity> GetAisAidToNavigationPositionTimeseriesCollection( )
@@ -23613,8 +25782,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetAisAidToNavigationPositionTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (AisAidToNavigationPositionTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (AisAidToNavigationPositionTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23624,17 +25796,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GeoPosition3DTimeseriesEntity? GetGeoPosition3DTimeseriesById( Guid id )
         {
-            var entity = (GeoPosition3DTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGeoPosition3DTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GeoPosition3DTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GeoPosition3DTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGeoPosition3DTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GeoPosition3DTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GeoPosition3DTimeseriesEntity> GetGeoPosition3DTimeseriesCollection( )
@@ -23658,8 +25834,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGeoPosition3DTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GeoPosition3DTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GeoPosition3DTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23669,17 +25848,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public GuidTimeseriesEntity? GetGuidTimeseriesById( Guid id )
         {
-            var entity = (GuidTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetGuidTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (GuidTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (GuidTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetGuidTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (GuidTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<GuidTimeseriesEntity> GetGuidTimeseriesCollection( )
@@ -23703,8 +25886,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetGuidTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (GuidTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (GuidTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23714,17 +25900,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int16TimeseriesEntity? GetInt16TimeseriesById( Guid id )
         {
-            var entity = (Int16TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt16TimeseriesById( id );
-                if( dataObject != null )
+                var entity = (Int16TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int16TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt16TimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int16TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int16TimeseriesEntity> GetInt16TimeseriesCollection( )
@@ -23748,8 +25938,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt16TimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (Int16TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int16TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23759,17 +25952,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int32TimeseriesEntity? GetInt32TimeseriesById( Guid id )
         {
-            var entity = (Int32TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt32TimeseriesById( id );
-                if( dataObject != null )
+                var entity = (Int32TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int32TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt32TimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int32TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int32TimeseriesEntity> GetInt32TimeseriesCollection( )
@@ -23793,8 +25990,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt32TimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (Int32TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int32TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23804,17 +26004,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarAzimuthOffsetTimeseriesEntity? GetRadarAzimuthOffsetTimeseriesById( Guid id )
         {
-            var entity = (RadarAzimuthOffsetTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarAzimuthOffsetTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarAzimuthOffsetTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarAzimuthOffsetTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarAzimuthOffsetTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarAzimuthOffsetTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarAzimuthOffsetTimeseriesEntity> GetRadarAzimuthOffsetTimeseriesCollection( )
@@ -23838,8 +26042,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarAzimuthOffsetTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarAzimuthOffsetTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarAzimuthOffsetTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23849,17 +26056,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarFastTimeConstantLevelTimeseriesEntity? GetRadarFastTimeConstantLevelTimeseriesById( Guid id )
         {
-            var entity = (RadarFastTimeConstantLevelTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarFastTimeConstantLevelTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarFastTimeConstantLevelTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarFastTimeConstantLevelTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarFastTimeConstantLevelTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarFastTimeConstantLevelTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarFastTimeConstantLevelTimeseriesEntity> GetRadarFastTimeConstantLevelTimeseriesCollection( )
@@ -23883,8 +26094,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarFastTimeConstantLevelTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarFastTimeConstantLevelTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarFastTimeConstantLevelTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23894,17 +26108,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarFastTimeConstantModeTimeseriesEntity? GetRadarFastTimeConstantModeTimeseriesById( Guid id )
         {
-            var entity = (RadarFastTimeConstantModeTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarFastTimeConstantModeTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarFastTimeConstantModeTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarFastTimeConstantModeTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarFastTimeConstantModeTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarFastTimeConstantModeTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarFastTimeConstantModeTimeseriesEntity> GetRadarFastTimeConstantModeTimeseriesCollection( )
@@ -23928,8 +26146,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarFastTimeConstantModeTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarFastTimeConstantModeTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarFastTimeConstantModeTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23939,17 +26160,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarPulseTimeseriesEntity? GetRadarPulseTimeseriesById( Guid id )
         {
-            var entity = (RadarPulseTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarPulseTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarPulseTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarPulseTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarPulseTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarPulseTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarPulseTimeseriesEntity> GetRadarPulseTimeseriesCollection( )
@@ -23973,8 +26198,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarPulseTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarPulseTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarPulseTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -23984,17 +26212,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarSector1EndTimeseriesEntity? GetRadarSector1EndTimeseriesById( Guid id )
         {
-            var entity = (RadarSector1EndTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarSector1EndTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarSector1EndTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarSector1EndTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarSector1EndTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarSector1EndTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarSector1EndTimeseriesEntity> GetRadarSector1EndTimeseriesCollection( )
@@ -24018,8 +26250,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarSector1EndTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarSector1EndTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarSector1EndTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24029,17 +26264,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarSector1StartTimeseriesEntity? GetRadarSector1StartTimeseriesById( Guid id )
         {
-            var entity = (RadarSector1StartTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarSector1StartTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarSector1StartTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarSector1StartTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarSector1StartTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarSector1StartTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarSector1StartTimeseriesEntity> GetRadarSector1StartTimeseriesCollection( )
@@ -24063,8 +26302,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarSector1StartTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarSector1StartTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarSector1StartTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24074,17 +26316,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarSector2EndTimeseriesEntity? GetRadarSector2EndTimeseriesById( Guid id )
         {
-            var entity = (RadarSector2EndTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarSector2EndTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarSector2EndTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarSector2EndTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarSector2EndTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarSector2EndTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarSector2EndTimeseriesEntity> GetRadarSector2EndTimeseriesCollection( )
@@ -24108,8 +26354,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarSector2EndTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarSector2EndTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarSector2EndTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24119,17 +26368,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarSector2StartTimeseriesEntity? GetRadarSector2StartTimeseriesById( Guid id )
         {
-            var entity = (RadarSector2StartTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarSector2StartTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarSector2StartTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarSector2StartTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarSector2StartTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarSector2StartTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarSector2StartTimeseriesEntity> GetRadarSector2StartTimeseriesCollection( )
@@ -24153,8 +26406,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarSector2StartTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarSector2StartTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarSector2StartTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24164,17 +26420,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarSensitivityTimeControlLevelTimeseriesEntity? GetRadarSensitivityTimeControlLevelTimeseriesById( Guid id )
         {
-            var entity = (RadarSensitivityTimeControlLevelTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarSensitivityTimeControlLevelTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarSensitivityTimeControlLevelTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarSensitivityTimeControlLevelTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarSensitivityTimeControlLevelTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarSensitivityTimeControlLevelTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarSensitivityTimeControlLevelTimeseriesEntity> GetRadarSensitivityTimeControlLevelTimeseriesCollection( )
@@ -24198,8 +26458,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarSensitivityTimeControlLevelTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarSensitivityTimeControlLevelTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarSensitivityTimeControlLevelTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24209,17 +26472,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadarTuningTimeseriesEntity? GetRadarTuningTimeseriesById( Guid id )
         {
-            var entity = (RadarTuningTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadarTuningTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadarTuningTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadarTuningTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadarTuningTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadarTuningTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadarTuningTimeseriesEntity> GetRadarTuningTimeseriesCollection( )
@@ -24243,8 +26510,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadarTuningTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadarTuningTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadarTuningTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24254,17 +26524,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public VesselPersonsOnBoardTimeseriesEntity? GetVesselPersonsOnBoardTimeseriesById( Guid id )
         {
-            var entity = (VesselPersonsOnBoardTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetVesselPersonsOnBoardTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (VesselPersonsOnBoardTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (VesselPersonsOnBoardTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetVesselPersonsOnBoardTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (VesselPersonsOnBoardTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<VesselPersonsOnBoardTimeseriesEntity> GetVesselPersonsOnBoardTimeseriesCollection( )
@@ -24288,8 +26562,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetVesselPersonsOnBoardTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (VesselPersonsOnBoardTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (VesselPersonsOnBoardTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24299,17 +26576,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Int64TimeseriesEntity? GetInt64TimeseriesById( Guid id )
         {
-            var entity = (Int64TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetInt64TimeseriesById( id );
-                if( dataObject != null )
+                var entity = (Int64TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Int64TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetInt64TimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Int64TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Int64TimeseriesEntity> GetInt64TimeseriesCollection( )
@@ -24333,8 +26614,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetInt64TimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (Int64TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Int64TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24344,17 +26628,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Position2DTimeseriesEntity? GetPosition2DTimeseriesById( Guid id )
         {
-            var entity = (Position2DTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetPosition2DTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (Position2DTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Position2DTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetPosition2DTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Position2DTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Position2DTimeseriesEntity> GetPosition2DTimeseriesCollection( )
@@ -24378,8 +26666,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPosition2DTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (Position2DTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Position2DTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24389,17 +26680,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Position3DTimeseriesEntity? GetPosition3DTimeseriesById( Guid id )
         {
-            var entity = (Position3DTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetPosition3DTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (Position3DTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Position3DTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetPosition3DTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Position3DTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Position3DTimeseriesEntity> GetPosition3DTimeseriesCollection( )
@@ -24423,8 +26718,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPosition3DTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (Position3DTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Position3DTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24434,17 +26732,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ReferenceTimeseriesEntity? GetReferenceTimeseriesById( Guid id )
         {
-            var entity = (ReferenceTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetReferenceTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (ReferenceTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ReferenceTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetReferenceTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ReferenceTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ReferenceTimeseriesEntity> GetReferenceTimeseriesCollection( )
@@ -24468,8 +26770,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetReferenceTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (ReferenceTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ReferenceTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24479,17 +26784,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SByteTimeseriesEntity? GetSByteTimeseriesById( Guid id )
         {
-            var entity = (SByteTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSByteTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (SByteTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SByteTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSByteTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SByteTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SByteTimeseriesEntity> GetSByteTimeseriesCollection( )
@@ -24513,8 +26822,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSByteTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (SByteTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SByteTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24524,17 +26836,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public SingleTimeseriesEntity? GetSingleTimeseriesById( Guid id )
         {
-            var entity = (SingleTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetSingleTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (SingleTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (SingleTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetSingleTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (SingleTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<SingleTimeseriesEntity> GetSingleTimeseriesCollection( )
@@ -24558,8 +26874,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetSingleTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (SingleTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (SingleTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24569,17 +26888,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public StringTimeseriesEntity? GetStringTimeseriesById( Guid id )
         {
-            var entity = (StringTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetStringTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (StringTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (StringTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetStringTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (StringTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<StringTimeseriesEntity> GetStringTimeseriesCollection( )
@@ -24603,8 +26926,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetStringTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (StringTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (StringTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24614,17 +26940,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeSpanTimeseriesEntity? GetTimeSpanTimeseriesById( Guid id )
         {
-            var entity = (TimeSpanTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeSpanTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (TimeSpanTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeSpanTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeSpanTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeSpanTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeSpanTimeseriesEntity> GetTimeSpanTimeseriesCollection( )
@@ -24648,8 +26978,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeSpanTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (TimeSpanTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeSpanTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24659,17 +26992,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt16TimeseriesEntity? GetUInt16TimeseriesById( Guid id )
         {
-            var entity = (UInt16TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt16TimeseriesById( id );
-                if( dataObject != null )
+                var entity = (UInt16TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt16TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt16TimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt16TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt16TimeseriesEntity> GetUInt16TimeseriesCollection( )
@@ -24693,8 +27030,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt16TimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (UInt16TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt16TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24704,17 +27044,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt32TimeseriesEntity? GetUInt32TimeseriesById( Guid id )
         {
-            var entity = (UInt32TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt32TimeseriesById( id );
-                if( dataObject != null )
+                var entity = (UInt32TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt32TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt32TimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt32TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt32TimeseriesEntity> GetUInt32TimeseriesCollection( )
@@ -24738,8 +27082,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt32TimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (UInt32TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt32TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24749,17 +27096,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public RadomeStatusTimeseriesEntity? GetRadomeStatusTimeseriesById( Guid id )
         {
-            var entity = (RadomeStatusTimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetRadomeStatusTimeseriesById( id );
-                if( dataObject != null )
+                var entity = (RadomeStatusTimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (RadomeStatusTimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetRadomeStatusTimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (RadomeStatusTimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<RadomeStatusTimeseriesEntity> GetRadomeStatusTimeseriesCollection( )
@@ -24783,8 +27134,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetRadomeStatusTimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (RadomeStatusTimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (RadomeStatusTimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24794,17 +27148,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt64TimeseriesEntity? GetUInt64TimeseriesById( Guid id )
         {
-            var entity = (UInt64TimeseriesEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt64TimeseriesById( id );
-                if( dataObject != null )
+                var entity = (UInt64TimeseriesEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt64TimeseriesEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt64TimeseriesById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt64TimeseriesEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt64TimeseriesEntity> GetUInt64TimeseriesCollection( )
@@ -24828,8 +27186,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt64TimeseriesByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (UInt64TimeseriesEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt64TimeseriesEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24839,17 +27200,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeseriesCatalogEntity? GetTimeseriesCatalogById( Guid id )
         {
-            var entity = (TimeseriesCatalogEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeseriesCatalogById( id );
-                if( dataObject != null )
+                var entity = (TimeseriesCatalogEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeseriesCatalogEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeseriesCatalogById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeseriesCatalogEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeseriesCatalogEntity> GetTimeseriesCatalogCollection( )
@@ -24873,8 +27238,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeseriesCatalogByCatalogAndName( catalog, name );
             if( dataObject != null )
             {
-                var result = (TimeseriesCatalogEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeseriesCatalogEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24884,17 +27252,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeseriesInfoEntity? GetTimeseriesInfoById( Guid id )
         {
-            var entity = (TimeseriesInfoEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeseriesInfoById( id );
-                if( dataObject != null )
+                var entity = (TimeseriesInfoEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeseriesInfoEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeseriesInfoById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeseriesInfoEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeseriesInfoEntity> GetTimeseriesInfoCollection( )
@@ -24909,17 +27281,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TimeSpanTimeseriesValueEntity? GetTimeSpanTimeseriesValueById( Guid id )
         {
-            var entity = (TimeSpanTimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTimeSpanTimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (TimeSpanTimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TimeSpanTimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTimeSpanTimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TimeSpanTimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TimeSpanTimeseriesValueEntity> GetTimeSpanTimeseriesValueCollection( )
@@ -24943,8 +27319,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeSpanTimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (TimeSpanTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeSpanTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -24955,8 +27334,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTimeSpanTimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (TimeSpanTimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TimeSpanTimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25030,17 +27412,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackableItemTrackLinkEntity? GetTrackableItemTrackLinkById( Guid id )
         {
-            var entity = (TrackableItemTrackLinkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackableItemTrackLinkById( id );
-                if( dataObject != null )
+                var entity = (TrackableItemTrackLinkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackableItemTrackLinkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackableItemTrackLinkEntity> GetTrackableItemTrackLinkCollection( )
@@ -25064,8 +27450,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackableItemTrackLinkByItemAndStart( item, start );
             if( dataObject != null )
             {
-                var result = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25076,8 +27465,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackableItemTrackLinkByItemAtStart( item, start );
             if( dataObject != null )
             {
-                var result = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25160,8 +27552,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackableItemTrackLinkByTrackAndStart( track, start );
             if( dataObject != null )
             {
-                var result = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25172,8 +27567,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackableItemTrackLinkByTrackAtStart( track, start );
             if( dataObject != null )
             {
-                var result = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackableItemTrackLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25287,17 +27685,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackBaseEntity? GetTrackBaseById( Guid id )
         {
-            var entity = (TrackBaseEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackBaseById( id );
-                if( dataObject != null )
+                var entity = (TrackBaseEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackBaseEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackBaseById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackBaseEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackBaseEntity> GetTrackBaseCollection( )
@@ -25353,8 +27755,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackBaseByTrackerTrackNumberAndTimestamp( tracker, trackNumber, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackBaseEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackBaseEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25365,8 +27770,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackBaseByTrackerTrackNumberAtTimestamp( tracker, trackNumber, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackBaseEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackBaseEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25512,17 +27920,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackEntity? GetTrackById( Guid id )
         {
-            var entity = (TrackEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackById( id );
-                if( dataObject != null )
+                var entity = (TrackEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackEntity> GetTrackCollection( )
@@ -25578,8 +27990,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackByTrackerTrackNumberAndTimestamp( tracker, trackNumber, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25590,8 +28005,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackByTrackerTrackNumberAtTimestamp( tracker, trackNumber, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25737,17 +28155,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public Track3DEntity? GetTrack3DById( Guid id )
         {
-            var entity = (Track3DEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrack3DById( id );
-                if( dataObject != null )
+                var entity = (Track3DEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (Track3DEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrack3DById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (Track3DEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<Track3DEntity> GetTrack3DCollection( )
@@ -25803,8 +28225,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrack3DByTrackerTrackNumberAndTimestamp( tracker, trackNumber, timestamp );
             if( dataObject != null )
             {
-                var result = (Track3DEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Track3DEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25815,8 +28240,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrack3DByTrackerTrackNumberAtTimestamp( tracker, trackNumber, timestamp );
             if( dataObject != null )
             {
-                var result = (Track3DEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (Track3DEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -25962,17 +28390,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackerFilterParametersEntity? GetTrackerFilterParametersById( Guid id )
         {
-            var entity = (TrackerFilterParametersEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackerFilterParametersById( id );
-                if( dataObject != null )
+                var entity = (TrackerFilterParametersEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackerFilterParametersEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackerFilterParametersById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackerFilterParametersEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackerFilterParametersEntity> GetTrackerFilterParametersCollection( )
@@ -25996,8 +28428,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackerFilterParametersByTrackerAndName( tracker, name );
             if( dataObject != null )
             {
-                var result = (TrackerFilterParametersEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackerFilterParametersEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26007,17 +28442,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackerFilterParametersConfigurationEntity? GetTrackerFilterParametersConfigurationById( Guid id )
         {
-            var entity = (TrackerFilterParametersConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackerFilterParametersConfigurationById( id );
-                if( dataObject != null )
+                var entity = (TrackerFilterParametersConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackerFilterParametersConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackerFilterParametersConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackerFilterParametersConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackerFilterParametersConfigurationEntity> GetTrackerFilterParametersConfigurationCollection( )
@@ -26041,8 +28480,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackerFilterParametersConfigurationByParametersAndTimestamp( parameters, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackerFilterParametersConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackerFilterParametersConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26053,8 +28495,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackerFilterParametersConfigurationByParametersAtTimestamp( parameters, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackerFilterParametersConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackerFilterParametersConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26128,17 +28573,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackInfoEntity? GetTrackInfoById( Guid id )
         {
-            var entity = (TrackInfoEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackInfoById( id );
-                if( dataObject != null )
+                var entity = (TrackInfoEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackInfoEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackInfoById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackInfoEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackInfoEntity> GetTrackInfoCollection( )
@@ -26153,17 +28602,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackingServiceOptionsEntity? GetTrackingServiceOptionsById( Guid id )
         {
-            var entity = (TrackingServiceOptionsEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackingServiceOptionsById( id );
-                if( dataObject != null )
+                var entity = (TrackingServiceOptionsEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackingServiceOptionsEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackingServiceOptionsById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackingServiceOptionsEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackingServiceOptionsEntity> GetTrackingServiceOptionsCollection( )
@@ -26179,8 +28632,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackingServiceOptionsByTimestamp( timestamp );
             if( dataObject != null )
             {
-                var result = (TrackingServiceOptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackingServiceOptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26191,8 +28647,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackingServiceOptionsAtTimestamp( timestamp );
             if( dataObject != null )
             {
-                var result = (TrackingServiceOptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackingServiceOptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26226,17 +28685,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackLinkEntity? GetTrackLinkById( Guid id )
         {
-            var entity = (TrackLinkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackLinkById( id );
-                if( dataObject != null )
+                var entity = (TrackLinkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackLinkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackLinkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackLinkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackLinkEntity> GetTrackLinkCollection( )
@@ -26387,17 +28850,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackValueEntity? GetTrackValueById( Guid id )
         {
-            var entity = (TrackValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackValueById( id );
-                if( dataObject != null )
+                var entity = (TrackValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackValueEntity> GetTrackValueCollection( )
@@ -26421,8 +28888,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackValueByTrackAndTimestamp( track, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26433,8 +28903,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackValueByTrackAtTimestamp( track, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26508,17 +28981,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public TrackValue3DEntity? GetTrackValue3DById( Guid id )
         {
-            var entity = (TrackValue3DEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetTrackValue3DById( id );
-                if( dataObject != null )
+                var entity = (TrackValue3DEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (TrackValue3DEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetTrackValue3DById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (TrackValue3DEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<TrackValue3DEntity> GetTrackValue3DCollection( )
@@ -26542,8 +29019,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackValue3DByTrackAndTimestamp( track, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackValue3DEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackValue3DEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26554,8 +29034,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetTrackValue3DByTrackAtTimestamp( track, timestamp );
             if( dataObject != null )
             {
-                var result = (TrackValue3DEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (TrackValue3DEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26629,17 +29112,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt16TimeseriesValueEntity? GetUInt16TimeseriesValueById( Guid id )
         {
-            var entity = (UInt16TimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt16TimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (UInt16TimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt16TimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt16TimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt16TimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt16TimeseriesValueEntity> GetUInt16TimeseriesValueCollection( )
@@ -26663,8 +29150,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt16TimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (UInt16TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt16TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26675,8 +29165,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt16TimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (UInt16TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt16TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26750,17 +29243,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt32TimeseriesValueEntity? GetUInt32TimeseriesValueById( Guid id )
         {
-            var entity = (UInt32TimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt32TimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (UInt32TimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt32TimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt32TimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt32TimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt32TimeseriesValueEntity> GetUInt32TimeseriesValueCollection( )
@@ -26784,8 +29281,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt32TimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (UInt32TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt32TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26796,8 +29296,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt32TimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (UInt32TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt32TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26871,17 +29374,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public UInt64TimeseriesValueEntity? GetUInt64TimeseriesValueById( Guid id )
         {
-            var entity = (UInt64TimeseriesValueEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetUInt64TimeseriesValueById( id );
-                if( dataObject != null )
+                var entity = (UInt64TimeseriesValueEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (UInt64TimeseriesValueEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetUInt64TimeseriesValueById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (UInt64TimeseriesValueEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<UInt64TimeseriesValueEntity> GetUInt64TimeseriesValueCollection( )
@@ -26905,8 +29412,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt64TimeseriesValueByTimeseriesAndTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (UInt64TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt64TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26917,8 +29427,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetUInt64TimeseriesValueByTimeseriesAtTimestamp( timeseries, timestamp );
             if( dataObject != null )
             {
-                var result = (UInt64TimeseriesValueEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (UInt64TimeseriesValueEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -26992,17 +29505,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public VehicleTypeEntity? GetVehicleTypeById( Guid id )
         {
-            var entity = (VehicleTypeEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetVehicleTypeById( id );
-                if( dataObject != null )
+                var entity = (VehicleTypeEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (VehicleTypeEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetVehicleTypeById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (VehicleTypeEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<VehicleTypeEntity> GetVehicleTypeCollection( )
@@ -27018,8 +29535,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetVehicleTypeByName( name );
             if( dataObject != null )
             {
-                var result = (VehicleTypeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (VehicleTypeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27029,17 +29549,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public VesselTypeEntity? GetVesselTypeById( Guid id )
         {
-            var entity = (VesselTypeEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetVesselTypeById( id );
-                if( dataObject != null )
+                var entity = (VesselTypeEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (VesselTypeEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetVesselTypeById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (VesselTypeEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<VesselTypeEntity> GetVesselTypeCollection( )
@@ -27055,8 +29579,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetVesselTypeByName( name );
             if( dataObject != null )
             {
-                var result = (VesselTypeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (VesselTypeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27067,8 +29594,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetVesselTypeByCode( code );
             if( dataObject != null )
             {
-                var result = (VesselTypeEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (VesselTypeEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27102,17 +29632,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ViewEntity? GetViewById( Guid id )
         {
-            var entity = (ViewEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetViewById( id );
-                if( dataObject != null )
+                var entity = (ViewEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ViewEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetViewById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ViewEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ViewEntity> GetViewCollection( )
@@ -27128,8 +29662,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewByName( name );
             if( dataObject != null )
             {
-                var result = (ViewEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27139,17 +29676,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ViewCameraLinkEntity? GetViewCameraLinkById( Guid id )
         {
-            var entity = (ViewCameraLinkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetViewCameraLinkById( id );
-                if( dataObject != null )
+                var entity = (ViewCameraLinkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ViewCameraLinkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetViewCameraLinkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ViewCameraLinkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ViewCameraLinkEntity> GetViewCameraLinkCollection( )
@@ -27173,8 +29714,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewCameraLinkByViewAndStart( view, start );
             if( dataObject != null )
             {
-                var result = (ViewCameraLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewCameraLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27185,8 +29729,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewCameraLinkByViewAtStart( view, start );
             if( dataObject != null )
             {
-                var result = (ViewCameraLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewCameraLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27229,8 +29776,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewCameraLinkByCameraAndStart( camera, start );
             if( dataObject != null )
             {
-                var result = (ViewCameraLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewCameraLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27241,8 +29791,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewCameraLinkByCameraAtStart( camera, start );
             if( dataObject != null )
             {
-                var result = (ViewCameraLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewCameraLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27316,17 +29869,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ViewTrackerLinkEntity? GetViewTrackerLinkById( Guid id )
         {
-            var entity = (ViewTrackerLinkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetViewTrackerLinkById( id );
-                if( dataObject != null )
+                var entity = (ViewTrackerLinkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ViewTrackerLinkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetViewTrackerLinkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ViewTrackerLinkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ViewTrackerLinkEntity> GetViewTrackerLinkCollection( )
@@ -27350,8 +29907,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewTrackerLinkByViewAndStart( view, start );
             if( dataObject != null )
             {
-                var result = (ViewTrackerLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewTrackerLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27362,8 +29922,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewTrackerLinkByViewAtStart( view, start );
             if( dataObject != null )
             {
-                var result = (ViewTrackerLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewTrackerLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27406,8 +29969,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewTrackerLinkByTrackerAndStart( tracker, start );
             if( dataObject != null )
             {
-                var result = (ViewTrackerLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewTrackerLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27418,8 +29984,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetViewTrackerLinkByTrackerAtStart( tracker, start );
             if( dataObject != null )
             {
-                var result = (ViewTrackerLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ViewTrackerLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27493,17 +30062,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationCommandEntity? GetWeatherStationCommandById( Guid id )
         {
-            var entity = (WeatherStationCommandEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationCommandById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationCommandEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationCommandEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationCommandById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationCommandEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationCommandEntity> GetWeatherStationCommandCollection( )
@@ -27614,17 +30187,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationCommandReplyEntity? GetWeatherStationCommandReplyById( Guid id )
         {
-            var entity = (WeatherStationCommandReplyEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationCommandReplyById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationCommandReplyEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationCommandReplyEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationCommandReplyById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationCommandReplyEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationCommandReplyEntity> GetWeatherStationCommandReplyCollection( )
@@ -27728,8 +30305,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationCommandReplyByCommand( command );
             if( dataObject != null )
             {
-                var result = (WeatherStationCommandReplyEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationCommandReplyEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27739,17 +30319,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public WeatherStationConfigurationEntity? GetWeatherStationConfigurationById( Guid id )
         {
-            var entity = (WeatherStationConfigurationEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetWeatherStationConfigurationById( id );
-                if( dataObject != null )
+                var entity = (WeatherStationConfigurationEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (WeatherStationConfigurationEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetWeatherStationConfigurationById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (WeatherStationConfigurationEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<WeatherStationConfigurationEntity> GetWeatherStationConfigurationCollection( )
@@ -27773,8 +30357,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationConfigurationByWeatherStationAndTimestamp( weatherStation, timestamp );
             if( dataObject != null )
             {
-                var result = (WeatherStationConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27785,8 +30372,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetWeatherStationConfigurationByWeatherStationAtTimestamp( weatherStation, timestamp );
             if( dataObject != null )
             {
-                var result = (WeatherStationConfigurationEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (WeatherStationConfigurationEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27860,17 +30450,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ZoneEntity? GetZoneById( Guid id )
         {
-            var entity = (ZoneEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetZoneById( id );
-                if( dataObject != null )
+                var entity = (ZoneEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ZoneEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetZoneById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ZoneEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ZoneEntity> GetZoneCollection( )
@@ -27886,8 +30480,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetZoneByName( name );
             if( dataObject != null )
             {
-                var result = (ZoneEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ZoneEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27897,17 +30494,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public CircularZoneEntity? GetCircularZoneById( Guid id )
         {
-            var entity = (CircularZoneEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetCircularZoneById( id );
-                if( dataObject != null )
+                var entity = (CircularZoneEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (CircularZoneEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetCircularZoneById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (CircularZoneEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<CircularZoneEntity> GetCircularZoneCollection( )
@@ -27923,8 +30524,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetCircularZoneByName( name );
             if( dataObject != null )
             {
-                var result = (CircularZoneEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (CircularZoneEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27934,17 +30538,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public PolygonZoneEntity? GetPolygonZoneById( Guid id )
         {
-            var entity = (PolygonZoneEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetPolygonZoneById( id );
-                if( dataObject != null )
+                var entity = (PolygonZoneEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (PolygonZoneEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetPolygonZoneById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (PolygonZoneEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<PolygonZoneEntity> GetPolygonZoneCollection( )
@@ -27960,8 +30568,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetPolygonZoneByName( name );
             if( dataObject != null )
             {
-                var result = (PolygonZoneEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (PolygonZoneEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -27971,17 +30582,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ZoneExceptionsEntity? GetZoneExceptionsById( Guid id )
         {
-            var entity = (ZoneExceptionsEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetZoneExceptionsById( id );
-                if( dataObject != null )
+                var entity = (ZoneExceptionsEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ZoneExceptionsEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetZoneExceptionsById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ZoneExceptionsEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ZoneExceptionsEntity> GetZoneExceptionsCollection( )
@@ -28005,8 +30620,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetZoneExceptionsByZoneAndTimestamp( zone, timestamp );
             if( dataObject != null )
             {
-                var result = (ZoneExceptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ZoneExceptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -28017,8 +30635,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetZoneExceptionsByZoneAtTimestamp( zone, timestamp );
             if( dataObject != null )
             {
-                var result = (ZoneExceptionsEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ZoneExceptionsEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -28092,17 +30713,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ZoneExceptionsVesselLinkEntity? GetZoneExceptionsVesselLinkById( Guid id )
         {
-            var entity = (ZoneExceptionsVesselLinkEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetZoneExceptionsVesselLinkById( id );
-                if( dataObject != null )
+                var entity = (ZoneExceptionsVesselLinkEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ZoneExceptionsVesselLinkEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetZoneExceptionsVesselLinkById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ZoneExceptionsVesselLinkEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ZoneExceptionsVesselLinkEntity> GetZoneExceptionsVesselLinkCollection( )
@@ -28126,8 +30751,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetZoneExceptionsVesselLinkByZoneExceptionsAndVessel( zoneExceptions, vessel );
             if( dataObject != null )
             {
-                var result = (ZoneExceptionsVesselLinkEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ZoneExceptionsVesselLinkEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -28145,17 +30773,21 @@ namespace Barrelman.Data.Entities
         // ---------------------------------------------------------------------
         public ZoneTrackAlarmEntity? GetZoneTrackAlarmById( Guid id )
         {
-            var entity = (ZoneTrackAlarmEntity?)GetEntityFromCache( id );
-            if( entity == null )
+            if( IsDeleted( id ) == false )
             {
-                var dataContext = DataContext;
-                var dataObject = dataContext.GetZoneTrackAlarmById( id );
-                if( dataObject != null )
+                var entity = (ZoneTrackAlarmEntity?)GetEntityFromCache( id );
+                if( entity == null )
                 {
-                    entity = (ZoneTrackAlarmEntity)AddToContext( dataObject );
+                    var dataContext = DataContext;
+                    var dataObject = dataContext.GetZoneTrackAlarmById( id );
+                    if( dataObject != null )
+                    {
+                        entity = (ZoneTrackAlarmEntity)AddToContext( dataObject );
+                    }
                 }
+                return entity;
             }
-            return entity;
+            return null;
         }
 
         public BindingList<ZoneTrackAlarmEntity> GetZoneTrackAlarmCollection( )
@@ -28179,8 +30811,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetZoneTrackAlarmByTrackAndTimestamp( track, timestamp );
             if( dataObject != null )
             {
-                var result = (ZoneTrackAlarmEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ZoneTrackAlarmEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -28191,8 +30826,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetZoneTrackAlarmByTrackAtTimestamp( track, timestamp );
             if( dataObject != null )
             {
-                var result = (ZoneTrackAlarmEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ZoneTrackAlarmEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -28243,8 +30881,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetZoneTrackAlarmByZoneTrackAndTimestamp( zone, track, timestamp );
             if( dataObject != null )
             {
-                var result = (ZoneTrackAlarmEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ZoneTrackAlarmEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }
@@ -28255,8 +30896,11 @@ namespace Barrelman.Data.Entities
             var dataObject = dataContext.GetZoneTrackAlarmByZoneTrackAtTimestamp( zone, track, timestamp );
             if( dataObject != null )
             {
-                var result = (ZoneTrackAlarmEntity)AddToContext( dataObject );
-                return result;
+                if( IsDeleted( dataObject.Id ) == false )
+                {
+                    var result = (ZoneTrackAlarmEntity)AddToContext( dataObject );
+                    return result;
+                }
             }
             return null;
         }

@@ -119,6 +119,51 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisDeviceCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisDeviceCommand]([Id], [RowVersion], [AisDevice], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, 0, @AisDevice, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisDeviceCommandInsertTrigger]
 ON [AisDeviceCommandView]
 INSTEAD OF INSERT AS
@@ -190,6 +235,51 @@ AS
     BEGIN TRY
       INSERT INTO [AisDeviceCommandReply]([Id], [RowVersion], [AisDevice], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @AisDevice, @Timestamp, @Command, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisDeviceCommandReply]([Id], [RowVersion], [AisDevice], [Timestamp], [Status], [Message])
+          VALUES(@Id, 0, @AisDevice, @Timestamp, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -676,6 +766,73 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @NavigationalAidType [int],
+  @Name [nvarchar](127),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @Timestamp [int],
+  @OffPosition [bit],
+  @RegionalReserved [int],
+  @Raim [int],
+  @VirtualAid [bit],
+  @Assigned [bit],
+  @Spare [int],
+  @NameExtension [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 10700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AidToNavigationReportMessage]([Id], [NavigationalAidType], [Name], [PositionAccuracy], [Longitude], [Latitude], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [Timestamp], [OffPosition], [RegionalReserved], [Raim], [VirtualAid], [Assigned], [Spare], [NameExtension])
+          VALUES(@Id, @NavigationalAidType, @Name, @PositionAccuracy, @Longitude, @Latitude, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @Timestamp, @OffPosition, @RegionalReserved, @Raim, @VirtualAid, @Assigned, @Spare, @NameExtension);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AidToNavigationReportMessageInsertTrigger]
 ON [AidToNavigationReportMessageView]
 INSTEAD OF INSERT AS
@@ -852,6 +1009,59 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisAddressedSafetyRelatedMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @SequenceNumber [int],
+  @RetransmitFlag [bit],
+  @Spare [int],
+  @Text [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 10800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisAddressedSafetyRelatedMessage]([Id], [SequenceNumber], [RetransmitFlag], [Spare], [Text])
+          VALUES(@Id, @SequenceNumber, @RetransmitFlag, @Spare, @Text);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisAddressedSafetyRelatedMessageInsertTrigger]
 ON [AisAddressedSafetyRelatedMessageView]
 INSTEAD OF INSERT AS
@@ -953,6 +1163,63 @@ AS
     BEGIN TRY
       INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisBaseStationReportMessage]([Id], [Timestamp], [PositionAccuracy], [Longitude], [Latitude], [PositionFixType], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @Timestamp, @PositionAccuracy, @Longitude, @Latitude, @PositionFixType, @Spare, @Raim, @RadioStatus);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisBaseStationReportMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Timestamp [bigint],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @PositionFixType [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 10900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
       INSERT INTO [AisBaseStationReportMessage]([Id], [Timestamp], [PositionAccuracy], [Longitude], [Latitude], [PositionFixType], [Spare], [Raim], [RadioStatus])
           VALUES(@Id, @Timestamp, @PositionAccuracy, @Longitude, @Latitude, @PositionFixType, @Spare, @Raim, @RadioStatus);
       IF @TranCounter = 0
@@ -1119,6 +1386,60 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisBinaryAcknowledgeMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Spare [int],
+  @SequenceNumber1 [int],
+  @SequenceNumber2 [int],
+  @SequenceNumber3 [int],
+  @SequenceNumber4 [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisBinaryAcknowledgeMessage]([Id], [Spare], [SequenceNumber1], [SequenceNumber2], [SequenceNumber3], [SequenceNumber4])
+          VALUES(@Id, @Spare, @SequenceNumber1, @SequenceNumber2, @SequenceNumber3, @SequenceNumber4);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisBinaryAcknowledgeMessageInsertTrigger]
 ON [AisBinaryAcknowledgeMessageView]
 INSTEAD OF INSERT AS
@@ -1237,6 +1558,61 @@ AS
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
       INSERT INTO [AisBinaryAddressedMessage]([Id], [SequenceNumber], [DestinationMmsi], [RetransmitFlag], [Spare], [DesignatedAreaCode], [FunctionalId], [Data])
           VALUES(@Id, @SequenceNumber, @DestinationMmsi, @RetransmitFlag, @Spare, @DesignatedAreaCode, @FunctionalId, @Data);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisBinaryAddressedMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @SequenceNumber [int],
+  @RetransmitFlag [bit],
+  @Spare [int],
+  @DesignatedAreaCode [int],
+  @FunctionalId [int],
+  @Data [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisBinaryAddressedMessage]([Id], [SequenceNumber], [RetransmitFlag], [Spare], [DesignatedAreaCode], [FunctionalId], [Data])
+          VALUES(@Id, @SequenceNumber, @RetransmitFlag, @Spare, @DesignatedAreaCode, @FunctionalId, @Data);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -1392,6 +1768,59 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisBinaryBroadcastMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Spare [int],
+  @DesignatedAreaCode [int],
+  @FunctionalId [int],
+  @Data [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisBinaryBroadcastMessage]([Id], [Spare], [DesignatedAreaCode], [FunctionalId], [Data])
+          VALUES(@Id, @Spare, @DesignatedAreaCode, @FunctionalId, @Data);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisBinaryBroadcastMessageInsertTrigger]
 ON [AisBinaryBroadcastMessageView]
 INSTEAD OF INSERT AS
@@ -1498,6 +1927,72 @@ AS
     BEGIN TRY
       INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisDataLinkManagementMessage]([Id], [Spare], [Offset1], [ReservedSlots1], [Timeout1], [Increment1], [Offset2], [ReservedSlots2], [Timeout2], [Increment2], [Offset3], [ReservedSlots3], [Timeout3], [Increment3], [Offset4], [ReservedSlots4], [Timeout4], [Increment4])
+          VALUES(@Id, @Spare, @Offset1, @ReservedSlots1, @Timeout1, @Increment1, @Offset2, @ReservedSlots2, @Timeout2, @Increment2, @Offset3, @ReservedSlots3, @Timeout3, @Increment3, @Offset4, @ReservedSlots4, @Timeout4, @Increment4);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisDataLinkManagementMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Spare [int],
+  @Offset1 [int],
+  @ReservedSlots1 [int],
+  @Timeout1 [int],
+  @Increment1 [int],
+  @Offset2 [int],
+  @ReservedSlots2 [int],
+  @Timeout2 [int],
+  @Increment2 [int],
+  @Offset3 [int],
+  @ReservedSlots3 [int],
+  @Timeout3 [int],
+  @Increment3 [int],
+  @Offset4 [int],
+  @ReservedSlots4 [int],
+  @Timeout4 [int],
+  @Increment4 [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
       INSERT INTO [AisDataLinkManagementMessage]([Id], [Spare], [Offset1], [ReservedSlots1], [Timeout1], [Increment1], [Offset2], [ReservedSlots2], [Timeout2], [Increment2], [Offset3], [ReservedSlots3], [Timeout3], [Increment3], [Offset4], [ReservedSlots4], [Timeout4], [Increment4])
           VALUES(@Id, @Spare, @Offset1, @ReservedSlots1, @Timeout1, @Increment1, @Offset2, @ReservedSlots2, @Timeout2, @Increment2, @Offset3, @ReservedSlots3, @Timeout3, @Increment3, @Offset4, @ReservedSlots4, @Timeout4, @Increment4);
       IF @TranCounter = 0
@@ -1711,6 +2206,74 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisExtendedClassBCsPositionReportMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Reserved [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @RegionalReserved [int],
+  @ShipType [int],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @Raim [int],
+  @DataTerminalReady [bit],
+  @Assigned [bit],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisExtendedClassBCsPositionReportMessage]([Id], [Reserved], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [RegionalReserved], [ShipType], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [Raim], [DataTerminalReady], [Assigned], [Spare])
+          VALUES(@Id, @Reserved, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @RegionalReserved, @ShipType, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @Raim, @DataTerminalReady, @Assigned, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisExtendedClassBCsPositionReportMessageInsertTrigger]
 ON [AisExtendedClassBCsPositionReportMessageView]
 INSTEAD OF INSERT AS
@@ -1898,6 +2461,61 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisInterrogationMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @FirstMessageType [int],
+  @FirstSlotOffset [int],
+  @SecondMessageType [int],
+  @SecondSlotOffset [int],
+  @SecondStationFirstMessageType [int],
+  @SecondStationFirstSlotOffset [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisInterrogationMessage]([Id], [FirstMessageType], [FirstSlotOffset], [SecondMessageType], [SecondSlotOffset], [SecondStationFirstMessageType], [SecondStationFirstSlotOffset])
+          VALUES(@Id, @FirstMessageType, @FirstSlotOffset, @SecondMessageType, @SecondSlotOffset, @SecondStationFirstMessageType, @SecondStationFirstSlotOffset);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisInterrogationMessageInsertTrigger]
 ON [AisInterrogationMessageView]
 INSTEAD OF INSERT AS
@@ -2016,6 +2634,70 @@ AS
     BEGIN TRY
       INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
+      INSERT INTO [AisPositionReportClassAAssignedScheduleMessage]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAAssignedScheduleMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
       INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
           VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
       INSERT INTO [AisPositionReportClassAAssignedScheduleMessage]([Id])
@@ -2210,6 +2892,70 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
+      INSERT INTO [AisPositionReportClassAMessage]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisPositionReportClassAMessageInsertTrigger]
 ON [AisPositionReportClassAMessageView]
 INSTEAD OF INSERT AS
@@ -2348,6 +3094,70 @@ AS
     BEGIN TRY
       INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
+      INSERT INTO [AisPositionReportClassAResponseToInterrogationMessage]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAResponseToInterrogationMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
       INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
           VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
       INSERT INTO [AisPositionReportClassAResponseToInterrogationMessage]([Id])
@@ -2536,6 +3346,64 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisPositionReportForLongRangeApplicationsMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @PositionAccuracy [int],
+  @Raim [int],
+  @NavigationStatus [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @SpeedOverGround [float](53),
+  @CourseOverGround [float](53),
+  @GnssPositionStatus [int],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisPositionReportForLongRangeApplicationsMessage]([Id], [PositionAccuracy], [Raim], [NavigationStatus], [Longitude], [Latitude], [SpeedOverGround], [CourseOverGround], [GnssPositionStatus], [Spare])
+          VALUES(@Id, @PositionAccuracy, @Raim, @NavigationStatus, @Longitude, @Latitude, @SpeedOverGround, @CourseOverGround, @GnssPositionStatus, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisPositionReportForLongRangeApplicationsMessageInsertTrigger]
 ON [AisPositionReportForLongRangeApplicationsMessageView]
 INSTEAD OF INSERT AS
@@ -2656,6 +3524,60 @@ AS
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
       INSERT INTO [AisSafetyRelatedAcknowledgmentMessage]([Id], [Spare], [SequenceNumber1], [Mmsi1], [SequenceNumber2], [Mmsi2], [SequenceNumber3], [Mmsi3], [SequenceNumber4], [Mmsi4])
           VALUES(@Id, @Spare, @SequenceNumber1, @Mmsi1, @SequenceNumber2, @Mmsi2, @SequenceNumber3, @Mmsi3, @SequenceNumber4, @Mmsi4);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisSafetyRelatedAcknowledgmentMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Spare [int],
+  @SequenceNumber1 [int],
+  @SequenceNumber2 [int],
+  @SequenceNumber3 [int],
+  @SequenceNumber4 [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisSafetyRelatedAcknowledgmentMessage]([Id], [Spare], [SequenceNumber1], [SequenceNumber2], [SequenceNumber3], [SequenceNumber4])
+          VALUES(@Id, @Spare, @SequenceNumber1, @SequenceNumber2, @SequenceNumber3, @SequenceNumber4);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -2806,6 +3728,72 @@ AS
     BEGIN TRY
       INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisStandardClassBCsPositionReportMessage]([Id], [Reserved], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [RegionalReserved], [IsCsUnit], [HasDisplay], [HasDscCapability], [Band], [CanAcceptMessage22], [Assigned], [Raim], [RadioStatus])
+          VALUES(@Id, @Reserved, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @RegionalReserved, @IsCsUnit, @HasDisplay, @HasDscCapability, @Band, @CanAcceptMessage22, @Assigned, @Raim, @RadioStatus);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStandardClassBCsPositionReportMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Reserved [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @RegionalReserved [int],
+  @IsCsUnit [bit],
+  @HasDisplay [bit],
+  @HasDscCapability [bit],
+  @Band [bit],
+  @CanAcceptMessage22 [bit],
+  @Assigned [bit],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
       INSERT INTO [AisStandardClassBCsPositionReportMessage]([Id], [Reserved], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [RegionalReserved], [IsCsUnit], [HasDisplay], [HasDscCapability], [Band], [CanAcceptMessage22], [Assigned], [Raim], [RadioStatus])
           VALUES(@Id, @Reserved, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @RegionalReserved, @IsCsUnit, @HasDisplay, @HasDscCapability, @Band, @CanAcceptMessage22, @Assigned, @Raim, @RadioStatus);
       IF @TranCounter = 0
@@ -3012,6 +4000,68 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisStandardSarAircraftPositionReportMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Altitude [int],
+  @SpeedOverGround [int],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @Timestamp [int],
+  @Reserved [int],
+  @DataTerminalReady [bit],
+  @Spare [int],
+  @Assigned [bit],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisStandardSarAircraftPositionReportMessage]([Id], [Altitude], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [Timestamp], [Reserved], [DataTerminalReady], [Spare], [Assigned], [Raim], [RadioStatus])
+          VALUES(@Id, @Altitude, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @Timestamp, @Reserved, @DataTerminalReady, @Spare, @Assigned, @Raim, @RadioStatus);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisStandardSarAircraftPositionReportMessageInsertTrigger]
 ON [AisStandardSarAircraftPositionReportMessageView]
 INSTEAD OF INSERT AS
@@ -3154,6 +4204,67 @@ AS
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
       INSERT INTO [AisStaticAndVoyageRelatedDataMessage]([Id], [AisVersion], [ImoNumber], [Callsign], [ShipName], [ShipType], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [EstimatedTimeOfArrival], [Draught], [Destination], [DataTerminalReady], [Spare])
           VALUES(@Id, @AisVersion, @ImoNumber, @Callsign, @ShipName, @ShipType, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @EstimatedTimeOfArrival, @Draught, @Destination, @DataTerminalReady, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticAndVoyageRelatedDataMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @AisVersion [int],
+  @ShipType [int],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @EstimatedTimeOfArrival [bigint],
+  @Draught [float](53),
+  @Destination [nvarchar](127),
+  @DataTerminalReady [bit],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisStaticAndVoyageRelatedDataMessage]([Id], [AisVersion], [ShipType], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [EstimatedTimeOfArrival], [Draught], [Destination], [DataTerminalReady], [Spare])
+          VALUES(@Id, @AisVersion, @ShipType, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @EstimatedTimeOfArrival, @Draught, @Destination, @DataTerminalReady, @Spare);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3338,6 +4449,56 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisStaticDataReportMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @PartNumber [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
+          VALUES(@Id, @PartNumber);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisStaticDataReportMessageInsertTrigger]
 ON [AisStaticDataReportMessageView]
 INSTEAD OF INSERT AS
@@ -3422,6 +4583,59 @@ AS
           VALUES(@Id, @PartNumber);
       INSERT INTO [AisStaticDataReportPartAMessage]([Id], [ShipName], [Spare])
           VALUES(@Id, @ShipName, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticDataReportPartAMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @PartNumber [int],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
+          VALUES(@Id, @PartNumber);
+      INSERT INTO [AisStaticDataReportPartAMessage]([Id], [Spare])
+          VALUES(@Id, @Spare);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3548,6 +4762,68 @@ AS
           VALUES(@Id, @PartNumber);
       INSERT INTO [AisStaticDataReportPartBMessage]([Id], [ShipType], [VendorId], [UnitModelCode], [SerialNumber], [Callsign], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [MothershipMmsi], [PositionFixType], [Spare])
           VALUES(@Id, @ShipType, @VendorId, @UnitModelCode, @SerialNumber, @Callsign, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @MothershipMmsi, @PositionFixType, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticDataReportPartBMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @PartNumber [int],
+  @ShipType [int],
+  @VendorId [nvarchar](127),
+  @UnitModelCode [int],
+  @SerialNumber [int],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
+          VALUES(@Id, @PartNumber);
+      INSERT INTO [AisStaticDataReportPartBMessage]([Id], [ShipType], [VendorId], [UnitModelCode], [SerialNumber], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [Spare])
+          VALUES(@Id, @ShipType, @VendorId, @UnitModelCode, @SerialNumber, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @Spare);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3726,6 +5002,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisUtcAndDateInquiryMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Spare1 [int],
+  @Spare2 [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
+      INSERT INTO [AisUtcAndDateInquiryMessage]([Id], [Spare1], [Spare2])
+          VALUES(@Id, @Spare1, @Spare2);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisUtcAndDateInquiryMessageInsertTrigger]
 ON [AisUtcAndDateInquiryMessageView]
 INSTEAD OF INSERT AS
@@ -3819,6 +5146,63 @@ AS
     BEGIN TRY
       INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
           VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisUtcAndDateResponseMessage]([Id], [Datetime], [PositionAccuracy], [Longitude], [Latitude], [PositionFixType], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @Datetime, @PositionAccuracy, @Longitude, @Latitude, @PositionFixType, @Spare, @Raim, @RadioStatus);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisUtcAndDateResponseMessageInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Datetime [bigint],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @PositionFixType [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat);
       INSERT INTO [AisUtcAndDateResponseMessage]([Id], [Datetime], [PositionAccuracy], [Longitude], [Latitude], [PositionFixType], [Spare], [Raim], [RadioStatus])
           VALUES(@Id, @Datetime, @PositionAccuracy, @Longitude, @Latitude, @PositionFixType, @Spare, @Raim, @RadioStatus);
       IF @TranCounter = 0
@@ -4489,6 +5873,53 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 13600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint13600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint13600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraCommandInsertTrigger]
 ON [CameraCommandView]
 INSTEAD OF INSERT AS
@@ -4572,6 +6003,65 @@ AS
     BEGIN TRY
       INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      INSERT INTO [CameraCommandAbsoluteMove]([Id], [PositionPanTiltMode], [PanAngle], [TiltAngle], [PositionFocalLengthMode], [FocalLength], [SpeedPanTiltMode], [PanSpeed], [TiltSpeed], [SpeedFocalLengthMode], [ZoomSpeed])
+          VALUES(@Id, @PositionPanTiltMode, @PanAngle, @TiltAngle, @PositionFocalLengthMode, @FocalLength, @SpeedPanTiltMode, @PanSpeed, @TiltSpeed, @SpeedFocalLengthMode, @ZoomSpeed);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint13700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraCommandAbsoluteMoveInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @PositionPanTiltMode [int],
+  @PanAngle [float](53),
+  @TiltAngle [float](53),
+  @PositionFocalLengthMode [int],
+  @FocalLength [float](53),
+  @SpeedPanTiltMode [int],
+  @PanSpeed [float](53),
+  @TiltSpeed [float](53),
+  @SpeedFocalLengthMode [int],
+  @ZoomSpeed [float](53)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 13700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint13700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
       INSERT INTO [CameraCommandAbsoluteMove]([Id], [PositionPanTiltMode], [PanAngle], [TiltAngle], [PositionFocalLengthMode], [FocalLength], [SpeedPanTiltMode], [PanSpeed], [TiltSpeed], [SpeedFocalLengthMode], [ZoomSpeed])
           VALUES(@Id, @PositionPanTiltMode, @PanAngle, @TiltAngle, @PositionFocalLengthMode, @FocalLength, @SpeedPanTiltMode, @PanSpeed, @TiltSpeed, @SpeedFocalLengthMode, @ZoomSpeed);
       IF @TranCounter = 0
@@ -4740,6 +6230,58 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraCommandAdjustPanTiltZoomInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @X [float](53),
+  @Y [float](53),
+  @Z [float](53)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 13800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint13800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      INSERT INTO [CameraCommandAdjustPanTiltZoom]([Id], [X], [Y], [Z])
+          VALUES(@Id, @X, @Y, @Z);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint13800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraCommandAdjustPanTiltZoomInsertTrigger]
 ON [CameraCommandAdjustPanTiltZoomView]
 INSTEAD OF INSERT AS
@@ -4830,6 +6372,60 @@ AS
     BEGIN TRY
       INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      INSERT INTO [CameraCommandContinuousMove]([Id], [Normalized], [PanVelocity], [TiltVelocity], [ZoomVelocity], [Duration])
+          VALUES(@Id, @Normalized, @PanVelocity, @TiltVelocity, @ZoomVelocity, @Duration);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint13900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraCommandContinuousMoveInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Normalized [bit],
+  @PanVelocity [float](53),
+  @TiltVelocity [float](53),
+  @ZoomVelocity [float](53),
+  @Duration [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 13900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint13900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
       INSERT INTO [CameraCommandContinuousMove]([Id], [Normalized], [PanVelocity], [TiltVelocity], [ZoomVelocity], [Duration])
           VALUES(@Id, @Normalized, @PanVelocity, @TiltVelocity, @ZoomVelocity, @Duration);
       IF @TranCounter = 0
@@ -4980,6 +6576,60 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraCommandGeoMoveInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Latitude [float](53),
+  @Longitude [float](53),
+  @Altitude [float](53),
+  @ViewportWidth [float](53),
+  @ViewportHeight [float](53)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      INSERT INTO [CameraCommandGeoMove]([Id], [Latitude], [Longitude], [Altitude], [ViewportWidth], [ViewportHeight])
+          VALUES(@Id, @Latitude, @Longitude, @Altitude, @ViewportWidth, @ViewportHeight);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraCommandGeoMoveInsertTrigger]
 ON [CameraCommandGeoMoveView]
 INSTEAD OF INSERT AS
@@ -5080,6 +6730,62 @@ AS
     BEGIN TRY
       INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      INSERT INTO [CameraCommandRelativeMove]([Id], [Normalized], [PanAngle], [TiltAngle], [FocalLength], [PanSpeed], [TiltSpeed], [ZoomSpeed])
+          VALUES(@Id, @Normalized, @PanAngle, @TiltAngle, @FocalLength, @PanSpeed, @TiltSpeed, @ZoomSpeed);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraCommandRelativeMoveInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Normalized [bit],
+  @PanAngle [float](53),
+  @TiltAngle [float](53),
+  @FocalLength [float](53),
+  @PanSpeed [float](53),
+  @TiltSpeed [float](53),
+  @ZoomSpeed [float](53)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
       INSERT INTO [CameraCommandRelativeMove]([Id], [Normalized], [PanAngle], [TiltAngle], [FocalLength], [PanSpeed], [TiltSpeed], [ZoomSpeed])
           VALUES(@Id, @Normalized, @PanAngle, @TiltAngle, @FocalLength, @PanSpeed, @TiltSpeed, @ZoomSpeed);
       IF @TranCounter = 0
@@ -5233,6 +6939,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraCommandReleasePTZOwnershipInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      INSERT INTO [CameraCommandReleasePTZOwnership]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraCommandReleasePTZOwnershipInsertTrigger]
 ON [CameraCommandReleasePTZOwnershipView]
 INSTEAD OF INSERT AS
@@ -5306,6 +7061,55 @@ AS
     BEGIN TRY
       INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      INSERT INTO [CameraCommandRequestPTZOwnership]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraCommandRequestPTZOwnershipInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
       INSERT INTO [CameraCommandRequestPTZOwnership]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
@@ -5406,6 +7210,56 @@ AS
     BEGIN TRY
       INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      INSERT INTO [CameraCommandSetAutoFocus]([Id], [Enabled])
+          VALUES(@Id, @Enabled);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraCommandSetAutoFocusInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Enabled [bit]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
       INSERT INTO [CameraCommandSetAutoFocus]([Id], [Enabled])
           VALUES(@Id, @Enabled);
       IF @TranCounter = 0
@@ -5536,6 +7390,56 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraCommandSetBlackAndWhiteInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Enabled [bit]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      INSERT INTO [CameraCommandSetBlackAndWhite]([Id], [Enabled])
+          VALUES(@Id, @Enabled);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraCommandSetBlackAndWhiteInsertTrigger]
 ON [CameraCommandSetBlackAndWhiteView]
 INSTEAD OF INSERT AS
@@ -5615,6 +7519,57 @@ AS
     BEGIN TRY
       INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      INSERT INTO [CameraCommandSetFollowed]([Id], [TrackId], [Reason])
+          VALUES(@Id, @TrackId, @Reason);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraCommandSetFollowedInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @TrackId [uniqueidentifier],
+  @Reason [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
       INSERT INTO [CameraCommandSetFollowed]([Id], [TrackId], [Reason])
           VALUES(@Id, @TrackId, @Reason);
       IF @TranCounter = 0
@@ -5749,6 +7704,56 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraCommandSetInfraRedLampInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Enabled [bit]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      INSERT INTO [CameraCommandSetInfraRedLamp]([Id], [Enabled])
+          VALUES(@Id, @Enabled);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraCommandSetInfraRedLampInsertTrigger]
 ON [CameraCommandSetInfraRedLampView]
 INSTEAD OF INSERT AS
@@ -5853,6 +7858,56 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraCommandSetWasherInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Enabled [bit]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      INSERT INTO [CameraCommandSetWasher]([Id], [Enabled])
+          VALUES(@Id, @Enabled);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraCommandSetWasherInsertTrigger]
 ON [CameraCommandSetWasherView]
 INSTEAD OF INSERT AS
@@ -5931,6 +7986,56 @@ AS
     BEGIN TRY
       INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      INSERT INTO [CameraCommandSetWiper]([Id], [Enabled])
+          VALUES(@Id, @Enabled);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint14900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraCommandSetWiperInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Enabled [bit]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 14900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint14900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
       INSERT INTO [CameraCommandSetWiper]([Id], [Enabled])
           VALUES(@Id, @Enabled);
       IF @TranCounter = 0
@@ -6062,6 +8167,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraCommandStopInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @PanTilt [bit],
+  @Zoom [bit]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 15000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint15000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommand]([Id], [EntityType], [RowVersion], [Camera], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Camera, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      INSERT INTO [CameraCommandStop]([Id], [PanTilt], [Zoom])
+          VALUES(@Id, @PanTilt, @Zoom);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint15000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraCommandStopInsertTrigger]
 ON [CameraCommandStopView]
 INSTEAD OF INSERT AS
@@ -6144,6 +8300,54 @@ AS
     BEGIN TRY
       INSERT INTO [CameraCommandReply]([Id], [RowVersion], [Camera], [Timestamp], [Command], [Status], [Message], [PanAngle], [TiltAngle], [FocalLength])
           VALUES(@Id, 0, @Camera, @Timestamp, @Command, @Status, @Message, @PanAngle, @TiltAngle, @FocalLength);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint15100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max),
+  @PanAngle [float](53),
+  @TiltAngle [float](53),
+  @FocalLength [float](53)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint15100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraCommandReply]([Id], [RowVersion], [Camera], [Timestamp], [Status], [Message], [PanAngle], [TiltAngle], [FocalLength])
+          VALUES(@Id, 0, @Camera, @Timestamp, @Status, @Message, @PanAngle, @TiltAngle, @FocalLength);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -6817,6 +9021,63 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CameraStatusInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Camera [uniqueidentifier],
+  @Timestamp [bigint],
+  @PositionPanTiltMode [int],
+  @PanAngle [float](53),
+  @TiltAngle [float](53),
+  @PositionFocalLengthMode [int],
+  @FocalLength [float](53),
+  @PanTiltMoveStatus [int],
+  @ZoomMoveStatus [int],
+  @VelocityPanTiltMode [int],
+  @PanVelocity [float](53),
+  @TiltVelocity [float](53),
+  @VelocityFocalLengthMode [int],
+  @ZoomVelocity [float](53),
+  @ActiveFeatures [int],
+  @Error [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint15500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CameraStatus]([Id], [RowVersion], [Camera], [Timestamp], [PositionPanTiltMode], [PanAngle], [TiltAngle], [PositionFocalLengthMode], [FocalLength], [PanTiltMoveStatus], [ZoomMoveStatus], [VelocityPanTiltMode], [PanVelocity], [TiltVelocity], [VelocityFocalLengthMode], [ZoomVelocity], [ActiveFeatures], [Error])
+          VALUES(@Id, 0, @Camera, @Timestamp, @PositionPanTiltMode, @PanAngle, @TiltAngle, @PositionFocalLengthMode, @FocalLength, @PanTiltMoveStatus, @ZoomMoveStatus, @VelocityPanTiltMode, @PanVelocity, @TiltVelocity, @VelocityFocalLengthMode, @ZoomVelocity, @ActiveFeatures, @Error);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint15500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CameraStatusInsertTrigger]
 ON [CameraStatusView]
 INSTEAD OF INSERT AS
@@ -7291,6 +9552,52 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [CatalogInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 16100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint16100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Catalog]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint16100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [CatalogInsertTrigger]
 ON [CatalogView]
 INSTEAD OF INSERT AS
@@ -7352,6 +9659,52 @@ AS
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
       INSERT INTO [Element]([Id], [ElementType])
           VALUES(@Id, @ElementType);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint16200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [ElementInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 16200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint16200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [CatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Element]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -8303,6 +10656,51 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GNSSDeviceCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @GNSSDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint17300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [GNSSDeviceCommand]([Id], [RowVersion], [GNSSDevice], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, 0, @GNSSDevice, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint17300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GNSSDeviceCommandInsertTrigger]
 ON [GNSSDeviceCommandView]
 INSTEAD OF INSERT AS
@@ -8374,6 +10772,51 @@ AS
     BEGIN TRY
       INSERT INTO [GNSSDeviceCommandReply]([Id], [RowVersion], [GNSSDevice], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @GNSSDevice, @Timestamp, @Command, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint17400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GNSSDeviceCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @GNSSDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint17400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [GNSSDeviceCommandReply]([Id], [RowVersion], [GNSSDevice], [Timestamp], [Status], [Message])
+          VALUES(@Id, 0, @GNSSDevice, @Timestamp, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -8688,6 +11131,51 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GyroDeviceCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @GyroDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint17700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [GyroDeviceCommand]([Id], [RowVersion], [GyroDevice], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, 0, @GyroDevice, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint17700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GyroDeviceCommandInsertTrigger]
 ON [GyroDeviceCommandView]
 INSTEAD OF INSERT AS
@@ -8759,6 +11247,51 @@ AS
     BEGIN TRY
       INSERT INTO [GyroDeviceCommandReply]([Id], [RowVersion], [GyroDevice], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @GyroDevice, @Timestamp, @Command, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint17800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GyroDeviceCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @GyroDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint17800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [GyroDeviceCommandReply]([Id], [RowVersion], [GyroDevice], [Timestamp], [Status], [Message])
+          VALUES(@Id, 0, @GyroDevice, @Timestamp, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -9560,6 +12093,52 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [BaseStationInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 18900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint18900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [BaseStation]([Id], [Name])
+          VALUES(@Id, @Name);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint18900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [BaseStationInsertTrigger]
 ON [BaseStationView]
 INSTEAD OF INSERT AS
@@ -9622,6 +12201,56 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
+      INSERT INTO [CameraDevice]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint19100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [CameraDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 19100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint19100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
       INSERT INTO [CameraDevice]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
@@ -9747,6 +12376,56 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GNSSDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 19200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint19200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
+      INSERT INTO [GNSSDevice]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint19200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GNSSDeviceInsertTrigger]
 ON [GNSSDeviceView]
 INSTEAD OF INSERT AS
@@ -9839,6 +12518,56 @@ AS
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
       INSERT INTO [GyroDevice]([Id], [HeadingTrueNorthTimeseries], [HeadingMagneticNorthTimeseries], [PitchTimeseries], [RateOfTurnTimeseries], [RollTimeseries], [CourseTimeseries], [SpeedTimeseries], [GNSSDevice])
           VALUES(@Id, @HeadingTrueNorthTimeseries, @HeadingMagneticNorthTimeseries, @PitchTimeseries, @RateOfTurnTimeseries, @RollTimeseries, @CourseTimeseries, @SpeedTimeseries, @GNSSDevice);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint19300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GyroDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 19300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint19300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
+      INSERT INTO [GyroDevice]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -9991,6 +12720,56 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [LineInputDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 19400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint19400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
+      INSERT INTO [LineInputDevice]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint19400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [LineInputDeviceInsertTrigger]
 ON [LineInputDeviceView]
 INSTEAD OF INSERT AS
@@ -10061,6 +12840,56 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
+      INSERT INTO [OilSpillDetectorDevice]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint19500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [OilSpillDetectorDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 19500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint19500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
       INSERT INTO [OilSpillDetectorDevice]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
@@ -10183,6 +13012,56 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadioDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 19600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint19600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
+      INSERT INTO [RadioDevice]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint19600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadioDeviceInsertTrigger]
 ON [RadioDeviceView]
 INSTEAD OF INSERT AS
@@ -10260,6 +13139,56 @@ AS
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
       INSERT INTO [RadomeDevice]([Id], [Radar], [PressureTimeseries], [TemperatureTimeseries], [DewPointTimeseries], [StatusTimeseries])
           VALUES(@Id, @Radar, @PressureTimeseries, @TemperatureTimeseries, @DewPointTimeseries, @StatusTimeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint19700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadomeDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 19700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint19700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
+      INSERT INTO [RadomeDevice]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -10402,6 +13331,58 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 19900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint19900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
+      INSERT INTO [TrackerDevice]([Id])
+          VALUES(@Id);
+      INSERT INTO [AisDevice]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint19900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisDeviceInsertTrigger]
 ON [AisDeviceView]
 INSTEAD OF INSERT AS
@@ -10499,6 +13480,58 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarDevice]([Id], [SaveSettingsTimeseries], [PowerOnTimeseries], [TrackingOnTimeseries], [RadarPulseTimeseries], [TuningTimeseries], [BlankSector1Timeseries], [Sector1StartTimeseries], [Sector1EndTimeseries], [BlankSector2Timeseries], [Sector2StartTimeseries], [Sector2EndTimeseries], [EnableAutomaticFrequencyControlTimeseries], [AzimuthOffsetTimeseries], [EnableSensitivityTimeControlTimeseries], [AutomaticSensitivityTimeControlTimeseries], [SensitivityTimeControlLevelTimeseries], [EnableFastTimeConstantTimeseries], [FastTimeConstantLevelTimeseries], [FastTimeConstantModeTimeseries], [LatitudeTimeseries], [LongitudeTimeseries], [Radome], [GNSSDevice])
           VALUES(@Id, @SaveSettingsTimeseries, @PowerOnTimeseries, @TrackingOnTimeseries, @RadarPulseTimeseries, @TuningTimeseries, @BlankSector1Timeseries, @Sector1StartTimeseries, @Sector1EndTimeseries, @BlankSector2Timeseries, @Sector2StartTimeseries, @Sector2EndTimeseries, @EnableAutomaticFrequencyControlTimeseries, @AzimuthOffsetTimeseries, @EnableSensitivityTimeControlTimeseries, @AutomaticSensitivityTimeControlTimeseries, @SensitivityTimeControlLevelTimeseries, @EnableFastTimeConstantTimeseries, @FastTimeConstantLevelTimeseries, @FastTimeConstantModeTimeseries, @LatitudeTimeseries, @LongitudeTimeseries, @Radome, @GNSSDevice);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint20000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 20000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint20000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
+      INSERT INTO [TrackerDevice]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarDevice]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -10720,6 +13753,56 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [WeatherStationDeviceInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Host [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 20100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint20100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Device]([Id], [Host], [Name], [Description])
+          VALUES(@Id, @Host, @Name, @Description);
+      INSERT INTO [WeatherStationDevice]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint20100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [WeatherStationDeviceInsertTrigger]
 ON [WeatherStationDeviceView]
 INSTEAD OF INSERT AS
@@ -10851,6 +13934,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [FacilityInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @Altitude [float](53)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 20200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint20200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [Facility]([Id], [Name], [Longitude], [Latitude], [Altitude])
+          VALUES(@Id, @Name, @Longitude, @Latitude, @Altitude);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint20200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [FacilityInsertTrigger]
 ON [FacilityView]
 INSTEAD OF INSERT AS
@@ -10949,6 +14081,54 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AircraftInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 20400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint20400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [TrackableItem]([Id])
+          VALUES(@Id);
+      INSERT INTO [Aircraft]([Id], [Name])
+          VALUES(@Id, @Name);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint20400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AircraftInsertTrigger]
 ON [AircraftView]
 INSTEAD OF INSERT AS
@@ -11019,6 +14199,60 @@ AS
           VALUES(@Id);
       INSERT INTO [AisAidToNavigation]([Id], [Name], [MMSI], [NavigationalAidType], [Position], [IsVirtual], [ToBow], [ToStern], [ToPort], [ToStarboard], [OffPositionTimeseries])
           VALUES(@Id, @Name, @MMSI, @NavigationalAidType, @Position, @IsVirtual, @ToBow, @ToStern, @ToPort, @ToStarboard, @OffPositionTimeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint20500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisAidToNavigationInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @NavigationalAidType [int],
+  @IsVirtual [bit],
+  @ToBow [int],
+  @ToStern [int],
+  @ToPort [int],
+  @ToStarboard [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 20500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint20500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [TrackableItem]([Id])
+          VALUES(@Id);
+      INSERT INTO [AisAidToNavigation]([Id], [Name], [NavigationalAidType], [IsVirtual], [ToBow], [ToStern], [ToPort], [ToStarboard])
+          VALUES(@Id, @Name, @NavigationalAidType, @IsVirtual, @ToBow, @ToStern, @ToPort, @ToStarboard);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11161,6 +14395,54 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [VehicleInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 20600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint20600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [TrackableItem]([Id])
+          VALUES(@Id);
+      INSERT INTO [Vehicle]([Id], [Name])
+          VALUES(@Id, @Name);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint20600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [VehicleInsertTrigger]
 ON [VehicleView]
 INSTEAD OF INSERT AS
@@ -11229,6 +14511,58 @@ AS
           VALUES(@Id);
       INSERT INTO [Vessel]([Id], [Name], [Type], [ToBow], [ToStern], [ToPort], [ToStarboard], [DraughtTimeseries], [PersonsOnBoardTimeseries])
           VALUES(@Id, @Name, @Type, @ToBow, @ToStern, @ToPort, @ToStarboard, @DraughtTimeseries, @PersonsOnBoardTimeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint20700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [VesselInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @ToBow [int],
+  @ToStern [int],
+  @ToPort [int],
+  @ToStarboard [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 20700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint20700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Item]([Id], [EntityType], [RowVersion])
+          VALUES(@Id, @EntityType, 0);
+      INSERT INTO [TrackableItem]([Id])
+          VALUES(@Id);
+      INSERT INTO [Vessel]([Id], [Name], [ToBow], [ToStern], [ToPort], [ToStarboard])
+          VALUES(@Id, @Name, @ToBow, @ToStern, @ToPort, @ToStarboard);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11535,6 +14869,51 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [LineInputDeviceCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @LineInputDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint21000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [LineInputDeviceCommand]([Id], [RowVersion], [LineInputDevice], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, 0, @LineInputDevice, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint21000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [LineInputDeviceCommandInsertTrigger]
 ON [LineInputDeviceCommandView]
 INSTEAD OF INSERT AS
@@ -11606,6 +14985,51 @@ AS
     BEGIN TRY
       INSERT INTO [LineInputDeviceCommandReply]([Id], [RowVersion], [LineInputDevice], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @LineInputDevice, @Timestamp, @Command, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint21100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [LineInputDeviceCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @LineInputDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint21100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [LineInputDeviceCommandReply]([Id], [RowVersion], [LineInputDevice], [Timestamp], [Status], [Message])
+          VALUES(@Id, 0, @LineInputDevice, @Timestamp, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -12023,6 +15447,48 @@ AS
     BEGIN TRY
       INSERT INTO [LineInputMessageRoutingDestination]([Id], [RowVersion], [Routing], [Listener])
           VALUES(@Id, 0, @Routing, @Listener);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint21400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [LineInputMessageRoutingDestinationInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Routing [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint21400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [LineInputMessageRoutingDestination]([Id], [RowVersion], [Routing])
+          VALUES(@Id, 0, @Routing);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -12728,6 +16194,53 @@ AS
     BEGIN TRY
       INSERT INTO [LogProcess]([Id], [RowVersion], [Application], [Host], [Started], [Stopped], [ProcessId], [Path], [Identity])
           VALUES(@Id, 0, @Application, @Host, @Started, @Stopped, @ProcessId, @Path, @Identity);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint22100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [LogProcessInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Application [uniqueidentifier],
+  @Started [bigint],
+  @Stopped [bigint],
+  @ProcessId [bigint],
+  @Path [nvarchar](max),
+  @Identity [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint22100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [LogProcess]([Id], [RowVersion], [Application], [Started], [Stopped], [ProcessId], [Path], [Identity])
+          VALUES(@Id, 0, @Application, @Started, @Stopped, @ProcessId, @Path, @Identity);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -13583,6 +17096,49 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [MediaProxySessionInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Service [uniqueidentifier],
+  @Name [nvarchar](128)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint22900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [MediaProxySession]([Id], [RowVersion], [Service], [Name])
+          VALUES(@Id, 0, @Service, @Name);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint22900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [MediaProxySessionInsertTrigger]
 ON [MediaProxySessionView]
 INSTEAD OF INSERT AS
@@ -13862,6 +17418,47 @@ AS
     BEGIN TRY
       INSERT INTO [MediaService]([Id], [RowVersion], [EnabledTimeseries])
           VALUES(@Id, 0, @EnabledTimeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint23200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [MediaServiceInsert1]
+  @Id [uniqueidentifier] OUTPUT
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint23200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [MediaService]([Id], [RowVersion])
+          VALUES(@Id, 0);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -14338,6 +17935,51 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [OilSpillDetectorCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @OilSpillDetector [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint23800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [OilSpillDetectorCommand]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint23800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [OilSpillDetectorCommandInsertTrigger]
 ON [OilSpillDetectorCommandView]
 INSTEAD OF INSERT AS
@@ -14409,6 +18051,51 @@ AS
     BEGIN TRY
       INSERT INTO [OilSpillDetectorCommandReply]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @Command, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint23900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [OilSpillDetectorCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @OilSpillDetector [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint23900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [OilSpillDetectorCommandReply]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [Status], [Message])
+          VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -14523,6 +18210,70 @@ AS
     BEGIN TRY
       INSERT INTO [OilSpillDetectorConfiguration]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [Range], [StartAngle], [EndAngle], [StartRange], [EndRange], [UpdateRate], [StatusSendTime], [DrawBorder], [Colors], [SendToServer], [Directory], [TransparentWater], [SavePictures], [SendAsTarget], [WriteLog], [TargetFilePrefix], [TargetMMSI], [Latitude], [Longitude], [TestSourceEnabled], [ProxyServer], [UseProxyServer])
           VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @Range, @StartAngle, @EndAngle, @StartRange, @EndRange, @UpdateRate, @StatusSendTime, @DrawBorder, @Colors, @SendToServer, @Directory, @TransparentWater, @SavePictures, @SendAsTarget, @WriteLog, @TargetFilePrefix, @TargetMMSI, @Latitude, @Longitude, @TestSourceEnabled, @ProxyServer, @UseProxyServer);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint24000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [OilSpillDetectorConfigurationInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @OilSpillDetector [uniqueidentifier],
+  @Timestamp [bigint],
+  @Range [float](53),
+  @StartAngle [float](53),
+  @EndAngle [float](53),
+  @StartRange [float](53),
+  @EndRange [float](53),
+  @UpdateRate [int],
+  @StatusSendTime [bigint],
+  @DrawBorder [bit],
+  @Colors [varbinary](max),
+  @SendToServer [bit],
+  @Directory [nvarchar](260),
+  @TransparentWater [bit],
+  @SavePictures [bit],
+  @SendAsTarget [bit],
+  @WriteLog [bit],
+  @TargetFilePrefix [nvarchar](127),
+  @Latitude [float](53),
+  @Longitude [float](53),
+  @TestSourceEnabled [bit],
+  @ProxyServer [nvarchar](127),
+  @UseProxyServer [bit]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint24000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [OilSpillDetectorConfiguration]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [Range], [StartAngle], [EndAngle], [StartRange], [EndRange], [UpdateRate], [StatusSendTime], [DrawBorder], [Colors], [SendToServer], [Directory], [TransparentWater], [SavePictures], [SendAsTarget], [WriteLog], [TargetFilePrefix], [Latitude], [Longitude], [TestSourceEnabled], [ProxyServer], [UseProxyServer])
+          VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @Range, @StartAngle, @EndAngle, @StartRange, @EndRange, @UpdateRate, @StatusSendTime, @DrawBorder, @Colors, @SendToServer, @Directory, @TransparentWater, @SavePictures, @SendAsTarget, @WriteLog, @TargetFilePrefix, @Latitude, @Longitude, @TestSourceEnabled, @ProxyServer, @UseProxyServer);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -15786,6 +19537,53 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [ReferencePropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 25400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint25400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [ReferenceProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint25400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [ReferencePropertyInsertTrigger]
 ON [ReferencePropertyView]
 INSTEAD OF INSERT AS
@@ -16144,6 +19942,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [BinaryTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 25900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint25900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [BinaryTimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint25900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [BinaryTimeseriesPropertyInsertTrigger]
 ON [BinaryTimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -16211,6 +20058,55 @@ AS
           VALUES(@Id);
       INSERT INTO [BooleanTimeseriesProperty]([Id], [Timeseries])
           VALUES(@Id, @Timeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [BooleanTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [BooleanTimeseriesProperty]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -16326,6 +20222,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [ByteTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [ByteTimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [ByteTimeseriesPropertyInsertTrigger]
 ON [ByteTimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -16393,6 +20338,55 @@ AS
           VALUES(@Id);
       INSERT INTO [DateTimeTimeseriesProperty]([Id], [Timeseries])
           VALUES(@Id, @Timeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [DateTimeTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [DateTimeTimeseriesProperty]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -16508,6 +20502,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [DoubleTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [DoubleTimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [DoubleTimeseriesPropertyInsertTrigger]
 ON [DoubleTimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -16575,6 +20618,55 @@ AS
           VALUES(@Id);
       INSERT INTO [GuidTimeseriesProperty]([Id], [Timeseries])
           VALUES(@Id, @Timeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GuidTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [GuidTimeseriesProperty]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -16690,6 +20782,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [Int16TimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [Int16TimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [Int16TimeseriesPropertyInsertTrigger]
 ON [Int16TimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -16757,6 +20898,55 @@ AS
           VALUES(@Id);
       INSERT INTO [Int32TimeseriesProperty]([Id], [Timeseries])
           VALUES(@Id, @Timeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [Int32TimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [Int32TimeseriesProperty]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -16872,6 +21062,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [Int64TimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [Int64TimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [Int64TimeseriesPropertyInsertTrigger]
 ON [Int64TimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -16939,6 +21178,55 @@ AS
           VALUES(@Id);
       INSERT INTO [ReferenceTimeseriesProperty]([Id], [Timeseries])
           VALUES(@Id, @Timeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [ReferenceTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [ReferenceTimeseriesProperty]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -17054,6 +21342,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [SByteTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 26900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint26900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [SByteTimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint26900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [SByteTimeseriesPropertyInsertTrigger]
 ON [SByteTimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -17121,6 +21458,55 @@ AS
           VALUES(@Id);
       INSERT INTO [SingleTimeseriesProperty]([Id], [Timeseries])
           VALUES(@Id, @Timeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint27000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [SingleTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 27000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint27000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [SingleTimeseriesProperty]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -17236,6 +21622,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [StringTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 27100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint27100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [StringTimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint27100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [StringTimeseriesPropertyInsertTrigger]
 ON [StringTimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -17303,6 +21738,55 @@ AS
           VALUES(@Id);
       INSERT INTO [TimeSpanTimeseriesProperty]([Id], [Timeseries])
           VALUES(@Id, @Timeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint27200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [TimeSpanTimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 27200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint27200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [TimeSpanTimeseriesProperty]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -17418,6 +21902,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [UInt16TimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 27300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint27300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [UInt16TimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint27300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [UInt16TimeseriesPropertyInsertTrigger]
 ON [UInt16TimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -17509,6 +22042,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [UInt32TimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 27400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint27400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [UInt32TimeseriesProperty]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint27400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [UInt32TimeseriesPropertyInsertTrigger]
 ON [UInt32TimeseriesPropertyView]
 INSTEAD OF INSERT AS
@@ -17576,6 +22158,55 @@ AS
           VALUES(@Id);
       INSERT INTO [UInt64TimeseriesProperty]([Id], [Timeseries])
           VALUES(@Id, @Timeseries);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint27500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [UInt64TimeseriesPropertyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Element [uniqueidentifier],
+  @Definition [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 27500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint27500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [Property]([Id], [EntityType], [RowVersion], [Element], [Definition])
+          VALUES(@Id, @EntityType, 0, @Element, @Definition);
+      INSERT INTO [TimeseriesProperty]([Id])
+          VALUES(@Id);
+      INSERT INTO [UInt64TimeseriesProperty]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -18953,6 +23584,54 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [ReferencePropertyDefinitionInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @ElementType [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 29000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint29000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [PropertyDefinition]([Id], [EntityType], [RowVersion], [ElementType], [Name], [Description])
+          VALUES(@Id, @EntityType, 0, @ElementType, @Name, @Description);
+      INSERT INTO [ReferencePropertyDefinition]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint29000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [ReferencePropertyDefinitionInsertTrigger]
 ON [ReferencePropertyDefinitionView]
 INSTEAD OF INSERT AS
@@ -20215,6 +24894,56 @@ AS
           VALUES(@Id);
       INSERT INTO [ReferenceTimeseriesPropertyDefinition]([Id], [ReferencedElementType])
           VALUES(@Id, @ReferencedElementType);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint30400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [ReferenceTimeseriesPropertyDefinitionInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @ElementType [uniqueidentifier],
+  @Name [nvarchar](127),
+  @Description [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 30400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint30400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [PropertyDefinition]([Id], [EntityType], [RowVersion], [ElementType], [Name], [Description])
+          VALUES(@Id, @EntityType, 0, @ElementType, @Name, @Description);
+      INSERT INTO [TimeseriesPropertyDefinition]([Id])
+          VALUES(@Id);
+      INSERT INTO [ReferenceTimeseriesPropertyDefinition]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -21535,6 +26264,53 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Radar [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 31700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint31700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [RadarCommand]([Id], [EntityType], [RowVersion], [Radar], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Radar, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint31700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarCommandInsertTrigger]
 ON [RadarCommandView]
 INSTEAD OF INSERT AS
@@ -21608,6 +26384,55 @@ AS
     BEGIN TRY
       INSERT INTO [RadarCommand]([Id], [EntityType], [RowVersion], [Radar], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, @EntityType, 0, @Radar, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      INSERT INTO [RadarCommandGetStatus]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint31800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarCommandGetStatusInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Radar [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 31800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint31800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [RadarCommand]([Id], [EntityType], [RowVersion], [Radar], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, @EntityType, 0, @Radar, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
       INSERT INTO [RadarCommandGetStatus]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
@@ -21731,6 +26556,53 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Radar [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 31900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint31900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [RadarCommandReply]([Id], [EntityType], [RowVersion], [Radar], [Timestamp], [Status], [Message])
+          VALUES(@Id, @EntityType, 0, @Radar, @Timestamp, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint31900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarCommandReplyInsertTrigger]
 ON [RadarCommandReplyView]
 INSTEAD OF INSERT AS
@@ -21809,6 +26681,60 @@ AS
     BEGIN TRY
       INSERT INTO [RadarCommandReply]([Id], [EntityType], [RowVersion], [Radar], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, @EntityType, 0, @Radar, @Timestamp, @Command, @Status, @Message);
+      INSERT INTO [RadarCommandReplyGetStatus]([Id], [AzimuthCount], [TriggerCount], [RotationCount], [Pulse], [Tx])
+          VALUES(@Id, @AzimuthCount, @TriggerCount, @RotationCount, @Pulse, @Tx);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint32000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarCommandReplyGetStatusInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Radar [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max),
+  @AzimuthCount [int],
+  @TriggerCount [int],
+  @RotationCount [bigint],
+  @Pulse [int],
+  @Tx [bit]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 32000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint32000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [RadarCommandReply]([Id], [EntityType], [RowVersion], [Radar], [Timestamp], [Status], [Message])
+          VALUES(@Id, @EntityType, 0, @Radar, @Timestamp, @Status, @Message);
       INSERT INTO [RadarCommandReplyGetStatus]([Id], [AzimuthCount], [TriggerCount], [RotationCount], [Pulse], [Tx])
           VALUES(@Id, @AzimuthCount, @TriggerCount, @RotationCount, @Pulse, @Tx);
       IF @TranCounter = 0
@@ -22455,6 +27381,51 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadioCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Radio [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint32500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [RadioCommand]([Id], [RowVersion], [Radio], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, 0, @Radio, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint32500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadioCommandInsertTrigger]
 ON [RadioCommandView]
 INSTEAD OF INSERT AS
@@ -22526,6 +27497,51 @@ AS
     BEGIN TRY
       INSERT INTO [RadioCommandReply]([Id], [RowVersion], [Radio], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @Radio, @Timestamp, @Command, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint32600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadioCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Radio [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint32600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [RadioCommandReply]([Id], [RowVersion], [Radio], [Timestamp], [Status], [Message])
+          VALUES(@Id, 0, @Radio, @Timestamp, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -22760,6 +27776,51 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadomeCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Radome [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint32800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [RadomeCommand]([Id], [RowVersion], [Radome], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, 0, @Radome, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint32800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadomeCommandInsertTrigger]
 ON [RadomeCommandView]
 INSTEAD OF INSERT AS
@@ -22831,6 +27892,51 @@ AS
     BEGIN TRY
       INSERT INTO [RadomeCommandReply]([Id], [RowVersion], [Radome], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @Radome, @Timestamp, @Command, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint32900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadomeCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Radome [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint32900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [RadomeCommandReply]([Id], [RowVersion], [Radome], [Timestamp], [Status], [Message])
+          VALUES(@Id, 0, @Radome, @Timestamp, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -23957,6 +29063,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [BinaryTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 34400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint34400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BinaryTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint34400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [BinaryTimeseriesInsertTrigger]
 ON [BinaryTimeseriesView]
 INSTEAD OF INSERT AS
@@ -24020,6 +29175,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint34500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [BooleanTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 34500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint34500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [BooleanTimeseries]([Id])
@@ -24142,6 +29346,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisAidToNavigationOffPositionTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 34600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint34600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [AisAidToNavigationOffPositionTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint34600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisAidToNavigationOffPositionTimeseriesInsertTrigger]
 ON [AisAidToNavigationOffPositionTimeseriesView]
 INSTEAD OF INSERT AS
@@ -24216,6 +29471,57 @@ AS
           VALUES(@Id);
       INSERT INTO [DeviceEnabledTimeseries]([Id], [Device])
           VALUES(@Id, @Device);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint34700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [DeviceEnabledTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 34700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint34700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [DeviceEnabledTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -24338,6 +29644,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarAutomaticSensitivityTimeControlTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 34800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint34800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarAutomaticSensitivityTimeControlTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint34800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarAutomaticSensitivityTimeControlTimeseriesInsertTrigger]
 ON [RadarAutomaticSensitivityTimeControlTimeseriesView]
 INSTEAD OF INSERT AS
@@ -24412,6 +29769,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarBlankSector1Timeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint34900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarBlankSector1TimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 34900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint34900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarBlankSector1Timeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -24534,6 +29942,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarBlankSector2TimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarBlankSector2Timeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarBlankSector2TimeseriesInsertTrigger]
 ON [RadarBlankSector2TimeseriesView]
 INSTEAD OF INSERT AS
@@ -24608,6 +30067,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarEnableAutomaticFrequencyControlTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarEnableAutomaticFrequencyControlTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarEnableAutomaticFrequencyControlTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -24730,6 +30240,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarEnableFastTimeConstantTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarEnableFastTimeConstantTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarEnableFastTimeConstantTimeseriesInsertTrigger]
 ON [RadarEnableFastTimeConstantTimeseriesView]
 INSTEAD OF INSERT AS
@@ -24804,6 +30365,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarEnableSensitivityTimeControlTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarEnableSensitivityTimeControlTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarEnableSensitivityTimeControlTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -24926,6 +30538,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarPowerOnTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarPowerOnTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarPowerOnTimeseriesInsertTrigger]
 ON [RadarPowerOnTimeseriesView]
 INSTEAD OF INSERT AS
@@ -25000,6 +30663,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarSaveSettingsTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarSaveSettingsTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarSaveSettingsTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -25122,6 +30836,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarTrackingTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarTrackingTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarTrackingTimeseriesInsertTrigger]
 ON [RadarTrackingTimeseriesView]
 INSTEAD OF INSERT AS
@@ -25196,6 +30961,57 @@ AS
           VALUES(@Id);
       INSERT INTO [MediaProxySessionEnabledTimeseries]([Id], [ProxySession])
           VALUES(@Id, @ProxySession);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [MediaProxySessionEnabledTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [MediaProxySessionEnabledTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -25318,6 +31134,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [MediaServiceEnabledTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [BooleanTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [MediaServiceEnabledTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [MediaServiceEnabledTimeseriesInsertTrigger]
 ON [MediaServiceEnabledTimeseriesView]
 INSTEAD OF INSERT AS
@@ -25385,6 +31252,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [ByteTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint35900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [ByteTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 35900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint35900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [ByteTimeseries]([Id])
@@ -25504,6 +31420,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [DateTimeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DateTimeTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [DateTimeTimeseriesInsertTrigger]
 ON [DateTimeTimeseriesView]
 INSTEAD OF INSERT AS
@@ -25567,6 +31532,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [DoubleTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [DoubleTimeseries]([Id])
@@ -25689,6 +31703,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GNSSAltitudeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GNSSAltitudeTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GNSSAltitudeTimeseriesInsertTrigger]
 ON [GNSSAltitudeTimeseriesView]
 INSTEAD OF INSERT AS
@@ -25763,6 +31828,57 @@ AS
           VALUES(@Id);
       INSERT INTO [GNSSLatitudeTimeseries]([Id], [GNSSDevice])
           VALUES(@Id, @GNSSDevice);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GNSSLatitudeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GNSSLatitudeTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -25885,6 +32001,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GNSSLongitudeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GNSSLongitudeTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GNSSLongitudeTimeseriesInsertTrigger]
 ON [GNSSLongitudeTimeseriesView]
 INSTEAD OF INSERT AS
@@ -25959,6 +32126,57 @@ AS
           VALUES(@Id);
       INSERT INTO [GyroCourseTimeseries]([Id], [GyroDevice])
           VALUES(@Id, @GyroDevice);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GyroCourseTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GyroCourseTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -26081,6 +32299,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GyroHeadingMagneticNorthTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GyroHeadingMagneticNorthTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GyroHeadingMagneticNorthTimeseriesInsertTrigger]
 ON [GyroHeadingMagneticNorthTimeseriesView]
 INSTEAD OF INSERT AS
@@ -26155,6 +32424,57 @@ AS
           VALUES(@Id);
       INSERT INTO [GyroHeadingTrueNorthTimeseries]([Id], [GyroDevice])
           VALUES(@Id, @GyroDevice);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GyroHeadingTrueNorthTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GyroHeadingTrueNorthTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -26277,6 +32597,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GyroPitchTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GyroPitchTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GyroPitchTimeseriesInsertTrigger]
 ON [GyroPitchTimeseriesView]
 INSTEAD OF INSERT AS
@@ -26351,6 +32722,57 @@ AS
           VALUES(@Id);
       INSERT INTO [GyroRateOfTurnTimeseries]([Id], [GyroDevice])
           VALUES(@Id, @GyroDevice);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint36900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GyroRateOfTurnTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 36900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint36900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GyroRateOfTurnTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -26473,6 +32895,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GyroRollTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GyroRollTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GyroRollTimeseriesInsertTrigger]
 ON [GyroRollTimeseriesView]
 INSTEAD OF INSERT AS
@@ -26547,6 +33020,57 @@ AS
           VALUES(@Id);
       INSERT INTO [GyroSpeedTimeseries]([Id], [GyroDevice])
           VALUES(@Id, @GyroDevice);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GyroSpeedTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [GyroSpeedTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -26669,6 +33193,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarLatitudeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarLatitudeTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarLatitudeTimeseriesInsertTrigger]
 ON [RadarLatitudeTimeseriesView]
 INSTEAD OF INSERT AS
@@ -26743,6 +33318,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarLongitudeTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarLongitudeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarLongitudeTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -26865,6 +33491,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadomeDewPointTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadomeDewPointTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadomeDewPointTimeseriesInsertTrigger]
 ON [RadomeDewPointTimeseriesView]
 INSTEAD OF INSERT AS
@@ -26939,6 +33616,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadomePressureTimeseries]([Id], [Radome])
           VALUES(@Id, @Radome);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadomePressureTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadomePressureTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -27061,6 +33789,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadomeTemperatureTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadomeTemperatureTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadomeTemperatureTimeseriesInsertTrigger]
 ON [RadomeTemperatureTimeseriesView]
 INSTEAD OF INSERT AS
@@ -27135,6 +33914,57 @@ AS
           VALUES(@Id);
       INSERT INTO [VesselDraughtTimeseries]([Id], [Vessel])
           VALUES(@Id, @Vessel);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [VesselDraughtTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [VesselDraughtTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -27257,6 +34087,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [ViewLatitudeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [ViewLatitudeTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [ViewLatitudeTimeseriesInsertTrigger]
 ON [ViewLatitudeTimeseriesView]
 INSTEAD OF INSERT AS
@@ -27331,6 +34212,57 @@ AS
           VALUES(@Id);
       INSERT INTO [ViewLongitudeTimeseries]([Id], [View])
           VALUES(@Id, @View);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint37900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [ViewLongitudeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 37900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint37900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [ViewLongitudeTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -27453,6 +34385,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [ViewZoomLevelTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [ViewZoomLevelTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [ViewZoomLevelTimeseriesInsertTrigger]
 ON [ViewZoomLevelTimeseriesView]
 INSTEAD OF INSERT AS
@@ -27527,6 +34510,57 @@ AS
           VALUES(@Id);
       INSERT INTO [WeatherStationAbsoluteHumidityTimeseries]([Id], [WeatherStation])
           VALUES(@Id, @WeatherStation);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [WeatherStationAbsoluteHumidityTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [WeatherStationAbsoluteHumidityTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -27649,6 +34683,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [WeatherStationAirTemperatureTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [WeatherStationAirTemperatureTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [WeatherStationAirTemperatureTimeseriesInsertTrigger]
 ON [WeatherStationAirTemperatureTimeseriesView]
 INSTEAD OF INSERT AS
@@ -27723,6 +34808,57 @@ AS
           VALUES(@Id);
       INSERT INTO [WeatherStationBarometricPressureTimeseries]([Id], [WeatherStation])
           VALUES(@Id, @WeatherStation);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [WeatherStationBarometricPressureTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [WeatherStationBarometricPressureTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -27845,6 +34981,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [WeatherStationDewPointTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [WeatherStationDewPointTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [WeatherStationDewPointTimeseriesInsertTrigger]
 ON [WeatherStationDewPointTimeseriesView]
 INSTEAD OF INSERT AS
@@ -27919,6 +35106,57 @@ AS
           VALUES(@Id);
       INSERT INTO [WeatherStationRelativeHumidityTimeseries]([Id], [WeatherStation])
           VALUES(@Id, @WeatherStation);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [WeatherStationRelativeHumidityTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [WeatherStationRelativeHumidityTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -28041,6 +35279,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [WeatherStationWaterTemperatureTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [WeatherStationWaterTemperatureTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [WeatherStationWaterTemperatureTimeseriesInsertTrigger]
 ON [WeatherStationWaterTemperatureTimeseriesView]
 INSTEAD OF INSERT AS
@@ -28115,6 +35404,57 @@ AS
           VALUES(@Id);
       INSERT INTO [WeatherStationWindDirectionTimeseries]([Id], [WeatherStation])
           VALUES(@Id, @WeatherStation);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [WeatherStationWindDirectionTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [WeatherStationWindDirectionTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -28237,6 +35577,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [WeatherStationWindSpeedTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [DoubleTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [WeatherStationWindSpeedTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [WeatherStationWindSpeedTimeseriesInsertTrigger]
 ON [WeatherStationWindSpeedTimeseriesView]
 INSTEAD OF INSERT AS
@@ -28304,6 +35695,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [GeoPosition2DTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint38900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GeoPosition2DTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 38900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint38900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [GeoPosition2DTimeseries]([Id])
@@ -28426,6 +35866,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [AisAidToNavigationPositionTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [GeoPosition2DTimeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [AisAidToNavigationPositionTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [AisAidToNavigationPositionTimeseriesInsertTrigger]
 ON [AisAidToNavigationPositionTimeseriesView]
 INSTEAD OF INSERT AS
@@ -28493,6 +35984,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [GeoPosition3DTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [GeoPosition3DTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [GeoPosition3DTimeseries]([Id])
@@ -28612,6 +36152,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [GuidTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [GuidTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [GuidTimeseriesInsertTrigger]
 ON [GuidTimeseriesView]
 INSTEAD OF INSERT AS
@@ -28703,6 +36292,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [Int16TimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int16Timeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [Int16TimeseriesInsertTrigger]
 ON [Int16TimeseriesView]
 INSTEAD OF INSERT AS
@@ -28766,6 +36404,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [Int32TimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [Int32Timeseries]([Id])
@@ -28888,6 +36575,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarAzimuthOffsetTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarAzimuthOffsetTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarAzimuthOffsetTimeseriesInsertTrigger]
 ON [RadarAzimuthOffsetTimeseriesView]
 INSTEAD OF INSERT AS
@@ -28962,6 +36700,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarFastTimeConstantLevelTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarFastTimeConstantLevelTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarFastTimeConstantLevelTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -29084,6 +36873,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarFastTimeConstantModeTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarFastTimeConstantModeTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarFastTimeConstantModeTimeseriesInsertTrigger]
 ON [RadarFastTimeConstantModeTimeseriesView]
 INSTEAD OF INSERT AS
@@ -29158,6 +36998,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarPulseTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarPulseTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarPulseTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -29280,6 +37171,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarSector1EndTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 39900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint39900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarSector1EndTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint39900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarSector1EndTimeseriesInsertTrigger]
 ON [RadarSector1EndTimeseriesView]
 INSTEAD OF INSERT AS
@@ -29354,6 +37296,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarSector1StartTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarSector1StartTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarSector1StartTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -29476,6 +37469,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarSector2EndTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarSector2EndTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarSector2EndTimeseriesInsertTrigger]
 ON [RadarSector2EndTimeseriesView]
 INSTEAD OF INSERT AS
@@ -29550,6 +37594,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarSector2StartTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarSector2StartTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarSector2StartTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -29672,6 +37767,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadarSensitivityTimeControlLevelTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarSensitivityTimeControlLevelTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadarSensitivityTimeControlLevelTimeseriesInsertTrigger]
 ON [RadarSensitivityTimeControlLevelTimeseriesView]
 INSTEAD OF INSERT AS
@@ -29746,6 +37892,57 @@ AS
           VALUES(@Id);
       INSERT INTO [RadarTuningTimeseries]([Id], [Radar])
           VALUES(@Id, @Radar);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [RadarTuningTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadarTuningTimeseries]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -29868,6 +38065,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [VesselPersonsOnBoardTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [VesselPersonsOnBoardTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [VesselPersonsOnBoardTimeseriesInsertTrigger]
 ON [VesselPersonsOnBoardTimeseriesView]
 INSTEAD OF INSERT AS
@@ -29935,6 +38183,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Int64Timeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [Int64TimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [Int64Timeseries]([Id])
@@ -30054,6 +38351,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [Position2DTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Position2DTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [Position2DTimeseriesInsertTrigger]
 ON [Position2DTimeseriesView]
 INSTEAD OF INSERT AS
@@ -30117,6 +38463,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [Position3DTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [Position3DTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [Position3DTimeseries]([Id])
@@ -30236,6 +38631,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [ReferenceTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 40900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint40900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [ReferenceTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint40900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [ReferenceTimeseriesInsertTrigger]
 ON [ReferenceTimeseriesView]
 INSTEAD OF INSERT AS
@@ -30299,6 +38743,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [SByteTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [SByteTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [SByteTimeseries]([Id])
@@ -30418,6 +38911,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [SingleTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [SingleTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [SingleTimeseriesInsertTrigger]
 ON [SingleTimeseriesView]
 INSTEAD OF INSERT AS
@@ -30481,6 +39023,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [StringTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [StringTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [StringTimeseries]([Id])
@@ -30600,6 +39191,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [TimeSpanTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [TimeSpanTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [TimeSpanTimeseriesInsertTrigger]
 ON [TimeSpanTimeseriesView]
 INSTEAD OF INSERT AS
@@ -30691,6 +39331,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [UInt16TimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [UInt16Timeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [UInt16TimeseriesInsertTrigger]
 ON [UInt16TimeseriesView]
 INSTEAD OF INSERT AS
@@ -30754,6 +39443,55 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [UInt32Timeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [UInt32TimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [Timeseries]([Id], [MaxRetention])
           VALUES(@Id, @MaxRetention);
       INSERT INTO [UInt32Timeseries]([Id])
@@ -30876,6 +39614,57 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [RadomeStatusTimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [UInt32Timeseries]([Id])
+          VALUES(@Id);
+      INSERT INTO [RadomeStatusTimeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [RadomeStatusTimeseriesInsertTrigger]
 ON [RadomeStatusTimeseriesView]
 INSTEAD OF INSERT AS
@@ -30971,6 +39760,55 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [UInt64TimeseriesInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127),
+  @MaxRetention [bigint]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
+      INSERT INTO [Timeseries]([Id], [MaxRetention])
+          VALUES(@Id, @MaxRetention);
+      INSERT INTO [UInt64Timeseries]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [UInt64TimeseriesInsertTrigger]
 ON [UInt64TimeseriesView]
 INSTEAD OF INSERT AS
@@ -31033,6 +39871,52 @@ AS
     BEGIN TRY
       INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Catalog], [Name])
           VALUES(@Id, @EntityType, 0, @Catalog, @Name);
+      INSERT INTO [TimeseriesCatalog]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint41800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [TimeseriesCatalogInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 41800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint41800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [TimeseriesCatalogElement]([Id], [EntityType], [RowVersion], [Name])
+          VALUES(@Id, @EntityType, 0, @Name);
       INSERT INTO [TimeseriesCatalog]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
@@ -32769,6 +41653,48 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [ViewInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Name [nvarchar](127)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint43700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [View]([Id], [RowVersion], [Name])
+          VALUES(@Id, 0, @Name);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint43700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [ViewInsertTrigger]
 ON [ViewView]
 INSTEAD OF INSERT AS
@@ -33040,6 +41966,51 @@ AS
 
 GO
 
+CREATE OR ALTER PROCEDURE [WeatherStationCommandInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @WeatherStation [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint44000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [WeatherStationCommand]([Id], [RowVersion], [WeatherStation], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId])
+          VALUES(@Id, 0, @WeatherStation, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint44000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
 CREATE OR ALTER TRIGGER [WeatherStationCommandInsertTrigger]
 ON [WeatherStationCommandView]
 INSTEAD OF INSERT AS
@@ -33111,6 +42082,51 @@ AS
     BEGIN TRY
       INSERT INTO [WeatherStationCommandReply]([Id], [RowVersion], [WeatherStation], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @WeatherStation, @Timestamp, @Command, @Status, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint44100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [WeatherStationCommandReplyInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @WeatherStation [uniqueidentifier],
+  @Timestamp [bigint],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint44100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [WeatherStationCommandReply]([Id], [RowVersion], [WeatherStation], [Timestamp], [Status], [Message])
+          VALUES(@Id, 0, @WeatherStation, @Timestamp, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -33737,6 +42753,59 @@ AS
     BEGIN TRY
       INSERT INTO [ZoneTrackAlarm]([Id], [RowVersion], [Track], [Zone], [RadarTrack], [Timestamp], [Latitude], [Longitude], [Speed], [Course], [Heading], [EnterLatitude], [EnterLongitude], [LeaveLatitude], [LeaveLongitude])
           VALUES(@Id, 0, @Track, @Zone, @RadarTrack, @Timestamp, @Latitude, @Longitude, @Speed, @Course, @Heading, @EnterLatitude, @EnterLongitude, @LeaveLatitude, @LeaveLongitude);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint44800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [ZoneTrackAlarmInsert1]
+  @Id [uniqueidentifier] OUTPUT,
+  @Track [uniqueidentifier],
+  @Zone [uniqueidentifier],
+  @Timestamp [bigint],
+  @Latitude [float](53),
+  @Longitude [float](53),
+  @Speed [float](53),
+  @Course [float](53),
+  @Heading [float](53),
+  @EnterLatitude [float](53),
+  @EnterLongitude [float](53),
+  @LeaveLatitude [float](53),
+  @LeaveLongitude [float](53)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint44800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [ZoneTrackAlarm]([Id], [RowVersion], [Track], [Zone], [Timestamp], [Latitude], [Longitude], [Speed], [Course], [Heading], [EnterLatitude], [EnterLongitude], [LeaveLatitude], [LeaveLongitude])
+          VALUES(@Id, 0, @Track, @Zone, @Timestamp, @Latitude, @Longitude, @Speed, @Course, @Heading, @EnterLatitude, @EnterLongitude, @LeaveLatitude, @LeaveLongitude);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY

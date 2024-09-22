@@ -177,6 +177,7 @@
     <ClCompile Include="CSharpEnumsGenerator.cpp" />
     <ClCompile Include="CSharpHelper.cpp" />
     <ClCompile Include="CSharpSqlServerStoredProceduresGenerator.cpp" />
+    <ClCompile Include="CSharpSqlServerUpdateNodesGenerator.cpp" />
     <ClCompile Include="EnumMemberInfo.cpp" />
     <ClCompile Include="IndexInfo.cpp" />
     <ClCompile Include="MemberInfo.cpp" />
