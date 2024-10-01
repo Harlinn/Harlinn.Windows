@@ -188,7 +188,7 @@ namespace Harlinn::ODBC::Tool
         }
         else
         {
-            for ( size_t i = 0; i < fieldCount - 1; i++ )
+            for ( size_t i = 1; i < fieldCount - 1; i++ )
             {
                 const auto& field = *fields[ i ];
                 WriteLine( L"        public class By{}", field.Name( ) );
@@ -196,6 +196,35 @@ namespace Harlinn::ODBC::Tool
                 auto keyType = CSharpHelper::GetNotNullableBaseType( field );
                 const auto& nextField = *fields[ i + 1 ];
                 WriteLine( L"            readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", keyType, nextField.Name( ), keyType, nextField.Name( ) );
+                WriteLine( L"            List<{}> _emptyKeys = new List<{}>( );", keyType, keyType );
+                WriteLine( );
+                WriteLine( L"            public By{}( )", field.Name( ) );
+                WriteLine( L"            {" );
+                WriteLine( L"            }" );
+                WriteLine( );
+                WriteLine( L"            void RemoveEmptyKeys( )" );
+                WriteLine( L"            {" );
+                WriteLine( L"                var emptyKeyCount = _emptyKeys.Count;" );
+                WriteLine( L"                for ( int i = 0; i < emptyKeyCount; i++ )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    _entries.Remove( _emptyKeys[ i ] );" );
+                WriteLine( L"                }" );
+                WriteLine( L"                _emptyKeys.Clear( );" );
+                WriteLine( L"            }" );
+                WriteLine( );
+                WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
+                WriteLine( L"            {" );
+                WriteLine( L"                foreach( var entry in _entries )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    if( entry.Value.GetAll( result ) == false )" );
+                WriteLine( L"                    {" );
+                WriteLine( L"                        _emptyKeys.Add( entry.Key );" );
+                WriteLine( L"                    }" );
+                WriteLine( L"                }" );
+                WriteLine( L"                RemoveEmptyKeys( );" );
+                WriteLine( L"                return _entries.Count > 0;" );
+                WriteLine( L"            }" );
+                WriteLine( );
                 WriteLine( L"        }" );
             }
             const auto& field = *fields.back( );
@@ -204,7 +233,7 @@ namespace Harlinn::ODBC::Tool
             WriteLine( L"        public class By{}", field.Name( ) );
             WriteLine( L"        {" );
             auto keyType = CSharpHelper::GetNotNullableBaseType( field );
-            
+
             WriteLine( L"            readonly SortedWeakReferenceList<{}, {}> _entries = new SortedWeakReferenceList<{}, {}>( );", keyType, entityClassName, keyType, entityClassName );
             WriteLine( );
             WriteLine( L"            public By{}( )", field.Name( ) );
@@ -285,8 +314,16 @@ namespace Harlinn::ODBC::Tool
             WriteLine( L"            }" );
             WriteLine( );
             WriteLine( L"        }" );
+
+            WriteLine( );
+
+            const auto& firstField = *fields.front( );
+            auto firstFieldKeyType = CSharpHelper::GetNotNullableBaseType( field );
+
+            const auto& secondField = *fields[ 1 ];
+            WriteLine( L"        readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", firstFieldKeyType, secondField.Name( ), firstFieldKeyType, secondField.Name( ) );
         }
-        WriteLine( );
+        CreateIndexGetByIndex( classInfo, indexInfo );
         WriteLine( L"    }" );
     }
 
@@ -295,9 +332,10 @@ namespace Harlinn::ODBC::Tool
         const auto& fields = indexInfo.Fields( );
         auto fieldCount = fields.size( );
         auto className = CSharpHelper::GetEntityIndexClassName( indexInfo );
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
         WriteLine( L"    public class {}", className );
         WriteLine( L"    {" );
-        for ( size_t i = 0; i < fieldCount; i++ )
+        for ( size_t i = 1; i < fieldCount; i++ )
         {
             const auto& field = *fields[ i ];
             if ( i < fieldCount )
@@ -315,6 +353,35 @@ namespace Harlinn::ODBC::Tool
                 {
                     WriteLine( L"            readonly SortedListEx<{}, ById> _entries = new SortedListEx<{}, ById>( );", keyType, keyType );
                 }
+                WriteLine( L"            List<{}> _emptyKeys = new List<{}>( );", keyType, keyType );
+                WriteLine( );
+                WriteLine( L"            public By{}( )", field.Name( ) );
+                WriteLine( L"            {" );
+                WriteLine( L"            }" );
+                WriteLine( );
+                WriteLine( L"            void RemoveEmptyKeys( )" );
+                WriteLine( L"            {" );
+                WriteLine( L"                var emptyKeyCount = _emptyKeys.Count;" );
+                WriteLine( L"                for ( int i = 0; i < emptyKeyCount; i++ )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    _entries.Remove( _emptyKeys[ i ] );" );
+                WriteLine( L"                }" );
+                WriteLine( L"                _emptyKeys.Clear( );" );
+                WriteLine( L"            }" );
+                WriteLine( );
+                WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
+                WriteLine( L"            {" );
+                WriteLine( L"                foreach( var entry in _entries )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    if( entry.Value.GetAll( result ) == false )" );
+                WriteLine( L"                    {" );
+                WriteLine( L"                        _emptyKeys.Add( entry.Key );" );
+                WriteLine( L"                    }" );
+                WriteLine( L"                }" );
+                WriteLine( L"                RemoveEmptyKeys( );" );
+                WriteLine( L"                return _entries.Count > 0;" );
+                WriteLine( L"            }" );
+                WriteLine( );
                 WriteLine( L"        }" );
             }
         }
@@ -322,9 +389,77 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        {" );
         auto primaryKey = classInfo.PrimaryKey( );
         auto nextKeyType = CSharpHelper::GetNotNullableBaseType( *primaryKey );
-        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
-        WriteLine( L"            readonly SortedListEx<{}, WeakReference<{}>> _entries = new SortedListEx<{}, WeakReference<{}>>( );", nextKeyType, entityClassName, nextKeyType, entityClassName );
+        
+        WriteLine( L"            readonly SortedWeakReferenceList<{}, {}> _entries = new SortedWeakReferenceList<{}, {}>( );", nextKeyType, entityClassName, nextKeyType, entityClassName );
+        WriteLine( L"            public ById( )" );
+        WriteLine( L"            {" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public void Add( {} entity )", entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                if( _entries.TryGetValue(entity.Id, out var weakReference ) )" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    weakReference.SetTarget( entity );" );
+        WriteLine( L"                }" );
+        WriteLine( L"                else" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    _entries.Add( entity.Id, new WeakReference<{}>( entity, false ) );", entityClassName );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetById( Guid id, out {}? entity )", entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                entity = null;" );
+        WriteLine( L"                if ( _entries.TryGetValue( id, out var weakReference ) )" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    if ( weakReference.TryGetTarget( out entity ) == false )" );
+        WriteLine( L"                    {" );
+        WriteLine( L"                        _entries.Remove( id );" );
+        WriteLine( L"                    }" );
+        WriteLine( L"                }" );
+        WriteLine( L"                return _entries.Count > 0;" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetFrom(Guid id, [DisallowNull] IList<{}> result )", entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                return _entries.From( id, result );" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetUntil(Guid id, [DisallowNull] IList<{}> result )", entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                return _entries.Until( id, result );" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetOver(Guid firstId, Guid lastId, [DisallowNull] IList<{}> result )", entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                return _entries.Over( firstId, lastId, result );" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                return _entries.All( result );" );
+        WriteLine( L"            }" );
+        WriteLine( );
         WriteLine( L"        }" );
+        WriteLine( );
+        const auto& field = *fields.front( );
+        auto keyType = CSharpHelper::GetNotNullableBaseType( field );
+
+        if ( fieldCount > 1 )
+        {
+            const auto& nextField = *fields[ 1 ];
+            WriteLine( L"        readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", keyType, nextField.Name( ), keyType, nextField.Name( ) );
+        }
+        else
+        {
+            WriteLine( L"        readonly SortedListEx<{}, ById> _entries = new SortedListEx<{}, ById>( );", keyType, keyType );
+        }
+        WriteLine( );
+        WriteLine( L"        public {}( )", className );
+        WriteLine( L"        {" );
+        WriteLine( L"        }" );
+        WriteLine( );
+        CreateIndexGetByIndex( classInfo, indexInfo );
         WriteLine( L"    }" );
         WriteLine( );
     }
@@ -347,6 +482,133 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
+    
+
+
+    void CSharpEntityChangesGenerator::CreateIndexGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        auto indexMemberCount = indexMembers.size( );
+        for ( size_t j = 0; j < indexMemberCount; j++ )
+        {
+            CreateIndexGetByIndex( classInfo, indexInfo, j + 1 );
+            if ( indexInfo.HasNullableElements( j + 1 ) )
+            {
+                CreateIndexGetByNullableIndex( classInfo, indexInfo, j + 1 );
+            }
+            if ( indexInfo.IsTimeSeries( j + 1 ) )
+            {
+                CreateIndexGetByIndexAt( classInfo, indexInfo, j + 1 );
+            }
+            if ( indexInfo.IsRange( j + 1 ) )
+            {
+                CreateIndexGetByIndexFrom( classInfo, indexInfo, j + 1 );
+                CreateIndexGetByIndexUntil( classInfo, indexInfo, j + 1 );
+                CreateIndexGetByIndexOver( classInfo, indexInfo, j + 1 );
+            }
+        }
+    }
+    void CSharpEntityChangesGenerator::CreateIndexGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto className = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexFunctionName( classInfo, indexInfo, indexMemberCount );
+        auto returnType = className + L"?";
+        if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
+        {
+            returnType = Format( L"List<{}>", className );
+        }
+        auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+        WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+        WriteLine( L"        {" );
+        WriteLine( L"            throw new NotImplementedException();" );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+    void CSharpEntityChangesGenerator::CreateIndexGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto className = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByNullableIndexFunctionName( classInfo, indexInfo, indexMemberCount );
+        auto returnType = Format( L"IList<{}>", className );
+        auto arguments = CSharpHelper::GetByNullableIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+        WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+        WriteLine( L"        {" );
+        WriteLine( L"            throw new NotImplementedException();" );
+        WriteLine( L"        }" );
+        WriteLine( );
+
+    }
+    void CSharpEntityChangesGenerator::CreateIndexGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto className = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexAtFunctionName( classInfo, indexInfo, indexMemberCount );
+        auto returnType = className + L"?";
+        if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
+        {
+            returnType = Format( L"IList<{}>", className );
+        }
+        auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+        WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+        WriteLine( L"        {" );
+        WriteLine( L"            throw new NotImplementedException();" );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+    void CSharpEntityChangesGenerator::CreateIndexGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto className = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexFromFunctionName( classInfo, indexInfo, indexMemberCount );
+        auto returnType = Format( L"IList<{}>", className );
+        auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+        WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+        WriteLine( L"        {" );
+        WriteLine( L"            throw new NotImplementedException();" );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+    void CSharpEntityChangesGenerator::CreateIndexGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto className = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexUntilFunctionName( classInfo, indexInfo, indexMemberCount );
+        auto returnType = Format( L"IList<{}>", className );
+        auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+        WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+        WriteLine( L"        {" );
+        WriteLine( L"            throw new NotImplementedException();" );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+    void CSharpEntityChangesGenerator::CreateIndexGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto className = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexOverFunctionName( classInfo, indexInfo, indexMemberCount );
+        auto returnType = Format( L"IList<{}>", className );
+        auto arguments = CSharpHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
+        WriteLine( L"        {} {}( {} )", returnType, functionName, arguments );
+        WriteLine( L"        {" );
+        WriteLine( L"            throw new NotImplementedException();" );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+
+    void CSharpEntityChangesGenerator::CreateNestedGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
+    {
+    }
+    void CSharpEntityChangesGenerator::CreateNestedGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
+    {
+    }
+    void CSharpEntityChangesGenerator::CreateNestedGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
+    {
+    }
+    void CSharpEntityChangesGenerator::CreateNestedGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
+    {
+    }
+    void CSharpEntityChangesGenerator::CreateNestedGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
+    {
+    }
+    void CSharpEntityChangesGenerator::CreateNestedGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
+    {
+    }
+
     void CSharpEntityChangesGenerator::CreateEntityChanges( )
     {
         const auto& model = Model( );
@@ -358,14 +620,14 @@ namespace Harlinn::ODBC::Tool
         for ( size_t i = 0; i < classCount; i++ )
         {
             const auto& classInfo = *classes[ i ];
-            
+
             const auto& indexes = classInfo.Indexes( );
             auto indexCount = indexes.size( );
             for ( size_t i = 0; i < indexCount; i++ )
             {
                 const auto& index = *indexes[ i ];
                 auto entityIndexClassName = CSharpHelper::GetEntityIndexClassName( index );
-                WriteLine( L"        readonly {} _{} = new {}( );", entityIndexClassName, entityIndexClassName.FirstToLower(), entityIndexClassName );
+                WriteLine( L"        readonly {} _{} = new {}( );", entityIndexClassName, entityIndexClassName.FirstToLower( ), entityIndexClassName );
                 if ( index.HasNullableElements( ) )
                 {
                     auto entityNullableIndexClassName = CSharpHelper::GetEntityNullableIndexClassName( index );
@@ -373,7 +635,176 @@ namespace Harlinn::ODBC::Tool
                 }
             }
         }
+
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto& classInfo = *classes[ i ];
+            CreateGetAll( classInfo );
+            CreateGetByIndex( classInfo );
+        }
+
         WriteLine( L"    }" );
         WriteLine( );
     }
+
+    void CSharpEntityChangesGenerator::CreateGetAll( const ClassInfo& classInfo )
+    {
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+        auto dataClassName = CSharpHelper::GetDataType( classInfo );
+        auto functionName = CSharpHelper::GetAllFunctionName( classInfo );
+        functions_.insert( functionName );
+
+        WriteLine( L"        public IList<{}> {}( )", entityClassName, functionName );
+        WriteLine( L"        {" );
+        WriteLine( L"            throw new NotImplementedException();" );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+    void CSharpEntityChangesGenerator::CreateGetByIndex( const ClassInfo& classInfo )
+    {
+        auto indexes = classInfo.AllIndexes( );
+        auto indexCount = indexes.size( );
+        for ( size_t i = 0; i < indexCount; i++ )
+        {
+            const auto& index = *indexes[ i ];
+            const auto& indexMembers = index.Fields( );
+            auto indexMemberCount = indexMembers.size( );
+            for ( size_t j = 0; j < indexMemberCount; j++ )
+            {
+                CreateGetByIndex( classInfo, index, j + 1 );
+                if ( index.HasNullableElements( j + 1 ) )
+                {
+                    CreateGetByNullableIndex( classInfo, index, j + 1 );
+                }
+                if ( index.IsTimeSeries( j + 1 ) )
+                {
+                    CreateGetByIndexAt( classInfo, index, j + 1 );
+                }
+                if ( index.IsRange( j + 1 ) )
+                {
+                    CreateGetByIndexFrom( classInfo, index, j + 1 );
+                    CreateGetByIndexUntil( classInfo, index, j + 1 );
+                    CreateGetByIndexOver( classInfo, index, j + 1 );
+                }
+            }
+        }
+    }
+    void CSharpEntityChangesGenerator::CreateGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexFunctionName( classInfo, indexInfo, indexMemberCount );
+        if ( functions_.contains( functionName ) == false )
+        {
+            functions_.insert( functionName );
+            auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+            auto callArguments = CSharpHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
+            auto dataClassName = CSharpHelper::GetDataType( classInfo );
+            if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) )
+            {
+                auto returnType = entityClassName + L"?";
+                WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+                WriteLine( L"        {" );
+                WriteLine( L"            throw new NotImplementedException();" );
+                WriteLine( L"        }" );
+            }
+            else
+            {
+                auto returnType = Format( L"List<{}>", entityClassName );
+                WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+                WriteLine( L"        {" );
+                WriteLine( L"            throw new NotImplementedException();" );
+                WriteLine( L"        }" );
+            }
+            WriteLine( );
+        }
+    }
+    void CSharpEntityChangesGenerator::CreateGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        
+    }
+    void CSharpEntityChangesGenerator::CreateGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexAtFunctionName( classInfo, indexInfo, indexMemberCount );
+        if ( functions_.contains( functionName ) == false )
+        {
+            functions_.insert( functionName );
+            auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+            auto callArguments = CSharpHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
+            auto dataClassName = CSharpHelper::GetDataType( classInfo );
+
+            if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) )
+            {
+                auto returnType = entityClassName + L"?";
+                WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+                WriteLine( L"        {" );
+                WriteLine( L"            throw new NotImplementedException();" );
+                WriteLine( L"        }" );
+            }
+            else
+            {
+                auto returnType = Format( L"List<{}>", entityClassName );
+                WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+                WriteLine( L"        {" );
+                WriteLine( L"            throw new NotImplementedException();" );
+                WriteLine( L"        }" );
+            }
+            WriteLine( );
+        }
+    }
+    void CSharpEntityChangesGenerator::CreateGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexFromFunctionName( classInfo, indexInfo, indexMemberCount );
+        if ( functions_.contains( functionName ) == false )
+        {
+            functions_.insert( functionName );
+            auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+            auto callArguments = CSharpHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
+            auto dataClassName = CSharpHelper::GetDataType( classInfo );
+            auto returnType = Format( L"List<{}>", entityClassName );
+            WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+            WriteLine( L"        {" );
+            WriteLine( L"            throw new NotImplementedException();" );
+            WriteLine( L"        }" );
+            WriteLine( );
+        }
+    }
+    void CSharpEntityChangesGenerator::CreateGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexUntilFunctionName( classInfo, indexInfo, indexMemberCount );
+        if ( functions_.contains( functionName ) == false )
+        {
+            functions_.insert( functionName );
+            auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+            auto callArguments = CSharpHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
+            auto dataClassName = CSharpHelper::GetDataType( classInfo );
+            auto returnType = Format( L"List<{}>", entityClassName );
+            WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+            WriteLine( L"        {" );
+            WriteLine( L"            throw new NotImplementedException();" );
+            WriteLine( L"        }" );
+            WriteLine( );
+        }
+    }
+    void CSharpEntityChangesGenerator::CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+        auto functionName = CSharpHelper::GetByIndexOverFunctionName( classInfo, indexInfo, indexMemberCount );
+        if ( functions_.contains( functionName ) == false )
+        {
+            functions_.insert( functionName );
+            auto arguments = CSharpHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
+            auto callArguments = CSharpHelper::GetByIndexFunctionOverCallParameters( classInfo, indexInfo, indexMemberCount );
+            auto dataClassName = CSharpHelper::GetDataType( classInfo );
+            auto returnType = Format( L"List<{}>", entityClassName );
+            WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
+            WriteLine( L"        {" );
+            WriteLine( L"            throw new NotImplementedException();" );
+            WriteLine( L"        }" );
+            WriteLine( );
+        }
+    }
+
 }

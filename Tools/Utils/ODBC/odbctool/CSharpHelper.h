@@ -90,13 +90,42 @@ namespace Harlinn::ODBC::Tool
         static WideString GetByNullableIndexFunctionParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         static WideString GetByNullableIndexFunctionCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
 
-        static WideString GetByIndexFunctionName( const WideString& lastFieldPrefix, const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
-        static WideString GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
-        static WideString GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
-        static WideString GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
-        static WideString GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
-        static WideString GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
-        static WideString GetByIndexFunctionOverCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexFunctionName( const WideString& lastFieldPrefix, const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        static WideString GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        static WideString GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        static WideString GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        static WideString GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        static WideString GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        static WideString GetByIndexFunctionOverCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+
+        static WideString GetByIndexFunctionName( const WideString& lastFieldPrefix, const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+        {
+            return GetByIndexFunctionName( lastFieldPrefix, classInfo, indexInfo, 0, indexMemberCount );
+        }
+        static WideString GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+        {
+            return GetByIndexAtFunctionName( classInfo, indexInfo, 0, indexMemberCount );
+        }
+        static WideString GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+        {
+            return GetByIndexFromFunctionName( classInfo, indexInfo, 0, indexMemberCount );
+        }
+        static WideString GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+        {
+            return GetByIndexUntilFunctionName( classInfo, indexInfo, 0, indexMemberCount );
+        }
+        static WideString GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+        {
+            return GetByIndexOverFunctionName( classInfo, indexInfo, 0, indexMemberCount );
+        }
+        static WideString GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+        {
+            return GetByIndexFunctionOverParameters( classInfo, indexInfo, 0, indexMemberCount );
+        }
+        static WideString GetByIndexFunctionOverCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+        {
+            return GetByIndexFunctionOverCallParameters( classInfo, indexInfo, 0, indexMemberCount );
+        }
 
         static bool IsUnique( const IndexInfo& indexInfo, size_t indexMemberCount );
         static bool RequiresComplexReader( const ClassInfo& classInfo );
@@ -104,6 +133,9 @@ namespace Harlinn::ODBC::Tool
 
         static WideString GetEntityIndexClassName( const IndexInfo& indexInfo );
         static WideString GetEntityNullableIndexClassName( const IndexInfo& indexInfo );
+
+
+
         
 
 

@@ -924,7 +924,32 @@ namespace Harlinn::ODBC::Tool
         void CreateEntityIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
         void CreateNullableEntityUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
         void CreateNullableEntityIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        
+
+        void CreateIndexGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateIndexGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateIndexGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateIndexGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateIndexGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateIndexGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateIndexGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+
+        void CreateNestedGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        void CreateNestedGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        void CreateNestedGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        void CreateNestedGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        void CreateNestedGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        void CreateNestedGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+
         void CreateEntityChanges( );
+        void CreateGetAll( const ClassInfo& classInfo );
+        void CreateGetByIndex( const ClassInfo& classInfo );
+        void CreateGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
     };
 
 

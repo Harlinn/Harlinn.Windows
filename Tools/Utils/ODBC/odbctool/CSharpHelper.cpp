@@ -1721,13 +1721,13 @@ namespace Harlinn::ODBC::Tool
         return sb.ToString( );
     }
 
-    WideString CSharpHelper::GetByIndexFunctionName( const WideString& lastFieldPrefix, const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    WideString CSharpHelper::GetByIndexFunctionName( const WideString& lastFieldPrefix, const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
         const auto& indexMembers = indexInfo.Fields( );
-        if ( indexMemberCount > 1 )
+        if ( indexMemberCount > ( indexDepth + 1) )
         {
             StringBuilder<wchar_t> sb;
-            for ( size_t i = 0; i < indexMemberCount; i++ )
+            for ( size_t i = indexDepth; i < indexMemberCount; i++ )
             {
                 const auto& indexMember = *indexMembers[ i ];
                 if ( i < ( indexMemberCount - 1 ) )
@@ -1765,28 +1765,28 @@ namespace Harlinn::ODBC::Tool
             }
         }
     }
-    WideString CSharpHelper::GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    WideString CSharpHelper::GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"At", classInfo, indexInfo, indexMemberCount );
+        return GetByIndexFunctionName( L"At", classInfo, indexInfo, indexDepth, indexMemberCount );
     }
-    WideString CSharpHelper::GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    WideString CSharpHelper::GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"From", classInfo, indexInfo, indexMemberCount );
+        return GetByIndexFunctionName( L"From", classInfo, indexInfo, indexDepth, indexMemberCount );
     }
-    WideString CSharpHelper::GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    WideString CSharpHelper::GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"Until", classInfo, indexInfo, indexMemberCount );
+        return GetByIndexFunctionName( L"Until", classInfo, indexInfo, indexDepth, indexMemberCount );
     }
-    WideString CSharpHelper::GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    WideString CSharpHelper::GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"Over", classInfo, indexInfo, indexMemberCount );
+        return GetByIndexFunctionName( L"Over", classInfo, indexInfo, indexDepth, indexMemberCount );
     }
 
-    WideString CSharpHelper::GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    WideString CSharpHelper::GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
         const auto& indexMembers = indexInfo.Fields( );
         StringBuilder<wchar_t> sb;
-        for ( size_t i = 0; i < indexMemberCount; i++ )
+        for ( size_t i = indexDepth; i < indexMemberCount; i++ )
         {
             const auto& indexMember = *indexMembers[ i ];
             auto parameterType = GetNotNullableBaseType( indexMember );
@@ -1805,11 +1805,11 @@ namespace Harlinn::ODBC::Tool
         return sb.ToString( );
     }
 
-    WideString CSharpHelper::GetByIndexFunctionOverCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    WideString CSharpHelper::GetByIndexFunctionOverCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
         const auto& indexMembers = indexInfo.Fields( );
         StringBuilder<wchar_t> sb;
-        for ( size_t i = 0; i < indexMemberCount; i++ )
+        for ( size_t i = indexDepth; i < indexMemberCount; i++ )
         {
             const auto& indexMember = *indexMembers[ i ];
             auto parameterName = GetInputArgumentName( indexMember );
@@ -1927,6 +1927,7 @@ namespace Harlinn::ODBC::Tool
         }
         return sb.ToString( );
     }
+
 
 
 }
