@@ -773,6 +773,16 @@ namespace Harlinn::ODBC::Tool
         }
     };
 
+    class CSharpEntityChangesOptions : public OptionsFile<CSharpEntitiesOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpEntitiesOptions>;
+        CSharpEntityChangesOptions( const CSharpEntitiesOptions& owner )
+            : Base( owner, L"EntityChanges.cs" )
+        {
+        }
+    };
+
     class CSharpEntityContextOptions : public OptionsFile<CSharpEntitiesOptions>
     {
     public:
@@ -788,11 +798,12 @@ namespace Harlinn::ODBC::Tool
     {
         CSharpEntityTypesOptions entityTypes_;
         CSharpEntityContextOptions entityContext_;
+        CSharpEntityChangesOptions entityChanges_;
     public:
         using Base = OptionsContainer<CSharpOptions>;
 
         CSharpEntitiesOptions( const CSharpOptions& owner )
-            : Base( owner, L"Entities" ), entityTypes_( *this ), entityContext_( *this )
+            : Base( owner, L"Entities" ), entityTypes_( *this ), entityContext_( *this ), entityChanges_( *this )
         {
         }
 
@@ -804,6 +815,11 @@ namespace Harlinn::ODBC::Tool
         const CSharpEntityContextOptions& EntityContext( ) const
         {
             return entityContext_;
+        }
+
+        const CSharpEntityChangesOptions& EntityChanges( ) const
+        {
+            return entityChanges_;
         }
 
     };

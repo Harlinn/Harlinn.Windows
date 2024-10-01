@@ -120,15 +120,34 @@ namespace Harlinn.Common.Core.Net.Entities
             }
         }
 
-        public BaseEntity<TKind> AddNew( TKind kind )
+        public BaseEntity<TKind> AddNew( TKind kind, Guid id )
         {
             var result = _entityFactory.Create(this, kind);
             var data = result._GetData();
-            data.Id = Guid.NewGuid();
+            data.Id = id;
             data.ObjectState = ObjectState.New;
             AddToContext(result);
             return result;
         }
+
+        public BaseEntity<TKind> AddNew(TKind kind)
+        {
+            return AddNew(kind, Guid.NewGuid());
+        }
+
+        public T AddNew<T>(Guid id) where T : BaseEntity<TKind>
+        {
+            var entityType = typeof(T);
+            var entityTypeName = entityType.Name;
+            var enumName = entityTypeName.Substring(0, entityTypeName.LastIndexOf("Entity"));
+            var kind = Enum.Parse<TKind>(enumName);
+            return (T)AddNew(kind, id);
+        }
+        public T AddNew<T>() where T : BaseEntity<TKind>
+        {
+            return AddNew<T>(Guid.NewGuid());
+        }
+
 
 
         /// <summary>
@@ -293,6 +312,7 @@ namespace Harlinn.Common.Core.Net.Entities
 
         internal void OnDelete(BaseEntity<TKind> entity)
         {
+            
             if (entity.IsNew() == false)
             {
                 _deletedEntities[entity.Id] = entity;
@@ -301,6 +321,12 @@ namespace Harlinn.Common.Core.Net.Entities
             {
                 _newEntities.Remove(entity.Id);
             }
+            var data = entity._GetData();
+            if (data.ObjectState != ObjectState.Deleted)
+            {
+                data.ObjectState = ObjectState.Deleted;
+            }
+
             _entities.Remove(entity.Id);
             _cachedEntities.Remove(entity.Id);
             _changedEntities.Remove(entity.Id);

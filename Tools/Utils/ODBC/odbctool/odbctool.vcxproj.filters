@@ -135,6 +135,9 @@
     <ClCompile Include="CSharpSqlServerUpdateNodesGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CSharpEntityChangesGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Options.h">

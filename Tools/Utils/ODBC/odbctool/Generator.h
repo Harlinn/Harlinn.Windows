@@ -908,10 +908,31 @@ namespace Harlinn::ODBC::Tool
         void CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
     };
 
+
+    class CSharpEntityChangesGenerator : public CodeGenerator<CSharpEntitiesGenerator, CSharpEntityChangesOptions>
+    {
+        std::set<WideString> functions_;
+    public:
+        using Base = CodeGenerator<CSharpEntitiesGenerator, CSharpEntityChangesOptions>;
+
+        inline CSharpEntityChangesGenerator( const CSharpEntitiesGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateEntityIndexClasses( const ClassInfo& classInfo );
+        void CreateEntityUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateEntityIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateNullableEntityUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateNullableEntityIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateEntityChanges( );
+    };
+
+
     class CSharpEntitiesGenerator : public GeneratorContainer<CSharpGenerator, CSharpEntitiesOptions>
     {
         CSharpEntityTypesGenerator entityTypes_;
         CSharpEntityContextGenerator entityContext_;
+        CSharpEntityChangesGenerator entityChanges_;
     public:
         using Base = GeneratorContainer<CSharpGenerator, CSharpEntitiesOptions>;
 
@@ -921,6 +942,7 @@ namespace Harlinn::ODBC::Tool
         {
             entityTypes_.Run( );
             entityContext_.Run( );
+            entityChanges_.Run( );
         }
     };
 
@@ -931,6 +953,11 @@ namespace Harlinn::ODBC::Tool
 
     inline CSharpEntityContextGenerator::CSharpEntityContextGenerator( const CSharpEntitiesGenerator& owner )
         : Base( owner, owner.Options( ).EntityContext( ) )
+    {
+    }
+
+    inline CSharpEntityChangesGenerator::CSharpEntityChangesGenerator( const CSharpEntitiesGenerator& owner )
+        : Base( owner, owner.Options( ).EntityChanges( ) )
     {
     }
 
@@ -964,7 +991,7 @@ namespace Harlinn::ODBC::Tool
     { }
 
     inline CSharpEntitiesGenerator::CSharpEntitiesGenerator( const CSharpGenerator& owner )
-        : Base( owner, owner.Options( ).Entities( ) ), entityTypes_( *this ), entityContext_( *this )
+        : Base( owner, owner.Options( ).Entities( ) ), entityTypes_( *this ), entityContext_( *this ), entityChanges_( *this )
     {
     }
 

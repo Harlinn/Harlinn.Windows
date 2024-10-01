@@ -95,14 +95,26 @@ namespace Harlinn::ODBC::Tool
 
         if ( index.Unique() )
         {
-            WriteLine( L"ALTER TABLE [dbo].[{}]", tableName );
-            WriteLine( L"  ADD CONSTRAINT [{}] UNIQUE({})", dbName, dbColumnNames );
+            if ( index.HasNullableElements( ) )
+            {
+                auto nullableMembers = index.NullableElements( );
+                WriteLine( L"CREATE UNIQUE NONCLUSTERED INDEX [{}] ON [dbo].[{}]({})", dbName, tableName, dbColumnNames );      
+                WriteLine( L"   WHERE [{}] IS NOT NULL", nullableMembers[0]->Name() );
+                WriteLine( "go" );
+            }
+            else
+            {
+                WriteLine( L"ALTER TABLE [dbo].[{}]", tableName );
+                WriteLine( L"  ADD CONSTRAINT [{}] UNIQUE({})", dbName, dbColumnNames );
+                WriteLine( "go" );
+            }
         }
         else
         {
             WriteLine( L"CREATE INDEX [{}] ON [dbo].[{}]({})", dbName, tableName, dbColumnNames );
+            WriteLine( "go" );
         }
-        WriteLine( "go" );
+        
 
         WriteLine( );
     }

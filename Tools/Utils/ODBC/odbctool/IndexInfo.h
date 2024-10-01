@@ -71,7 +71,7 @@ namespace Harlinn::ODBC::Tool
             return result;
         }
 
-        const std::vector<std::shared_ptr<MemberInfo>> RequiredFields( size_t indexMemberCount ) const
+        std::vector<std::shared_ptr<MemberInfo>> RequiredFields( size_t indexMemberCount ) const
         {
             std::vector<std::shared_ptr<MemberInfo>> result;
             for ( size_t i = 0; i < indexMemberCount; i++ )
@@ -98,6 +98,23 @@ namespace Harlinn::ODBC::Tool
             }
             return false;
         }
+
+        std::vector<std::shared_ptr<MemberInfo>> NullableElements( ) const
+        {
+            std::vector<std::shared_ptr<MemberInfo>> result;
+            auto indexMemberCount = fields_.size( );
+            for ( size_t i = 0; i < indexMemberCount; i++ )
+            {
+                const auto& field = fields_[ i ];
+
+                if ( field->Nullable( ) )
+                {
+                    result.emplace_back( field );
+                }
+            }
+            return result;
+        }
+
 
         bool HasNullableElements( size_t indexMemberCount ) const
         {

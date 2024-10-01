@@ -1843,4 +1843,90 @@ namespace Harlinn::ODBC::Tool
         return classInfo.DerivedClasses( ).size( ) > 0;
     }
 
+    WideString CSharpHelper::GetEntityIndexClassName( const IndexInfo& indexInfo )
+    {
+        auto owner = indexInfo.Owner( );
+        const auto& indexMembers = indexInfo.Fields( );
+        auto indexMemberCount = indexMembers.size( );
+        StringBuilder<wchar_t> sb;
+        sb.Append( L"{}By", owner->Name( ) );
+        if ( indexMemberCount > 1 )
+        {
+            for ( size_t i = 0; i < indexMemberCount; i++ )
+            {
+                const auto& indexMember = *indexMembers[ i ];
+                auto fieldName = indexMember.Name( ).FirstToUpper();
+                if ( i < ( indexMemberCount - 1 ) )
+                {
+                    sb.Append( L"{}", fieldName );
+                }
+                else
+                {
+                    sb.Append( L"And{}EntityIndex", fieldName );
+                }
+            }
+        }
+        else
+        {
+            const auto& indexMember = *indexMembers[ 0 ];
+            auto fieldName = indexMember.Name( ).FirstToUpper( );
+            sb.Append( L"{}EntityIndex", fieldName );
+        }
+        return sb.ToString( );
+    }
+
+    WideString CSharpHelper::GetEntityNullableIndexClassName( const IndexInfo& indexInfo )
+    {
+        auto owner = indexInfo.Owner( );
+        const auto& indexMembers = indexInfo.Fields( );
+        auto indexMemberCount = indexMembers.size( );
+        StringBuilder<wchar_t> sb;
+        sb.Append( L"{}By", owner->Name( ) );
+        if ( indexMemberCount > 1 )
+        {
+            for ( size_t i = 0; i < indexMemberCount; i++ )
+            {
+                const auto& indexMember = *indexMembers[ i ];
+                auto fieldName = indexMember.Name( ).FirstToUpper( );
+                if ( i < ( indexMemberCount - 1 ) )
+                {
+                    if ( indexMember.Nullable( ) )
+                    {
+                        sb.Append( L"{}IsNull", fieldName );
+                    }
+                    else
+                    {
+                        sb.Append( L"{}", fieldName );
+                    }
+                }
+                else
+                {
+                    if ( indexMember.Nullable( ) )
+                    {
+                        sb.Append( L"And{}IsNullEntityIndex", fieldName );
+                    }
+                    else
+                    {
+                        sb.Append( L"And{}EntityIndex", fieldName );
+                    }
+                }
+            }
+        }
+        else
+        {
+            const auto& indexMember = *indexMembers[ 0 ];
+            auto fieldName = indexMember.Name( ).FirstToUpper( );
+            if ( indexMember.Nullable( ) )
+            {
+                sb.Append( L"{}IsNullEntityIndex", fieldName );
+            }
+            else
+            {
+                sb.Append( L"{}EntityIndex", fieldName );
+            }
+        }
+        return sb.ToString( );
+    }
+
+
 }

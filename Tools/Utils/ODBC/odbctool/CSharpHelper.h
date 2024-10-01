@@ -100,7 +100,12 @@ namespace Harlinn::ODBC::Tool
 
         static bool IsUnique( const IndexInfo& indexInfo, size_t indexMemberCount );
         static bool RequiresComplexReader( const ClassInfo& classInfo );
+
+
+        static WideString GetEntityIndexClassName( const IndexInfo& indexInfo );
+        static WideString GetEntityNullableIndexClassName( const IndexInfo& indexInfo );
         
+
 
     };
 }

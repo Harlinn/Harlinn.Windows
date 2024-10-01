@@ -167,6 +167,7 @@
     <ClCompile Include="CppHelper.cpp" />
     <ClCompile Include="CppStoredProceduresGenerator.cpp" />
     <ClCompile Include="CppStoredProceduresSourceGenerator.cpp" />
+    <ClCompile Include="CSharpEntityChangesGenerator.cpp" />
     <ClCompile Include="CSharpEntityContextGenerator.cpp" />
     <ClCompile Include="CSharpEntityTypesGenerator.cpp" />
     <ClCompile Include="CSharpIDataContextGenerator.cpp" />

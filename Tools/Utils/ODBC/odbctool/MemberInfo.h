@@ -91,6 +91,12 @@ namespace Harlinn::ODBC::Tool
         {
             return type_;
         }
+
+        bool IsReferenceType( ) const
+        {
+            return type_ == Tool::MemberInfoType::Reference || type_ == Tool::MemberInfoType::TimeSeries;
+        }
+
         const WideString& Name( ) const
         {
             return name_;

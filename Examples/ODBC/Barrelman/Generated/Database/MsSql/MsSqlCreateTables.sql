@@ -775,8 +775,8 @@ go
 CREATE INDEX [IDX_AisDeviceCommandReply_Timestamp] ON [dbo].[AisDeviceCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[AisDeviceCommandReply]
-  ADD CONSTRAINT [UNQ_AisDeviceCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_AisDeviceCommandReply_Command] ON [dbo].[AisDeviceCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -2008,8 +2008,8 @@ go
 CREATE INDEX [IDX_CameraCommandReply_Timestamp] ON [dbo].[CameraCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[CameraCommandReply]
-  ADD CONSTRAINT [UNQ_CameraCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_CameraCommandReply_Command] ON [dbo].[CameraCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -2163,8 +2163,8 @@ ALTER TABLE [dbo].[CameraStatus]
   ADD CONSTRAINT [UNQ_CameraStatus_Camera_Timestamp] UNIQUE([Camera],[Timestamp])
 go
 
-ALTER TABLE [dbo].[CameraStatus]
-  ADD CONSTRAINT [UNQ_CameraStatus_Track_Timestamp] UNIQUE([Track],[Timestamp])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_CameraStatus_Track_Timestamp] ON [dbo].[CameraStatus]([Track],[Timestamp])
+   WHERE [Track] IS NOT NULL
 go
 
 CREATE INDEX [IDX_CameraStatus_Timestamp] ON [dbo].[CameraStatus]([Timestamp])
@@ -2270,8 +2270,8 @@ CREATE TABLE [dbo].[CatalogElement]
 )
 go
 
-ALTER TABLE [dbo].[CatalogElement]
-  ADD CONSTRAINT [UNQ_CatalogElement_Catalog_Name] UNIQUE([Catalog],[Name])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_CatalogElement_Catalog_Name] ON [dbo].[CatalogElement]([Catalog],[Name])
+   WHERE [Catalog] IS NOT NULL
 go
 
 /*
@@ -2576,8 +2576,8 @@ go
 CREATE INDEX [IDX_GNSSDeviceCommandReply_Timestamp] ON [dbo].[GNSSDeviceCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[GNSSDeviceCommandReply]
-  ADD CONSTRAINT [UNQ_GNSSDeviceCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GNSSDeviceCommandReply_Command] ON [dbo].[GNSSDeviceCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -2678,8 +2678,8 @@ go
 CREATE INDEX [IDX_GyroDeviceCommandReply_Timestamp] ON [dbo].[GyroDeviceCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[GyroDeviceCommandReply]
-  ADD CONSTRAINT [UNQ_GyroDeviceCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GyroDeviceCommandReply_Command] ON [dbo].[GyroDeviceCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -3527,8 +3527,8 @@ go
 CREATE INDEX [IDX_LineInputDeviceCommandReply_Timestamp] ON [dbo].[LineInputDeviceCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[LineInputDeviceCommandReply]
-  ADD CONSTRAINT [UNQ_LineInputDeviceCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_LineInputDeviceCommandReply_Command] ON [dbo].[LineInputDeviceCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -3725,8 +3725,8 @@ CREATE TABLE [dbo].[LineInputMessageRoutingDestination]
 )
 go
 
-ALTER TABLE [dbo].[LineInputMessageRoutingDestination]
-  ADD CONSTRAINT [UNQ_LineInputMessageRoutingDestination_Routing_Listener] UNIQUE([Routing],[Listener])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_LineInputMessageRoutingDestination_Routing_Listener] ON [dbo].[LineInputMessageRoutingDestination]([Routing],[Listener])
+   WHERE [Listener] IS NOT NULL
 go
 
 CREATE INDEX [IDX_LineInputMessageRoutingDestination_Listener] ON [dbo].[LineInputMessageRoutingDestination]([Listener])
@@ -4496,8 +4496,8 @@ go
 CREATE INDEX [IDX_OilSpillDetectorCommandReply_Timestamp] ON [dbo].[OilSpillDetectorCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[OilSpillDetectorCommandReply]
-  ADD CONSTRAINT [UNQ_OilSpillDetectorCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_OilSpillDetectorCommandReply_Command] ON [dbo].[OilSpillDetectorCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -6186,8 +6186,8 @@ go
 CREATE INDEX [IDX_RadarCommandReply_Timestamp] ON [dbo].[RadarCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[RadarCommandReply]
-  ADD CONSTRAINT [UNQ_RadarCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_RadarCommandReply_Command] ON [dbo].[RadarCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -6383,8 +6383,8 @@ go
 CREATE INDEX [IDX_RadioCommandReply_Timestamp] ON [dbo].[RadioCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[RadioCommandReply]
-  ADD CONSTRAINT [UNQ_RadioCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_RadioCommandReply_Command] ON [dbo].[RadioCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -6464,8 +6464,8 @@ go
 CREATE INDEX [IDX_RadomeCommandReply_Timestamp] ON [dbo].[RadomeCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[RadomeCommandReply]
-  ADD CONSTRAINT [UNQ_RadomeCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_RadomeCommandReply_Command] ON [dbo].[RadomeCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
@@ -6803,8 +6803,8 @@ CREATE TABLE [dbo].[TimeseriesCatalogElement]
 )
 go
 
-ALTER TABLE [dbo].[TimeseriesCatalogElement]
-  ADD CONSTRAINT [UNQ_TimeseriesCatalogElement_Catalog_Name] UNIQUE([Catalog],[Name])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_TimeseriesCatalogElement_Catalog_Name] ON [dbo].[TimeseriesCatalogElement]([Catalog],[Name])
+   WHERE [Catalog] IS NOT NULL
 go
 
 /*
@@ -7251,8 +7251,8 @@ CREATE TABLE [dbo].[GyroCourseTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[GyroCourseTimeseries]
-  ADD CONSTRAINT [UNQ_GyroCourseTimeseries_GyroDevice] UNIQUE([GyroDevice])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GyroCourseTimeseries_GyroDevice] ON [dbo].[GyroCourseTimeseries]([GyroDevice])
+   WHERE [GyroDevice] IS NOT NULL
 go
 
 /*
@@ -7274,8 +7274,8 @@ CREATE TABLE [dbo].[GyroHeadingMagneticNorthTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[GyroHeadingMagneticNorthTimeseries]
-  ADD CONSTRAINT [UNQ_GyroHeadingMagneticNorthTimeseries_GyroDevice] UNIQUE([GyroDevice])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GyroHeadingMagneticNorthTimeseries_GyroDevice] ON [dbo].[GyroHeadingMagneticNorthTimeseries]([GyroDevice])
+   WHERE [GyroDevice] IS NOT NULL
 go
 
 /*
@@ -7297,8 +7297,8 @@ CREATE TABLE [dbo].[GyroHeadingTrueNorthTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[GyroHeadingTrueNorthTimeseries]
-  ADD CONSTRAINT [UNQ_GyroHeadingTrueNorthTimeseries_GyroDevice] UNIQUE([GyroDevice])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GyroHeadingTrueNorthTimeseries_GyroDevice] ON [dbo].[GyroHeadingTrueNorthTimeseries]([GyroDevice])
+   WHERE [GyroDevice] IS NOT NULL
 go
 
 /*
@@ -7320,8 +7320,8 @@ CREATE TABLE [dbo].[GyroPitchTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[GyroPitchTimeseries]
-  ADD CONSTRAINT [UNQ_GyroPitchTimeseries_GyroDevice] UNIQUE([GyroDevice])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GyroPitchTimeseries_GyroDevice] ON [dbo].[GyroPitchTimeseries]([GyroDevice])
+   WHERE [GyroDevice] IS NOT NULL
 go
 
 /*
@@ -7343,8 +7343,8 @@ CREATE TABLE [dbo].[GyroRateOfTurnTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[GyroRateOfTurnTimeseries]
-  ADD CONSTRAINT [UNQ_GyroRateOfTurnTimeseries_GyroDevice] UNIQUE([GyroDevice])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GyroRateOfTurnTimeseries_GyroDevice] ON [dbo].[GyroRateOfTurnTimeseries]([GyroDevice])
+   WHERE [GyroDevice] IS NOT NULL
 go
 
 /*
@@ -7366,8 +7366,8 @@ CREATE TABLE [dbo].[GyroRollTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[GyroRollTimeseries]
-  ADD CONSTRAINT [UNQ_GyroRollTimeseries_GyroDevice] UNIQUE([GyroDevice])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GyroRollTimeseries_GyroDevice] ON [dbo].[GyroRollTimeseries]([GyroDevice])
+   WHERE [GyroDevice] IS NOT NULL
 go
 
 /*
@@ -7389,8 +7389,8 @@ CREATE TABLE [dbo].[GyroSpeedTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[GyroSpeedTimeseries]
-  ADD CONSTRAINT [UNQ_GyroSpeedTimeseries_GyroDevice] UNIQUE([GyroDevice])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_GyroSpeedTimeseries_GyroDevice] ON [dbo].[GyroSpeedTimeseries]([GyroDevice])
+   WHERE [GyroDevice] IS NOT NULL
 go
 
 /*
@@ -7592,8 +7592,8 @@ CREATE TABLE [dbo].[WeatherStationAbsoluteHumidityTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[WeatherStationAbsoluteHumidityTimeseries]
-  ADD CONSTRAINT [UNQ_WeatherStationAbsoluteHumidityTimeseries_WeatherStation] UNIQUE([WeatherStation])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationAbsoluteHumidityTimeseries_WeatherStation] ON [dbo].[WeatherStationAbsoluteHumidityTimeseries]([WeatherStation])
+   WHERE [WeatherStation] IS NOT NULL
 go
 
 /*
@@ -7615,8 +7615,8 @@ CREATE TABLE [dbo].[WeatherStationAirTemperatureTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[WeatherStationAirTemperatureTimeseries]
-  ADD CONSTRAINT [UNQ_WeatherStationAirTemperatureTimeseries_WeatherStation] UNIQUE([WeatherStation])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationAirTemperatureTimeseries_WeatherStation] ON [dbo].[WeatherStationAirTemperatureTimeseries]([WeatherStation])
+   WHERE [WeatherStation] IS NOT NULL
 go
 
 /*
@@ -7638,8 +7638,8 @@ CREATE TABLE [dbo].[WeatherStationBarometricPressureTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[WeatherStationBarometricPressureTimeseries]
-  ADD CONSTRAINT [UNQ_WeatherStationBarometricPressureTimeseries_WeatherStation] UNIQUE([WeatherStation])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationBarometricPressureTimeseries_WeatherStation] ON [dbo].[WeatherStationBarometricPressureTimeseries]([WeatherStation])
+   WHERE [WeatherStation] IS NOT NULL
 go
 
 /*
@@ -7661,8 +7661,8 @@ CREATE TABLE [dbo].[WeatherStationDewPointTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[WeatherStationDewPointTimeseries]
-  ADD CONSTRAINT [UNQ_WeatherStationDewPointTimeseries_WeatherStation] UNIQUE([WeatherStation])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationDewPointTimeseries_WeatherStation] ON [dbo].[WeatherStationDewPointTimeseries]([WeatherStation])
+   WHERE [WeatherStation] IS NOT NULL
 go
 
 /*
@@ -7684,8 +7684,8 @@ CREATE TABLE [dbo].[WeatherStationRelativeHumidityTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[WeatherStationRelativeHumidityTimeseries]
-  ADD CONSTRAINT [UNQ_WeatherStationRelativeHumidityTimeseries_WeatherStation] UNIQUE([WeatherStation])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationRelativeHumidityTimeseries_WeatherStation] ON [dbo].[WeatherStationRelativeHumidityTimeseries]([WeatherStation])
+   WHERE [WeatherStation] IS NOT NULL
 go
 
 /*
@@ -7707,8 +7707,8 @@ CREATE TABLE [dbo].[WeatherStationWaterTemperatureTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[WeatherStationWaterTemperatureTimeseries]
-  ADD CONSTRAINT [UNQ_WeatherStationWaterTemperatureTimeseries_WeatherStation] UNIQUE([WeatherStation])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationWaterTemperatureTimeseries_WeatherStation] ON [dbo].[WeatherStationWaterTemperatureTimeseries]([WeatherStation])
+   WHERE [WeatherStation] IS NOT NULL
 go
 
 /*
@@ -7730,8 +7730,8 @@ CREATE TABLE [dbo].[WeatherStationWindDirectionTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[WeatherStationWindDirectionTimeseries]
-  ADD CONSTRAINT [UNQ_WeatherStationWindDirectionTimeseries_WeatherStation] UNIQUE([WeatherStation])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationWindDirectionTimeseries_WeatherStation] ON [dbo].[WeatherStationWindDirectionTimeseries]([WeatherStation])
+   WHERE [WeatherStation] IS NOT NULL
 go
 
 /*
@@ -7753,8 +7753,8 @@ CREATE TABLE [dbo].[WeatherStationWindSpeedTimeseries]
 )
 go
 
-ALTER TABLE [dbo].[WeatherStationWindSpeedTimeseries]
-  ADD CONSTRAINT [UNQ_WeatherStationWindSpeedTimeseries_WeatherStation] UNIQUE([WeatherStation])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationWindSpeedTimeseries_WeatherStation] ON [dbo].[WeatherStationWindSpeedTimeseries]([WeatherStation])
+   WHERE [WeatherStation] IS NOT NULL
 go
 
 /*
@@ -8909,8 +8909,8 @@ go
 CREATE INDEX [IDX_WeatherStationCommandReply_Timestamp] ON [dbo].[WeatherStationCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[WeatherStationCommandReply]
-  ADD CONSTRAINT [UNQ_WeatherStationCommandReply_Command] UNIQUE([Command])
+CREATE UNIQUE NONCLUSTERED INDEX [UNQ_WeatherStationCommandReply_Command] ON [dbo].[WeatherStationCommandReply]([Command])
+   WHERE [Command] IS NOT NULL
 go
 
 /*
