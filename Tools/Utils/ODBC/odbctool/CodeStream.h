@@ -28,8 +28,13 @@ namespace Harlinn::ODBC
 
 namespace Harlinn::ODBC::Tool
 {
+    class NestedCodeStream;
+
+
+
     class CodeStream
     {
+        friend class NestedCodeStream;
         WideString filename_;
         Blocks::Stream stream_;
     public:
@@ -179,11 +184,131 @@ namespace Harlinn::ODBC::Tool
             }
             IO::File::WriteAllBytes( filename_, bytes );
         }
+    };
+
+    class NestedCodeStream
+    {
+        CodeStream& codeStream_;
+
+    public:
+        NestedCodeStream( CodeStream& codeStream )
+            : codeStream_( codeStream )
+        { }
+
+        void Write( const wchar_t* wstr )
+        {
+            if ( wstr )
+            {
+                auto str = AnsiString::From( wstr );
+                codeStream_.stream_.Write( str.c_str( ), str.Length( ) );
+            }
+        }
+
+        void Write( const char* str )
+        {
+            if ( str )
+            {
+                auto strLen = LengthOf( str );
+                codeStream_.stream_.Write( str, strLen );
+            }
+        }
+
+        void WriteLine( const wchar_t* wstr )
+        {
+            Write( wstr );
+            WriteLine( );
+        }
+
+        void WriteLine( const char* str )
+        {
+            Write( str );
+            WriteLine( );
+        }
+
+        void Write( const WideString& wstr )
+        {
+            if ( wstr )
+            {
+                auto str = AnsiString::From( wstr );
+                codeStream_.stream_.Write( str.c_str( ), str.Length( ) );
+            }
+        }
+
+        void Write( const AnsiString& str )
+        {
+            if ( str )
+            {
+                codeStream_.stream_.Write( str.c_str( ), str.Length( ) );
+            }
+        }
+
+        void WriteLine( const WideString& wstr )
+        {
+            Write( wstr );
+            WriteLine( );
+        }
+
+        void WriteLine( const AnsiString& str )
+        {
+            Write( str );
+            WriteLine( );
+        }
 
 
+
+        template <class... Types>
+        void Write( const std::wformat_string<Types...> fmt, Types&&... args )
+        {
+            auto wstr = FormatV( fmt.get( ), std::make_wformat_args( args... ) );
+            if ( wstr )
+            {
+                auto str = AnsiString::From( wstr );
+                codeStream_.stream_.Write( str.c_str( ), str.Length( ) );
+            }
+        }
+        template <class... Types>
+        void WriteLine( const std::wformat_string<Types...> fmt, Types&&... args )
+        {
+            auto wstr = FormatV( fmt.get( ), std::make_wformat_args( args... ) );
+            if ( wstr )
+            {
+                auto str = AnsiString::From( wstr );
+                codeStream_.stream_.Write( str.c_str( ), str.Length( ) );
+            }
+            codeStream_.stream_.Write( "\r\n", 2 );
+        }
+
+        template <class... Types>
+        void Write( const std::format_string<Types...> fmt, Types&&... args )
+        {
+            auto str = FormatV( fmt.get( ), std::make_format_args( args... ) );
+            if ( str )
+            {
+                codeStream_.stream_.Write( str.c_str( ), str.Length( ) );
+            }
+        }
+
+        template <class... Types>
+        void WriteLine( const std::format_string<Types...> fmt, Types&&... args )
+        {
+            auto str = FormatV( fmt.get( ), std::make_format_args( args... ) );
+            if ( str )
+            {
+                codeStream_.stream_.Write( str.c_str( ), str.Length( ) );
+            }
+            codeStream_.stream_.Write( "\r\n", 2 );
+        }
+
+        void WriteLine( )
+        {
+            codeStream_.stream_.Write( "\r\n", 2 );
+        }
 
     };
+
+
 }
 
 
 #endif
+

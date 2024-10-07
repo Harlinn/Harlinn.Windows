@@ -1552,13 +1552,13 @@ namespace Harlinn::ODBC::Tool
         auto result = Format( L"Get{}Collection", classInfo.Name( ) );
         return result;
     }
-    WideString CSharpHelper::GetByIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    WideString CSharpHelper::GetByIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
         const auto& indexMembers = indexInfo.Fields( );
         StringBuilder<wchar_t> sb;
         if ( indexMemberCount > 1 )
         {
-            for ( size_t i = 0; i < indexMemberCount; i++ )
+            for ( size_t i = indexDepth; i < indexMemberCount; i++ )
             {
                 const auto& indexMember = *indexMembers[ i ];
                 if ( i < ( indexMemberCount - 1) )

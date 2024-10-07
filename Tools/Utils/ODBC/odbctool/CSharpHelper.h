@@ -82,7 +82,11 @@ namespace Harlinn::ODBC::Tool
 
         static WideString GetByIdFunctionName( const ClassInfo& classInfo );
         static WideString GetAllFunctionName( const ClassInfo& classInfo );
-        static WideString GetByIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount );
+        static WideString GetByIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+        {
+            return GetByIndexFunctionName( classInfo, indexInfo, 0, indexMemberCount )
+        }
         static WideString GetByNullableIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         static WideString GetByIndexFunctionParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         static WideString GetByIndexFunctionCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );

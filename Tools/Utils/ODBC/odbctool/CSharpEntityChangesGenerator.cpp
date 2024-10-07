@@ -95,237 +95,286 @@ namespace Harlinn::ODBC::Tool
     {
         const auto& fields = indexInfo.Fields( );
         auto fieldCount = fields.size( );
-        auto className = CSharpHelper::GetEntityIndexClassName( indexInfo );
-        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
         
-        WriteLine( L"    public class {}", className );
-        WriteLine( L"    {" );
         if ( fieldCount == 1 )
         {
-            const auto& field = *fields[ 0 ];
-            auto variableName = CSharpHelper::GetInputArgumentName( field );
-            auto variableType = CSharpHelper::GetNotNullableBaseType( field );
-            auto keyType = CSharpHelper::GetNotNullableBaseType( field );
-            auto entityClassName = CSharpHelper::GetEntityType( classInfo );
-            WriteLine( L"        readonly SortedWeakReferenceList<{}, {}> _entries = new SortedWeakReferenceList<{}, {}>( );", keyType, entityClassName, keyType, entityClassName );
-            WriteLine( );
-            WriteLine( L"        public {}( )", className );
-            WriteLine( L"        {" );
-            WriteLine( L"        }" );
-            WriteLine( );
-            WriteLine( L"        public void Add( {} entity )", entityClassName );
-            WriteLine( L"        {" );
-            WideString propertyName = field.Name( ).FirstToUpper( );
-            if ( field.IsReferenceType( ) )
-            {
-                propertyName += L"Id";
-            }
-            if ( field.Nullable( ) )
-            {
-                
-                WriteLine( L"            if ( entity.{} is {} {} )", propertyName, variableType, variableName );
-                WriteLine( L"            {");
-                WriteLine( L"                if ( _entries.TryGetValue( {}, out var weakReference ) )", variableName );
-                WriteLine( L"                {");
-                WriteLine( L"                    weakReference.SetTarget( entity );");
-                WriteLine( L"                }");
-                WriteLine( L"                else");
-                WriteLine( L"                {");
-                WriteLine( L"                    _entries.Add( {}, new WeakReference<{}>( entity, false ) );", variableName, entityClassName );
-                WriteLine( L"                }");
-                WriteLine( L"            }");
-                WriteLine( L"            else");
-                WriteLine( L"            {");
-                WriteLine( L"                throw new ArgumentException( \"entity.{} is null.\", nameof( entity ) );", propertyName );
-                WriteLine( L"            }" );
-            }
-            else
-            {
-                WriteLine( L"            if( _entries.TryGetValue(entity.{}, out var weakReference ) )", propertyName );
-                WriteLine( L"            {" );
-                WriteLine( L"                weakReference.SetTarget( entity );" );
-                WriteLine( L"            }" );
-                WriteLine( L"            else" );
-                WriteLine( L"            {" );
-                WriteLine( L"                _entries.Add( entity.{}, new WeakReference<{}>( entity, false ) );", propertyName, entityClassName );
-                WriteLine( L"            }" );
-            }
-            WriteLine( L"        }" );
-            WriteLine( );
-            WriteLine( L"        public bool GetBy{}( {} {}, out {}? entity )", propertyName, variableType, variableName, entityClassName );
-            WriteLine( L"        {");
-            WriteLine( L"            entity = null;");
-            WriteLine( L"            if ( _entries.TryGetValue( {}, out var weakReference ) )", variableName );
-            WriteLine( L"            {");
-            WriteLine( L"                if ( weakReference.TryGetTarget( out entity ) == false )");
-            WriteLine( L"                {");
-            WriteLine( L"                    _entries.Remove( {} );", variableName );
-            WriteLine( L"                }");
-            WriteLine( L"            }");
-            WriteLine( L"            return _entries.Count > 0;");
-            WriteLine( L"        }" );
-            WriteLine( );
-            WriteLine( L"        public bool GetFrom({} key, [DisallowNull] IList<{}> result )", variableType, entityClassName );
-            WriteLine( L"        {" );
-            WriteLine( L"            return _entries.From( key, result );" );
-            WriteLine( L"        }" );
-            WriteLine( );
-            WriteLine( L"        public bool GetUntil({} key, [DisallowNull] IList<{}> result )", variableType, entityClassName );
-            WriteLine( L"        {" );
-            WriteLine( L"            return _entries.Until( key, result );" );
-            WriteLine( L"        }" );
-            WriteLine( );
-            WriteLine( L"        public bool GetOver({} firstKey, {} lastKey, [DisallowNull] IList<{}> result )", variableType, variableType, entityClassName );
-            WriteLine( L"        {" );
-            WriteLine( L"            return _entries.Over( firstKey, lastKey, result );" );
-            WriteLine( L"        }" );
-            WriteLine( );
-            WriteLine( L"        public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
-            WriteLine( L"        {" );
-            WriteLine( L"            return _entries.All( result );" );
-            WriteLine( L"        }" );
-            WriteLine( );
+            CreateEntitySingleFieldUniqueIndexClass( classInfo, indexInfo );
         }
         else
         {
-            for ( size_t i = 1; i < fieldCount - 1; i++ )
-            {
-                const auto& field = *fields[ i ];
-                WriteLine( L"        public class By{}", field.Name( ) );
-                WriteLine( L"        {" );
-                auto keyType = CSharpHelper::GetNotNullableBaseType( field );
-                const auto& nextField = *fields[ i + 1 ];
-                WriteLine( L"            readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", keyType, nextField.Name( ), keyType, nextField.Name( ) );
-                WriteLine( L"            List<{}> _emptyKeys = new List<{}>( );", keyType, keyType );
-                WriteLine( );
-                WriteLine( L"            public By{}( )", field.Name( ) );
-                WriteLine( L"            {" );
-                WriteLine( L"            }" );
-                WriteLine( );
-                WriteLine( L"            void RemoveEmptyKeys( )" );
-                WriteLine( L"            {" );
-                WriteLine( L"                var emptyKeyCount = _emptyKeys.Count;" );
-                WriteLine( L"                for ( int i = 0; i < emptyKeyCount; i++ )" );
-                WriteLine( L"                {" );
-                WriteLine( L"                    _entries.Remove( _emptyKeys[ i ] );" );
-                WriteLine( L"                }" );
-                WriteLine( L"                _emptyKeys.Clear( );" );
-                WriteLine( L"            }" );
-                WriteLine( );
-                WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
-                WriteLine( L"            {" );
-                WriteLine( L"                foreach( var entry in _entries )" );
-                WriteLine( L"                {" );
-                WriteLine( L"                    if( entry.Value.GetAll( result ) == false )" );
-                WriteLine( L"                    {" );
-                WriteLine( L"                        _emptyKeys.Add( entry.Key );" );
-                WriteLine( L"                    }" );
-                WriteLine( L"                }" );
-                WriteLine( L"                RemoveEmptyKeys( );" );
-                WriteLine( L"                return _entries.Count > 0;" );
-                WriteLine( L"            }" );
-                WriteLine( );
-                WriteLine( L"        }" );
-            }
-            const auto& field = *fields.back( );
-            auto variableName = CSharpHelper::GetInputArgumentName( field );
-            auto variableType = CSharpHelper::GetNotNullableBaseType( field );
-            WriteLine( L"        public class By{}", field.Name( ) );
-            WriteLine( L"        {" );
-            auto keyType = CSharpHelper::GetNotNullableBaseType( field );
+            CreateEntityMultiFieldUniqueIndexClass( classInfo, indexInfo );
+        }
+    }
 
-            WriteLine( L"            readonly SortedWeakReferenceList<{}, {}> _entries = new SortedWeakReferenceList<{}, {}>( );", keyType, entityClassName, keyType, entityClassName );
-            WriteLine( );
-            WriteLine( L"            public By{}( )", field.Name( ) );
+    void CSharpEntityChangesGenerator::CreateEntitySingleFieldUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo )
+    {
+        const auto& fields = indexInfo.Fields( );
+        auto fieldCount = fields.size( );
+        auto className = CSharpHelper::GetEntityIndexClassName( indexInfo );
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+
+        WriteLine( L"    public class {}", className );
+        WriteLine( L"    {" );
+        const auto& field = *fields[ 0 ];
+        auto variableName = CSharpHelper::GetInputArgumentName( field );
+        auto variableType = CSharpHelper::GetNotNullableBaseType( field );
+        auto keyType = CSharpHelper::GetNotNullableBaseType( field );
+        WriteLine( L"        readonly SortedWeakReferenceList<{}, {}> _entries = new SortedWeakReferenceList<{}, {}>( );", keyType, entityClassName, keyType, entityClassName );
+        WriteLine( );
+        WriteLine( L"        public {}( )", className );
+        WriteLine( L"        {" );
+        WriteLine( L"        }" );
+        WriteLine( );
+        WriteLine( L"        public void Add( {} entity )", entityClassName );
+        WriteLine( L"        {" );
+        WideString propertyName = field.Name( ).FirstToUpper( );
+        if ( field.IsReferenceType( ) )
+        {
+            propertyName += L"Id";
+        }
+        if ( field.Nullable( ) )
+        {
+
+            WriteLine( L"            if ( entity.{} is {} {} )", propertyName, variableType, variableName );
             WriteLine( L"            {" );
-            WriteLine( L"            }" );
-            WriteLine( );
-            WriteLine( L"            public void Add( {} entity )", entityClassName );
-            WriteLine( L"            {" );
-            WideString propertyName = field.Name( ).FirstToUpper( );
-            if ( field.IsReferenceType( ) )
-            {
-                propertyName += L"Id";
-            }
-            if ( field.Nullable( ) )
-            {
-                auto variableName = CSharpHelper::GetInputArgumentName( field );
-                auto variableType = CSharpHelper::GetNotNullableBaseType( field );
-                WriteLine( L"                if ( entity.{} is {} {} )", propertyName, variableType, variableName );
-                WriteLine( L"                {" );
-                WriteLine( L"                    if ( _entries.TryGetValue( {}, out var weakReference ) )", variableName );
-                WriteLine( L"                    {" );
-                WriteLine( L"                        weakReference.SetTarget( entity );" );
-                WriteLine( L"                    }" );
-                WriteLine( L"                    else" );
-                WriteLine( L"                    {" );
-                WriteLine( L"                        _entries.Add( {}, new WeakReference<{}>( entity, false ) );", variableName, entityClassName );
-                WriteLine( L"                    }" );
-                WriteLine( L"                }" );
-                WriteLine( L"                else" );
-                WriteLine( L"                {" );
-                WriteLine( L"                    throw new ArgumentException( \"entity.{} is null.\", nameof( entity ) );", propertyName );
-                WriteLine( L"                }" );
-            }
-            else
-            {
-                WriteLine( L"                if( _entries.TryGetValue(entity.{}, out var weakReference ) )", propertyName );
-                WriteLine( L"                {" );
-                WriteLine( L"                    weakReference.SetTarget( entity );" );
-                WriteLine( L"                }" );
-                WriteLine( L"                else" );
-                WriteLine( L"                {" );
-                WriteLine( L"                    _entries.Add( entity.{}, new WeakReference<{}>( entity, false ) );", propertyName, entityClassName );
-                WriteLine( L"                }" );
-            }
-            WriteLine( L"            }" );
-            WriteLine( );
-            WriteLine( L"            public bool GetBy{}( {} {}, out {}? entity )", propertyName, variableType, variableName, entityClassName );
-            WriteLine( L"            {" );
-            WriteLine( L"                entity = null;" );
             WriteLine( L"                if ( _entries.TryGetValue( {}, out var weakReference ) )", variableName );
             WriteLine( L"                {" );
-            WriteLine( L"                    if ( weakReference.TryGetTarget( out entity ) == false )" );
-            WriteLine( L"                    {" );
-            WriteLine( L"                        _entries.Remove( {} );", variableName );
-            WriteLine( L"                    }" );
+            WriteLine( L"                    weakReference.SetTarget( entity );" );
             WriteLine( L"                }" );
-            WriteLine( L"                return _entries.Count > 0;" );
+            WriteLine( L"                else" );
+            WriteLine( L"                {" );
+            WriteLine( L"                    _entries.Add( {}, new WeakReference<{}>( entity, false ) );", variableName, entityClassName );
+            WriteLine( L"                }" );
             WriteLine( L"            }" );
-            WriteLine( );
-            WriteLine( L"            public bool GetFrom({} key, [DisallowNull] IList<{}> result )", variableType, entityClassName );
+            WriteLine( L"            else" );
             WriteLine( L"            {" );
-            WriteLine( L"                return _entries.From( key, result );" );
+            WriteLine( L"                throw new ArgumentException( \"entity.{} is null.\", nameof( entity ) );", propertyName );
             WriteLine( L"            }" );
-            WriteLine( );
-            WriteLine( L"            public bool GetUntil({} key, [DisallowNull] IList<{}> result )", variableType, entityClassName );
-            WriteLine( L"            {" );
-            WriteLine( L"                return _entries.Until( key, result );" );
-            WriteLine( L"            }" );
-            WriteLine( );
-            WriteLine( L"            public bool GetOver({} firstKey, {} lastKey, [DisallowNull] IList<{}> result )", variableType, variableType, entityClassName );
-            WriteLine( L"            {" );
-            WriteLine( L"                return _entries.Over( firstKey, lastKey, result );" );
-            WriteLine( L"            }" );
-            WriteLine( );
-            WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
-            WriteLine( L"            {" );
-            WriteLine( L"                return _entries.All( result );" );
-            WriteLine( L"            }" );
-            WriteLine( );
-            WriteLine( L"        }" );
-
-            WriteLine( );
-
-            const auto& firstField = *fields.front( );
-            auto firstFieldKeyType = CSharpHelper::GetNotNullableBaseType( field );
-
-            const auto& secondField = *fields[ 1 ];
-            WriteLine( L"        readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", firstFieldKeyType, secondField.Name( ), firstFieldKeyType, secondField.Name( ) );
         }
+        else
+        {
+            WriteLine( L"            if( _entries.TryGetValue(entity.{}, out var weakReference ) )", propertyName );
+            WriteLine( L"            {" );
+            WriteLine( L"                weakReference.SetTarget( entity );" );
+            WriteLine( L"            }" );
+            WriteLine( L"            else" );
+            WriteLine( L"            {" );
+            WriteLine( L"                _entries.Add( entity.{}, new WeakReference<{}>( entity, false ) );", propertyName, entityClassName );
+            WriteLine( L"            }" );
+        }
+        WriteLine( L"        }" );
+        WriteLine( );
+        WriteLine( L"        public bool GetBy{}( {} {}, out {}? entity )", propertyName, variableType, variableName, entityClassName );
+        WriteLine( L"        {" );
+        WriteLine( L"            entity = null;" );
+        WriteLine( L"            if ( _entries.TryGetValue( {}, out var weakReference ) )", variableName );
+        WriteLine( L"            {" );
+        WriteLine( L"                if ( weakReference.TryGetTarget( out entity ) == false )" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    _entries.Remove( {} );", variableName );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( L"            return _entries.Count > 0;" );
+        WriteLine( L"        }" );
+        WriteLine( );
+        WriteLine( L"        public bool GetFrom({} key, [DisallowNull] IList<{}> result )", variableType, entityClassName );
+        WriteLine( L"        {" );
+        WriteLine( L"            return _entries.From( key, result );" );
+        WriteLine( L"        }" );
+        WriteLine( );
+        WriteLine( L"        public bool GetUntil({} key, [DisallowNull] IList<{}> result )", variableType, entityClassName );
+        WriteLine( L"        {" );
+        WriteLine( L"            return _entries.Until( key, result );" );
+        WriteLine( L"        }" );
+        WriteLine( );
+        WriteLine( L"        public bool GetOver({} firstKey, {} lastKey, [DisallowNull] IList<{}> result )", variableType, variableType, entityClassName );
+        WriteLine( L"        {" );
+        WriteLine( L"            return _entries.Over( firstKey, lastKey, result );" );
+        WriteLine( L"        }" );
+        WriteLine( );
+        WriteLine( L"        public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
+        WriteLine( L"        {" );
+        WriteLine( L"            return _entries.All( result );" );
+        WriteLine( L"        }" );
+        WriteLine( );
         CreateIndexGetByIndex( classInfo, indexInfo );
         WriteLine( L"    }" );
     }
+    void CSharpEntityChangesGenerator::CreateEntityMultiFieldUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo )
+    {
+        const auto& fields = indexInfo.Fields( );
+        auto fieldCount = fields.size( );
+        auto className = CSharpHelper::GetEntityIndexClassName( indexInfo );
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+
+        WriteLine( L"    public class {}", className );
+        WriteLine( L"    {" );
+        for ( size_t i = 1; i < fieldCount - 1; i++ )
+        {
+            const auto& field = *fields[ i ];
+            CreateEntityMultiFieldUniqueIndexIntermediateClass( classInfo, indexInfo, i );
+        }
+        WriteLine( );
+        CreateEntityMultiFieldUniqueIndexFinalClass( classInfo, indexInfo );
+
+        const auto& firstField = *fields.front( );
+        auto firstFieldKeyType = CSharpHelper::GetNotNullableBaseType( firstField );
+
+        const auto& secondField = *fields[ 1 ];
+        WriteLine( L"        readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", firstFieldKeyType, secondField.Name( ), firstFieldKeyType, secondField.Name( ) );
+    
+        CreateIndexGetByIndex( classInfo, indexInfo );
+        WriteLine( L"    }" );
+
+    }
+
+    void CSharpEntityChangesGenerator::CreateEntityMultiFieldUniqueIndexIntermediateClass( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t fieldIndex )
+    {
+        const auto& fields = indexInfo.Fields( );
+        auto fieldCount = fields.size( );
+        auto className = CSharpHelper::GetEntityIndexClassName( indexInfo );
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+        const auto& field = *fields[ fieldIndex ];
+
+        WriteLine( L"        public class By{}", field.Name( ) );
+        WriteLine( L"        {" );
+        auto keyType = CSharpHelper::GetNotNullableBaseType( field );
+        const auto& nextField = *fields[ fieldIndex + 1 ];
+        WriteLine( L"            readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", keyType, nextField.Name( ), keyType, nextField.Name( ) );
+        WriteLine( L"            List<{}> _emptyKeys = new List<{}>( );", keyType, keyType );
+        WriteLine( );
+        WriteLine( L"            public By{}( )", field.Name( ) );
+        WriteLine( L"            {" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            void RemoveEmptyKeys( )" );
+        WriteLine( L"            {" );
+        WriteLine( L"                var emptyKeyCount = _emptyKeys.Count;" );
+        WriteLine( L"                for ( int i = 0; i < emptyKeyCount; i++ )" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    _entries.Remove( _emptyKeys[ i ] );" );
+        WriteLine( L"                }" );
+        WriteLine( L"                _emptyKeys.Clear( );" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                foreach( var entry in _entries )" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    if( entry.Value.GetAll( result ) == false )" );
+        WriteLine( L"                    {" );
+        WriteLine( L"                        _emptyKeys.Add( entry.Key );" );
+        WriteLine( L"                    }" );
+        WriteLine( L"                }" );
+        WriteLine( L"                RemoveEmptyKeys( );" );
+        WriteLine( L"                return _entries.Count > 0;" );
+        WriteLine( L"            }" );
+        for ( size_t i = fieldIndex + 1; i < fieldCount; i++ )
+        {
+            const auto& field = *fields[ i ];
+            auto functionName = CSharpHelper::GetByIndexFunctionName( classInfo, indexInfo, fieldIndex, i );
+        }
+        WriteLine( );
+        WriteLine( L"        }" );
+    }
+    void CSharpEntityChangesGenerator::CreateEntityMultiFieldUniqueIndexFinalClass( const ClassInfo& classInfo, const IndexInfo& indexInfo )
+    {
+        const auto& fields = indexInfo.Fields( );
+        auto fieldCount = fields.size( );
+        auto className = CSharpHelper::GetEntityIndexClassName( indexInfo );
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+
+        const auto& field = *fields.back( );
+        auto variableName = CSharpHelper::GetInputArgumentName( field );
+        auto variableType = CSharpHelper::GetNotNullableBaseType( field );
+        WriteLine( L"        public class By{}", field.Name( ) );
+        WriteLine( L"        {" );
+        auto keyType = CSharpHelper::GetNotNullableBaseType( field );
+
+        WriteLine( L"            readonly SortedWeakReferenceList<{}, {}> _entries = new SortedWeakReferenceList<{}, {}>( );", keyType, entityClassName, keyType, entityClassName );
+        WriteLine( );
+        WriteLine( L"            public By{}( )", field.Name( ) );
+        WriteLine( L"            {" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public void Add( {} entity )", entityClassName );
+        WriteLine( L"            {" );
+        WideString propertyName = field.Name( ).FirstToUpper( );
+        if ( field.IsReferenceType( ) )
+        {
+            propertyName += L"Id";
+        }
+        if ( field.Nullable( ) )
+        {
+            auto variableName = CSharpHelper::GetInputArgumentName( field );
+            auto variableType = CSharpHelper::GetNotNullableBaseType( field );
+            WriteLine( L"                if ( entity.{} is {} {} )", propertyName, variableType, variableName );
+            WriteLine( L"                {" );
+            WriteLine( L"                    if ( _entries.TryGetValue( {}, out var weakReference ) )", variableName );
+            WriteLine( L"                    {" );
+            WriteLine( L"                        weakReference.SetTarget( entity );" );
+            WriteLine( L"                    }" );
+            WriteLine( L"                    else" );
+            WriteLine( L"                    {" );
+            WriteLine( L"                        _entries.Add( {}, new WeakReference<{}>( entity, false ) );", variableName, entityClassName );
+            WriteLine( L"                    }" );
+            WriteLine( L"                }" );
+            WriteLine( L"                else" );
+            WriteLine( L"                {" );
+            WriteLine( L"                    throw new ArgumentException( \"entity.{} is null.\", nameof( entity ) );", propertyName );
+            WriteLine( L"                }" );
+        }
+        else
+        {
+            WriteLine( L"                if( _entries.TryGetValue(entity.{}, out var weakReference ) )", propertyName );
+            WriteLine( L"                {" );
+            WriteLine( L"                    weakReference.SetTarget( entity );" );
+            WriteLine( L"                }" );
+            WriteLine( L"                else" );
+            WriteLine( L"                {" );
+            WriteLine( L"                    _entries.Add( entity.{}, new WeakReference<{}>( entity, false ) );", propertyName, entityClassName );
+            WriteLine( L"                }" );
+        }
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetBy{}( {} {}, out {}? entity )", propertyName, variableType, variableName, entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                entity = null;" );
+        WriteLine( L"                if ( _entries.TryGetValue( {}, out var weakReference ) )", variableName );
+        WriteLine( L"                {" );
+        WriteLine( L"                    if ( weakReference.TryGetTarget( out entity ) == false )" );
+        WriteLine( L"                    {" );
+        WriteLine( L"                        _entries.Remove( {} );", variableName );
+        WriteLine( L"                    }" );
+        WriteLine( L"                }" );
+        WriteLine( L"                return _entries.Count > 0;" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetFrom({} key, [DisallowNull] IList<{}> result )", variableType, entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                return _entries.From( key, result );" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetUntil({} key, [DisallowNull] IList<{}> result )", variableType, entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                return _entries.Until( key, result );" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetOver({} firstKey, {} lastKey, [DisallowNull] IList<{}> result )", variableType, variableType, entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                return _entries.Over( firstKey, lastKey, result );" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
+        WriteLine( L"            {" );
+        WriteLine( L"                return _entries.All( result );" );
+        WriteLine( L"            }" );
+        WriteLine( );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+
+
 
     void CSharpEntityChangesGenerator::CreateEntityIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo )
     {
@@ -337,59 +386,100 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"    {" );
         for ( size_t i = 1; i < fieldCount; i++ )
         {
-            const auto& field = *fields[ i ];
-            if ( i < fieldCount )
-            {
-
-                WriteLine( L"        public class By{}", field.Name( ) );
-                WriteLine( L"        {" );
-                auto keyType = CSharpHelper::GetNotNullableBaseType( field );
-                if ( i != ( fieldCount - 1 ) )
-                {
-                    const auto& nextField = *fields[ i + 1 ];
-                    WriteLine( L"            readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", keyType, nextField.Name( ), keyType, nextField.Name( ) );
-                }
-                else
-                {
-                    WriteLine( L"            readonly SortedListEx<{}, ById> _entries = new SortedListEx<{}, ById>( );", keyType, keyType );
-                }
-                WriteLine( L"            List<{}> _emptyKeys = new List<{}>( );", keyType, keyType );
-                WriteLine( );
-                WriteLine( L"            public By{}( )", field.Name( ) );
-                WriteLine( L"            {" );
-                WriteLine( L"            }" );
-                WriteLine( );
-                WriteLine( L"            void RemoveEmptyKeys( )" );
-                WriteLine( L"            {" );
-                WriteLine( L"                var emptyKeyCount = _emptyKeys.Count;" );
-                WriteLine( L"                for ( int i = 0; i < emptyKeyCount; i++ )" );
-                WriteLine( L"                {" );
-                WriteLine( L"                    _entries.Remove( _emptyKeys[ i ] );" );
-                WriteLine( L"                }" );
-                WriteLine( L"                _emptyKeys.Clear( );" );
-                WriteLine( L"            }" );
-                WriteLine( );
-                WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
-                WriteLine( L"            {" );
-                WriteLine( L"                foreach( var entry in _entries )" );
-                WriteLine( L"                {" );
-                WriteLine( L"                    if( entry.Value.GetAll( result ) == false )" );
-                WriteLine( L"                    {" );
-                WriteLine( L"                        _emptyKeys.Add( entry.Key );" );
-                WriteLine( L"                    }" );
-                WriteLine( L"                }" );
-                WriteLine( L"                RemoveEmptyKeys( );" );
-                WriteLine( L"                return _entries.Count > 0;" );
-                WriteLine( L"            }" );
-                WriteLine( );
-                WriteLine( L"        }" );
-            }
+            CreateEntityIndexIntermediateClass( classInfo, indexInfo, i );
         }
+
+        CreateEntityIndexFinalClass( classInfo, indexInfo );
+
+        const auto& field = *fields.front( );
+        auto keyType = CSharpHelper::GetNotNullableBaseType( field );
+
+        if ( fieldCount > 1 )
+        {
+            const auto& nextField = *fields[ 1 ];
+            WriteLine( L"        readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", keyType, nextField.Name( ), keyType, nextField.Name( ) );
+        }
+        else
+        {
+            WriteLine( L"        readonly SortedListEx<{}, ById> _entries = new SortedListEx<{}, ById>( );", keyType, keyType );
+        }
+        WriteLine( );
+        WriteLine( L"        public {}( )", className );
+        WriteLine( L"        {" );
+        WriteLine( L"        }" );
+        WriteLine( );
+        CreateIndexGetByIndex( classInfo, indexInfo );
+        WriteLine( L"    }" );
+        WriteLine( );
+    }
+
+    void CSharpEntityChangesGenerator::CreateEntityIndexIntermediateClass( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t fieldIndex )
+    {
+        const auto& fields = indexInfo.Fields( );
+        auto fieldCount = fields.size( );
+        auto className = CSharpHelper::GetEntityIndexClassName( indexInfo );
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+
+        for ( size_t i = 1; i < fieldCount; i++ )
+        {
+            const auto& field = *fields[ i ];
+
+            WriteLine( L"        public class By{}", field.Name( ) );
+            WriteLine( L"        {" );
+            auto keyType = CSharpHelper::GetNotNullableBaseType( field );
+            if ( i != ( fieldCount - 1 ) )
+            {
+                const auto& nextField = *fields[ i + 1 ];
+                WriteLine( L"            readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", keyType, nextField.Name( ), keyType, nextField.Name( ) );
+            }
+            else
+            {
+                WriteLine( L"            readonly SortedListEx<{}, ById> _entries = new SortedListEx<{}, ById>( );", keyType, keyType );
+            }
+            WriteLine( L"            List<{}> _emptyKeys = new List<{}>( );", keyType, keyType );
+            WriteLine( );
+            WriteLine( L"            public By{}( )", field.Name( ) );
+            WriteLine( L"            {" );
+            WriteLine( L"            }" );
+            WriteLine( );
+            WriteLine( L"            void RemoveEmptyKeys( )" );
+            WriteLine( L"            {" );
+            WriteLine( L"                var emptyKeyCount = _emptyKeys.Count;" );
+            WriteLine( L"                for ( int i = 0; i < emptyKeyCount; i++ )" );
+            WriteLine( L"                {" );
+            WriteLine( L"                    _entries.Remove( _emptyKeys[ i ] );" );
+            WriteLine( L"                }" );
+            WriteLine( L"                _emptyKeys.Clear( );" );
+            WriteLine( L"            }" );
+            WriteLine( );
+            WriteLine( L"            public bool GetAll([DisallowNull] IList<{}> result )", entityClassName );
+            WriteLine( L"            {" );
+            WriteLine( L"                foreach( var entry in _entries )" );
+            WriteLine( L"                {" );
+            WriteLine( L"                    if( entry.Value.GetAll( result ) == false )" );
+            WriteLine( L"                    {" );
+            WriteLine( L"                        _emptyKeys.Add( entry.Key );" );
+            WriteLine( L"                    }" );
+            WriteLine( L"                }" );
+            WriteLine( L"                RemoveEmptyKeys( );" );
+            WriteLine( L"                return _entries.Count > 0;" );
+            WriteLine( L"            }" );
+            WriteLine( );
+            WriteLine( L"        }" );
+        }
+    }
+    void CSharpEntityChangesGenerator::CreateEntityIndexFinalClass( const ClassInfo& classInfo, const IndexInfo& indexInfo )
+    {
+        const auto& fields = indexInfo.Fields( );
+        auto fieldCount = fields.size( );
+        auto className = CSharpHelper::GetEntityIndexClassName( indexInfo );
+        auto entityClassName = CSharpHelper::GetEntityType( classInfo );
+
         WriteLine( L"        public class ById" );
         WriteLine( L"        {" );
         auto primaryKey = classInfo.PrimaryKey( );
         auto nextKeyType = CSharpHelper::GetNotNullableBaseType( *primaryKey );
-        
+
         WriteLine( L"            readonly SortedWeakReferenceList<{}, {}> _entries = new SortedWeakReferenceList<{}, {}>( );", nextKeyType, entityClassName, nextKeyType, entityClassName );
         WriteLine( L"            public ById( )" );
         WriteLine( L"            {" );
@@ -442,27 +532,9 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
         WriteLine( L"        }" );
         WriteLine( );
-        const auto& field = *fields.front( );
-        auto keyType = CSharpHelper::GetNotNullableBaseType( field );
 
-        if ( fieldCount > 1 )
-        {
-            const auto& nextField = *fields[ 1 ];
-            WriteLine( L"        readonly SortedListEx<{}, By{}> _entries = new SortedListEx<{}, By{}>( );", keyType, nextField.Name( ), keyType, nextField.Name( ) );
-        }
-        else
-        {
-            WriteLine( L"        readonly SortedListEx<{}, ById> _entries = new SortedListEx<{}, ById>( );", keyType, keyType );
-        }
-        WriteLine( );
-        WriteLine( L"        public {}( )", className );
-        WriteLine( L"        {" );
-        WriteLine( L"        }" );
-        WriteLine( );
-        CreateIndexGetByIndex( classInfo, indexInfo );
-        WriteLine( L"    }" );
-        WriteLine( );
     }
+
 
     void CSharpEntityChangesGenerator::CreateNullableEntityUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo )
     {
@@ -528,7 +600,7 @@ namespace Harlinn::ODBC::Tool
     {
         auto className = CSharpHelper::GetEntityType( classInfo );
         auto functionName = CSharpHelper::GetByNullableIndexFunctionName( classInfo, indexInfo, indexMemberCount );
-        auto returnType = Format( L"IList<{}>", className );
+        auto returnType = Format( L"List<{}>", className );
         auto arguments = CSharpHelper::GetByNullableIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
         WriteLine( L"        {" );
@@ -544,7 +616,7 @@ namespace Harlinn::ODBC::Tool
         auto returnType = className + L"?";
         if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
         {
-            returnType = Format( L"IList<{}>", className );
+            returnType = Format( L"List<{}>", className );
         }
         auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
@@ -557,7 +629,7 @@ namespace Harlinn::ODBC::Tool
     {
         auto className = CSharpHelper::GetEntityType( classInfo );
         auto functionName = CSharpHelper::GetByIndexFromFunctionName( classInfo, indexInfo, indexMemberCount );
-        auto returnType = Format( L"IList<{}>", className );
+        auto returnType = Format( L"List<{}>", className );
         auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
         WriteLine( L"        {" );
@@ -569,7 +641,7 @@ namespace Harlinn::ODBC::Tool
     {
         auto className = CSharpHelper::GetEntityType( classInfo );
         auto functionName = CSharpHelper::GetByIndexUntilFunctionName( classInfo, indexInfo, indexMemberCount );
-        auto returnType = Format( L"IList<{}>", className );
+        auto returnType = Format( L"List<{}>", className );
         auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
         WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
         WriteLine( L"        {" );
@@ -581,9 +653,9 @@ namespace Harlinn::ODBC::Tool
     {
         auto className = CSharpHelper::GetEntityType( classInfo );
         auto functionName = CSharpHelper::GetByIndexOverFunctionName( classInfo, indexInfo, indexMemberCount );
-        auto returnType = Format( L"IList<{}>", className );
+        auto returnType = Format( L"List<{}>", className );
         auto arguments = CSharpHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
-        WriteLine( L"        {} {}( {} )", returnType, functionName, arguments );
+        WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
         WriteLine( L"        {" );
         WriteLine( L"            throw new NotImplementedException();" );
         WriteLine( L"        }" );
@@ -654,7 +726,10 @@ namespace Harlinn::ODBC::Tool
         auto functionName = CSharpHelper::GetAllFunctionName( classInfo );
         functions_.insert( functionName );
 
-        WriteLine( L"        public IList<{}> {}( )", entityClassName, functionName );
+        
+
+
+        WriteLine( L"        public List<{}> {}( )", entityClassName, functionName );
         WriteLine( L"        {" );
         WriteLine( L"            throw new NotImplementedException();" );
         WriteLine( L"        }" );
@@ -662,7 +737,7 @@ namespace Harlinn::ODBC::Tool
     }
     void CSharpEntityChangesGenerator::CreateGetByIndex( const ClassInfo& classInfo )
     {
-        auto indexes = classInfo.AllIndexes( );
+        auto indexes = classInfo.Indexes( );
         auto indexCount = indexes.size( );
         for ( size_t i = 0; i < indexCount; i++ )
         {
@@ -699,12 +774,15 @@ namespace Harlinn::ODBC::Tool
             auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             auto callArguments = CSharpHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
             auto dataClassName = CSharpHelper::GetDataType( classInfo );
+
+            auto entityIndexVariableName = Format(L"_{}",CSharpHelper::GetEntityIndexClassName( indexInfo ).FirstToLower());
+
             if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) )
             {
                 auto returnType = entityClassName + L"?";
                 WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
                 WriteLine( L"        {" );
-                WriteLine( L"            throw new NotImplementedException();" );
+                WriteLine( L"            return {}.{}( {} );", entityIndexVariableName, functionName, callArguments );
                 WriteLine( L"        }" );
             }
             else
@@ -712,7 +790,7 @@ namespace Harlinn::ODBC::Tool
                 auto returnType = Format( L"List<{}>", entityClassName );
                 WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
                 WriteLine( L"        {" );
-                WriteLine( L"            throw new NotImplementedException();" );
+                WriteLine( L"            return {}.{}( {} );", entityIndexVariableName, functionName, callArguments );
                 WriteLine( L"        }" );
             }
             WriteLine( );
@@ -733,12 +811,14 @@ namespace Harlinn::ODBC::Tool
             auto callArguments = CSharpHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
             auto dataClassName = CSharpHelper::GetDataType( classInfo );
 
+            auto entityIndexVariableName = Format( L"_{}", CSharpHelper::GetEntityIndexClassName( indexInfo ).FirstToLower( ) );
+
             if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) )
             {
                 auto returnType = entityClassName + L"?";
                 WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
                 WriteLine( L"        {" );
-                WriteLine( L"            throw new NotImplementedException();" );
+                WriteLine( L"            return {}.{}( {} );", entityIndexVariableName, functionName, callArguments );
                 WriteLine( L"        }" );
             }
             else
@@ -746,7 +826,7 @@ namespace Harlinn::ODBC::Tool
                 auto returnType = Format( L"List<{}>", entityClassName );
                 WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
                 WriteLine( L"        {" );
-                WriteLine( L"            throw new NotImplementedException();" );
+                WriteLine( L"            return {}.{}( {} );", entityIndexVariableName, functionName, callArguments );
                 WriteLine( L"        }" );
             }
             WriteLine( );
@@ -763,9 +843,12 @@ namespace Harlinn::ODBC::Tool
             auto callArguments = CSharpHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
             auto dataClassName = CSharpHelper::GetDataType( classInfo );
             auto returnType = Format( L"List<{}>", entityClassName );
+
+            auto entityIndexVariableName = Format( L"_{}", CSharpHelper::GetEntityIndexClassName( indexInfo ).FirstToLower( ) );
+
             WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
             WriteLine( L"        {" );
-            WriteLine( L"            throw new NotImplementedException();" );
+            WriteLine( L"            return {}.{}( {} );", entityIndexVariableName, functionName, callArguments );
             WriteLine( L"        }" );
             WriteLine( );
         }
@@ -781,9 +864,12 @@ namespace Harlinn::ODBC::Tool
             auto callArguments = CSharpHelper::GetByIndexFunctionCallParameters( classInfo, indexInfo, indexMemberCount );
             auto dataClassName = CSharpHelper::GetDataType( classInfo );
             auto returnType = Format( L"List<{}>", entityClassName );
+
+            auto entityIndexVariableName = Format( L"_{}", CSharpHelper::GetEntityIndexClassName( indexInfo ).FirstToLower( ) );
+
             WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
             WriteLine( L"        {" );
-            WriteLine( L"            throw new NotImplementedException();" );
+            WriteLine( L"            return {}.{}( {} );", entityIndexVariableName, functionName, callArguments );
             WriteLine( L"        }" );
             WriteLine( );
         }
@@ -798,10 +884,13 @@ namespace Harlinn::ODBC::Tool
             auto arguments = CSharpHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
             auto callArguments = CSharpHelper::GetByIndexFunctionOverCallParameters( classInfo, indexInfo, indexMemberCount );
             auto dataClassName = CSharpHelper::GetDataType( classInfo );
+
+            auto entityIndexVariableName = Format( L"_{}", CSharpHelper::GetEntityIndexClassName( indexInfo ).FirstToLower( ) );
+
             auto returnType = Format( L"List<{}>", entityClassName );
             WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
             WriteLine( L"        {" );
-            WriteLine( L"            throw new NotImplementedException();" );
+            WriteLine( L"            return {}.{}( {} );", entityIndexVariableName, functionName, callArguments );
             WriteLine( L"        }" );
             WriteLine( );
         }

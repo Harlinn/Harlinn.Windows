@@ -908,7 +908,6 @@ namespace Harlinn::ODBC::Tool
         void CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
     };
 
-
     class CSharpEntityChangesGenerator : public CodeGenerator<CSharpEntitiesGenerator, CSharpEntityChangesOptions>
     {
         std::set<WideString> functions_;
@@ -921,7 +920,13 @@ namespace Harlinn::ODBC::Tool
     private:
         void CreateEntityIndexClasses( const ClassInfo& classInfo );
         void CreateEntityUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateEntitySingleFieldUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateEntityMultiFieldUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateEntityMultiFieldUniqueIndexIntermediateClass( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t fieldIndex );
+        void CreateEntityMultiFieldUniqueIndexFinalClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
         void CreateEntityIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
+        void CreateEntityIndexIntermediateClass( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t fieldIndex );
+        void CreateEntityIndexFinalClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
         void CreateNullableEntityUniqueIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
         void CreateNullableEntityIndexClass( const ClassInfo& classInfo, const IndexInfo& indexInfo );
         
