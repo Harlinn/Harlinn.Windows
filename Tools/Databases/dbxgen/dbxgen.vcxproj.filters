@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{d83a31b6-7039-457d-bbcd-d97b8d7bf3d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators">
+      <UniqueIdentifier>{da0a0748-9622-4695-800f-e19f600cc409}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Metadata">
+      <UniqueIdentifier>{b8c1c8e1-d01a-4039-afe1-cb5435f16787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\Cpp">
+      <UniqueIdentifier>{a6caa2b0-669a-492c-bb3c-6683ef897d83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\CSharp">
+      <UniqueIdentifier>{85193768-5c1d-46aa-9b23-5987e4fae9ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\Databases">
+      <UniqueIdentifier>{509cf460-a20e-4c81-b0ba-b11ff8c259aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\Databases\MsSql">
+      <UniqueIdentifier>{8d6ad7e9-e176-4510-8191-f74acff7d676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{d953db05-c1c6-4954-a62f-a39c75533ab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators">
+      <UniqueIdentifier>{813a9d41-d4bf-498a-88b2-2227e8a719c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Metadata">
+      <UniqueIdentifier>{a0020c39-225c-41c0-ab95-6a29f0c46401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\Cpp">
+      <UniqueIdentifier>{6360cbc1-1c27-480d-b45b-653e64eb4671}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\CSharp">
+      <UniqueIdentifier>{72e3dbca-3545-4baa-87ad-856772a297fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\Databases">
+      <UniqueIdentifier>{221c4b20-c205-4283-a985-5ee24fa64c87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\Databases\MsSql">
+      <UniqueIdentifier>{947138d4-a33a-43ee-865a-5a9437c199a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\Cpp\Databases">
+      <UniqueIdentifier>{780a538d-7e8f-476f-9c77-bbdfbd96b028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\Cpp\Databases\MsSql">
+      <UniqueIdentifier>{e5f29742-93ea-48e0-a26d-9fee99de7052}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\CSharp\Databases">
+      <UniqueIdentifier>{2b279246-5871-4cb6-99af-047f854b9d81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\CodeGenerators\CSharp\Databases\MsSql">
+      <UniqueIdentifier>{a0ecc5bb-cd8e-42b7-99f8-63d34da58f03}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\CodeGenerators\Cpp\CppHelper.h">
+      <Filter>Include\CodeGenerators\Cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\CSharp\CSharpHelper.h">
+      <Filter>Include\CodeGenerators\CSharp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Databases\MsSql\MsSqlHelper.h">
+      <Filter>Include\CodeGenerators\Databases\MsSql</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\CodeStream.h">
+      <Filter>Include\CodeGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Generator.h">
+      <Filter>Include\CodeGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Options.h">
+      <Filter>Include\CodeGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Metadata\ClassInfo.h">
+      <Filter>Include\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Metadata\EnumInfo.h">
+      <Filter>Include\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Metadata\IndexInfo.h">
+      <Filter>Include\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Metadata\MemberInfo.h">
+      <Filter>Include\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Metadata\ModelInfo.h">
+      <Filter>Include\Metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dbxgen.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="TestModel.xml" />
+    <Xml Include="Model.xml" />
+    <Xml Include="options.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlComplexDatabaseReadersGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlComplexDatabaseReadersSourceGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlSimpleDatabaseReadersGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlSimpleDatabaseReadersSourceGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlStoredProceduresGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlStoredProceduresSourceGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\CppDataTypesGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\CppDataTypesSourceGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\CppDataTypesTestGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\CppEnumsGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\CppHelper.cpp">
+      <Filter>Src\CodeGenerators\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlComplexDatabaseReadersGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlDataContextGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlSimpleDatabaseReadersGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlStoredProceduresGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlUpdateNodesGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpDataTypesGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpEntityChangesGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpEntityContextGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpEntityTypesGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpEnumsGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpHelper.cpp">
+      <Filter>Src\CodeGenerators\CSharp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpIDataContextGenerator.cpp">
+      <Filter>Src\CodeGenerators\CSharp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateDeleteProceduresGenerator.cpp">
+      <Filter>Src\CodeGenerators\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateInsertProceduresGenerator.cpp">
+      <Filter>Src\CodeGenerators\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateTablesGenerator.cpp">
+      <Filter>Src\CodeGenerators\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateUpdateProceduresGenerator.cpp">
+      <Filter>Src\CodeGenerators\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateViewsGenerator.cpp">
+      <Filter>Src\CodeGenerators\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlHelper.cpp">
+      <Filter>Src\CodeGenerators\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\BinaryMemberInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\ClassInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\CollectionMemberInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\EnumMemberInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\IndexInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\MemberInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\ModelInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\ReferenceMemberInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\StringMemberInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Metadata\TimeSeriesMemberInfo.cpp">
+      <Filter>Src\Metadata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Options.cpp">
+      <Filter>Src\CodeGenerators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dbxgen.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -25,11 +25,14 @@
     <Filter Include="Generated\Database\MsSql">
       <UniqueIdentifier>{2e2f6732-330a-42c4-b46a-ad5fc47c4455}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generated\Cpp\Database">
-      <UniqueIdentifier>{406d8bb0-51f2-4ae0-acf3-e739ed0f9ac1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Generated\Cpp\Types">
       <UniqueIdentifier>{c3c2069b-6019-45dc-a2d5-979e65102444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\Cpp\Databases">
+      <UniqueIdentifier>{406d8bb0-51f2-4ae0-acf3-e739ed0f9ac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\Cpp\Databases\MsSql">
+      <UniqueIdentifier>{9c604c78-eea6-429d-beeb-f1d02b619073}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -39,23 +42,23 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Generated\Cpp\Database\DatabaseReaders.h">
-      <Filter>Generated\Cpp\Database</Filter>
-    </ClInclude>
-    <ClInclude Include="Generated\Cpp\Database\ComplexDatabaseReaders.h">
-      <Filter>Generated\Cpp\Database</Filter>
-    </ClInclude>
     <ClInclude Include="Generated\Cpp\BarrelmanExport.h">
       <Filter>Generated\Cpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Generated\Cpp\Database\StoredProcedures.h">
-      <Filter>Generated\Cpp\Database</Filter>
     </ClInclude>
     <ClInclude Include="Generated\Cpp\Types\DataTypes.h">
       <Filter>Generated\Cpp\Types</Filter>
     </ClInclude>
     <ClInclude Include="Generated\Cpp\Types\Enums.h">
       <Filter>Generated\Cpp\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Cpp\Databases\MsSql\MsSqlComplexDatabaseReaders.h">
+      <Filter>Generated\Cpp\Databases\MsSql</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Cpp\Databases\MsSql\MsSqlSimpleDatabaseReaders.h">
+      <Filter>Generated\Cpp\Databases\MsSql</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Cpp\Databases\MsSql\MsSqlStoredProcedures.h">
+      <Filter>Generated\Cpp\Databases\MsSql</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -65,17 +68,17 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Generated\Cpp\Database\DatabaseReaders.cpp">
-      <Filter>Generated\Cpp\Database</Filter>
-    </ClCompile>
-    <ClCompile Include="Generated\Cpp\Database\ComplexDatabaseReaders.cpp">
-      <Filter>Generated\Cpp\Database</Filter>
-    </ClCompile>
-    <ClCompile Include="Generated\Cpp\Database\StoredProcedures.cpp">
-      <Filter>Generated\Cpp\Database</Filter>
-    </ClCompile>
     <ClCompile Include="Generated\Cpp\Types\DataTypes.cpp">
       <Filter>Generated\Cpp\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Databases\MsSql\MsSqlComplexDatabaseReaders.cpp">
+      <Filter>Generated\Cpp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Databases\MsSql\MsSqlSimpleDatabaseReaders.cpp">
+      <Filter>Generated\Cpp\Databases\MsSql</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Databases\MsSql\MsSqlStoredProcedures.cpp">
+      <Filter>Generated\Cpp\Databases\MsSql</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

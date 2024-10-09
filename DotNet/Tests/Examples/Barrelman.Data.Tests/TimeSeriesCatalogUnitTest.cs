@@ -26,7 +26,7 @@ namespace Barrelman.Data.Tests
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
-            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
+            var dataContext = new Databases.MsSql.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
 
             Guid id = new Guid("{C76C4997-9B8C-4D22-A24F-44057A174A73}");
             string name1 = "Catalog1";
@@ -98,7 +98,7 @@ namespace Barrelman.Data.Tests
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
-            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
+            var dataContext = new Databases.MsSql.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
 
             Guid id = new Guid("{C76C4997-9B8C-4D22-A24F-44057A174A73}");
             string name1 = "Catalog1";
@@ -167,7 +167,7 @@ namespace Barrelman.Data.Tests
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
-            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
+            var dataContext = new Databases.MsSql.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
 
             Guid id = new Guid("{C76C4997-9B8C-4D22-A24F-44057A174A73}");
             string name1 = "Catalog3";
@@ -238,7 +238,7 @@ namespace Barrelman.Data.Tests
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
-            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
+            var dataContext = new Databases.MsSql.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
 
             Guid id = new Guid("{C76C4997-9B8C-4D22-A24F-44057A174A73}");
             string name1 = "Catalog3";

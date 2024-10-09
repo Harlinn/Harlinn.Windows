@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\..\Libraries\Harlinn.Common.Core.Net\Harlinn.Common.Core.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Databases\MsSql\" />
+  </ItemGroup>
+
 </Project>

@@ -163,18 +163,18 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="Generated\Cpp\BarrelmanExport.h" />
-    <ClInclude Include="Generated\Cpp\Database\ComplexDatabaseReaders.h" />
-    <ClInclude Include="Generated\Cpp\Database\DatabaseReaders.h" />
-    <ClInclude Include="Generated\Cpp\Database\StoredProcedures.h" />
+    <ClInclude Include="Generated\Cpp\Databases\MsSql\MsSqlComplexDatabaseReaders.h" />
+    <ClInclude Include="Generated\Cpp\Databases\MsSql\MsSqlSimpleDatabaseReaders.h" />
+    <ClInclude Include="Generated\Cpp\Databases\MsSql\MsSqlStoredProcedures.h" />
     <ClInclude Include="Generated\Cpp\Types\DataTypes.h" />
     <ClInclude Include="Generated\Cpp\Types\Enums.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Generated\Cpp\Database\ComplexDatabaseReaders.cpp" />
-    <ClCompile Include="Generated\Cpp\Database\DatabaseReaders.cpp" />
-    <ClCompile Include="Generated\Cpp\Database\StoredProcedures.cpp" />
+    <ClCompile Include="Generated\Cpp\Databases\MsSql\MsSqlComplexDatabaseReaders.cpp" />
+    <ClCompile Include="Generated\Cpp\Databases\MsSql\MsSqlSimpleDatabaseReaders.cpp" />
+    <ClCompile Include="Generated\Cpp\Databases\MsSql\MsSqlStoredProcedures.cpp" />
     <ClCompile Include="Generated\Cpp\Types\DataTypes.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

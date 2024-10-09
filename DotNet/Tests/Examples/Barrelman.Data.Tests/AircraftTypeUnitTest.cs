@@ -26,7 +26,7 @@ namespace Barrelman.Data.Tests
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
-            var storedProcedures = new Database.StoredProcedures(loggerFactory, connection);
+            var storedProcedures = new Databases.MsSql.StoredProcedures(loggerFactory, connection);
 
             Guid id = new Guid("{E9D19608-ADEE-41B5-ADDF-E519AE336B0C}");
             string name1 = "Lockheed Martin F-35 Lightning II";
@@ -44,14 +44,14 @@ namespace Barrelman.Data.Tests
             var inserted = storedProcedures.InsertAircraftType(ref id, name1);
             Assert.IsTrue(inserted);
 
-            var sql = Database.SimpleAircraftTypeDataReader.BaseQuery + "WHERE Id = @id";
+            var sql = Databases.MsSql.SimpleAircraftTypeDataReader.BaseQuery + "WHERE Id = @id";
             var afterInsertedCommand = connection.CreateCommand();
             afterInsertedCommand.CommandText = sql;
             var afterInsertedCommandParameters = afterInsertedCommand.Parameters;
             afterInsertedCommandParameters.AddGuid("@id", id);
             var afterInsertedCommandReader = afterInsertedCommand.ExecuteReader();
 
-            var afterInsertedReader = new Database.SimpleAircraftTypeDataReader(loggerFactory, afterInsertedCommandReader);
+            var afterInsertedReader = new Databases.MsSql.SimpleAircraftTypeDataReader(loggerFactory, afterInsertedCommandReader);
             var afterInsertedReaderFound = afterInsertedReader.Read();
             Assert.IsTrue(afterInsertedReaderFound);
             if(afterInsertedReaderFound)
@@ -70,7 +70,7 @@ namespace Barrelman.Data.Tests
             afterUpdatedCommandParameters.AddGuid("@id", id);
             var afterUpdatedCommandReader = afterUpdatedCommand.ExecuteReader();
 
-            var afterUpdatedReader = new Database.SimpleAircraftTypeDataReader(loggerFactory, afterUpdatedCommandReader);
+            var afterUpdatedReader = new Databases.MsSql.SimpleAircraftTypeDataReader(loggerFactory, afterUpdatedCommandReader);
             var afterUpdatedReaderFound = afterUpdatedReader.Read();
             Assert.IsTrue(afterUpdatedReaderFound);
             if (afterUpdatedReaderFound)
@@ -90,7 +90,7 @@ namespace Barrelman.Data.Tests
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
-            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
+            var dataContext = new Databases.MsSql.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
 
             Guid id = new Guid("{E9D19608-ADEE-41B5-ADDF-E519AE336B0C}");
             string name1 = "Lockheed Martin F-35 Lightning II";

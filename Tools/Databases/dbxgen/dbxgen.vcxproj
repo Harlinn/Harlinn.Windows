@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{5ca6c634-3492-4b59-a682-49e8a444c23f}</ProjectGuid>
+    <RootNamespace>odbctool</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.ODBC;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.ODBC;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.ODBC;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.ODBC;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="include\CodeGenerators\CodeStream.h" />
+    <ClInclude Include="include\CodeGenerators\Cpp\CppHelper.h" />
+    <ClInclude Include="include\CodeGenerators\CSharp\CSharpHelper.h" />
+    <ClInclude Include="include\CodeGenerators\Databases\MsSql\MsSqlHelper.h" />
+    <ClInclude Include="include\CodeGenerators\Generator.h" />
+    <ClInclude Include="include\CodeGenerators\Options.h" />
+    <ClInclude Include="include\dbxgen.h" />
+    <ClInclude Include="include\Metadata\ClassInfo.h" />
+    <ClInclude Include="include\Metadata\EnumInfo.h" />
+    <ClInclude Include="include\Metadata\IndexInfo.h" />
+    <ClInclude Include="include\Metadata\MemberInfo.h" />
+    <ClInclude Include="include\Metadata\ModelInfo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Model.xml" />
+    <Xml Include="options.xml" />
+    <Xml Include="TestModel.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\CodeGenerators\Cpp\CppDataTypesGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\CppDataTypesSourceGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\CppDataTypesTestGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\CppEnumsGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\CppHelper.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlComplexDatabaseReadersGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlComplexDatabaseReadersSourceGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlSimpleDatabaseReadersGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlSimpleDatabaseReadersSourceGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlStoredProceduresGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlStoredProceduresSourceGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpDataTypesGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpEntityChangesGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpEntityContextGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpEntityTypesGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpEnumsGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpHelper.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\CSharpIDataContextGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlComplexDatabaseReadersGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlDataContextGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlSimpleDatabaseReadersGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlStoredProceduresGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlUpdateNodesGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateDeleteProceduresGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateInsertProceduresGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateTablesGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateUpdateProceduresGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlCreateViewsGenerator.cpp" />
+    <ClCompile Include="src\CodeGenerators\Databases\MsSql\MsSqlHelper.cpp" />
+    <ClCompile Include="src\CodeGenerators\Options.cpp" />
+    <ClCompile Include="src\dbxgen.cpp" />
+    <ClCompile Include="src\Metadata\BinaryMemberInfo.cpp" />
+    <ClCompile Include="src\Metadata\ClassInfo.cpp" />
+    <ClCompile Include="src\Metadata\CollectionMemberInfo.cpp" />
+    <ClCompile Include="src\Metadata\EnumMemberInfo.cpp" />
+    <ClCompile Include="src\Metadata\IndexInfo.cpp" />
+    <ClCompile Include="src\Metadata\MemberInfo.cpp" />
+    <ClCompile Include="src\Metadata\ModelInfo.cpp" />
+    <ClCompile Include="src\Metadata\ReferenceMemberInfo.cpp" />
+    <ClCompile Include="src\Metadata\StringMemberInfo.cpp" />
+    <ClCompile Include="src\Metadata\TimeSeriesMemberInfo.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

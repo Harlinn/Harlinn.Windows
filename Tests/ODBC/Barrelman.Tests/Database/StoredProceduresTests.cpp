@@ -1,7 +1,7 @@
 #include <HCCIO.h>
-#include "Database/StoredProcedures.h"
-#include "Database/DatabaseReaders.h"
-#include "Database/ComplexDatabaseReaders.h"
+#include "Databases/MsSql/MsSqlStoredProcedures.h"
+#include "Databases/MsSql/MsSqlSimpleDatabaseReaders.h"
+#include "Databases/MsSql/MsSqlComplexDatabaseReaders.h"
 
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
@@ -39,11 +39,11 @@ BOOST_AUTO_TEST_CASE( AircraftTypeTest )
     deleteStatement.BindGuidParameter( 1, &id );
     deleteStatement.ExecDirect( L"DELETE FROM AircraftType WHERE Id = ?" );
 
-    auto inserted = Database::InsertAircraftType( connection, id, name1 );
+    auto inserted = Databases::MsSql::InsertAircraftType( connection, id, name1 );
     BOOST_CHECK( inserted );
     auto statementAfterInsert = connection.CreateStatement( );
     statementAfterInsert.BindGuidParameter( 1, &id );
-    auto readerAfterInsert = statementAfterInsert.ExecuteReader<Database::SimpleAircraftTypeDataReader>( Database::SimpleAircraftTypeDataReader::BaseQuery + L" WHERE Id = ?" );
+    auto readerAfterInsert = statementAfterInsert.ExecuteReader<Databases::MsSql::SimpleAircraftTypeDataReader>( Databases::MsSql::SimpleAircraftTypeDataReader::BaseQuery + L" WHERE Id = ?" );
     bool readerAfterInsertHasData = readerAfterInsert->Read( );
     BOOST_CHECK( readerAfterInsertHasData );
     if ( readerAfterInsertHasData )
@@ -54,11 +54,11 @@ BOOST_AUTO_TEST_CASE( AircraftTypeTest )
         
     }
     
-    auto updated = Database::UpdateAircraftType( connection, id, rowVersion, name2 );
+    auto updated = Databases::MsSql::UpdateAircraftType( connection, id, rowVersion, name2 );
     BOOST_CHECK( updated );
     auto statementAfterUpdate = connection.CreateStatement( );
     statementAfterUpdate.BindGuidParameter( 1, &id );
-    auto readerAfterUpdate = statementAfterUpdate.ExecuteReader<Database::SimpleAircraftTypeDataReader>( Database::SimpleAircraftTypeDataReader::BaseQuery + L" WHERE Id = ?" );
+    auto readerAfterUpdate = statementAfterUpdate.ExecuteReader<Databases::MsSql::SimpleAircraftTypeDataReader>( Databases::MsSql::SimpleAircraftTypeDataReader::BaseQuery + L" WHERE Id = ?" );
     bool readerAfterUpdateHasData = readerAfterUpdate->Read( );
     BOOST_CHECK( readerAfterUpdateHasData );
     if ( readerAfterUpdateHasData )
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE( AircraftTypeTest )
         BOOST_CHECK( equal );
     }
 
-    auto deleted = Database::DeleteAircraftType( connection, id, rowVersion );
+    auto deleted = Databases::MsSql::DeleteAircraftType( connection, id, rowVersion );
     BOOST_CHECK( deleted );
 
 }
@@ -84,17 +84,17 @@ BOOST_AUTO_TEST_CASE( TimeseriesCatalogTest )
     FixedDBWideString<127> name1 = L"Devices";
     Int64 rowVersion = 0;
 
-    Database::DeleteTimeseriesCatalog( connection, id, rowVersion );
+    Databases::MsSql::DeleteTimeseriesCatalog( connection, id, rowVersion );
 
-    auto inserted = Database::InsertTimeseriesCatalog( connection, id, {}, name1 );
+    auto inserted = Databases::MsSql::InsertTimeseriesCatalog( connection, id, {}, name1 );
     BOOST_CHECK( inserted );
 
     auto statementAfterInsert = connection.CreateStatement( );
     statementAfterInsert.BindGuidParameter( 1, &id );
 
-    auto sql = Database::ComplexTimeseriesCatalogElementDataReader::BaseQuery + L" WHERE " + Database::ComplexTimeseriesCatalogElementDataReader::ViewAliasName + L".Id = ?";
+    auto sql = Databases::MsSql::ComplexTimeseriesCatalogElementDataReader::BaseQuery + L" WHERE " + Databases::MsSql::ComplexTimeseriesCatalogElementDataReader::ViewAliasName + L".Id = ?";
 
-    auto readerAfterInsert = statementAfterInsert.ExecuteReader<Database::ComplexTimeseriesCatalogElementDataReader>( sql );
+    auto readerAfterInsert = statementAfterInsert.ExecuteReader<Databases::MsSql::ComplexTimeseriesCatalogElementDataReader>( sql );
     bool readerAfterInsertHasData = readerAfterInsert->Read( );
     BOOST_CHECK( readerAfterInsertHasData );
     
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE( TimeseriesCatalogTest )
 
     }
 
-    auto deleted = Database::DeleteTimeseriesCatalog( connection, id, rowVersion );
+    auto deleted = Databases::MsSql::DeleteTimeseriesCatalog( connection, id, rowVersion );
     BOOST_CHECK( deleted );
 
 }

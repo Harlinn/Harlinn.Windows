@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2024 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<model>
+  <enum name="E" type="Int64">
+    <value name="First" value="0"/>
+    <value name="Second"/>
+    <value name="Third"/>
+  </enum>
+  <type name="GeoPoint">
+    <double name="Latitude"/>
+    <double name="Longitude"/>
+  </type>
+  <class name="A" >
+    <members>
+      <guid name="Id" primarykey="true"/>
+      <reference name="Owner" type="A" nullable="true"/>
+      <string name="Name" size="260"/>
+      <rowversion name="OptimisticLockValue"/>
+    </members>
+    <index name="IdxOwnerName" fields="Owner;Name" unique="true"/>
+  </class>
+  <class name="B" base="A">
+
+  </class>
+  <class name="C" base="A">
+
+  </class>
+  <class name="D">
+
+  </class>
+  <service name="Service1">
+    <function name="function1">
+      <param name="param1" type="guid"/>
+      <returns type="bool"/>
+    </function>
+  </service>
+</model>
+  
