@@ -154,10 +154,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\CodeGenerators\CodeStream.h" />
+    <ClInclude Include="include\CodeGenerators\Cpp\CppGenerators.h" />
     <ClInclude Include="include\CodeGenerators\Cpp\CppHelper.h" />
+    <ClInclude Include="include\CodeGenerators\Cpp\Databases\CppDatabasesGenerator.h" />
+    <ClInclude Include="include\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlGenerators.h" />
+    <ClInclude Include="include\CodeGenerators\CSharp\CSharpGenerators.h" />
     <ClInclude Include="include\CodeGenerators\CSharp\CSharpHelper.h" />
+    <ClInclude Include="include\CodeGenerators\CSharp\Databases\CSharpDatabasesGenerator.h" />
+    <ClInclude Include="include\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlGenerators.h" />
+    <ClInclude Include="include\CodeGenerators\Databases\DatabasesGenerator.h" />
+    <ClInclude Include="include\CodeGenerators\Databases\MsSql\MsSqlGenerators.h" />
     <ClInclude Include="include\CodeGenerators\Databases\MsSql\MsSqlHelper.h" />
     <ClInclude Include="include\CodeGenerators\Generator.h" />
+    <ClInclude Include="include\CodeGenerators\GeneratorsBase.h" />
     <ClInclude Include="include\CodeGenerators\Options.h" />
     <ClInclude Include="include\dbxgen.h" />
     <ClInclude Include="include\Metadata\ClassInfo.h" />

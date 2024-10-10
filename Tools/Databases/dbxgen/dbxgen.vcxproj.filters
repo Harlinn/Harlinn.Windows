@@ -67,6 +67,18 @@
     <Filter Include="Src\CodeGenerators\CSharp\Databases\MsSql">
       <UniqueIdentifier>{a0ecc5bb-cd8e-42b7-99f8-63d34da58f03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Include\CodeGenerators\Cpp\Databases">
+      <UniqueIdentifier>{37ab7369-8e98-42e9-8a94-a2bf63b3d01a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\Cpp\Databases\MsSql">
+      <UniqueIdentifier>{84f6dd40-ab56-4309-8ccd-c734788541b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\CSharp\Databases">
+      <UniqueIdentifier>{70c80c98-1fab-4d34-b538-8f291a398f57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\CodeGenerators\CSharp\Databases\MsSql">
+      <UniqueIdentifier>{75857baf-d9bd-4777-b85d-c82bf9a32113}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CodeGenerators\Cpp\CppHelper.h">
@@ -104,6 +116,33 @@
     </ClInclude>
     <ClInclude Include="include\dbxgen.h">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Cpp\CppGenerators.h">
+      <Filter>Include\CodeGenerators\Cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\GeneratorsBase.h">
+      <Filter>Include\CodeGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\CSharp\CSharpGenerators.h">
+      <Filter>Include\CodeGenerators\CSharp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Databases\DatabasesGenerator.h">
+      <Filter>Include\CodeGenerators\Databases</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Databases\MsSql\MsSqlGenerators.h">
+      <Filter>Include\CodeGenerators\Databases\MsSql</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Cpp\Databases\CppDatabasesGenerator.h">
+      <Filter>Include\CodeGenerators\Cpp\Databases</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlGenerators.h">
+      <Filter>Include\CodeGenerators\Cpp\Databases\MsSql</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\CSharp\Databases\CSharpDatabasesGenerator.h">
+      <Filter>Include\CodeGenerators\CSharp\Databases</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeGenerators\CSharp\Databases\MsSql\CSharpMsSqlGenerators.h">
+      <Filter>Include\CodeGenerators\CSharp\Databases\MsSql</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
