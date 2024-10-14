@@ -55,16 +55,40 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
         static WideString GetSimpleTestValue( const ClassInfo& classInfo, const MemberInfo& member );
 
         static WideString GetInsertFunctionName( const ClassInfo& classInfo );
+        static WideString GetInsertFunctionName1( const ClassInfo& classInfo );
         static WideString GetUpdateFunctionName( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionName1( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionName2( const ClassInfo& classInfo );
         static WideString GetDeleteFunctionName( const ClassInfo& classInfo );
+
+        static WideString GetInsertFunctionParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members );
+        static WideString GetInsertFunctionCallParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members );
+        static WideString GetInsertFunctionParameterMarkers( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members );
 
         static WideString GetInsertFunctionParameters( const ClassInfo& classInfo );
         static WideString GetInsertFunctionCallParameters( const ClassInfo& classInfo );
         static WideString GetInsertFunctionParameterMarkers( const ClassInfo& classInfo );
 
+        static WideString GetInsertFunctionParameters1( const ClassInfo& classInfo );
+        static WideString GetInsertFunctionCallParameters1( const ClassInfo& classInfo );
+        static WideString GetInsertFunctionParameterMarkers1( const ClassInfo& classInfo );
+
+
+        static WideString GetUpdateFunctionParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members );
+        static WideString GetUpdateFunctionCallParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members );
+        static WideString GetUpdateFunctionParameterMarkers( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members );
+
         static WideString GetUpdateFunctionParameters( const ClassInfo& classInfo );
         static WideString GetUpdateFunctionCallParameters( const ClassInfo& classInfo );
         static WideString GetUpdateFunctionParameterMarkers( const ClassInfo& classInfo );
+
+        static WideString GetUpdateFunctionParameters1( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionCallParameters1( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionParameterMarkers1( const ClassInfo& classInfo );
+
+        static WideString GetUpdateFunctionParameters2( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionCallParameters2( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionParameterMarkers2( const ClassInfo& classInfo );
 
         static WideString GetDeleteFunctionParameters( const ClassInfo& classInfo );
         static WideString GetDeleteFunctionCallParameters( const ClassInfo& classInfo );

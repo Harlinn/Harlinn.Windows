@@ -1096,18 +1096,32 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
     {
         return Format( L"Insert{}", classInfo.Name( ) );
     }
+    WideString CppHelper::GetInsertFunctionName1( const ClassInfo& classInfo )
+    {
+        return Format( L"Insert1{}", classInfo.Name( ) );
+    }
+
     WideString CppHelper::GetUpdateFunctionName( const ClassInfo& classInfo )
     {
         return Format( L"Update{}", classInfo.Name( ) );
     }
+
+    WideString CppHelper::GetUpdateFunctionName1( const ClassInfo& classInfo )
+    {
+        return Format( L"Update1{}", classInfo.Name( ) );
+    }
+    WideString CppHelper::GetUpdateFunctionName2( const ClassInfo& classInfo )
+    {
+        return Format( L"Update2{}", classInfo.Name( ) );
+    }
+
     WideString CppHelper::GetDeleteFunctionName( const ClassInfo& classInfo )
     {
         return Format( L"Delete{}", classInfo.Name( ) );
     }
 
-    WideString CppHelper::GetInsertFunctionParameters( const ClassInfo& classInfo )
+    WideString CppHelper::GetInsertFunctionParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members )
     {
-        const auto& members = classInfo.PersistentMembers( );
         size_t membersCount = members.size( );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = GetInputArgumentName( *primaryKey );
@@ -1117,12 +1131,6 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
         parameters.Append( L"{}& {}", primaryKeyArgumentType, primaryKeyName  );
 
-        if ( membersCount > 0 )
-        {
-            parameters.Append( L"," );
-        }
-
-
         for ( size_t i = 0; i < membersCount; i++ )
         {
             const auto& member = *members[ i ];
@@ -1134,22 +1142,14 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
                     auto variableName = GetInputArgumentName( member );
                     auto variableType = GetInputArgumentType( member );
 
-                    if ( i < ( membersCount - 1 ) )
-                    {
-                        parameters.Append( L" {} {},", variableType, variableName );
-                    }
-                    else
-                    {
-                        parameters.Append( L" {} {}", variableType, variableName );
-                    }
+                    parameters.Append( L", {} {}", variableType, variableName );
                 }
             }
         }
         return parameters.ToString( );
     }
-    WideString CppHelper::GetInsertFunctionCallParameters( const ClassInfo& classInfo )
+    WideString CppHelper::GetInsertFunctionCallParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members )
     {
-        const auto& members = classInfo.PersistentMembers( );
         size_t membersCount = members.size( );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = GetInputArgumentName( *primaryKey );
@@ -1159,12 +1159,6 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
         parameters.Append( L"{}", primaryKeyName );
 
-        if ( membersCount > 0 )
-        {
-            parameters.Append( L"," );
-        }
-
-
         for ( size_t i = 0; i < membersCount; i++ )
         {
             const auto& member = *members[ i ];
@@ -1176,33 +1170,20 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
                     auto variableName = GetInputArgumentName( member );
                     auto variableType = GetInputArgumentType( member );
 
-                    if ( i < ( membersCount - 1 ) )
-                    {
-                        parameters.Append( L" {},", variableName );
-                    }
-                    else
-                    {
-                        parameters.Append( L" {}", variableName );
-                    }
+                    parameters.Append( L", {}", variableName );
                 }
             }
         }
         return parameters.ToString( );
     }
 
-    WideString CppHelper::GetInsertFunctionParameterMarkers( const ClassInfo& classInfo )
+    WideString CppHelper::GetInsertFunctionParameterMarkers( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members )
     {
-        const auto& members = classInfo.PersistentMembers( );
         size_t membersCount = members.size( );
 
         StringBuilder<wchar_t> markers;
 
         markers.Append( L"?" );
-
-        if ( membersCount > 0 )
-        {
-            markers.Append( L"," );
-        }
 
         for ( size_t i = 0; i < membersCount; i++ )
         {
@@ -1212,24 +1193,53 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
                 auto memberType = member.Type( );
                 if ( memberType != MemberInfoType::RowVersion )
                 {
-                    if ( i < ( membersCount - 1 ) )
-                    {
-                        markers.Append( L" ?," );
-                    }
-                    else
-                    {
-                        markers.Append( L" ?" );
-                    }
+                    markers.Append( L", ?" );
                 }
             }
         }
         return markers.ToString( );
     }
 
-
-    WideString CppHelper::GetUpdateFunctionParameters( const ClassInfo& classInfo )
+    WideString CppHelper::GetInsertFunctionParameters( const ClassInfo& classInfo )
     {
         const auto& members = classInfo.PersistentMembers( );
+        return GetInsertFunctionParameters( classInfo, members );
+    }
+
+
+    WideString CppHelper::GetInsertFunctionParameters1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        return GetInsertFunctionParameters( classInfo, members );
+    }
+
+    WideString CppHelper::GetInsertFunctionCallParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        return GetInsertFunctionParameters( classInfo, members );
+    }
+
+    WideString CppHelper::GetInsertFunctionCallParameters1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        return GetInsertFunctionParameters( classInfo, members );
+    }
+
+    WideString CppHelper::GetInsertFunctionParameterMarkers( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        return GetInsertFunctionParameterMarkers( classInfo, members );
+    }
+
+    WideString CppHelper::GetInsertFunctionParameterMarkers1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        return GetInsertFunctionParameterMarkers( classInfo, members );
+    }
+
+
+    WideString CppHelper::GetUpdateFunctionParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members )
+    {
         size_t membersCount = members.size( );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = GetInputArgumentName( *primaryKey );
@@ -1239,12 +1249,6 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
         parameters.Append( L"const {}& {}", primaryKeyArgumentType, primaryKeyName );
 
-        if ( membersCount > 0 )
-        {
-            parameters.Append( L"," );
-        }
-
-
         for ( size_t i = 0; i < membersCount; i++ )
         {
             const auto& member = *members[ i ];
@@ -1253,21 +1257,13 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
                 auto variableName = GetInputArgumentName( member );
                 auto variableType = GetInputArgumentType( member );
 
-                if ( i < ( membersCount - 1 ) )
-                {
-                    parameters.Append( L" {} {},", variableType, variableName );
-                }
-                else
-                {
-                    parameters.Append( L" {} {}", variableType, variableName );
-                }
+                parameters.Append( L", {} {}", variableType, variableName );
             }
         }
         return parameters.ToString( );
     }
-    WideString CppHelper::GetUpdateFunctionCallParameters( const ClassInfo& classInfo )
+    WideString CppHelper::GetUpdateFunctionCallParameters( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members )
     {
-        const auto& members = classInfo.PersistentMembers( );
         size_t membersCount = members.size( );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = GetInputArgumentName( *primaryKey );
@@ -1277,12 +1273,6 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
         parameters.Append( L"{}", primaryKeyName );
 
-        if ( membersCount > 0 )
-        {
-            parameters.Append( L"," );
-        }
-
-
         for ( size_t i = 0; i < membersCount; i++ )
         {
             const auto& member = *members[ i ];
@@ -1291,32 +1281,19 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
                 auto variableName = GetInputArgumentName( member );
                 auto variableType = GetInputArgumentType( member );
 
-                if ( i < ( membersCount - 1 ) )
-                {
-                    parameters.Append( L" {},", variableName );
-                }
-                else
-                {
-                    parameters.Append( L" {}", variableName );
-                }
+                parameters.Append( L", {}", variableName );
             }
         }
         return parameters.ToString( );
     }
 
-    WideString CppHelper::GetUpdateFunctionParameterMarkers( const ClassInfo& classInfo )
+    WideString CppHelper::GetUpdateFunctionParameterMarkers( const ClassInfo& classInfo, const std::vector<std::shared_ptr<MemberInfo>>& members )
     {
-        const auto& members = classInfo.PersistentMembers( );
         size_t membersCount = members.size( );
 
         StringBuilder<wchar_t> markers;
 
         markers.Append( L"?" );
-
-        if ( membersCount > 0 )
-        {
-            markers.Append( L"," );
-        }
 
         for ( size_t i = 0; i < membersCount; i++ )
         {
@@ -1324,17 +1301,61 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
             if ( member.PrimaryKey( ) == false )
             {
 
-                if ( i < ( membersCount - 1 ) )
-                {
-                    markers.Append( L" ?," );
-                }
-                else
-                {
-                    markers.Append( L" ?" );
-                }
+                markers.Append( L", ?" );
             }
         }
         return markers.ToString( );
+    }
+
+
+    WideString CppHelper::GetUpdateFunctionParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        return GetUpdateFunctionParameters( classInfo, members );
+    }
+
+    WideString CppHelper::GetUpdateFunctionParameters1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        return GetUpdateFunctionParameters( classInfo, members );
+    }
+
+    WideString CppHelper::GetUpdateFunctionParameters2( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.Update2Members( );
+        return GetUpdateFunctionParameters( classInfo, members );
+    }
+
+    WideString CppHelper::GetUpdateFunctionCallParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        return GetUpdateFunctionCallParameters( classInfo, members );
+    }
+    WideString CppHelper::GetUpdateFunctionCallParameters1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        return GetUpdateFunctionCallParameters( classInfo, members );
+    }
+    WideString CppHelper::GetUpdateFunctionCallParameters2( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.Update2Members( );
+        return GetUpdateFunctionCallParameters( classInfo, members );
+    }
+
+    WideString CppHelper::GetUpdateFunctionParameterMarkers( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        return GetUpdateFunctionParameterMarkers( classInfo, members );
+    }
+    WideString CppHelper::GetUpdateFunctionParameterMarkers1( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
+        return GetUpdateFunctionParameterMarkers( classInfo, members );
+    }
+    WideString CppHelper::GetUpdateFunctionParameterMarkers2( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.Update2Members( );
+        return GetUpdateFunctionParameterMarkers( classInfo, members );
     }
 
 

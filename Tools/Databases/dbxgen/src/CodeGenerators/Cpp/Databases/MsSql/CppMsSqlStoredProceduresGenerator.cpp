@@ -30,6 +30,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
 
         auto headerGuard = CppHelper::GetHeaderGuard( Filename( ) );
         auto nspace = Options( ).Namespace( L"::" );
+        const auto& dataTypesOptions = Options( ).Owner( ).Owner( ).Owner( ).Data( );
+        auto dataTypesNamespace = dataTypesOptions.Namespace( L"::" );
         WriteLine( L"#pragma once" );
         WriteLine( L"#ifndef {}", headerGuard );
         WriteLine( L"#define {}", headerGuard );
@@ -45,6 +47,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         WriteLine( L"    using namespace Harlinn;" );
         WriteLine( L"    using namespace Harlinn::ODBC;" );
         WriteLine( L"    using namespace Harlinn::Common::Core;" );
+        WriteLine( L"    using namespace {};", dataTypesNamespace );
         WriteLine( );
 
         auto classCount = classes.size( );
@@ -54,8 +57,29 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
             if ( classInfo.Abstract( ) == false )
             {
                 CreateInsert( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateInsert1( classInfo );
+                }
+                CreateInsertObject( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateInsertObject1( classInfo );
+                }
                 CreateUpdate( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateUpdate1( classInfo );
+                    CreateUpdate2( classInfo );
+                }
+                CreateUpdateObject( classInfo );
+                if ( classInfo.HasNullableReferences( ) )
+                {
+                    CreateUpdateObject1( classInfo );
+                    CreateUpdateObject2( classInfo );
+                }
                 CreateDelete( classInfo );
+                CreateDeleteObject( classInfo );
                 WriteLine( );
             }
         }
@@ -73,6 +97,29 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         auto functionParameters = CppHelper::GetInsertFunctionParameters( classInfo );
         WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
     }
+
+    void CppMsSqlStoredProceduresGenerator::CreateInsert1( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetInsertFunctionName1( classInfo );
+        auto functionParameters = CppHelper::GetInsertFunctionParameters1( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateInsertObject( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetInsertFunctionName( classInfo );
+        auto dataTypeName = CppHelper::GetDataType( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {}& data );", dllExport, functionName, dataTypeName );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateInsertObject1( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetInsertFunctionName1( classInfo );
+        auto dataTypeName = CppHelper::GetDataType( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {}& data );", dllExport, functionName, dataTypeName );
+    }
+
     void CppMsSqlStoredProceduresGenerator::CreateUpdate( const ClassInfo& classInfo )
     {
         auto dllExport = Options( ).DllExport( );
@@ -80,12 +127,57 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         auto functionParameters = CppHelper::GetUpdateFunctionParameters( classInfo );
         WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
     }
+
+    void CppMsSqlStoredProceduresGenerator::CreateUpdate1( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetUpdateFunctionName1( classInfo );
+        auto functionParameters = CppHelper::GetUpdateFunctionParameters1( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateUpdate2( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetUpdateFunctionName2( classInfo );
+        auto functionParameters = CppHelper::GetUpdateFunctionParameters2( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateUpdateObject( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetUpdateFunctionName( classInfo );
+        auto dataTypeName = CppHelper::GetDataType( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {}& data );", dllExport, functionName, dataTypeName );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateUpdateObject1( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetUpdateFunctionName1( classInfo );
+        auto dataTypeName = CppHelper::GetDataType( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {}& data );", dllExport, functionName, dataTypeName );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateUpdateObject2( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetUpdateFunctionName2( classInfo );
+        auto dataTypeName = CppHelper::GetDataType( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {}& data );", dllExport, functionName, dataTypeName );
+    }
+
     void CppMsSqlStoredProceduresGenerator::CreateDelete( const ClassInfo& classInfo )
     {
         auto dllExport = Options( ).DllExport( );
         auto functionName = CppHelper::GetDeleteFunctionName( classInfo );
         auto functionParameters = CppHelper::GetDeleteFunctionParameters( classInfo );
         WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
+    }
+
+    void CppMsSqlStoredProceduresGenerator::CreateDeleteObject( const Metadata::ClassInfo& classInfo )
+    {
+        auto dllExport = Options( ).DllExport( );
+        auto functionName = CppHelper::GetDeleteFunctionName( classInfo );
+        auto dataTypeName = CppHelper::GetDataType( classInfo );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {}& data );", dllExport, functionName, dataTypeName );
     }
 
 }

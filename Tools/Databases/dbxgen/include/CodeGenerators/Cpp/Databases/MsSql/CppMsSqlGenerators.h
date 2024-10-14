@@ -97,8 +97,18 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         void Run( );
     private:
         void CreateInsert( const Metadata::ClassInfo& classInfo );
+        void CreateInsert1( const Metadata::ClassInfo& classInfo );
+        void CreateInsertObject( const Metadata::ClassInfo& classInfo );
+        void CreateInsertObject1( const Metadata::ClassInfo& classInfo );
+
         void CreateUpdate( const Metadata::ClassInfo& classInfo );
+        void CreateUpdate1( const Metadata::ClassInfo& classInfo );
+        void CreateUpdate2( const Metadata::ClassInfo& classInfo );
+        void CreateUpdateObject( const Metadata::ClassInfo& classInfo );
+        void CreateUpdateObject1( const Metadata::ClassInfo& classInfo );
+        void CreateUpdateObject2( const Metadata::ClassInfo& classInfo );
         void CreateDelete( const Metadata::ClassInfo& classInfo );
+        void CreateDeleteObject( const Metadata::ClassInfo& classInfo );
     };
 
     class CppMsSqlStoredProceduresSourceGenerator : public CodeGenerator<CppMsSqlGenerator, CppMsSqlStoredProceduresSourceOptions>
@@ -110,8 +120,17 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         void Run( );
     private:
         void CreateInsert( const Metadata::ClassInfo& classInfo );
+        void CreateInsert1( const Metadata::ClassInfo& classInfo );
+        void CreateInsertObject( const Metadata::ClassInfo& classInfo );
+        void CreateInsertObject1( const Metadata::ClassInfo& classInfo );
         void CreateUpdate( const Metadata::ClassInfo& classInfo );
+        void CreateUpdate1( const Metadata::ClassInfo& classInfo );
+        void CreateUpdate2( const Metadata::ClassInfo& classInfo );
+        void CreateUpdateObject( const Metadata::ClassInfo& classInfo );
+        void CreateUpdateObject1( const Metadata::ClassInfo& classInfo );
+        void CreateUpdateObject2( const Metadata::ClassInfo& classInfo );
         void CreateDelete( const Metadata::ClassInfo& classInfo );
+        void CreateDeleteObject( const Metadata::ClassInfo& classInfo );
     };
 
 

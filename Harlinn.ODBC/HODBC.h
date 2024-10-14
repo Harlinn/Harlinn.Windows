@@ -6773,6 +6773,13 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
+        void ConsumeResults( ) const
+        {
+            while( MoreResults( ) != Result::NoData)
+            { }
+        }
+
+
         Result NumParams( SQLSMALLINT* result ) const
         {
             auto rc = SQLNumParams( Handle( ), result );
