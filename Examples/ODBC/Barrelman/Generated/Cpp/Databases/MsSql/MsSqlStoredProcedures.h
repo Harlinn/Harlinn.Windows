@@ -12,6 +12,7 @@ namespace Barrelman::Databases::MsSql
     using namespace Harlinn;
     using namespace Harlinn::ODBC;
     using namespace Harlinn::Common::Core;
+    using namespace Harlinn::Common::Core::Data;
     using namespace Barrelman::Types;
 
     BARRELMAN_EXPORT bool InsertAircraftType( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name );

@@ -47,6 +47,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         WriteLine( L"    using namespace Harlinn;" );
         WriteLine( L"    using namespace Harlinn::ODBC;" );
         WriteLine( L"    using namespace Harlinn::Common::Core;" );
+        WriteLine( L"    using namespace Harlinn::Common::Core::Data;" );
         WriteLine( L"    using namespace {};", dataTypesNamespace );
         WriteLine( );
 

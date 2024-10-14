@@ -1216,13 +1216,13 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
     WideString CppHelper::GetInsertFunctionCallParameters( const ClassInfo& classInfo )
     {
         const auto& members = classInfo.PersistentMembers( );
-        return GetInsertFunctionParameters( classInfo, members );
+        return GetInsertFunctionCallParameters( classInfo, members );
     }
 
     WideString CppHelper::GetInsertFunctionCallParameters1( const ClassInfo& classInfo )
     {
         const auto& members = classInfo.PersistentMembersExceptNullableReferences( );
-        return GetInsertFunctionParameters( classInfo, members );
+        return GetInsertFunctionCallParameters( classInfo, members );
     }
 
     WideString CppHelper::GetInsertFunctionParameterMarkers( const ClassInfo& classInfo )
