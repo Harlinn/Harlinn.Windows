@@ -3406,5 +3406,9 @@ namespace Barrelman::Databases::MsSql
     BARRELMAN_EXPORT bool DeleteZoneTrackAlarm( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
     BARRELMAN_EXPORT bool DeleteZoneTrackAlarm( const ODBC::Connection& connection, ZoneTrackAlarmObject& data );
 
+    BARRELMAN_EXPORT bool Insert( const ODBC::Connection& connection, BaseData<Kind, Guid>& data );
+    BARRELMAN_EXPORT bool Update( const ODBC::Connection& connection, BaseData<Kind, Guid>& data );
+    BARRELMAN_EXPORT bool Delete( const ODBC::Connection& connection, BaseData<Kind, Guid>& data );
+    BARRELMAN_EXPORT bool Merge( const ODBC::Connection& connection, BaseData<Kind, Guid>& data );
 }
 #endif

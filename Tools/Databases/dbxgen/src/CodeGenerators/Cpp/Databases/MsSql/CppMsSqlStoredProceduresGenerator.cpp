@@ -84,7 +84,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
                 WriteLine( );
             }
         }
-
+        CreateInsertDataObject( );
+        CreateUpdateDataObject( );
+        CreateDeleteDataObject( );
+        CreateMergeDataObject( );
         WriteLine( L"}" );
         WriteLine( L"#endif" );
 
@@ -179,6 +182,27 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         auto functionName = CppHelper::GetDeleteFunctionName( classInfo );
         auto dataTypeName = CppHelper::GetDataType( classInfo );
         WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {}& data );", dllExport, functionName, dataTypeName );
+    }
+
+    void CppMsSqlStoredProceduresGenerator::CreateInsertDataObject( )
+    {
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} bool Insert( const ODBC::Connection& connection, BaseData<Kind, Guid>& data );", dllExport );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateUpdateDataObject( )
+    {
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} bool Update( const ODBC::Connection& connection, BaseData<Kind, Guid>& data );", dllExport );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateDeleteDataObject( )
+    {
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} bool Delete( const ODBC::Connection& connection, BaseData<Kind, Guid>& data );", dllExport );
+    }
+    void CppMsSqlStoredProceduresGenerator::CreateMergeDataObject( )
+    {
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} bool Merge( const ODBC::Connection& connection, BaseData<Kind, Guid>& data );", dllExport );
     }
 
 }

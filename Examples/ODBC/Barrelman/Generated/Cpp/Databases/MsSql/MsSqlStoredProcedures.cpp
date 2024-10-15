@@ -50460,4 +50460,5021 @@ namespace Barrelman::Databases::MsSql
         return result;
     }
 
+    BARRELMAN_EXPORT bool Insert( const ODBC::Connection& connection, BaseData<Kind, Guid>& data )
+    {
+        bool result = false;
+        auto kind = data.GetObjectType( );
+        switch ( kind )
+        {
+            case Kind::AircraftType:
+            {
+                result = InsertAircraftType( connection, static_cast<AircraftTypeObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceCommand:
+            {
+                result = InsertAisDeviceCommand( connection, static_cast<AisDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceCommandReply:
+            {
+                result = InsertAisDeviceCommandReply( connection, static_cast<AisDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceConfiguration:
+            {
+                result = InsertAisDeviceConfiguration( connection, static_cast<AisDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceRawMessage:
+            {
+                result = InsertAisDeviceRawMessage( connection, static_cast<AisDeviceRawMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceRawSentence:
+            {
+                result = InsertAisDeviceRawSentence( connection, static_cast<AisDeviceRawSentenceObject&>( data ) );
+            }
+            break;
+            case Kind::AidToNavigationReportMessage:
+            {
+                result = InsertAidToNavigationReportMessage( connection, static_cast<AidToNavigationReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisAddressedSafetyRelatedMessage:
+            {
+                result = InsertAisAddressedSafetyRelatedMessage( connection, static_cast<AisAddressedSafetyRelatedMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBaseStationReportMessage:
+            {
+                result = InsertAisBaseStationReportMessage( connection, static_cast<AisBaseStationReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryAcknowledgeMessage:
+            {
+                result = InsertAisBinaryAcknowledgeMessage( connection, static_cast<AisBinaryAcknowledgeMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryAddressedMessage:
+            {
+                result = InsertAisBinaryAddressedMessage( connection, static_cast<AisBinaryAddressedMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryBroadcastMessage:
+            {
+                result = InsertAisBinaryBroadcastMessage( connection, static_cast<AisBinaryBroadcastMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisDataLinkManagementMessage:
+            {
+                result = InsertAisDataLinkManagementMessage( connection, static_cast<AisDataLinkManagementMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisExtendedClassBCsPositionReportMessage:
+            {
+                result = InsertAisExtendedClassBCsPositionReportMessage( connection, static_cast<AisExtendedClassBCsPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisInterrogationMessage:
+            {
+                result = InsertAisInterrogationMessage( connection, static_cast<AisInterrogationMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAAssignedScheduleMessage:
+            {
+                result = InsertAisPositionReportClassAAssignedScheduleMessage( connection, static_cast<AisPositionReportClassAAssignedScheduleMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAMessage:
+            {
+                result = InsertAisPositionReportClassAMessage( connection, static_cast<AisPositionReportClassAMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAResponseToInterrogationMessage:
+            {
+                result = InsertAisPositionReportClassAResponseToInterrogationMessage( connection, static_cast<AisPositionReportClassAResponseToInterrogationMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportForLongRangeApplicationsMessage:
+            {
+                result = InsertAisPositionReportForLongRangeApplicationsMessage( connection, static_cast<AisPositionReportForLongRangeApplicationsMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisSafetyRelatedAcknowledgmentMessage:
+            {
+                result = InsertAisSafetyRelatedAcknowledgmentMessage( connection, static_cast<AisSafetyRelatedAcknowledgmentMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStandardClassBCsPositionReportMessage:
+            {
+                result = InsertAisStandardClassBCsPositionReportMessage( connection, static_cast<AisStandardClassBCsPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStandardSarAircraftPositionReportMessage:
+            {
+                result = InsertAisStandardSarAircraftPositionReportMessage( connection, static_cast<AisStandardSarAircraftPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticAndVoyageRelatedDataMessage:
+            {
+                result = InsertAisStaticAndVoyageRelatedDataMessage( connection, static_cast<AisStaticAndVoyageRelatedDataMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportMessage:
+            {
+                result = InsertAisStaticDataReportMessage( connection, static_cast<AisStaticDataReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportPartAMessage:
+            {
+                result = InsertAisStaticDataReportPartAMessage( connection, static_cast<AisStaticDataReportPartAMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportPartBMessage:
+            {
+                result = InsertAisStaticDataReportPartBMessage( connection, static_cast<AisStaticDataReportPartBMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisUtcAndDateInquiryMessage:
+            {
+                result = InsertAisUtcAndDateInquiryMessage( connection, static_cast<AisUtcAndDateInquiryMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisUtcAndDateResponseMessage:
+            {
+                result = InsertAisUtcAndDateResponseMessage( connection, static_cast<AisUtcAndDateResponseMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AlarmStateChange:
+            {
+                result = InsertAlarmStateChange( connection, static_cast<AlarmStateChangeObject&>( data ) );
+            }
+            break;
+            case Kind::BaseStationType:
+            {
+                result = InsertBaseStationType( connection, static_cast<BaseStationTypeObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesValue:
+            {
+                result = InsertBinaryTimeseriesValue( connection, static_cast<BinaryTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Bookmark:
+            {
+                result = InsertBookmark( connection, static_cast<BookmarkObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesValue:
+            {
+                result = InsertBooleanTimeseriesValue( connection, static_cast<BooleanTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesValue:
+            {
+                result = InsertByteTimeseriesValue( connection, static_cast<ByteTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommand:
+            {
+                result = InsertCameraCommand( connection, static_cast<CameraCommandObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandAbsoluteMove:
+            {
+                result = InsertCameraCommandAbsoluteMove( connection, static_cast<CameraCommandAbsoluteMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandAdjustPanTiltZoom:
+            {
+                result = InsertCameraCommandAdjustPanTiltZoom( connection, static_cast<CameraCommandAdjustPanTiltZoomObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandContinuousMove:
+            {
+                result = InsertCameraCommandContinuousMove( connection, static_cast<CameraCommandContinuousMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandGeoMove:
+            {
+                result = InsertCameraCommandGeoMove( connection, static_cast<CameraCommandGeoMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandRelativeMove:
+            {
+                result = InsertCameraCommandRelativeMove( connection, static_cast<CameraCommandRelativeMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandReleasePTZOwnership:
+            {
+                result = InsertCameraCommandReleasePTZOwnership( connection, static_cast<CameraCommandReleasePTZOwnershipObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandRequestPTZOwnership:
+            {
+                result = InsertCameraCommandRequestPTZOwnership( connection, static_cast<CameraCommandRequestPTZOwnershipObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetAutoFocus:
+            {
+                result = InsertCameraCommandSetAutoFocus( connection, static_cast<CameraCommandSetAutoFocusObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetBlackAndWhite:
+            {
+                result = InsertCameraCommandSetBlackAndWhite( connection, static_cast<CameraCommandSetBlackAndWhiteObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetFollowed:
+            {
+                result = InsertCameraCommandSetFollowed( connection, static_cast<CameraCommandSetFollowedObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetInfraRedLamp:
+            {
+                result = InsertCameraCommandSetInfraRedLamp( connection, static_cast<CameraCommandSetInfraRedLampObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetWasher:
+            {
+                result = InsertCameraCommandSetWasher( connection, static_cast<CameraCommandSetWasherObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetWiper:
+            {
+                result = InsertCameraCommandSetWiper( connection, static_cast<CameraCommandSetWiperObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandStop:
+            {
+                result = InsertCameraCommandStop( connection, static_cast<CameraCommandStopObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandReply:
+            {
+                result = InsertCameraCommandReply( connection, static_cast<CameraCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::CameraConfiguration:
+            {
+                result = InsertCameraConfiguration( connection, static_cast<CameraConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraPanCalibration:
+            {
+                result = InsertCameraPanCalibration( connection, static_cast<CameraPanCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraPanCalibrationValue:
+            {
+                result = InsertCameraPanCalibrationValue( connection, static_cast<CameraPanCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraStatus:
+            {
+                result = InsertCameraStatus( connection, static_cast<CameraStatusObject&>( data ) );
+            }
+            break;
+            case Kind::CameraTiltCalibration:
+            {
+                result = InsertCameraTiltCalibration( connection, static_cast<CameraTiltCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraTiltCalibrationValue:
+            {
+                result = InsertCameraTiltCalibrationValue( connection, static_cast<CameraTiltCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraZoomCalibration:
+            {
+                result = InsertCameraZoomCalibration( connection, static_cast<CameraZoomCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraZoomCalibrationValue:
+            {
+                result = InsertCameraZoomCalibrationValue( connection, static_cast<CameraZoomCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::Catalog:
+            {
+                result = InsertCatalog( connection, static_cast<CatalogObject&>( data ) );
+            }
+            break;
+            case Kind::Element:
+            {
+                result = InsertElement( connection, static_cast<ElementObject&>( data ) );
+            }
+            break;
+            case Kind::CollectionInfo:
+            {
+                result = InsertCollectionInfo( connection, static_cast<CollectionInfoObject&>( data ) );
+            }
+            break;
+            case Kind::Country:
+            {
+                result = InsertCountry( connection, static_cast<CountryObject&>( data ) );
+            }
+            break;
+            case Kind::CursorInfo:
+            {
+                result = InsertCursorInfo( connection, static_cast<CursorInfoObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesValue:
+            {
+                result = InsertDateTimeTimeseriesValue( connection, static_cast<DateTimeTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceHost:
+            {
+                result = InsertDeviceHost( connection, static_cast<DeviceHostObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceHostConfiguration:
+            {
+                result = InsertDeviceHostConfiguration( connection, static_cast<DeviceHostConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesValue:
+            {
+                result = InsertDoubleTimeseriesValue( connection, static_cast<DoubleTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::FacilityType:
+            {
+                result = InsertFacilityType( connection, static_cast<FacilityTypeObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition2DTimeseriesValue:
+            {
+                result = InsertGeoPosition2DTimeseriesValue( connection, static_cast<GeoPosition2DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition3DTimeseriesValue:
+            {
+                result = InsertGeoPosition3DTimeseriesValue( connection, static_cast<GeoPosition3DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceCommand:
+            {
+                result = InsertGNSSDeviceCommand( connection, static_cast<GNSSDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceCommandReply:
+            {
+                result = InsertGNSSDeviceCommandReply( connection, static_cast<GNSSDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceConfiguration:
+            {
+                result = InsertGNSSDeviceConfiguration( connection, static_cast<GNSSDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesValue:
+            {
+                result = InsertGuidTimeseriesValue( connection, static_cast<GuidTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceCommand:
+            {
+                result = InsertGyroDeviceCommand( connection, static_cast<GyroDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceCommandReply:
+            {
+                result = InsertGyroDeviceCommandReply( connection, static_cast<GyroDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceConfiguration:
+            {
+                result = InsertGyroDeviceConfiguration( connection, static_cast<GyroDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::Callsign:
+            {
+                result = InsertCallsign( connection, static_cast<CallsignObject&>( data ) );
+            }
+            break;
+            case Kind::InternationalMaritimeOrganizationNumber:
+            {
+                result = InsertInternationalMaritimeOrganizationNumber( connection, static_cast<InternationalMaritimeOrganizationNumberObject&>( data ) );
+            }
+            break;
+            case Kind::MaritimeMobileServiceIdentity:
+            {
+                result = InsertMaritimeMobileServiceIdentity( connection, static_cast<MaritimeMobileServiceIdentityObject&>( data ) );
+            }
+            break;
+            case Kind::Name:
+            {
+                result = InsertName( connection, static_cast<NameObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesValue:
+            {
+                result = InsertInt16TimeseriesValue( connection, static_cast<Int16TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesValue:
+            {
+                result = InsertInt32TimeseriesValue( connection, static_cast<Int32TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesValue:
+            {
+                result = InsertInt64TimeseriesValue( connection, static_cast<Int64TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::BaseStation:
+            {
+                result = InsertBaseStation( connection, static_cast<BaseStationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraDevice:
+            {
+                result = InsertCameraDevice( connection, static_cast<CameraDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDevice:
+            {
+                result = InsertGNSSDevice( connection, static_cast<GNSSDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDevice:
+            {
+                result = InsertGyroDevice( connection, static_cast<GyroDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDevice:
+            {
+                result = InsertLineInputDevice( connection, static_cast<LineInputDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorDevice:
+            {
+                result = InsertOilSpillDetectorDevice( connection, static_cast<OilSpillDetectorDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadioDevice:
+            {
+                result = InsertRadioDevice( connection, static_cast<RadioDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeDevice:
+            {
+                result = InsertRadomeDevice( connection, static_cast<RadomeDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::AisDevice:
+            {
+                result = InsertAisDevice( connection, static_cast<AisDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadarDevice:
+            {
+                result = InsertRadarDevice( connection, static_cast<RadarDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationDevice:
+            {
+                result = InsertWeatherStationDevice( connection, static_cast<WeatherStationDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::Facility:
+            {
+                result = InsertFacility( connection, static_cast<FacilityObject&>( data ) );
+            }
+            break;
+            case Kind::Aircraft:
+            {
+                result = InsertAircraft( connection, static_cast<AircraftObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigation:
+            {
+                result = InsertAisAidToNavigation( connection, static_cast<AisAidToNavigationObject&>( data ) );
+            }
+            break;
+            case Kind::Vehicle:
+            {
+                result = InsertVehicle( connection, static_cast<VehicleObject&>( data ) );
+            }
+            break;
+            case Kind::Vessel:
+            {
+                result = InsertVessel( connection, static_cast<VesselObject&>( data ) );
+            }
+            break;
+            case Kind::ItemIdentityLink:
+            {
+                result = InsertItemIdentityLink( connection, static_cast<ItemIdentityLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ItemParentChildLink:
+            {
+                result = InsertItemParentChildLink( connection, static_cast<ItemParentChildLinkObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceCommand:
+            {
+                result = InsertLineInputDeviceCommand( connection, static_cast<LineInputDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceCommandReply:
+            {
+                result = InsertLineInputDeviceCommandReply( connection, static_cast<LineInputDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceConfiguration:
+            {
+                result = InsertLineInputDeviceConfiguration( connection, static_cast<LineInputDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputMessageRouting:
+            {
+                result = InsertLineInputMessageRouting( connection, static_cast<LineInputMessageRoutingObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputMessageRoutingDestination:
+            {
+                result = InsertLineInputMessageRoutingDestination( connection, static_cast<LineInputMessageRoutingDestinationObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputWhiteListEntry:
+            {
+                result = InsertLineInputWhiteListEntry( connection, static_cast<LineInputWhiteListEntryObject&>( data ) );
+            }
+            break;
+            case Kind::LogApplication:
+            {
+                result = InsertLogApplication( connection, static_cast<LogApplicationObject&>( data ) );
+            }
+            break;
+            case Kind::LogApplicationConfiguration:
+            {
+                result = InsertLogApplicationConfiguration( connection, static_cast<LogApplicationConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LogHost:
+            {
+                result = InsertLogHost( connection, static_cast<LogHostObject&>( data ) );
+            }
+            break;
+            case Kind::LogHostConfiguration:
+            {
+                result = InsertLogHostConfiguration( connection, static_cast<LogHostConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LogLocation:
+            {
+                result = InsertLogLocation( connection, static_cast<LogLocationObject&>( data ) );
+            }
+            break;
+            case Kind::LogProcess:
+            {
+                result = InsertLogProcess( connection, static_cast<LogProcessObject&>( data ) );
+            }
+            break;
+            case Kind::LogRecord:
+            {
+                result = InsertLogRecord( connection, static_cast<LogRecordObject&>( data ) );
+            }
+            break;
+            case Kind::LogThread:
+            {
+                result = InsertLogThread( connection, static_cast<LogThreadObject&>( data ) );
+            }
+            break;
+            case Kind::LogTraceEntry:
+            {
+                result = InsertLogTraceEntry( connection, static_cast<LogTraceEntryObject&>( data ) );
+            }
+            break;
+            case Kind::MapElement:
+            {
+                result = InsertMapElement( connection, static_cast<MapElementObject&>( data ) );
+            }
+            break;
+            case Kind::MapInfo:
+            {
+                result = InsertMapInfo( connection, static_cast<MapInfoObject&>( data ) );
+            }
+            break;
+            case Kind::MapServiceOptions:
+            {
+                result = InsertMapServiceOptions( connection, static_cast<MapServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::MaritimeIdentificationDigits:
+            {
+                result = InsertMaritimeIdentificationDigits( connection, static_cast<MaritimeIdentificationDigitsObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySession:
+            {
+                result = InsertMediaProxySession( connection, static_cast<MediaProxySessionObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionFile:
+            {
+                result = InsertMediaProxySessionFile( connection, static_cast<MediaProxySessionFileObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionOptions:
+            {
+                result = InsertMediaProxySessionOptions( connection, static_cast<MediaProxySessionOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::MediaService:
+            {
+                result = InsertMediaService( connection, static_cast<MediaServiceObject&>( data ) );
+            }
+            break;
+            case Kind::MediaServiceOptions:
+            {
+                result = InsertMediaServiceOptions( connection, static_cast<MediaServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::ElementType:
+            {
+                result = InsertElementType( connection, static_cast<ElementTypeObject&>( data ) );
+            }
+            break;
+            case Kind::Namespace:
+            {
+                result = InsertNamespace( connection, static_cast<NamespaceObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpill:
+            {
+                result = InsertOilSpill( connection, static_cast<OilSpillObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorCommand:
+            {
+                result = InsertOilSpillDetectorCommand( connection, static_cast<OilSpillDetectorCommandObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorCommandReply:
+            {
+                result = InsertOilSpillDetectorCommandReply( connection, static_cast<OilSpillDetectorCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorConfiguration:
+            {
+                result = InsertOilSpillDetectorConfiguration( connection, static_cast<OilSpillDetectorConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::Position2DTimeseriesValue:
+            {
+                result = InsertPosition2DTimeseriesValue( connection, static_cast<Position2DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Position3DTimeseriesValue:
+            {
+                result = InsertPosition3DTimeseriesValue( connection, static_cast<Position3DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::ProcessTrackValueResult:
+            {
+                result = InsertProcessTrackValueResult( connection, static_cast<ProcessTrackValueResultObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryProperty:
+            {
+                result = InsertBinaryProperty( connection, static_cast<BinaryPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanProperty:
+            {
+                result = InsertBooleanProperty( connection, static_cast<BooleanPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ByteProperty:
+            {
+                result = InsertByteProperty( connection, static_cast<BytePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeProperty:
+            {
+                result = InsertDateTimeProperty( connection, static_cast<DateTimePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleProperty:
+            {
+                result = InsertDoubleProperty( connection, static_cast<DoublePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::GuidProperty:
+            {
+                result = InsertGuidProperty( connection, static_cast<GuidPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int16Property:
+            {
+                result = InsertInt16Property( connection, static_cast<Int16PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int32Property:
+            {
+                result = InsertInt32Property( connection, static_cast<Int32PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int64Property:
+            {
+                result = InsertInt64Property( connection, static_cast<Int64PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceProperty:
+            {
+                result = InsertReferenceProperty( connection, static_cast<ReferencePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SByteProperty:
+            {
+                result = InsertSByteProperty( connection, static_cast<SBytePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SingleProperty:
+            {
+                result = InsertSingleProperty( connection, static_cast<SinglePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::StringProperty:
+            {
+                result = InsertStringProperty( connection, static_cast<StringPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesProperty:
+            {
+                result = InsertBinaryTimeseriesProperty( connection, static_cast<BinaryTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesProperty:
+            {
+                result = InsertBooleanTimeseriesProperty( connection, static_cast<BooleanTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesProperty:
+            {
+                result = InsertByteTimeseriesProperty( connection, static_cast<ByteTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesProperty:
+            {
+                result = InsertDateTimeTimeseriesProperty( connection, static_cast<DateTimeTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesProperty:
+            {
+                result = InsertDoubleTimeseriesProperty( connection, static_cast<DoubleTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesProperty:
+            {
+                result = InsertGuidTimeseriesProperty( connection, static_cast<GuidTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesProperty:
+            {
+                result = InsertInt16TimeseriesProperty( connection, static_cast<Int16TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesProperty:
+            {
+                result = InsertInt32TimeseriesProperty( connection, static_cast<Int32TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesProperty:
+            {
+                result = InsertInt64TimeseriesProperty( connection, static_cast<Int64TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesProperty:
+            {
+                result = InsertReferenceTimeseriesProperty( connection, static_cast<ReferenceTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesProperty:
+            {
+                result = InsertSByteTimeseriesProperty( connection, static_cast<SByteTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesProperty:
+            {
+                result = InsertSingleTimeseriesProperty( connection, static_cast<SingleTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesProperty:
+            {
+                result = InsertStringTimeseriesProperty( connection, static_cast<StringTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesProperty:
+            {
+                result = InsertTimeSpanTimeseriesProperty( connection, static_cast<TimeSpanTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesProperty:
+            {
+                result = InsertUInt16TimeseriesProperty( connection, static_cast<UInt16TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesProperty:
+            {
+                result = InsertUInt32TimeseriesProperty( connection, static_cast<UInt32TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesProperty:
+            {
+                result = InsertUInt64TimeseriesProperty( connection, static_cast<UInt64TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanProperty:
+            {
+                result = InsertTimeSpanProperty( connection, static_cast<TimeSpanPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16Property:
+            {
+                result = InsertUInt16Property( connection, static_cast<UInt16PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32Property:
+            {
+                result = InsertUInt32Property( connection, static_cast<UInt32PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64Property:
+            {
+                result = InsertUInt64Property( connection, static_cast<UInt64PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryPropertyDefinition:
+            {
+                result = InsertBinaryPropertyDefinition( connection, static_cast<BinaryPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanPropertyDefinition:
+            {
+                result = InsertBooleanPropertyDefinition( connection, static_cast<BooleanPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BytePropertyDefinition:
+            {
+                result = InsertBytePropertyDefinition( connection, static_cast<BytePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimePropertyDefinition:
+            {
+                result = InsertDateTimePropertyDefinition( connection, static_cast<DateTimePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DoublePropertyDefinition:
+            {
+                result = InsertDoublePropertyDefinition( connection, static_cast<DoublePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::GuidPropertyDefinition:
+            {
+                result = InsertGuidPropertyDefinition( connection, static_cast<GuidPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int16PropertyDefinition:
+            {
+                result = InsertInt16PropertyDefinition( connection, static_cast<Int16PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int32PropertyDefinition:
+            {
+                result = InsertInt32PropertyDefinition( connection, static_cast<Int32PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int64PropertyDefinition:
+            {
+                result = InsertInt64PropertyDefinition( connection, static_cast<Int64PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ReferencePropertyDefinition:
+            {
+                result = InsertReferencePropertyDefinition( connection, static_cast<ReferencePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SBytePropertyDefinition:
+            {
+                result = InsertSBytePropertyDefinition( connection, static_cast<SBytePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SinglePropertyDefinition:
+            {
+                result = InsertSinglePropertyDefinition( connection, static_cast<SinglePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::StringPropertyDefinition:
+            {
+                result = InsertStringPropertyDefinition( connection, static_cast<StringPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesPropertyDefinition:
+            {
+                result = InsertBinaryTimeseriesPropertyDefinition( connection, static_cast<BinaryTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesPropertyDefinition:
+            {
+                result = InsertBooleanTimeseriesPropertyDefinition( connection, static_cast<BooleanTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesPropertyDefinition:
+            {
+                result = InsertByteTimeseriesPropertyDefinition( connection, static_cast<ByteTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesPropertyDefinition:
+            {
+                result = InsertDateTimeTimeseriesPropertyDefinition( connection, static_cast<DateTimeTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesPropertyDefinition:
+            {
+                result = InsertDoubleTimeseriesPropertyDefinition( connection, static_cast<DoubleTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesPropertyDefinition:
+            {
+                result = InsertGuidTimeseriesPropertyDefinition( connection, static_cast<GuidTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesPropertyDefinition:
+            {
+                result = InsertInt16TimeseriesPropertyDefinition( connection, static_cast<Int16TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesPropertyDefinition:
+            {
+                result = InsertInt32TimeseriesPropertyDefinition( connection, static_cast<Int32TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesPropertyDefinition:
+            {
+                result = InsertInt64TimeseriesPropertyDefinition( connection, static_cast<Int64TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesPropertyDefinition:
+            {
+                result = InsertReferenceTimeseriesPropertyDefinition( connection, static_cast<ReferenceTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesPropertyDefinition:
+            {
+                result = InsertSByteTimeseriesPropertyDefinition( connection, static_cast<SByteTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesPropertyDefinition:
+            {
+                result = InsertSingleTimeseriesPropertyDefinition( connection, static_cast<SingleTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesPropertyDefinition:
+            {
+                result = InsertStringTimeseriesPropertyDefinition( connection, static_cast<StringTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesPropertyDefinition:
+            {
+                result = InsertTimeSpanTimeseriesPropertyDefinition( connection, static_cast<TimeSpanTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesPropertyDefinition:
+            {
+                result = InsertUInt16TimeseriesPropertyDefinition( connection, static_cast<UInt16TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesPropertyDefinition:
+            {
+                result = InsertUInt32TimeseriesPropertyDefinition( connection, static_cast<UInt32TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesPropertyDefinition:
+            {
+                result = InsertUInt64TimeseriesPropertyDefinition( connection, static_cast<UInt64TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanPropertyDefinition:
+            {
+                result = InsertTimeSpanPropertyDefinition( connection, static_cast<TimeSpanPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16PropertyDefinition:
+            {
+                result = InsertUInt16PropertyDefinition( connection, static_cast<UInt16PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32PropertyDefinition:
+            {
+                result = InsertUInt32PropertyDefinition( connection, static_cast<UInt32PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64PropertyDefinition:
+            {
+                result = InsertUInt64PropertyDefinition( connection, static_cast<UInt64PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAlarmStatus:
+            {
+                result = InsertRadarAlarmStatus( connection, static_cast<RadarAlarmStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommand:
+            {
+                result = InsertRadarCommand( connection, static_cast<RadarCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandGetStatus:
+            {
+                result = InsertRadarCommandGetStatus( connection, static_cast<RadarCommandGetStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandReply:
+            {
+                result = InsertRadarCommandReply( connection, static_cast<RadarCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandReplyGetStatus:
+            {
+                result = InsertRadarCommandReplyGetStatus( connection, static_cast<RadarCommandReplyGetStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarConfiguration:
+            {
+                result = InsertRadarConfiguration( connection, static_cast<RadarConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::RadarImage:
+            {
+                result = InsertRadarImage( connection, static_cast<RadarImageObject&>( data ) );
+            }
+            break;
+            case Kind::RadarRawTrackTable:
+            {
+                result = InsertRadarRawTrackTable( connection, static_cast<RadarRawTrackTableObject&>( data ) );
+            }
+            break;
+            case Kind::RadarStatus:
+            {
+                result = InsertRadarStatus( connection, static_cast<RadarStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadioCommand:
+            {
+                result = InsertRadioCommand( connection, static_cast<RadioCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadioCommandReply:
+            {
+                result = InsertRadioCommandReply( connection, static_cast<RadioCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadioConfiguration:
+            {
+                result = InsertRadioConfiguration( connection, static_cast<RadioConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeCommand:
+            {
+                result = InsertRadomeCommand( connection, static_cast<RadomeCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeCommandReply:
+            {
+                result = InsertRadomeCommandReply( connection, static_cast<RadomeCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeConfiguration:
+            {
+                result = InsertRadomeConfiguration( connection, static_cast<RadomeConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesValue:
+            {
+                result = InsertReferenceTimeseriesValue( connection, static_cast<ReferenceTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesValue:
+            {
+                result = InsertSByteTimeseriesValue( connection, static_cast<SByteTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityDomain:
+            {
+                result = InsertSecurityDomain( connection, static_cast<SecurityDomainObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityLogin:
+            {
+                result = InsertSecurityLogin( connection, static_cast<SecurityLoginObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityRole:
+            {
+                result = InsertSecurityRole( connection, static_cast<SecurityRoleObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityIdentifierRoleLink:
+            {
+                result = InsertSecurityIdentifierRoleLink( connection, static_cast<SecurityIdentifierRoleLinkObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityLoginSession:
+            {
+                result = InsertSecurityLoginSession( connection, static_cast<SecurityLoginSessionObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityPermission:
+            {
+                result = InsertSecurityPermission( connection, static_cast<SecurityPermissionObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesValue:
+            {
+                result = InsertSingleTimeseriesValue( connection, static_cast<SingleTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesValue:
+            {
+                result = InsertStringTimeseriesValue( connection, static_cast<StringTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseries:
+            {
+                result = InsertBinaryTimeseries( connection, static_cast<BinaryTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseries:
+            {
+                result = InsertBooleanTimeseries( connection, static_cast<BooleanTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigationOffPositionTimeseries:
+            {
+                result = InsertAisAidToNavigationOffPositionTimeseries( connection, static_cast<AisAidToNavigationOffPositionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceEnabledTimeseries:
+            {
+                result = InsertDeviceEnabledTimeseries( connection, static_cast<DeviceEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAutomaticSensitivityTimeControlTimeseries:
+            {
+                result = InsertRadarAutomaticSensitivityTimeControlTimeseries( connection, static_cast<RadarAutomaticSensitivityTimeControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarBlankSector1Timeseries:
+            {
+                result = InsertRadarBlankSector1Timeseries( connection, static_cast<RadarBlankSector1TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarBlankSector2Timeseries:
+            {
+                result = InsertRadarBlankSector2Timeseries( connection, static_cast<RadarBlankSector2TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableAutomaticFrequencyControlTimeseries:
+            {
+                result = InsertRadarEnableAutomaticFrequencyControlTimeseries( connection, static_cast<RadarEnableAutomaticFrequencyControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableFastTimeConstantTimeseries:
+            {
+                result = InsertRadarEnableFastTimeConstantTimeseries( connection, static_cast<RadarEnableFastTimeConstantTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableSensitivityTimeControlTimeseries:
+            {
+                result = InsertRadarEnableSensitivityTimeControlTimeseries( connection, static_cast<RadarEnableSensitivityTimeControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarPowerOnTimeseries:
+            {
+                result = InsertRadarPowerOnTimeseries( connection, static_cast<RadarPowerOnTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSaveSettingsTimeseries:
+            {
+                result = InsertRadarSaveSettingsTimeseries( connection, static_cast<RadarSaveSettingsTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarTrackingTimeseries:
+            {
+                result = InsertRadarTrackingTimeseries( connection, static_cast<RadarTrackingTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionEnabledTimeseries:
+            {
+                result = InsertMediaProxySessionEnabledTimeseries( connection, static_cast<MediaProxySessionEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::MediaServiceEnabledTimeseries:
+            {
+                result = InsertMediaServiceEnabledTimeseries( connection, static_cast<MediaServiceEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseries:
+            {
+                result = InsertByteTimeseries( connection, static_cast<ByteTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseries:
+            {
+                result = InsertDateTimeTimeseries( connection, static_cast<DateTimeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseries:
+            {
+                result = InsertDoubleTimeseries( connection, static_cast<DoubleTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSAltitudeTimeseries:
+            {
+                result = InsertGNSSAltitudeTimeseries( connection, static_cast<GNSSAltitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSLatitudeTimeseries:
+            {
+                result = InsertGNSSLatitudeTimeseries( connection, static_cast<GNSSLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSLongitudeTimeseries:
+            {
+                result = InsertGNSSLongitudeTimeseries( connection, static_cast<GNSSLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroCourseTimeseries:
+            {
+                result = InsertGyroCourseTimeseries( connection, static_cast<GyroCourseTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroHeadingMagneticNorthTimeseries:
+            {
+                result = InsertGyroHeadingMagneticNorthTimeseries( connection, static_cast<GyroHeadingMagneticNorthTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroHeadingTrueNorthTimeseries:
+            {
+                result = InsertGyroHeadingTrueNorthTimeseries( connection, static_cast<GyroHeadingTrueNorthTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroPitchTimeseries:
+            {
+                result = InsertGyroPitchTimeseries( connection, static_cast<GyroPitchTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroRateOfTurnTimeseries:
+            {
+                result = InsertGyroRateOfTurnTimeseries( connection, static_cast<GyroRateOfTurnTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroRollTimeseries:
+            {
+                result = InsertGyroRollTimeseries( connection, static_cast<GyroRollTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroSpeedTimeseries:
+            {
+                result = InsertGyroSpeedTimeseries( connection, static_cast<GyroSpeedTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarLatitudeTimeseries:
+            {
+                result = InsertRadarLatitudeTimeseries( connection, static_cast<RadarLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarLongitudeTimeseries:
+            {
+                result = InsertRadarLongitudeTimeseries( connection, static_cast<RadarLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeDewPointTimeseries:
+            {
+                result = InsertRadomeDewPointTimeseries( connection, static_cast<RadomeDewPointTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomePressureTimeseries:
+            {
+                result = InsertRadomePressureTimeseries( connection, static_cast<RadomePressureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeTemperatureTimeseries:
+            {
+                result = InsertRadomeTemperatureTimeseries( connection, static_cast<RadomeTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::VesselDraughtTimeseries:
+            {
+                result = InsertVesselDraughtTimeseries( connection, static_cast<VesselDraughtTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewLatitudeTimeseries:
+            {
+                result = InsertViewLatitudeTimeseries( connection, static_cast<ViewLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewLongitudeTimeseries:
+            {
+                result = InsertViewLongitudeTimeseries( connection, static_cast<ViewLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewZoomLevelTimeseries:
+            {
+                result = InsertViewZoomLevelTimeseries( connection, static_cast<ViewZoomLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationAbsoluteHumidityTimeseries:
+            {
+                result = InsertWeatherStationAbsoluteHumidityTimeseries( connection, static_cast<WeatherStationAbsoluteHumidityTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationAirTemperatureTimeseries:
+            {
+                result = InsertWeatherStationAirTemperatureTimeseries( connection, static_cast<WeatherStationAirTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationBarometricPressureTimeseries:
+            {
+                result = InsertWeatherStationBarometricPressureTimeseries( connection, static_cast<WeatherStationBarometricPressureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationDewPointTimeseries:
+            {
+                result = InsertWeatherStationDewPointTimeseries( connection, static_cast<WeatherStationDewPointTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationRelativeHumidityTimeseries:
+            {
+                result = InsertWeatherStationRelativeHumidityTimeseries( connection, static_cast<WeatherStationRelativeHumidityTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWaterTemperatureTimeseries:
+            {
+                result = InsertWeatherStationWaterTemperatureTimeseries( connection, static_cast<WeatherStationWaterTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWindDirectionTimeseries:
+            {
+                result = InsertWeatherStationWindDirectionTimeseries( connection, static_cast<WeatherStationWindDirectionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWindSpeedTimeseries:
+            {
+                result = InsertWeatherStationWindSpeedTimeseries( connection, static_cast<WeatherStationWindSpeedTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition2DTimeseries:
+            {
+                result = InsertGeoPosition2DTimeseries( connection, static_cast<GeoPosition2DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigationPositionTimeseries:
+            {
+                result = InsertAisAidToNavigationPositionTimeseries( connection, static_cast<AisAidToNavigationPositionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition3DTimeseries:
+            {
+                result = InsertGeoPosition3DTimeseries( connection, static_cast<GeoPosition3DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseries:
+            {
+                result = InsertGuidTimeseries( connection, static_cast<GuidTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int16Timeseries:
+            {
+                result = InsertInt16Timeseries( connection, static_cast<Int16TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int32Timeseries:
+            {
+                result = InsertInt32Timeseries( connection, static_cast<Int32TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAzimuthOffsetTimeseries:
+            {
+                result = InsertRadarAzimuthOffsetTimeseries( connection, static_cast<RadarAzimuthOffsetTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarFastTimeConstantLevelTimeseries:
+            {
+                result = InsertRadarFastTimeConstantLevelTimeseries( connection, static_cast<RadarFastTimeConstantLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarFastTimeConstantModeTimeseries:
+            {
+                result = InsertRadarFastTimeConstantModeTimeseries( connection, static_cast<RadarFastTimeConstantModeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarPulseTimeseries:
+            {
+                result = InsertRadarPulseTimeseries( connection, static_cast<RadarPulseTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector1EndTimeseries:
+            {
+                result = InsertRadarSector1EndTimeseries( connection, static_cast<RadarSector1EndTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector1StartTimeseries:
+            {
+                result = InsertRadarSector1StartTimeseries( connection, static_cast<RadarSector1StartTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector2EndTimeseries:
+            {
+                result = InsertRadarSector2EndTimeseries( connection, static_cast<RadarSector2EndTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector2StartTimeseries:
+            {
+                result = InsertRadarSector2StartTimeseries( connection, static_cast<RadarSector2StartTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSensitivityTimeControlLevelTimeseries:
+            {
+                result = InsertRadarSensitivityTimeControlLevelTimeseries( connection, static_cast<RadarSensitivityTimeControlLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarTuningTimeseries:
+            {
+                result = InsertRadarTuningTimeseries( connection, static_cast<RadarTuningTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::VesselPersonsOnBoardTimeseries:
+            {
+                result = InsertVesselPersonsOnBoardTimeseries( connection, static_cast<VesselPersonsOnBoardTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int64Timeseries:
+            {
+                result = InsertInt64Timeseries( connection, static_cast<Int64TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Position2DTimeseries:
+            {
+                result = InsertPosition2DTimeseries( connection, static_cast<Position2DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Position3DTimeseries:
+            {
+                result = InsertPosition3DTimeseries( connection, static_cast<Position3DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseries:
+            {
+                result = InsertReferenceTimeseries( connection, static_cast<ReferenceTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseries:
+            {
+                result = InsertSByteTimeseries( connection, static_cast<SByteTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseries:
+            {
+                result = InsertSingleTimeseries( connection, static_cast<SingleTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseries:
+            {
+                result = InsertStringTimeseries( connection, static_cast<StringTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseries:
+            {
+                result = InsertTimeSpanTimeseries( connection, static_cast<TimeSpanTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16Timeseries:
+            {
+                result = InsertUInt16Timeseries( connection, static_cast<UInt16TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32Timeseries:
+            {
+                result = InsertUInt32Timeseries( connection, static_cast<UInt32TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeStatusTimeseries:
+            {
+                result = InsertRadomeStatusTimeseries( connection, static_cast<RadomeStatusTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64Timeseries:
+            {
+                result = InsertUInt64Timeseries( connection, static_cast<UInt64TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::TimeseriesCatalog:
+            {
+                result = InsertTimeseriesCatalog( connection, static_cast<TimeseriesCatalogObject&>( data ) );
+            }
+            break;
+            case Kind::TimeseriesInfo:
+            {
+                result = InsertTimeseriesInfo( connection, static_cast<TimeseriesInfoObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesValue:
+            {
+                result = InsertTimeSpanTimeseriesValue( connection, static_cast<TimeSpanTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::TrackableItemTrackLink:
+            {
+                result = InsertTrackableItemTrackLink( connection, static_cast<TrackableItemTrackLinkObject&>( data ) );
+            }
+            break;
+            case Kind::Track:
+            {
+                result = InsertTrack( connection, static_cast<TrackObject&>( data ) );
+            }
+            break;
+            case Kind::Track3D:
+            {
+                result = InsertTrack3D( connection, static_cast<Track3DObject&>( data ) );
+            }
+            break;
+            case Kind::TrackerFilterParameters:
+            {
+                result = InsertTrackerFilterParameters( connection, static_cast<TrackerFilterParametersObject&>( data ) );
+            }
+            break;
+            case Kind::TrackerFilterParametersConfiguration:
+            {
+                result = InsertTrackerFilterParametersConfiguration( connection, static_cast<TrackerFilterParametersConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::TrackInfo:
+            {
+                result = InsertTrackInfo( connection, static_cast<TrackInfoObject&>( data ) );
+            }
+            break;
+            case Kind::TrackingServiceOptions:
+            {
+                result = InsertTrackingServiceOptions( connection, static_cast<TrackingServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::TrackLink:
+            {
+                result = InsertTrackLink( connection, static_cast<TrackLinkObject&>( data ) );
+            }
+            break;
+            case Kind::TrackValue:
+            {
+                result = InsertTrackValue( connection, static_cast<TrackValueObject&>( data ) );
+            }
+            break;
+            case Kind::TrackValue3D:
+            {
+                result = InsertTrackValue3D( connection, static_cast<TrackValue3DObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesValue:
+            {
+                result = InsertUInt16TimeseriesValue( connection, static_cast<UInt16TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesValue:
+            {
+                result = InsertUInt32TimeseriesValue( connection, static_cast<UInt32TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesValue:
+            {
+                result = InsertUInt64TimeseriesValue( connection, static_cast<UInt64TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::VehicleType:
+            {
+                result = InsertVehicleType( connection, static_cast<VehicleTypeObject&>( data ) );
+            }
+            break;
+            case Kind::VesselType:
+            {
+                result = InsertVesselType( connection, static_cast<VesselTypeObject&>( data ) );
+            }
+            break;
+            case Kind::View:
+            {
+                result = InsertView( connection, static_cast<ViewObject&>( data ) );
+            }
+            break;
+            case Kind::ViewCameraLink:
+            {
+                result = InsertViewCameraLink( connection, static_cast<ViewCameraLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ViewTrackerLink:
+            {
+                result = InsertViewTrackerLink( connection, static_cast<ViewTrackerLinkObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationCommand:
+            {
+                result = InsertWeatherStationCommand( connection, static_cast<WeatherStationCommandObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationCommandReply:
+            {
+                result = InsertWeatherStationCommandReply( connection, static_cast<WeatherStationCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationConfiguration:
+            {
+                result = InsertWeatherStationConfiguration( connection, static_cast<WeatherStationConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::CircularZone:
+            {
+                result = InsertCircularZone( connection, static_cast<CircularZoneObject&>( data ) );
+            }
+            break;
+            case Kind::PolygonZone:
+            {
+                result = InsertPolygonZone( connection, static_cast<PolygonZoneObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneExceptions:
+            {
+                result = InsertZoneExceptions( connection, static_cast<ZoneExceptionsObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneExceptionsVesselLink:
+            {
+                result = InsertZoneExceptionsVesselLink( connection, static_cast<ZoneExceptionsVesselLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneTrackAlarm:
+            {
+                result = InsertZoneTrackAlarm( connection, static_cast<ZoneTrackAlarmObject&>( data ) );
+            }
+            break;
+        }
+        return result;
+    }
+    BARRELMAN_EXPORT bool Update( const ODBC::Connection& connection, BaseData<Kind, Guid>& data )
+    {
+        bool result = false;
+        auto kind = data.GetObjectType( );
+        switch ( kind )
+        {
+            case Kind::AircraftType:
+            {
+                result = UpdateAircraftType( connection, static_cast<AircraftTypeObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceCommand:
+            {
+                result = UpdateAisDeviceCommand( connection, static_cast<AisDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceCommandReply:
+            {
+                result = UpdateAisDeviceCommandReply( connection, static_cast<AisDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceConfiguration:
+            {
+                result = UpdateAisDeviceConfiguration( connection, static_cast<AisDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceRawMessage:
+            {
+                result = UpdateAisDeviceRawMessage( connection, static_cast<AisDeviceRawMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceRawSentence:
+            {
+                result = UpdateAisDeviceRawSentence( connection, static_cast<AisDeviceRawSentenceObject&>( data ) );
+            }
+            break;
+            case Kind::AidToNavigationReportMessage:
+            {
+                result = UpdateAidToNavigationReportMessage( connection, static_cast<AidToNavigationReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisAddressedSafetyRelatedMessage:
+            {
+                result = UpdateAisAddressedSafetyRelatedMessage( connection, static_cast<AisAddressedSafetyRelatedMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBaseStationReportMessage:
+            {
+                result = UpdateAisBaseStationReportMessage( connection, static_cast<AisBaseStationReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryAcknowledgeMessage:
+            {
+                result = UpdateAisBinaryAcknowledgeMessage( connection, static_cast<AisBinaryAcknowledgeMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryAddressedMessage:
+            {
+                result = UpdateAisBinaryAddressedMessage( connection, static_cast<AisBinaryAddressedMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryBroadcastMessage:
+            {
+                result = UpdateAisBinaryBroadcastMessage( connection, static_cast<AisBinaryBroadcastMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisDataLinkManagementMessage:
+            {
+                result = UpdateAisDataLinkManagementMessage( connection, static_cast<AisDataLinkManagementMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisExtendedClassBCsPositionReportMessage:
+            {
+                result = UpdateAisExtendedClassBCsPositionReportMessage( connection, static_cast<AisExtendedClassBCsPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisInterrogationMessage:
+            {
+                result = UpdateAisInterrogationMessage( connection, static_cast<AisInterrogationMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAAssignedScheduleMessage:
+            {
+                result = UpdateAisPositionReportClassAAssignedScheduleMessage( connection, static_cast<AisPositionReportClassAAssignedScheduleMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAMessage:
+            {
+                result = UpdateAisPositionReportClassAMessage( connection, static_cast<AisPositionReportClassAMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAResponseToInterrogationMessage:
+            {
+                result = UpdateAisPositionReportClassAResponseToInterrogationMessage( connection, static_cast<AisPositionReportClassAResponseToInterrogationMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportForLongRangeApplicationsMessage:
+            {
+                result = UpdateAisPositionReportForLongRangeApplicationsMessage( connection, static_cast<AisPositionReportForLongRangeApplicationsMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisSafetyRelatedAcknowledgmentMessage:
+            {
+                result = UpdateAisSafetyRelatedAcknowledgmentMessage( connection, static_cast<AisSafetyRelatedAcknowledgmentMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStandardClassBCsPositionReportMessage:
+            {
+                result = UpdateAisStandardClassBCsPositionReportMessage( connection, static_cast<AisStandardClassBCsPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStandardSarAircraftPositionReportMessage:
+            {
+                result = UpdateAisStandardSarAircraftPositionReportMessage( connection, static_cast<AisStandardSarAircraftPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticAndVoyageRelatedDataMessage:
+            {
+                result = UpdateAisStaticAndVoyageRelatedDataMessage( connection, static_cast<AisStaticAndVoyageRelatedDataMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportMessage:
+            {
+                result = UpdateAisStaticDataReportMessage( connection, static_cast<AisStaticDataReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportPartAMessage:
+            {
+                result = UpdateAisStaticDataReportPartAMessage( connection, static_cast<AisStaticDataReportPartAMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportPartBMessage:
+            {
+                result = UpdateAisStaticDataReportPartBMessage( connection, static_cast<AisStaticDataReportPartBMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisUtcAndDateInquiryMessage:
+            {
+                result = UpdateAisUtcAndDateInquiryMessage( connection, static_cast<AisUtcAndDateInquiryMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisUtcAndDateResponseMessage:
+            {
+                result = UpdateAisUtcAndDateResponseMessage( connection, static_cast<AisUtcAndDateResponseMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AlarmStateChange:
+            {
+                result = UpdateAlarmStateChange( connection, static_cast<AlarmStateChangeObject&>( data ) );
+            }
+            break;
+            case Kind::BaseStationType:
+            {
+                result = UpdateBaseStationType( connection, static_cast<BaseStationTypeObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesValue:
+            {
+                result = UpdateBinaryTimeseriesValue( connection, static_cast<BinaryTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Bookmark:
+            {
+                result = UpdateBookmark( connection, static_cast<BookmarkObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesValue:
+            {
+                result = UpdateBooleanTimeseriesValue( connection, static_cast<BooleanTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesValue:
+            {
+                result = UpdateByteTimeseriesValue( connection, static_cast<ByteTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommand:
+            {
+                result = UpdateCameraCommand( connection, static_cast<CameraCommandObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandAbsoluteMove:
+            {
+                result = UpdateCameraCommandAbsoluteMove( connection, static_cast<CameraCommandAbsoluteMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandAdjustPanTiltZoom:
+            {
+                result = UpdateCameraCommandAdjustPanTiltZoom( connection, static_cast<CameraCommandAdjustPanTiltZoomObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandContinuousMove:
+            {
+                result = UpdateCameraCommandContinuousMove( connection, static_cast<CameraCommandContinuousMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandGeoMove:
+            {
+                result = UpdateCameraCommandGeoMove( connection, static_cast<CameraCommandGeoMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandRelativeMove:
+            {
+                result = UpdateCameraCommandRelativeMove( connection, static_cast<CameraCommandRelativeMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandReleasePTZOwnership:
+            {
+                result = UpdateCameraCommandReleasePTZOwnership( connection, static_cast<CameraCommandReleasePTZOwnershipObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandRequestPTZOwnership:
+            {
+                result = UpdateCameraCommandRequestPTZOwnership( connection, static_cast<CameraCommandRequestPTZOwnershipObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetAutoFocus:
+            {
+                result = UpdateCameraCommandSetAutoFocus( connection, static_cast<CameraCommandSetAutoFocusObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetBlackAndWhite:
+            {
+                result = UpdateCameraCommandSetBlackAndWhite( connection, static_cast<CameraCommandSetBlackAndWhiteObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetFollowed:
+            {
+                result = UpdateCameraCommandSetFollowed( connection, static_cast<CameraCommandSetFollowedObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetInfraRedLamp:
+            {
+                result = UpdateCameraCommandSetInfraRedLamp( connection, static_cast<CameraCommandSetInfraRedLampObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetWasher:
+            {
+                result = UpdateCameraCommandSetWasher( connection, static_cast<CameraCommandSetWasherObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetWiper:
+            {
+                result = UpdateCameraCommandSetWiper( connection, static_cast<CameraCommandSetWiperObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandStop:
+            {
+                result = UpdateCameraCommandStop( connection, static_cast<CameraCommandStopObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandReply:
+            {
+                result = UpdateCameraCommandReply( connection, static_cast<CameraCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::CameraConfiguration:
+            {
+                result = UpdateCameraConfiguration( connection, static_cast<CameraConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraPanCalibration:
+            {
+                result = UpdateCameraPanCalibration( connection, static_cast<CameraPanCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraPanCalibrationValue:
+            {
+                result = UpdateCameraPanCalibrationValue( connection, static_cast<CameraPanCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraStatus:
+            {
+                result = UpdateCameraStatus( connection, static_cast<CameraStatusObject&>( data ) );
+            }
+            break;
+            case Kind::CameraTiltCalibration:
+            {
+                result = UpdateCameraTiltCalibration( connection, static_cast<CameraTiltCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraTiltCalibrationValue:
+            {
+                result = UpdateCameraTiltCalibrationValue( connection, static_cast<CameraTiltCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraZoomCalibration:
+            {
+                result = UpdateCameraZoomCalibration( connection, static_cast<CameraZoomCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraZoomCalibrationValue:
+            {
+                result = UpdateCameraZoomCalibrationValue( connection, static_cast<CameraZoomCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::Catalog:
+            {
+                result = UpdateCatalog( connection, static_cast<CatalogObject&>( data ) );
+            }
+            break;
+            case Kind::Element:
+            {
+                result = UpdateElement( connection, static_cast<ElementObject&>( data ) );
+            }
+            break;
+            case Kind::CollectionInfo:
+            {
+                result = UpdateCollectionInfo( connection, static_cast<CollectionInfoObject&>( data ) );
+            }
+            break;
+            case Kind::Country:
+            {
+                result = UpdateCountry( connection, static_cast<CountryObject&>( data ) );
+            }
+            break;
+            case Kind::CursorInfo:
+            {
+                result = UpdateCursorInfo( connection, static_cast<CursorInfoObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesValue:
+            {
+                result = UpdateDateTimeTimeseriesValue( connection, static_cast<DateTimeTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceHost:
+            {
+                result = UpdateDeviceHost( connection, static_cast<DeviceHostObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceHostConfiguration:
+            {
+                result = UpdateDeviceHostConfiguration( connection, static_cast<DeviceHostConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesValue:
+            {
+                result = UpdateDoubleTimeseriesValue( connection, static_cast<DoubleTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::FacilityType:
+            {
+                result = UpdateFacilityType( connection, static_cast<FacilityTypeObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition2DTimeseriesValue:
+            {
+                result = UpdateGeoPosition2DTimeseriesValue( connection, static_cast<GeoPosition2DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition3DTimeseriesValue:
+            {
+                result = UpdateGeoPosition3DTimeseriesValue( connection, static_cast<GeoPosition3DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceCommand:
+            {
+                result = UpdateGNSSDeviceCommand( connection, static_cast<GNSSDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceCommandReply:
+            {
+                result = UpdateGNSSDeviceCommandReply( connection, static_cast<GNSSDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceConfiguration:
+            {
+                result = UpdateGNSSDeviceConfiguration( connection, static_cast<GNSSDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesValue:
+            {
+                result = UpdateGuidTimeseriesValue( connection, static_cast<GuidTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceCommand:
+            {
+                result = UpdateGyroDeviceCommand( connection, static_cast<GyroDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceCommandReply:
+            {
+                result = UpdateGyroDeviceCommandReply( connection, static_cast<GyroDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceConfiguration:
+            {
+                result = UpdateGyroDeviceConfiguration( connection, static_cast<GyroDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::Callsign:
+            {
+                result = UpdateCallsign( connection, static_cast<CallsignObject&>( data ) );
+            }
+            break;
+            case Kind::InternationalMaritimeOrganizationNumber:
+            {
+                result = UpdateInternationalMaritimeOrganizationNumber( connection, static_cast<InternationalMaritimeOrganizationNumberObject&>( data ) );
+            }
+            break;
+            case Kind::MaritimeMobileServiceIdentity:
+            {
+                result = UpdateMaritimeMobileServiceIdentity( connection, static_cast<MaritimeMobileServiceIdentityObject&>( data ) );
+            }
+            break;
+            case Kind::Name:
+            {
+                result = UpdateName( connection, static_cast<NameObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesValue:
+            {
+                result = UpdateInt16TimeseriesValue( connection, static_cast<Int16TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesValue:
+            {
+                result = UpdateInt32TimeseriesValue( connection, static_cast<Int32TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesValue:
+            {
+                result = UpdateInt64TimeseriesValue( connection, static_cast<Int64TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::BaseStation:
+            {
+                result = UpdateBaseStation( connection, static_cast<BaseStationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraDevice:
+            {
+                result = UpdateCameraDevice( connection, static_cast<CameraDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDevice:
+            {
+                result = UpdateGNSSDevice( connection, static_cast<GNSSDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDevice:
+            {
+                result = UpdateGyroDevice( connection, static_cast<GyroDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDevice:
+            {
+                result = UpdateLineInputDevice( connection, static_cast<LineInputDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorDevice:
+            {
+                result = UpdateOilSpillDetectorDevice( connection, static_cast<OilSpillDetectorDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadioDevice:
+            {
+                result = UpdateRadioDevice( connection, static_cast<RadioDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeDevice:
+            {
+                result = UpdateRadomeDevice( connection, static_cast<RadomeDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::AisDevice:
+            {
+                result = UpdateAisDevice( connection, static_cast<AisDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadarDevice:
+            {
+                result = UpdateRadarDevice( connection, static_cast<RadarDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationDevice:
+            {
+                result = UpdateWeatherStationDevice( connection, static_cast<WeatherStationDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::Facility:
+            {
+                result = UpdateFacility( connection, static_cast<FacilityObject&>( data ) );
+            }
+            break;
+            case Kind::Aircraft:
+            {
+                result = UpdateAircraft( connection, static_cast<AircraftObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigation:
+            {
+                result = UpdateAisAidToNavigation( connection, static_cast<AisAidToNavigationObject&>( data ) );
+            }
+            break;
+            case Kind::Vehicle:
+            {
+                result = UpdateVehicle( connection, static_cast<VehicleObject&>( data ) );
+            }
+            break;
+            case Kind::Vessel:
+            {
+                result = UpdateVessel( connection, static_cast<VesselObject&>( data ) );
+            }
+            break;
+            case Kind::ItemIdentityLink:
+            {
+                result = UpdateItemIdentityLink( connection, static_cast<ItemIdentityLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ItemParentChildLink:
+            {
+                result = UpdateItemParentChildLink( connection, static_cast<ItemParentChildLinkObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceCommand:
+            {
+                result = UpdateLineInputDeviceCommand( connection, static_cast<LineInputDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceCommandReply:
+            {
+                result = UpdateLineInputDeviceCommandReply( connection, static_cast<LineInputDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceConfiguration:
+            {
+                result = UpdateLineInputDeviceConfiguration( connection, static_cast<LineInputDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputMessageRouting:
+            {
+                result = UpdateLineInputMessageRouting( connection, static_cast<LineInputMessageRoutingObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputMessageRoutingDestination:
+            {
+                result = UpdateLineInputMessageRoutingDestination( connection, static_cast<LineInputMessageRoutingDestinationObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputWhiteListEntry:
+            {
+                result = UpdateLineInputWhiteListEntry( connection, static_cast<LineInputWhiteListEntryObject&>( data ) );
+            }
+            break;
+            case Kind::LogApplication:
+            {
+                result = UpdateLogApplication( connection, static_cast<LogApplicationObject&>( data ) );
+            }
+            break;
+            case Kind::LogApplicationConfiguration:
+            {
+                result = UpdateLogApplicationConfiguration( connection, static_cast<LogApplicationConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LogHost:
+            {
+                result = UpdateLogHost( connection, static_cast<LogHostObject&>( data ) );
+            }
+            break;
+            case Kind::LogHostConfiguration:
+            {
+                result = UpdateLogHostConfiguration( connection, static_cast<LogHostConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LogLocation:
+            {
+                result = UpdateLogLocation( connection, static_cast<LogLocationObject&>( data ) );
+            }
+            break;
+            case Kind::LogProcess:
+            {
+                result = UpdateLogProcess( connection, static_cast<LogProcessObject&>( data ) );
+            }
+            break;
+            case Kind::LogRecord:
+            {
+                result = UpdateLogRecord( connection, static_cast<LogRecordObject&>( data ) );
+            }
+            break;
+            case Kind::LogThread:
+            {
+                result = UpdateLogThread( connection, static_cast<LogThreadObject&>( data ) );
+            }
+            break;
+            case Kind::LogTraceEntry:
+            {
+                result = UpdateLogTraceEntry( connection, static_cast<LogTraceEntryObject&>( data ) );
+            }
+            break;
+            case Kind::MapElement:
+            {
+                result = UpdateMapElement( connection, static_cast<MapElementObject&>( data ) );
+            }
+            break;
+            case Kind::MapInfo:
+            {
+                result = UpdateMapInfo( connection, static_cast<MapInfoObject&>( data ) );
+            }
+            break;
+            case Kind::MapServiceOptions:
+            {
+                result = UpdateMapServiceOptions( connection, static_cast<MapServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::MaritimeIdentificationDigits:
+            {
+                result = UpdateMaritimeIdentificationDigits( connection, static_cast<MaritimeIdentificationDigitsObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySession:
+            {
+                result = UpdateMediaProxySession( connection, static_cast<MediaProxySessionObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionFile:
+            {
+                result = UpdateMediaProxySessionFile( connection, static_cast<MediaProxySessionFileObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionOptions:
+            {
+                result = UpdateMediaProxySessionOptions( connection, static_cast<MediaProxySessionOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::MediaService:
+            {
+                result = UpdateMediaService( connection, static_cast<MediaServiceObject&>( data ) );
+            }
+            break;
+            case Kind::MediaServiceOptions:
+            {
+                result = UpdateMediaServiceOptions( connection, static_cast<MediaServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::ElementType:
+            {
+                result = UpdateElementType( connection, static_cast<ElementTypeObject&>( data ) );
+            }
+            break;
+            case Kind::Namespace:
+            {
+                result = UpdateNamespace( connection, static_cast<NamespaceObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpill:
+            {
+                result = UpdateOilSpill( connection, static_cast<OilSpillObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorCommand:
+            {
+                result = UpdateOilSpillDetectorCommand( connection, static_cast<OilSpillDetectorCommandObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorCommandReply:
+            {
+                result = UpdateOilSpillDetectorCommandReply( connection, static_cast<OilSpillDetectorCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorConfiguration:
+            {
+                result = UpdateOilSpillDetectorConfiguration( connection, static_cast<OilSpillDetectorConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::Position2DTimeseriesValue:
+            {
+                result = UpdatePosition2DTimeseriesValue( connection, static_cast<Position2DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Position3DTimeseriesValue:
+            {
+                result = UpdatePosition3DTimeseriesValue( connection, static_cast<Position3DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::ProcessTrackValueResult:
+            {
+                result = UpdateProcessTrackValueResult( connection, static_cast<ProcessTrackValueResultObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryProperty:
+            {
+                result = UpdateBinaryProperty( connection, static_cast<BinaryPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanProperty:
+            {
+                result = UpdateBooleanProperty( connection, static_cast<BooleanPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ByteProperty:
+            {
+                result = UpdateByteProperty( connection, static_cast<BytePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeProperty:
+            {
+                result = UpdateDateTimeProperty( connection, static_cast<DateTimePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleProperty:
+            {
+                result = UpdateDoubleProperty( connection, static_cast<DoublePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::GuidProperty:
+            {
+                result = UpdateGuidProperty( connection, static_cast<GuidPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int16Property:
+            {
+                result = UpdateInt16Property( connection, static_cast<Int16PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int32Property:
+            {
+                result = UpdateInt32Property( connection, static_cast<Int32PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int64Property:
+            {
+                result = UpdateInt64Property( connection, static_cast<Int64PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceProperty:
+            {
+                result = UpdateReferenceProperty( connection, static_cast<ReferencePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SByteProperty:
+            {
+                result = UpdateSByteProperty( connection, static_cast<SBytePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SingleProperty:
+            {
+                result = UpdateSingleProperty( connection, static_cast<SinglePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::StringProperty:
+            {
+                result = UpdateStringProperty( connection, static_cast<StringPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesProperty:
+            {
+                result = UpdateBinaryTimeseriesProperty( connection, static_cast<BinaryTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesProperty:
+            {
+                result = UpdateBooleanTimeseriesProperty( connection, static_cast<BooleanTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesProperty:
+            {
+                result = UpdateByteTimeseriesProperty( connection, static_cast<ByteTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesProperty:
+            {
+                result = UpdateDateTimeTimeseriesProperty( connection, static_cast<DateTimeTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesProperty:
+            {
+                result = UpdateDoubleTimeseriesProperty( connection, static_cast<DoubleTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesProperty:
+            {
+                result = UpdateGuidTimeseriesProperty( connection, static_cast<GuidTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesProperty:
+            {
+                result = UpdateInt16TimeseriesProperty( connection, static_cast<Int16TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesProperty:
+            {
+                result = UpdateInt32TimeseriesProperty( connection, static_cast<Int32TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesProperty:
+            {
+                result = UpdateInt64TimeseriesProperty( connection, static_cast<Int64TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesProperty:
+            {
+                result = UpdateReferenceTimeseriesProperty( connection, static_cast<ReferenceTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesProperty:
+            {
+                result = UpdateSByteTimeseriesProperty( connection, static_cast<SByteTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesProperty:
+            {
+                result = UpdateSingleTimeseriesProperty( connection, static_cast<SingleTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesProperty:
+            {
+                result = UpdateStringTimeseriesProperty( connection, static_cast<StringTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesProperty:
+            {
+                result = UpdateTimeSpanTimeseriesProperty( connection, static_cast<TimeSpanTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesProperty:
+            {
+                result = UpdateUInt16TimeseriesProperty( connection, static_cast<UInt16TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesProperty:
+            {
+                result = UpdateUInt32TimeseriesProperty( connection, static_cast<UInt32TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesProperty:
+            {
+                result = UpdateUInt64TimeseriesProperty( connection, static_cast<UInt64TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanProperty:
+            {
+                result = UpdateTimeSpanProperty( connection, static_cast<TimeSpanPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16Property:
+            {
+                result = UpdateUInt16Property( connection, static_cast<UInt16PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32Property:
+            {
+                result = UpdateUInt32Property( connection, static_cast<UInt32PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64Property:
+            {
+                result = UpdateUInt64Property( connection, static_cast<UInt64PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryPropertyDefinition:
+            {
+                result = UpdateBinaryPropertyDefinition( connection, static_cast<BinaryPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanPropertyDefinition:
+            {
+                result = UpdateBooleanPropertyDefinition( connection, static_cast<BooleanPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BytePropertyDefinition:
+            {
+                result = UpdateBytePropertyDefinition( connection, static_cast<BytePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimePropertyDefinition:
+            {
+                result = UpdateDateTimePropertyDefinition( connection, static_cast<DateTimePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DoublePropertyDefinition:
+            {
+                result = UpdateDoublePropertyDefinition( connection, static_cast<DoublePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::GuidPropertyDefinition:
+            {
+                result = UpdateGuidPropertyDefinition( connection, static_cast<GuidPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int16PropertyDefinition:
+            {
+                result = UpdateInt16PropertyDefinition( connection, static_cast<Int16PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int32PropertyDefinition:
+            {
+                result = UpdateInt32PropertyDefinition( connection, static_cast<Int32PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int64PropertyDefinition:
+            {
+                result = UpdateInt64PropertyDefinition( connection, static_cast<Int64PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ReferencePropertyDefinition:
+            {
+                result = UpdateReferencePropertyDefinition( connection, static_cast<ReferencePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SBytePropertyDefinition:
+            {
+                result = UpdateSBytePropertyDefinition( connection, static_cast<SBytePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SinglePropertyDefinition:
+            {
+                result = UpdateSinglePropertyDefinition( connection, static_cast<SinglePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::StringPropertyDefinition:
+            {
+                result = UpdateStringPropertyDefinition( connection, static_cast<StringPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesPropertyDefinition:
+            {
+                result = UpdateBinaryTimeseriesPropertyDefinition( connection, static_cast<BinaryTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesPropertyDefinition:
+            {
+                result = UpdateBooleanTimeseriesPropertyDefinition( connection, static_cast<BooleanTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesPropertyDefinition:
+            {
+                result = UpdateByteTimeseriesPropertyDefinition( connection, static_cast<ByteTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesPropertyDefinition:
+            {
+                result = UpdateDateTimeTimeseriesPropertyDefinition( connection, static_cast<DateTimeTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesPropertyDefinition:
+            {
+                result = UpdateDoubleTimeseriesPropertyDefinition( connection, static_cast<DoubleTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesPropertyDefinition:
+            {
+                result = UpdateGuidTimeseriesPropertyDefinition( connection, static_cast<GuidTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesPropertyDefinition:
+            {
+                result = UpdateInt16TimeseriesPropertyDefinition( connection, static_cast<Int16TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesPropertyDefinition:
+            {
+                result = UpdateInt32TimeseriesPropertyDefinition( connection, static_cast<Int32TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesPropertyDefinition:
+            {
+                result = UpdateInt64TimeseriesPropertyDefinition( connection, static_cast<Int64TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesPropertyDefinition:
+            {
+                result = UpdateReferenceTimeseriesPropertyDefinition( connection, static_cast<ReferenceTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesPropertyDefinition:
+            {
+                result = UpdateSByteTimeseriesPropertyDefinition( connection, static_cast<SByteTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesPropertyDefinition:
+            {
+                result = UpdateSingleTimeseriesPropertyDefinition( connection, static_cast<SingleTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesPropertyDefinition:
+            {
+                result = UpdateStringTimeseriesPropertyDefinition( connection, static_cast<StringTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesPropertyDefinition:
+            {
+                result = UpdateTimeSpanTimeseriesPropertyDefinition( connection, static_cast<TimeSpanTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesPropertyDefinition:
+            {
+                result = UpdateUInt16TimeseriesPropertyDefinition( connection, static_cast<UInt16TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesPropertyDefinition:
+            {
+                result = UpdateUInt32TimeseriesPropertyDefinition( connection, static_cast<UInt32TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesPropertyDefinition:
+            {
+                result = UpdateUInt64TimeseriesPropertyDefinition( connection, static_cast<UInt64TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanPropertyDefinition:
+            {
+                result = UpdateTimeSpanPropertyDefinition( connection, static_cast<TimeSpanPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16PropertyDefinition:
+            {
+                result = UpdateUInt16PropertyDefinition( connection, static_cast<UInt16PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32PropertyDefinition:
+            {
+                result = UpdateUInt32PropertyDefinition( connection, static_cast<UInt32PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64PropertyDefinition:
+            {
+                result = UpdateUInt64PropertyDefinition( connection, static_cast<UInt64PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAlarmStatus:
+            {
+                result = UpdateRadarAlarmStatus( connection, static_cast<RadarAlarmStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommand:
+            {
+                result = UpdateRadarCommand( connection, static_cast<RadarCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandGetStatus:
+            {
+                result = UpdateRadarCommandGetStatus( connection, static_cast<RadarCommandGetStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandReply:
+            {
+                result = UpdateRadarCommandReply( connection, static_cast<RadarCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandReplyGetStatus:
+            {
+                result = UpdateRadarCommandReplyGetStatus( connection, static_cast<RadarCommandReplyGetStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarConfiguration:
+            {
+                result = UpdateRadarConfiguration( connection, static_cast<RadarConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::RadarImage:
+            {
+                result = UpdateRadarImage( connection, static_cast<RadarImageObject&>( data ) );
+            }
+            break;
+            case Kind::RadarRawTrackTable:
+            {
+                result = UpdateRadarRawTrackTable( connection, static_cast<RadarRawTrackTableObject&>( data ) );
+            }
+            break;
+            case Kind::RadarStatus:
+            {
+                result = UpdateRadarStatus( connection, static_cast<RadarStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadioCommand:
+            {
+                result = UpdateRadioCommand( connection, static_cast<RadioCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadioCommandReply:
+            {
+                result = UpdateRadioCommandReply( connection, static_cast<RadioCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadioConfiguration:
+            {
+                result = UpdateRadioConfiguration( connection, static_cast<RadioConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeCommand:
+            {
+                result = UpdateRadomeCommand( connection, static_cast<RadomeCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeCommandReply:
+            {
+                result = UpdateRadomeCommandReply( connection, static_cast<RadomeCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeConfiguration:
+            {
+                result = UpdateRadomeConfiguration( connection, static_cast<RadomeConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesValue:
+            {
+                result = UpdateReferenceTimeseriesValue( connection, static_cast<ReferenceTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesValue:
+            {
+                result = UpdateSByteTimeseriesValue( connection, static_cast<SByteTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityDomain:
+            {
+                result = UpdateSecurityDomain( connection, static_cast<SecurityDomainObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityLogin:
+            {
+                result = UpdateSecurityLogin( connection, static_cast<SecurityLoginObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityRole:
+            {
+                result = UpdateSecurityRole( connection, static_cast<SecurityRoleObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityIdentifierRoleLink:
+            {
+                result = UpdateSecurityIdentifierRoleLink( connection, static_cast<SecurityIdentifierRoleLinkObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityLoginSession:
+            {
+                result = UpdateSecurityLoginSession( connection, static_cast<SecurityLoginSessionObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityPermission:
+            {
+                result = UpdateSecurityPermission( connection, static_cast<SecurityPermissionObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesValue:
+            {
+                result = UpdateSingleTimeseriesValue( connection, static_cast<SingleTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesValue:
+            {
+                result = UpdateStringTimeseriesValue( connection, static_cast<StringTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseries:
+            {
+                result = UpdateBinaryTimeseries( connection, static_cast<BinaryTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseries:
+            {
+                result = UpdateBooleanTimeseries( connection, static_cast<BooleanTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigationOffPositionTimeseries:
+            {
+                result = UpdateAisAidToNavigationOffPositionTimeseries( connection, static_cast<AisAidToNavigationOffPositionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceEnabledTimeseries:
+            {
+                result = UpdateDeviceEnabledTimeseries( connection, static_cast<DeviceEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAutomaticSensitivityTimeControlTimeseries:
+            {
+                result = UpdateRadarAutomaticSensitivityTimeControlTimeseries( connection, static_cast<RadarAutomaticSensitivityTimeControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarBlankSector1Timeseries:
+            {
+                result = UpdateRadarBlankSector1Timeseries( connection, static_cast<RadarBlankSector1TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarBlankSector2Timeseries:
+            {
+                result = UpdateRadarBlankSector2Timeseries( connection, static_cast<RadarBlankSector2TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableAutomaticFrequencyControlTimeseries:
+            {
+                result = UpdateRadarEnableAutomaticFrequencyControlTimeseries( connection, static_cast<RadarEnableAutomaticFrequencyControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableFastTimeConstantTimeseries:
+            {
+                result = UpdateRadarEnableFastTimeConstantTimeseries( connection, static_cast<RadarEnableFastTimeConstantTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableSensitivityTimeControlTimeseries:
+            {
+                result = UpdateRadarEnableSensitivityTimeControlTimeseries( connection, static_cast<RadarEnableSensitivityTimeControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarPowerOnTimeseries:
+            {
+                result = UpdateRadarPowerOnTimeseries( connection, static_cast<RadarPowerOnTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSaveSettingsTimeseries:
+            {
+                result = UpdateRadarSaveSettingsTimeseries( connection, static_cast<RadarSaveSettingsTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarTrackingTimeseries:
+            {
+                result = UpdateRadarTrackingTimeseries( connection, static_cast<RadarTrackingTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionEnabledTimeseries:
+            {
+                result = UpdateMediaProxySessionEnabledTimeseries( connection, static_cast<MediaProxySessionEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::MediaServiceEnabledTimeseries:
+            {
+                result = UpdateMediaServiceEnabledTimeseries( connection, static_cast<MediaServiceEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseries:
+            {
+                result = UpdateByteTimeseries( connection, static_cast<ByteTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseries:
+            {
+                result = UpdateDateTimeTimeseries( connection, static_cast<DateTimeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseries:
+            {
+                result = UpdateDoubleTimeseries( connection, static_cast<DoubleTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSAltitudeTimeseries:
+            {
+                result = UpdateGNSSAltitudeTimeseries( connection, static_cast<GNSSAltitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSLatitudeTimeseries:
+            {
+                result = UpdateGNSSLatitudeTimeseries( connection, static_cast<GNSSLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSLongitudeTimeseries:
+            {
+                result = UpdateGNSSLongitudeTimeseries( connection, static_cast<GNSSLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroCourseTimeseries:
+            {
+                result = UpdateGyroCourseTimeseries( connection, static_cast<GyroCourseTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroHeadingMagneticNorthTimeseries:
+            {
+                result = UpdateGyroHeadingMagneticNorthTimeseries( connection, static_cast<GyroHeadingMagneticNorthTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroHeadingTrueNorthTimeseries:
+            {
+                result = UpdateGyroHeadingTrueNorthTimeseries( connection, static_cast<GyroHeadingTrueNorthTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroPitchTimeseries:
+            {
+                result = UpdateGyroPitchTimeseries( connection, static_cast<GyroPitchTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroRateOfTurnTimeseries:
+            {
+                result = UpdateGyroRateOfTurnTimeseries( connection, static_cast<GyroRateOfTurnTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroRollTimeseries:
+            {
+                result = UpdateGyroRollTimeseries( connection, static_cast<GyroRollTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroSpeedTimeseries:
+            {
+                result = UpdateGyroSpeedTimeseries( connection, static_cast<GyroSpeedTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarLatitudeTimeseries:
+            {
+                result = UpdateRadarLatitudeTimeseries( connection, static_cast<RadarLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarLongitudeTimeseries:
+            {
+                result = UpdateRadarLongitudeTimeseries( connection, static_cast<RadarLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeDewPointTimeseries:
+            {
+                result = UpdateRadomeDewPointTimeseries( connection, static_cast<RadomeDewPointTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomePressureTimeseries:
+            {
+                result = UpdateRadomePressureTimeseries( connection, static_cast<RadomePressureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeTemperatureTimeseries:
+            {
+                result = UpdateRadomeTemperatureTimeseries( connection, static_cast<RadomeTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::VesselDraughtTimeseries:
+            {
+                result = UpdateVesselDraughtTimeseries( connection, static_cast<VesselDraughtTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewLatitudeTimeseries:
+            {
+                result = UpdateViewLatitudeTimeseries( connection, static_cast<ViewLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewLongitudeTimeseries:
+            {
+                result = UpdateViewLongitudeTimeseries( connection, static_cast<ViewLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewZoomLevelTimeseries:
+            {
+                result = UpdateViewZoomLevelTimeseries( connection, static_cast<ViewZoomLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationAbsoluteHumidityTimeseries:
+            {
+                result = UpdateWeatherStationAbsoluteHumidityTimeseries( connection, static_cast<WeatherStationAbsoluteHumidityTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationAirTemperatureTimeseries:
+            {
+                result = UpdateWeatherStationAirTemperatureTimeseries( connection, static_cast<WeatherStationAirTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationBarometricPressureTimeseries:
+            {
+                result = UpdateWeatherStationBarometricPressureTimeseries( connection, static_cast<WeatherStationBarometricPressureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationDewPointTimeseries:
+            {
+                result = UpdateWeatherStationDewPointTimeseries( connection, static_cast<WeatherStationDewPointTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationRelativeHumidityTimeseries:
+            {
+                result = UpdateWeatherStationRelativeHumidityTimeseries( connection, static_cast<WeatherStationRelativeHumidityTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWaterTemperatureTimeseries:
+            {
+                result = UpdateWeatherStationWaterTemperatureTimeseries( connection, static_cast<WeatherStationWaterTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWindDirectionTimeseries:
+            {
+                result = UpdateWeatherStationWindDirectionTimeseries( connection, static_cast<WeatherStationWindDirectionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWindSpeedTimeseries:
+            {
+                result = UpdateWeatherStationWindSpeedTimeseries( connection, static_cast<WeatherStationWindSpeedTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition2DTimeseries:
+            {
+                result = UpdateGeoPosition2DTimeseries( connection, static_cast<GeoPosition2DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigationPositionTimeseries:
+            {
+                result = UpdateAisAidToNavigationPositionTimeseries( connection, static_cast<AisAidToNavigationPositionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition3DTimeseries:
+            {
+                result = UpdateGeoPosition3DTimeseries( connection, static_cast<GeoPosition3DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseries:
+            {
+                result = UpdateGuidTimeseries( connection, static_cast<GuidTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int16Timeseries:
+            {
+                result = UpdateInt16Timeseries( connection, static_cast<Int16TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int32Timeseries:
+            {
+                result = UpdateInt32Timeseries( connection, static_cast<Int32TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAzimuthOffsetTimeseries:
+            {
+                result = UpdateRadarAzimuthOffsetTimeseries( connection, static_cast<RadarAzimuthOffsetTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarFastTimeConstantLevelTimeseries:
+            {
+                result = UpdateRadarFastTimeConstantLevelTimeseries( connection, static_cast<RadarFastTimeConstantLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarFastTimeConstantModeTimeseries:
+            {
+                result = UpdateRadarFastTimeConstantModeTimeseries( connection, static_cast<RadarFastTimeConstantModeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarPulseTimeseries:
+            {
+                result = UpdateRadarPulseTimeseries( connection, static_cast<RadarPulseTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector1EndTimeseries:
+            {
+                result = UpdateRadarSector1EndTimeseries( connection, static_cast<RadarSector1EndTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector1StartTimeseries:
+            {
+                result = UpdateRadarSector1StartTimeseries( connection, static_cast<RadarSector1StartTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector2EndTimeseries:
+            {
+                result = UpdateRadarSector2EndTimeseries( connection, static_cast<RadarSector2EndTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector2StartTimeseries:
+            {
+                result = UpdateRadarSector2StartTimeseries( connection, static_cast<RadarSector2StartTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSensitivityTimeControlLevelTimeseries:
+            {
+                result = UpdateRadarSensitivityTimeControlLevelTimeseries( connection, static_cast<RadarSensitivityTimeControlLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarTuningTimeseries:
+            {
+                result = UpdateRadarTuningTimeseries( connection, static_cast<RadarTuningTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::VesselPersonsOnBoardTimeseries:
+            {
+                result = UpdateVesselPersonsOnBoardTimeseries( connection, static_cast<VesselPersonsOnBoardTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int64Timeseries:
+            {
+                result = UpdateInt64Timeseries( connection, static_cast<Int64TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Position2DTimeseries:
+            {
+                result = UpdatePosition2DTimeseries( connection, static_cast<Position2DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Position3DTimeseries:
+            {
+                result = UpdatePosition3DTimeseries( connection, static_cast<Position3DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseries:
+            {
+                result = UpdateReferenceTimeseries( connection, static_cast<ReferenceTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseries:
+            {
+                result = UpdateSByteTimeseries( connection, static_cast<SByteTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseries:
+            {
+                result = UpdateSingleTimeseries( connection, static_cast<SingleTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseries:
+            {
+                result = UpdateStringTimeseries( connection, static_cast<StringTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseries:
+            {
+                result = UpdateTimeSpanTimeseries( connection, static_cast<TimeSpanTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16Timeseries:
+            {
+                result = UpdateUInt16Timeseries( connection, static_cast<UInt16TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32Timeseries:
+            {
+                result = UpdateUInt32Timeseries( connection, static_cast<UInt32TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeStatusTimeseries:
+            {
+                result = UpdateRadomeStatusTimeseries( connection, static_cast<RadomeStatusTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64Timeseries:
+            {
+                result = UpdateUInt64Timeseries( connection, static_cast<UInt64TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::TimeseriesCatalog:
+            {
+                result = UpdateTimeseriesCatalog( connection, static_cast<TimeseriesCatalogObject&>( data ) );
+            }
+            break;
+            case Kind::TimeseriesInfo:
+            {
+                result = UpdateTimeseriesInfo( connection, static_cast<TimeseriesInfoObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesValue:
+            {
+                result = UpdateTimeSpanTimeseriesValue( connection, static_cast<TimeSpanTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::TrackableItemTrackLink:
+            {
+                result = UpdateTrackableItemTrackLink( connection, static_cast<TrackableItemTrackLinkObject&>( data ) );
+            }
+            break;
+            case Kind::Track:
+            {
+                result = UpdateTrack( connection, static_cast<TrackObject&>( data ) );
+            }
+            break;
+            case Kind::Track3D:
+            {
+                result = UpdateTrack3D( connection, static_cast<Track3DObject&>( data ) );
+            }
+            break;
+            case Kind::TrackerFilterParameters:
+            {
+                result = UpdateTrackerFilterParameters( connection, static_cast<TrackerFilterParametersObject&>( data ) );
+            }
+            break;
+            case Kind::TrackerFilterParametersConfiguration:
+            {
+                result = UpdateTrackerFilterParametersConfiguration( connection, static_cast<TrackerFilterParametersConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::TrackInfo:
+            {
+                result = UpdateTrackInfo( connection, static_cast<TrackInfoObject&>( data ) );
+            }
+            break;
+            case Kind::TrackingServiceOptions:
+            {
+                result = UpdateTrackingServiceOptions( connection, static_cast<TrackingServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::TrackLink:
+            {
+                result = UpdateTrackLink( connection, static_cast<TrackLinkObject&>( data ) );
+            }
+            break;
+            case Kind::TrackValue:
+            {
+                result = UpdateTrackValue( connection, static_cast<TrackValueObject&>( data ) );
+            }
+            break;
+            case Kind::TrackValue3D:
+            {
+                result = UpdateTrackValue3D( connection, static_cast<TrackValue3DObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesValue:
+            {
+                result = UpdateUInt16TimeseriesValue( connection, static_cast<UInt16TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesValue:
+            {
+                result = UpdateUInt32TimeseriesValue( connection, static_cast<UInt32TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesValue:
+            {
+                result = UpdateUInt64TimeseriesValue( connection, static_cast<UInt64TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::VehicleType:
+            {
+                result = UpdateVehicleType( connection, static_cast<VehicleTypeObject&>( data ) );
+            }
+            break;
+            case Kind::VesselType:
+            {
+                result = UpdateVesselType( connection, static_cast<VesselTypeObject&>( data ) );
+            }
+            break;
+            case Kind::View:
+            {
+                result = UpdateView( connection, static_cast<ViewObject&>( data ) );
+            }
+            break;
+            case Kind::ViewCameraLink:
+            {
+                result = UpdateViewCameraLink( connection, static_cast<ViewCameraLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ViewTrackerLink:
+            {
+                result = UpdateViewTrackerLink( connection, static_cast<ViewTrackerLinkObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationCommand:
+            {
+                result = UpdateWeatherStationCommand( connection, static_cast<WeatherStationCommandObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationCommandReply:
+            {
+                result = UpdateWeatherStationCommandReply( connection, static_cast<WeatherStationCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationConfiguration:
+            {
+                result = UpdateWeatherStationConfiguration( connection, static_cast<WeatherStationConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::CircularZone:
+            {
+                result = UpdateCircularZone( connection, static_cast<CircularZoneObject&>( data ) );
+            }
+            break;
+            case Kind::PolygonZone:
+            {
+                result = UpdatePolygonZone( connection, static_cast<PolygonZoneObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneExceptions:
+            {
+                result = UpdateZoneExceptions( connection, static_cast<ZoneExceptionsObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneExceptionsVesselLink:
+            {
+                result = UpdateZoneExceptionsVesselLink( connection, static_cast<ZoneExceptionsVesselLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneTrackAlarm:
+            {
+                result = UpdateZoneTrackAlarm( connection, static_cast<ZoneTrackAlarmObject&>( data ) );
+            }
+            break;
+        }
+        return result;
+    }
+    BARRELMAN_EXPORT bool Delete( const ODBC::Connection& connection, BaseData<Kind, Guid>& data )
+    {
+        bool result = false;
+        auto kind = data.GetObjectType( );
+        switch ( kind )
+        {
+            case Kind::AircraftType:
+            {
+                result = DeleteAircraftType( connection, static_cast<AircraftTypeObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceCommand:
+            {
+                result = DeleteAisDeviceCommand( connection, static_cast<AisDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceCommandReply:
+            {
+                result = DeleteAisDeviceCommandReply( connection, static_cast<AisDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceConfiguration:
+            {
+                result = DeleteAisDeviceConfiguration( connection, static_cast<AisDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceRawMessage:
+            {
+                result = DeleteAisDeviceRawMessage( connection, static_cast<AisDeviceRawMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisDeviceRawSentence:
+            {
+                result = DeleteAisDeviceRawSentence( connection, static_cast<AisDeviceRawSentenceObject&>( data ) );
+            }
+            break;
+            case Kind::AidToNavigationReportMessage:
+            {
+                result = DeleteAidToNavigationReportMessage( connection, static_cast<AidToNavigationReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisAddressedSafetyRelatedMessage:
+            {
+                result = DeleteAisAddressedSafetyRelatedMessage( connection, static_cast<AisAddressedSafetyRelatedMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBaseStationReportMessage:
+            {
+                result = DeleteAisBaseStationReportMessage( connection, static_cast<AisBaseStationReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryAcknowledgeMessage:
+            {
+                result = DeleteAisBinaryAcknowledgeMessage( connection, static_cast<AisBinaryAcknowledgeMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryAddressedMessage:
+            {
+                result = DeleteAisBinaryAddressedMessage( connection, static_cast<AisBinaryAddressedMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisBinaryBroadcastMessage:
+            {
+                result = DeleteAisBinaryBroadcastMessage( connection, static_cast<AisBinaryBroadcastMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisDataLinkManagementMessage:
+            {
+                result = DeleteAisDataLinkManagementMessage( connection, static_cast<AisDataLinkManagementMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisExtendedClassBCsPositionReportMessage:
+            {
+                result = DeleteAisExtendedClassBCsPositionReportMessage( connection, static_cast<AisExtendedClassBCsPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisInterrogationMessage:
+            {
+                result = DeleteAisInterrogationMessage( connection, static_cast<AisInterrogationMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAAssignedScheduleMessage:
+            {
+                result = DeleteAisPositionReportClassAAssignedScheduleMessage( connection, static_cast<AisPositionReportClassAAssignedScheduleMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAMessage:
+            {
+                result = DeleteAisPositionReportClassAMessage( connection, static_cast<AisPositionReportClassAMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportClassAResponseToInterrogationMessage:
+            {
+                result = DeleteAisPositionReportClassAResponseToInterrogationMessage( connection, static_cast<AisPositionReportClassAResponseToInterrogationMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisPositionReportForLongRangeApplicationsMessage:
+            {
+                result = DeleteAisPositionReportForLongRangeApplicationsMessage( connection, static_cast<AisPositionReportForLongRangeApplicationsMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisSafetyRelatedAcknowledgmentMessage:
+            {
+                result = DeleteAisSafetyRelatedAcknowledgmentMessage( connection, static_cast<AisSafetyRelatedAcknowledgmentMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStandardClassBCsPositionReportMessage:
+            {
+                result = DeleteAisStandardClassBCsPositionReportMessage( connection, static_cast<AisStandardClassBCsPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStandardSarAircraftPositionReportMessage:
+            {
+                result = DeleteAisStandardSarAircraftPositionReportMessage( connection, static_cast<AisStandardSarAircraftPositionReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticAndVoyageRelatedDataMessage:
+            {
+                result = DeleteAisStaticAndVoyageRelatedDataMessage( connection, static_cast<AisStaticAndVoyageRelatedDataMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportMessage:
+            {
+                result = DeleteAisStaticDataReportMessage( connection, static_cast<AisStaticDataReportMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportPartAMessage:
+            {
+                result = DeleteAisStaticDataReportPartAMessage( connection, static_cast<AisStaticDataReportPartAMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisStaticDataReportPartBMessage:
+            {
+                result = DeleteAisStaticDataReportPartBMessage( connection, static_cast<AisStaticDataReportPartBMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisUtcAndDateInquiryMessage:
+            {
+                result = DeleteAisUtcAndDateInquiryMessage( connection, static_cast<AisUtcAndDateInquiryMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AisUtcAndDateResponseMessage:
+            {
+                result = DeleteAisUtcAndDateResponseMessage( connection, static_cast<AisUtcAndDateResponseMessageObject&>( data ) );
+            }
+            break;
+            case Kind::AlarmStateChange:
+            {
+                result = DeleteAlarmStateChange( connection, static_cast<AlarmStateChangeObject&>( data ) );
+            }
+            break;
+            case Kind::BaseStationType:
+            {
+                result = DeleteBaseStationType( connection, static_cast<BaseStationTypeObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesValue:
+            {
+                result = DeleteBinaryTimeseriesValue( connection, static_cast<BinaryTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Bookmark:
+            {
+                result = DeleteBookmark( connection, static_cast<BookmarkObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesValue:
+            {
+                result = DeleteBooleanTimeseriesValue( connection, static_cast<BooleanTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesValue:
+            {
+                result = DeleteByteTimeseriesValue( connection, static_cast<ByteTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommand:
+            {
+                result = DeleteCameraCommand( connection, static_cast<CameraCommandObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandAbsoluteMove:
+            {
+                result = DeleteCameraCommandAbsoluteMove( connection, static_cast<CameraCommandAbsoluteMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandAdjustPanTiltZoom:
+            {
+                result = DeleteCameraCommandAdjustPanTiltZoom( connection, static_cast<CameraCommandAdjustPanTiltZoomObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandContinuousMove:
+            {
+                result = DeleteCameraCommandContinuousMove( connection, static_cast<CameraCommandContinuousMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandGeoMove:
+            {
+                result = DeleteCameraCommandGeoMove( connection, static_cast<CameraCommandGeoMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandRelativeMove:
+            {
+                result = DeleteCameraCommandRelativeMove( connection, static_cast<CameraCommandRelativeMoveObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandReleasePTZOwnership:
+            {
+                result = DeleteCameraCommandReleasePTZOwnership( connection, static_cast<CameraCommandReleasePTZOwnershipObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandRequestPTZOwnership:
+            {
+                result = DeleteCameraCommandRequestPTZOwnership( connection, static_cast<CameraCommandRequestPTZOwnershipObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetAutoFocus:
+            {
+                result = DeleteCameraCommandSetAutoFocus( connection, static_cast<CameraCommandSetAutoFocusObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetBlackAndWhite:
+            {
+                result = DeleteCameraCommandSetBlackAndWhite( connection, static_cast<CameraCommandSetBlackAndWhiteObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetFollowed:
+            {
+                result = DeleteCameraCommandSetFollowed( connection, static_cast<CameraCommandSetFollowedObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetInfraRedLamp:
+            {
+                result = DeleteCameraCommandSetInfraRedLamp( connection, static_cast<CameraCommandSetInfraRedLampObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetWasher:
+            {
+                result = DeleteCameraCommandSetWasher( connection, static_cast<CameraCommandSetWasherObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandSetWiper:
+            {
+                result = DeleteCameraCommandSetWiper( connection, static_cast<CameraCommandSetWiperObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandStop:
+            {
+                result = DeleteCameraCommandStop( connection, static_cast<CameraCommandStopObject&>( data ) );
+            }
+            break;
+            case Kind::CameraCommandReply:
+            {
+                result = DeleteCameraCommandReply( connection, static_cast<CameraCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::CameraConfiguration:
+            {
+                result = DeleteCameraConfiguration( connection, static_cast<CameraConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraPanCalibration:
+            {
+                result = DeleteCameraPanCalibration( connection, static_cast<CameraPanCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraPanCalibrationValue:
+            {
+                result = DeleteCameraPanCalibrationValue( connection, static_cast<CameraPanCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraStatus:
+            {
+                result = DeleteCameraStatus( connection, static_cast<CameraStatusObject&>( data ) );
+            }
+            break;
+            case Kind::CameraTiltCalibration:
+            {
+                result = DeleteCameraTiltCalibration( connection, static_cast<CameraTiltCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraTiltCalibrationValue:
+            {
+                result = DeleteCameraTiltCalibrationValue( connection, static_cast<CameraTiltCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::CameraZoomCalibration:
+            {
+                result = DeleteCameraZoomCalibration( connection, static_cast<CameraZoomCalibrationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraZoomCalibrationValue:
+            {
+                result = DeleteCameraZoomCalibrationValue( connection, static_cast<CameraZoomCalibrationValueObject&>( data ) );
+            }
+            break;
+            case Kind::Catalog:
+            {
+                result = DeleteCatalog( connection, static_cast<CatalogObject&>( data ) );
+            }
+            break;
+            case Kind::Element:
+            {
+                result = DeleteElement( connection, static_cast<ElementObject&>( data ) );
+            }
+            break;
+            case Kind::CollectionInfo:
+            {
+                result = DeleteCollectionInfo( connection, static_cast<CollectionInfoObject&>( data ) );
+            }
+            break;
+            case Kind::Country:
+            {
+                result = DeleteCountry( connection, static_cast<CountryObject&>( data ) );
+            }
+            break;
+            case Kind::CursorInfo:
+            {
+                result = DeleteCursorInfo( connection, static_cast<CursorInfoObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesValue:
+            {
+                result = DeleteDateTimeTimeseriesValue( connection, static_cast<DateTimeTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceHost:
+            {
+                result = DeleteDeviceHost( connection, static_cast<DeviceHostObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceHostConfiguration:
+            {
+                result = DeleteDeviceHostConfiguration( connection, static_cast<DeviceHostConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesValue:
+            {
+                result = DeleteDoubleTimeseriesValue( connection, static_cast<DoubleTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::FacilityType:
+            {
+                result = DeleteFacilityType( connection, static_cast<FacilityTypeObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition2DTimeseriesValue:
+            {
+                result = DeleteGeoPosition2DTimeseriesValue( connection, static_cast<GeoPosition2DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition3DTimeseriesValue:
+            {
+                result = DeleteGeoPosition3DTimeseriesValue( connection, static_cast<GeoPosition3DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceCommand:
+            {
+                result = DeleteGNSSDeviceCommand( connection, static_cast<GNSSDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceCommandReply:
+            {
+                result = DeleteGNSSDeviceCommandReply( connection, static_cast<GNSSDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDeviceConfiguration:
+            {
+                result = DeleteGNSSDeviceConfiguration( connection, static_cast<GNSSDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesValue:
+            {
+                result = DeleteGuidTimeseriesValue( connection, static_cast<GuidTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceCommand:
+            {
+                result = DeleteGyroDeviceCommand( connection, static_cast<GyroDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceCommandReply:
+            {
+                result = DeleteGyroDeviceCommandReply( connection, static_cast<GyroDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDeviceConfiguration:
+            {
+                result = DeleteGyroDeviceConfiguration( connection, static_cast<GyroDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::Callsign:
+            {
+                result = DeleteCallsign( connection, static_cast<CallsignObject&>( data ) );
+            }
+            break;
+            case Kind::InternationalMaritimeOrganizationNumber:
+            {
+                result = DeleteInternationalMaritimeOrganizationNumber( connection, static_cast<InternationalMaritimeOrganizationNumberObject&>( data ) );
+            }
+            break;
+            case Kind::MaritimeMobileServiceIdentity:
+            {
+                result = DeleteMaritimeMobileServiceIdentity( connection, static_cast<MaritimeMobileServiceIdentityObject&>( data ) );
+            }
+            break;
+            case Kind::Name:
+            {
+                result = DeleteName( connection, static_cast<NameObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesValue:
+            {
+                result = DeleteInt16TimeseriesValue( connection, static_cast<Int16TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesValue:
+            {
+                result = DeleteInt32TimeseriesValue( connection, static_cast<Int32TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesValue:
+            {
+                result = DeleteInt64TimeseriesValue( connection, static_cast<Int64TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::BaseStation:
+            {
+                result = DeleteBaseStation( connection, static_cast<BaseStationObject&>( data ) );
+            }
+            break;
+            case Kind::CameraDevice:
+            {
+                result = DeleteCameraDevice( connection, static_cast<CameraDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSDevice:
+            {
+                result = DeleteGNSSDevice( connection, static_cast<GNSSDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::GyroDevice:
+            {
+                result = DeleteGyroDevice( connection, static_cast<GyroDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDevice:
+            {
+                result = DeleteLineInputDevice( connection, static_cast<LineInputDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorDevice:
+            {
+                result = DeleteOilSpillDetectorDevice( connection, static_cast<OilSpillDetectorDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadioDevice:
+            {
+                result = DeleteRadioDevice( connection, static_cast<RadioDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeDevice:
+            {
+                result = DeleteRadomeDevice( connection, static_cast<RadomeDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::AisDevice:
+            {
+                result = DeleteAisDevice( connection, static_cast<AisDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::RadarDevice:
+            {
+                result = DeleteRadarDevice( connection, static_cast<RadarDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationDevice:
+            {
+                result = DeleteWeatherStationDevice( connection, static_cast<WeatherStationDeviceObject&>( data ) );
+            }
+            break;
+            case Kind::Facility:
+            {
+                result = DeleteFacility( connection, static_cast<FacilityObject&>( data ) );
+            }
+            break;
+            case Kind::Aircraft:
+            {
+                result = DeleteAircraft( connection, static_cast<AircraftObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigation:
+            {
+                result = DeleteAisAidToNavigation( connection, static_cast<AisAidToNavigationObject&>( data ) );
+            }
+            break;
+            case Kind::Vehicle:
+            {
+                result = DeleteVehicle( connection, static_cast<VehicleObject&>( data ) );
+            }
+            break;
+            case Kind::Vessel:
+            {
+                result = DeleteVessel( connection, static_cast<VesselObject&>( data ) );
+            }
+            break;
+            case Kind::ItemIdentityLink:
+            {
+                result = DeleteItemIdentityLink( connection, static_cast<ItemIdentityLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ItemParentChildLink:
+            {
+                result = DeleteItemParentChildLink( connection, static_cast<ItemParentChildLinkObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceCommand:
+            {
+                result = DeleteLineInputDeviceCommand( connection, static_cast<LineInputDeviceCommandObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceCommandReply:
+            {
+                result = DeleteLineInputDeviceCommandReply( connection, static_cast<LineInputDeviceCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputDeviceConfiguration:
+            {
+                result = DeleteLineInputDeviceConfiguration( connection, static_cast<LineInputDeviceConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputMessageRouting:
+            {
+                result = DeleteLineInputMessageRouting( connection, static_cast<LineInputMessageRoutingObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputMessageRoutingDestination:
+            {
+                result = DeleteLineInputMessageRoutingDestination( connection, static_cast<LineInputMessageRoutingDestinationObject&>( data ) );
+            }
+            break;
+            case Kind::LineInputWhiteListEntry:
+            {
+                result = DeleteLineInputWhiteListEntry( connection, static_cast<LineInputWhiteListEntryObject&>( data ) );
+            }
+            break;
+            case Kind::LogApplication:
+            {
+                result = DeleteLogApplication( connection, static_cast<LogApplicationObject&>( data ) );
+            }
+            break;
+            case Kind::LogApplicationConfiguration:
+            {
+                result = DeleteLogApplicationConfiguration( connection, static_cast<LogApplicationConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LogHost:
+            {
+                result = DeleteLogHost( connection, static_cast<LogHostObject&>( data ) );
+            }
+            break;
+            case Kind::LogHostConfiguration:
+            {
+                result = DeleteLogHostConfiguration( connection, static_cast<LogHostConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::LogLocation:
+            {
+                result = DeleteLogLocation( connection, static_cast<LogLocationObject&>( data ) );
+            }
+            break;
+            case Kind::LogProcess:
+            {
+                result = DeleteLogProcess( connection, static_cast<LogProcessObject&>( data ) );
+            }
+            break;
+            case Kind::LogRecord:
+            {
+                result = DeleteLogRecord( connection, static_cast<LogRecordObject&>( data ) );
+            }
+            break;
+            case Kind::LogThread:
+            {
+                result = DeleteLogThread( connection, static_cast<LogThreadObject&>( data ) );
+            }
+            break;
+            case Kind::LogTraceEntry:
+            {
+                result = DeleteLogTraceEntry( connection, static_cast<LogTraceEntryObject&>( data ) );
+            }
+            break;
+            case Kind::MapElement:
+            {
+                result = DeleteMapElement( connection, static_cast<MapElementObject&>( data ) );
+            }
+            break;
+            case Kind::MapInfo:
+            {
+                result = DeleteMapInfo( connection, static_cast<MapInfoObject&>( data ) );
+            }
+            break;
+            case Kind::MapServiceOptions:
+            {
+                result = DeleteMapServiceOptions( connection, static_cast<MapServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::MaritimeIdentificationDigits:
+            {
+                result = DeleteMaritimeIdentificationDigits( connection, static_cast<MaritimeIdentificationDigitsObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySession:
+            {
+                result = DeleteMediaProxySession( connection, static_cast<MediaProxySessionObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionFile:
+            {
+                result = DeleteMediaProxySessionFile( connection, static_cast<MediaProxySessionFileObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionOptions:
+            {
+                result = DeleteMediaProxySessionOptions( connection, static_cast<MediaProxySessionOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::MediaService:
+            {
+                result = DeleteMediaService( connection, static_cast<MediaServiceObject&>( data ) );
+            }
+            break;
+            case Kind::MediaServiceOptions:
+            {
+                result = DeleteMediaServiceOptions( connection, static_cast<MediaServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::ElementType:
+            {
+                result = DeleteElementType( connection, static_cast<ElementTypeObject&>( data ) );
+            }
+            break;
+            case Kind::Namespace:
+            {
+                result = DeleteNamespace( connection, static_cast<NamespaceObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpill:
+            {
+                result = DeleteOilSpill( connection, static_cast<OilSpillObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorCommand:
+            {
+                result = DeleteOilSpillDetectorCommand( connection, static_cast<OilSpillDetectorCommandObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorCommandReply:
+            {
+                result = DeleteOilSpillDetectorCommandReply( connection, static_cast<OilSpillDetectorCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::OilSpillDetectorConfiguration:
+            {
+                result = DeleteOilSpillDetectorConfiguration( connection, static_cast<OilSpillDetectorConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::Position2DTimeseriesValue:
+            {
+                result = DeletePosition2DTimeseriesValue( connection, static_cast<Position2DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::Position3DTimeseriesValue:
+            {
+                result = DeletePosition3DTimeseriesValue( connection, static_cast<Position3DTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::ProcessTrackValueResult:
+            {
+                result = DeleteProcessTrackValueResult( connection, static_cast<ProcessTrackValueResultObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryProperty:
+            {
+                result = DeleteBinaryProperty( connection, static_cast<BinaryPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanProperty:
+            {
+                result = DeleteBooleanProperty( connection, static_cast<BooleanPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ByteProperty:
+            {
+                result = DeleteByteProperty( connection, static_cast<BytePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeProperty:
+            {
+                result = DeleteDateTimeProperty( connection, static_cast<DateTimePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleProperty:
+            {
+                result = DeleteDoubleProperty( connection, static_cast<DoublePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::GuidProperty:
+            {
+                result = DeleteGuidProperty( connection, static_cast<GuidPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int16Property:
+            {
+                result = DeleteInt16Property( connection, static_cast<Int16PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int32Property:
+            {
+                result = DeleteInt32Property( connection, static_cast<Int32PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int64Property:
+            {
+                result = DeleteInt64Property( connection, static_cast<Int64PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceProperty:
+            {
+                result = DeleteReferenceProperty( connection, static_cast<ReferencePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SByteProperty:
+            {
+                result = DeleteSByteProperty( connection, static_cast<SBytePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SingleProperty:
+            {
+                result = DeleteSingleProperty( connection, static_cast<SinglePropertyObject&>( data ) );
+            }
+            break;
+            case Kind::StringProperty:
+            {
+                result = DeleteStringProperty( connection, static_cast<StringPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesProperty:
+            {
+                result = DeleteBinaryTimeseriesProperty( connection, static_cast<BinaryTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesProperty:
+            {
+                result = DeleteBooleanTimeseriesProperty( connection, static_cast<BooleanTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesProperty:
+            {
+                result = DeleteByteTimeseriesProperty( connection, static_cast<ByteTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesProperty:
+            {
+                result = DeleteDateTimeTimeseriesProperty( connection, static_cast<DateTimeTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesProperty:
+            {
+                result = DeleteDoubleTimeseriesProperty( connection, static_cast<DoubleTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesProperty:
+            {
+                result = DeleteGuidTimeseriesProperty( connection, static_cast<GuidTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesProperty:
+            {
+                result = DeleteInt16TimeseriesProperty( connection, static_cast<Int16TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesProperty:
+            {
+                result = DeleteInt32TimeseriesProperty( connection, static_cast<Int32TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesProperty:
+            {
+                result = DeleteInt64TimeseriesProperty( connection, static_cast<Int64TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesProperty:
+            {
+                result = DeleteReferenceTimeseriesProperty( connection, static_cast<ReferenceTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesProperty:
+            {
+                result = DeleteSByteTimeseriesProperty( connection, static_cast<SByteTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesProperty:
+            {
+                result = DeleteSingleTimeseriesProperty( connection, static_cast<SingleTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesProperty:
+            {
+                result = DeleteStringTimeseriesProperty( connection, static_cast<StringTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesProperty:
+            {
+                result = DeleteTimeSpanTimeseriesProperty( connection, static_cast<TimeSpanTimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesProperty:
+            {
+                result = DeleteUInt16TimeseriesProperty( connection, static_cast<UInt16TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesProperty:
+            {
+                result = DeleteUInt32TimeseriesProperty( connection, static_cast<UInt32TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesProperty:
+            {
+                result = DeleteUInt64TimeseriesProperty( connection, static_cast<UInt64TimeseriesPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanProperty:
+            {
+                result = DeleteTimeSpanProperty( connection, static_cast<TimeSpanPropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16Property:
+            {
+                result = DeleteUInt16Property( connection, static_cast<UInt16PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32Property:
+            {
+                result = DeleteUInt32Property( connection, static_cast<UInt32PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64Property:
+            {
+                result = DeleteUInt64Property( connection, static_cast<UInt64PropertyObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryPropertyDefinition:
+            {
+                result = DeleteBinaryPropertyDefinition( connection, static_cast<BinaryPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanPropertyDefinition:
+            {
+                result = DeleteBooleanPropertyDefinition( connection, static_cast<BooleanPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BytePropertyDefinition:
+            {
+                result = DeleteBytePropertyDefinition( connection, static_cast<BytePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimePropertyDefinition:
+            {
+                result = DeleteDateTimePropertyDefinition( connection, static_cast<DateTimePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DoublePropertyDefinition:
+            {
+                result = DeleteDoublePropertyDefinition( connection, static_cast<DoublePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::GuidPropertyDefinition:
+            {
+                result = DeleteGuidPropertyDefinition( connection, static_cast<GuidPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int16PropertyDefinition:
+            {
+                result = DeleteInt16PropertyDefinition( connection, static_cast<Int16PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int32PropertyDefinition:
+            {
+                result = DeleteInt32PropertyDefinition( connection, static_cast<Int32PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int64PropertyDefinition:
+            {
+                result = DeleteInt64PropertyDefinition( connection, static_cast<Int64PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ReferencePropertyDefinition:
+            {
+                result = DeleteReferencePropertyDefinition( connection, static_cast<ReferencePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SBytePropertyDefinition:
+            {
+                result = DeleteSBytePropertyDefinition( connection, static_cast<SBytePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SinglePropertyDefinition:
+            {
+                result = DeleteSinglePropertyDefinition( connection, static_cast<SinglePropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::StringPropertyDefinition:
+            {
+                result = DeleteStringPropertyDefinition( connection, static_cast<StringPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseriesPropertyDefinition:
+            {
+                result = DeleteBinaryTimeseriesPropertyDefinition( connection, static_cast<BinaryTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseriesPropertyDefinition:
+            {
+                result = DeleteBooleanTimeseriesPropertyDefinition( connection, static_cast<BooleanTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseriesPropertyDefinition:
+            {
+                result = DeleteByteTimeseriesPropertyDefinition( connection, static_cast<ByteTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseriesPropertyDefinition:
+            {
+                result = DeleteDateTimeTimeseriesPropertyDefinition( connection, static_cast<DateTimeTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseriesPropertyDefinition:
+            {
+                result = DeleteDoubleTimeseriesPropertyDefinition( connection, static_cast<DoubleTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseriesPropertyDefinition:
+            {
+                result = DeleteGuidTimeseriesPropertyDefinition( connection, static_cast<GuidTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int16TimeseriesPropertyDefinition:
+            {
+                result = DeleteInt16TimeseriesPropertyDefinition( connection, static_cast<Int16TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int32TimeseriesPropertyDefinition:
+            {
+                result = DeleteInt32TimeseriesPropertyDefinition( connection, static_cast<Int32TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::Int64TimeseriesPropertyDefinition:
+            {
+                result = DeleteInt64TimeseriesPropertyDefinition( connection, static_cast<Int64TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesPropertyDefinition:
+            {
+                result = DeleteReferenceTimeseriesPropertyDefinition( connection, static_cast<ReferenceTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesPropertyDefinition:
+            {
+                result = DeleteSByteTimeseriesPropertyDefinition( connection, static_cast<SByteTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesPropertyDefinition:
+            {
+                result = DeleteSingleTimeseriesPropertyDefinition( connection, static_cast<SingleTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesPropertyDefinition:
+            {
+                result = DeleteStringTimeseriesPropertyDefinition( connection, static_cast<StringTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesPropertyDefinition:
+            {
+                result = DeleteTimeSpanTimeseriesPropertyDefinition( connection, static_cast<TimeSpanTimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesPropertyDefinition:
+            {
+                result = DeleteUInt16TimeseriesPropertyDefinition( connection, static_cast<UInt16TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesPropertyDefinition:
+            {
+                result = DeleteUInt32TimeseriesPropertyDefinition( connection, static_cast<UInt32TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesPropertyDefinition:
+            {
+                result = DeleteUInt64TimeseriesPropertyDefinition( connection, static_cast<UInt64TimeseriesPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanPropertyDefinition:
+            {
+                result = DeleteTimeSpanPropertyDefinition( connection, static_cast<TimeSpanPropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16PropertyDefinition:
+            {
+                result = DeleteUInt16PropertyDefinition( connection, static_cast<UInt16PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32PropertyDefinition:
+            {
+                result = DeleteUInt32PropertyDefinition( connection, static_cast<UInt32PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64PropertyDefinition:
+            {
+                result = DeleteUInt64PropertyDefinition( connection, static_cast<UInt64PropertyDefinitionObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAlarmStatus:
+            {
+                result = DeleteRadarAlarmStatus( connection, static_cast<RadarAlarmStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommand:
+            {
+                result = DeleteRadarCommand( connection, static_cast<RadarCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandGetStatus:
+            {
+                result = DeleteRadarCommandGetStatus( connection, static_cast<RadarCommandGetStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandReply:
+            {
+                result = DeleteRadarCommandReply( connection, static_cast<RadarCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadarCommandReplyGetStatus:
+            {
+                result = DeleteRadarCommandReplyGetStatus( connection, static_cast<RadarCommandReplyGetStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadarConfiguration:
+            {
+                result = DeleteRadarConfiguration( connection, static_cast<RadarConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::RadarImage:
+            {
+                result = DeleteRadarImage( connection, static_cast<RadarImageObject&>( data ) );
+            }
+            break;
+            case Kind::RadarRawTrackTable:
+            {
+                result = DeleteRadarRawTrackTable( connection, static_cast<RadarRawTrackTableObject&>( data ) );
+            }
+            break;
+            case Kind::RadarStatus:
+            {
+                result = DeleteRadarStatus( connection, static_cast<RadarStatusObject&>( data ) );
+            }
+            break;
+            case Kind::RadioCommand:
+            {
+                result = DeleteRadioCommand( connection, static_cast<RadioCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadioCommandReply:
+            {
+                result = DeleteRadioCommandReply( connection, static_cast<RadioCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadioConfiguration:
+            {
+                result = DeleteRadioConfiguration( connection, static_cast<RadioConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeCommand:
+            {
+                result = DeleteRadomeCommand( connection, static_cast<RadomeCommandObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeCommandReply:
+            {
+                result = DeleteRadomeCommandReply( connection, static_cast<RadomeCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeConfiguration:
+            {
+                result = DeleteRadomeConfiguration( connection, static_cast<RadomeConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseriesValue:
+            {
+                result = DeleteReferenceTimeseriesValue( connection, static_cast<ReferenceTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseriesValue:
+            {
+                result = DeleteSByteTimeseriesValue( connection, static_cast<SByteTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityDomain:
+            {
+                result = DeleteSecurityDomain( connection, static_cast<SecurityDomainObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityLogin:
+            {
+                result = DeleteSecurityLogin( connection, static_cast<SecurityLoginObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityRole:
+            {
+                result = DeleteSecurityRole( connection, static_cast<SecurityRoleObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityIdentifierRoleLink:
+            {
+                result = DeleteSecurityIdentifierRoleLink( connection, static_cast<SecurityIdentifierRoleLinkObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityLoginSession:
+            {
+                result = DeleteSecurityLoginSession( connection, static_cast<SecurityLoginSessionObject&>( data ) );
+            }
+            break;
+            case Kind::SecurityPermission:
+            {
+                result = DeleteSecurityPermission( connection, static_cast<SecurityPermissionObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseriesValue:
+            {
+                result = DeleteSingleTimeseriesValue( connection, static_cast<SingleTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseriesValue:
+            {
+                result = DeleteStringTimeseriesValue( connection, static_cast<StringTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::BinaryTimeseries:
+            {
+                result = DeleteBinaryTimeseries( connection, static_cast<BinaryTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::BooleanTimeseries:
+            {
+                result = DeleteBooleanTimeseries( connection, static_cast<BooleanTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigationOffPositionTimeseries:
+            {
+                result = DeleteAisAidToNavigationOffPositionTimeseries( connection, static_cast<AisAidToNavigationOffPositionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DeviceEnabledTimeseries:
+            {
+                result = DeleteDeviceEnabledTimeseries( connection, static_cast<DeviceEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAutomaticSensitivityTimeControlTimeseries:
+            {
+                result = DeleteRadarAutomaticSensitivityTimeControlTimeseries( connection, static_cast<RadarAutomaticSensitivityTimeControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarBlankSector1Timeseries:
+            {
+                result = DeleteRadarBlankSector1Timeseries( connection, static_cast<RadarBlankSector1TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarBlankSector2Timeseries:
+            {
+                result = DeleteRadarBlankSector2Timeseries( connection, static_cast<RadarBlankSector2TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableAutomaticFrequencyControlTimeseries:
+            {
+                result = DeleteRadarEnableAutomaticFrequencyControlTimeseries( connection, static_cast<RadarEnableAutomaticFrequencyControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableFastTimeConstantTimeseries:
+            {
+                result = DeleteRadarEnableFastTimeConstantTimeseries( connection, static_cast<RadarEnableFastTimeConstantTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarEnableSensitivityTimeControlTimeseries:
+            {
+                result = DeleteRadarEnableSensitivityTimeControlTimeseries( connection, static_cast<RadarEnableSensitivityTimeControlTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarPowerOnTimeseries:
+            {
+                result = DeleteRadarPowerOnTimeseries( connection, static_cast<RadarPowerOnTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSaveSettingsTimeseries:
+            {
+                result = DeleteRadarSaveSettingsTimeseries( connection, static_cast<RadarSaveSettingsTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarTrackingTimeseries:
+            {
+                result = DeleteRadarTrackingTimeseries( connection, static_cast<RadarTrackingTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::MediaProxySessionEnabledTimeseries:
+            {
+                result = DeleteMediaProxySessionEnabledTimeseries( connection, static_cast<MediaProxySessionEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::MediaServiceEnabledTimeseries:
+            {
+                result = DeleteMediaServiceEnabledTimeseries( connection, static_cast<MediaServiceEnabledTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ByteTimeseries:
+            {
+                result = DeleteByteTimeseries( connection, static_cast<ByteTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DateTimeTimeseries:
+            {
+                result = DeleteDateTimeTimeseries( connection, static_cast<DateTimeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::DoubleTimeseries:
+            {
+                result = DeleteDoubleTimeseries( connection, static_cast<DoubleTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSAltitudeTimeseries:
+            {
+                result = DeleteGNSSAltitudeTimeseries( connection, static_cast<GNSSAltitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSLatitudeTimeseries:
+            {
+                result = DeleteGNSSLatitudeTimeseries( connection, static_cast<GNSSLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GNSSLongitudeTimeseries:
+            {
+                result = DeleteGNSSLongitudeTimeseries( connection, static_cast<GNSSLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroCourseTimeseries:
+            {
+                result = DeleteGyroCourseTimeseries( connection, static_cast<GyroCourseTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroHeadingMagneticNorthTimeseries:
+            {
+                result = DeleteGyroHeadingMagneticNorthTimeseries( connection, static_cast<GyroHeadingMagneticNorthTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroHeadingTrueNorthTimeseries:
+            {
+                result = DeleteGyroHeadingTrueNorthTimeseries( connection, static_cast<GyroHeadingTrueNorthTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroPitchTimeseries:
+            {
+                result = DeleteGyroPitchTimeseries( connection, static_cast<GyroPitchTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroRateOfTurnTimeseries:
+            {
+                result = DeleteGyroRateOfTurnTimeseries( connection, static_cast<GyroRateOfTurnTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroRollTimeseries:
+            {
+                result = DeleteGyroRollTimeseries( connection, static_cast<GyroRollTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GyroSpeedTimeseries:
+            {
+                result = DeleteGyroSpeedTimeseries( connection, static_cast<GyroSpeedTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarLatitudeTimeseries:
+            {
+                result = DeleteRadarLatitudeTimeseries( connection, static_cast<RadarLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarLongitudeTimeseries:
+            {
+                result = DeleteRadarLongitudeTimeseries( connection, static_cast<RadarLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeDewPointTimeseries:
+            {
+                result = DeleteRadomeDewPointTimeseries( connection, static_cast<RadomeDewPointTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomePressureTimeseries:
+            {
+                result = DeleteRadomePressureTimeseries( connection, static_cast<RadomePressureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeTemperatureTimeseries:
+            {
+                result = DeleteRadomeTemperatureTimeseries( connection, static_cast<RadomeTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::VesselDraughtTimeseries:
+            {
+                result = DeleteVesselDraughtTimeseries( connection, static_cast<VesselDraughtTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewLatitudeTimeseries:
+            {
+                result = DeleteViewLatitudeTimeseries( connection, static_cast<ViewLatitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewLongitudeTimeseries:
+            {
+                result = DeleteViewLongitudeTimeseries( connection, static_cast<ViewLongitudeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ViewZoomLevelTimeseries:
+            {
+                result = DeleteViewZoomLevelTimeseries( connection, static_cast<ViewZoomLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationAbsoluteHumidityTimeseries:
+            {
+                result = DeleteWeatherStationAbsoluteHumidityTimeseries( connection, static_cast<WeatherStationAbsoluteHumidityTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationAirTemperatureTimeseries:
+            {
+                result = DeleteWeatherStationAirTemperatureTimeseries( connection, static_cast<WeatherStationAirTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationBarometricPressureTimeseries:
+            {
+                result = DeleteWeatherStationBarometricPressureTimeseries( connection, static_cast<WeatherStationBarometricPressureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationDewPointTimeseries:
+            {
+                result = DeleteWeatherStationDewPointTimeseries( connection, static_cast<WeatherStationDewPointTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationRelativeHumidityTimeseries:
+            {
+                result = DeleteWeatherStationRelativeHumidityTimeseries( connection, static_cast<WeatherStationRelativeHumidityTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWaterTemperatureTimeseries:
+            {
+                result = DeleteWeatherStationWaterTemperatureTimeseries( connection, static_cast<WeatherStationWaterTemperatureTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWindDirectionTimeseries:
+            {
+                result = DeleteWeatherStationWindDirectionTimeseries( connection, static_cast<WeatherStationWindDirectionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationWindSpeedTimeseries:
+            {
+                result = DeleteWeatherStationWindSpeedTimeseries( connection, static_cast<WeatherStationWindSpeedTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition2DTimeseries:
+            {
+                result = DeleteGeoPosition2DTimeseries( connection, static_cast<GeoPosition2DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::AisAidToNavigationPositionTimeseries:
+            {
+                result = DeleteAisAidToNavigationPositionTimeseries( connection, static_cast<AisAidToNavigationPositionTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GeoPosition3DTimeseries:
+            {
+                result = DeleteGeoPosition3DTimeseries( connection, static_cast<GeoPosition3DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::GuidTimeseries:
+            {
+                result = DeleteGuidTimeseries( connection, static_cast<GuidTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int16Timeseries:
+            {
+                result = DeleteInt16Timeseries( connection, static_cast<Int16TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int32Timeseries:
+            {
+                result = DeleteInt32Timeseries( connection, static_cast<Int32TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarAzimuthOffsetTimeseries:
+            {
+                result = DeleteRadarAzimuthOffsetTimeseries( connection, static_cast<RadarAzimuthOffsetTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarFastTimeConstantLevelTimeseries:
+            {
+                result = DeleteRadarFastTimeConstantLevelTimeseries( connection, static_cast<RadarFastTimeConstantLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarFastTimeConstantModeTimeseries:
+            {
+                result = DeleteRadarFastTimeConstantModeTimeseries( connection, static_cast<RadarFastTimeConstantModeTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarPulseTimeseries:
+            {
+                result = DeleteRadarPulseTimeseries( connection, static_cast<RadarPulseTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector1EndTimeseries:
+            {
+                result = DeleteRadarSector1EndTimeseries( connection, static_cast<RadarSector1EndTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector1StartTimeseries:
+            {
+                result = DeleteRadarSector1StartTimeseries( connection, static_cast<RadarSector1StartTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector2EndTimeseries:
+            {
+                result = DeleteRadarSector2EndTimeseries( connection, static_cast<RadarSector2EndTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSector2StartTimeseries:
+            {
+                result = DeleteRadarSector2StartTimeseries( connection, static_cast<RadarSector2StartTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarSensitivityTimeControlLevelTimeseries:
+            {
+                result = DeleteRadarSensitivityTimeControlLevelTimeseries( connection, static_cast<RadarSensitivityTimeControlLevelTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadarTuningTimeseries:
+            {
+                result = DeleteRadarTuningTimeseries( connection, static_cast<RadarTuningTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::VesselPersonsOnBoardTimeseries:
+            {
+                result = DeleteVesselPersonsOnBoardTimeseries( connection, static_cast<VesselPersonsOnBoardTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Int64Timeseries:
+            {
+                result = DeleteInt64Timeseries( connection, static_cast<Int64TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Position2DTimeseries:
+            {
+                result = DeletePosition2DTimeseries( connection, static_cast<Position2DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::Position3DTimeseries:
+            {
+                result = DeletePosition3DTimeseries( connection, static_cast<Position3DTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::ReferenceTimeseries:
+            {
+                result = DeleteReferenceTimeseries( connection, static_cast<ReferenceTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::SByteTimeseries:
+            {
+                result = DeleteSByteTimeseries( connection, static_cast<SByteTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::SingleTimeseries:
+            {
+                result = DeleteSingleTimeseries( connection, static_cast<SingleTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::StringTimeseries:
+            {
+                result = DeleteStringTimeseries( connection, static_cast<StringTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseries:
+            {
+                result = DeleteTimeSpanTimeseries( connection, static_cast<TimeSpanTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16Timeseries:
+            {
+                result = DeleteUInt16Timeseries( connection, static_cast<UInt16TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32Timeseries:
+            {
+                result = DeleteUInt32Timeseries( connection, static_cast<UInt32TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::RadomeStatusTimeseries:
+            {
+                result = DeleteRadomeStatusTimeseries( connection, static_cast<RadomeStatusTimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64Timeseries:
+            {
+                result = DeleteUInt64Timeseries( connection, static_cast<UInt64TimeseriesObject&>( data ) );
+            }
+            break;
+            case Kind::TimeseriesCatalog:
+            {
+                result = DeleteTimeseriesCatalog( connection, static_cast<TimeseriesCatalogObject&>( data ) );
+            }
+            break;
+            case Kind::TimeseriesInfo:
+            {
+                result = DeleteTimeseriesInfo( connection, static_cast<TimeseriesInfoObject&>( data ) );
+            }
+            break;
+            case Kind::TimeSpanTimeseriesValue:
+            {
+                result = DeleteTimeSpanTimeseriesValue( connection, static_cast<TimeSpanTimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::TrackableItemTrackLink:
+            {
+                result = DeleteTrackableItemTrackLink( connection, static_cast<TrackableItemTrackLinkObject&>( data ) );
+            }
+            break;
+            case Kind::Track:
+            {
+                result = DeleteTrack( connection, static_cast<TrackObject&>( data ) );
+            }
+            break;
+            case Kind::Track3D:
+            {
+                result = DeleteTrack3D( connection, static_cast<Track3DObject&>( data ) );
+            }
+            break;
+            case Kind::TrackerFilterParameters:
+            {
+                result = DeleteTrackerFilterParameters( connection, static_cast<TrackerFilterParametersObject&>( data ) );
+            }
+            break;
+            case Kind::TrackerFilterParametersConfiguration:
+            {
+                result = DeleteTrackerFilterParametersConfiguration( connection, static_cast<TrackerFilterParametersConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::TrackInfo:
+            {
+                result = DeleteTrackInfo( connection, static_cast<TrackInfoObject&>( data ) );
+            }
+            break;
+            case Kind::TrackingServiceOptions:
+            {
+                result = DeleteTrackingServiceOptions( connection, static_cast<TrackingServiceOptionsObject&>( data ) );
+            }
+            break;
+            case Kind::TrackLink:
+            {
+                result = DeleteTrackLink( connection, static_cast<TrackLinkObject&>( data ) );
+            }
+            break;
+            case Kind::TrackValue:
+            {
+                result = DeleteTrackValue( connection, static_cast<TrackValueObject&>( data ) );
+            }
+            break;
+            case Kind::TrackValue3D:
+            {
+                result = DeleteTrackValue3D( connection, static_cast<TrackValue3DObject&>( data ) );
+            }
+            break;
+            case Kind::UInt16TimeseriesValue:
+            {
+                result = DeleteUInt16TimeseriesValue( connection, static_cast<UInt16TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::UInt32TimeseriesValue:
+            {
+                result = DeleteUInt32TimeseriesValue( connection, static_cast<UInt32TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::UInt64TimeseriesValue:
+            {
+                result = DeleteUInt64TimeseriesValue( connection, static_cast<UInt64TimeseriesValueObject&>( data ) );
+            }
+            break;
+            case Kind::VehicleType:
+            {
+                result = DeleteVehicleType( connection, static_cast<VehicleTypeObject&>( data ) );
+            }
+            break;
+            case Kind::VesselType:
+            {
+                result = DeleteVesselType( connection, static_cast<VesselTypeObject&>( data ) );
+            }
+            break;
+            case Kind::View:
+            {
+                result = DeleteView( connection, static_cast<ViewObject&>( data ) );
+            }
+            break;
+            case Kind::ViewCameraLink:
+            {
+                result = DeleteViewCameraLink( connection, static_cast<ViewCameraLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ViewTrackerLink:
+            {
+                result = DeleteViewTrackerLink( connection, static_cast<ViewTrackerLinkObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationCommand:
+            {
+                result = DeleteWeatherStationCommand( connection, static_cast<WeatherStationCommandObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationCommandReply:
+            {
+                result = DeleteWeatherStationCommandReply( connection, static_cast<WeatherStationCommandReplyObject&>( data ) );
+            }
+            break;
+            case Kind::WeatherStationConfiguration:
+            {
+                result = DeleteWeatherStationConfiguration( connection, static_cast<WeatherStationConfigurationObject&>( data ) );
+            }
+            break;
+            case Kind::CircularZone:
+            {
+                result = DeleteCircularZone( connection, static_cast<CircularZoneObject&>( data ) );
+            }
+            break;
+            case Kind::PolygonZone:
+            {
+                result = DeletePolygonZone( connection, static_cast<PolygonZoneObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneExceptions:
+            {
+                result = DeleteZoneExceptions( connection, static_cast<ZoneExceptionsObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneExceptionsVesselLink:
+            {
+                result = DeleteZoneExceptionsVesselLink( connection, static_cast<ZoneExceptionsVesselLinkObject&>( data ) );
+            }
+            break;
+            case Kind::ZoneTrackAlarm:
+            {
+                result = DeleteZoneTrackAlarm( connection, static_cast<ZoneTrackAlarmObject&>( data ) );
+            }
+            break;
+        }
+        return result;
+    }
+    BARRELMAN_EXPORT bool Merge( const ODBC::Connection& connection, BaseData<Kind, Guid>& data )
+    {
+        bool result = false;
+        auto objectState = data.ObjectState( );
+        switch ( objectState )
+        {
+            case ObjectState::New:
+            {
+                result = Insert( connection, data );
+            }
+            break;
+            case ObjectState::Changed:
+            {
+                result = Update( connection, data );
+            }
+            break;
+            case ObjectState::Deleted:
+            {
+                result = Delete( connection, data );
+            }
+            break;
+        }
+        return result;
+    }
+
 }

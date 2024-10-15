@@ -72,6 +72,10 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
                 WriteLine( );
             }
         }
+        CreateInsertDataObject( );
+        CreateUpdateDataObject( );
+        CreateDeleteDataObject( );
+        CreateMergeDataObject( );
 
         WriteLine( L"}" );
 
@@ -653,6 +657,133 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         }
         WriteLine( L"        return result;" );
         WriteLine( L"    }" );
+    }
+
+    void CppMsSqlStoredProceduresSourceGenerator::CreateInsertDataObject( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        auto classCount = classes.size( );
+
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} bool Insert( const ODBC::Connection& connection, BaseData<Kind, Guid>& data )", dllExport );
+        WriteLine( L"    {" );
+        WriteLine( L"        bool result = false;" );
+        WriteLine( L"        auto kind = data.GetObjectType( );" );
+        WriteLine( L"        switch ( kind )" );
+        WriteLine( L"        {" );
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto classInfo = *classes[ i ];
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto functionName = CppHelper::GetInsertFunctionName( classInfo );
+                auto dataClassName = CppHelper::GetDataType( classInfo );
+                WriteLine( L"            case Kind::{}:", classInfo.Name( ).FirstToUpper( ) );
+                WriteLine( L"            {" );
+                WriteLine( L"                result = {}( connection, static_cast<{}&>( data ) );", functionName, dataClassName );
+                WriteLine( L"            }" );
+                WriteLine( L"            break;" );
+            }
+        }
+        WriteLine( L"        }" );
+        WriteLine( L"        return result;" );
+        WriteLine( L"    }" );
+    }
+    void CppMsSqlStoredProceduresSourceGenerator::CreateUpdateDataObject( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        auto classCount = classes.size( );
+
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} bool Update( const ODBC::Connection& connection, BaseData<Kind, Guid>& data )", dllExport );
+        WriteLine( L"    {" );
+        WriteLine( L"        bool result = false;" );
+        WriteLine( L"        auto kind = data.GetObjectType( );" );
+        WriteLine( L"        switch ( kind )" );
+        WriteLine( L"        {" );
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto classInfo = *classes[ i ];
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto functionName = CppHelper::GetUpdateFunctionName( classInfo );
+                auto dataClassName = CppHelper::GetDataType( classInfo );
+                WriteLine( L"            case Kind::{}:", classInfo.Name( ).FirstToUpper( ) );
+                WriteLine( L"            {" );
+                WriteLine( L"                result = {}( connection, static_cast<{}&>( data ) );", functionName, dataClassName );
+                WriteLine( L"            }" );
+                WriteLine( L"            break;" );
+            }
+        }
+        WriteLine( L"        }" );
+        WriteLine( L"        return result;" );
+        WriteLine( L"    }" );
+    }
+    void CppMsSqlStoredProceduresSourceGenerator::CreateDeleteDataObject( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        auto classCount = classes.size( );
+
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} bool Delete( const ODBC::Connection& connection, BaseData<Kind, Guid>& data )", dllExport );
+        WriteLine( L"    {" );
+        WriteLine( L"        bool result = false;" );
+        WriteLine( L"        auto kind = data.GetObjectType( );" );
+        WriteLine( L"        switch ( kind )" );
+        WriteLine( L"        {" );
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto classInfo = *classes[ i ];
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto functionName = CppHelper::GetDeleteFunctionName( classInfo );
+                auto dataClassName = CppHelper::GetDataType( classInfo );
+                WriteLine( L"            case Kind::{}:", classInfo.Name( ).FirstToUpper( ) );
+                WriteLine( L"            {" );
+                WriteLine( L"                result = {}( connection, static_cast<{}&>( data ) );", functionName, dataClassName );
+                WriteLine( L"            }" );
+                WriteLine( L"            break;" );
+            }
+        }
+        WriteLine( L"        }" );
+        WriteLine( L"        return result;" );
+        WriteLine( L"    }" );
+    }
+    void CppMsSqlStoredProceduresSourceGenerator::CreateMergeDataObject( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        auto classCount = classes.size( );
+
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} bool Merge( const ODBC::Connection& connection, BaseData<Kind, Guid>& data )", dllExport );
+        WriteLine( L"    {" );
+        WriteLine( L"        bool result = false;" );
+        WriteLine( L"        auto objectState = data.ObjectState( );" );
+        WriteLine( L"        switch ( objectState )" );
+        WriteLine( L"        {" );
+        WriteLine( L"            case ObjectState::New:" );
+        WriteLine( L"            {" );
+        WriteLine( L"                result = Insert( connection, data );" );
+        WriteLine( L"            }" );
+        WriteLine( L"            break;" );
+        WriteLine( L"            case ObjectState::Changed:" );
+        WriteLine( L"            {" );
+        WriteLine( L"                result = Update( connection, data );" );
+        WriteLine( L"            }" );
+        WriteLine( L"            break;" );
+        WriteLine( L"            case ObjectState::Deleted:" );
+        WriteLine( L"            {" );
+        WriteLine( L"                result = Delete( connection, data );" );
+        WriteLine( L"            }" );
+        WriteLine( L"            break;" );
+        WriteLine( L"        }" );
+        WriteLine( L"        return result;" );
+        WriteLine( L"    }" );
+        WriteLine( );
     }
 
 }

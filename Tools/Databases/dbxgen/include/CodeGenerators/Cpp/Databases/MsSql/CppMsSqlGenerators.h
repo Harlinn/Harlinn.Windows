@@ -109,6 +109,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         void CreateUpdateObject2( const Metadata::ClassInfo& classInfo );
         void CreateDelete( const Metadata::ClassInfo& classInfo );
         void CreateDeleteObject( const Metadata::ClassInfo& classInfo );
+
+        void CreateInsertDataObject( );
+        void CreateUpdateDataObject( );
+        void CreateDeleteDataObject( );
+        void CreateMergeDataObject( );
+
     };
 
     class CppMsSqlStoredProceduresSourceGenerator : public CodeGenerator<CppMsSqlGenerator, CppMsSqlStoredProceduresSourceOptions>
@@ -131,6 +137,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         void CreateUpdateObject2( const Metadata::ClassInfo& classInfo );
         void CreateDelete( const Metadata::ClassInfo& classInfo );
         void CreateDeleteObject( const Metadata::ClassInfo& classInfo );
+
+        void CreateInsertDataObject( );
+        void CreateUpdateDataObject( );
+        void CreateDeleteDataObject( );
+        void CreateMergeDataObject( );
     };
 
 
