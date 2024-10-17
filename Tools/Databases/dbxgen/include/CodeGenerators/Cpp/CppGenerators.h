@@ -62,6 +62,28 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
         void CreateDataTypeFactory( );
     };
 
+    class CppIDataContextGenerator : public CodeGenerator<CppDataGenerator, CppIDataContextOptions>
+    {
+        std::set<WideString> functions_;
+    public:
+        using Base = CodeGenerator<CppDataGenerator, CppIDataContextOptions>;
+
+        inline CppIDataContextGenerator( const CppDataGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateMembers( const Metadata::ClassInfo& classInfo );
+        void CreateGetById( const Metadata::ClassInfo& classInfo );
+        void CreateGetAll( const Metadata::ClassInfo& classInfo );
+        void CreateGetByIndex( const Metadata::ClassInfo& classInfo );
+        void CreateGetByIndex( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByNullableIndex( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexAt( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexFrom( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexUntil( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexOver( const Metadata::ClassInfo& classInfo, const Metadata::IndexInfo& indexInfo, size_t indexMemberCount );
+    };
+
 
 
     class CppDataGenerator : public GeneratorContainer<CppGenerator, CppDataOptions>
@@ -69,6 +91,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
         CppEnumsGenerator enums_;
         CppDataTypesGenerator dataTypes_;
         CppDataTypesSourceGenerator dataTypesSource_;
+        CppIDataContextGenerator dataContext_;
     public:
         using Base = GeneratorContainer<CppGenerator, CppDataOptions>;
         CppDataGenerator( const CppGenerator& owner );
@@ -78,6 +101,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
             enums_.Run( );
             dataTypes_.Run( );
             dataTypesSource_.Run( );
+            dataContext_.Run( );
         }
     };
 
@@ -95,6 +119,12 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
     inline CppDataTypesSourceGenerator::CppDataTypesSourceGenerator( const CppDataGenerator& owner )
         : Base( owner, owner.Options( ).DataTypesSource( ) )
+    {
+
+    }
+
+    inline CppIDataContextGenerator::CppIDataContextGenerator( const CppDataGenerator& owner )
+        : Base( owner, owner.Options( ).DataContext( ) )
     {
 
     }
@@ -126,7 +156,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
 
     inline CppDataGenerator::CppDataGenerator( const CppGenerator& owner )
-        : Base( owner, owner.Options( ).Data( ) ), enums_( *this ), dataTypes_( *this ), dataTypesSource_( *this )
+        : Base( owner, owner.Options( ).Data( ) ), enums_( *this ), dataTypes_( *this ), dataTypesSource_( *this ), dataContext_(*this)
     {
     }
 

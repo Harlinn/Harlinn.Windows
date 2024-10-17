@@ -186,6 +186,7 @@
     <ClCompile Include="src\CodeGenerators\Cpp\CppDataTypesTestGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Cpp\CppEnumsGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Cpp\CppHelper.cpp" />
+    <ClCompile Include="src\CodeGenerators\Cpp\CppIDataContextGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlComplexDatabaseReadersGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlComplexDatabaseReadersSourceGenerator.cpp" />
     <ClCompile Include="src\CodeGenerators\Cpp\Databases\MsSql\CppMsSqlSimpleDatabaseReadersGenerator.cpp" />

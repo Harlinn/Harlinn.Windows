@@ -194,6 +194,7 @@
   <ItemGroup>
     <ClInclude Include="HODBC.h" />
     <ClInclude Include="HODBCDef.h" />
+    <ClInclude Include="HODBCMsSql.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

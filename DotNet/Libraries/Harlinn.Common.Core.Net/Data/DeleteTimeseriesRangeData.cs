@@ -34,6 +34,7 @@ namespace Harlinn.Common.Core.Net.Data
         }
         public DeleteTimeseriesRangeData(DeleteTimeseriesRangeType rangeType, Guid id, TKind timeseriesType)
         {
+            _rangeType = rangeType;
             _timeseriesId = id;
             _timeseriesType = timeseriesType;
         }

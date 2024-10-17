@@ -433,6 +433,419 @@ namespace Harlinn::Common::Core::Data
         } \
     }
 
+    
+    template<typename ObjectT, typename KeyT>
+        requires std::is_enum_v<ObjectT>
+    class DeletedData 
+    {
+    public:
+        using ObjectType = ObjectT;
+        using KeyType = KeyT;
+    private:
+        ObjectType type_ = {};
+        KeyType key_ = {};
+        Int64 rowVersion_ = 0;
+    public:
+        DeletedData()
+        { }
+        DeletedData( ObjectType type, KeyType key, Int64 rowVersion )
+            : type_( type ), key_( key ), rowVersion_( rowVersion )
+        {
+        }
+
+        ObjectType Type( ) const
+        {
+            return type_;
+        }
+
+        void SetType( ObjectType type )
+        {
+            type_ = type;
+        }
+
+        
+        const KeyType& Key( ) const
+        {
+            return key_;
+        }
+        void SetKey( const KeyType& key )
+        {
+            key_ = key;
+        }
+
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( Int64 rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            destination.Write( type_ );
+            destination.Write( key_ );
+            destination.Write( rowVersion_ );
+        }
+
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            type_ = source.Read<ObjectType>( );
+            key_ = source.Read<KeyType>( );
+            rowVersion_ = source.Read<Int64>( );
+        }
+
+    };
+
+
+
+    enum DeleteTimeseriesRangeType : Byte
+    {
+        Unknown = 0,
+        Clear,
+        From,
+        Until,
+        Over
+    };
+
+    template<typename TKind>
+    class DeleteTimeseriesRangeData : public std::enable_shared_from_this< DeleteTimeseriesRangeData<TKind> >
+    {
+        DeleteTimeseriesRangeType rangeType_ = DeleteTimeseriesRangeType::Unknown;
+        Guid timeseriesId_;
+        TKind timeseriesType_ = {};
+    
+    protected: 
+        DeleteTimeseriesRangeData( DeleteTimeseriesRangeType rangeType )
+        {
+            rangeType_ = rangeType;
+        }
+    public:
+        DeleteTimeseriesRangeData( DeleteTimeseriesRangeType rangeType, Guid id, TKind timeseriesType )
+        {
+            rangeType_ = rangeType;
+            timeseriesId_ = id;
+            timeseriesType_ = timeseriesType;
+        }
+
+        DeleteTimeseriesRangeType RangeType( ) const
+        { 
+            return rangeType_; 
+        }
+
+        Guid TimeseriesId( ) const
+        {
+            return timeseriesId_;
+        }
+        void SetTimeseriesId(const Guid& timeseriesId )
+        {
+            timeseriesId_ = timeseriesId;
+        }
+        TKind TimeseriesType( ) const
+        {
+            return timeseriesType_;
+        }
+        void SetTimeseriesType( TKind timeseriesType ) 
+        {
+            timeseriesType_ = timeseriesType;
+
+        }
+
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            destination.Write( static_cast<Byte>(rangeType_) );
+            destination.Write( timeseriesId_ );
+            destination.Write( timeseriesType_ );
+        }
+
+        template<IO::StreamReader StreamT>
+        static DeleteTimeseriesRangeType ReadRangeType( IO::BinaryReader<StreamT>& source )
+        {
+            auto result = ( DeleteTimeseriesRangeType )source.ReadByte( );
+            return result;
+        }
+
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            timeseriesId_ = source.Read<Guid>( );
+            timeseriesType_ = source.Read<TKind>( );
+        }
+    };
+
+    template<typename TKind>
+    class DeleteClearTimeseriesRangeData : public DeleteTimeseriesRangeData<TKind>
+    {
+    public: 
+        using Base = DeleteTimeseriesRangeData<TKind>;
+        DeleteClearTimeseriesRangeData( )
+            : Base( DeleteTimeseriesRangeType::Clear )
+        {
+        }
+        DeleteClearTimeseriesRangeData( Guid id, TKind timeseriesType )
+            : Base( DeleteTimeseriesRangeType::Clear, id, timeseriesType )
+        {
+        }
+    };
+
+    template<typename TKind>
+    class DeleteFromTimeseriesRangeData : public DeleteTimeseriesRangeData<TKind>
+    {
+        DateTime from_;
+    public:
+        using Base = DeleteTimeseriesRangeData<TKind>;
+        DeleteFromTimeseriesRangeData( )
+            : Base( DeleteTimeseriesRangeType::From )
+        {
+        }
+        DeleteFromTimeseriesRangeData( const Guid& id, TKind timeseriesType )
+            : Base( DeleteTimeseriesRangeType::From, id, timeseriesType )
+        {
+        }
+
+        DeleteFromTimeseriesRangeData( const Guid& id, TKind timeseriesType, const DateTime& from )
+            : Base( DeleteTimeseriesRangeType::From, id, timeseriesType ), from_( from )
+        {
+        }
+
+        DateTime From( ) const
+        {
+            return from_;
+        }
+        void SetFrom( const DateTime& from )
+        {
+            from_ = from;
+        }
+
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteTo( destination );
+            destination.Write( from_ );
+        }
+
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            Base::ReadFrom( source );
+            from_ = source.Read<DateTime>( );
+            
+        }
+    };
+
+    template<typename TKind>
+    class DeleteUntilTimeseriesRangeData : public DeleteTimeseriesRangeData<TKind>
+    {
+        DateTime until_;
+    public:
+        using Base = DeleteTimeseriesRangeData<TKind>;
+        DeleteUntilTimeseriesRangeData( )
+            : Base( DeleteTimeseriesRangeType::Until )
+        {
+        }
+        DeleteUntilTimeseriesRangeData( const Guid& id, TKind timeseriesType )
+            : Base( DeleteTimeseriesRangeType::Until, id, timeseriesType )
+        {
+        }
+
+        DeleteUntilTimeseriesRangeData( const Guid& id, TKind timeseriesType, const DateTime& until )
+            : Base( DeleteTimeseriesRangeType::Until, id, timeseriesType ), until_( until )
+        {
+        }
+
+        DateTime Until( ) const
+        {
+            return until_;
+        }
+        void SetUntil( const DateTime& until )
+        {
+            until_ = until;
+        }
+
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteTo( destination );
+            destination.Write( until_ );
+        }
+
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            Base::ReadFrom( source );
+            until_ = source.Read<DateTime>( );
+        }
+    };
+
+    template<typename TKind>
+    class DeleteOverTimeseriesRangeData : public DeleteTimeseriesRangeData<TKind>
+    {
+        DateTime from_;
+        DateTime until_;
+    public:
+        using Base = DeleteTimeseriesRangeData<TKind>;
+        DeleteOverTimeseriesRangeData( )
+            : Base( DeleteTimeseriesRangeType::Over )
+        {
+        }
+        DeleteOverTimeseriesRangeData( const Guid& id, TKind timeseriesType )
+            : Base( DeleteTimeseriesRangeType::Over, id, timeseriesType )
+        {
+        }
+
+        DeleteOverTimeseriesRangeData( const Guid& id, TKind timeseriesType, const DateTime& from, const DateTime& until )
+            : Base( DeleteTimeseriesRangeType::Over, id, timeseriesType ), from_( from ), until_( until )
+        {
+        }
+
+        DateTime From( ) const
+        {
+            return from_;
+        }
+        void SetFrom( const DateTime& from )
+        {
+            from_ = from;
+        }
+
+        DateTime Until( ) const
+        {
+            return until_;
+        }
+        void SetUntil( const DateTime& until )
+        {
+            until_ = until;
+        }
+
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteTo( destination );
+            destination.Write( from_ );
+            destination.Write( until_ );
+        }
+
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            Base::ReadFrom( source );
+            from_ = source.Read<DateTime>( );
+            until_ = source.Read<DateTime>( );
+        }
+    };
+
+    template<typename TKind>
+    class DeleteTimeseriesRangeFactory
+    {
+    public:
+        static std::shared_ptr<DeleteTimeseriesRangeData<TKind>> Create( DeleteTimeseriesRangeType rangeType )
+        {
+            std::shared_ptr<DeleteTimeseriesRangeData<TKind>> result;
+            switch ( rangeType )
+            {
+                case DeleteTimeseriesRangeType::Clear:
+                {
+                    result = std::make_shared<DeleteClearTimeseriesRangeData<TKind>>( );
+                }
+                break;
+                case DeleteTimeseriesRangeType::From:
+                {
+                    result = std::make_shared<DeleteFromTimeseriesRangeData<TKind>>( );
+                }
+                break;
+                case DeleteTimeseriesRangeType::Until:
+                {
+                    result = std::make_shared<DeleteUntilTimeseriesRangeData<TKind>>( );
+                }
+                break;
+                case DeleteTimeseriesRangeType::Over:
+                {
+                    result = std::make_shared<DeleteOverTimeseriesRangeData<TKind>>( );
+                }
+                break;
+            }
+            return result;
+        }
+    };
+
+    template<typename TKind>
+    class DeleteTimeseriesRangeSerializer
+    {
+    public:
+        template<IO::StreamWriter StreamT>
+        static void WriteTo( const DeleteTimeseriesRangeData<TKind>& data, IO::BinaryWriter<StreamT>& destination )
+        {
+            auto rangeType = data.RangeType( );
+            switch ( rangeType )
+            {
+                case DeleteTimeseriesRangeType::Clear:
+                {
+                    const auto& deleteClearTimeseriesRangeData = static_cast<const DeleteClearTimeseriesRangeData<TKind>&>( data );
+                    deleteClearTimeseriesRangeData.WriteTo( destination );
+                }
+                break;
+                case DeleteTimeseriesRangeType::From:
+                {
+                    const auto& deleteFromTimeseriesRangeData = static_cast< const DeleteFromTimeseriesRangeData<TKind>& >( data );
+                    deleteFromTimeseriesRangeData.WriteTo( destination );
+                }
+                break;
+                case DeleteTimeseriesRangeType::Until:
+                {
+                    const auto& deleteUntilTimeseriesRangeData = static_cast< const DeleteUntilTimeseriesRangeData<TKind>& >( data );
+                    deleteUntilTimeseriesRangeData.WriteTo( destination );
+                }
+                break;
+                case DeleteTimeseriesRangeType::Over:
+                {
+                    const auto& deleteOverTimeseriesRangeData = static_cast< const DeleteOverTimeseriesRangeData<TKind>& >( data );
+                    deleteOverTimeseriesRangeData.WriteTo( destination );
+                }
+                break;
+            }
+        }
+        template<IO::StreamReader StreamT>
+        static std::shared_ptr<DeleteTimeseriesRangeData<TKind>> ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            auto rangeType = DeleteTimeseriesRangeData<TKind>.ReadRangeType( source );
+            switch ( rangeType )
+            {
+                case DeleteTimeseriesRangeType::Clear:
+                {
+                    auto result = std::make_shared<DeleteClearTimeseriesRangeData<TKind>>( );
+                    result->ReadFrom( source );
+                    return result;
+                }
+                break;
+                case DeleteTimeseriesRangeType::From:
+                {
+                    auto result = std::make_shared<DeleteFromTimeseriesRangeData<TKind>>( );
+                    result->ReadFrom( source );
+                    return result;
+                }
+                break;
+                case DeleteTimeseriesRangeType::Until:
+                {
+                    auto result = std::make_shared<DeleteUntilTimeseriesRangeData<TKind>>( );
+                    result->ReadFrom( source );
+                    return result;
+                }
+                break;
+                case DeleteTimeseriesRangeType::Over:
+                {
+                    auto result = std::make_shared<DeleteOverTimeseriesRangeData<TKind>>( );
+                    result->ReadFrom( source );
+                    return result;
+                }
+                break;
+            }
+            return {};
+        }
+
+    };
 
 
 }

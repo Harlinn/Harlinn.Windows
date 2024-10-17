@@ -481,6 +481,17 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             }
         };
 
+        class CppIDataContextOptions : public OptionsFile<CppDataOptions>
+        {
+        public:
+            using Base = OptionsFile<CppDataOptions>;
+            CppIDataContextOptions( const CppDataOptions& owner )
+                : Base( owner, L"IDataContext.h" )
+            {
+            }
+        };
+
+
 
         class CppOptions;
         class CppDataOptions : public OptionsContainer<CppOptions>
@@ -488,10 +499,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             CppEnumsOptions enums_;
             CppDataTypesOptions dataTypes_;
             CppDataTypesSourceOptions dataTypesSource_;
+            CppIDataContextOptions dataContext_;
         public:
             using Base = OptionsContainer<CppOptions>;
             CppDataOptions( const CppOptions& owner )
-                : Base( owner, L"Types" ), enums_( *this ), dataTypes_( *this ), dataTypesSource_( *this )
+                : Base( owner, L"Types" ), enums_( *this ), dataTypes_( *this ), dataTypesSource_( *this ), dataContext_( *this )
             {
             }
 
@@ -507,6 +519,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             const CppDataTypesSourceOptions& DataTypesSource( ) const
             {
                 return dataTypesSource_;
+            }
+
+            const CppIDataContextOptions& DataContext( ) const
+            {
+                return dataContext_;
             }
 
         };

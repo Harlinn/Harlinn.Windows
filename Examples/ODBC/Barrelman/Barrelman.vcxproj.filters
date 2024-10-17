@@ -60,6 +60,9 @@
     <ClInclude Include="Generated\Cpp\Databases\MsSql\MsSqlStoredProcedures.h">
       <Filter>Generated\Cpp\Databases\MsSql</Filter>
     </ClInclude>
+    <ClInclude Include="Generated\Cpp\Types\IDataContext.h">
+      <Filter>Generated\Cpp\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

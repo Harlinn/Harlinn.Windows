@@ -168,6 +168,7 @@
     <ClInclude Include="Generated\Cpp\Databases\MsSql\MsSqlStoredProcedures.h" />
     <ClInclude Include="Generated\Cpp\Types\DataTypes.h" />
     <ClInclude Include="Generated\Cpp\Types\Enums.h" />
+    <ClInclude Include="Generated\Cpp\Types\IDataContext.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

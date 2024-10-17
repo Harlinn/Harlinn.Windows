@@ -274,5 +274,8 @@
     <ClCompile Include="src\dbxgen.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CodeGenerators\Cpp\CppIDataContextGenerator.cpp">
+      <Filter>Src\CodeGenerators\Cpp</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
