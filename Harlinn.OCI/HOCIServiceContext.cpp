@@ -259,11 +259,11 @@ namespace Harlinn::OCI
         }
     }
 
-    const OCI::Session& ServiceContext::CreateSession( const WideString& username, const WideString& password )
+    const OCI::Session& ServiceContext::CreateSession( const wchar_t* username, size_t usernameLength, const wchar_t* password, size_t passwordLength )
     {
         auto& result = CreateSession( );
-        result.SetUserName( username );
-        result.SetPassword( password );
+        result.SetUserName( username, usernameLength );
+        result.SetPassword( password, passwordLength );
         return result;
     }
 
@@ -337,7 +337,7 @@ namespace Harlinn::OCI
         }
     }
 
-    OCI::Statement ServiceContext::CreateStatement( const WideString& sql ) const
+    OCI::Statement ServiceContext::CreateStatement( const wchar_t* sql, size_t sqlLength ) const
     {
         auto& environment = Environment( );
         if ( environment.IsValid( ) )
@@ -346,7 +346,7 @@ namespace Harlinn::OCI
             auto& error = Error( );
             auto errorHandle = (OCIError*)error.Handle( );
             auto rc = OCIStmtPrepare2( (OCISvcCtx*)Handle( ), &ociStatement, errorHandle, 
-                (OraText*)sql.c_str( ), static_cast<UInt32>( sql.length( ) * sizeof( wchar_t ) ), 
+                (OraText*)sql, static_cast<UInt32>( sqlLength * sizeof( wchar_t ) ),
                 nullptr, 0, OCI_NTV_SYNTAX, OCI_DEFAULT );
             error.CheckResult( rc );
             return Statement( *this, ociStatement, true );

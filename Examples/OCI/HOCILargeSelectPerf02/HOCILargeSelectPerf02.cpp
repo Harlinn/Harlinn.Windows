@@ -105,32 +105,32 @@ int main()
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( loginInfo.Username, loginInfo.Password, loginInfo.Alias );
     serviceContext.SessionBegin( );
-
-    constexpr UInt32 PrefetchRows = 32'000;
-    auto statement = serviceContext.CreateStatement( TimeseriesValues2Reader::SQL );
-    statement.SetPrefetchRows( PrefetchRows );
-
-    Stopwatch stopwatch;
-    stopwatch.Start( );
-    auto start = TimeSpan::UserTime( );
-    auto reader = statement.ExecuteReader<TimeseriesValues2Reader>( PrefetchRows * 5 );
-    size_t count = 0;
-    while ( reader->Read( ) )
     {
-        auto id = reader->Id( );
-        auto ts = reader->Timestamp( );
-        auto flags = reader->Flag( );
-        auto value = reader->Value( );
-        count++;
-    }
-    auto stop = TimeSpan::UserTime( );
-    stopwatch.Stop( );
-    auto duration = stopwatch.TotalSeconds( );
-    auto userTime = stop.TotalSeconds( ) - start.TotalSeconds( );
-    auto rowsPerSecond = count / duration;
-    printf( "Retrieved %zu rows in %f seconds - %f rows per seconds, user time: %f\n",
-        count, duration, rowsPerSecond, userTime );
+        constexpr UInt32 PrefetchRows = 32'000;
+        auto statement = serviceContext.CreateStatement( TimeseriesValues2Reader::SQL );
+        statement.SetPrefetchRows( PrefetchRows );
 
+        Stopwatch stopwatch;
+        stopwatch.Start( );
+        auto start = TimeSpan::UserTime( );
+        auto reader = statement.ExecuteReader<TimeseriesValues2Reader>( PrefetchRows * 5 );
+        size_t count = 0;
+        while ( reader->Read( ) )
+        {
+            auto id = reader->Id( );
+            auto ts = reader->Timestamp( );
+            auto flags = reader->Flag( );
+            auto value = reader->Value( );
+            count++;
+        }
+        auto stop = TimeSpan::UserTime( );
+        stopwatch.Stop( );
+        auto duration = stopwatch.TotalSeconds( );
+        auto userTime = stop.TotalSeconds( ) - start.TotalSeconds( );
+        auto rowsPerSecond = count / duration;
+        printf( "Retrieved %zu rows in %f seconds - %f rows per seconds, user time: %f\n",
+            count, duration, rowsPerSecond, userTime );
+    }
     serviceContext.SessionEnd( );
     CoUninitialize( );
 

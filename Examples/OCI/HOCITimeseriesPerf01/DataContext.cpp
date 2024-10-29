@@ -28,7 +28,7 @@ std::unique_ptr<OwnedObjectTypeData> DataContext::CreateOwnedObjectType( const W
         desc = description;
     }
 
-    constexpr wchar_t sql[] =
+    std::wstring sql =
         L"INSERT INTO OwnedObjectType(Id, Name, OptimisticLock, Created, Description ) "
         L"VALUES(SYS_GUID(),:1,0,SYSTIMESTAMP,:2) RETURNING Id, Created INTO :3, :4";
 
@@ -54,7 +54,7 @@ std::unique_ptr<OwnedObjectTypeData> DataContext::CreateOwnedObjectType( const G
         desc = description;
     }
 
-    constexpr wchar_t sql[] =
+    std::wstring sql =
         L"INSERT INTO OwnedObjectType(Id, Name, OptimisticLock, Created, Description ) "
         L"VALUES(:1,:2,0,SYSTIMESTAMP,:3) RETURNING Created INTO :4";
 
@@ -124,7 +124,8 @@ bool DataContext::UpdateOwnedObjectType( std::unique_ptr<OwnedObjectTypeData>& d
         desc = data->Description;
     }
 
-    constexpr wchar_t sql[] = L"UPDATE OwnedObjectType SET Name=:1, Description=:2 WHERE Id=:3 AND OptimisticLock=:4";
+    std::wstring sql =
+        L"UPDATE OwnedObjectType SET Name=:1, Description=:2 WHERE Id=:3 AND OptimisticLock=:4";
     auto statement = serviceContext.CreateStatement( sql, data->Name, desc, data->Id, data->OptimisticLock );
     auto count = statement.ExecuteNonQuery( );
     if ( count > 0 )
@@ -140,7 +141,8 @@ bool DataContext::UpdateOwnedObjectType( std::unique_ptr<OwnedObjectTypeData>& d
 bool DataContext::DeleteOwnedObjectType( const Guid& id, Int64 optimisticLock ) const
 {
     auto& serviceContext = ServiceContext( );
-    constexpr wchar_t sql[] = L"DELETE FROM OwnedObjectType WHERE Id=:1 AND OptimisticLock=:2";
+    std::wstring sql =
+        L"DELETE FROM OwnedObjectType WHERE Id=:1 AND OptimisticLock=:2";
     auto statement = serviceContext.CreateStatement( sql, id, optimisticLock );
     auto count = statement.ExecuteNonQuery( );
     return count > 0;
@@ -151,7 +153,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& typ
 {
     auto& serviceContext = ServiceContext( );
 
-    constexpr wchar_t sql[] =
+    std::wstring sql =
         L"INSERT INTO OwnedObject(Id, Tp, Name, OptimisticLock, Created, Description ) "
         L"VALUES(SYS_GUID(),:1,:2,0,SYSTIMESTAMP,:3) RETURNING Id, Created INTO :4, :5";
 
@@ -177,7 +179,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& typ
 {
     auto& serviceContext = ServiceContext( );
 
-    constexpr wchar_t sql[] =
+    std::wstring sql =
         L"INSERT INTO OwnedObject(Id, Tp, Name, OptimisticLock, Created, Description ) "
         L"VALUES(SYS_GUID(),:1,:2,0,SYSTIMESTAMP,:3, :4) RETURNING Id, Created INTO :5, :6";
 
@@ -206,7 +208,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
 {
     auto& serviceContext = ServiceContext( );
 
-    constexpr wchar_t sql[] =
+    std::wstring sql =
         L"INSERT INTO OwnedObject(Id, Tp, Name, OptimisticLock, Created, Description ) "
         L"VALUES(:1,:2,:3,0,SYSTIMESTAMP,:4) RETURNING Created INTO :5";
 
@@ -229,7 +231,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
 {
     auto& serviceContext = ServiceContext( );
 
-    constexpr wchar_t sql[] =
+    std::wstring sql =
         L"INSERT INTO OwnedObject(Id, Tp, Owner, Name, OptimisticLock, Created, Description ) "
         L"VALUES(:1,:2,:3,:4,0,SYSTIMESTAMP,:5) RETURNING Created INTO :6";
 
@@ -253,7 +255,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
 {
     auto& serviceContext = ServiceContext( );
 
-    constexpr wchar_t sql[] =
+    std::wstring sql =
         L"INSERT INTO OwnedObject(Id, Tp, Name, OptimisticLock, Created, Description, Data ) "
         L"VALUES(:1,:2,:3,0,SYSTIMESTAMP,:4,:5) RETURNING Created INTO :6";
 
@@ -288,7 +290,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
 {
     auto& serviceContext = ServiceContext( );
 
-    constexpr wchar_t sql[] =
+    std::wstring sql =
         L"INSERT INTO OwnedObject(Id, Tp, Owner ,Name, OptimisticLock, Created, Description, Data ) "
         L"VALUES(:1,:2,:3,0,SYSTIMESTAMP,:4,:5) RETURNING Created INTO :6";
 
@@ -414,14 +416,14 @@ std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > DataContext::ReadOwn
 void DataContext::ClearOwnedObjects( ) const
 {
     auto& serviceContext = ServiceContext( );
-    constexpr wchar_t sql[] = L"DELETE FROM OwnedObject";
+    std::wstring sql = L"DELETE FROM OwnedObject";
     auto statement = serviceContext.CreateStatement( sql );
     statement.ExecuteNonQuery( );
 }
 bool DataContext::UpdateOwnedObject( std::unique_ptr<OwnedObjectData>& data ) const
 {
     auto& serviceContext = ServiceContext( );
-    constexpr wchar_t sql[] = L"UPDATE OwnedObject SET Owner=:1 Name=:2, Description=:3, Data=:4 WHERE Id=:5 AND OptimisticLock=:6";
+    std::wstring sql = L"UPDATE OwnedObject SET Owner=:1 Name=:2, Description=:3, Data=:4 WHERE Id=:5 AND OptimisticLock=:6";
     std::optional<Guid> owner;
     if ( data->Owner.empty( ) == false )
     {
@@ -462,7 +464,7 @@ bool DataContext::UpdateOwnedObject( std::unique_ptr<OwnedObjectData>& data ) co
 bool DataContext::DeleteOwnedObject( const Guid& id, Int64 optimisticLock ) const
 {
     auto& serviceContext = ServiceContext( );
-    constexpr wchar_t sql[] = L"DELETE FROM OwnedObject WHERE Id=:1 AND OptimisticLock=:2";
+    std::wstring sql = L"DELETE FROM OwnedObject WHERE Id=:1 AND OptimisticLock=:2";
     auto statement = serviceContext.CreateStatement( sql, id, optimisticLock );
     auto count = statement.ExecuteNonQuery( );
     return count > 0;
@@ -472,7 +474,7 @@ bool DataContext::DeleteOwnedObject( const Guid& id, Int64 optimisticLock ) cons
 void DataContext::InsertTimeseriesPointSegment( const Guid& owner, const TimeseriesPointSegment& segment ) const
 {
     auto& serviceContext = ServiceContext( );
-    constexpr wchar_t sql[] = L"INSERT INTO TimeseriesSegment(Id, FirstTimestamp, OptimisticLock, Data ) "
+    std::wstring sql = L"INSERT INTO TimeseriesSegment(Id, FirstTimestamp, OptimisticLock, Data ) "
                                 L"VALUES(:1,:2,0,:3)";
     const DateTime& firstTimestamp = segment.Key( );
     auto statement = serviceContext.CreateStatement( sql, owner, firstTimestamp );

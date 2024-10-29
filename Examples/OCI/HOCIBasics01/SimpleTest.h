@@ -64,7 +64,7 @@ public:
             descr = description;
         }
 
-        constexpr wchar_t sql[] = 
+        std::wstring sql =
             L"INSERT INTO SimpleTest1(Id, OptimisticLock, Name, Description ) " 
             L"VALUES(SimpleTest1Seq.NextVal,0,:1,:2) RETURNING Id INTO :3";
 
@@ -80,11 +80,11 @@ public:
     std::unique_ptr<SimpleTestData> Select( Int64 id ) const
     {
         auto& serviceContext = ServiceContext( );
-        constexpr wchar_t sql[] = 
+        std::wstring sql =
             L"SELECT OptimisticLock, Name, Description FROM SimpleTest1 "
             L"WHERE Id = :1";
         auto statement = serviceContext.CreateStatement( sql, id );
-        auto reader = statement.ExecuteReader<OCI::DataReader>( );
+        auto reader = statement.ExecuteReader( );
         if ( reader->Read( ) )
         {
             auto optimisticLock = reader->GetInt64( 0 );
@@ -107,11 +107,11 @@ public:
     {
         Map result;
         auto& serviceContext = ServiceContext( );
-        constexpr wchar_t sql[] = 
+        std::wstring sql =
             L"SELECT Id, OptimisticLock, Name, Description FROM SimpleTest1";
             
         auto statement = serviceContext.CreateStatement( sql );
-        auto reader = statement.ExecuteReader<OCI::DataReader>( );
+        auto reader = statement.ExecuteReader( );
         while ( reader->Read( ) )
         {
             auto id = reader->GetInt64( 0 );
@@ -140,7 +140,7 @@ public:
         {
             descr = description;
         }
-        constexpr wchar_t sql[] = L"UPDATE SimpleTest1 " 
+        std::wstring sql = L"UPDATE SimpleTest1 "
             L"SET OptimisticLock=OptimisticLock+1, Name=:1, Description=:2 " 
             L"WHERE Id=:3 AND OptimisticLock=:4";
 
@@ -167,7 +167,7 @@ public:
         auto id = data.Id( );
         auto optimisticLock = data.OptimisticLock( );
         auto& serviceContext = ServiceContext( );
-        constexpr wchar_t sql[] = L"DELETE FROM SimpleTest1 "
+        std::wstring sql = L"DELETE FROM SimpleTest1 "
             L"WHERE Id=:1 AND OptimisticLock=:2";
 
         auto statement = serviceContext.CreateStatement( sql, id, optimisticLock );

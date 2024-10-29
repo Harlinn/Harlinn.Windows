@@ -38,6 +38,8 @@ CONSTRAINT PK_OwnedObjectType PRIMARY KEY(Id),
 CONSTRAINT UNQ_OwnedObjectTypeName UNIQUE(Name)
 );
 
+INSERT INTO OwnedObjectType(Id, Name, OptimisticLock, Created, Description ) VALUES(SYS_GUID(),'Type123',0,SYSTIMESTAMP,'Type123 Description');
+
 
 CREATE TABLE OwnedObject
 (
@@ -75,7 +77,7 @@ CREATE TABLE TimeseriesValue
 	Flags INTEGER NOT NULL,
 	Val BINARY_DOUBLE NOT NULL,
 	CONSTRAINT PK_TSV PRIMARY KEY(Id,Ts),
-	CONSTRAINT FK_OwnedObject FOREIGN KEY(Id) REFERENCES OwnedObject(Id) ON DELETE CASCADE
+	CONSTRAINT FK_TSVOwnedObject FOREIGN KEY(Id) REFERENCES OwnedObject(Id) ON DELETE CASCADE
 );
 
 CREATE TABLE TimeseriesValue1

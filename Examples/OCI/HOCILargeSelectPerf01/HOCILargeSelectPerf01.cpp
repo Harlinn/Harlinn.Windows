@@ -77,28 +77,29 @@ int main()
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( loginInfo.Username, loginInfo.Password, loginInfo.Alias );
     serviceContext.SessionBegin( );
-
-    auto statement = serviceContext.CreateStatement( L"SELECT Id,Ts,Flags,Val FROM TimeseriesValue2 ORDER BY Id,Ts" );
-    statement.SetPrefetchRows( 30'000 );
-
-    Stopwatch stopwatch;
-    stopwatch.Start( );
-    auto reader = statement.ExecuteReader<ArrayDataReader>( 120'000 );
-    size_t count = 0;
-    while ( reader->Read( ) )
     {
-        auto id = reader->GetUInt64( 0 );
-        auto ts = reader->GetUInt64( 1 );
-        auto flags = reader->GetUInt64( 2 );
-        auto value = reader->GetDouble( 3 );
-        count++;
-    }
-    stopwatch.Stop( );
-    auto duration = stopwatch.TotalSeconds( );
-    auto rowsPerSecond = count / duration;
-    printf( "Retrieved %zu rows in %f seconds - %f rows per seconds\n",
-        count, duration, rowsPerSecond );
+        auto statement = serviceContext.CreateStatement( L"SELECT Id,Ts,Flags,Val FROM TimeseriesValue2 ORDER BY Id,Ts" );
+        statement.SetPrefetchRows( 30'000 );
 
+        Stopwatch stopwatch;
+        stopwatch.Start( );
+        auto reader = statement.ExecuteReader<ArrayDataReader>( 120'000 );
+        size_t count = 0;
+        while ( reader->Read( ) )
+        {
+            auto id = reader->GetUInt64( 0 );
+            auto ts = reader->GetUInt64( 1 );
+            auto flags = reader->GetUInt64( 2 );
+            auto value = reader->GetDouble( 3 );
+            count++;
+        }
+        stopwatch.Stop( );
+        auto duration = stopwatch.TotalSeconds( );
+        auto rowsPerSecond = count / duration;
+        printf( "Retrieved %zu rows in %f seconds - %f rows per seconds\n",
+            count, duration, rowsPerSecond );
+
+    }
     serviceContext.SessionEnd( );
     CoUninitialize( );
 

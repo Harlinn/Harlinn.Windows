@@ -117,44 +117,45 @@ int main()
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( loginInfo.Username, loginInfo.Password, loginInfo.Alias );
     serviceContext.SessionBegin( );
-
-    constexpr UInt32 PrefetchRows = 32'000;
-    auto selectStatement = serviceContext.CreateStatement( TimeseriesValues1Reader::SQL );
-    selectStatement.SetPrefetchRows( PrefetchRows );
-
-    auto reader = selectStatement.ExecuteReader<TimeseriesValues1Reader>( PrefetchRows * 5 );
-    size_t count = 0;
-    std::vector<TimeseriesValues1> rows;
-    TimeseriesValues1 timeseriesValues1;
-    while ( reader->Read( ) )
     {
-        timeseriesValues1.Id = reader->Id( );
-        timeseriesValues1.Timestamp = reader->Timestamp( );
-        timeseriesValues1.Flags = reader->Flag( );
-        timeseriesValues1.Value = reader->Value( );
-        rows.emplace_back( timeseriesValues1 );
-        count++;
+        constexpr UInt32 PrefetchRows = 32'000;
+        auto selectStatement = serviceContext.CreateStatement( TimeseriesValues1Reader::SQL );
+        selectStatement.SetPrefetchRows( PrefetchRows );
+
+        auto reader = selectStatement.ExecuteReader<TimeseriesValues1Reader>( PrefetchRows * 5 );
+        size_t count = 0;
+        std::vector<TimeseriesValues1> rows;
+        TimeseriesValues1 timeseriesValues1;
+        while ( reader->Read( ) )
+        {
+            timeseriesValues1.Id = reader->Id( );
+            timeseriesValues1.Timestamp = reader->Timestamp( );
+            timeseriesValues1.Flags = reader->Flag( );
+            timeseriesValues1.Value = reader->Value( );
+            rows.emplace_back( timeseriesValues1 );
+            count++;
+        }
+
+
+
+        Stopwatch stopwatch;
+        stopwatch.Start( );
+        std::wstring sql = L"UPDATE TimeseriesValue1 SET Flags=:1, Val=:2 WHERE Id=:3 AND Ts=:4";
+
+        for ( auto& row : rows )
+        {
+            auto updateStatement = serviceContext.CreateStatement( sql, row.Flags * 2, row.Value * 2, row.Id, row.Timestamp );
+            updateStatement.ExecuteNonQuery( );
+        }
+
+
+        stopwatch.Stop( );
+        auto duration = stopwatch.TotalSeconds( );
+        auto rowsPerSecond = count / duration;
+        printf( "Updated %zu rows in %f seconds - %f rows per seconds\n",
+            count, duration, rowsPerSecond );
+
     }
-
-
-
-    Stopwatch stopwatch;
-    stopwatch.Start( );
-    constexpr wchar_t sql[] = L"UPDATE TimeseriesValue1 SET Flags=:1, Val=:2 WHERE Id=:3 AND Ts=:4";
-
-    for ( auto& row : rows )
-    {
-        auto updateStatement = serviceContext.CreateStatement( sql, row.Flags*2, row.Value*2, row.Id, row.Timestamp );
-        updateStatement.ExecuteNonQuery( );
-    }
-
-
-    stopwatch.Stop( );
-    auto duration = stopwatch.TotalSeconds( );
-    auto rowsPerSecond = count / duration;
-    printf( "Updated %zu rows in %f seconds - %f rows per seconds\n",
-        count, duration, rowsPerSecond );
-
     serviceContext.SessionEnd( );
     CoUninitialize( );
 

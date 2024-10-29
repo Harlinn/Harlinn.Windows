@@ -37,38 +37,38 @@ BOOST_AUTO_TEST_CASE( ExecuteTest1 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
-
-    Metadata::Database database( serviceContext );
-
-    size_t schemaObjectCount = 0;
-    size_t columnCount = 0;
-    auto schemas = database.Schemas( );
-    for ( const auto& schemaEntry : schemas )
     {
-        const auto& schema = schemaEntry.second;
-        auto schemaObjects = schema->Objects( );
+        Metadata::Database database( serviceContext );
 
-        for ( const auto& schemaObjectEntry : schemaObjects )
+        size_t schemaObjectCount = 0;
+        size_t columnCount = 0;
+        auto schemas = database.Schemas( );
+        for ( const auto& schemaEntry : schemas )
         {
-            const auto& schemaObject = schemaObjectEntry.second;
-            auto kind = schemaObject->Kind( );
-            switch ( kind )
+            const auto& schema = schemaEntry.second;
+            auto schemaObjects = schema->Objects( );
+
+            for ( const auto& schemaObjectEntry : schemaObjects )
             {
-                case Metadata::Kind::Table:
-                case Metadata::Kind::View:
+                const auto& schemaObject = schemaObjectEntry.second;
+                auto kind = schemaObject->Kind( );
+                switch ( kind )
                 {
-                    auto* tableOrView = static_cast<Metadata::TableOrView*>( schemaObject.get() );
-                    auto columns = tableOrView->Columns( );
-                    columnCount += columns.size( );
+                    case Metadata::Kind::Table:
+                    case Metadata::Kind::View:
+                    {
+                        auto* tableOrView = static_cast< Metadata::TableOrView* >( schemaObject.get( ) );
+                        auto columns = tableOrView->Columns( );
+                        columnCount += columns.size( );
+                    }
+                    break;
                 }
-                break;
             }
+
+            schemaObjectCount += schemaObjects.size( );
         }
 
-        schemaObjectCount += schemaObjects.size( );
     }
-
-
 
     serviceContext.SessionEnd( );
 }

@@ -20,21 +20,23 @@
 namespace Harlinn::OCI
 {
 
-    void Server::Attach( const WideString& databaseLink, ServerAttachMode attachMode ) const
+    void Server::Attach( const wchar_t* databaseLink, size_t databaseLinkLength, ServerAttachMode attachMode ) const
     {
         auto& error = Error( );
         auto errorHandle = (OCIError*)error.Handle( );
-        if ( databaseLink.empty( ) )
+        if ( databaseLinkLength == 0 )
         {
             auto rc = OCIServerAttach( (OCIServer*)Handle( ), errorHandle, ( OraText* )nullptr, 0, (UInt32)attachMode );
             error.CheckResult( rc );
         }
         else
         {
-            auto rc = OCIServerAttach( (OCIServer*)Handle( ), errorHandle, (OraText*)databaseLink.c_str( ), static_cast<sb4>( databaseLink.length( ) * sizeof( wchar_t ) ), (UInt32)attachMode );
+            auto rc = OCIServerAttach( (OCIServer*)Handle( ), errorHandle, (OraText*)databaseLink, static_cast<sb4>( databaseLinkLength * sizeof( wchar_t ) ), (UInt32)attachMode );
             error.CheckResult( rc );
         }
     }
+
+
 
     void Server::Detach( ) const
     {
@@ -58,11 +60,11 @@ namespace Harlinn::OCI
             ThrowInvalidEnvironment( );
         }
     }
-    ServiceContext Server::CreateServiceContext( const WideString& username, const WideString& password, const WideString& databaseLink, ServerAttachMode attachMode ) const
+    ServiceContext Server::CreateServiceContext( const wchar_t* username, size_t usernameLength, const wchar_t* password, size_t passwordLength, const wchar_t* databaseLink, size_t databaseLinkLength, ServerAttachMode attachMode ) const
     {
-        Attach( databaseLink, attachMode );
+        Attach( databaseLink, databaseLinkLength, attachMode );
         auto result = CreateServiceContext( );
-        result.CreateSession( username, password );
+        result.CreateSession( username, usernameLength, password, passwordLength );
         return result;
     }
 

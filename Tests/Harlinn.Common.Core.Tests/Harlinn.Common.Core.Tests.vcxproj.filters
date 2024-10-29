@@ -105,9 +105,6 @@
     <ClCompile Include="ConvertersTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FixedStringTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LibTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

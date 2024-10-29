@@ -148,29 +148,30 @@ BOOST_AUTO_TEST_CASE( CHAR5DefineTest1 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
-
-    auto defineTestTableExists = serviceContext.Exists( L"HOCIDefineTestTable", OCI::ParameterType::Table );
-    if ( defineTestTableExists )
     {
-        serviceContext.ExecuteNonQuery( L"DROP TABLE HOCIDefineTestTable" );
-    }
-    serviceContext.ExecuteNonQuery( L"CREATE TABLE HOCIDefineTestTable(NAME CHAR(5) NOT NULL PRIMARY KEY )" );
-    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString(L"10") );
-    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString(L"20") );
 
-    TestCHAR5Define<OCI::BooleanDefine>( serviceContext );
-    TestCHAR5Define<OCI::SByteDefine>( serviceContext );
-    TestCHAR5Define<OCI::ByteDefine>( serviceContext );
-    TestCHAR5Define<OCI::Int16Define>( serviceContext );
-    TestCHAR5Define<OCI::UInt16Define>( serviceContext );
-    TestCHAR5Define<OCI::Int32Define>( serviceContext );
-    TestCHAR5Define<OCI::UInt32Define>( serviceContext );
-    TestCHAR5Define<OCI::Int64Define>( serviceContext );
-    TestCHAR5Define<OCI::UInt64Define>( serviceContext );
-    TestCHAR5Define<OCI::SingleDefine>( serviceContext );
-    TestCHAR5Define<OCI::DoubleDefine>( serviceContext );
-    TestCHAR5Define<OCI::CStringDefine>( serviceContext );
-    
+        auto defineTestTableExists = serviceContext.Exists( L"HOCIDefineTestTable", OCI::ParameterType::Table );
+        if ( defineTestTableExists )
+        {
+            serviceContext.ExecuteNonQuery( L"DROP TABLE HOCIDefineTestTable" );
+        }
+        serviceContext.ExecuteNonQuery( L"CREATE TABLE HOCIDefineTestTable(NAME CHAR(5) NOT NULL PRIMARY KEY )" );
+        serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString( L"10" ) );
+        serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString( L"20" ) );
+
+        TestCHAR5Define<OCI::BooleanDefine>( serviceContext );
+        TestCHAR5Define<OCI::SByteDefine>( serviceContext );
+        TestCHAR5Define<OCI::ByteDefine>( serviceContext );
+        TestCHAR5Define<OCI::Int16Define>( serviceContext );
+        TestCHAR5Define<OCI::UInt16Define>( serviceContext );
+        TestCHAR5Define<OCI::Int32Define>( serviceContext );
+        TestCHAR5Define<OCI::UInt32Define>( serviceContext );
+        TestCHAR5Define<OCI::Int64Define>( serviceContext );
+        TestCHAR5Define<OCI::UInt64Define>( serviceContext );
+        TestCHAR5Define<OCI::SingleDefine>( serviceContext );
+        TestCHAR5Define<OCI::DoubleDefine>( serviceContext );
+        TestCHAR5Define<OCI::CStringDefine>( serviceContext );
+    }
 
     serviceContext.SessionEnd( );
 }
@@ -185,29 +186,29 @@ BOOST_AUTO_TEST_CASE( NCHAR5DefineTest1 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
-
-    auto defineTestTableExists = serviceContext.Exists( L"HOCIDefineTestTable", OCI::ParameterType::Table );
-    if ( defineTestTableExists )
     {
-        serviceContext.ExecuteNonQuery( L"DROP TABLE HOCIDefineTestTable" );
+        auto defineTestTableExists = serviceContext.Exists( L"HOCIDefineTestTable", OCI::ParameterType::Table );
+        if ( defineTestTableExists )
+        {
+            serviceContext.ExecuteNonQuery( L"DROP TABLE HOCIDefineTestTable" );
+        }
+        serviceContext.ExecuteNonQuery( L"CREATE TABLE HOCIDefineTestTable(NAME NCHAR(5) NOT NULL PRIMARY KEY )" );
+        serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString( L"10" ) );
+        serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString( L"20" ) );
+
+        TestCHAR5Define<OCI::BooleanDefine>( serviceContext );
+        TestCHAR5Define<OCI::SByteDefine>( serviceContext );
+        TestCHAR5Define<OCI::ByteDefine>( serviceContext );
+        TestCHAR5Define<OCI::Int16Define>( serviceContext );
+        TestCHAR5Define<OCI::UInt16Define>( serviceContext );
+        TestCHAR5Define<OCI::Int32Define>( serviceContext );
+        TestCHAR5Define<OCI::UInt32Define>( serviceContext );
+        TestCHAR5Define<OCI::Int64Define>( serviceContext );
+        TestCHAR5Define<OCI::UInt64Define>( serviceContext );
+        TestCHAR5Define<OCI::SingleDefine>( serviceContext );
+        TestCHAR5Define<OCI::DoubleDefine>( serviceContext );
+        TestCHAR5Define<OCI::CStringDefine>( serviceContext );
     }
-    serviceContext.ExecuteNonQuery( L"CREATE TABLE HOCIDefineTestTable(NAME NCHAR(5) NOT NULL PRIMARY KEY )" );
-    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString( L"10" ) );
-    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString( L"20" ) );
-
-    TestCHAR5Define<OCI::BooleanDefine>( serviceContext );
-    TestCHAR5Define<OCI::SByteDefine>( serviceContext );
-    TestCHAR5Define<OCI::ByteDefine>( serviceContext );
-    TestCHAR5Define<OCI::Int16Define>( serviceContext );
-    TestCHAR5Define<OCI::UInt16Define>( serviceContext );
-    TestCHAR5Define<OCI::Int32Define>( serviceContext );
-    TestCHAR5Define<OCI::UInt32Define>( serviceContext );
-    TestCHAR5Define<OCI::Int64Define>( serviceContext );
-    TestCHAR5Define<OCI::UInt64Define>( serviceContext );
-    TestCHAR5Define<OCI::SingleDefine>( serviceContext );
-    TestCHAR5Define<OCI::DoubleDefine>( serviceContext );
-    TestCHAR5Define<OCI::CStringDefine>( serviceContext );
-
 
     serviceContext.SessionEnd( );
 }

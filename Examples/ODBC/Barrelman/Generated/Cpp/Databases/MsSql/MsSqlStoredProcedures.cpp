@@ -287,7 +287,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -304,7 +304,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &aisDevice );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -358,7 +358,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -376,7 +376,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &aisDevice );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -725,7 +725,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &aisDevice );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindWideStringParameter( 4, sentence );
+        statement.BindStringParameter( 4, sentence );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -758,7 +758,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &aisDevice );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindWideStringParameter( 5, sentence );
+        statement.BindStringParameter( 5, sentence );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -1900,7 +1900,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt32Parameter( 10, &spare );
         statement.BindInt32Parameter( 11, &designatedAreaCode );
         statement.BindInt32Parameter( 12, &functionalId );
-        statement.BindWideStringParameter( 13, data );
+        statement.BindStringParameter( 13, data );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -1923,7 +1923,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt32Parameter( 8, &spare );
         statement.BindInt32Parameter( 9, &designatedAreaCode );
         statement.BindInt32Parameter( 10, &functionalId );
-        statement.BindWideStringParameter( 11, data );
+        statement.BindStringParameter( 11, data );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -1997,7 +1997,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt32Parameter( 11, &spare );
         statement.BindInt32Parameter( 12, &designatedAreaCode );
         statement.BindInt32Parameter( 13, &functionalId );
-        statement.BindWideStringParameter( 14, data );
+        statement.BindStringParameter( 14, data );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -2021,7 +2021,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt32Parameter( 9, &spare );
         statement.BindInt32Parameter( 10, &designatedAreaCode );
         statement.BindInt32Parameter( 11, &functionalId );
-        statement.BindWideStringParameter( 12, data );
+        statement.BindStringParameter( 12, data );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -2143,7 +2143,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt32Parameter( 7, &spare );
         statement.BindInt32Parameter( 8, &designatedAreaCode );
         statement.BindInt32Parameter( 9, &functionalId );
-        statement.BindWideStringParameter( 10, data );
+        statement.BindStringParameter( 10, data );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -2164,7 +2164,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt32Parameter( 6, &spare );
         statement.BindInt32Parameter( 7, &designatedAreaCode );
         statement.BindInt32Parameter( 8, &functionalId );
-        statement.BindWideStringParameter( 9, data );
+        statement.BindStringParameter( 9, data );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -2230,7 +2230,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt32Parameter( 8, &spare );
         statement.BindInt32Parameter( 9, &designatedAreaCode );
         statement.BindInt32Parameter( 10, &functionalId );
-        statement.BindWideStringParameter( 11, data );
+        statement.BindStringParameter( 11, data );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -2252,7 +2252,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt32Parameter( 7, &spare );
         statement.BindInt32Parameter( 8, &designatedAreaCode );
         statement.BindInt32Parameter( 9, &functionalId );
-        statement.BindWideStringParameter( 10, data );
+        statement.BindStringParameter( 10, data );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -10531,7 +10531,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.BindDoubleParameter( 7, &panAngle );
         statement.BindDoubleParameter( 8, &tiltAngle );
         statement.BindDoubleParameter( 9, &focalLength );
@@ -10551,7 +10551,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &camera );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.BindDoubleParameter( 6, &panAngle );
         statement.BindDoubleParameter( 7, &tiltAngle );
         statement.BindDoubleParameter( 8, &focalLength );
@@ -10614,7 +10614,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.BindDoubleParameter( 8, &panAngle );
         statement.BindDoubleParameter( 9, &tiltAngle );
         statement.BindDoubleParameter( 10, &focalLength );
@@ -10635,7 +10635,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &camera );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.BindDoubleParameter( 7, &panAngle );
         statement.BindDoubleParameter( 8, &tiltAngle );
         statement.BindDoubleParameter( 9, &focalLength );
@@ -11243,7 +11243,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindEnumParameter( 15, &velocityFocalLengthMode );
         statement.BindDoubleParameter( 16, zoomVelocity );
         statement.BindEnumParameter( 17, &activeFeatures );
-        statement.BindWideStringParameter( 18, error );
+        statement.BindStringParameter( 18, error );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -11272,7 +11272,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindEnumParameter( 14, &velocityFocalLengthMode );
         statement.BindDoubleParameter( 15, zoomVelocity );
         statement.BindEnumParameter( 16, &activeFeatures );
-        statement.BindWideStringParameter( 17, error );
+        statement.BindStringParameter( 17, error );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -11362,7 +11362,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindEnumParameter( 16, &velocityFocalLengthMode );
         statement.BindDoubleParameter( 17, zoomVelocity );
         statement.BindEnumParameter( 18, &activeFeatures );
-        statement.BindWideStringParameter( 19, error );
+        statement.BindStringParameter( 19, error );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -11392,7 +11392,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindEnumParameter( 15, &velocityFocalLengthMode );
         statement.BindDoubleParameter( 16, zoomVelocity );
         statement.BindEnumParameter( 17, &activeFeatures );
-        statement.BindWideStringParameter( 18, error );
+        statement.BindStringParameter( 18, error );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -13269,7 +13269,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -13286,7 +13286,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &gNSSDevice );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -13340,7 +13340,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -13358,7 +13358,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &gNSSDevice );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -13849,7 +13849,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -13866,7 +13866,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &gyroDevice );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -13920,7 +13920,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -13938,7 +13938,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &gyroDevice );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -14899,7 +14899,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -14916,7 +14916,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -14966,7 +14966,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -14984,7 +14984,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -15083,7 +15083,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.BindGuidParameter( 6, latitudeTimeseries );
         statement.BindGuidParameter( 7, longitudeTimeseries );
@@ -15103,7 +15103,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -15156,7 +15156,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.BindGuidParameter( 7, latitudeTimeseries );
         statement.BindGuidParameter( 8, longitudeTimeseries );
@@ -15177,7 +15177,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -15285,7 +15285,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.BindGuidParameter( 6, headingTrueNorthTimeseries );
         statement.BindGuidParameter( 7, headingMagneticNorthTimeseries );
@@ -15310,7 +15310,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -15368,7 +15368,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.BindGuidParameter( 7, headingTrueNorthTimeseries );
         statement.BindGuidParameter( 8, headingMagneticNorthTimeseries );
@@ -15394,7 +15394,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -15517,7 +15517,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -15534,7 +15534,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -15584,7 +15584,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -15602,7 +15602,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -15701,7 +15701,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -15718,7 +15718,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -15768,7 +15768,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -15786,7 +15786,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -15885,7 +15885,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -15902,7 +15902,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -15952,7 +15952,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -15970,7 +15970,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -16069,7 +16069,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.BindGuidParameter( 6, radar );
         statement.BindGuidParameter( 7, pressureTimeseries );
@@ -16091,7 +16091,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -16146,7 +16146,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.BindGuidParameter( 7, radar );
         statement.BindGuidParameter( 8, pressureTimeseries );
@@ -16169,7 +16169,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -16283,7 +16283,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -16300,7 +16300,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -16350,7 +16350,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -16368,7 +16368,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -16467,7 +16467,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.BindGuidParameter( 6, saveSettingsTimeseries );
         statement.BindGuidParameter( 7, powerOnTimeseries );
@@ -16507,7 +16507,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -16580,7 +16580,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.BindGuidParameter( 7, saveSettingsTimeseries );
         statement.BindGuidParameter( 8, powerOnTimeseries );
@@ -16621,7 +16621,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -16789,7 +16789,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, enabledTimeseries );
         statement.BindGuidParameter( 6, barometricPressureTimeseries );
         statement.BindGuidParameter( 7, airTemperatureTimeseries );
@@ -16815,7 +16815,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &host );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -16874,7 +16874,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, enabledTimeseries );
         statement.BindGuidParameter( 7, barometricPressureTimeseries );
         statement.BindGuidParameter( 8, airTemperatureTimeseries );
@@ -16901,7 +16901,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &host );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -18369,7 +18369,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -18386,7 +18386,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &lineInputDevice );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -18440,7 +18440,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -18458,7 +18458,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &lineInputDevice );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -19114,7 +19114,7 @@ namespace Barrelman::Databases::MsSql
         statement.Prepare( L"{ CALL [LogApplicationInsert]( ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindFixedDBWideStringParameter( 2, name );
-        statement.BindWideStringParameter( 3, description );
+        statement.BindStringParameter( 3, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -19145,7 +19145,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -19330,7 +19330,7 @@ namespace Barrelman::Databases::MsSql
         statement.Prepare( L"{ CALL [LogHostInsert]( ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindFixedDBWideStringParameter( 2, computerName );
-        statement.BindWideStringParameter( 3, description );
+        statement.BindStringParameter( 3, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -19361,7 +19361,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindFixedDBWideStringParameter( 3, computerName );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -19547,8 +19547,8 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindFixedDBWideStringParameter( 2, fileName );
         statement.BindInt32Parameter( 3, &lineNumber );
-        statement.BindWideStringParameter( 4, namespace__ );
-        statement.BindWideStringParameter( 5, className );
+        statement.BindStringParameter( 4, namespace__ );
+        statement.BindStringParameter( 5, className );
         statement.BindFixedDBWideStringParameter( 6, methodName );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -19584,8 +19584,8 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindFixedDBWideStringParameter( 3, fileName );
         statement.BindInt32Parameter( 4, &lineNumber );
-        statement.BindWideStringParameter( 5, namespace__ );
-        statement.BindWideStringParameter( 6, className );
+        statement.BindStringParameter( 5, namespace__ );
+        statement.BindStringParameter( 6, className );
         statement.BindFixedDBWideStringParameter( 7, methodName );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -19646,7 +19646,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, started );
         statement.BindDateTimeParameter( 5, stopped );
         statement.BindInt64Parameter( 6, &processId );
-        statement.BindWideStringParameter( 7, path );
+        statement.BindStringParameter( 7, path );
         statement.BindFixedDBWideStringParameter( 8, identity );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -19665,7 +19665,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, started );
         statement.BindDateTimeParameter( 4, stopped );
         statement.BindInt64Parameter( 5, &processId );
-        statement.BindWideStringParameter( 6, path );
+        statement.BindStringParameter( 6, path );
         statement.BindFixedDBWideStringParameter( 7, identity );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -19725,7 +19725,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 5, started );
         statement.BindDateTimeParameter( 6, stopped );
         statement.BindInt64Parameter( 7, &processId );
-        statement.BindWideStringParameter( 8, path );
+        statement.BindStringParameter( 8, path );
         statement.BindFixedDBWideStringParameter( 9, identity );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -19745,7 +19745,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, started );
         statement.BindDateTimeParameter( 5, stopped );
         statement.BindInt64Parameter( 6, &processId );
-        statement.BindWideStringParameter( 7, path );
+        statement.BindStringParameter( 7, path );
         statement.BindFixedDBWideStringParameter( 8, identity );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -19855,8 +19855,8 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 5, timestamp );
         statement.BindInt32Parameter( 6, &depth );
         statement.BindGuidParameter( 7, &location );
-        statement.BindWideStringParameter( 8, message );
-        statement.BindWideStringParameter( 9, exceptionString );
+        statement.BindStringParameter( 8, message );
+        statement.BindStringParameter( 9, exceptionString );
         statement.BindBinaryParameter( 10, propertiesData );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -19900,8 +19900,8 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 6, timestamp );
         statement.BindInt32Parameter( 7, &depth );
         statement.BindGuidParameter( 8, &location );
-        statement.BindWideStringParameter( 9, message );
-        statement.BindWideStringParameter( 10, exceptionString );
+        statement.BindStringParameter( 9, message );
+        statement.BindStringParameter( 10, exceptionString );
         statement.BindBinaryParameter( 11, propertiesData );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -21219,7 +21219,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &namespace__ );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -21252,7 +21252,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &namespace__ );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -21307,7 +21307,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &namespace__ );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -21340,7 +21340,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &namespace__ );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -21693,7 +21693,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -21710,7 +21710,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &oilSpillDetector );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -21764,7 +21764,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -21782,7 +21782,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &oilSpillDetector );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -27075,7 +27075,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindBinaryParameter( 5, defaultValue );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -27110,7 +27110,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindBinaryParameter( 6, defaultValue );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -27167,7 +27167,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindBooleanParameter( 5, &defaultValue );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -27202,7 +27202,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindBooleanParameter( 6, &defaultValue );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -27259,7 +27259,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindByteParameter( 5, &defaultValue );
         statement.BindByteParameter( 6, &minValue );
         statement.BindByteParameter( 7, &maxValue );
@@ -27298,7 +27298,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindByteParameter( 6, &defaultValue );
         statement.BindByteParameter( 7, &minValue );
         statement.BindByteParameter( 8, &maxValue );
@@ -27359,7 +27359,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindFixedDBWideStringParameter( 5, defaultValue );
         statement.BindFixedDBWideStringParameter( 6, minValue );
         statement.BindFixedDBWideStringParameter( 7, maxValue );
@@ -27398,7 +27398,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindFixedDBWideStringParameter( 6, defaultValue );
         statement.BindFixedDBWideStringParameter( 7, minValue );
         statement.BindFixedDBWideStringParameter( 8, maxValue );
@@ -27459,7 +27459,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindDoubleParameter( 5, &defaultValue );
         statement.BindDoubleParameter( 6, &minValue );
         statement.BindDoubleParameter( 7, &maxValue );
@@ -27498,7 +27498,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindDoubleParameter( 6, &defaultValue );
         statement.BindDoubleParameter( 7, &minValue );
         statement.BindDoubleParameter( 8, &maxValue );
@@ -27559,7 +27559,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, &defaultValue );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -27594,7 +27594,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, &defaultValue );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -27651,7 +27651,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindInt16Parameter( 5, &defaultValue );
         statement.BindInt16Parameter( 6, &minValue );
         statement.BindInt16Parameter( 7, &maxValue );
@@ -27690,7 +27690,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindInt16Parameter( 6, &defaultValue );
         statement.BindInt16Parameter( 7, &minValue );
         statement.BindInt16Parameter( 8, &maxValue );
@@ -27751,7 +27751,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindInt32Parameter( 5, &defaultValue );
         statement.BindInt32Parameter( 6, &minValue );
         statement.BindInt32Parameter( 7, &maxValue );
@@ -27790,7 +27790,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindInt32Parameter( 6, &defaultValue );
         statement.BindInt32Parameter( 7, &minValue );
         statement.BindInt32Parameter( 8, &maxValue );
@@ -27851,7 +27851,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindInt64Parameter( 5, &defaultValue );
         statement.BindInt64Parameter( 6, &minValue );
         statement.BindInt64Parameter( 7, &maxValue );
@@ -27890,7 +27890,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindInt64Parameter( 6, &defaultValue );
         statement.BindInt64Parameter( 7, &minValue );
         statement.BindInt64Parameter( 8, &maxValue );
@@ -27951,7 +27951,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, defaultValue );
         statement.BindGuidParameter( 6, referencedElementType );
         statement.Execute( );
@@ -27969,7 +27969,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -28020,7 +28020,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, defaultValue );
         statement.BindGuidParameter( 7, referencedElementType );
         statement.Execute( );
@@ -28039,7 +28039,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -28141,7 +28141,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindSByteParameter( 5, &defaultValue );
         statement.BindSByteParameter( 6, &minValue );
         statement.BindSByteParameter( 7, &maxValue );
@@ -28180,7 +28180,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindSByteParameter( 6, &defaultValue );
         statement.BindSByteParameter( 7, &minValue );
         statement.BindSByteParameter( 8, &maxValue );
@@ -28241,7 +28241,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindSingleParameter( 5, &defaultValue );
         statement.BindSingleParameter( 6, &minValue );
         statement.BindSingleParameter( 7, &maxValue );
@@ -28280,7 +28280,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindSingleParameter( 6, &defaultValue );
         statement.BindSingleParameter( 7, &minValue );
         statement.BindSingleParameter( 8, &maxValue );
@@ -28341,7 +28341,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindFixedDBWideStringParameter( 5, defaultValue );
         statement.BindFixedDBWideStringParameter( 6, pattern );
         statement.Execute( );
@@ -28378,7 +28378,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindFixedDBWideStringParameter( 6, defaultValue );
         statement.BindFixedDBWideStringParameter( 7, pattern );
         statement.Execute( );
@@ -28437,7 +28437,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -28470,7 +28470,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -28525,7 +28525,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -28558,7 +28558,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -28613,7 +28613,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindByteParameter( 5, &minValue );
         statement.BindByteParameter( 6, &maxValue );
         statement.Execute( );
@@ -28650,7 +28650,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindByteParameter( 6, &minValue );
         statement.BindByteParameter( 7, &maxValue );
         statement.Execute( );
@@ -28709,7 +28709,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindFixedDBWideStringParameter( 5, minValue );
         statement.BindFixedDBWideStringParameter( 6, maxValue );
         statement.Execute( );
@@ -28746,7 +28746,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindFixedDBWideStringParameter( 6, minValue );
         statement.BindFixedDBWideStringParameter( 7, maxValue );
         statement.Execute( );
@@ -28805,7 +28805,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindDoubleParameter( 5, &minValue );
         statement.BindDoubleParameter( 6, &maxValue );
         statement.Execute( );
@@ -28842,7 +28842,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindDoubleParameter( 6, &minValue );
         statement.BindDoubleParameter( 7, &maxValue );
         statement.Execute( );
@@ -28901,7 +28901,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -28934,7 +28934,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -28989,7 +28989,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindInt16Parameter( 5, &minValue );
         statement.BindInt16Parameter( 6, &maxValue );
         statement.Execute( );
@@ -29026,7 +29026,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindInt16Parameter( 6, &minValue );
         statement.BindInt16Parameter( 7, &maxValue );
         statement.Execute( );
@@ -29085,7 +29085,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindInt32Parameter( 5, &minValue );
         statement.BindInt32Parameter( 6, &maxValue );
         statement.Execute( );
@@ -29122,7 +29122,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindInt32Parameter( 6, &minValue );
         statement.BindInt32Parameter( 7, &maxValue );
         statement.Execute( );
@@ -29181,7 +29181,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindInt64Parameter( 5, &minValue );
         statement.BindInt64Parameter( 6, &maxValue );
         statement.Execute( );
@@ -29218,7 +29218,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindInt64Parameter( 6, &minValue );
         statement.BindInt64Parameter( 7, &maxValue );
         statement.Execute( );
@@ -29277,7 +29277,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindGuidParameter( 5, referencedElementType );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -29294,7 +29294,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -29344,7 +29344,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindGuidParameter( 6, referencedElementType );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -29362,7 +29362,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -29461,7 +29461,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindSByteParameter( 5, &minValue );
         statement.BindSByteParameter( 6, &maxValue );
         statement.Execute( );
@@ -29498,7 +29498,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindSByteParameter( 6, &minValue );
         statement.BindSByteParameter( 7, &maxValue );
         statement.Execute( );
@@ -29557,7 +29557,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindSingleParameter( 5, &minValue );
         statement.BindSingleParameter( 6, &maxValue );
         statement.Execute( );
@@ -29594,7 +29594,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindSingleParameter( 6, &minValue );
         statement.BindSingleParameter( 7, &maxValue );
         statement.Execute( );
@@ -29653,7 +29653,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindFixedDBWideStringParameter( 5, pattern );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -29688,7 +29688,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindFixedDBWideStringParameter( 6, pattern );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -29745,7 +29745,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindTimeSpanParameter( 5, minValue );
         statement.BindTimeSpanParameter( 6, maxValue );
         statement.Execute( );
@@ -29782,7 +29782,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindTimeSpanParameter( 6, minValue );
         statement.BindTimeSpanParameter( 7, maxValue );
         statement.Execute( );
@@ -29841,7 +29841,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindUInt16Parameter( 5, &minValue );
         statement.BindUInt16Parameter( 6, &maxValue );
         statement.Execute( );
@@ -29878,7 +29878,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindUInt16Parameter( 6, &minValue );
         statement.BindUInt16Parameter( 7, &maxValue );
         statement.Execute( );
@@ -29937,7 +29937,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindUInt32Parameter( 5, &minValue );
         statement.BindUInt32Parameter( 6, &maxValue );
         statement.Execute( );
@@ -29974,7 +29974,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindUInt32Parameter( 6, &minValue );
         statement.BindUInt32Parameter( 7, &maxValue );
         statement.Execute( );
@@ -30033,7 +30033,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindInt64Parameter( 5, &minValue );
         statement.BindInt64Parameter( 6, &maxValue );
         statement.Execute( );
@@ -30070,7 +30070,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindInt64Parameter( 6, &minValue );
         statement.BindInt64Parameter( 7, &maxValue );
         statement.Execute( );
@@ -30129,7 +30129,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindTimeSpanParameter( 5, defaultValue );
         statement.BindTimeSpanParameter( 6, minValue );
         statement.BindTimeSpanParameter( 7, maxValue );
@@ -30168,7 +30168,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindTimeSpanParameter( 6, defaultValue );
         statement.BindTimeSpanParameter( 7, minValue );
         statement.BindTimeSpanParameter( 8, maxValue );
@@ -30229,7 +30229,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindUInt16Parameter( 5, &defaultValue );
         statement.BindUInt16Parameter( 6, &minValue );
         statement.BindUInt16Parameter( 7, &maxValue );
@@ -30268,7 +30268,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindUInt16Parameter( 6, &defaultValue );
         statement.BindUInt16Parameter( 7, &minValue );
         statement.BindUInt16Parameter( 8, &maxValue );
@@ -30329,7 +30329,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindUInt32Parameter( 5, &defaultValue );
         statement.BindUInt32Parameter( 6, &minValue );
         statement.BindUInt32Parameter( 7, &maxValue );
@@ -30368,7 +30368,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindUInt32Parameter( 6, &defaultValue );
         statement.BindUInt32Parameter( 7, &minValue );
         statement.BindUInt32Parameter( 8, &maxValue );
@@ -30429,7 +30429,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindInt64Parameter( 5, &defaultValue );
         statement.BindInt64Parameter( 6, &minValue );
         statement.BindInt64Parameter( 7, &maxValue );
@@ -30468,7 +30468,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindInt64Parameter( 6, &defaultValue );
         statement.BindInt64Parameter( 7, &minValue );
         statement.BindInt64Parameter( 8, &maxValue );
@@ -31003,7 +31003,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -31020,7 +31020,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &radar );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -31074,7 +31074,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -31092,7 +31092,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &radar );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -31195,7 +31195,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.BindInt32Parameter( 7, &azimuthCount );
         statement.BindInt32Parameter( 8, &triggerCount );
         statement.BindTimeSpanParameter( 9, rotationCount );
@@ -31217,7 +31217,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &radar );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.BindInt32Parameter( 6, &azimuthCount );
         statement.BindInt32Parameter( 7, &triggerCount );
         statement.BindTimeSpanParameter( 8, rotationCount );
@@ -31286,7 +31286,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.BindInt32Parameter( 8, &azimuthCount );
         statement.BindInt32Parameter( 9, &triggerCount );
         statement.BindTimeSpanParameter( 10, rotationCount );
@@ -31309,7 +31309,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &radar );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.BindInt32Parameter( 7, &azimuthCount );
         statement.BindInt32Parameter( 8, &triggerCount );
         statement.BindTimeSpanParameter( 9, rotationCount );
@@ -32103,7 +32103,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -32120,7 +32120,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &radio );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -32174,7 +32174,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -32192,7 +32192,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &radio );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -32599,7 +32599,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -32616,7 +32616,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &radome );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -32670,7 +32670,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -32688,7 +32688,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &radome );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -33068,7 +33068,7 @@ namespace Barrelman::Databases::MsSql
         statement.Prepare( L"{ CALL [SecurityDomainInsert]( ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindFixedDBWideStringParameter( 2, name );
-        statement.BindWideStringParameter( 3, description );
+        statement.BindStringParameter( 3, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -33099,7 +33099,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -33153,7 +33153,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &domain );
         statement.BindFixedDBWideStringParameter( 3, identity );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -33186,7 +33186,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &domain );
         statement.BindFixedDBWideStringParameter( 4, identity );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -33241,7 +33241,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &domain );
         statement.BindFixedDBWideStringParameter( 3, identity );
-        statement.BindWideStringParameter( 4, description );
+        statement.BindStringParameter( 4, description );
         statement.BindFixedDBWideStringParameter( 5, name );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
@@ -33276,7 +33276,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &domain );
         statement.BindFixedDBWideStringParameter( 4, identity );
-        statement.BindWideStringParameter( 5, description );
+        statement.BindStringParameter( 5, description );
         statement.BindFixedDBWideStringParameter( 6, name );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -33717,7 +33717,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 1, &id, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 2, &timeseries );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindWideStringParameter( 4, value );
+        statement.BindStringParameter( 4, value );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -33750,7 +33750,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindInt64Parameter( 2, &rowVersion, ODBC::ParameterDirection::InputOutput );
         statement.BindGuidParameter( 3, &timeseries );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindWideStringParameter( 5, value );
+        statement.BindStringParameter( 5, value );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -49509,7 +49509,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -49526,7 +49526,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 2, &weatherStation );
         statement.BindDateTimeParameter( 3, timestamp );
         statement.BindEnumParameter( 4, &status );
-        statement.BindWideStringParameter( 5, message );
+        statement.BindStringParameter( 5, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         if ( numberOfRowsInserted )
@@ -49580,7 +49580,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
-        statement.BindWideStringParameter( 7, message );
+        statement.BindStringParameter( 7, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -49598,7 +49598,7 @@ namespace Barrelman::Databases::MsSql
         statement.BindGuidParameter( 3, &weatherStation );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &status );
-        statement.BindWideStringParameter( 6, message );
+        statement.BindStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )

@@ -44,15 +44,16 @@ BOOST_AUTO_TEST_CASE( ExecuteTest1 )
         L" :result := SYSDATE();" \
         L"END;";
 
-    auto statement = serviceContext.CreateStatement( sql );
+    {
+        auto statement = serviceContext.CreateStatement( sql );
 
-    auto result = statement.Bind<DateBind>( 1 );
+        auto result = statement.Bind<DateBind>( 1 );
 
-    statement.Execute( 1 );
+        statement.Execute( 1 );
 
-    auto dateTime = result->AsDateTime( );
-    BOOST_CHECK( dateTime.Ticks( ) > 0 );
-
+        auto dateTime = result->AsDateTime( );
+        BOOST_CHECK( dateTime.Ticks( ) > 0 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -80,16 +81,16 @@ BOOST_AUTO_TEST_CASE( ExecuteTest1a )
         L"BEGIN"\
         L" :result := SYSDATE();" \
         L"END;";
+    {
+        auto statement = serviceContext.CreateStatement( sql );
 
-    auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<DateBind>( 1 );
 
-    auto result = statement.Bind<DateBind>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto dateTime = result->AsDateTime( );
-    BOOST_CHECK( dateTime.Ticks( ) > 0 );
-
+        auto dateTime = result->AsDateTime( );
+        BOOST_CHECK( dateTime.Ticks( ) > 0 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -109,16 +110,16 @@ BOOST_AUTO_TEST_CASE( ExecuteTest2 )
         L"BEGIN"\
         L" :result := SYSTIMESTAMP();" \
         L"END;";
-    
-    auto statement = serviceContext.CreateStatement( sql );
+    {
+        auto statement = serviceContext.CreateStatement( sql );
 
-    auto result = statement.Bind<DateTime>( 1 );
+        auto result = statement.Bind<DateTime>( 1 );
 
-    statement.Execute( 1 );
+        statement.Execute( 1 );
 
-    auto dateTime = result->As<DateTime>( );
-    BOOST_CHECK( dateTime.Ticks( ) > 0 );
-    
+        auto dateTime = result->As<DateTime>( );
+        BOOST_CHECK( dateTime.Ticks( ) > 0 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -137,14 +138,15 @@ BOOST_AUTO_TEST_CASE( ExecuteTest3 )
         L" :result := 1;" \
         L"END;";
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<bool>( 1 );
+    {
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<bool>( 1 );
 
-    statement.Execute( 1 );
+        statement.Execute( 1 );
 
-    auto value = result->As<bool>( );
-    BOOST_CHECK( value );
-
+        auto value = result->As<bool>( );
+        BOOST_CHECK( value );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -162,15 +164,15 @@ BOOST_AUTO_TEST_CASE( ExecuteTest4 )
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
+    {
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<SByte>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<SByte>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<SByte>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<SByte>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -189,15 +191,15 @@ BOOST_AUTO_TEST_CASE( ExecuteTest5 )
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
+    {
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<Byte>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<Byte>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<Byte>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<Byte>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -215,15 +217,15 @@ BOOST_AUTO_TEST_CASE( ExecuteTest6 )
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
+    {
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<Int16>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<Int16>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<Int16>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<Int16>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -242,14 +244,15 @@ BOOST_AUTO_TEST_CASE( ExecuteTest7 )
         L" :result := 1;" \
         L"END;";
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<UInt16>( 1 );
+    {
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<UInt16>( 1 );
 
-    statement.Execute( 1 );
+        statement.Execute( 1 );
 
-    auto value = result->As<UInt16>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<UInt16>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -267,15 +270,15 @@ BOOST_AUTO_TEST_CASE( ExecuteTest8 )
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
+    {
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<Int32>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<Int32>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<Int32>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<Int32>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -293,15 +296,15 @@ BOOST_AUTO_TEST_CASE( ExecuteTest9 )
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
+    {
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<UInt32>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<UInt32>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<UInt32>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<UInt32>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -314,20 +317,20 @@ BOOST_AUTO_TEST_CASE( ExecuteTest10 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
+    {
+        WideString sql =
+            L"BEGIN"\
+            L" :result := 1;" \
+            L"END;";
 
-    WideString sql =
-        L"BEGIN"\
-        L" :result := 1;" \
-        L"END;";
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<Int64>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<Int64>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<Int64>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<Int64>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -340,20 +343,20 @@ BOOST_AUTO_TEST_CASE( ExecuteTest11 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
+    {
+        WideString sql =
+            L"BEGIN"\
+            L" :result := 1;" \
+            L"END;";
 
-    WideString sql =
-        L"BEGIN"\
-        L" :result := 1;" \
-        L"END;";
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<UInt64>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<UInt64>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<UInt64>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<UInt64>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -371,15 +374,15 @@ BOOST_AUTO_TEST_CASE( ExecuteTest12 )
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
+    {
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<float>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<float>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<float>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<float>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -392,20 +395,20 @@ BOOST_AUTO_TEST_CASE( ExecuteTest13 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
+    {
+        WideString sql =
+            L"BEGIN"\
+            L" :result := 1;" \
+            L"END;";
 
-    WideString sql =
-        L"BEGIN"\
-        L" :result := 1;" \
-        L"END;";
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<Double>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<Double>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<Double>( );
-    BOOST_CHECK( value == 1 );
-
+        auto value = result->As<Double>( );
+        BOOST_CHECK( value == 1 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -418,21 +421,21 @@ BOOST_AUTO_TEST_CASE( ExecuteTest14 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
+    {
+        WideString sql =
+            L"BEGIN"\
+            L" :result := 1;" \
+            L"END;";
 
-    WideString sql =
-        L"BEGIN"\
-        L" :result := 1;" \
-        L"END;";
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<WideString>( 1 );
+        result->Reserve( 5 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<WideString>( 1 );
-    result->Reserve( 5 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<WideString>( );
-    BOOST_CHECK( value == L"1" );
-
+        auto value = result->As<WideString>( );
+        BOOST_CHECK( value == L"1" );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -445,20 +448,20 @@ BOOST_AUTO_TEST_CASE( ExecuteTest15 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
+    {
+        WideString sql =
+            L"BEGIN"\
+            L" :result := 1;" \
+            L"END;";
 
-    WideString sql =
-        L"BEGIN"\
-        L" :result := 1;" \
-        L"END;";
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<StringBind>( 1 );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<StringBind>( 1 );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->AsString( );
-    BOOST_CHECK( value == L"1" );
-
+        auto value = result->AsString( );
+        BOOST_CHECK( value == L"1" );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -472,22 +475,22 @@ BOOST_AUTO_TEST_CASE( ExecuteTest16 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
+    {
+        WideString sql =
+            L"BEGIN"\
+            L" :result := :value;" \
+            L"END;";
 
-    WideString sql =
-        L"BEGIN"\
-        L" :result := :value;" \
-        L"END;";
+        auto statement = serviceContext.CreateStatement( sql );
+        auto result = statement.Bind<Guid>( 1 );
+        auto input = statement.Bind<Guid>( 2 );
+        input->Assign( guid );
 
-    auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<Guid>( 1 );
-    auto input = statement.Bind<Guid>( 2 );
-    input->Assign( guid );
+        statement.Execute( 1 );
 
-    statement.Execute( 1 );
-
-    auto value = result->As<Guid>( );
-    BOOST_CHECK( value == guid );
-
+        auto value = result->As<Guid>( );
+        BOOST_CHECK( value == guid );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -501,17 +504,18 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest1a )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
 
     serviceContext.SessionBegin( );
-
-    WideString sql =
-        L"SELECT * FROM ALL_USERS WHERE USERNAME<>:1";
-    WideString myName( L"ESPEN" );
-    auto statement = serviceContext.CreateStatement( sql, myName );
-    auto reader = statement.ExecuteReader<DataReader>( );
-    while ( reader->Read( ) )
     {
-        auto userName = reader->As<WideString>( 0 );
-        auto userId = reader->As<Int64>( 1 );
-        auto created = reader->As<DateTime>( 2 );
+        WideString sql =
+            L"SELECT * FROM ALL_USERS WHERE USERNAME<>:1";
+        WideString myName( L"ESPEN" );
+        auto statement = serviceContext.CreateStatement( sql, myName );
+        auto reader = statement.ExecuteReader<DataReader>( );
+        while ( reader->Read( ) )
+        {
+            auto userName = reader->As<WideString>( 0 );
+            auto userId = reader->As<Int64>( 1 );
+            auto created = reader->As<DateTime>( 2 );
+        }
     }
     serviceContext.SessionEnd( );
 }
@@ -530,20 +534,20 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest1 )
     BOOST_CHECK( serviceContext.Handle( ) != nullptr );
 
     serviceContext.SessionBegin( );
-
-    WideString sql =
-        L"SELECT * FROM ALL_USERS";
-
-    auto statement = serviceContext.CreateStatement( sql );
-
-    auto reader = statement.ExecuteReader<DataReader>();
-    size_t count = 0;
-    while ( reader->Read( ) )
     {
-        count++;
-    }
-    BOOST_CHECK( count > 0 );
+        WideString sql =
+            L"SELECT * FROM ALL_USERS";
 
+        auto statement = serviceContext.CreateStatement( sql );
+
+        auto reader = statement.ExecuteReader<DataReader>( );
+        size_t count = 0;
+        while ( reader->Read( ) )
+        {
+            count++;
+        }
+        BOOST_CHECK( count > 0 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -561,19 +565,19 @@ BOOST_AUTO_TEST_CASE( ExecuteArrayReaderTest1 )
     BOOST_CHECK( serviceContext.Handle( ) != nullptr );
 
     serviceContext.SessionBegin( );
-
-    WideString sql = L"SELECT * FROM ALL_USERS";
-
-    auto statement = serviceContext.CreateStatement( sql );
-
-    auto reader = statement.ExecuteReader<ArrayDataReader>( );
-    size_t count = 0;
-    while ( reader->Read( ) )
     {
-        count++;
-    }
-    BOOST_CHECK( count > 0 );
+        WideString sql = L"SELECT * FROM ALL_USERS";
 
+        auto statement = serviceContext.CreateStatement( sql );
+
+        auto reader = statement.ExecuteReader<ArrayDataReader>( );
+        size_t count = 0;
+        while ( reader->Read( ) )
+        {
+            count++;
+        }
+        BOOST_CHECK( count > 0 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -672,20 +676,20 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest3 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
-
-    auto statement = serviceContext.CreateStatement( AllUsersReader::SQL );
-
-    auto reader = statement.ExecuteReader<AllUsersReader>( );
-    size_t count = 0;
-    while ( reader->Read( ) )
     {
-        auto userName = reader->UserName( );
-        auto userId = reader->UserId( );
-        auto created = reader->Created( );
-        count++;
-    }
-    BOOST_CHECK( count > 0 );
+        auto statement = serviceContext.CreateStatement( AllUsersReader::SQL );
 
+        auto reader = statement.ExecuteReader<AllUsersReader>( );
+        size_t count = 0;
+        while ( reader->Read( ) )
+        {
+            auto userName = reader->UserName( );
+            auto userId = reader->UserId( );
+            auto created = reader->Created( );
+            count++;
+        }
+        BOOST_CHECK( count > 0 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -774,18 +778,18 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest4 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
-
-    auto statement = serviceContext.CreateStatement( AllUsersArrayReader::SQL );
-
-    auto reader = statement.ExecuteReader<AllUsersArrayReader>( );
-    size_t count = 0;
-    while ( reader->Read( ) )
     {
-        auto userName = reader->UserName( );
-        count++;
-    }
-    BOOST_CHECK( count > 0 );
+        auto statement = serviceContext.CreateStatement( AllUsersArrayReader::SQL );
 
+        auto reader = statement.ExecuteReader<AllUsersArrayReader>( );
+        size_t count = 0;
+        while ( reader->Read( ) )
+        {
+            auto userName = reader->UserName( );
+            count++;
+        }
+        BOOST_CHECK( count > 0 );
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -800,21 +804,21 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest5 )
     serviceContext.SessionBegin( );
 
     auto statement = serviceContext.CreateStatement( L"SELECT * FROM OwnedObjectType" );
-
-    auto reader = statement.ExecuteReader<DataReader>( );
-    size_t count = 0;
-    while ( reader->Read( ) )
     {
-        auto id = reader->As<Guid>( 0 );
-        auto name = reader->As<WideString>( 1 );
-        auto optimisticLock = reader->As<Int64>( 2 );
-        auto create = reader->As<DateTime>( 3 );
-        auto deleted = reader->As<std::optional< DateTime > >( 4 );
-        auto description = reader->As< std::optional< WideString >>( 5 );
-        count++;
+        auto reader = statement.ExecuteReader<DataReader>( );
+        size_t count = 0;
+        while ( reader->Read( ) )
+        {
+            auto id = reader->As<Guid>( 0 );
+            auto name = reader->As<WideString>( 1 );
+            auto optimisticLock = reader->As<Int64>( 2 );
+            auto create = reader->As<DateTime>( 3 );
+            auto deleted = reader->As<std::optional< DateTime > >( 4 );
+            auto description = reader->As< std::optional< WideString >>( 5 );
+            count++;
+        }
+        BOOST_CHECK( count > 0 );
     }
-    BOOST_CHECK( count > 0 );
-
     serviceContext.SessionEnd( );
 }
 
@@ -828,14 +832,14 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest1 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
+        auto result = serviceContext.ExecuteScalar<bool>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
 
-    auto result = serviceContext.ExecuteScalar<bool>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
-
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -847,13 +851,13 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest2 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
-
-    auto result = serviceContext.ExecuteScalar<SByte>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
+        auto result = serviceContext.ExecuteScalar<SByte>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
+    }
 
     serviceContext.SessionEnd( );
 }
@@ -866,14 +870,14 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest3 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
+        auto result = serviceContext.ExecuteScalar<Byte>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
 
-    auto result = serviceContext.ExecuteScalar<Byte>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
-
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -885,14 +889,14 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest4 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
+        auto result = serviceContext.ExecuteScalar<Int16>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
 
-    auto result = serviceContext.ExecuteScalar<Int16>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
-
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -904,14 +908,14 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest5 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
+        auto result = serviceContext.ExecuteScalar<UInt16>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
 
-    auto result = serviceContext.ExecuteScalar<UInt16>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
-
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -923,13 +927,13 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest6 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
-
-    auto result = serviceContext.ExecuteScalar<Int32>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
+        auto result = serviceContext.ExecuteScalar<Int32>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
+    }
 
     serviceContext.SessionEnd( );
 }
@@ -942,13 +946,14 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest7 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    auto result = serviceContext.ExecuteScalar<UInt32>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
+        auto result = serviceContext.ExecuteScalar<UInt32>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
+    }
 
     serviceContext.SessionEnd( );
 }
@@ -961,14 +966,14 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest8 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
+        auto result = serviceContext.ExecuteScalar<Int64>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
 
-    auto result = serviceContext.ExecuteScalar<Int64>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
-
+    }
     serviceContext.SessionEnd( );
 }
 
@@ -980,13 +985,13 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest9 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
-
-    auto result = serviceContext.ExecuteScalar<UInt64>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
+        auto result = serviceContext.ExecuteScalar<UInt64>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
+    }
 
     serviceContext.SessionEnd( );
 }
@@ -999,13 +1004,13 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest10 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
-
-    auto result = serviceContext.ExecuteScalar<float>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
+        auto result = serviceContext.ExecuteScalar<float>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
+    }
 
     serviceContext.SessionEnd( );
 }
@@ -1018,13 +1023,13 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest11 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT 1 FROM DUAL" );
 
-    WideString sql( L"SELECT 1 FROM DUAL" );
-
-    auto result = serviceContext.ExecuteScalar<Double>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-
+        auto result = serviceContext.ExecuteScalar<Double>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
+    }
 
     serviceContext.SessionEnd( );
 }
@@ -1037,16 +1042,16 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest12 )
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
+    {
+        WideString sql( L"SELECT SYSTIMESTAMP FROM DUAL" );
 
-    WideString sql( L"SELECT SYSTIMESTAMP FROM DUAL" );
-
-    auto result = serviceContext.ExecuteScalar<DateTime>( sql );
-    BOOST_CHECK( result.has_value( ) );
-    BOOST_CHECK( result.value( ) );
-    auto& value = result.value( );
-    auto valueString = value.ToString( );
-    BOOST_CHECK( valueString.length() > 0 );
-    
+        auto result = serviceContext.ExecuteScalar<DateTime>( sql );
+        BOOST_CHECK( result.has_value( ) );
+        BOOST_CHECK( result.value( ) );
+        auto& value = result.value( );
+        auto valueString = value.ToString( );
+        BOOST_CHECK( valueString.length( ) > 0 );
+    }
 
 
     serviceContext.SessionEnd( );

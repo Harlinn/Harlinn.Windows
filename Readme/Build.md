@@ -5,7 +5,7 @@ The provided code has been tried and tested on Windows 11 and Windows 2019 serve
  
 ## Requirements
 To build the solution you need:
-- [Visual Studio 17.11.0](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
+- [Visual Studio 17.11.5](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 8, 64-bit C++ development and 64-bit python development. 
 - [boost c++ libraries](https://www.boost.org/)
 - [nasm](https://www.nasm.us/) 
 - [yasm](https://yasm.tortall.net/)
@@ -84,8 +84,8 @@ in Visual Studio, and if you plan to test the code on a system that does not sup
 AVX2, you need to change the **Enable Enhanced Instruction Set** setting under 
 **C/C++ ⇒ Code Generation** to a value suitable for your system.
  
-## .Net 6.0 support
-The [.Net 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) SDK, or newer, is 
+## .Net 8.0 support
+The [.Net 8.0](https://dotnet.microsoft.com/download/dotnet/8.0) SDK, or newer, is 
 required to build the C# code.
 
 ## Julia support

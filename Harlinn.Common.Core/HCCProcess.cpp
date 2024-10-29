@@ -41,7 +41,7 @@ namespace Harlinn::Common::Core
             ThrowLastOSError( );
         }
         SetHandle( processInformation.hProcess );
-        thread_ = Thread( processInformation.hThread, (UInt32)processInformation.dwThreadId );
+        primaryThread_ = Thread( processInformation.hThread, (UInt32)processInformation.dwThreadId );
 
 
     }

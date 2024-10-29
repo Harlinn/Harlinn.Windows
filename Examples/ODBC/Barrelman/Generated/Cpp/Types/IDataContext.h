@@ -6,12 +6,24 @@
 
 namespace Barrelman::Types
 {
+
+    class UpdateData
+    {
+    };
+
+    class UpdateResult
+    {
+    };
+
     class IDataContext
     {
+
         virtual bool Insert( BaseData<Kind, Guid>& data ) = 0;
         virtual bool Update( BaseData<Kind, Guid>& data ) = 0;
         virtual bool Delete( const BaseData<Kind, Guid>& data ) = 0;
         virtual bool Merge( BaseData<Kind, Guid>& data ) = 0;
+
+        virtual bool Update( const UpdateData& data, UpdateResult& result ) = 0;
 
         // ---------------------------------------------------------------------
         // AircraftType queries

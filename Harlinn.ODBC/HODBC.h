@@ -422,10 +422,33 @@ namespace Harlinn::ODBC
 
     enum class ConnectionPooling : UInt32
     {
+        /// <summary>
+        ///  Connection pooling is turned off. This is the default.
+        /// </summary>
         Off = SQL_CP_OFF,
+        /// <summary>
+        ///  Connection pooling is turned off. This is the default.
+        /// </summary>
         Default = SQL_CP_DEFAULT,
+        /// <summary>
+        /// A single connection pool is supported for each driver. Every connection 
+        /// in a pool is associated with one driver.
+        /// </summary>
         OnePerDriver = SQL_CP_ONE_PER_DRIVER,
+        /// <summary>
+        ///  A single connection pool is supported for each environment. Every 
+        /// connection in a pool is associated with one environment.
+        /// </summary>
         OnePerEnvironment = SQL_CP_ONE_PER_HENV,
+        /// <summary>
+        /// Use the connection-pool awareness feature of the driver, if it is available. 
+        /// If the driver does not support connection-pool awareness, DriverAware is ignored and 
+        /// OnePerEnvironment is used. For more information, see Driver-Aware Connection Pooling. 
+        /// In an environment where some drivers support and some drivers do not support connection-pool 
+        /// awareness, DriverAware can enable the connection-pool awareness feature on those supporting 
+        /// drivers, but it is equivalent to setting to OnePerEnvironment on those drivers that do not 
+        /// support connection-pool awareness feature.
+        /// </summary>
         DriverAware = SQL_CP_DRIVER_AWARE
     };
 
@@ -1052,7 +1075,7 @@ namespace Harlinn::ODBC
 
     using DBInterval = Internal::DBValue<Interval>;
 
-    struct TimestampOffset
+    struct TimeStampOffset
     {
         SQLSMALLINT year = 0;
         SQLUSMALLINT month = 0;
@@ -1065,7 +1088,7 @@ namespace Harlinn::ODBC
         SQLSMALLINT timezoneMinute = 0;
     };
 
-    using DBTimestampOffset = Internal::DBValue<TimestampOffset>;
+    using DBTimeStampOffset = Internal::DBValue<TimeStampOffset>;
 
 
     class Numeric : public SQL_NUMERIC_STRUCT
@@ -1162,6 +1185,19 @@ namespace Harlinn::ODBC
         constexpr SQLHANDLE Handle( ) const noexcept
         {
             return sqlHandle_;
+        }
+    protected:
+        void SetHandle( SQLHANDLE sqlHandle, bool destructorClosesHandle )
+        {
+            if ( sqlHandle != sqlHandle_ )
+            {
+                if ( destructorClosesHandle_ )
+                {
+                    Close( );
+                }
+                sqlHandle_ = sqlHandle;
+                destructorClosesHandle_ = destructorClosesHandle;
+            }
         }
 
     protected:
@@ -1773,7 +1809,7 @@ namespace Harlinn::ODBC
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline DBTimestampOffset GetDBTimestampOffset( SQLUSMALLINT columnNumber ) const;
+        inline DBTimeStampOffset GetDBTimeStampOffset( SQLUSMALLINT columnNumber ) const;
         /// <summary>
         /// Gets the value of the specified column as a DBDate.
         /// </summary>
@@ -1991,7 +2027,7 @@ namespace Harlinn::ODBC
         /// The implementation throws an exception if the column value is NULL.
         /// </remarks>
         [[nodiscard]]
-        inline TimestampOffset GetTimestampOffset( SQLUSMALLINT columnNumber ) const;
+        inline TimeStampOffset GetTimeStampOffset( SQLUSMALLINT columnNumber ) const;
 
         /// <summary>
         /// Gets the value of the specified column as a Date.
@@ -2155,6 +2191,141 @@ namespace Harlinn::ODBC
         }
 
 
+        Result BindBooleanColumn( SQLUSMALLINT columnNumber, bool* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Boolean, targetAddress, sizeof( Byte ), nullIndicatorOrActualLength );
+        }
+        Result BindBooleanColumn( SQLUSMALLINT columnNumber, DBBoolean& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Boolean, dbValue.data(), sizeof( Byte ), dbValue.Indicator() );
+        }
+        Result BindSByteColumn( SQLUSMALLINT columnNumber, SByte* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::SByte, targetAddress, sizeof( SByte ), nullIndicatorOrActualLength );
+        }
+        Result BindSByteColumn( SQLUSMALLINT columnNumber, DBSByte& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::SByte, dbValue.data( ), sizeof( SByte ), dbValue.Indicator( ) );
+        }
+
+        Result BindByteColumn( SQLUSMALLINT columnNumber, Byte* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Byte, targetAddress, sizeof( Byte ), nullIndicatorOrActualLength );
+        }
+        Result BindByteColumn( SQLUSMALLINT columnNumber, DBByte& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Byte, dbValue.data( ), sizeof( Byte ), dbValue.Indicator( ) );
+        }
+
+        Result BindInt16Column( SQLUSMALLINT columnNumber, Int16* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int16, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
+        }
+        Result BindInt16Column( SQLUSMALLINT columnNumber, DBInt16& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int16, dbValue.data( ), sizeof( Int16 ), dbValue.Indicator( ) );
+        }
+
+        Result BindUInt16Column( SQLUSMALLINT columnNumber, UInt16* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt16, targetAddress, sizeof( UInt16 ), nullIndicatorOrActualLength );
+        }
+        Result BindUInt16Column( SQLUSMALLINT columnNumber, DBUInt16& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt16, dbValue.data( ), sizeof( UInt16 ), dbValue.Indicator( ) );
+        }
+
+        Result BindInt32Column( SQLUSMALLINT columnNumber, Int32* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int32, targetAddress, sizeof( Int32 ), nullIndicatorOrActualLength );
+        }
+        Result BindInt32Column( SQLUSMALLINT columnNumber, DBInt32& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int32, dbValue.data( ), sizeof( Int32 ), dbValue.Indicator( ) );
+        }
+
+
+        Result BindUInt32Column( SQLUSMALLINT columnNumber, UInt32* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt32, targetAddress, sizeof( UInt32 ), nullIndicatorOrActualLength );
+        }
+        Result BindUInt32Column( SQLUSMALLINT columnNumber, DBUInt32& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt32, dbValue.data( ), sizeof( UInt32 ), dbValue.Indicator( ) );
+        }
+
+        Result BindInt64Column( SQLUSMALLINT columnNumber, Int64* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
+        }
+        Result BindInt64Column( SQLUSMALLINT columnNumber, DBInt64& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, dbValue.data( ), sizeof( Int64 ), dbValue.Indicator( ) );
+        }
+        Result BindUInt64Column( SQLUSMALLINT columnNumber, UInt64* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt64, targetAddress, sizeof( UInt64 ), nullIndicatorOrActualLength );
+        }
+        Result BindUInt64Column( SQLUSMALLINT columnNumber, DBUInt64& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt64, dbValue.data( ), sizeof( UInt64 ), dbValue.Indicator( ) );
+        }
+
+        Result BindSingleColumn( SQLUSMALLINT columnNumber, float* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Single, targetAddress, sizeof( float ), nullIndicatorOrActualLength );
+        }
+        Result BindSingleColumn( SQLUSMALLINT columnNumber, DBSingle& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Single, dbValue.data( ), sizeof( float ), dbValue.Indicator( ) );
+        }
+
+        Result BindDoubleColumn( SQLUSMALLINT columnNumber, double* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Double, targetAddress, sizeof( double ), nullIndicatorOrActualLength );
+        }
+        Result BindDoubleColumn( SQLUSMALLINT columnNumber, DBDouble& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Double, dbValue.data( ), sizeof( double ), dbValue.Indicator( ) );
+        }
+
+        Result BindDateTimeColumn( SQLUSMALLINT columnNumber, DateTime* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
+        }
+        Result BindDateTimeColumn( SQLUSMALLINT columnNumber, DBDateTime& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, dbValue.data( ), sizeof( Int64 ), dbValue.Indicator( ) );
+        }
+
+        Result BindTimeSpanColumn( SQLUSMALLINT columnNumber, TimeSpan* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
+        }
+        Result BindTimeSpanColumn( SQLUSMALLINT columnNumber, DBTimeSpan& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, dbValue.data( ), sizeof( Int64 ), dbValue.Indicator( ) );
+        }
+
+
+        Result BindGuidColumn( SQLUSMALLINT columnNumber, Guid* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Guid, targetAddress, sizeof( Guid ), nullIndicatorOrActualLength );
+        }
+        Result BindGuidColumn( SQLUSMALLINT columnNumber, DBGuid& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Guid, dbValue.data( ), sizeof( Guid ), dbValue.Indicator( ) );
+        }
+
+        Result BindCurrencyColumn( SQLUSMALLINT columnNumber, Currency* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
+        }
+        Result BindCurrencyColumn( SQLUSMALLINT columnNumber, DBCurrency& dbValue ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, dbValue.data( ), sizeof( Int64 ), dbValue.Indicator( ) );
+        }
+
         Result BindCharColumn( SQLUSMALLINT columnNumber, SQLPOINTER targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Char, targetAddress, targetAddressMaxLength, nullIndicatorOrActualLength );
@@ -2168,58 +2339,48 @@ namespace Harlinn::ODBC
         {
             return BindColumn( columnNumber, NativeType::Short, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
         }
-        Result BindSingleColumn( SQLUSMALLINT columnNumber, float* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        
+        Result BindTimeColumn( SQLUSMALLINT columnNumber, ODBC::Time* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
-            return BindColumn( columnNumber, NativeType::Single, targetAddress, sizeof( float ), nullIndicatorOrActualLength );
+            return BindColumn( columnNumber, NativeType::TypeTime, targetAddress, sizeof( ODBC::Time ), nullIndicatorOrActualLength );
         }
-        Result BindDoubleColumn( SQLUSMALLINT columnNumber, Double* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+
+        Result BindTime2Column( SQLUSMALLINT columnNumber, ODBC::Time2* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
-            return BindColumn( columnNumber, NativeType::Double, targetAddress, sizeof( Double ), nullIndicatorOrActualLength );
+            return BindColumn( columnNumber, NativeType::Binary, targetAddress, sizeof( ODBC::Time2 ), nullIndicatorOrActualLength );
         }
-        Result BindBooleanColumn( SQLUSMALLINT columnNumber, Byte* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+
+        Result BindIntervalColumn( SQLUSMALLINT columnNumber, ODBC::Interval* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
-            return BindColumn( columnNumber, NativeType::Boolean, targetAddress, sizeof( Byte ), nullIndicatorOrActualLength );
+            return BindColumn( columnNumber, NativeType::IntervalDayToSecond, targetAddress, sizeof( ODBC::Interval ), nullIndicatorOrActualLength );
         }
-        Result BindInt64Column( SQLUSMALLINT columnNumber, Int64* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
-        }
-        Result BindUInt64Column( SQLUSMALLINT columnNumber, UInt64* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::UInt64, targetAddress, sizeof( UInt64 ), nullIndicatorOrActualLength );
-        }
-        Result BindInt32Column( SQLUSMALLINT columnNumber, Int32* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::Int32, targetAddress, sizeof( Int32 ), nullIndicatorOrActualLength );
-        }
-        Result BindUInt32Column( SQLUSMALLINT columnNumber, UInt32* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::UInt32, targetAddress, sizeof( UInt32 ), nullIndicatorOrActualLength );
-        }
-        Result BindInt16Column( SQLUSMALLINT columnNumber, Int16* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::Int16, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
-        }
-        Result BindUInt16Column( SQLUSMALLINT columnNumber, UInt16* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::UInt16, targetAddress, sizeof( UInt16 ), nullIndicatorOrActualLength );
-        }
-        Result BindSByteColumn( SQLUSMALLINT columnNumber, SByte* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::SByte, targetAddress, sizeof( SByte ), nullIndicatorOrActualLength );
-        }
-        Result BindByteColumn( SQLUSMALLINT columnNumber, Byte* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::Byte, targetAddress, sizeof( Byte ), nullIndicatorOrActualLength );
-        }
-        Result BindGuidColumn( SQLUSMALLINT columnNumber, Guid* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::Guid, targetAddress, sizeof( Guid ), nullIndicatorOrActualLength );
-        }
+        
+        
         Result BindTimeStampColumn( SQLUSMALLINT columnNumber, ODBC::TimeStamp* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::TypeTimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
+
+        Result BindTimeStampOffsetColumn( SQLUSMALLINT columnNumber, ODBC::TimeStampOffset* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Binary, targetAddress, sizeof( ODBC::TimeStampOffset ), nullIndicatorOrActualLength );
+        }
+
+        Result BindNumericColumn( SQLUSMALLINT columnNumber, ODBC::Numeric* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Numeric, targetAddress, sizeof( ODBC::Numeric ), nullIndicatorOrActualLength );
+        }
+
+        Result BindMoneyColumn( SQLUSMALLINT columnNumber, ODBC::Money* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Binary, targetAddress, sizeof( ODBC::Money ), nullIndicatorOrActualLength );
+        }
+
+        Result BindRowVersionColumn( SQLUSMALLINT columnNumber, ODBC::RowVersion* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Binary, targetAddress, sizeof( ODBC::RowVersion ), nullIndicatorOrActualLength );
+        }
+
 
         template<size_t maxSize>
         Result BindBinaryColumn( SQLUSMALLINT columnNumber, FixedDBBinary<maxSize>* targetAddress ) const
@@ -2227,12 +2388,12 @@ namespace Harlinn::ODBC
             return BindColumn( columnNumber, NativeType::Binary, targetAddress->data(), maxSize, targetAddress->Indicator() );
         }
         template<size_t maxSize>
-        Result BindWideStringColumn( SQLUSMALLINT columnNumber, FixedDBWideString<maxSize>* targetAddress ) const
+        Result BindStringColumn( SQLUSMALLINT columnNumber, FixedDBWideString<maxSize>* targetAddress ) const
         {
             return BindColumn( columnNumber, NativeType::WideChar, targetAddress->data( ), (maxSize + 1) * sizeof(wchar_t), targetAddress->Indicator( ) );
         }
         template<size_t maxSize>
-        Result BindAnsiStringColumn( SQLUSMALLINT columnNumber, FixedDBAnsiString<maxSize>* targetAddress ) const
+        Result BindStringColumn( SQLUSMALLINT columnNumber, FixedDBAnsiString<maxSize>* targetAddress ) const
         {
             return BindColumn( columnNumber, NativeType::Char, targetAddress->data( ), maxSize + 1, targetAddress->Indicator( ) );
         }
@@ -2617,7 +2778,7 @@ namespace Harlinn::ODBC
         }
         Result BindShortParameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, SQLLEN* nullIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Long, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Short, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
 
@@ -2950,43 +3111,43 @@ namespace Harlinn::ODBC
             return BindBinaryParameter( parameterNumber, 0, parameterValue );
         }
 
-        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, AnsiString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, AnsiString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindVarCharParameter( parameterNumber, columnSize, parameterValue.data(), static_cast<SQLLEN>(parameterValue.size()), lengthOrIndicator, parameterDirection );
             return rc;
         }
-        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const AnsiString& parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const AnsiString& parameterValue, SQLLEN* lengthOrIndicator ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindVarCharParameter( parameterNumber, columnSize, const_cast<char*>(parameterValue.data( )), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
             return rc;
         }
-        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, AnsiString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, AnsiString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindVarCharParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, lengthOrIndicator, parameterDirection );
             return rc;
         }
-        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, const AnsiString& parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, const AnsiString& parameterValue, SQLLEN* lengthOrIndicator ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindVarCharParameter( parameterNumber, 0, const_cast< char* >( parameterValue.data( ) ), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
             return rc;
         }
-        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, AnsiString& parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, AnsiString& parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindVarCharParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, nullptr, parameterDirection );
             return rc;
         }
-        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, const AnsiString& parameterValue ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, const AnsiString& parameterValue ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindVarCharParameter( parameterNumber, 0, const_cast< char* >( parameterValue.data( ) ), parameterValueBufferLength, nullptr, ODBC::ParameterDirection::Input );
             return rc;
         }
-        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const DBAnsiString& parameterValue ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const DBAnsiString& parameterValue ) const
         {
             if ( parameterValue.IsNull( ) )
             {
@@ -2999,48 +3160,48 @@ namespace Harlinn::ODBC
                 return BindVarCharParameter( parameterNumber, columnSize, const_cast< char* >( str.data( ) ), parameterValueBufferLength, parameterValue.Indicator( ), ODBC::ParameterDirection::Input );
             }
         }
-        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, const DBAnsiString& parameterValue ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, const DBAnsiString& parameterValue ) const
         {
-            return BindAnsiStringParameter( parameterNumber, 0, parameterValue );
+            return BindStringParameter( parameterNumber, 0, parameterValue );
         }
 
-        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, WideString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, WideString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindNVarCharParameter( parameterNumber, columnSize, parameterValue.data( ), parameterValueBufferLength, lengthOrIndicator, parameterDirection );
             return rc;
         }
-        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const WideString& parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const WideString& parameterValue, SQLLEN* lengthOrIndicator ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindNVarCharParameter( parameterNumber, columnSize, const_cast< wchar_t* >( parameterValue.data( ) ), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
             return rc;
         }
-        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, WideString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, WideString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindNVarCharParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, lengthOrIndicator, parameterDirection );
             return rc;
         }
-        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue, SQLLEN* lengthOrIndicator ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindNVarCharParameter( parameterNumber, 0, const_cast< wchar_t* >( parameterValue.data( ) ), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
             return rc;
         }
-        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, WideString& parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, WideString& parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindNVarCharParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, nullptr, parameterDirection );
             return rc;
         }
-        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue ) const
         {
             SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
             auto rc = BindNVarCharParameter( parameterNumber, 0, const_cast< wchar_t* >( parameterValue.data( ) ), parameterValueBufferLength, nullptr, ODBC::ParameterDirection::Input );
             return rc;
         }
-        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const DBWideString& parameterValue ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const DBWideString& parameterValue ) const
         {
             if ( parameterValue.IsNull( ) )
             {
@@ -3053,9 +3214,9 @@ namespace Harlinn::ODBC
                 return BindNVarCharParameter( parameterNumber, columnSize, const_cast< wchar_t* >( str.data( ) ), parameterValueBufferLength, parameterValue.Indicator( ), ODBC::ParameterDirection::Input );
             }
         }
-        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, const DBWideString& parameterValue ) const
+        Result BindStringParameter( SQLUSMALLINT parameterNumber, const DBWideString& parameterValue ) const
         {
-            return BindWideStringParameter( parameterNumber, 0, parameterValue );
+            return BindStringParameter( parameterNumber, 0, parameterValue );
         }
 
 
@@ -4078,9 +4239,9 @@ namespace Harlinn::ODBC
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        DBTimestampOffset GetDBTimestampOffset( SQLUSMALLINT columnNumber ) const
+        DBTimeStampOffset GetDBTimeStampOffset( SQLUSMALLINT columnNumber ) const
         {
-            TimestampOffset value;
+            TimeStampOffset value;
             SQLLEN indicator;
             GetData( columnNumber, NativeType::Binary, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
@@ -4649,9 +4810,9 @@ namespace Harlinn::ODBC
         /// The implementation throws an exception if the column value is NULL.
         /// </remarks>
         [[nodiscard]]
-        TimestampOffset GetTimestampOffset( SQLUSMALLINT columnNumber ) const
+        TimeStampOffset GetTimeStampOffset( SQLUSMALLINT columnNumber ) const
         {
-            TimestampOffset value;
+            TimeStampOffset value;
             SQLLEN indicator;
             GetData( columnNumber, NativeType::Binary, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
@@ -6286,9 +6447,9 @@ namespace Harlinn::ODBC
     }
 
     [[nodiscard]]
-    inline DBTimestampOffset DataReader::GetDBTimestampOffset( SQLUSMALLINT columnNumber ) const
+    inline DBTimeStampOffset DataReader::GetDBTimeStampOffset( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetDBTimestampOffset( columnNumber );
+        return statement_->GetDBTimeStampOffset( columnNumber );
     }
 
     [[nodiscard]]
@@ -6432,9 +6593,9 @@ namespace Harlinn::ODBC
     }
 
     [[nodiscard]]
-    inline TimestampOffset DataReader::GetTimestampOffset( SQLUSMALLINT columnNumber ) const
+    inline TimeStampOffset DataReader::GetTimeStampOffset( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetTimestampOffset( columnNumber );
+        return statement_->GetTimeStampOffset( columnNumber );
     }
 
 
@@ -6611,46 +6772,40 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        template<typename T1, typename T2, typename T3>
-            requires std::is_same_v<T1, WideString> || std::is_same_v<T1, std::wstring> || std::is_same_v<T1, std::wstring_view> ||
-            std::is_same_v<T2, WideString> || std::is_same_v<T2, std::wstring> || std::is_same_v<T2, std::wstring_view>
-        Result Connect( const T1& datasourceName ) const
-        {
-            return Connect( datasourceName.data( ), static_cast< SQLSMALLINT >( datasourceName.length( ) ), nullptr, 0, nullptr, 0 );
-        }
-
-
-        template<typename T1, typename T2, typename T3>
-            requires std::is_same_v<T1, WideString> || std::is_same_v<T1, std::wstring> || std::is_same_v<T1, std::wstring_view> ||
-                    std::is_same_v<T2, WideString> || std::is_same_v<T2, std::wstring> || std::is_same_v<T2, std::wstring_view>
-        Result Connect( const T1& datasourceName, const T2& userName ) const
-        {
-            return Connect( datasourceName.data( ), static_cast< SQLSMALLINT >( datasourceName.length( ) ),
-                            userName.data( ), static_cast< SQLSMALLINT >( userName.length( ) ),
-                            nullptr, 0 );
-        }
-
-        template<typename T1, typename T2, typename T3>
-        requires std::is_same_v<T1,WideString> || std::is_same_v<T1, std::wstring> || std::is_same_v<T1, std::wstring_view> ||
-                    std::is_same_v<T2, WideString> || std::is_same_v<T2, std::wstring> || std::is_same_v<T2, std::wstring_view> ||
-                    std::is_same_v<T3, WideString> || std::is_same_v<T3, std::wstring> || std::is_same_v<T3, std::wstring_view> 
-        Result Connect( const T1& datasourceName, const T2& userName, const T3& authenticationString ) const
-        {
-            return Connect( datasourceName.data(), static_cast< SQLSMALLINT >( datasourceName.length() ),
-                            userName.data( ), static_cast< SQLSMALLINT >( userName.length( ) ), 
-                            authenticationString.data( ), static_cast< SQLSMALLINT >( authenticationString.length( ) ) );
-        }
-
-
         Result Connect( const SQLCHAR* datasourceName, SQLSMALLINT datasourceNameLength, const SQLCHAR* userName, SQLSMALLINT userNameLength, const SQLCHAR* authenticationString, SQLSMALLINT authenticationStringLength ) const
         {
-            auto rc = SQLConnectA( Handle( ), const_cast<SQLCHAR*>( datasourceName ), datasourceNameLength, const_cast<SQLCHAR*>( userName ), userNameLength, const_cast<SQLCHAR*>( authenticationString ), authenticationStringLength );
-            if ( Failed(static_cast<Result>(rc)) )
+            auto rc = SQLConnectA( Handle( ), const_cast< SQLCHAR* >( datasourceName ), datasourceNameLength, const_cast< SQLCHAR* >( userName ), userNameLength, const_cast< SQLCHAR* >( authenticationString ), authenticationStringLength );
+            if ( Failed( static_cast< Result >( rc ) ) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
-            return static_cast<Result>( rc );
+            return static_cast< Result >( rc );
         }
+
+        template<SimpleStringLike StringT>
+        Result Connect( const StringT& datasourceName ) const
+        {
+            return Connect( datasourceName.c_str( ), static_cast< SQLSMALLINT >( datasourceName.size( ) ), nullptr, 0, nullptr, 0 );
+        }
+
+
+        template<SimpleStringLike StringT1, SimpleStringLike StringT2>
+        Result Connect( const StringT1& datasourceName, const StringT2& userName ) const
+        {
+            return Connect( datasourceName.c_str( ), static_cast< SQLSMALLINT >( datasourceName.size( ) ),
+                            userName.c_str( ), static_cast< SQLSMALLINT >( userName.size( ) ),
+                            nullptr, 0 );
+        }
+
+        template<SimpleStringLike StringT1, SimpleStringLike StringT2, SimpleStringLike StringT3>
+        Result Connect( const StringT1& datasourceName, const StringT2& userName, const StringT3& authenticationString ) const
+        {
+            return Connect( datasourceName.c_str(), static_cast< SQLSMALLINT >( datasourceName.size() ),
+                            userName.c_str( ), static_cast< SQLSMALLINT >( userName.size( ) ),
+                            authenticationString.c_str( ), static_cast< SQLSMALLINT >( authenticationString.size( ) ) );
+        }
+
+
 
         ODBC::Statement CreateStatement( ) const
         {
@@ -7061,6 +7216,13 @@ namespace Harlinn::ODBC
         constexpr Environment( ) noexcept
         {
         }
+
+        explicit Environment( ODBC::Version version ) noexcept
+        {
+            auto sqlHandle = AllocateHandle( );
+            SetHandle( sqlHandle, true );
+            SetVersion( version );
+        }
     private:
         constexpr explicit Environment( SQLHANDLE sqlHandle, bool destructorClosesHandle = true ) noexcept
             : Base( sqlHandle, destructorClosesHandle )
@@ -7198,7 +7360,7 @@ namespace Harlinn::ODBC
         }
 
 
-        std::vector<ODBC::DataSource> DataSources( ODBC::FetchOrientation direction = ODBC::FetchOrientation::First )
+        std::vector<ODBC::DataSource> DataSources( ODBC::FetchOrientation direction = ODBC::FetchOrientation::First ) const
         {
             SQLWCHAR dataSourceName[1024];
             SQLSMALLINT dataSourceNameLength = 0;
@@ -7227,7 +7389,7 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        std::vector<ODBC::Driver> Drivers( ODBC::FetchOrientation direction )
+        std::vector<ODBC::Driver> Drivers( ODBC::FetchOrientation direction ) const
         {
             SQLWCHAR driverDescription[1024];
             SQLSMALLINT driverDescriptionLength = 0;
@@ -7266,32 +7428,34 @@ namespace Harlinn::ODBC
         }
 
 
-        ODBC::Connection CreateConnection( )
+        ODBC::Connection CreateConnection( ) const
         {
             auto connectionHandle = ODBC::Connection::AllocateHandle( Handle( ) );
             ODBC::Connection result( connectionHandle );
             return result;
         }
 
-
-        ODBC::Connection Connect( const WideString& datasourceName )
+        template<SimpleWideStringLike StringT>
+        ODBC::Connection Connect( const StringT& datasourceName ) const
         {
             auto connection = CreateConnection( );
-            connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.length( ) ), nullptr, 0, nullptr, 0 );
+            connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.size( ) ), nullptr, 0, nullptr, 0 );
             return connection;
         }
 
-        ODBC::Connection Connect( const WideString& datasourceName, const WideString& userName )
+        template<SimpleWideStringLike StringT1, SimpleWideStringLike StringT2>
+        ODBC::Connection Connect( const StringT1& datasourceName, const StringT2& userName ) const
         {
             auto connection = CreateConnection( );
-            connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.length( ) ), userName.c_str( ), static_cast<SQLSMALLINT>( userName.length( ) ), nullptr, 0 );
+            connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.size( ) ), userName.c_str( ), static_cast<SQLSMALLINT>( userName.size( ) ), nullptr, 0 );
             return connection;
         }
 
-        ODBC::Connection Connect( const WideString& datasourceName, const WideString& userName, const WideString& authenticationString )
+        template<SimpleWideStringLike StringT1, SimpleWideStringLike StringT2, SimpleWideStringLike StringT3>
+        ODBC::Connection Connect( const StringT1& datasourceName, const StringT2& userName, const StringT3& authenticationString ) const
         {
             auto connection = CreateConnection( );
-            connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.length( ) ), userName.c_str( ), static_cast<SQLSMALLINT>( userName.length( ) ), authenticationString.c_str( ), static_cast<SQLSMALLINT>( authenticationString.length( ) ) );
+            connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.size( ) ), userName.c_str( ), static_cast<SQLSMALLINT>( userName.size( ) ), authenticationString.c_str( ), static_cast<SQLSMALLINT>( authenticationString.size( ) ) );
             return connection;
         }
     };

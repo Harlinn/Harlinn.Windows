@@ -77,10 +77,10 @@ using TimeseriesPointArray = std::array<TimeseriesPoint, 8192*2>;
 
 class TimeseriesPointSegment
 {
-    TimeseriesPointSegment* next_;
-    TimeseriesPointSegment* previous_;
-    Int64 optimisticLock_;
-    size_t size_;
+    TimeseriesPointSegment* next_ = nullptr;
+    TimeseriesPointSegment* previous_ = nullptr;
+    Int64 optimisticLock_ = 0;
+    size_t size_ = 0;
     TimeseriesPointArray data_;
     
 
@@ -177,8 +177,8 @@ public:
 class TimeseriesPoints 
 {
 private:
-    TimeseriesPointSegment* first_;
-    TimeseriesPointSegment* last_;
+    TimeseriesPointSegment* first_ = nullptr;
+    TimeseriesPointSegment* last_ = nullptr;
     size_t size_;
 public:
     constexpr TimeseriesPoints( )

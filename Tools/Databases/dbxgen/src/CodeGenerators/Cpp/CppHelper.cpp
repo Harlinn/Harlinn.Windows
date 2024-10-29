@@ -771,7 +771,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
                 }
                 else
                 {
-                    result = L"BindWideStringParameter";
+                    result = L"BindStringParameter";
                 }
             }
             break;

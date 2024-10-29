@@ -212,7 +212,6 @@
     <ClCompile Include="EseTests.cpp" />
     <ClCompile Include="EventWaitHandleTests.cpp" />
     <ClCompile Include="FileTests.cpp" />
-    <ClCompile Include="FixedStringTests.cpp" />
     <ClCompile Include="GuidTests.cpp" />
     <ClCompile Include="Harlinn.Common.Core.Tests.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

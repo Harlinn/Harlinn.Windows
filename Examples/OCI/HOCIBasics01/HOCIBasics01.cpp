@@ -75,10 +75,10 @@ int main()
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( loginInfo.Username, loginInfo.Password, loginInfo.Alias );
     serviceContext.SessionBegin( );
-
-    SimpleTest simpleTest( serviceContext );
-    simpleTest.Execute( );
-
+    {
+        SimpleTest simpleTest( serviceContext );
+        simpleTest.Execute( );
+    }
     serviceContext.SessionEnd( );
 
     CoUninitialize( );

@@ -113,68 +113,68 @@ int main()
     auto server = environment.CreateServer( );
     auto serviceContext = server.CreateServiceContext( loginInfo.Username, loginInfo.Password, loginInfo.Alias );
     serviceContext.SessionBegin( );
-
-    constexpr UInt32 PrefetchRows = 32'000;
-    auto selectStatement = serviceContext.CreateStatement( TimeseriesValues1Reader::SQL );
-    selectStatement.SetPrefetchRows( PrefetchRows );
-
-    auto reader = selectStatement.ExecuteReader<TimeseriesValues1Reader>( PrefetchRows * 5 );
-    size_t count = 0;
-    std::vector<TimeseriesValues1> rows;
-    TimeseriesValues1 timeseriesValues1;
-    while ( reader->Read( ) )
     {
-        timeseriesValues1.Id = reader->Id( );
-        timeseriesValues1.Timestamp = reader->Timestamp( );
-        timeseriesValues1.Flags = reader->Flag( );
-        timeseriesValues1.Value = reader->Value( );
-        rows.emplace_back( timeseriesValues1 );
-        count++;
+        constexpr UInt32 PrefetchRows = 32'000;
+        auto selectStatement = serviceContext.CreateStatement( TimeseriesValues1Reader::SQL );
+        selectStatement.SetPrefetchRows( PrefetchRows );
+
+        auto reader = selectStatement.ExecuteReader<TimeseriesValues1Reader>( PrefetchRows * 5 );
+        size_t count = 0;
+        std::vector<TimeseriesValues1> rows;
+        TimeseriesValues1 timeseriesValues1;
+        while ( reader->Read( ) )
+        {
+            timeseriesValues1.Id = reader->Id( );
+            timeseriesValues1.Timestamp = reader->Timestamp( );
+            timeseriesValues1.Flags = reader->Flag( );
+            timeseriesValues1.Value = reader->Value( );
+            rows.emplace_back( timeseriesValues1 );
+            count++;
+        }
+
+
+
+        constexpr wchar_t sql[ ] = L"UPDATE TimeseriesValue1 SET Flags=:1, Val=:2 WHERE Id=:3 AND Ts=:4";
+        auto updateStatement = serviceContext.CreateStatement( sql );
+
+        auto flag = updateStatement.Bind<UInt64ArrayBind>( 1 );
+        auto value = updateStatement.Bind<DoubleArrayBind>( 2 );
+        auto id = updateStatement.Bind<UInt64ArrayBind>( 3 );
+        auto timestamp = updateStatement.Bind<TimestampArrayBind>( 4 );
+
+        std::vector<UInt64> ids( count );
+        std::vector<DateTime> timestamps( count );
+        std::vector<UInt64> flags( count );
+        std::vector<double> values( count );
+
+        for ( size_t i = 0; i < count; ++i )
+        {
+            auto& row = rows[ i ];
+            ids[ i ] = row.Id;
+            timestamps[ i ] = row.Timestamp;
+            flags[ i ] = row.Flags * 2;
+            values[ i ] = row.Value * 2;
+        }
+
+        // Assign the vectors to the bind objects
+        id->Assign( std::move( ids ) );
+        timestamp->Assign( timestamps );
+        flag->Assign( std::move( flags ) );
+        value->Assign( std::move( values ) );
+
+
+        Stopwatch stopwatch;
+        stopwatch.Start( );
+
+        updateStatement.ExecuteNonQuery( static_cast< UInt32 >( count ) );
+        serviceContext.TransactionCommit( );
+
+        stopwatch.Stop( );
+        auto duration = stopwatch.TotalSeconds( );
+        auto rowsPerSecond = count / duration;
+        printf( "Updated %zu rows in %f seconds - %f rows per seconds\n",
+            count, duration, rowsPerSecond );
     }
-
-
-
-    constexpr wchar_t sql[] = L"UPDATE TimeseriesValue1 SET Flags=:1, Val=:2 WHERE Id=:3 AND Ts=:4";
-    auto updateStatement = serviceContext.CreateStatement( sql );
-
-    auto flag = updateStatement.Bind<UInt64ArrayBind>( 1 );
-    auto value = updateStatement.Bind<DoubleArrayBind>( 2 );
-    auto id = updateStatement.Bind<UInt64ArrayBind>( 3 );
-    auto timestamp = updateStatement.Bind<TimestampArrayBind>( 4 );
-
-    std::vector<UInt64> ids( count );
-    std::vector<DateTime> timestamps( count );
-    std::vector<UInt64> flags( count );
-    std::vector<double> values( count );
-
-    for ( size_t i = 0; i < count; ++i )
-    {
-        auto& row = rows[i];
-        ids[i] = row.Id;
-        timestamps[i] = row.Timestamp;
-        flags[i] = row.Flags*2;
-        values[i] = row.Value*2;
-    }
-
-    // Assign the vectors to the bind objects
-    id->Assign( std::move( ids ) );
-    timestamp->Assign( timestamps );
-    flag->Assign( std::move( flags ) );
-    value->Assign( std::move( values ) );
-
-
-    Stopwatch stopwatch;
-    stopwatch.Start( );
-    
-    updateStatement.ExecuteNonQuery( static_cast<UInt32>( count ) );
-    serviceContext.TransactionCommit( );
-
-    stopwatch.Stop( );
-    auto duration = stopwatch.TotalSeconds( );
-    auto rowsPerSecond = count / duration;
-    printf( "Updated %zu rows in %f seconds - %f rows per seconds\n",
-        count, duration, rowsPerSecond );
-
     serviceContext.SessionEnd( );
     CoUninitialize( );
 

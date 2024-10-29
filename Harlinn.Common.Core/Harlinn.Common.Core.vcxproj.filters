@@ -378,9 +378,6 @@
     <ClInclude Include="HCCServiceRunner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCFixedString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCPropertyVariant.h">
       <Filter>Header Files</Filter>
     </ClInclude>

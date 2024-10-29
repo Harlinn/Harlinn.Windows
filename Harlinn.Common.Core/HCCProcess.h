@@ -463,9 +463,45 @@ namespace Harlinn::Common::Core
     class Process : public WaitableHandle
     {
         DWORD processId_;
-        Thread thread_;
+        Core::Thread primaryThread_;
     public:
-        HCC_EXPORT Process( const ProcessOptions& options );
+        using Base = WaitableHandle;
+        constexpr Process( )
+            : processId_( 0 )
+        { }
+
+        explicit HCC_EXPORT Process( const ProcessOptions& options );
+
+        Process( Process&& other )
+            : Base(std::move( other )), processId_( other.processId_ )
+        {
+            primaryThread_ = std::move( other.primaryThread_ );
+            other.processId_ = 0;
+        }
+
+
+        Process& operator = ( Process&& other )
+        {
+            if ( this != &other )
+            {
+                Base::operator = ( std::move( other ) );
+                std::swap( primaryThread_, other.primaryThread_ );
+                std::swap( processId_, other.processId_ );
+            }
+            return *this;
+        }
+
+        const Core::Thread& PrimaryThread( ) const
+        {
+            return primaryThread_;
+        }
+
+        DWORD ProcessId( ) const
+        {
+            return processId_;
+        }
+
+
 
         DWORD ExitCode( ) const
         {
@@ -478,7 +514,7 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        ProcessPriorityClass PriorityClass( )
+        ProcessPriorityClass PriorityClass( ) const
         {
             auto rc = GetPriorityClass( GetHandle( ) );
             if ( !rc )

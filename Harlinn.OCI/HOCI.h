@@ -298,12 +298,13 @@ namespace Harlinn::OCI
         /// </summary>
         /// <param name="attribute">Identifies the attribute to retrieve the value for</param>
         /// <returns>Value of the attribute as a WideString</returns>
-        WideString GetStringAttribute( Attribute attribute ) const
+        template<WideStringLike StringT = WideString>
+        StringT GetStringAttribute( Attribute attribute ) const
         {
             wchar_t* buffer = nullptr;
             UInt32 bufferSize = 0;
             GetAttribute( &buffer, &bufferSize, attribute );
-            WideString result( buffer, bufferSize / sizeof( wchar_t ) );
+            StringT result( buffer, bufferSize / sizeof( wchar_t ) );
             return result;
         }
 
@@ -313,12 +314,13 @@ namespace Harlinn::OCI
         /// </summary>
         /// <param name="attribute">Identifies the attribute to retrieve the value for</param>
         /// <returns>Value of the attribute as a WideString</returns>
-        WideString GetStringAttributeFromByteString( Attribute attribute ) const
+        template<WideStringLike StringT = WideString>
+        StringT GetStringAttributeFromByteString( Attribute attribute ) const
         {
             char* buffer = nullptr;
             UInt32 bufferSize = 0;
             GetAttribute( &buffer, &bufferSize, attribute );
-            WideString result;
+            StringT result;
             ToWideString( buffer, bufferSize, result );
             return result;
         }
@@ -328,10 +330,15 @@ namespace Harlinn::OCI
         /// Sets the value of an attribute on the handle as a WideString
         /// </summary>
         /// <param name="attribute">Identifies the attribute to assign the value to</param>
-        /// <param name="value">Value of the attribute as a WideString</param>
-        void SetStringAttribute( Attribute attribute, const WideString& value ) const
+        /// <param name="value">Value of the attribute</param>
+        template<WideStringLike StringT>
+        void SetStringAttribute( Attribute attribute, const StringT& value ) const
         {
-            SetAttribute( (void*)value.c_str( ), static_cast<UInt32>( value.length( ) * sizeof( wchar_t ) ), attribute );
+            SetAttribute( (void*)value.c_str( ), static_cast<UInt32>( value.size( ) * sizeof( wchar_t ) ), attribute );
+        }
+        void SetStringAttribute( Attribute attribute, const wchar_t* value, size_t valueLength ) const
+        {
+            SetAttribute( ( void* )value, static_cast< UInt32 >( valueLength * sizeof( wchar_t ) ), attribute );
         }
 
         /// <summary>
@@ -789,22 +796,24 @@ namespace Harlinn::OCI
         /// subscribes to receive notifications of database events or events in the AQ namespace.
         /// </remarks>
         /// <returns>The newly created Subscription object</returns>
-        OCI::Subscription CreateSubscription( const WideString& subscriptionName ) const;
+        template<WideStringLike StringT>
+        inline OCI::Subscription CreateSubscription( const StringT& subscriptionName ) const;
 
         /// <summary>
         /// The login name (DN) for LDAP connections. 
         /// </summary>
         /// <returns>login name</returns>
-        WideString BindDN( ) const
+        template<WideStringLike StringT = WideString>
+        StringT BindDN( ) const
         {
-            auto result = GetStringAttribute( Attribute::BIND_DN );
-            return result;
+            return GetStringAttribute<StringT>( Attribute::BIND_DN );
         }
         /// <summary>
         /// Sets the login name (DN) for LDAP connections. 
         /// </summary>
         /// <param name="loginName"></param>
-        void SetBindDN( const WideString& loginName ) const
+        template<WideStringLike StringT>
+        void SetBindDN( const StringT& loginName ) const
         {
             SetStringAttribute( Attribute::BIND_DN, loginName );
         }
@@ -920,11 +929,14 @@ namespace Harlinn::OCI
         /// holds the password to use when connecting to the LDAP server.
         /// </summary>
         /// <returns></returns>
-        WideString LDAPCredentials( ) const
+        template<WideStringLike StringT = WideString>
+        StringT LDAPCredentials( ) const
         {
-            return GetStringAttribute( Attribute::LDAP_CRED );
+            return GetStringAttribute<StringT>( Attribute::LDAP_CRED );
         }
-        void SetLDAPCredentials( const WideString& credentials ) const
+
+        template<WideStringLike StringT>
+        void SetLDAPCredentials( const StringT& credentials ) const
         {
             SetStringAttribute( Attribute::LDAP_CRED, credentials );
         }
@@ -933,11 +945,13 @@ namespace Harlinn::OCI
         /// The administrative context of the client. This is usually the root of the Oracle 
         /// RDBMS LDAP schema in the LDAP server.
         /// </summary>
-        WideString LDAPContext( ) const
+        template<WideStringLike StringT = WideString>
+        StringT LDAPContext( ) const
         {
-            return GetStringAttribute( Attribute::LDAP_CTX );
+            return GetStringAttribute<StringT>( Attribute::LDAP_CTX );
         }
-        void SetLDAPContext( const WideString& context ) const
+        template<WideStringLike StringT>
+        void SetLDAPContext( const StringT& context ) const
         {
             SetStringAttribute( Attribute::LDAP_CTX, context );
         }
@@ -945,11 +959,13 @@ namespace Harlinn::OCI
         /// <summary>
         /// The name of the host on which the LDAP server runs.
         /// </summary>
-        WideString LDAPHost( ) const
+        template<WideStringLike StringT = WideString>
+        StringT LDAPHost( ) const
         {
-            return GetStringAttribute( Attribute::LDAP_HOST );
+            return GetStringAttribute<StringT>( Attribute::LDAP_HOST );
         }
-        void SetLDAPHost( const WideString& host ) const
+        template<WideStringLike StringT>
+        void SetLDAPHost( const StringT& host ) const
         {
             SetStringAttribute( Attribute::LDAP_HOST, host );
         }
@@ -1093,15 +1109,17 @@ namespace Harlinn::OCI
         /// If the authentication method is SSL authentication, this attribute 
         /// contains the location of the client wallet.
         /// </summary>
-        WideString SSLWalletLocation( ) const
+        template<WideStringLike StringT = WideString>
+        StringT SSLWalletLocation( ) const
         {
-            return GetStringAttribute( Attribute::WALL_LOC );
+            return GetStringAttribute<StringT>( Attribute::WALL_LOC );
         }
         /// <summary>
         /// If the authentication method is SSL authentication, this attribute 
         /// contains the location of the client wallet.
         /// </summary>
-        void SetSSLWalletLocation( const WideString& location ) const
+        template<WideStringLike StringT>
+        void SetSSLWalletLocation( const StringT& location ) const
         {
             SetStringAttribute( Attribute::WALL_LOC, location );
         }
@@ -1180,11 +1198,24 @@ namespace Harlinn::OCI
             return error_;
         }
 
-        HO_EXPORT void Attach( const WideString& databaseLink, ServerAttachMode attachMode = ServerAttachMode::Default ) const;
+        HO_EXPORT void Attach( const wchar_t* databaseLink, size_t databaseLinkLength, ServerAttachMode attachMode = ServerAttachMode::Default ) const;
+
+        template<WideStringLike StringT>
+        void Attach( const StringT& databaseLink, ServerAttachMode attachMode = ServerAttachMode::Default ) const
+        {
+            Attach( databaseLink.c_str( ), databaseLink.size( ), attachMode );
+        }
+        
         HO_EXPORT void Detach( ) const;
 
         HO_EXPORT ServiceContext CreateServiceContext( ) const;
-        HO_EXPORT ServiceContext CreateServiceContext( const WideString& username, const WideString& password, const WideString& databaseLink, ServerAttachMode attachMode = ServerAttachMode::Default ) const;
+        HO_EXPORT ServiceContext CreateServiceContext( const wchar_t* username, size_t usernameLength, const wchar_t* password, size_t passwordLength, const wchar_t* databaseLink, size_t databaseLinkLength, ServerAttachMode attachMode = ServerAttachMode::Default ) const;
+
+        template<WideStringLike StringT1, WideStringLike StringT2, WideStringLike StringT3>
+        ServiceContext CreateServiceContext( const StringT1& username, const StringT2& password, const StringT3& databaseLink, ServerAttachMode attachMode = ServerAttachMode::Default ) const
+        {
+            return CreateServiceContext( username.c_str(), username.size(), password.c_str(), password.size(), databaseLink.c_str(), databaseLink.size(), attachMode );
+        }
 
         
         /// <summary>
@@ -1196,11 +1227,13 @@ namespace Harlinn::OCI
         /// coordination.Server database names can only be accessed if the database is open at 
         /// the time the OCISessionBegin( ) call is issued.
         /// </summary>
-        WideString ExternalName( ) const
+        template<WideStringLike StringT = WideString>
+        StringT ExternalName( ) const
         {
-            return GetStringAttribute( Attribute::EXTERNAL_NAME );
+            return GetStringAttribute<StringT>( Attribute::EXTERNAL_NAME );
         }
-        void SetExternalName( const WideString& externalName ) const
+        template<WideStringLike StringT>
+        void SetExternalName( const StringT& externalName ) const
         {
             SetStringAttribute( Attribute::EXTERNAL_NAME, externalName );
         }
@@ -1248,11 +1281,13 @@ namespace Harlinn::OCI
         /// Sets the client database name that will be recorded when performing global transactions. 
         /// The name can be used by the DBA to track transactions that may be pending in a prepared 
         /// state due to failures.
-        WideString InternalName( ) const
+        template<WideStringLike StringT = WideString>
+        StringT InternalName( ) const
         {
-            return GetStringAttribute( Attribute::INTERNAL_NAME );
+            return GetStringAttribute<StringT>( Attribute::INTERNAL_NAME );
         }
-        void SetInternalName( const WideString& internalName ) const
+        template<WideStringLike StringT>
+        void SetInternalName( const StringT& internalName ) const
         {
             SetStringAttribute( Attribute::INTERNAL_NAME, internalName );
         }
@@ -1282,14 +1317,16 @@ namespace Harlinn::OCI
         /// <summary>
         /// An alpha-numeric string not exceeding 30 characters specifying the server group
         /// </summary>
-        WideString ServerGroup( ) const
+        template<WideStringLike StringT = WideString>
+        StringT ServerGroup( ) const
         {
-            return GetStringAttribute( Attribute::SERVER_GROUP );
+            return GetStringAttribute<StringT>( Attribute::SERVER_GROUP );
         }
         /// <summary>
         /// An alpha-numeric string not exceeding 30 characters specifying the server group
         /// </summary>
-        void SetServerGroup( const WideString& serverGroup ) const
+        template<WideStringLike StringT>
+        void SetServerGroup( const StringT& serverGroup ) const
         {
             SetStringAttribute( Attribute::SERVER_GROUP, serverGroup );
         }
@@ -1314,18 +1351,20 @@ namespace Harlinn::OCI
             return ServerStatus( ) == 1; //OCI_SERVER_NORMAL 0x1
         }
 
-
-        WideString DbDomain( ) const
+        template<WideStringLike StringT = WideString>
+        StringT DbDomain( ) const
         {
-            return GetStringAttribute( Attribute::DBDOMAIN );
+            return GetStringAttribute<StringT>( Attribute::DBDOMAIN );
         }
-        WideString DbName( ) const
+        template<WideStringLike StringT = WideString>
+        StringT DbName( ) const
         {
-            return GetStringAttributeFromByteString( Attribute::DBNAME );
+            return GetStringAttributeFromByteString<StringT>( Attribute::DBNAME );
         }
-        WideString InstanceName( ) const
+        template<WideStringLike StringT = WideString>
+        StringT InstanceName( ) const
         {
-            return GetStringAttribute( Attribute::INSTNAME );
+            return GetStringAttribute<StringT>( Attribute::INSTNAME );
         }
 
         DateTime InstanceStartTime( ) const
@@ -1337,9 +1376,10 @@ namespace Harlinn::OCI
             return result;
         }
 
-        WideString ServiceName( ) const
+        template<WideStringLike StringT = WideString>
+        StringT ServiceName( ) const
         {
-            return GetStringAttribute( Attribute::SERVICENAME );
+            return GetStringAttribute<StringT>( Attribute::SERVICENAME );
         }
 
 
@@ -1413,18 +1453,30 @@ namespace Harlinn::OCI
         }
         
     public:
-        WideString UserName( ) const
+        template<WideStringLike StringT = WideString>
+        StringT UserName( ) const
         {
-            return GetStringAttribute( Attribute::USERNAME );
+            return GetStringAttribute<StringT>( Attribute::USERNAME );
         }
-        void SetUserName( const WideString& userName ) const
+        template<WideStringLike StringT>
+        void SetUserName( const StringT& userName ) const
         {
             SetStringAttribute( Attribute::USERNAME, userName );
         }
 
-        void SetPassword( const WideString& password ) const
+        void SetUserName( const wchar_t* userName, size_t userNameLength ) const
+        {
+            SetStringAttribute( Attribute::USERNAME, userName, userNameLength );
+        }
+
+        template<WideStringLike StringT>
+        void SetPassword( const StringT& password ) const
         {
             SetStringAttribute( Attribute::PASSWORD, password );
+        }
+        void SetPassword( const wchar_t* password, size_t passwordLength ) const
+        {
+            SetStringAttribute( Attribute::PASSWORD, password, passwordLength );
         }
 
     };
@@ -1694,7 +1746,13 @@ namespace Harlinn::OCI
 
         
         HO_EXPORT const OCI::Session& CreateSession( );
-        HO_EXPORT const OCI::Session& CreateSession( const WideString& username, const WideString& password );
+        HO_EXPORT const OCI::Session& CreateSession( const wchar_t* username, size_t usernameLength, const wchar_t* password, size_t passwordLength );
+
+        template<WideStringLike StringT1, WideStringLike StringT2>
+        const OCI::Session& CreateSession( const StringT1& username, const StringT2& password )
+        {
+            return CreateSession( username.c_str( ), username.size( ), password.c_str( ), password.size( ) );
+        }
 
 
         const OCI::Server* Server( ) const
@@ -1713,19 +1771,32 @@ namespace Harlinn::OCI
         HO_EXPORT void SessionEnd( ) const;
 
 
-        HO_EXPORT OCI::Statement CreateStatement( const WideString& sql ) const;
+        HO_EXPORT OCI::Statement CreateStatement( const wchar_t* sql, size_t sqlLength ) const;
 
-        template<typename ...BindableTypes>
-        OCI::Statement CreateStatement( const WideString& sql, BindableTypes&& ...bindableArgs ) const;
+        template<WideStringLike StringT>
+        OCI::Statement CreateStatement( const StringT& sql ) const
+        {
+            return CreateStatement( sql.c_str(), sql.size() );
+        }
+
+        inline OCI::Statement CreateStatement( const wchar_t* sql ) const;
+
+
+        template<WideStringLike StringT, typename ...BindableTypes>
+            requires (sizeof...( BindableTypes ) > 0)
+        OCI::Statement CreateStatement( const StringT& sql, BindableTypes&& ...bindableArgs ) const;
 
         HO_EXPORT OCI::Describe CreateDescribe( ) const;
         HO_EXPORT std::vector<WideString> GetDbmsOutput( ) const;
 
-        template<typename T>
-        std::optional<T> ExecuteScalar( const WideString& sql ) const;
+        template<typename T, WideStringLike StringT>
+        std::optional<T> ExecuteScalar( const StringT& sql ) const;
+
+        template<WideStringLike StringT, typename ...BindableTypes>
+        Int64 ExecuteNonQuery( const StringT& sql, BindableTypes&& ...bindableArgs ) const;
 
         template<typename ...BindableTypes>
-        Int64 ExecuteNonQuery( const WideString& sql, BindableTypes&& ...bindableArgs ) const;
+        Int64 ExecuteNonQuery( const wchar_t* sql, BindableTypes&& ...bindableArgs ) const;
 
 
         WideString DbName( ) const
@@ -1971,11 +2042,13 @@ namespace Harlinn::OCI
         /// attributes are not set, an error is returned.The subscription name that is 
         /// set for the subscription handle must be consistent with its namespace.
         /// </summary>
-        WideString Name( ) const
+        template<WideStringLike StringT = WideString>
+        StringT Name( ) const
         {
-            return GetStringAttribute( Attribute::SUBSCR_NAME );
+            return GetStringAttribute<StringT>( Attribute::SUBSCR_NAME );
         }
-        void SetName( const WideString& name ) const
+        template<WideStringLike StringT>
+        void SetName( const StringT& name ) const
         {
             SetStringAttribute( Attribute::SUBSCR_NAME, name );
         }
@@ -2177,7 +2250,8 @@ namespace Harlinn::OCI
         }
     };
 
-    inline Subscription Environment::CreateSubscription( const WideString& subscriptionName ) const
+    template<WideStringLike StringT>
+    inline Subscription Environment::CreateSubscription( const StringT& subscriptionName ) const
     {
         auto result = CreateSubscription( );
         result.SetName( subscriptionName );
@@ -2476,7 +2550,7 @@ namespace Harlinn::OCI
 
         HO_EXPORT Int32 Execute( UInt32 iters = 1, StatementExecuteMode executeMode = StatementExecuteMode::Default, UInt32 rowoff = 0 );
 
-        template<typename DataReaderType>
+        template<typename DataReaderType = OCI::DataReader>
             requires std::is_base_of_v<OCI::DataReader, DataReaderType>
         std::unique_ptr<DataReaderType> ExecuteReader( StatementExecuteMode executeMode = StatementExecuteMode::Default );
 
@@ -2513,11 +2587,18 @@ namespace Harlinn::OCI
     };
 
 
-    template<typename ...BindableTypes>
-    inline Int64 ServiceContext::ExecuteNonQuery( const WideString& sql, BindableTypes&& ...bindableArgs ) const
+    template<WideStringLike StringT, typename ...BindableTypes>
+    inline Int64 ServiceContext::ExecuteNonQuery( const StringT& sql, BindableTypes&& ...bindableArgs ) const
     {
         auto statement = CreateStatement( sql, std::forward<BindableTypes>( bindableArgs )... );
         return statement.ExecuteNonQuery( );
+    }
+
+    template<typename ...BindableTypes>
+    inline Int64 ServiceContext::ExecuteNonQuery( const wchar_t* sql, BindableTypes&& ...bindableArgs ) const
+    {
+        WideString wsql( sql );
+        return ExecuteNonQuery( wsql, std::forward<BindableTypes>( bindableArgs )... );
     }
 
 
@@ -6117,7 +6198,7 @@ namespace Harlinn::OCI
         void BindArgs( OCI::Statement& statement, UInt32 position, 
             const Arg& arg, OtherArgsTypes&& ...otherArgsTypes )
         {
-            if constexpr ( IsAnyOf_v<Arg, WideString> )
+            if constexpr ( IsAnyOf_v<Arg, WideString, std::wstring> )
             {
                 auto newBind = statement.Bind<Arg>( position, arg.length( ) );
                 newBind->Assign( arg );
@@ -6127,7 +6208,7 @@ namespace Harlinn::OCI
                 using BintT = typename Arg::value_type;
                 if ( arg.has_value( ) )
                 {
-                    if constexpr ( IsAnyOf_v< BintT, WideString> )
+                    if constexpr ( IsAnyOf_v< BintT, WideString, std::wstring> )
                     {
                         auto newBind = statement.Bind<BintT>( position, arg.value( ).length( ) );
                         newBind->Assign( arg.value() );
@@ -6140,7 +6221,7 @@ namespace Harlinn::OCI
                 }
                 else
                 {
-                    if constexpr ( IsAnyOf_v<BintT, WideString> )
+                    if constexpr ( IsAnyOf_v<BintT, WideString, std::wstring> )
                     {
                         auto newBind = statement.Bind<BintT>( position, static_cast<size_t>(0) );
                         newBind->SetDBNull( );
@@ -6164,9 +6245,16 @@ namespace Harlinn::OCI
         }
     }
 
+    inline OCI::Statement ServiceContext::CreateStatement( const wchar_t* sql ) const
+    {
+        auto sqlLength = LengthOf( sql );
+        return CreateStatement( sql, sqlLength );
+    }
 
-    template<typename ...BindableTypes>
-    inline OCI::Statement ServiceContext::CreateStatement( const WideString& sql, 
+
+    template<WideStringLike StringT, typename ...BindableTypes>
+        requires ( sizeof...( BindableTypes ) > 0 )
+    inline OCI::Statement ServiceContext::CreateStatement( const StringT& sql,
         BindableTypes&& ...bindableArgs ) const
     {
         auto result = CreateStatement( sql );
@@ -8945,8 +9033,8 @@ namespace Harlinn::OCI
         };
     }
 
-    template<typename T>
-    inline std::optional<T> ServiceContext::ExecuteScalar( const WideString& sql ) const
+    template<typename T, WideStringLike StringT>
+    inline std::optional<T> ServiceContext::ExecuteScalar( const StringT& sql ) const
     {
         auto statement = CreateStatement( sql );
         auto reader = statement.ExecuteReader<Internal::ScalarDataReader<T>>( );
