@@ -24,7 +24,13 @@ namespace Harlinn::Common::Core
     class Guid;
     template<typename T>
     concept GuidType = std::is_same_v<GUID, T> || std::is_same_v<Guid, T> || std::is_same_v<boost::uuids::uuid, T>;
-
+    /// <summary>
+    /// Represents a globally unique identifier (GUID).
+    /// </summary>
+    /// <remarks>
+    /// A GUID is a 128-bit integer (16 bytes) that can be used across all computers and networks wherever 
+    /// a unique identifier is required. Such an identifier has a very low probability of being duplicated.
+    /// </remarks>
     class Guid
     {
     public:

@@ -1819,16 +1819,21 @@ namespace Harlinn::Common::Core
     {
         if ( FAILED( hresult ) )
         {
-            int length = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, hresult, 0, (wchar_t*)buffer, 512, nullptr );
-            if ( length )
-            {
-                wchar_t* ptr = (wchar_t*)buffer;
-                throw Runtime::InteropServices::COMException( hresult, 0, ptr );
-            }
-            else
-            {
-                throw Runtime::InteropServices::COMException( hresult, 0, L"Unknown error" );
-            }
+            ThrowHRESULT( hresult );
+        }
+    }
+
+    [[noreturn]] void ThrowHRESULT( HRESULT hresult )
+    {
+        int length = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, hresult, 0, ( wchar_t* )buffer, 512, nullptr );
+        if ( length )
+        {
+            wchar_t* ptr = ( wchar_t* )buffer;
+            throw Runtime::InteropServices::COMException( hresult, 0, ptr );
+        }
+        else
+        {
+            throw Runtime::InteropServices::COMException( hresult, 0, L"Unknown error" );
         }
     }
 

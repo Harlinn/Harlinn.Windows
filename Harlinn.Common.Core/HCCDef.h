@@ -511,6 +511,7 @@ namespace Harlinn::Common::Core
 #define CURRENT_FILE __FILEW__
 
     HCC_EXPORT void CheckHRESULT( HRESULT hresult );
+    [[noreturn]] HCC_EXPORT void ThrowHRESULT( HRESULT hresult );
     HCC_EXPORT void CheckHRESULT( HRESULT hresult, IUnknown* itf );
     HCC_EXPORT void CheckHRESULT( HRESULT hresult, const wchar_t* function, const wchar_t* filename, int lineNumber );
     HCC_EXPORT void CheckHRESULT( HRESULT hresult, IUnknown* itf, const wchar_t* function, const wchar_t* filename, int lineNumber );

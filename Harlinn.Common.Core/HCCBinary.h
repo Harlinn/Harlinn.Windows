@@ -92,6 +92,10 @@ namespace Harlinn::Common::Core
         {
             size_t allocationByteCount = AllocationByteCount( size );
             Data* data = ( Data* )malloc( allocationByteCount );
+            if ( !data )
+            {
+                throw std::bad_alloc( );
+            }
             data->referenceCount_ = 1;
             data->size_ = size;
             return data;
@@ -100,6 +104,10 @@ namespace Harlinn::Common::Core
         static Data* Allocate( size_type allocationByteCount, size_t size )
         {
             Data* data = ( Data* )malloc( allocationByteCount );
+            if ( !data )
+            {
+                throw std::bad_alloc( );
+            }
             data->referenceCount_ = 1;
             data->size_ = size;
             return data;
@@ -706,17 +714,9 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-        Binary& operator = ( Binary&& other )
+        Binary& operator = ( Binary&& other ) noexcept
         {
-            if ( other.data_ != data_ )
-            {
-                if ( data_ )
-                {
-                    ReleaseData( data_ );
-                }
-                data_ = other.data_;
-                other.data_ = nullptr;
-            }
+            std::swap( other.data_, data_ );
             return *this;
         }
 

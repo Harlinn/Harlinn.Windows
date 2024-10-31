@@ -362,11 +362,12 @@ namespace Harlinn::Common::Core
     inline bool EnumMoniker::Next( ULONG requestedNumberOfElements, std::vector<Moniker>& result ) const
     {
         auto pInterface = GetInterface( );
-        IMoniker** pElements = (IMoniker**)alloca( requestedNumberOfElements * sizeof( IMoniker* ) );
+        IMoniker** pElements = (IMoniker**)_malloca( requestedNumberOfElements * sizeof( IMoniker* ) );
+        std::unique_ptr<IMoniker*, MallocaDeleter<IMoniker*>> elementsPtr( pElements );
         memset( pElements, 0, requestedNumberOfElements * sizeof( IMoniker* ) );
         ULONG actual = 0;
 
-        auto hr = pInterface->Next( 1, pElements, &actual );
+        auto hr = pInterface->Next( requestedNumberOfElements, pElements, &actual );
         if ( actual )
         {
             result.clear( );
@@ -676,11 +677,12 @@ namespace Harlinn::Common::Core
         bool Next( ULONG requestedNumberOfElements, std::vector<STATSTG>& result ) const
         {
             auto pInterface = GetInterface( );
-            STATSTG* pElements = (STATSTG*)alloca( requestedNumberOfElements * sizeof( STATSTG ) );
+            STATSTG* pElements = (STATSTG*)_malloca( requestedNumberOfElements * sizeof( STATSTG ) );
+            std::unique_ptr<STATSTG, MallocaDeleter<STATSTG>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( STATSTG ) );
             ULONG actual = 0;
 
-            auto hr = pInterface->Next( 1, pElements, &actual );
+            auto hr = pInterface->Next( requestedNumberOfElements, pElements, &actual );
             if ( actual )
             {
                 result.clear( );
@@ -1145,11 +1147,12 @@ namespace Harlinn::Common::Core
         bool Next( ULONG requestedNumberOfElements, std::vector<FORMATETC>& result ) const
         {
             auto pInterface = GetInterface( );
-            FORMATETC* pElements = (FORMATETC*)alloca( requestedNumberOfElements * sizeof( FORMATETC ) );
+            FORMATETC* pElements = (FORMATETC*)_malloca( requestedNumberOfElements * sizeof( FORMATETC ) );
+            std::unique_ptr<FORMATETC, MallocaDeleter<FORMATETC>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( FORMATETC ) );
             ULONG actual = 0;
 
-            auto hr = pInterface->Next( 1, pElements, &actual );
+            auto hr = pInterface->Next( requestedNumberOfElements, pElements, &actual );
             if ( actual )
             {
                 result.clear( );
@@ -1211,11 +1214,12 @@ namespace Harlinn::Common::Core
         bool Next( ULONG requestedNumberOfElements, std::vector<STATDATA>& result ) const
         {
             auto pInterface = GetInterface( );
-            STATDATA* pElements = (STATDATA*)alloca( requestedNumberOfElements * sizeof( STATDATA ) );
+            STATDATA* pElements = (STATDATA*)_malloca( requestedNumberOfElements * sizeof( STATDATA ) );
+            std::unique_ptr<STATDATA, MallocaDeleter<STATDATA>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( STATDATA ) );
             ULONG actual = 0;
 
-            auto hr = pInterface->Next( 1, pElements, &actual );
+            auto hr = pInterface->Next( requestedNumberOfElements, pElements, &actual );
             if ( actual )
             {
                 result.clear( );
@@ -5583,11 +5587,12 @@ namespace Harlinn::Common::Core
         bool Next( ULONG requestedNumberOfElements, std::vector<ConnectData>& result ) const
         {
             auto pInterface = GetInterface( );
-            CONNECTDATA* elements = (CONNECTDATA*)alloca( requestedNumberOfElements * sizeof( CONNECTDATA ) );
+            CONNECTDATA* elements = (CONNECTDATA*)_malloca( requestedNumberOfElements * sizeof( CONNECTDATA ) );
+            std::unique_ptr<CONNECTDATA, MallocaDeleter<CONNECTDATA>> elementsPtr( elements );
             memset( elements, 0, requestedNumberOfElements * sizeof( CONNECTDATA ) );
             ULONG actual = 0;
 
-            auto hr = pInterface->Next( 1, elements, &actual );
+            auto hr = pInterface->Next( requestedNumberOfElements, elements, &actual );
             if ( actual )
             {
                 result.clear( );
@@ -5698,11 +5703,12 @@ namespace Harlinn::Common::Core
         bool Next( ULONG requestedNumberOfElements, std::vector<ConnectionPoint>& result ) const
         {
             auto pInterface = GetInterface( );
-            IConnectionPoint** pElements = (IConnectionPoint**)alloca( requestedNumberOfElements * sizeof( IConnectionPoint* ) );
+            IConnectionPoint** pElements = (IConnectionPoint**)_malloca( requestedNumberOfElements * sizeof( IConnectionPoint* ) );
+            std::unique_ptr<IConnectionPoint*, MallocaDeleter<IConnectionPoint*>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( IConnectionPoint* ) );
             ULONG actual = 0;
 
-            auto hr = pInterface->Next( 1, pElements, &actual );
+            auto hr = pInterface->Next( requestedNumberOfElements, pElements, &actual );
             if ( actual )
             {
                 result.clear( );

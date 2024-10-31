@@ -43,6 +43,10 @@ namespace
     GetCalendarDateFormatExProc LoadGetCalendarDateFormatEx( )
     {
         auto module = LoadLibraryW( L"Kernel32.dll" );
+        if ( !module )
+        {
+            Harlinn::Common::Core::ThrowLastOSError( );
+        }
         auto result = (GetCalendarDateFormatExProc)GetProcAddress( module, "GetCalendarDateFormatEx" );
         return result;
     }

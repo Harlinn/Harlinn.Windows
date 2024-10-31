@@ -173,7 +173,8 @@ namespace Harlinn::Common::Core::Environment
         {
             WideString result;
             result.SetLength( len - 1 );
-            len = ExpandEnvironmentStringsW( str, buffer, static_cast< DWORD >( len ) );
+            auto resultData = result.data( );
+            len = ExpandEnvironmentStringsW( str, resultData, static_cast< DWORD >( len ) );
             if ( !len )
             {
                 ThrowLastOSError( );

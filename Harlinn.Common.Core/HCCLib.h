@@ -1842,7 +1842,16 @@ namespace Harlinn::Common::Core
         return result;
     }
 
-    
+    template<typename T>
+    class MallocaDeleter
+    {
+    public:
+        MallocaDeleter( ) = default;
+        void operator()( T* p ) const
+        {
+            _freea( p );
+        };
+    };
 
 
 

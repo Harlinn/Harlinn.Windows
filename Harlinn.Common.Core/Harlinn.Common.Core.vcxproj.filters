@@ -393,6 +393,9 @@
     <ClInclude Include="HCCData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCDoxygen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -504,6 +507,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HCCBinary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HCCDoxygen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HCCDoxygenEnums.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

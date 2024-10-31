@@ -1310,17 +1310,9 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-        BasicString& operator = ( BasicString&& other )
+        BasicString& operator = ( BasicString&& other ) noexcept
         {
-            if ( other.data_ != data_ )
-            {
-                if ( data_ )
-                {
-                    ReleaseData( data_ );
-                }
-                data_ = other.data_;
-                other.data_ = nullptr;
-            }
+            std::swap( other.data_, data_ );
             return *this;
         }
 

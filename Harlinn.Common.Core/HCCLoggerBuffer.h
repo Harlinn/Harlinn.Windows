@@ -187,16 +187,16 @@ namespace Harlinn::Common::Core::Logging::Internal
         using PrimaryKeyType = BufferKey;
     private:
         UInt32 referenceCount_ = 1;
-        BufferManager* manager_;
+        BufferManager* manager_ = nullptr;
         
         PrimaryKeyType primaryKey_;
 
         size_t size_ = 0;
-        UInt64 recordCount_;
-        UInt64 referenceRdtscCycle_;
+        UInt64 recordCount_ = 0;
+        UInt64 referenceRdtscCycle_ = 0;
         UInt64 rdtscCyclesPerTick_ = 0;
         BufferFlags flags_ = BufferFlags::RecordHeadersHasPointers;
-        std::array<Byte, MaximumSize> data_;
+        std::array<Byte, MaximumSize> data_{};
     public:
         Buffer( BufferManager* manager, UInt32 threadId, UInt64 sequenceNumber )
             : manager_( manager ), primaryKey_(Guid( ), DateTime::UtcNow( ), threadId, sequenceNumber ), recordCount_(0), referenceRdtscCycle_( __rdtsc( ) )

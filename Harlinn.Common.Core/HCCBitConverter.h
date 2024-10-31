@@ -41,21 +41,21 @@ namespace Harlinn::Common::Core::BitConverter
 #endif
 
     // Converts a byte into a vector of bytes with length one.
-    static std::vector<byte> GetBytes( bool value )
+    inline std::vector<byte> GetBytes( bool value )
     {
         std::vector<byte> result( 1, value ? 1 : 0 );
         return result;
     }
 
     // Converts a char into a vector of bytes with length one. 
-    static std::vector<byte> GetBytes( char value )
+    inline std::vector<byte> GetBytes( char value )
     {
         std::vector<byte> result( 1, value );
         return result;
     }
 
     // Converts a wchar_t into a vector of bytes with length two. 
-    static std::vector<byte> GetBytes( wchar_t value )
+    inline std::vector<byte> GetBytes( wchar_t value )
     {
         std::vector<byte> result( 2 );
         wchar_t* ptr = reinterpret_cast<wchar_t*>( result.data( ) );
@@ -64,7 +64,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a short into a vector of bytes with length two.
-    static std::vector<byte> GetBytes( short value )
+    inline std::vector<byte> GetBytes( short value )
     {
         std::vector<byte> result( 2 );
         short* ptr = reinterpret_cast<short*>( result.data( ) );
@@ -73,7 +73,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts an int into a vector of bytes with length four.
-    static std::vector<byte> GetBytes( int value )
+    inline std::vector<byte> GetBytes( int value )
     {
         std::vector<byte> result( 4 );
         int* ptr = reinterpret_cast<int*>( result.data( ) );
@@ -82,7 +82,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a long into a vector of bytes with length eight. 
-    static std::vector<byte> GetBytes( long long value )
+    inline std::vector<byte> GetBytes( long long value )
     {
         std::vector<byte> result( 8 );
         long long* ptr = reinterpret_cast<long long*>( result.data( ) );
@@ -91,7 +91,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts an ushort into a vector of bytes with length two.
-    static std::vector<byte> GetBytes( unsigned short value )
+    inline std::vector<byte> GetBytes( unsigned short value )
     {
         std::vector<byte> result( 2 );
         unsigned short* ptr = reinterpret_cast<unsigned short*>( result.data( ) );
@@ -100,7 +100,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts an uint into a vector of bytes with length four.
-    static std::vector<byte> GetBytes( unsigned int value )
+    inline std::vector<byte> GetBytes( unsigned int value )
     {
         std::vector<byte> result( 4 );
         unsigned int* ptr = reinterpret_cast<unsigned int*>( result.data( ) );
@@ -109,7 +109,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts an unsigned long into a vector of bytes with length eight. 
-    static std::vector<byte> GetBytes( unsigned long long value )
+    inline std::vector<byte> GetBytes( unsigned long long value )
     {
         std::vector<byte> result( 8 );
         unsigned long long* ptr = reinterpret_cast<unsigned long long*>( result.data( ) );
@@ -118,7 +118,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a float into a vector of bytes with length four.
-    static std::vector<byte> GetBytes( float value )
+    inline std::vector<byte> GetBytes( float value )
     {
         std::vector<byte> result( 4 );
         float* ptr = reinterpret_cast<float*>( result.data( ) );
@@ -127,7 +127,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a double into a vector of bytes with length eight. 
-    static std::vector<byte> GetBytes( double value )
+    inline std::vector<byte> GetBytes( double value )
     {
         std::vector<byte> result( 8 );
         double* ptr = reinterpret_cast<double*>( result.data( ) );
@@ -136,7 +136,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a vector of bytes into a wchar_t.
-    static wchar_t ToWideChar( const std::vector<byte>& value, size_t startIndex )
+    inline wchar_t ToWideChar( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -167,7 +167,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a vector of bytes into a short. 
-    static short ToInt16( const std::vector<byte>& value, size_t startIndex )
+    inline short ToInt16( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -198,7 +198,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a vector of bytes into an unsigned short. 
-    static unsigned short ToUInt16( const std::vector<byte>& value, size_t startIndex )
+    inline unsigned short ToUInt16( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -229,7 +229,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a vector of bytes into a 32-bit integer. 
-    static int ToInt32( const std::vector<byte>& value, size_t startIndex )
+    inline int ToInt32( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -260,7 +260,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a vector of bytes into a 32-bit unsigned integer. 
-    static unsigned int ToUInt32( const std::vector<byte>& value, size_t startIndex )
+    inline unsigned int ToUInt32( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -292,7 +292,7 @@ namespace Harlinn::Common::Core::BitConverter
 
 
     // Converts a vector of bytes into a 64-bit integer. 
-    static long long ToInt64( const std::vector<byte>& value, size_t startIndex )
+    inline long long ToInt64( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -328,7 +328,7 @@ namespace Harlinn::Common::Core::BitConverter
 
 
     // Converts a vector of bytes into a 64-bit unsigned integer. 
-    static unsigned long long ToUInt64( const std::vector<byte>& value, size_t startIndex )
+    inline unsigned long long ToUInt64( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -364,7 +364,7 @@ namespace Harlinn::Common::Core::BitConverter
 
 
     // Converts a vector of bytes into a float.
-    static float ToSingle( const std::vector<byte>& value, size_t startIndex )
+    inline float ToSingle( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -396,7 +396,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a vector of bytes into a double.
-    static double ToDouble( const std::vector<byte>& value, size_t startIndex )
+    inline double ToDouble( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -432,7 +432,7 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
 
-    static WideString::value_type GetHexValue( int i )
+    inline WideString::value_type GetHexValue( int i )
     {
         if ( i < 10 )
         {
@@ -443,7 +443,7 @@ namespace Harlinn::Common::Core::BitConverter
 
 
     // Converts a vector of bytes into a String.
-    static WideString ToString( const std::vector<byte>& value, size_t startIndex, size_t length )
+    inline WideString ToString( const std::vector<byte>& value, size_t startIndex, size_t length )
     {
         if ( startIndex >= value.size( ) && startIndex > 0 )
         {
@@ -485,19 +485,19 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a vector of bytes into a String. 
-    static WideString ToString( const std::vector<byte>& value )
+    inline WideString ToString( const std::vector<byte>& value )
     {
         return ToString( value, 0, value.size( ) );
     }
 
     // Converts a vector of bytes into a String. 
-    static WideString ToString( const std::vector<byte>& value, size_t startIndex )
+    inline WideString ToString( const std::vector<byte>& value, size_t startIndex )
     {
         return ToString( value, startIndex, value.size( ) - startIndex );
     }
 
     // Converts a vector of bytes into a boolean. 
-    static bool ToBoolean( const std::vector<byte>& value, size_t startIndex )
+    inline bool ToBoolean( const std::vector<byte>& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {

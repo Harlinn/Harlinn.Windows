@@ -1165,7 +1165,7 @@ namespace Harlinn::Common::Core
             ptr_ = SafeArrayCreateVectorEx( VARTYPE( variantType ), 0, numberOfElements, nullptr );
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1181,7 +1181,7 @@ namespace Harlinn::Common::Core
             ptr_ = SafeArrayCreateVector( static_cast< VARTYPE >( variantType ), 0, static_cast<ULONG>( containerSize ) );
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
             if ( containerSize )
             {
@@ -1211,7 +1211,7 @@ namespace Harlinn::Common::Core
             ptr_ = SafeArrayCreateVector( VARTYPE( variantType ), lowerBound, numberOfElements );
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1230,7 +1230,7 @@ namespace Harlinn::Common::Core
             }
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1249,7 +1249,7 @@ namespace Harlinn::Common::Core
             }
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1258,7 +1258,7 @@ namespace Harlinn::Common::Core
             ptr_ = SafeArrayCreateVectorEx( VT_RECORD, 0, numberOfElements, recordInfo );
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1267,7 +1267,7 @@ namespace Harlinn::Common::Core
             ptr_ = SafeArrayCreateVectorEx( VT_RECORD, lowerBound, numberOfElements, recordInfo );
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1280,7 +1280,7 @@ namespace Harlinn::Common::Core
             ptr_ = SafeArrayCreate( VARTYPE( variantType ), numberOfDimensions, const_cast< SAFEARRAYBOUND* >(dimensionbounds) );
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1294,7 +1294,7 @@ namespace Harlinn::Common::Core
             ptr_ = SafeArrayCreateEx( VARTYPE( variantType ), numberOfDimensions, const_cast< SAFEARRAYBOUND* >( dimensionbounds ), const_cast<Guid*>( &iid ) );
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1310,7 +1310,7 @@ namespace Harlinn::Common::Core
             ptr_ = SafeArrayCreateEx( VT_RECORD, numberOfDimensions, const_cast< SAFEARRAYBOUND* >( dimensionbounds ), recordInfo );
             if ( !ptr_ )
             {
-                CheckHRESULT( E_OUTOFMEMORY );
+                ThrowHRESULT( E_OUTOFMEMORY );
             }
         }
 
@@ -1329,7 +1329,7 @@ namespace Harlinn::Common::Core
                 auto hr = SafeArrayCopy( other.ptr_, &ptr_ );
                 if ( FAILED( hr ) )
                 {
-                    CheckHRESULT( hr );
+                    ThrowHRESULT( hr );
                 }
             }
         }
@@ -1538,19 +1538,9 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-        SafeArray& operator = ( SafeArray&& other )
+        SafeArray& operator = ( SafeArray&& other ) noexcept
         {
-            if ( this != &other )
-            {
-                if ( ptr_ )
-                {
-                    auto hr = SafeArrayDestroy( ptr_ );
-                    CheckHRESULT( hr );
-                    ptr_ = nullptr;
-                }
-                ptr_ = other.ptr_;
-                other.ptr_ = nullptr;
-            }
+            std::swap( ptr_, other.ptr_ );
             return *this;
         }
 

@@ -127,11 +127,11 @@ namespace Harlinn::Common::Core
 
     struct FixedSizeMemoryManagerStatistics
     {
-        size_t FreeCount;
-        size_t MallocCalls;
-        size_t FreeCalls;
-        size_t AlignedMallocCalls;
-        size_t AlignedFreeCalls;
+        size_t FreeCount = 0;
+        size_t MallocCalls = 0;
+        size_t FreeCalls = 0;
+        size_t AlignedMallocCalls = 0;
+        size_t AlignedFreeCalls = 0;
 
         void Print( )
         {

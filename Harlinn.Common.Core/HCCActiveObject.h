@@ -349,7 +349,6 @@ namespace Harlinn::Common::Core::Concurrency
         virtual void Start( ) override
         {
             EventWaitHandle manualEventWaitHandle( true );
-            //auto self = ESFT::shared_from_this( );
             ActiveObject* activeObjectPtr = this;
             thread_ = Thread( [ activeObjectPtr, &manualEventWaitHandle ]
                 {
@@ -363,7 +362,9 @@ namespace Harlinn::Common::Core::Concurrency
         virtual void Stop( ) override
         {
             if ( Base::stopped_ )
+            {
                 return;
+            }
             Base::stopped_ = true;
             this->PostStopMessage( );
             Base::messages_.Close( );

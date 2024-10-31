@@ -222,6 +222,7 @@
     <ClInclude Include="HCCDebugServiceHost.h" />
     <ClInclude Include="HCCDemangle.h" />
     <ClInclude Include="HCCDirectoryUtils.h" />
+    <ClInclude Include="HCCDoxygen.h" />
     <ClInclude Include="HCCEseOptions.h" />
     <ClInclude Include="HCCFlags.h" />
     <ClInclude Include="HCCFormatStringParser.h" />
@@ -335,6 +336,8 @@
     <ClCompile Include="HCCCurrency.cpp" />
     <ClCompile Include="HCCDateTime.cpp" />
     <ClCompile Include="HCCDemangle.cpp" />
+    <ClCompile Include="HCCDoxygen.cpp" />
+    <ClCompile Include="HCCDoxygenEnums.cpp" />
     <ClCompile Include="HCCEnvironment.cpp" />
     <ClCompile Include="HCCEse.cpp" />
     <ClCompile Include="HCCException.cpp" />

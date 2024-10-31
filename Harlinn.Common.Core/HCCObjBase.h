@@ -200,11 +200,12 @@ namespace Harlinn::Common::Core
         bool Next( ULONG requestedNumberOfElements, std::vector<Unknown>& result ) const
         {
             auto pInterface = GetInterface( );
-            IUnknown** pElements = (IUnknown**)alloca( requestedNumberOfElements * sizeof( IUnknown* ) );
+            IUnknown** pElements = (IUnknown**)_malloca( requestedNumberOfElements * sizeof( IUnknown* ) );
+            std::unique_ptr<IUnknown*, MallocaDeleter<IUnknown*>> elementsPtr( pElements );
             memset( pElements, 0, requestedNumberOfElements * sizeof( IUnknown* ) );
             ULONG actual = 0;
 
-            auto hr = pInterface->Next( 1, pElements, &actual );
+            auto hr = pInterface->Next( requestedNumberOfElements, pElements, &actual );
             if ( actual )
             {
                 result.clear( );
