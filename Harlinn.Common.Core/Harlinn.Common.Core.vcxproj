@@ -227,6 +227,7 @@
     <ClInclude Include="HCCFlags.h" />
     <ClInclude Include="HCCFormatStringParser.h" />
     <ClInclude Include="HCCGenerators.h" />
+    <ClInclude Include="HCCHtmlNamedCharacters.h" />
     <ClInclude Include="HCCIOBufferStream.h" />
     <ClInclude Include="HCCCom.h" />
     <ClInclude Include="HCCConsole.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="HCCProcess.h" />
     <ClInclude Include="HCCPropertyVariant.h" />
     <ClInclude Include="HCCPropSys.h" />
+    <ClInclude Include="HCCRapidXml.h" />
     <ClInclude Include="HCCRdtscConverter.h" />
     <ClInclude Include="HCCRegistry.h" />
     <ClInclude Include="HCCRtWorkQ.h" />
@@ -314,6 +316,7 @@
     <ClInclude Include="HCCTypeDescriptorCursor.h" />
     <ClInclude Include="HCCUdpClient.h" />
     <ClInclude Include="HCCUdpServer.h" />
+    <ClInclude Include="HCCUtf.h" />
     <ClInclude Include="HCCVariant.h" />
     <ClInclude Include="HCCVector.h" />
     <ClInclude Include="HCCwbem.h" />
@@ -342,6 +345,7 @@
     <ClCompile Include="HCCEse.cpp" />
     <ClCompile Include="HCCException.cpp" />
     <ClCompile Include="HCCGuid.cpp" />
+    <ClCompile Include="HCCHtmlNamedCharacters.cpp" />
     <ClCompile Include="HCCIO.cpp" />
     <ClCompile Include="HCCIOContext.cpp" />
     <ClCompile Include="HCCIStreamOnStreamImpl.cpp" />

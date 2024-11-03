@@ -149,6 +149,7 @@ namespace Harlinn::Common::Core
                 }
             }
         }
+
         void Append( const wchar_t* wstr )
         {
             if ( wstr )
@@ -165,6 +166,68 @@ namespace Harlinn::Common::Core
                 }
             }
         }
+
+        void Append( const std::string_view& str )
+        {
+            if ( str.empty() == false )
+            {
+                if constexpr ( isWide )
+                {
+                    auto wstr = WideString::From( str );
+                    stream_.Write( wstr.c_str( ), wstr.Length( ) * sizeof( wchar_t ) );
+                }
+                else
+                {
+                    stream_.Write( str.data(), str.size() );
+                }
+            }
+        }
+
+        void Append( const std::wstring_view& str )
+        {
+            if ( str.empty( ) == false )
+            {
+                if constexpr ( isWide )
+                {
+                    stream_.Write( str.data( ), str.size( ) * sizeof( wchar_t ) );
+                }
+                else
+                {
+                    auto astr = AnsiString::From( str );
+                    stream_.Write( astr.c_str( ), astr.Length( ) );
+                }
+            }
+        }
+
+
+        void Append( char c )
+        {
+            if constexpr ( isWide )
+            {
+                std::string_view view( &c, 1 );
+                auto wstr = WideString::From( view );
+                stream_.Write( wstr.c_str( ), wstr.Length( ) * sizeof( wchar_t ) );
+            }
+            else
+            {
+                stream_.Write( &c, 1 );
+            }
+        }
+
+        void Append( wchar_t c )
+        {
+            if constexpr ( isWide )
+            {
+                stream_.Write( &c, sizeof( wchar_t ) );
+            }
+            else
+            {
+                std::wstring_view view( &c, 1 );
+                auto str = AnsiString::From( view );
+                stream_.Write( str, str.Length( ) );
+            }
+        }
+
 
         void AppendLine( const char* str )
         {

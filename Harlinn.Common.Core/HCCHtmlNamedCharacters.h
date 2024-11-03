@@ -1,3 +1,7 @@
+#pragma once
+#ifndef HCCHTMLNAMEDCHARACTERS_H_
+#define HCCHTMLNAMEDCHARACTERS_H_
+
 /*
    Copyright 2024 Espen Harlinn
 
@@ -14,20 +18,28 @@
    limitations under the License.
 */
 
-#include <HCCDoxygen.h>
+#include "HCCString.h"
 
-int wmain(int argc, wchar_t* argv[] )
+namespace Harlinn::Common::Core::Html
 {
-    using namespace Harlinn::Common::Core;
-
-    if ( argc > 1 )
+    struct NamedChar
     {
-        Doxygen::DocumentCollection documentCollection;
-        WideString directory( argv[ 1 ] );
-        documentCollection.AddDirectory( directory );
+        std::wstring_view Name;
+        std::vector<UInt32> Codepoints;
+        std::wstring_view Value;
+    };
 
-        auto documentCount = documentCollection.size( );
-    }
 
+
+    HCC_EXPORT WideString Encode( const wchar_t* text, size_t textLength );
+    HCC_EXPORT WideString Decode( const wchar_t* text, size_t textLength );
+
+
+
+
+    HCC_EXPORT std::span<const NamedChar> CharactersByName( );
+    HCC_EXPORT std::span<const NamedChar> CharactersByValue( );
 
 }
+
+#endif

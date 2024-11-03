@@ -196,6 +196,7 @@
     <ClCompile Include="EseOptionsTests.cpp" />
     <ClCompile Include="FlagsTests.cpp" />
     <ClCompile Include="FormatStringParserTests.cpp" />
+    <ClCompile Include="HtmlNamedCharactersTests.cpp" />
     <ClCompile Include="IntervalTests.cpp" />
     <ClCompile Include="ListTests.cpp" />
     <ClCompile Include="LoggerLevelTests.cpp" />

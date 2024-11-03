@@ -2838,22 +2838,22 @@ namespace Harlinn::Common::Core::IO
 
         bool IsReadOnly( ) const
         {
-            return data_.dwFileAttributes & FILE_ATTRIBUTE_READONLY != 0;
+            return (data_.dwFileAttributes & FILE_ATTRIBUTE_READONLY) != 0;
         }
 
         bool IsHidden( ) const
         {
-            return data_.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN != 0;
+            return (data_.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) != 0;
         }
 
         bool IsSystem( ) const
         {
-            return data_.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM != 0;
+            return (data_.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) != 0;
         }
 
         bool IsDirectory( ) const
         {
-            return data_.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY != 0;
+            return (data_.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
         }
 
         
