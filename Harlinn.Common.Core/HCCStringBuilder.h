@@ -167,7 +167,9 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void Append( const std::string_view& str )
+        template<typename StringT>
+            requires std::is_same_v<StringT, std::string_view> || std::is_same_v<StringT, std::string> || std::is_same_v<StringT, AnsiString>
+        void Append( const StringT& str )
         {
             if ( str.empty() == false )
             {
@@ -183,7 +185,9 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void Append( const std::wstring_view& str )
+        template<typename StringT>
+            requires std::is_same_v<StringT, std::wstring_view> || std::is_same_v<StringT, std::wstring> || std::is_same_v<StringT, WideString>
+        void Append( const StringT& str )
         {
             if ( str.empty( ) == false )
             {
@@ -197,6 +201,15 @@ namespace Harlinn::Common::Core
                     stream_.Write( astr.c_str( ), astr.Length( ) );
                 }
             }
+        }
+
+        template<typename StringT>
+            requires std::is_same_v<StringT, std::string_view> || std::is_same_v<StringT, std::string> || std::is_same_v<StringT, AnsiString> ||
+                    std::is_same_v<StringT, std::wstring_view> || std::is_same_v<StringT, std::wstring> || std::is_same_v<StringT, WideString>
+        void AppendLine( const StringT& str )
+        {
+            Append( str );
+            AppendLine( );
         }
 
 
@@ -239,49 +252,6 @@ namespace Harlinn::Common::Core
             Append( wstr );
             AppendLine( );
         }
-
-        void Append( const AnsiString& str )
-        {
-            if ( str )
-            {
-                if constexpr ( isWide )
-                {
-                    auto wstr = WideString::From( str );
-                    stream_.Write( wstr.c_str( ), wstr.Length( ) * sizeof( wchar_t ) );
-                }
-                else
-                {
-                    stream_.Write( str.c_str(), str.Length() );
-                }
-            }
-        }
-        void Append( const WideString& wstr )
-        {
-            if ( wstr )
-            {
-                if constexpr ( isWide )
-                {
-                    stream_.Write( wstr.c_str( ), wstr.Length() * sizeof( wchar_t ) );
-                }
-                else
-                {
-                    auto str = AnsiString::From( wstr );
-                    stream_.Write( str, str.Length( ) );
-                }
-            }
-        }
-
-        void AppendLine( const AnsiString& str )
-        {
-            Append( str );
-            AppendLine( );
-        }
-        void AppendLine( const WideString& wstr )
-        {
-            Append( wstr );
-            AppendLine( );
-        }
-
 
     };
 }

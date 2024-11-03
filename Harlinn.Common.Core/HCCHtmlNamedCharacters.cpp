@@ -2381,8 +2381,215 @@ namespace Harlinn::Common::Core::Html
         }
         return {};
     }
+    namespace
+    {
+        std::wstring_view ExtractName( const wchar_t* text, size_t textLength )
+        {
+            using UtfTraits = Utf::Traits<wchar_t>;
+
+            if ( text && textLength )
+            {
+                const auto* ptr = text;
+                const auto* textEnd = text + textLength;
+                if ( *ptr == L'&' )
+                {
+                    ptr++;
+                    if ( ptr < textEnd )
+                    {
+                        if ( *ptr == L'#' )
+                        {
+                            ptr++;
+                            if ( ptr < textEnd )
+                            {
+                                if ( *ptr == L'x' || *ptr == L'X' )
+                                {
+                                    ptr++;
+                                    while ( ptr < textEnd )
+                                    {
+                                        auto currentChar = *ptr;
+                                        if ( IsXDigit( currentChar ) == false )
+                                        {
+                                            if ( currentChar == L';' )
+                                            {
+                                                ptr++;
+                                            }
+                                            break;
+                                        }
+                                        ptr = UtfTraits::Next( ptr );
+                                    }
+                                    return {text, static_cast<size_t>(ptr - text) };
+                                }
+                                else
+                                {
+                                    while ( ptr < textEnd )
+                                    {
+                                        auto currentChar = *ptr;
+                                        if ( IsDigit( currentChar ) == false )
+                                        {
+                                            if ( currentChar == L';' )
+                                            {
+                                                ptr++;
+                                            }
+                                            break;
+                                        }
+                                        ptr = UtfTraits::Next( ptr );
+                                    }
+                                    return { text, static_cast< size_t >( ptr - text ) };
+                                }
+                            }
+                        }
+                        else
+                        {
+                            while ( ptr < textEnd )
+                            {
+                                auto currentChar = *ptr;
+                                if ( IsAlnum( currentChar ) == false )
+                                {
+                                    if ( currentChar == L';' )
+                                    {
+                                        ptr++;
+                                    }
+                                    break;
+                                }
+                                ptr = UtfTraits::Next( ptr );
+                            }
+                            return { text, static_cast< size_t >( ptr - text ) };
+                        }
+                    }
+                }
+            }
+            return {};
+        }
+
+        bool IsNumber( const std::wstring_view& view )
+        {
+            auto size = view.size( );
+            if ( size > 1 )
+            {
+                return view[ 1 ] == L'#';
+            }
+            return false;
+        }
+
+        bool IsHexNumber( const std::wstring_view& view )
+        {
+            auto size = view.size( );
+            if ( size > 2 )
+            {
+                return view[ 1 ] == L'#' && (view[ 2 ] == L'x' || view[ 2 ] == L'X' );
+            }
+            return false;
+        }
+
+        std::wstring ExtractValueFromNumber( const std::wstring_view& view )
+        {
+            auto size = view.size( );
+            if ( size > 2 )
+            {
+                if ( IsHexNumber( view ) )
+                {
+                    std::wstring str( view.data( ) + 3, view.size( ) - 3 );
+                    UInt16 value;
+                    if ( TryParseUInt16( str, value, 16 ) )
+                    {
+                        return std::wstring( reinterpret_cast<const wchar_t*>( &value ), 1 );
+                    }
+                }
+                else
+                {
+                    std::wstring str( view.data( ) + 2, view.size( ) - 2 );
+                    UInt16 value;
+                    if ( TryParseUInt16( str, value ) )
+                    {
+                        return std::wstring( reinterpret_cast< const wchar_t* >( &value ), 1 );
+                    }
+                }
+            }
+            return {};
+        }
+
+        bool TryGetValue( const std::span<const NamedChar>& charactersByName, const std::wstring_view& name, std::wstring_view& value )
+        {
+            auto it = std::lower_bound( charactersByName.begin( ), charactersByName.end( ), name, []( const NamedChar& namedChar, const std::wstring_view& name )
+                {
+                    const auto& namedCharName = namedChar.Name;
+                    return namedCharName < name;
+                } );
+            if ( it != charactersByName.end( ) )
+            {
+                if ( it->Name == name )
+                {
+                    value = it->Value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    }
+
     WideString Decode( const wchar_t* text, size_t textLength )
     {
+        if ( text && textLength )
+        {
+            std::wstring_view originalText( text, textLength );
+            auto indexOfAmp = originalText.find( L'&' );
+            if ( indexOfAmp != std::wstring_view::npos )
+            {
+                using UtfTraits = Utf::Traits<wchar_t>;
+                StringBuilder<wchar_t> sb;
+                auto textEnd = text + textLength;
+                auto charactersByName = CharactersByName( );
+                if ( indexOfAmp )
+                {
+                    std::wstring_view startView(text, indexOfAmp );
+                    sb.Append( startView );
+                    text += indexOfAmp;
+                }
+                while ( text < textEnd )
+                {
+                    auto remainingLength = static_cast< size_t >( textEnd - text );
+                    auto currentChar = *text;
+                    if ( currentChar == L'&' )
+                    {
+                        auto name = ExtractName( text, remainingLength );
+                        if ( IsNumber( name ) )
+                        {
+                            auto value = ExtractValueFromNumber( name );
+                            sb.Append( value );
+                        }
+                        else 
+                        {
+                            std::wstring_view value;
+                            if ( TryGetValue( charactersByName, name, value ) )
+                            {
+                                sb.Append( value );
+                            }
+                        }
+                        text += name.size( );
+                    }
+                    else
+                    {
+                        if ( UtfTraits::IsLead( currentChar ) )
+                        {
+                            sb.Append( currentChar );
+                            sb.Append( *( text + 1 ) );
+                        }
+                        else
+                        {
+                            sb.Append( currentChar );
+                        }
+                        text = UtfTraits::Next( text );
+                    }
+                }
+                return sb.ToString( );
+            }
+            else
+            {
+                return { text , textLength };
+            }
+
+        }
         return {};
     }
 

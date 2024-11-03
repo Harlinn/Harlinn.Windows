@@ -34,6 +34,70 @@ namespace Harlinn::Common::Core::Html
     HCC_EXPORT WideString Encode( const wchar_t* text, size_t textLength );
     HCC_EXPORT WideString Decode( const wchar_t* text, size_t textLength );
 
+    template<typename StringT>
+        requires std::is_same_v<StringT,WideString> || std::is_same_v<StringT, std::wstring> || std::is_same_v<StringT, std::wstring_view>
+    inline WideString Encode( const StringT& str )
+    {
+        if ( str.empty( ) == false )
+        {
+            return Encode( str.data( ), str.size( ) );
+        }
+        return {};
+    }
+
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, std::wstring> || std::is_same_v<StringT, std::wstring_view>
+    inline WideString Decode( const StringT& str )
+    {
+        if ( str.empty( ) == false )
+        {
+            return Decode( str.data( ), str.size( ) );
+        }
+        return {};
+    }
+
+
+    inline AnsiString Encode( const char* text, size_t textLength )
+    {
+        WideString ws; 
+        ToWideString( text, textLength, ws );
+        auto encoded = Encode( ws );
+        AnsiString result;
+        ToAnsiString( encoded.c_str( ), encoded.size( ), result );
+        return result;
+    }
+    inline AnsiString Decode( const char* text, size_t textLength )
+    {
+        WideString ws;
+        ToWideString( text, textLength, ws );
+        auto decoded = Decode( ws );
+        AnsiString result;
+        ToAnsiString( decoded.c_str( ), decoded.size( ), result );
+        return result;
+    }
+
+
+    template<typename StringT>
+        requires std::is_same_v<StringT, AnsiString> || std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::string_view>
+    inline AnsiString Encode( const StringT& str )
+    {
+        if ( str.empty( ) == false )
+        {
+            return Encode( str.data( ), str.size( ) );
+        }
+        return {};
+    }
+
+    template<typename StringT>
+        requires std::is_same_v<StringT, AnsiString> || std::is_same_v<StringT, std::string> || std::is_same_v<StringT, std::string_view>
+    inline AnsiString Decode( const StringT& str )
+    {
+        if ( str.empty( ) == false )
+        {
+            return Decode( str.data( ), str.size( ) );
+        }
+        return {};
+    }
 
 
 
