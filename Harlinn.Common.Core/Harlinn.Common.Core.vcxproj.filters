@@ -527,6 +527,9 @@
     <ClCompile Include="HCCHtmlNamedCharacters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HCCDoxygenStructure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Support\hcc.natvis">

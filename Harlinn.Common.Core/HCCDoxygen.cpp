@@ -18,9 +18,332 @@
 #include "HCCIO.h"
 #include "HCCRapidXml.h"
 
+
 namespace Harlinn::Common::Core::Doxygen
 {
+    using namespace std::literals::string_view_literals;
     using XmlNodeType = RapidXml::NodeType;
+
+    bool TryParseCmdGroupType( const RapidXml::XmlNode<>& xmlNode, DocCmdGroupType& result )
+    {
+        if ( xmlNode.NodeType( ) == XmlNodeType::node_element )
+        {
+            DoxCmdGroupType doxCmdGroupType{};
+            WideString nodeName = ToWideString( xmlNode.Name( ) );
+            if ( TryParse( nodeName, doxCmdGroupType ) )
+            {
+                result.Type = doxCmdGroupType;
+                switch ( doxCmdGroupType )
+                {
+                    case DoxCmdGroupType::ulink:
+                    {
+                        result.Value = std::make_shared<DocURLLink>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::bold:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::s:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::strike:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::underline:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::emphasis:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::computeroutput:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::subscript:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::superscript:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::center:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::Small:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::cite:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::del:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::ins:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::htmlonly:
+                    {
+                        result.Value = std::make_shared<DocHtmlOnlyType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::manonly:
+                    {
+                        result.Value = std::make_shared<TextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::xmlonly:
+                    {
+                        result.Value = std::make_shared<TextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::rtfonly:
+                    {
+                        result.Value = std::make_shared<TextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::latexonly:
+                    {
+                        result.Value = std::make_shared<TextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::docbookonly:
+                    {
+                        result.Value = std::make_shared<TextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::image:
+                    {
+                        result.Value = std::make_shared<DocImageType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::dot:
+                    {
+                        result.Value = std::make_shared<DocDotMscType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::msc:
+                    {
+                        result.Value = std::make_shared<DocDotMscType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::plantuml:
+                    {
+                        result.Value = std::make_shared<DocPlantumlType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::anchor:
+                    {
+                        result.Value = std::make_shared<DocAnchorType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::formula:
+                    {
+                        result.Value = std::make_shared<DocFormulaType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::ref:
+                    {
+                        result.Value = std::make_shared<DocRefTextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::emoji:
+                    {
+                        result.Value = std::make_shared<DocEmojiType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::preformatted:
+                    {
+                        result.Value = std::make_shared<DocMarkupType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::programlisting:
+                    {
+                        result.Value = std::make_shared<ListingType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::verbatim:
+                    {
+                        result.Value = std::make_shared<TextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::javadocliteral:
+                    {
+                        result.Value = std::make_shared<TextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::javadoccode:
+                    {
+                        result.Value = std::make_shared<TextType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::indexentry:
+                    {
+                        result.Value = std::make_shared<DocIndexEntryType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::orderedlist:
+                    {
+                        result.Value = std::make_shared<DocListType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::itemizedlist:
+                    {
+                        result.Value = std::make_shared<DocListType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::simplesect:
+                    {
+                        result.Value = std::make_shared<DocSimpleSectType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::title:
+                    {
+                        result.Value = std::make_shared<DocTitleType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::variablelist:
+                    {
+                        result.Value = std::make_shared<DocVariableListType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::table:
+                    {
+                        result.Value = std::make_shared<DocTableType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::heading:
+                    {
+                        result.Value = std::make_shared<DocHeadingType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::dotfile:
+                    {
+                        result.Value = std::make_shared<DocImageFileType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::mscfile:
+                    {
+                        result.Value = std::make_shared<DocImageFileType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::diafile:
+                    {
+                        result.Value = std::make_shared<DocImageFileType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::toclist:
+                    {
+                        result.Value = std::make_shared<DocTocListType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::language:
+                    {
+                        result.Value = std::make_shared<DocLanguageType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::parameterlist:
+                    {
+                        result.Value = std::make_shared<DocParamListType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::xrefsect:
+                    {
+                        result.Value = std::make_shared<DocXRefSectType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::copydoc:
+                    {
+                        result.Value = std::make_shared<DocCopyType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::details:
+                    {
+                        result.Value = std::make_shared<DocDetailsType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::blockquote:
+                    {
+                        result.Value = std::make_shared<DocBlockQuoteType>( xmlNode );
+                    }
+                    break;
+                    case DoxCmdGroupType::parblock:
+                    {
+                        result.Value = std::make_shared<DocParBlockType>( xmlNode );
+                    }
+                    break;
+                    default:
+                    {
+                        result.Value.reset( );
+                    }
+                    break;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool TryParseTextOrCmdGroupType( const RapidXml::XmlNode<>& xmlNode, DocCmdGroupType& result )
+    {
+        if ( xmlNode.NodeType( ) == XmlNodeType::node_data )
+        {
+            if ( xmlNode.NodeType( ) == XmlNodeType::node_data )
+            {
+                auto text = Trim( xmlNode.ToString( ) );
+                if ( text.size( ) )
+                {
+                    auto decoded = Html::Decode( text );
+                    result.Value = std::make_shared<TextType>( decoded );
+                    return true;
+                }
+            }
+            return false;
+        }
+        else
+        {
+            return TryParseCmdGroupType( xmlNode, result );
+        }
+    }
+
+
+    TextType::TextType( const XmlNode& xmlNode )
+    {
+        auto value = xmlNode.Value( );
+        WideString text;
+        ToWideString( value.data( ), value.length( ), text );
+        text_ = Html::Decode( text );
+    }
+
+    TitleType::TitleType( const XmlNode& xmlNode )
+    {
+        auto value = xmlNode.Value( );
+        WideString text;
+        ToWideString( value.data( ), value.length( ), text );
+        text_ = Html::Decode( text );
+    }
 
     DocEmojiType::DocEmojiType( const XmlNode& xmlNode )
     {
@@ -172,539 +495,482 @@ namespace Harlinn::Common::Core::Doxygen
 
     DocRefTextType::DocRefTextType( const XmlNode& xmlNode )
     {
-
+        refId_ = xmlNode.Read<WideString>( "refid" );
+        kindRef_ = xmlNode.Read<DoxRefKind>( "kindref" );
+        external_ = xmlNode.Read<WideString>( "external" );
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                DocCmdGroupType nodeValue;
+                if ( TryParseTextOrCmdGroupType( childNode, nodeValue ) )
+                {
+                    emplace_back( nodeValue );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     DocVariableListType::DocVariableListType( const XmlNode& xmlNode )
     {
-
+        /*
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                auto childNodeName = childNode.Name( );
+                if ( childNodeName == "para"sv )
+                {
+                    auto docListItemType = std::make_shared<DocParaType>( childNode );
+                    emplace_back( std::move( docListItemType ) );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
+        */
     }
 
     DocVariableListGroup::DocVariableListGroup( const XmlNode& xmlNode )
     {
-
+        varListEntry_ = xmlNode.Child<DocVarListEntryType>( "varlistentry" );
+        listItem_ = xmlNode.Child<DocListItemType>( "listitem" );
     }
 
     DocVarListEntryType::DocVarListEntryType( const XmlNode& xmlNode )
     {
-
+        term_ = xmlNode.Child<DocTitleType>( "title" );
     }
 
     DocSimpleSectType::DocSimpleSectType( const XmlNode& xmlNode )
     {
+        kind_ = xmlNode.Read<DoxSimpleSectKind>( "kind" );
+        title_ = xmlNode.Child<DocTitleType>( "title" );
 
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                auto childNodeName = childNode.Name( );
+                if ( childNodeName == "para"sv )
+                {
+                    auto docListItemType = std::make_shared<DocParaType>( childNode );
+                    emplace_back( std::move( docListItemType ) );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     DocListItemType::DocListItemType( const XmlNode& xmlNode )
     {
+        override_ = xmlNode.Read<DoxCheck>( "override" );
+        value_ = xmlNode.Read<Int32>( "value" );
+
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                auto childNodeName = childNode.Name( );
+                if ( childNodeName == "para"sv )
+                {
+                    auto docListItemType = std::make_shared<DocParaType>( childNode );
+                    emplace_back( std::move( docListItemType ) );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
 
     }
 
     DocListType::DocListType( const XmlNode& xmlNode )
     {
-
+        type_ = xmlNode.Read<DoxOlType>("type" );
+        start_ = xmlNode.Read<Int32>( "start" );
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                auto childNodeName = childNode.Name( );
+                if ( childNodeName == "listitem"sv )
+                {
+                    auto docListItemType = std::make_shared<DocListItemType>( childNode );
+                    emplace_back( std::move( docListItemType ) );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     DocIndexEntryType::DocIndexEntryType( const XmlNode& xmlNode )
     {
-
+        primary_ = Html::Decode( xmlNode.Child<WideString>( "primaryie" ) );
+        secondary_ = Html::Decode( xmlNode.Child<WideString>( "secondaryie" ) );
     }
 
     DocFormulaType::DocFormulaType( const XmlNode& xmlNode )
     {
-
+        id_ = xmlNode.Read<WideString>( "id" );
+        content_ = Html::Decode( Trim( xmlNode.ToString<WideString>( ) ) );
     }
 
     DocAnchorType::DocAnchorType( const XmlNode& xmlNode )
     {
-
+        id_ = xmlNode.Read<WideString>( "id" );
+        content_ = Html::Decode( Trim(xmlNode.ToString<WideString>( )) );
     }
 
     DocURLLink::DocURLLink( const XmlNode& xmlNode )
     {
-
+        url_ = xmlNode.Read<WideString>( "url" );
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                DocCmdGroupType nodeValue;
+                if ( TryParseTextOrCmdGroupType( childNode, nodeValue ) )
+                {
+                    emplace_back( nodeValue );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     DocMarkupType::DocMarkupType( const XmlNode& xmlNode )
     {
-
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                DocCmdGroupType nodeValue;
+                if ( TryParseTextOrCmdGroupType( childNode, nodeValue ) )
+                {
+                    emplace_back( nodeValue );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     DocParaType::DocParaType( const XmlNode& xmlNode )
     {
-
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                DocCmdGroupType nodeValue;
+                if ( TryParseTextOrCmdGroupType( childNode, nodeValue ) )
+                {
+                    emplace_back( nodeValue );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
+    /*
     DocCmdGroup::DocCmdGroup( const XmlNode& xmlNode )
     {
 
     }
+    */
 
     DocSummaryType::DocSummaryType( const XmlNode& xmlNode )
     {
-
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                DocCmdGroupType nodeValue;
+                if ( TryParseTextOrCmdGroupType( childNode, nodeValue ) )
+                {
+                    emplace_back( nodeValue );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     DocTitleType::DocTitleType( const XmlNode& xmlNode )
     {
-
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do 
+            {
+                DocCmdGroupType nodeValue;
+                if ( TryParseTextOrCmdGroupType( childNode, nodeValue ) )
+                {
+                    emplace_back( nodeValue );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
+    /*
     DocTitleCmdGroup::DocTitleCmdGroup( const XmlNode& xmlNode )
     {
 
     }
+    */
+
+    namespace Internal
+    {
+        template<Doxygen::DoxType doxType>
+        DocInternalSectionBaseType<doxType>::DocInternalSectionBaseType( const XmlNode& xmlNode )
+        {
+            WideString id_ = xmlNode.Read<WideString>( "id" );
+
+            auto childNode = xmlNode.FirstNode( );
+            if ( childNode )
+            {
+                do
+                {
+                    auto nodeName = childNode.Name( );
+                    if ( childNode.NodeType( ) == XmlNodeType::node_data )
+                    {
+                        auto text = Trim( childNode.ToString( ) );
+                        if ( text.size( ) )
+                        {
+                            auto decoded = Html::Decode( text );
+                            auto textType = std::make_shared<TextType>( decoded );
+                            emplace_back( std::move( textType ) );
+                        }
+                    }
+                    else if ( nodeName == "title"sv )
+                    {
+                        title_ = std::make_shared<TitleType>( childNode );
+                        emplace_back( title_ );
+                    }
+                    else if ( nodeName == "para"sv )
+                    {
+                        auto paraType = std::make_shared<ParaType>( childNode );
+                        para_.emplace_back( paraType );
+                        emplace_back( std::move( paraType ) );
+                    }
+                    childNode = childNode.NextSibling( );
+                } while ( childNode );
+            }
+        }
+
+        template<Doxygen::DoxType doxType, typename SubSectT  >
+        DocInternalSectionType<doxType, SubSectT>::DocInternalSectionType( const XmlNode& xmlNode, std::string_view subSectionElementName )
+        {
+            WideString id_ = xmlNode.Read<WideString>( "id" );
+
+            auto childNode = xmlNode.FirstNode( );
+            if ( childNode )
+            {
+                do
+                {
+                    auto nodeName = childNode.Name( );
+                    if ( childNode.NodeType( ) == XmlNodeType::node_data )
+                    {
+                        auto text = Trim( childNode.ToString( ) );
+                        if ( text.size( ) )
+                        {
+                            auto decoded = Html::Decode( text );
+                            auto textType = std::make_shared<TextType>( decoded );
+                            emplace_back( std::move( textType ) );
+                        }
+                    }
+                    else if ( nodeName == "title"sv )
+                    {
+                        title_ = std::make_shared<TitleType>( childNode );
+                        emplace_back( title_ );
+                    }
+                    else if ( nodeName == "para"sv )
+                    {
+                        auto paraType = std::make_shared<ParaType>( childNode );
+                        para_.emplace_back( paraType );
+                        emplace_back( std::move( paraType ) );
+                    }
+                    else if ( nodeName == subSectionElementName )
+                    {
+                        auto subSectType = std::make_shared<SubSectType>( childNode );
+                        subSections_.emplace_back( subSectType );
+                        emplace_back( std::move( subSectType ) );
+                    }
+                    childNode = childNode.NextSibling( );
+                } while ( childNode );
+            }
+        }
+
+    }
 
     DocInternalS6Type::DocInternalS6Type( const XmlNode& xmlNode )
+        : Base( xmlNode )
     {
-        ParaTypeVector para_ = xmlNode.Children<ParaType>( "para" );
     }
 
     DocInternalS5Type::DocInternalS5Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect5"sv )
     {
-        ParaTypeVector para_ = xmlNode.Children<ParaType>( "para" );
-        SubSectTypeVector sections_ = xmlNode.Children<SubSectType>( "sect6" );
     }
 
     DocInternalS4Type::DocInternalS4Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect5"sv )
     {
-        ParaTypeVector para_ = xmlNode.Children<ParaType>( "para" );
-        SubSectTypeVector sections_ = xmlNode.Children<SubSectType>( "sect5" );
     }
 
     DocInternalS3Type::DocInternalS3Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect4"sv )
     {
-        ParaTypeVector para_ = xmlNode.Children<ParaType>( "para" );
-        SubSectTypeVector sections_ = xmlNode.Children<SubSectType>( "sect4" );
     }
 
     DocInternalS2Type::DocInternalS2Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect3"sv )
     {
-        ParaTypeVector para_ = xmlNode.Children<ParaType>( "para" );
-        SubSectTypeVector sections_ = xmlNode.Children<SubSectType>( "sect3" );
     }
 
     DocInternalS1Type::DocInternalS1Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect2"sv )
     {
-        ParaTypeVector para_ = xmlNode.Children<ParaType>( "para" );
-        SubSectTypeVector sections_ = xmlNode.Children<SubSectType>( "sect2" );
     }
 
     DocInternalType::DocInternalType( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect1"sv )
     {
-        ParaTypeVector para_ = xmlNode.Children<ParaType>( "para" );
-        SubSectTypeVector sections_ = xmlNode.Children<SubSectType>( "sect1" );
+    }
+
+
+    namespace Internal
+    {
+        template<Doxygen::DoxType doxType, typename InternalT>
+        DocSectionBaseType<doxType, InternalT>::DocSectionBaseType( const XmlNode& xmlNode )
+        {
+            WideString id_ = xmlNode.Read<WideString>( "id" );
+
+            auto childNode = xmlNode.FirstNode( );
+            if ( childNode )
+            {
+                do
+                {
+                    auto nodeName = childNode.Name( );
+                    if ( childNode.NodeType( ) == XmlNodeType::node_data )
+                    {
+                        auto text = Trim( childNode.ToString( ) );
+                        if ( text.size( ) )
+                        {
+                            auto decoded = Html::Decode( text );
+                            auto textType = std::make_shared<TextType>( decoded );
+                            emplace_back( std::move( textType ) );
+                        }
+                    }
+                    else if ( nodeName == "title"sv )
+                    {
+                        title_ = std::make_shared<TitleType>( childNode );
+                        emplace_back( title_ );
+                    }
+                    else if ( nodeName == "para"sv )
+                    {
+                        auto paraType = std::make_shared<ParaType>( childNode );
+                        para_.emplace_back( paraType );
+                        emplace_back( std::move( paraType ) );
+                    }
+                    else if ( nodeName == "internal"sv )
+                    {
+                        auto internalType = std::make_shared<InternalType>( childNode );
+                        internal_.emplace_back( internalType );
+                        emplace_back( std::move( internalType ) );
+                    }
+                    childNode = childNode.NextSibling( );
+                } while ( childNode );
+            }
+        }
+
+        template<Doxygen::DoxType doxType, typename InternalT, typename SubSectT  >
+        DocSectionType<doxType, InternalT, SubSectT>::DocSectionType( const XmlNode& xmlNode, std::string_view subSectionElementName )
+        {
+            WideString id_ = xmlNode.Read<WideString>( "id" );
+
+            auto childNode = xmlNode.FirstNode( );
+            if ( childNode )
+            {
+                do
+                {
+                    auto nodeName = childNode.Name( );
+                    if ( childNode.NodeType( ) == XmlNodeType::node_data )
+                    {
+                        auto text = Trim( childNode.ToString( ) );
+                        if ( text.size( ) )
+                        {
+                            auto decoded = Html::Decode( text );
+                            auto textType = std::make_shared<TextType>( decoded );
+                            emplace_back( std::move( textType ) );
+                        }
+                    }
+                    else if ( nodeName == "title"sv )
+                    {
+                        title_ = std::make_shared<TitleType>( childNode );
+                        emplace_back( title_ );
+                    }
+                    else if ( nodeName == "para"sv )
+                    {
+                        auto paraType = std::make_shared<ParaType>( childNode );
+                        para_.emplace_back( paraType );
+                        emplace_back( std::move( paraType ) );
+                    }
+                    else if ( nodeName == "internal"sv )
+                    {
+                        auto internalType = std::make_shared<InternalType>( childNode );
+                        internal_.emplace_back( internalType );
+                        emplace_back( std::move( internalType ) );
+                    }
+                    else if ( nodeName == subSectionElementName )
+                    {
+                        auto subSectType = std::make_shared<SubSectType>( childNode );
+                        subSections_.emplace_back( subSectType );
+                        emplace_back( std::move( subSectType ) );
+                    }
+                    childNode = childNode.NextSibling( );
+                } while ( childNode );
+            }
+        }
+
     }
 
     DocSect6Type::DocSect6Type( const XmlNode& xmlNode )
+        : Base( xmlNode )
     {
-        WideString id_ = xmlNode.Read<WideString>( "id" );
-        auto child = xmlNode.FirstNode( );
-        if ( child )
-        {
-            constexpr std::string_view title( "title" );
-            constexpr std::string_view para( "para" );
-            constexpr std::string_view internal( "internal" );
-            do
-            {
-                auto name = child.Name( );
-                if ( name == title )
-                {
-                    title_ = child.Content<WideString>( );
-                    child = child.NextSibling( );
-                }
-                else if ( name == para )
-                {
-                    ParaTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<ParaType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != para )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == internal )
-                {
-                    InternalTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<InternalType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != internal )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else
-                {
-                    child = child.NextSibling( );
-                }
-            } while ( child );
-        }
     }
 
     DocSect5Type::DocSect5Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect6"sv )
     {
-        WideString id_ = xmlNode.Read<WideString>( "id" );
-        auto child = xmlNode.FirstNode( );
-        if ( child )
-        {
-            constexpr std::string_view title( "title" );
-            constexpr std::string_view para( "para" );
-            constexpr std::string_view internal( "internal" );
-            constexpr std::string_view subSect( "sect6" );
-            do
-            {
-                auto name = child.Name( );
-                if ( name == title )
-                {
-                    title_ = child.Content<WideString>( );
-                    child = child.NextSibling( );
-                }
-                else if ( name == para )
-                {
-                    ParaTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<ParaType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != para )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == internal )
-                {
-                    InternalTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<InternalType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != internal )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == subSect )
-                {
-                    SubSectTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<SubSectType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != subSect )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else
-                {
-                    child = child.NextSibling( );
-                }
-            } while ( child );
-        }
     }
 
     DocSect4Type::DocSect4Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect5"sv )
     {
-        WideString id_ = xmlNode.Read<WideString>( "id" );
-        auto child = xmlNode.FirstNode( );
-        if ( child )
-        {
-            constexpr std::string_view title( "title" );
-            constexpr std::string_view para( "para" );
-            constexpr std::string_view internal( "internal" );
-            constexpr std::string_view subSect( "sect5" );
-            do
-            {
-                auto name = child.Name( );
-                if ( name == title )
-                {
-                    title_ = child.Content<WideString>( );
-                    child = child.NextSibling( );
-                }
-                else if ( name == para )
-                {
-                    ParaTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<ParaType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != para )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == internal )
-                {
-                    InternalTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<InternalType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != internal )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == subSect )
-                {
-                    SubSectTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<SubSectType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != subSect )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else
-                {
-                    child = child.NextSibling( );
-                }
-            } while ( child );
-        }
     }
 
     DocSect3Type::DocSect3Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect4"sv )
     {
-        WideString id_ = xmlNode.Read<WideString>( "id" );
-        auto child = xmlNode.FirstNode( );
-        if ( child )
-        {
-            constexpr std::string_view title( "title" );
-            constexpr std::string_view para( "para" );
-            constexpr std::string_view internal( "internal" );
-            constexpr std::string_view subSect( "sect4" );
-            do
-            {
-                auto name = child.Name( );
-                if ( name == title )
-                {
-                    title_ = child.Content<WideString>( );
-                    child = child.NextSibling( );
-                }
-                else if ( name == para )
-                {
-                    ParaTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<ParaType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != para )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == internal )
-                {
-                    InternalTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<InternalType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != internal )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == subSect )
-                {
-                    SubSectTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<SubSectType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != subSect )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else
-                {
-                    child = child.NextSibling( );
-                }
-            } while ( child );
-        }
     }
 
     DocSect2Type::DocSect2Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect3"sv )
     {
-        WideString id_ = xmlNode.Read<WideString>( "id" );
-        auto child = xmlNode.FirstNode( );
-        if ( child )
-        {
-            constexpr std::string_view title( "title" );
-            constexpr std::string_view para( "para" );
-            constexpr std::string_view internal( "internal" );
-            constexpr std::string_view subSect( "sect3" );
-            do
-            {
-                auto name = child.Name( );
-                if ( name == title )
-                {
-                    title_ = child.Content<WideString>( );
-                    child = child.NextSibling( );
-                }
-                else if ( name == para )
-                {
-                    ParaTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<ParaType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != para )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == internal )
-                {
-                    InternalTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<InternalType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != internal )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == subSect )
-                {
-                    SubSectTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<SubSectType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != subSect )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else
-                {
-                    child = child.NextSibling( );
-                }
-            } while ( child );
-        }
     }
 
     DocSect1Type::DocSect1Type( const XmlNode& xmlNode )
+        : Base( xmlNode, "sect2"sv )
     {
-        WideString id_ = xmlNode.Read<WideString>( "id" );
-        auto child = xmlNode.FirstNode( );
-        if ( child )
-        {
-            constexpr std::string_view title( "title" );
-            constexpr std::string_view para( "para" );
-            constexpr std::string_view internal( "internal" );
-            constexpr std::string_view subSect( "sect2" );
-            do
-            {
-                auto name = child.Name( );
-                if ( name == title )
-                {
-                    title_ = child.Content<WideString>( );
-                    child = child.NextSibling( );
-                }
-                else if ( name == para )
-                {
-                    ParaTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<ParaType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != para )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == internal )
-                {
-                    InternalTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<InternalType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != internal )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else if ( name == subSect )
-                {
-                    SubSectTypeVector elements;
-                    for ( ;;)
-                    {
-                        auto element = std::make_shared<SubSectType>( child );
-                        elements.emplace_back( std::move( element ) );
-                        child = child.NextSibling( );
-                        if ( !child || child.Name( ) != subSect )
-                        {
-                            break;
-                        }
-                    }
-                    contents_.emplace_back( std::move( elements ) );
-                }
-                else
-                {
-                    child = child.NextSibling( );
-                }
-            } while ( child );
-        }
     }
+
 
     LocationType::LocationType( const XmlNode& xmlNode )
     {
@@ -725,37 +991,48 @@ namespace Harlinn::Common::Core::Doxygen
         WideString compoundRef_ = xmlNode.Read<WideString>( "compoundref" );
         Int32 startLine_ = xmlNode.Read<Int32>( "startline" );
         Int32 endline_ = xmlNode.Read<Int32>( "endline" );
+        text_ = Trim( xmlNode.ToString( ) );
     }
 
-    /*
     SpType::SpType( const XmlNode& xmlNode )
     {
-
+        value_ = xmlNode.Read<Int32>( "value" );
+        text_ = Trim( xmlNode.ToString( ) );
     }
-    */
 
     HighlightType::HighlightType( const XmlNode& xmlNode )
     {
         class_ = xmlNode.Read<DoxHighlightClass>( "class" );
-        static constexpr std::string_view sp( "sp" );
-        static constexpr std::string_view ref( "ref" );
-        auto child = xmlNode.FirstNode( );
-        if ( child )
+
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
         {
             do
             {
-                auto name = child.Name( );
-                if ( name == sp )
+                auto nodeName = childNode.Name( );
+                if ( childNode.NodeType( ) == XmlNodeType::node_data )
                 {
-                    Int32 value = child.Read<Int32>( "value" );
-                    items_.emplace_back( value );
+                    auto text = Trim( childNode.ToString( ) );
+                    if ( text.size( ) )
+                    {
+                        auto decoded = Html::Decode( text );
+                        auto textType = std::make_shared<TextType>( decoded );
+                        emplace_back( std::move( textType ) );
+                    }
                 }
-                else if ( name == ref )
+                else if ( nodeName == "ref"sv )
                 {
-                    items_.emplace_back( std::make_shared<RefTextType>( child ) );
+                    auto refTextType = std::make_shared<RefTextType>( childNode );
+                    ref_.emplace_back( refTextType );
+                    emplace_back( std::move( refTextType ) );
                 }
-                child = child.NextSibling( );
-            } while ( child );
+                else if ( nodeName == "sp"sv )
+                {
+                    auto spType = std::make_shared<SpType>( childNode );
+                    emplace_back( std::move( spType ) );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
         }
     }
 
@@ -802,7 +1079,31 @@ namespace Harlinn::Common::Core::Doxygen
 
     LinkedTextType::LinkedTextType( const XmlNode& xmlNode )
     {
-        static_cast< std::vector<RefTextTypePtr>& >( *this ) = xmlNode.Children<RefTextType>( "ref" );
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                auto nodeName = childNode.Name( );
+                if ( childNode.NodeType( ) == XmlNodeType::node_data )
+                {
+                    auto text = Trim( childNode.ToString( ) );
+                    if ( text.size( ) )
+                    {
+                        auto decoded = Html::Decode( text );
+                        auto textType = std::make_shared<TextType>( decoded );
+                        emplace_back( std::move(textType) );
+                    }
+                }
+                else if ( nodeName == "ref"sv )
+                {
+                    auto refTextType = std::make_shared<RefTextType>( childNode );
+                    ref_.emplace_back( refTextType );
+                    emplace_back( std::move( refTextType ) );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     ParamType::ParamType( const XmlNode& xmlNode )
@@ -834,10 +1135,51 @@ namespace Harlinn::Common::Core::Doxygen
 
     DescriptionType::DescriptionType( const XmlNode& xmlNode )
     {
-        title_ = xmlNode.Child<WideString>( "title" );
-        para_ = xmlNode.Children<DocParaType>( "para" );
-        internal_ = xmlNode.Children<DocInternalType>( "internal" );
-        sect1_ = xmlNode.Children<DocSect1Type>( "sect1" );
+        
+        auto childNode = xmlNode.FirstNode( );
+        if ( childNode )
+        {
+            do
+            {
+                auto nodeName = childNode.Name( );
+                if ( childNode.NodeType( ) == XmlNodeType::node_data )
+                {
+                    auto value = ToWideString( childNode.Value( ) );
+                    value = Trim( value );
+                    if ( value.size( ) )
+                    {
+                        auto decoded = Html::Decode( value );
+                        auto textType = std::make_shared<TextType>( decoded );
+                        emplace_back( std::move( textType ) );
+                    }
+                }
+                else if ( nodeName == "title"sv )
+                {
+                    auto titleType = std::make_shared<TitleType>( childNode );
+                    title_ = titleType;
+                    emplace_back( std::move( titleType ) );
+                }
+                else if ( nodeName == "para"sv )
+                {
+                    auto docParaType = std::make_shared<DocParaType>( childNode );
+                    para_.emplace_back( docParaType );
+                    emplace_back( std::move( docParaType ) );
+                }
+                else if ( nodeName == "internal"sv )
+                {
+                    auto docInternalType = std::make_shared<DocInternalType>( childNode );
+                    internal_.emplace_back( docInternalType );
+                    emplace_back( std::move( docInternalType ) );
+                }
+                else if ( nodeName == "sect1"sv )
+                {
+                    auto docSect1Type = std::make_shared<DocSect1Type>( childNode );
+                    sect1_.emplace_back( docSect1Type );
+                    emplace_back( std::move( docSect1Type ) );
+                }
+                childNode = childNode.NextSibling( );
+            } while ( childNode );
+        }
     }
 
     MemberDefType::MemberDefType( const XmlNode& xmlNode )
@@ -998,8 +1340,8 @@ namespace Harlinn::Common::Core::Doxygen
 
     MemberRefType::MemberRefType( const XmlNode& xmlNode )
     {
-        name_ = xmlNode.Child<WideString>( "name" );
-        scope_ = xmlNode.Child<WideString>( "scope" );
+        name_ = Html::Decode( xmlNode.Child<WideString>( "name" ) );
+        scope_ = Html::Decode( xmlNode.Child<WideString>( "scope" ) );
         refId_ = xmlNode.Read<WideString>( "refid" );
         prot_ = xmlNode.Read<DoxProtectionKind>( "prot" );
         virt_ = xmlNode.Read<DoxVirtualKind>( "virt" );
@@ -1024,8 +1366,8 @@ namespace Harlinn::Common::Core::Doxygen
         sealed_ = xmlNode.Read<bool>( "sealed" );
         abstract_ = xmlNode.Read<bool>( "abstract" );
 
-        compoundName_ = xmlNode.Child<WideString>( "compoundname" );
-        title_ = xmlNode.Child<WideString>( "title" );
+        compoundName_ = Html::Decode( xmlNode.Child<WideString>( "compoundname" ) );
+        title_ = Html::Decode( xmlNode.Child<WideString>( "title" ) );
         baseCompoundRef_ = xmlNode.Children<CompoundRefType>( "basecompoundref" );
 
         derivedCompoundRef_ = xmlNode.Children<CompoundRefType>( "derivedcompoundref" );
@@ -1098,9 +1440,11 @@ namespace Harlinn::Common::Core::Doxygen
 
         if ( xml.size() )
         {
-            RapidXml::XmlDocument xmlDocument;
+            RapidXml::XmlParser xmlParser;
             char* xmlText = xml.data( );
-            xmlDocument.Parse<RapidXml::ParsingFlags::NonDestructive>( xmlText );
+            xmlParser.Parse<RapidXml::ParsingFlags::NonDestructive>( xmlText );
+
+            auto xmlDocument = xmlParser.Document( );
 
             auto xmlNode = xmlDocument.FirstNode( "doxygen" );
             if ( xmlNode )
@@ -1115,4 +1459,12 @@ namespace Harlinn::Common::Core::Doxygen
         }
     }
 
+    std::unique_ptr<Structure::TypeSystem> DocumentCollection::TypeSystem( ) const
+    {
+        auto result = std::make_unique<Structure::TypeSystem>( );
+        result->Process( *this );
+        return result;
+    }
+
 }
+

@@ -1,7 +1,3 @@
-#pragma once
-#ifndef HCCHTMLNAMEDCHARACTERS_H_
-#define HCCHTMLNAMEDCHARACTERS_H_
-
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,21 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#include "CppMarkdown.h"
 
-#include "HCCString.h"
-
-namespace Harlinn::Common::Core::Html
+namespace Doxygen2Md::Cpp
 {
-    struct NamedChar
+    /*
+    WideString MarkdownOutputFile( const CppTypeManager& typeManager, const Doxygen::CompoundDefTypePtr& compoundDefType )
     {
-        std::wstring_view Name;
-        std::vector<UInt32> Codepoints;
-        std::wstring_view Value;
-    };
-
-    HCC_EXPORT std::span<const NamedChar> CharactersByName( );
-    HCC_EXPORT std::span<const NamedChar> CharactersByValue( );
-
+        compoundDefType->
+    }
+    */
 }
-
-#endif

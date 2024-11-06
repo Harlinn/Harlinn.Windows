@@ -1104,6 +1104,352 @@ namespace Harlinn::Common::Core
     }
 
 
+    /////////
+    namespace
+    {
+        using DoxCmdGroupType = Doxygen::DoxCmdGroupType;
+        class DoxCmdGroupTypeConverter : public Enum<DoxCmdGroupType>
+        {
+        public:
+            using Base = Enum<DoxCmdGroupType>;
+            DoxCmdGroupTypeConverter( )
+            {
+                Add( L"ulink", DoxCmdGroupType::ulink );
+                Add( L"bold", DoxCmdGroupType::bold );
+                Add( L"s", DoxCmdGroupType::s );
+                Add( L"strike", DoxCmdGroupType::strike );
+                Add( L"underline", DoxCmdGroupType::underline );
+                Add( L"emphasis", DoxCmdGroupType::emphasis );
+                Add( L"computeroutput", DoxCmdGroupType::computeroutput );
+                Add( L"subscript", DoxCmdGroupType::subscript );
+                Add( L"superscript", DoxCmdGroupType::superscript );
+                Add( L"center", DoxCmdGroupType::center );
+                Add( L"small", DoxCmdGroupType::Small );
+                Add( L"cite", DoxCmdGroupType::cite );
+                Add( L"del", DoxCmdGroupType::del );
+                Add( L"ins", DoxCmdGroupType::ins );
+                Add( L"htmlonly", DoxCmdGroupType::htmlonly );
+                Add( L"manonly", DoxCmdGroupType::manonly );
+                Add( L"xmlonly", DoxCmdGroupType::xmlonly );
+                Add( L"rtfonly", DoxCmdGroupType::rtfonly );
+                Add( L"latexonly", DoxCmdGroupType::latexonly );
+                Add( L"docbookonly", DoxCmdGroupType::docbookonly );
+                Add( L"image", DoxCmdGroupType::image );
+                Add( L"dot", DoxCmdGroupType::dot );
+                Add( L"msc", DoxCmdGroupType::msc );
+                Add( L"plantuml", DoxCmdGroupType::plantuml );
+                Add( L"anchor", DoxCmdGroupType::anchor );
+                Add( L"formula", DoxCmdGroupType::formula );
+                Add( L"ref", DoxCmdGroupType::ref );
+                Add( L"emoji", DoxCmdGroupType::emoji );
+                Add( L"linebreak", DoxCmdGroupType::linebreak );
+                Add( L"nonbreakablespace", DoxCmdGroupType::nonbreakablespace );
+                Add( L"iexcl", DoxCmdGroupType::iexcl );
+                Add( L"cent", DoxCmdGroupType::cent );
+                Add( L"pound", DoxCmdGroupType::pound );
+                Add( L"curren", DoxCmdGroupType::curren );
+                Add( L"yen", DoxCmdGroupType::yen );
+                Add( L"brvbar", DoxCmdGroupType::brvbar );
+                Add( L"sect", DoxCmdGroupType::sect );
+                Add( L"umlaut", DoxCmdGroupType::umlaut );
+                Add( L"copy", DoxCmdGroupType::copy );
+                Add( L"ordf", DoxCmdGroupType::ordf );
+                Add( L"laquo", DoxCmdGroupType::laquo );
+                Add( L"not", DoxCmdGroupType::Not );
+                Add( L"shy", DoxCmdGroupType::shy );
+                Add( L"registered", DoxCmdGroupType::registered );
+                Add( L"macr", DoxCmdGroupType::macr );
+                Add( L"deg", DoxCmdGroupType::deg );
+                Add( L"plusmn", DoxCmdGroupType::plusmn );
+                Add( L"sup2", DoxCmdGroupType::sup2 );
+                Add( L"sup3", DoxCmdGroupType::sup3 );
+                Add( L"acute", DoxCmdGroupType::acute );
+                Add( L"micro", DoxCmdGroupType::micro );
+                Add( L"para", DoxCmdGroupType::para );
+                Add( L"middot", DoxCmdGroupType::middot );
+                Add( L"cedil", DoxCmdGroupType::cedil );
+                Add( L"sup1", DoxCmdGroupType::sup1 );
+                Add( L"ordm", DoxCmdGroupType::ordm );
+                Add( L"raquo", DoxCmdGroupType::raquo );
+                Add( L"frac14", DoxCmdGroupType::frac14 );
+                Add( L"frac12", DoxCmdGroupType::frac12 );
+                Add( L"frac34", DoxCmdGroupType::frac34 );
+                Add( L"iquest", DoxCmdGroupType::iquest );
+                Add( L"Agrave", DoxCmdGroupType::Agrave );
+                Add( L"Aacute", DoxCmdGroupType::Aacute );
+                Add( L"Acirc", DoxCmdGroupType::Acirc );
+                Add( L"Atilde", DoxCmdGroupType::Atilde );
+                Add( L"Aumlaut", DoxCmdGroupType::Aumlaut );
+                Add( L"Aring", DoxCmdGroupType::Aring );
+                Add( L"AElig", DoxCmdGroupType::AElig );
+                Add( L"Ccedil", DoxCmdGroupType::Ccedil );
+                Add( L"Egrave", DoxCmdGroupType::Egrave );
+                Add( L"Eacute", DoxCmdGroupType::Eacute );
+                Add( L"Ecirc", DoxCmdGroupType::Ecirc );
+                Add( L"Eumlaut", DoxCmdGroupType::Eumlaut );
+                Add( L"Igrave", DoxCmdGroupType::Igrave );
+                Add( L"Iacute", DoxCmdGroupType::Iacute );
+                Add( L"Icirc", DoxCmdGroupType::Icirc );
+                Add( L"Iumlaut", DoxCmdGroupType::Iumlaut );
+                Add( L"ETH", DoxCmdGroupType::ETH );
+                Add( L"Ntilde", DoxCmdGroupType::Ntilde );
+                Add( L"Ograve", DoxCmdGroupType::Ograve );
+                Add( L"Oacute", DoxCmdGroupType::Oacute );
+                Add( L"Ocirc", DoxCmdGroupType::Ocirc );
+                Add( L"Otilde", DoxCmdGroupType::Otilde );
+                Add( L"Oumlaut", DoxCmdGroupType::Oumlaut );
+                Add( L"times", DoxCmdGroupType::times );
+                Add( L"Oslash", DoxCmdGroupType::Oslash );
+                Add( L"Ugrave", DoxCmdGroupType::Ugrave );
+                Add( L"Uacute", DoxCmdGroupType::Uacute );
+                Add( L"Ucirc", DoxCmdGroupType::Ucirc );
+                Add( L"Uumlaut", DoxCmdGroupType::Uumlaut );
+                Add( L"Yacute", DoxCmdGroupType::Yacute );
+                Add( L"THORN", DoxCmdGroupType::THORN );
+                Add( L"szlig", DoxCmdGroupType::szlig );
+                Add( L"agrave", DoxCmdGroupType::agrave );
+                Add( L"aacute", DoxCmdGroupType::aacute );
+                Add( L"acirc", DoxCmdGroupType::acirc );
+                Add( L"atilde", DoxCmdGroupType::atilde );
+                Add( L"aumlaut", DoxCmdGroupType::aumlaut );
+                Add( L"aring", DoxCmdGroupType::aring );
+                Add( L"aelig", DoxCmdGroupType::aelig );
+                Add( L"ccedil", DoxCmdGroupType::ccedil );
+                Add( L"egrave", DoxCmdGroupType::egrave );
+                Add( L"eacute", DoxCmdGroupType::eacute );
+                Add( L"ecirc", DoxCmdGroupType::ecirc );
+                Add( L"eumlaut", DoxCmdGroupType::eumlaut );
+                Add( L"igrave", DoxCmdGroupType::igrave );
+                Add( L"iacute", DoxCmdGroupType::iacute );
+                Add( L"icirc", DoxCmdGroupType::icirc );
+                Add( L"iumlaut", DoxCmdGroupType::iumlaut );
+                Add( L"eth", DoxCmdGroupType::eth );
+                Add( L"ntilde", DoxCmdGroupType::ntilde );
+                Add( L"ograve", DoxCmdGroupType::ograve );
+                Add( L"oacute", DoxCmdGroupType::oacute );
+                Add( L"ocirc", DoxCmdGroupType::ocirc );
+                Add( L"otilde", DoxCmdGroupType::otilde );
+                Add( L"oumlaut", DoxCmdGroupType::oumlaut );
+                Add( L"divide", DoxCmdGroupType::divide );
+                Add( L"oslash", DoxCmdGroupType::oslash );
+                Add( L"ugrave", DoxCmdGroupType::ugrave );
+                Add( L"uacute", DoxCmdGroupType::uacute );
+                Add( L"ucirc", DoxCmdGroupType::ucirc );
+                Add( L"uumlaut", DoxCmdGroupType::uumlaut );
+                Add( L"yacute", DoxCmdGroupType::yacute );
+                Add( L"thorn", DoxCmdGroupType::thorn );
+                Add( L"yumlaut", DoxCmdGroupType::yumlaut );
+                Add( L"fnof", DoxCmdGroupType::fnof );
+                Add( L"Alpha", DoxCmdGroupType::Alpha );
+                Add( L"Beta", DoxCmdGroupType::Beta );
+                Add( L"Gamma", DoxCmdGroupType::Gamma );
+                Add( L"Delta", DoxCmdGroupType::Delta );
+                Add( L"Epsilon", DoxCmdGroupType::Epsilon );
+                Add( L"Zeta", DoxCmdGroupType::Zeta );
+                Add( L"Eta", DoxCmdGroupType::Eta );
+                Add( L"Theta", DoxCmdGroupType::Theta );
+                Add( L"Iota", DoxCmdGroupType::Iota );
+                Add( L"Kappa", DoxCmdGroupType::Kappa );
+                Add( L"Lambda", DoxCmdGroupType::Lambda );
+                Add( L"Mu", DoxCmdGroupType::Mu );
+                Add( L"Nu", DoxCmdGroupType::Nu );
+                Add( L"Xi", DoxCmdGroupType::Xi );
+                Add( L"Omicron", DoxCmdGroupType::Omicron );
+                Add( L"Pi", DoxCmdGroupType::Pi );
+                Add( L"Rho", DoxCmdGroupType::Rho );
+                Add( L"Sigma", DoxCmdGroupType::Sigma );
+                Add( L"Tau", DoxCmdGroupType::Tau );
+                Add( L"Upsilon", DoxCmdGroupType::Upsilon );
+                Add( L"Phi", DoxCmdGroupType::Phi );
+                Add( L"Chi", DoxCmdGroupType::Chi );
+                Add( L"Psi", DoxCmdGroupType::Psi );
+                Add( L"Omega", DoxCmdGroupType::Omega );
+                Add( L"alpha", DoxCmdGroupType::alpha );
+                Add( L"beta", DoxCmdGroupType::beta );
+                Add( L"gamma", DoxCmdGroupType::gamma );
+                Add( L"delta", DoxCmdGroupType::delta );
+                Add( L"epsilon", DoxCmdGroupType::epsilon );
+                Add( L"zeta", DoxCmdGroupType::zeta );
+                Add( L"eta", DoxCmdGroupType::eta );
+                Add( L"theta", DoxCmdGroupType::theta );
+                Add( L"iota", DoxCmdGroupType::iota );
+                Add( L"kappa", DoxCmdGroupType::kappa );
+                Add( L"lambda", DoxCmdGroupType::lambda );
+                Add( L"mu", DoxCmdGroupType::mu );
+                Add( L"nu", DoxCmdGroupType::nu );
+                Add( L"xi", DoxCmdGroupType::xi );
+                Add( L"omicron", DoxCmdGroupType::omicron );
+                Add( L"pi", DoxCmdGroupType::pi );
+                Add( L"rho", DoxCmdGroupType::rho );
+                Add( L"sigmaf", DoxCmdGroupType::sigmaf );
+                Add( L"sigma", DoxCmdGroupType::sigma );
+                Add( L"tau", DoxCmdGroupType::tau );
+                Add( L"upsilon", DoxCmdGroupType::upsilon );
+                Add( L"phi", DoxCmdGroupType::phi );
+                Add( L"chi", DoxCmdGroupType::chi );
+                Add( L"psi", DoxCmdGroupType::psi );
+                Add( L"omega", DoxCmdGroupType::omega );
+                Add( L"thetasym", DoxCmdGroupType::thetasym );
+                Add( L"upsih", DoxCmdGroupType::upsih );
+                Add( L"piv", DoxCmdGroupType::piv );
+                Add( L"bull", DoxCmdGroupType::bull );
+                Add( L"hellip", DoxCmdGroupType::hellip );
+                Add( L"prime", DoxCmdGroupType::prime );
+                Add( L"Prime", DoxCmdGroupType::Prime );
+                Add( L"oline", DoxCmdGroupType::oline );
+                Add( L"frasl", DoxCmdGroupType::frasl );
+                Add( L"weierp", DoxCmdGroupType::weierp );
+                Add( L"imaginary", DoxCmdGroupType::imaginary );
+                Add( L"real", DoxCmdGroupType::real );
+                Add( L"trademark", DoxCmdGroupType::trademark );
+                Add( L"alefsym", DoxCmdGroupType::alefsym );
+                Add( L"larr", DoxCmdGroupType::larr );
+                Add( L"uarr", DoxCmdGroupType::uarr );
+                Add( L"rarr", DoxCmdGroupType::rarr );
+                Add( L"darr", DoxCmdGroupType::darr );
+                Add( L"harr", DoxCmdGroupType::harr );
+                Add( L"crarr", DoxCmdGroupType::crarr );
+                Add( L"lArr", DoxCmdGroupType::lArr );
+                Add( L"uArr", DoxCmdGroupType::uArr );
+                Add( L"rArr", DoxCmdGroupType::rArr );
+                Add( L"dArr", DoxCmdGroupType::dArr );
+                Add( L"hArr", DoxCmdGroupType::hArr );
+                Add( L"forall", DoxCmdGroupType::forall );
+                Add( L"part", DoxCmdGroupType::part );
+                Add( L"exist", DoxCmdGroupType::exist );
+                Add( L"empty", DoxCmdGroupType::empty );
+                Add( L"nabla", DoxCmdGroupType::nabla );
+                Add( L"isin", DoxCmdGroupType::isin );
+                Add( L"notin", DoxCmdGroupType::notin );
+                Add( L"ni", DoxCmdGroupType::ni );
+                Add( L"prod", DoxCmdGroupType::prod );
+                Add( L"sum", DoxCmdGroupType::sum );
+                Add( L"minus", DoxCmdGroupType::minus );
+                Add( L"lowast", DoxCmdGroupType::lowast );
+                Add( L"radic", DoxCmdGroupType::radic );
+                Add( L"prop", DoxCmdGroupType::prop );
+                Add( L"infin", DoxCmdGroupType::infin );
+                Add( L"ang", DoxCmdGroupType::ang );
+                Add( L"and", DoxCmdGroupType::And );
+                Add( L"or ", DoxCmdGroupType::Or  );
+                Add( L"cap", DoxCmdGroupType::cap );
+                Add( L"cup", DoxCmdGroupType::cup );
+                Add( L"int", DoxCmdGroupType::Int );
+                Add( L"there4", DoxCmdGroupType::there4 );
+                Add( L"sim", DoxCmdGroupType::sim );
+                Add( L"cong", DoxCmdGroupType::cong );
+                Add( L"asymp", DoxCmdGroupType::asymp );
+                Add( L"ne", DoxCmdGroupType::ne );
+                Add( L"equiv", DoxCmdGroupType::equiv );
+                Add( L"le", DoxCmdGroupType::le );
+                Add( L"ge", DoxCmdGroupType::ge );
+                Add( L"sub", DoxCmdGroupType::sub );
+                Add( L"sup", DoxCmdGroupType::sup );
+                Add( L"nsub", DoxCmdGroupType::nsub );
+                Add( L"sube", DoxCmdGroupType::sube );
+                Add( L"supe", DoxCmdGroupType::supe );
+                Add( L"oplus", DoxCmdGroupType::oplus );
+                Add( L"otimes", DoxCmdGroupType::otimes );
+                Add( L"perp", DoxCmdGroupType::perp );
+                Add( L"sdot", DoxCmdGroupType::sdot );
+                Add( L"lceil", DoxCmdGroupType::lceil );
+                Add( L"rceil", DoxCmdGroupType::rceil );
+                Add( L"lfloor", DoxCmdGroupType::lfloor );
+                Add( L"rfloor", DoxCmdGroupType::rfloor );
+                Add( L"lang", DoxCmdGroupType::lang );
+                Add( L"rang", DoxCmdGroupType::rang );
+                Add( L"loz", DoxCmdGroupType::loz );
+                Add( L"spades", DoxCmdGroupType::spades );
+                Add( L"clubs", DoxCmdGroupType::clubs );
+                Add( L"hearts", DoxCmdGroupType::hearts );
+                Add( L"diams", DoxCmdGroupType::diams );
+                Add( L"OElig", DoxCmdGroupType::OElig );
+                Add( L"oelig", DoxCmdGroupType::oelig );
+                Add( L"Scaron", DoxCmdGroupType::Scaron );
+                Add( L"scaron", DoxCmdGroupType::scaron );
+                Add( L"Yumlaut", DoxCmdGroupType::Yumlaut );
+                Add( L"circ", DoxCmdGroupType::circ );
+                Add( L"tilde", DoxCmdGroupType::tilde );
+                Add( L"ensp", DoxCmdGroupType::ensp );
+                Add( L"emsp", DoxCmdGroupType::emsp );
+                Add( L"thinsp", DoxCmdGroupType::thinsp );
+                Add( L"zwnj", DoxCmdGroupType::zwnj );
+                Add( L"zwj", DoxCmdGroupType::zwj );
+                Add( L"lrm", DoxCmdGroupType::lrm );
+                Add( L"rlm", DoxCmdGroupType::rlm );
+                Add( L"ndash", DoxCmdGroupType::ndash );
+                Add( L"mdash", DoxCmdGroupType::mdash );
+                Add( L"lsquo", DoxCmdGroupType::lsquo );
+                Add( L"rsquo", DoxCmdGroupType::rsquo );
+                Add( L"sbquo", DoxCmdGroupType::sbquo );
+                Add( L"ldquo", DoxCmdGroupType::ldquo );
+                Add( L"rdquo", DoxCmdGroupType::rdquo );
+                Add( L"bdquo", DoxCmdGroupType::bdquo );
+                Add( L"dagger", DoxCmdGroupType::dagger );
+                Add( L"Dagger", DoxCmdGroupType::Dagger );
+                Add( L"permil", DoxCmdGroupType::permil );
+                Add( L"lsaquo", DoxCmdGroupType::lsaquo );
+                Add( L"rsaquo", DoxCmdGroupType::rsaquo );
+                Add( L"euro", DoxCmdGroupType::euro );
+                Add( L"tm", DoxCmdGroupType::tm );
+                Add( L"hruler", DoxCmdGroupType::hruler );
+                Add( L"preformatted", DoxCmdGroupType::preformatted );
+                Add( L"programlisting", DoxCmdGroupType::programlisting );
+                Add( L"verbatim", DoxCmdGroupType::verbatim );
+                Add( L"javadocliteral", DoxCmdGroupType::javadocliteral );
+                Add( L"javadoccode", DoxCmdGroupType::javadoccode );
+                Add( L"indexentry", DoxCmdGroupType::indexentry );
+                Add( L"orderedlist", DoxCmdGroupType::orderedlist );
+                Add( L"itemizedlist", DoxCmdGroupType::itemizedlist );
+                Add( L"simplesect", DoxCmdGroupType::simplesect );
+                Add( L"title", DoxCmdGroupType::title );
+                Add( L"variablelist", DoxCmdGroupType::variablelist );
+                Add( L"table", DoxCmdGroupType::table );
+                Add( L"heading", DoxCmdGroupType::heading );
+                Add( L"dotfile", DoxCmdGroupType::dotfile );
+                Add( L"mscfile", DoxCmdGroupType::mscfile );
+                Add( L"diafile", DoxCmdGroupType::diafile );
+                Add( L"toclist", DoxCmdGroupType::toclist );
+                Add( L"language", DoxCmdGroupType::language );
+                Add( L"parameterlist", DoxCmdGroupType::parameterlist );
+                Add( L"xrefsect", DoxCmdGroupType::xrefsect );
+                Add( L"copydoc", DoxCmdGroupType::copydoc );
+                Add( L"details", DoxCmdGroupType::details );
+                Add( L"blockquote", DoxCmdGroupType::blockquote );
+                Add( L"parblock", DoxCmdGroupType::parblock );
+            }
+        };
+
+        DoxCmdGroupTypeConverter staticDoxCmdGroupTypeConverter;
+    }
+
+    WideString ToWideString( DoxCmdGroupType value )
+    {
+        return staticDoxCmdGroupTypeConverter.ToString( value );
+    }
+    WideString ToWideString( DoxCmdGroupType value, const WideString& defaultResult )
+    {
+        return staticDoxCmdGroupTypeConverter.ToString( value, defaultResult );
+    }
+    namespace Doxygen
+    {
+        DoxCmdGroupType ParseDoxCmdGroupType( const WideString& str )
+        {
+            return staticDoxCmdGroupTypeConverter.Parse( str );
+        }
+
+        DoxCmdGroupType ParseDoxCmdGroupType( const WideString& str, DoxCmdGroupType defaultResult )
+        {
+            return staticDoxCmdGroupTypeConverter.Parse( str, defaultResult );
+        }
+
+        bool TryParseDoxCmdGroupType( const WideString& str, DoxCmdGroupType& value )
+        {
+            return staticDoxCmdGroupTypeConverter.TryParse( str, value );
+        }
+    }
+
+
 
 
 }

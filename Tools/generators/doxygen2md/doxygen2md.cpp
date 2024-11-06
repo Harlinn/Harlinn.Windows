@@ -14,17 +14,35 @@
    limitations under the License.
 */
 
+#include "doxygen2mdOptions.h"
 #include <HCCDoxygen.h>
 
-int wmain(int argc, wchar_t* argv[] )
+
+int main(int argc, char* argv[] )
 {
     using namespace Harlinn::Common::Core;
 
-    if ( argc > 1 )
+    Doxygen2MdOptions options;
+    
+
+    if ( options.Parse( argc, argv ) )
     {
         Doxygen::DocumentCollection documentCollection;
-        WideString directory( argv[ 1 ] );
+        auto directory = options.InputDirectory();
         documentCollection.AddDirectory( directory );
+        auto typeSystem = documentCollection.TypeSystem( );
+        const auto& allTypes = typeSystem->AllTypes( );
+        auto allTypesSize = allTypes.size( );
+
+        auto globalNamespace = typeSystem->GlobalNamespace( );
+
+        const auto& globalNamespaceMembers = globalNamespace->Members( );
+
+        for ( auto& member : globalNamespaceMembers )
+        {
+            auto line = Format( L"{} -> {}", member->Name( ), member->QualifiedName( ) );
+            std::wcout << line << std::endl;
+        }
 
         auto documentCount = documentCollection.size( );
     }

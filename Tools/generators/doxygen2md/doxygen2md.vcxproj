@@ -146,6 +146,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="doxygen2md.cpp" />
+    <ClCompile Include="MarkdownOutputFile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CppMarkdown.h" />
+    <ClInclude Include="doxygen2mdOptions.h" />
+    <ClInclude Include="MarkdownBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -31,6 +31,7 @@ namespace Harlinn::Common::Core::RapidXml
         using namespace boost::property_tree::detail::rapidxml;
     }
 
+    using XmlNodeType = rapidxml::node_type;
 
     ///////////////////////////////////////////////////////////////////////
     // Parsing flags
@@ -142,6 +143,8 @@ namespace Harlinn::Common::Core::RapidXml
     class XmlNode;
     template<typename Ch = char>
     class XmlDocument;
+    template<typename Ch = char>
+    class XmlParser;
 #pragma warning(pop)
     template<typename Ch>
     class XmlBase
@@ -218,6 +221,26 @@ namespace Harlinn::Common::Core::RapidXml
         }
 
         inline XmlNode<Ch> Parent( ) const;
+
+        template<typename StringT = WideString>
+            requires std::is_same_v<StringT,WideString> || std::is_same_v<StringT, std::wstring>
+        StringT ToString( ) const
+        {
+            auto value = Value( );
+            StringT result;
+            ToWideString( value.data(), value.size(), result );
+            return result;
+        }
+        template<typename StringT>
+            requires std::is_same_v<StringT, AnsiString> || std::is_same_v<StringT, std::string>
+        StringT ToString( ) const
+        {
+            auto value = Value( );
+            StringT result;
+            ToAnsiString( value.data( ), value.size( ), result );
+            return result;
+        }
+
     };
 
 
@@ -468,6 +491,12 @@ namespace Harlinn::Common::Core::RapidXml
             return static_cast< rapidxml::xml_node<Ch>* >( Base::data_ );
         }
     public:
+        XmlNodeType NodeType( ) const
+        {
+            rapidxml::xml_node<Ch>* data = Data( );
+            return data->type( );
+        }
+
         XmlAttribute<Ch> Attribute( const Ch* name ) const
         {
             rapidxml::xml_node<Ch>* data = Data( );
@@ -699,7 +728,7 @@ namespace Harlinn::Common::Core::RapidXml
             return {};
         }
 
-
+        XmlDocument<Ch> Document( ) const;
 
         XmlNode<Ch> FirstNode( const Ch* n = 0, std::size_t nsize = 0, bool case_sensitive = true ) const
         {
@@ -778,22 +807,82 @@ namespace Harlinn::Common::Core::RapidXml
     private:
         using Base::data_;
     public:
-        rapidxml::xml_document<Ch> document_;
+        
     public:
-        XmlDocument( )
-            : Base( &document_ )
+        XmlDocument( ) = default;
+        XmlDocument( rapidxml::xml_document<Ch>* document )
+            : Base( document )
         {
         }
+    private:
+        rapidxml::xml_document<Ch>* Data( ) const
+        {
+            return static_cast< rapidxml::xml_document<Ch>* >( Base::data_ );
+        }
+    public:
+        template<ParsingFlags flags>
+        void Parse( Ch* str )
+        {
+            auto data = Data( );
+            if ( data )
+            {
+                data->parse<static_cast< int >( flags )>( str );
+            }
+        }
+        void Parse( Ch* str )
+        {
+            auto data = Data( );
+            if ( data )
+            {
+                data->parse<0>( str );
+            }
+        }
+    };
+
+    template<typename Ch>
+    inline XmlNode<Ch> XmlBase<Ch>::Parent( ) const
+    {
+        if ( data_ )
+        {
+            return XmlNode<Ch>( data_->parent( ) );
+        }
+        return {};
+    }
+    template<typename Ch>
+    inline XmlDocument<Ch> XmlNode<Ch>::Document( ) const
+    {
+        auto data = Data( );
+        if ( data_ )
+        {
+            return XmlDocument<Ch>( data->document( ) );
+        }
+        return {};
+    }
+
+
+    template<typename Ch>
+    class XmlParser
+    {
+        mutable rapidxml::xml_document<Ch> document_;
+    public:
+        XmlParser( )
+        { }
     private:
         rapidxml::xml_document<Ch>* Data( ) const
         {
             return &document_;
         }
     public:
+        XmlDocument<Ch> Document( ) const
+        {
+            return XmlDocument<Ch>( Data( ) );
+        }
+
+
         template<ParsingFlags flags>
         void Parse( Ch* str )
         {
-            document_.parse<static_cast<int>(flags)>( str );
+            document_.parse<static_cast< int >( flags )>( str );
         }
         void Parse( Ch* str )
         {
@@ -801,11 +890,6 @@ namespace Harlinn::Common::Core::RapidXml
         }
     };
 
-    template<typename Ch>
-    inline XmlNode<Ch> XmlBase<Ch>::Parent( ) const
-    {
-        return XmlNode<Ch>( data_->parent( ) );
-    }
 
 }
 

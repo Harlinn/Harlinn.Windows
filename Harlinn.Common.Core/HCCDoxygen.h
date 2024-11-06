@@ -32,10 +32,16 @@ namespace Harlinn::Common::Core::RapidXml
     class XmlNode;
     template<typename Ch = char>
     class XmlDocument;
+    template<typename Ch = char>
+    class XmlParser;
 }
 
 namespace Harlinn::Common::Core::Doxygen
 {
+    namespace Structure
+    {
+        class TypeSystem;
+    }
     
 
     enum class MemberKind
@@ -336,9 +342,14 @@ namespace Harlinn::Common::Core::Doxygen
     };
 
 
+    
+
+
     enum class DoxType
     {
         Unknown,
+        TextType,
+        TitleType,
         DocEmojiType,
         TableOfContentsKindType,
         TableOfContentsType,
@@ -431,6 +442,8 @@ namespace Harlinn::Common::Core::Doxygen
 
     /////////////////////////////////
      
+    class TextType;
+    class TitleType;
     class DocEmojiType;
     class TableOfContentsKindType;
     class TableOfContentsType;
@@ -489,7 +502,7 @@ namespace Harlinn::Common::Core::Doxygen
     class DocSect1Type;
     class LocationType;
     class ReferenceType;
-    //class SpType;
+    class SpType;
     class HighlightType;
     class CodeLineType;
     class ListingType;
@@ -519,6 +532,8 @@ namespace Harlinn::Common::Core::Doxygen
     class Document;
     class DocumentCollection;
 
+    using TextTypePtr = std::shared_ptr<TextType>;
+    using TitleTypePtr = std::shared_ptr<TitleType>;
     using DocEmojiTypePtr = std::shared_ptr<DocEmojiType>;
     using TableOfContentsKindTypePtr = std::shared_ptr<TableOfContentsKindType>;
     using TableOfContentsTypePtr = std::shared_ptr<TableOfContentsType>;
@@ -577,7 +592,7 @@ namespace Harlinn::Common::Core::Doxygen
     using DocSect1TypePtr = std::shared_ptr<DocSect1Type>;
     using LocationTypePtr = std::shared_ptr<LocationType>;
     using ReferenceTypePtr = std::shared_ptr<ReferenceType>;
-    //using SpTypePtr = std::shared_ptr<SpType>;
+    using SpTypePtr = std::shared_ptr<SpType>;
     using HighlightTypePtr = std::shared_ptr<HighlightType>;
     using CodeLineTypePtr = std::shared_ptr<CodeLineType>;
     using ListingTypePtr = std::shared_ptr<ListingType>;
@@ -606,8 +621,320 @@ namespace Harlinn::Common::Core::Doxygen
     using CompoundDefTypePtr = std::shared_ptr<CompoundDefType>;
     using DocumentPtr = std::shared_ptr<Document>;
 
-    /////////////////////////////////
 
+    enum class DoxCmdGroupType
+    {
+        Unknown,
+        ulink,//DocURLLink
+        bold,//DocMarkupType 
+        s,//DocMarkupType
+        strike,//DocMarkupType
+        underline,//DocMarkupType
+        emphasis,//DocMarkupType
+        computeroutput,//DocMarkupType
+        subscript,//DocMarkupType
+        superscript,//DocMarkupType
+        center,//DocMarkupType
+        Small,//DocMarkupType
+        cite,//DocMarkupType
+        del,//DocMarkupType
+        ins,//DocMarkupType
+        htmlonly,//DocHtmlOnlyType
+        manonly,//TextType
+        xmlonly,//TextType
+        rtfonly,//TextType
+        latexonly,//TextType
+        docbookonly,//TextType
+        image,//DocImageType
+        dot,//DocDotMscType
+        msc,//DocDotMscType
+        plantuml,//DocPlantumlType
+        anchor,//DocAnchorType
+        formula,//DocFormulaType
+        ref,//DocRefTextType
+        emoji,//DocEmojiType
+        linebreak,
+        nonbreakablespace,
+        iexcl,
+        cent,
+        pound,
+        curren,
+        yen,
+        brvbar,
+        sect,
+        umlaut,
+        copy,
+        ordf,
+        laquo,
+        Not,
+        shy,
+        registered,
+        macr,
+        deg,
+        plusmn,
+        sup2,
+        sup3,
+        acute,
+        micro,
+        para,
+        middot,
+        cedil,
+        sup1,
+        ordm,
+        raquo,
+        frac14,
+        frac12,
+        frac34,
+        iquest,
+        Agrave,
+        Aacute,
+        Acirc,
+        Atilde,
+        Aumlaut,
+        Aring,
+        AElig,
+        Ccedil,
+        Egrave,
+        Eacute,
+        Ecirc,
+        Eumlaut,
+        Igrave,
+        Iacute,
+        Icirc,
+        Iumlaut,
+        ETH,
+        Ntilde,
+        Ograve,
+        Oacute,
+        Ocirc,
+        Otilde,
+        Oumlaut,
+        times,
+        Oslash,
+        Ugrave,
+        Uacute,
+        Ucirc,
+        Uumlaut,
+        Yacute,
+        THORN,
+        szlig,
+        agrave,
+        aacute,
+        acirc,
+        atilde,
+        aumlaut,
+        aring,
+        aelig,
+        ccedil,
+        egrave,
+        eacute,
+        ecirc,
+        eumlaut,
+        igrave,
+        iacute,
+        icirc,
+        iumlaut,
+        eth,
+        ntilde,
+        ograve,
+        oacute,
+        ocirc,
+        otilde,
+        oumlaut,
+        divide,
+        oslash,
+        ugrave,
+        uacute,
+        ucirc,
+        uumlaut,
+        yacute,
+        thorn,
+        yumlaut,
+        fnof,
+        Alpha,
+        Beta,
+        Gamma,
+        Delta,
+        Epsilon,
+        Zeta,
+        Eta,
+        Theta,
+        Iota,
+        Kappa,
+        Lambda,
+        Mu,
+        Nu,
+        Xi,
+        Omicron,
+        Pi,
+        Rho,
+        Sigma,
+        Tau,
+        Upsilon,
+        Phi,
+        Chi,
+        Psi,
+        Omega,
+        alpha,
+        beta,
+        gamma,
+        delta,
+        epsilon,
+        zeta,
+        eta,
+        theta,
+        iota,
+        kappa,
+        lambda,
+        mu,
+        nu,
+        xi,
+        omicron,
+        pi,
+        rho,
+        sigmaf,
+        sigma,
+        tau,
+        upsilon,
+        phi,
+        chi,
+        psi,
+        omega,
+        thetasym,
+        upsih,
+        piv,
+        bull,
+        hellip,
+        prime,
+        Prime,
+        oline,
+        frasl,
+        weierp,
+        imaginary,
+        real,
+        trademark,
+        alefsym,
+        larr,
+        uarr,
+        rarr,
+        darr,
+        harr,
+        crarr,
+        lArr,
+        uArr,
+        rArr,
+        dArr,
+        hArr,
+        forall,
+        part,
+        exist,
+        empty,
+        nabla,
+        isin,
+        notin,
+        ni,
+        prod,
+        sum,
+        minus,
+        lowast,
+        radic,
+        prop,
+        infin,
+        ang,
+        And,
+        Or ,
+        cap,
+        cup,
+        Int,
+        there4,
+        sim,
+        cong,
+        asymp,
+        ne,
+        equiv,
+        le,
+        ge,
+        sub,
+        sup,
+        nsub,
+        sube,
+        supe,
+        oplus,
+        otimes,
+        perp,
+        sdot,
+        lceil,
+        rceil,
+        lfloor,
+        rfloor,
+        lang,
+        rang,
+        loz,
+        spades,
+        clubs,
+        hearts,
+        diams,
+        OElig,
+        oelig,
+        Scaron,
+        scaron,
+        Yumlaut,
+        circ,
+        tilde,
+        ensp,
+        emsp,
+        thinsp,
+        zwnj,
+        zwj,
+        lrm,
+        rlm,
+        ndash,
+        mdash,
+        lsquo,
+        rsquo,
+        sbquo,
+        ldquo,
+        rdquo,
+        bdquo,
+        dagger,
+        Dagger,
+        permil,
+        lsaquo,
+        rsaquo,
+        euro,
+        tm,
+        hruler,
+        preformatted,//DocMarkupType
+        programlisting,//ListingType
+        verbatim,//TextType
+        javadocliteral,//TextType
+        javadoccode,//TextType
+        indexentry,//DocIndexEntryType
+        orderedlist,//DocListType
+        itemizedlist,//DocListType
+        simplesect,//DocSimpleSectType
+        title,//DocTitleType
+        variablelist,//DocVariableListType
+        table,//DocTableType
+        heading,//DocHeadingType
+        dotfile,//DocImageFileType
+        mscfile,//DocImageFileType
+        diafile,//DocImageFileType
+        toclist,//DocTocListType
+        language,//DocLanguageType
+        parameterlist,//DocParamListType
+        xrefsect,//DocXRefSectType
+        copydoc,//DocCopyType
+        details,//DocDetailsType
+        blockquote,//DocBlockQuoteType
+        parblock, //DocParBlockType
+        text // TextType
+
+    };
+
+    
+
+    /////////////////////////////////
 
     class DocBaseType : std::enable_shared_from_this<DocBaseType>
     {
@@ -618,6 +945,17 @@ namespace Harlinn::Common::Core::Doxygen
         virtual Doxygen::DoxType DoxType( ) const = 0;
 
     };
+
+    using DocBaseTypePtr = std::shared_ptr<DocBaseType>;
+
+    struct DocCmdGroupType
+    {
+        DoxCmdGroupType Type{};
+        DocBaseTypePtr Value;
+    };
+
+    HCC_EXPORT bool TryParseCmdGroupType( const RapidXml::XmlNode<>& xmlNode, DocCmdGroupType& result );
+    HCC_EXPORT bool TryParseTextOrCmdGroupType( const RapidXml::XmlNode<>& xmlNode, DocCmdGroupType& result );
 
     namespace Internal
     {
@@ -635,7 +973,39 @@ namespace Harlinn::Common::Core::Doxygen
         };
     }
 
+    class TextType : public Internal::DocBase<Doxygen::DoxType::TextType>
+    {
+        WideString text_;
+    public:
+        using Base = Internal::DocBase<Doxygen::DoxType::TextType>;
 
+        TextType( ) = default;
+        explicit TextType( const WideString& text )
+            : text_( text )
+        { }
+        HCC_EXPORT explicit TextType( const XmlNode& xmlNode );
+
+        const WideString& Text( ) const
+        {
+            return text_;
+        }
+    };
+
+    class TitleType : public Internal::DocBase<Doxygen::DoxType::TitleType>
+    {
+        WideString text_;
+    public:
+        using Base = Internal::DocBase<Doxygen::DoxType::TitleType>;
+
+        TitleType( ) = default;
+        HCC_EXPORT explicit TitleType( const XmlNode& xmlNode );
+
+        const WideString& Text( ) const
+        {
+            return text_;
+        }
+
+    };
 
     class DocEmojiType : public Internal::DocBase<Doxygen::DoxType::DocEmojiType>
     {
@@ -950,16 +1320,24 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit DocTableType( const XmlNode& xmlNode );
     };
 
-    class DocRefTextType : public Internal::DocBase<Doxygen::DoxType::DocRefTextType>
+    class DocRefTextType : public Internal::DocBase<Doxygen::DoxType::DocRefTextType>, public std::vector<DocCmdGroupType>
     {
+        WideString refId_;
+        DoxRefKind kindRef_{};
+        WideString external_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocRefTextType>;
 
         DocRefTextType( ) = default;
         HCC_EXPORT explicit DocRefTextType( const XmlNode& xmlNode );
+
+        const WideString& RefId() const { return refId_; }
+        DoxRefKind KindRef() const { return kindRef_; }
+        const WideString& External( ) const { return external_; }
+
     };
 
-    class DocVariableListType : public Internal::DocBase<Doxygen::DoxType::DocVariableListType>
+    class DocVariableListType : public Internal::DocBase<Doxygen::DoxType::DocVariableListType>, public std::vector<DocVariableListGroupPtr>
     {
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocVariableListType>;
@@ -970,87 +1348,133 @@ namespace Harlinn::Common::Core::Doxygen
 
     class DocVariableListGroup : public Internal::DocBase<Doxygen::DoxType::DocVariableListGroup>
     {
+        DocVarListEntryTypePtr varListEntry_;
+        DocListItemTypePtr listItem_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocVariableListGroup>;
 
         DocVariableListGroup( ) = default;
         HCC_EXPORT explicit DocVariableListGroup( const XmlNode& xmlNode );
+
+        const DocVarListEntryTypePtr& VarListEntry( ) const { return varListEntry_; }
+        const DocListItemTypePtr& ListItem( ) const { return listItem_; }
+
     };
 
     class DocVarListEntryType : public Internal::DocBase<Doxygen::DoxType::DocVarListEntryType>
     {
+        DocTitleTypePtr term_;
+
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocVarListEntryType>;
 
         DocVarListEntryType( ) = default;
         HCC_EXPORT explicit DocVarListEntryType( const XmlNode& xmlNode );
+
+        const DocTitleTypePtr& Term( ) const { return term_; }
     };
 
-    class DocSimpleSectType : public Internal::DocBase<Doxygen::DoxType::DocSimpleSectType>
+    class DocSimpleSectType : public Internal::DocBase<Doxygen::DoxType::DocSimpleSectType>, public std::vector<DocParaTypePtr>
     {
+        DoxSimpleSectKind kind_;
+        DocTitleTypePtr title_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocSimpleSectType>;
 
         DocSimpleSectType( ) = default;
         HCC_EXPORT explicit DocSimpleSectType( const XmlNode& xmlNode );
+
+        DoxSimpleSectKind kind() const { return kind_; }
+        const DocTitleTypePtr& title( ) const { return title_; }
+
     };
 
-    class DocListItemType : public Internal::DocBase<Doxygen::DoxType::DocListItemType>
+    class DocListItemType : public Internal::DocBase<Doxygen::DoxType::DocListItemType>, public std::vector<DocParaTypePtr>
     {
+        DoxCheck override_;
+        Int32 value_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocListItemType>;
 
         DocListItemType( ) = default;
         HCC_EXPORT explicit DocListItemType( const XmlNode& xmlNode );
+
+        DoxCheck Override() const { return override_; }
+        Int32 Value( ) const { return value_; }
+
     };
 
-    class DocListType : public Internal::DocBase<Doxygen::DoxType::DocListType>
+    class DocListType : public Internal::DocBase<Doxygen::DoxType::DocListType>, public std::vector<DocListItemTypePtr>
     {
+        DoxOlType type_;
+        Int32 start_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocListType>;
 
         DocListType( ) = default;
         HCC_EXPORT explicit DocListType( const XmlNode& xmlNode );
+
+        DoxOlType Type() const { return type_; }
+        Int32 Start( ) const { return start_; }
+
     };
 
     class DocIndexEntryType : public Internal::DocBase<Doxygen::DoxType::DocIndexEntryType>
     {
+        WideString primary_;
+        WideString secondary_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocIndexEntryType>;
 
         DocIndexEntryType( ) = default;
         HCC_EXPORT explicit DocIndexEntryType( const XmlNode& xmlNode );
+
+        const WideString& Primary( ) const { return primary_; }
+        const WideString& Secondary( ) const { return secondary_; }
+
     };
 
     class DocFormulaType : public Internal::DocBase<Doxygen::DoxType::DocFormulaType>
     {
+        WideString id_;
+        WideString content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocFormulaType>;
 
         DocFormulaType( ) = default;
         HCC_EXPORT explicit DocFormulaType( const XmlNode& xmlNode );
+
+        const WideString& Id( ) const { return id_; }
+        const WideString& Content( ) const { return content_; }
     };
 
     class DocAnchorType : public Internal::DocBase<Doxygen::DoxType::DocAnchorType>
     {
+        WideString id_;
+        WideString content_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocAnchorType>;
 
         DocAnchorType( ) = default;
         HCC_EXPORT explicit DocAnchorType( const XmlNode& xmlNode );
 
+        const WideString& Id( ) const { return id_; }
+        const WideString& Content( ) const { return content_; }
     };
 
-    class DocURLLink : public Internal::DocBase<Doxygen::DoxType::DocURLLink>
+    class DocURLLink : public Internal::DocBase<Doxygen::DoxType::DocURLLink>, public std::vector<DocCmdGroupType>
     {
+        WideString url_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocURLLink>;
 
         DocURLLink( ) = default;
         HCC_EXPORT explicit DocURLLink( const XmlNode& xmlNode );
+
+        const WideString& Url( ) const { return url_; }
     };
 
-    class DocMarkupType : public Internal::DocBase<Doxygen::DoxType::DocMarkupType>
+    class DocMarkupType : public Internal::DocBase<Doxygen::DoxType::DocMarkupType>, public std::vector<DocCmdGroupType>
     {
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocMarkupType>;
@@ -1060,7 +1484,7 @@ namespace Harlinn::Common::Core::Doxygen
     };
 
 
-    class DocParaType : public Internal::DocBase<Doxygen::DoxType::DocParaType>
+    class DocParaType : public Internal::DocBase<Doxygen::DoxType::DocParaType>, public std::vector<DocCmdGroupType>
     {
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocParaType>;
@@ -1068,7 +1492,7 @@ namespace Harlinn::Common::Core::Doxygen
         DocParaType( ) = default;
         HCC_EXPORT explicit DocParaType( const XmlNode& xmlNode );
     };
-
+    /*
     class DocCmdGroup : public Internal::DocBase<Doxygen::DoxType::DocCmdGroup>
     {
     public:
@@ -1077,8 +1501,9 @@ namespace Harlinn::Common::Core::Doxygen
         DocCmdGroup( ) = default;
         HCC_EXPORT explicit DocCmdGroup( const XmlNode& xmlNode );
     };
+    */
 
-    class DocSummaryType : public Internal::DocBase<Doxygen::DoxType::DocSummaryType>
+    class DocSummaryType : public Internal::DocBase<Doxygen::DoxType::DocSummaryType>, public std::vector<DocCmdGroupType>
     {
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocSummaryType>;
@@ -1087,7 +1512,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit DocSummaryType( const XmlNode& xmlNode );
     };
 
-    class DocTitleType : public Internal::DocBase<Doxygen::DoxType::DocTitleType>
+    class DocTitleType : public Internal::DocBase<Doxygen::DoxType::DocTitleType>, public std::vector<DocCmdGroupType>
     {
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::DocTitleType>;
@@ -1096,6 +1521,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit DocTitleType( const XmlNode& xmlNode );
     };
 
+    /*
     class DocTitleCmdGroup : public Internal::DocBase<Doxygen::DoxType::DocTitleCmdGroup>
     {
 
@@ -1105,312 +1531,245 @@ namespace Harlinn::Common::Core::Doxygen
         DocTitleCmdGroup( ) = default;
         HCC_EXPORT explicit DocTitleCmdGroup( const XmlNode& xmlNode );
     };
+    */
+    namespace Internal
+    {
+        template<Doxygen::DoxType doxType>
+        class DocInternalSectionBaseType : public DocBase<doxType>, public std::vector<DocBaseTypePtr>
+        {
+        public:
+            using Base = DocBase<doxType>;
+            using Base::XmlNode;
+            using BaseVector = std::vector<DocBaseTypePtr>;
+            using BaseVector::emplace_back;
+            using ParaType = DocParaType;
 
-    class DocInternalS6Type : public Internal::DocBase<Doxygen::DoxType::DocInternalS6Type>
+            using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
+        protected:
+            WideString id_;
+            TitleTypePtr title_;
+            ParaTypeVector para_;
+        public:
+            DocInternalSectionBaseType( ) = default;
+            HCC_EXPORT explicit DocInternalSectionBaseType( const XmlNode& xmlNode );
+
+            const WideString& Id( ) const { return id_; }
+            const TitleTypePtr& Title( ) const { return title_; }
+            const ParaTypeVector& Para( ) const { return para_; }
+        };
+
+        template<Doxygen::DoxType doxType, typename SubSectT>
+        class DocInternalSectionType : public DocInternalSectionBaseType<doxType>
+        {
+        public:
+            using Base = DocInternalSectionBaseType<doxType>;
+            using XmlNode = typename Base::XmlNode;
+            using ParaType = typename Base::ParaType;
+            using SubSectType = SubSectT;
+
+            using ParaTypeVector = typename Base::ParaTypeVector;
+            using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
+        protected:
+            using BaseVector = typename Base::BaseVector;
+            using BaseVector::emplace_back;
+            using Base::id_;
+            using Base::title_;
+            using Base::para_;
+        private:
+            SubSectTypeVector subSections_;
+        public:
+            DocInternalSectionType( ) = default;
+            HCC_EXPORT explicit DocInternalSectionType( const XmlNode& xmlNode, std::string_view subSectionElementName );
+
+            const SubSectTypeVector& SubSections( ) const { return subSections_; }
+        };
+    }
+
+
+    class DocInternalS6Type : public Internal::DocInternalSectionBaseType<Doxygen::DoxType::DocInternalS6Type>
     {
     public:
-        using ParaType = DocParaType;
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-    private:
-        ParaTypeVector para_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocInternalS6Type>;
+        using Base = Internal::DocInternalSectionBaseType<Doxygen::DoxType::DocInternalS6Type>;
 
         DocInternalS6Type( ) = default;
         HCC_EXPORT explicit DocInternalS6Type( const XmlNode& xmlNode );
-
-        const ParaTypeVector& Para( ) const { return para_; }
     };
 
-    class DocInternalS5Type : public Internal::DocBase<Doxygen::DoxType::DocInternalS5Type>
+    class DocInternalS5Type : public Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS5Type, DocInternalS6Type>
     {
     public:
-        using ParaType = DocParaType;
-        using SubSectType = DocInternalS6Type;
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-    private:
-        ParaTypeVector para_;
-        SubSectTypeVector sections_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocInternalS5Type>;
+        using Base = Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS5Type, DocInternalS6Type>;
 
         DocInternalS5Type( ) = default;
         HCC_EXPORT explicit DocInternalS5Type( const XmlNode& xmlNode );
-
-        const ParaTypeVector& Para( ) const { return para_; }
-        const SubSectTypeVector& Sections( ) const { return sections_; }
     };
 
-    class DocInternalS4Type : public Internal::DocBase<Doxygen::DoxType::DocInternalS4Type>
+    class DocInternalS4Type : public Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS4Type, DocInternalS5Type>
     {
     public:
-        using ParaType = DocParaType;
-        using SubSectType = DocInternalS5Type;
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-    private:
-        ParaTypeVector para_;
-        SubSectTypeVector sections_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocInternalS4Type>;
+        using Base = Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS4Type, DocInternalS5Type>;
 
         DocInternalS4Type( ) = default;
         HCC_EXPORT explicit DocInternalS4Type( const XmlNode& xmlNode );
-
-        const ParaTypeVector& Para( ) const { return para_; }
-        const SubSectTypeVector& Sections( ) const { return sections_; }
     };
 
-    class DocInternalS3Type : public Internal::DocBase<Doxygen::DoxType::DocInternalS3Type>
+    class DocInternalS3Type : public Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS3Type, DocInternalS4Type>
     {
     public:
-        using ParaType = DocParaType;
-        using SubSectType = DocInternalS4Type;
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-    private:
-        ParaTypeVector para_;
-        SubSectTypeVector sections_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocInternalS3Type>;
+        using Base = Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS3Type, DocInternalS4Type>;
 
         DocInternalS3Type( ) = default;
         HCC_EXPORT explicit DocInternalS3Type( const XmlNode& xmlNode );
-
-        const ParaTypeVector& Para( ) const { return para_; }
-        const SubSectTypeVector& Sections( ) const { return sections_; }
     };
 
-    class DocInternalS2Type : public Internal::DocBase<Doxygen::DoxType::DocInternalS2Type>
+    class DocInternalS2Type : public Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS2Type, DocInternalS3Type>
     {
     public:
-        using ParaType = DocParaType;
-        using SubSectType = DocInternalS3Type;
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-    private:
-        ParaTypeVector para_;
-        SubSectTypeVector sections_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocInternalS2Type>;
+        using Base = Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS2Type, DocInternalS3Type>;
 
         DocInternalS2Type( ) = default;
         HCC_EXPORT explicit DocInternalS2Type( const XmlNode& xmlNode );
-
-        const ParaTypeVector& Para( ) const { return para_; }
-        const SubSectTypeVector& Sections( ) const { return sections_; }
     };
 
-    class DocInternalS1Type : public Internal::DocBase<Doxygen::DoxType::DocInternalS1Type>
+    class DocInternalS1Type : public Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS1Type, DocInternalS2Type>
     {
     public:
-        using ParaType = DocParaType;
-        using SubSectType = DocInternalS2Type;
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-    private:
-        ParaTypeVector para_;
-        SubSectTypeVector sections_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocInternalS1Type>;
+        using Base = Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalS1Type, DocInternalS2Type>;
 
         DocInternalS1Type( ) = default;
         HCC_EXPORT explicit DocInternalS1Type( const XmlNode& xmlNode );
-
-        const ParaTypeVector& Para( ) const { return para_; }
-        const SubSectTypeVector& Sections( ) const { return sections_; }
     };
 
-
-    class DocInternalType : public Internal::DocBase<Doxygen::DoxType::DocInternalType>
+    class DocInternalType : public Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalType, DocInternalS1Type>
     {
     public:
-        using ParaType = DocParaType;
-        using SubSectType = DocInternalS1Type;
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-    private:
-        ParaTypeVector para_;
-        SubSectTypeVector sections_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocInternalType>;
+        using Base = Internal::DocInternalSectionType<Doxygen::DoxType::DocInternalType, DocInternalS1Type>;
 
         DocInternalType( ) = default;
         HCC_EXPORT explicit DocInternalType( const XmlNode& xmlNode );
-
-        const ParaTypeVector& Para( ) const { return para_; }
-        const SubSectTypeVector& Sections( ) const { return sections_; }
-
     };
 
-    class DocSect6Type : public Internal::DocBase<Doxygen::DoxType::DocSect6Type>
+    namespace Internal
+    {
+        template<Doxygen::DoxType doxType, typename InternalT>
+        class DocSectionBaseType : public DocBase<doxType>, public std::vector<DocBaseTypePtr>
+        {
+        public:
+            using Base = DocBase<doxType>;
+            using Base::XmlNode;
+            using BaseVector = std::vector<DocBaseTypePtr>;
+            using BaseVector::emplace_back;
+            using ParaType = DocParaType;
+            using InternalType = InternalT;
+
+            using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
+            using InternalTypeVector = std::vector<std::shared_ptr<InternalType>>;
+        protected:
+            WideString id_;
+            TitleTypePtr title_;
+            ParaTypeVector para_;
+            InternalTypeVector internal_;
+        public:
+            DocSectionBaseType( ) = default;
+            HCC_EXPORT explicit DocSectionBaseType( const XmlNode& xmlNode );
+
+            const WideString& Id( ) const { return id_; }
+            const TitleTypePtr& Title( ) const { return title_; }
+            const ParaTypeVector& Para( ) const { return para_; }
+            const InternalTypeVector& Internal( ) const { return internal_; }
+        };
+
+        template<Doxygen::DoxType doxType, typename InternalT, typename SubSectT  >
+        class DocSectionType : public DocSectionBaseType<doxType, InternalT>
+        {
+        public:
+            using Base = DocSectionBaseType<doxType, InternalT>;
+            using XmlNode = typename Base::XmlNode;
+            using ParaType = typename Base::ParaType;
+            using InternalType = typename Base::InternalType;
+            using SubSectType = SubSectT;
+
+            using ParaTypeVector = typename Base::ParaTypeVector;
+            using InternalTypeVector = typename Base::InternalTypeVector;
+            using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
+        protected:
+            using BaseVector = typename Base::BaseVector;
+            using BaseVector::emplace_back;
+            using Base::id_;
+            using Base::title_;
+            using Base::para_;
+            using Base::internal_;
+        private:
+            SubSectTypeVector subSections_;
+        public:
+            DocSectionType( ) = default;
+            HCC_EXPORT explicit DocSectionType( const XmlNode& xmlNode, std::string_view subSectionElementName);
+
+            const SubSectTypeVector& SubSections( ) const { return subSections_; }
+        };
+    }
+
+    class DocSect6Type : public Internal::DocSectionBaseType<Doxygen::DoxType::DocSect6Type, DocInternalS6Type>
     {
     public:
-        using ParaType = DocParaType;
-        using InternalType = DocInternalS5Type;
-
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using InternalTypeVector = std::vector<std::shared_ptr<InternalType>>;
-
-        using ContentType = std::variant<ParaTypeVector, InternalTypeVector>;
-        using ContentTypeVector = std::vector<ContentType>;
-    private:
-        WideString id_;
-        WideString title_;
-        ContentTypeVector contents_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocSect6Type>;
+        using Base = Internal::DocSectionBaseType<Doxygen::DoxType::DocSect6Type, DocInternalS6Type>;
+        using XmlNode = typename Base::XmlNode;
 
         DocSect6Type( ) = default;
         HCC_EXPORT explicit DocSect6Type( const XmlNode& xmlNode );
-
-        const WideString& Id( ) const { return id_; }
-        const WideString& Title( ) const { return title_; }
-        const ContentTypeVector& Contents( ) const { return contents_; }
     };
 
-
-    class DocSect5Type : public Internal::DocBase<Doxygen::DoxType::DocSect5Type>
+    class DocSect5Type : public Internal::DocSectionType<Doxygen::DoxType::DocSect5Type, DocInternalS5Type, DocSect6Type>
     {
     public:
-        using ParaType = DocParaType;
-        using InternalType = DocInternalS5Type;
-        using SubSectType = DocSect6Type;
-
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using InternalTypeVector = std::vector<std::shared_ptr<InternalType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-
-        using ContentType = std::variant<ParaTypeVector, InternalTypeVector, SubSectTypeVector>;
-        using ContentTypeVector = std::vector<ContentType>;
-    private:
-        WideString id_;
-        WideString title_;
-        ContentTypeVector contents_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocSect5Type>;
+        using Base = Internal::DocSectionType<Doxygen::DoxType::DocSect5Type, DocInternalS5Type, DocSect6Type>;
+        using XmlNode = typename Base::XmlNode;
 
         DocSect5Type( ) = default;
         HCC_EXPORT explicit DocSect5Type( const XmlNode& xmlNode );
-
-        const WideString& Id( ) const { return id_; }
-        const WideString& Title( ) const { return title_; }
-        const ContentTypeVector& Contents( ) const { return contents_; }
     };
 
-    class DocSect4Type : public Internal::DocBase<Doxygen::DoxType::DocSect4Type>
+    class DocSect4Type : public Internal::DocSectionType<Doxygen::DoxType::DocSect4Type, DocInternalS4Type, DocSect5Type>
     {
     public:
-        using ParaType = DocParaType;
-        using InternalType = DocInternalS4Type;
-        using SubSectType = DocSect5Type;
-
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using InternalTypeVector = std::vector<std::shared_ptr<InternalType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-
-        using ContentType = std::variant<ParaTypeVector, InternalTypeVector, SubSectTypeVector>;
-        using ContentTypeVector = std::vector<ContentType>;
-    private:
-        WideString id_;
-        WideString title_;
-        ContentTypeVector contents_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocSect4Type>;
+        using Base = Internal::DocSectionType<Doxygen::DoxType::DocSect4Type, DocInternalS4Type, DocSect5Type>;
+        using XmlNode = typename Base::XmlNode;
 
         DocSect4Type( ) = default;
         HCC_EXPORT explicit DocSect4Type( const XmlNode& xmlNode );
-
-        const WideString& Id( ) const { return id_; }
-        const WideString& Title( ) const { return title_; }
-        const ContentTypeVector& Contents( ) const { return contents_; }
     };
 
-    class DocSect3Type : public Internal::DocBase<Doxygen::DoxType::DocSect3Type>
+    class DocSect3Type : public Internal::DocSectionType<Doxygen::DoxType::DocSect3Type, DocInternalS3Type, DocSect4Type>
     {
     public:
-        using ParaType = DocParaType;
-        using InternalType = DocInternalS3Type;
-        using SubSectType = DocSect4Type;
-
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using InternalTypeVector = std::vector<std::shared_ptr<InternalType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-
-        using ContentType = std::variant<ParaTypeVector, InternalTypeVector, SubSectTypeVector>;
-        using ContentTypeVector = std::vector<ContentType>;
-    private:
-        WideString id_;
-        WideString title_;
-        ContentTypeVector contents_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocSect3Type>;
+        using Base = Internal::DocSectionType<Doxygen::DoxType::DocSect3Type, DocInternalS3Type, DocSect4Type>;
+        using XmlNode = typename Base::XmlNode;
 
         DocSect3Type( ) = default;
         HCC_EXPORT explicit DocSect3Type( const XmlNode& xmlNode );
-
-        const WideString& Id( ) const { return id_; }
-        const WideString& Title( ) const { return title_; }
-        const ContentTypeVector& Contents( ) const { return contents_; }
     };
 
-    class DocSect2Type : public Internal::DocBase<Doxygen::DoxType::DocSect2Type>
+    class DocSect2Type : public Internal::DocSectionType<Doxygen::DoxType::DocSect2Type, DocInternalS2Type, DocSect3Type>
     {
     public:
-        using ParaType = DocParaType;
-        using InternalType = DocInternalS2Type;
-        using SubSectType = DocSect3Type;
-
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using InternalTypeVector = std::vector<std::shared_ptr<InternalType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-
-        using ContentType = std::variant<ParaTypeVector, InternalTypeVector, SubSectTypeVector>;
-        using ContentTypeVector = std::vector<ContentType>;
-    private:
-        WideString id_;
-        WideString title_;
-        ContentTypeVector contents_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocSect2Type>;
+        using Base = Internal::DocSectionType<Doxygen::DoxType::DocSect2Type, DocInternalS2Type, DocSect3Type>;
+        using XmlNode = typename Base::XmlNode;
 
         DocSect2Type( ) = default;
         HCC_EXPORT explicit DocSect2Type( const XmlNode& xmlNode );
-
-        const WideString& Id( ) const { return id_; }
-        const WideString& Title( ) const { return title_; }
-        const ContentTypeVector& Contents( ) const { return contents_; }
     };
 
-    class DocSect1Type : public Internal::DocBase<Doxygen::DoxType::DocSect1Type>
+    class DocSect1Type : public Internal::DocSectionType<Doxygen::DoxType::DocSect1Type, DocInternalS1Type, DocSect2Type>
     {
     public:
-        using ParaType = DocParaType;
-        using InternalType = DocInternalS1Type;
-        using SubSectType = DocSect2Type;
-
-        using ParaTypeVector = std::vector<std::shared_ptr<ParaType>>;
-        using InternalTypeVector = std::vector<std::shared_ptr<InternalType>>;
-        using SubSectTypeVector = std::vector<std::shared_ptr<SubSectType>>;
-
-        using ContentType = std::variant<ParaTypeVector, InternalTypeVector, SubSectTypeVector>;
-        using ContentTypeVector = std::vector<ContentType>;
-    private:
-        WideString id_;
-        WideString title_;
-        ContentTypeVector contents_;
-    public:
-        using Base = Internal::DocBase<Doxygen::DoxType::DocSect1Type>;
+        using Base = Internal::DocSectionType<Doxygen::DoxType::DocSect1Type, DocInternalS1Type, DocSect2Type>;
+        using XmlNode = typename Base::XmlNode;
 
         DocSect1Type( ) = default;
         HCC_EXPORT explicit DocSect1Type( const XmlNode& xmlNode );
-
-        const WideString& Id( ) const { return id_; }
-        const WideString& Title( ) const { return title_; }
-        const ContentTypeVector& Contents( ) const { return contents_; }
-
     };
+
+
 
     class LocationType : public Internal::DocBase<Doxygen::DoxType::LocationType>
     {
@@ -1447,6 +1806,7 @@ namespace Harlinn::Common::Core::Doxygen
         WideString compoundRef_;
         Int32 startLine_ = 0;
         Int32 endline_ = 0;
+        WideString text_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::ReferenceType>;
 
@@ -1458,25 +1818,29 @@ namespace Harlinn::Common::Core::Doxygen
         const WideString& CompoundRef( ) const { return compoundRef_; }
         Int32 StartLine( ) const { return startLine_; }
         Int32 Endline( ) const { return endline_; }
-
+        const WideString& Text( ) const { return text_; }
     };
-    /*
+    
     class SpType : public Internal::DocBase<Doxygen::DoxType::SpType>
     {
+        Int32 value_;
+        WideString text_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::SpType>;
 
         SpType( ) = default;
         HCC_EXPORT explicit SpType( const XmlNode& xmlNode );
+
+        Int32 Value( ) const { return value_; }
+        const WideString& Text( ) const { return text_; }
+
     };
-    */
-    class HighlightType : public Internal::DocBase<Doxygen::DoxType::HighlightType>
+    
+    class HighlightType : public Internal::DocBase<Doxygen::DoxType::HighlightType>, public std::vector<DocBaseTypePtr>
     {
-    public:
-        using SpOrRef = std::variant<Int32, std::shared_ptr<RefTextType>>;
     private:
         DoxHighlightClass class_;
-        std::vector<SpOrRef> items_;
+        std::vector<RefTextTypePtr> ref_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::HighlightType>;
         
@@ -1484,7 +1848,7 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit HighlightType( const XmlNode& xmlNode );
 
         DoxHighlightClass Class( ) const { return class_; }
-        const std::vector<SpOrRef>& Items( ) const { return items_; }
+        const std::vector<RefTextTypePtr>& Ref( ) const { return ref_; }
     };
 
     class CodeLineType : public Internal::DocBase<Doxygen::DoxType::CodeLineType>
@@ -1580,8 +1944,9 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit GraphType( const XmlNode& xmlNode );
     };
 
-    class LinkedTextType : public Internal::DocBase<Doxygen::DoxType::LinkedTextType>, public std::vector<RefTextTypePtr>
+    class LinkedTextType : public Internal::DocBase<Doxygen::DoxType::LinkedTextType>, public std::vector<DocBaseTypePtr>
     {
+        std::vector<RefTextTypePtr> ref_;
     public:
         using Base = Internal::DocBase<Doxygen::DoxType::LinkedTextType>;
 
@@ -1642,9 +2007,9 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT explicit EnumvalueType( const XmlNode& xmlNode );
     };
 
-    class DescriptionType : public Internal::DocBase<Doxygen::DoxType::DescriptionType>
+    class DescriptionType : public Internal::DocBase<Doxygen::DoxType::DescriptionType>, public std::vector<DocBaseTypePtr>
     {
-        WideString title_;
+        TitleTypePtr title_;
         std::vector<DocParaTypePtr> para_;
         std::vector<DocInternalTypePtr> internal_;
         std::vector<DocSect1TypePtr> sect1_;
@@ -1654,11 +2019,10 @@ namespace Harlinn::Common::Core::Doxygen
         DescriptionType( ) = default;
         HCC_EXPORT explicit DescriptionType( const XmlNode& xmlNode );
 
-        const WideString& Title( ) const { return title_; }
+        const TitleTypePtr& Title( ) const { return title_; }
         const std::vector<DocParaTypePtr>& Para( ) const { return para_; }
         const std::vector<DocInternalTypePtr>& Internal( ) const { return internal_; }
         const std::vector<DocSect1TypePtr>& Sect1( ) const { return sect1_; }
-
     };
 
 
@@ -2124,7 +2488,7 @@ namespace Harlinn::Common::Core::Doxygen
         const std::vector<RefTypePtr>& InnerGroup() const { return innerGroup_; }
         const std::vector<WideString>& Qualifier() const { return qualifier_; }
         const TemplateParamListTypePtr& TemplateParamList() const { return templateParamList_; }
-        const std::vector<SectionDefTypePtr>& Sectiondef() const { return sectiondef_; }
+        const std::vector<SectionDefTypePtr>& SectionDef() const { return sectiondef_; }
         const TableOfContentsTypePtr& TableOfContents() const { return tableOfContents_; }
         const LinkedTextTypePtr& RequiresClause() const { return requiresClause_; }
         const LinkedTextTypePtr& Initializer() const { return initializer_; }
@@ -2160,7 +2524,582 @@ namespace Harlinn::Common::Core::Doxygen
         HCC_EXPORT void AddDirectory( const WideString& directoryName );
         HCC_EXPORT void AddFile( const WideString& filename );
 
+        HCC_EXPORT std::unique_ptr<Structure::TypeSystem> TypeSystem( ) const;
+
     };
+
+    namespace Structure
+    {
+
+        enum class MemberType
+        {
+            Unknown,
+            Namespace,
+            Struct,
+            Class,
+            Union,
+            Interface,
+            Module,
+            Concept,
+            Function,
+            Enum,
+            Define,
+            Property,
+            Event,
+            Variable,
+            Typedef,
+            Signal,
+            Prototype,
+            Friend,
+            DCop,
+            Slot,
+            InterfaceReference,
+            Service
+
+
+        };
+
+        class Member;
+        class Container;
+        class Namespace;
+        class Struct;
+        class Class;
+        class Union;
+        class Interface;
+        class Enum;
+        class Concept;
+        class Function;
+        class Module;
+        class Define;
+        class Property;
+        class Event;
+        class Variable;
+        class Typedef;
+        class Signal;
+        class Prototype;
+        class Friend;
+        class DCop;
+        class Slot;
+        class InterfaceReference;
+        class Service;
+
+        class TypeSystem
+        {
+            std::vector<std::unique_ptr<Member>> all_;
+            std::unordered_map<WideStringView, Member*> allTypes_;
+            std::unordered_map<WideStringView, Member*> allTypesByQualifiedName_;
+            std::unordered_map<WideStringView, Namespace*> allNamespaces_;
+            std::unordered_map<WideStringView, Namespace*> allNamespacesByQualifiedName_;
+            Namespace* global_ = nullptr;
+        public:
+            HCC_EXPORT TypeSystem( );
+            HCC_EXPORT ~TypeSystem( );
+
+            const std::unordered_map<WideStringView, Member*>& AllTypes( ) const { return allTypes_; }
+            const std::unordered_map<WideStringView, Member*>& AllTypesByQualifiedName( ) const { return allTypesByQualifiedName_; }
+            const std::unordered_map<WideStringView, Namespace*>& AllNamespaces( ) const { return allNamespaces_; }
+            const std::unordered_map<WideStringView, Namespace*>& AllNamespacesByQualifiedName( ) const { allNamespacesByQualifiedName_; }
+
+            Member* FindTypeById( const WideString& id ) const
+            {
+                auto it = allTypes_.find( id );
+                if ( it != allTypes_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
+            Member* FindTypeByQualifiedName( const WideString& qualifiedName ) const
+            {
+                auto it = allTypesByQualifiedName_.find( qualifiedName );
+                if ( it != allTypesByQualifiedName_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
+            Namespace* FindNamespaceById( const WideString& id ) const
+            {
+                auto it = allNamespaces_.find( id );
+                if ( it != allNamespaces_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
+            Namespace* FindNamespaceByQualifiedName( const WideString& qualifiedName ) const
+            {
+                auto it = allNamespacesByQualifiedName_.find( qualifiedName );
+                if ( it != allNamespacesByQualifiedName_.end( ) )
+                {
+                    return it->second;
+                }
+                return nullptr;
+            }
+
+            HCC_EXPORT void Process( const DocumentCollection& documentCollection );
+
+            Namespace* GlobalNamespace( ) const { return global_; }
+
+
+        private:
+            HCC_EXPORT void ScanSections( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container );
+        public:
+            HCC_EXPORT Namespace* AddNamespace( const Doxygen::CompoundDefTypePtr& compoundDef );
+            HCC_EXPORT Struct* AddStruct( const Doxygen::CompoundDefTypePtr& compoundDef );
+            HCC_EXPORT Class* AddClass( const Doxygen::CompoundDefTypePtr& compoundDef );
+            HCC_EXPORT Union* AddUnion( const Doxygen::CompoundDefTypePtr& compoundDef );
+            HCC_EXPORT Interface* AddInterface( const Doxygen::CompoundDefTypePtr& compoundDef );
+            
+            HCC_EXPORT Concept* AddConcept( const Doxygen::CompoundDefTypePtr& compoundDef );
+            
+            HCC_EXPORT Module* AddModule( const Doxygen::CompoundDefTypePtr& compoundDef );
+            HCC_EXPORT Member* AddCompoundDef( const Doxygen::CompoundDefTypePtr& compoundDef );
+
+            HCC_EXPORT Function* AddFunction( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Enum* AddEnum( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Define* AddDefine( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Property* AddProperty( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Event* AddEvent( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Variable* AddVariable( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Typedef* AddTypedef( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Signal* AddSignal( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Prototype* AddPrototype( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Friend* AddFriend( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT DCop* AddDCop( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Slot* AddSlot( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Service* AddService( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT InterfaceReference* AddInterfaceReference( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+            HCC_EXPORT Member* AddMemberDef( const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+
+            template<typename MemberDefT>
+            MemberDefT* AddMemberDef( const WideString& qualifiedName, const WideString& name, const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef );
+        };
+
+
+        class Member 
+        {
+            Structure::TypeSystem* typeSystem_ = nullptr;
+            Container* owner_ = nullptr;
+            WideString name_;
+            WideString qualifiedName_;
+        public:
+
+            explicit Member( Structure::TypeSystem* typeSystem )
+                : typeSystem_( typeSystem )
+            { }
+            virtual ~Member( ) = default;
+            virtual Structure::MemberType MemberType( ) const = 0;
+
+            Structure::TypeSystem* TypeSystem( ) const { return typeSystem_; }
+            Container* Owner( ) const { return owner_; }
+            void SetOwner( Container* owner )
+            {
+                owner_ = owner;
+            }
+
+            const WideString& Name( ) const { return name_; }
+            void SetName( const WideString& name )
+            {
+                name_ = name;
+            }
+            const WideString& QualifiedName( ) const { return qualifiedName_; }
+            void SetQualifiedName( const WideString& qualifiedName )
+            {
+                qualifiedName_ = qualifiedName;
+            }
+
+
+
+        };
+
+        class Container : public Member
+        {
+            std::vector<Member*> members_;
+            std::unordered_map<WideString,Member*> membersByName_;
+        public:
+            using Base = Member;
+            explicit Container( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            { }
+
+            const std::vector<Member*>& Members( ) const { return members_; }
+            const std::unordered_map<WideString, Member*>& MembersByName( ) const { return membersByName_; }
+
+            virtual void Add( Member* member )
+            {
+                assert( member != nullptr );
+                if ( !membersByName_.contains( member->Name( ) ) )
+                {
+                    membersByName_.emplace( member->Name( ), member );
+                    members_.emplace_back( member );
+                }
+            }
+
+        };
+
+        class TypeContainer : public Container
+        {
+            Doxygen::CompoundDefTypePtr compoundDef_;
+        public:
+            using Base = Container;
+            explicit TypeContainer( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+
+            const Doxygen::CompoundDefTypePtr& CompoundDef( ) const
+            {
+                return compoundDef_;
+            }
+            void Assign( const Doxygen::CompoundDefTypePtr& compoundDef )
+            {
+                compoundDef_ = compoundDef;
+            }
+
+        };
+
+        class MemberDef : public Member
+        {
+            Doxygen::CompoundDefTypePtr compoundDef_;
+            Doxygen::SectionDefTypePtr sectionDef_;
+            Doxygen::MemberDefTypePtr memberDef_;
+        public:
+            using Base = Member;
+            explicit MemberDef( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+
+            const Doxygen::CompoundDefTypePtr& CompoundDef( ) const
+            {
+                return compoundDef_;
+            }
+
+            const Doxygen::SectionDefTypePtr& SectionDef( ) const { return sectionDef_; }
+            const Doxygen::MemberDefTypePtr& SemberDef( ) const { return memberDef_; }
+
+            void Assign( const Doxygen::CompoundDefTypePtr& compoundDef, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
+            {
+                compoundDef_ = compoundDef;
+                sectionDef_ = sectionDef;
+                memberDef_ = memberDef;
+            }
+
+        };
+
+
+        
+
+
+        namespace Internal
+        {
+            template<typename BaseT,Structure::MemberType memberType>
+            class Base : public BaseT
+            {
+            public:
+                static constexpr Structure::MemberType MEMBERTYPE = memberType;
+
+                Base( Structure::TypeSystem* typeSystem )
+                    : BaseT( typeSystem )
+                { }
+
+                template<typename T>
+                    requires std::is_constructible_v<BaseT, Structure::TypeSystem*,const T&>
+                Base( Structure::TypeSystem* typeSystem, const T& arg )
+                    : BaseT( typeSystem, arg )
+                {
+                }
+
+                virtual Structure::MemberType MemberType( ) const override
+                {
+                    return MEMBERTYPE;
+                }
+            };
+
+            template<Structure::MemberType memberType>
+            using MemberBase = Base<Member, memberType>;
+
+            template<Structure::MemberType memberType>
+            using ContainerBase = Base<Container, memberType>;
+
+            template<Structure::MemberType memberType>
+            using TypeContainerBase = Base<TypeContainer, memberType>;
+
+            template<Structure::MemberType memberType>
+            using MemberDefBase = Base<MemberDef, memberType>;
+            
+        }
+
+        class Namespace : public Internal::TypeContainerBase<Structure::MemberType::Namespace>
+        {
+        public:
+            using Base = Internal::TypeContainerBase<Structure::MemberType::Namespace>;
+
+            explicit Namespace( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+        };
+
+        class Struct : public Internal::TypeContainerBase<Structure::MemberType::Struct>
+        {
+        public:
+            using Base = Internal::TypeContainerBase<Structure::MemberType::Struct>;
+
+            explicit Struct( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+
+        class Class : public Internal::TypeContainerBase<Structure::MemberType::Class>
+        {
+        public:
+            using Base = Internal::TypeContainerBase<Structure::MemberType::Class>;
+
+            explicit Class( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+        };
+
+        class Union : public Internal::TypeContainerBase<Structure::MemberType::Union>
+        {
+        public:
+            using Base = Internal::TypeContainerBase<Structure::MemberType::Union>;
+
+            explicit Union( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+        };
+
+        class Interface : public Internal::TypeContainerBase<Structure::MemberType::Interface>
+        {
+        public:
+            using Base = Internal::TypeContainerBase<Structure::MemberType::Interface>;
+
+            explicit Interface( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+        };
+
+        class Enum : public Internal::ContainerBase<Structure::MemberType::Enum>
+        {
+            Doxygen::CompoundDefTypePtr compoundDef_;
+            Doxygen::SectionDefTypePtr sectionDef_;
+            Doxygen::MemberDefTypePtr memberDef_;
+        public:
+            using Base = Internal::ContainerBase<Structure::MemberType::Enum>;
+
+            explicit Enum( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+            const Doxygen::CompoundDefTypePtr& CompoundDef( ) const
+            {
+                return compoundDef_;
+            }
+
+            const Doxygen::SectionDefTypePtr& SectionDef( ) const { return sectionDef_; }
+            const Doxygen::MemberDefTypePtr& SemberDef( ) const { return memberDef_; }
+
+            void Assign( const Doxygen::CompoundDefTypePtr& compoundDef, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
+            {
+                compoundDef_ = compoundDef;
+                sectionDef_ = sectionDef;
+                memberDef_ = memberDef;
+            }
+
+        };
+
+        class Concept : public Internal::TypeContainerBase<Structure::MemberType::Concept>
+        {
+        public:
+            using Base = Internal::TypeContainerBase<Structure::MemberType::Concept>;
+
+            explicit Concept( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+        };
+
+        class Module : public Internal::TypeContainerBase<Structure::MemberType::Module>
+        {
+        public:
+            using Base = Internal::TypeContainerBase<Structure::MemberType::Module>;
+
+            explicit Module( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+
+        };
+
+        class Function : public Internal::MemberDefBase<Structure::MemberType::Function>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Function>;
+
+            explicit Function( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+
+        class Define : public Internal::MemberDefBase<Structure::MemberType::Define>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Define>;
+
+            explicit Define( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+
+        class Property : public Internal::MemberDefBase<Structure::MemberType::Property>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Property>;
+
+            explicit Property( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class Event : public Internal::MemberDefBase<Structure::MemberType::Event>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Event>;
+
+            explicit Event( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class Variable : public Internal::MemberDefBase<Structure::MemberType::Variable>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Variable>;
+
+            explicit Variable( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class Typedef : public Internal::MemberDefBase<Structure::MemberType::Typedef>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Typedef>;
+
+            explicit Typedef( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class Signal : public Internal::MemberDefBase<Structure::MemberType::Signal>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Signal>;
+
+            explicit Signal( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class Prototype : public Internal::MemberDefBase<Structure::MemberType::Prototype>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Prototype>;
+
+            explicit Prototype( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class Friend : public Internal::MemberDefBase<Structure::MemberType::Friend>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Friend>;
+
+            explicit Friend( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class DCop : public Internal::MemberDefBase<Structure::MemberType::DCop>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::DCop>;
+
+            explicit DCop( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class Slot : public Internal::MemberDefBase<Structure::MemberType::Slot>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Slot>;
+
+            explicit Slot( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        class InterfaceReference : public Internal::MemberDefBase<Structure::MemberType::InterfaceReference>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::InterfaceReference>;
+
+            explicit InterfaceReference( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+
+        class Service : public Internal::MemberDefBase<Structure::MemberType::Service>
+        {
+        public:
+            using Base = Internal::MemberDefBase<Structure::MemberType::Service>;
+
+            explicit Service( Structure::TypeSystem* typeSystem )
+                : Base( typeSystem )
+            {
+            }
+        };
+        
+
+        
+        template<typename MemberDefT>
+        inline MemberDefT* TypeSystem::AddMemberDef( const WideString& qualifiedName, const WideString& name, const Doxygen::CompoundDefTypePtr& compoundDef, Container* container, const Doxygen::SectionDefTypePtr& sectionDef, const Doxygen::MemberDefTypePtr& memberDef )
+        {
+            auto memberDefT = std::make_unique<MemberDefT>( this );
+            auto result = memberDefT.get( );
+            all_.emplace_back( std::move( memberDefT ) );
+            result->SetQualifiedName( qualifiedName );
+            result->SetName( name );
+            result->SetOwner( container );
+            container->Add( result );
+            result->Assign( compoundDef, sectionDef, memberDef );
+            return result;
+        }
+
+    }
 
 
 }
@@ -3303,6 +4242,64 @@ namespace Harlinn::Common::Core
     {
         return Doxygen::ParseDoxOlType( str );
     }
+
+
+    /////////
+    HCC_EXPORT WideString ToWideString( Doxygen::DoxCmdGroupType value );
+    HCC_EXPORT WideString ToWideString( Doxygen::DoxCmdGroupType value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Doxygen::DoxCmdGroupType value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Doxygen::DoxCmdGroupType value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Doxygen
+    {
+        HCC_EXPORT DoxCmdGroupType ParseDoxCmdGroupType( const WideString& str );
+        HCC_EXPORT DoxCmdGroupType ParseDoxCmdGroupType( const WideString& str, DoxCmdGroupType defaultResult );
+        HCC_EXPORT bool TryParseDoxCmdGroupType( const WideString& str, DoxCmdGroupType& value );
+
+        inline DoxCmdGroupType ParseDoxCmdGroupType( const AnsiString& str )
+        {
+            return ParseDoxCmdGroupType( ToWideString( str ) );
+        }
+        inline DoxCmdGroupType ParseDoxCmdGroupType( const AnsiString& str, DoxCmdGroupType defaultResult )
+        {
+            return ParseDoxCmdGroupType( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseDoxCmdGroupType( const AnsiString& str, DoxCmdGroupType& value )
+        {
+            return TryParseDoxCmdGroupType( ToWideString( str ), value );
+        }
+    }
+
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Doxygen::DoxCmdGroupType& value )
+    {
+        return Doxygen::TryParseDoxCmdGroupType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Doxygen::DoxCmdGroupType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Doxygen::ParseDoxCmdGroupType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Doxygen::DoxCmdGroupType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Doxygen::ParseDoxCmdGroupType( str );
+    }
+
+
+
 
 
 }

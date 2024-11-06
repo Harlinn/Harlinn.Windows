@@ -341,6 +341,7 @@
     <ClCompile Include="HCCDemangle.cpp" />
     <ClCompile Include="HCCDoxygen.cpp" />
     <ClCompile Include="HCCDoxygenEnums.cpp" />
+    <ClCompile Include="HCCDoxygenStructure.cpp" />
     <ClCompile Include="HCCEnvironment.cpp" />
     <ClCompile Include="HCCEse.cpp" />
     <ClCompile Include="HCCException.cpp" />
