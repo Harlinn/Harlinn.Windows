@@ -26,31 +26,19 @@ namespace
         LocalFixture( ) {}
         ~LocalFixture( ) {}
     };
-
-    template<size_t N1, size_t N2>
-    concept StdArraySupportsConstexprConcat = requires (std::array<Byte,N1> a1, std::array<Byte, N2> a2)
-    {
-        {
-            a1 + a2
-        } -> std::same_as<std::array<Byte, N1 + N2> >;
-    };
-
 }
 
 BOOST_FIXTURE_TEST_SUITE( ArrayTests, LocalFixture )
 
 
 
-BOOST_AUTO_TEST_CASE( StdArrayDoesNotSupportConstexprConcatTest1 )
+BOOST_AUTO_TEST_CASE( StdArraySupportsConstexprConcatTest1 )
 {
-    constexpr bool supportsConstexprConcat = StdArraySupportsConstexprConcat<1, 2>;
-    BOOST_CHECK( supportsConstexprConcat == false );
-#if 0
     std::array<Byte, 1> a1{};
     std::array<Byte, 2> a2{};
     auto a3 = a1 + a2;
 
-    constexpr char buffer1[] = { 1,2,3 };
+    constexpr signed char buffer1[] = { 1,2,3 };
     constexpr unsigned char buffer2[] = { 1,2,3 };
     constexpr char buffer3[] = "hello";
     constexpr int buffer4[] = { 1,2,3 };
@@ -58,14 +46,13 @@ BOOST_AUTO_TEST_CASE( StdArrayDoesNotSupportConstexprConcatTest1 )
     constexpr auto length2 = LengthOf( buffer2 );
     constexpr auto length3 = LengthOf( buffer3 );
     constexpr auto length4 = LengthOf( buffer4 );
-#endif
 }
 
 // --run_test=ArrayTests/ArrayConcatTest1
 BOOST_AUTO_TEST_CASE( ArrayConcatTest1 )
 {
-    constexpr Array a1{ 1 };
-    constexpr Array a2{ 2 };
+    constexpr std::array a1{ 1 };
+    constexpr std::array a2{ 2 };
     constexpr auto a3 = a1 + a2;
     constexpr auto v1 = a3[0];
     constexpr auto v2 = a3[1];

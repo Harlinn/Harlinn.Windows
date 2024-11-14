@@ -878,7 +878,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetTimestampOffsetTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto value = reader->GetTimestampOffset( 2 );
+        auto value = reader->GetTimeStampOffset( 2 );
         BOOST_CHECK( value.year == 2011 );
         BOOST_CHECK( value.month == 8 );
         BOOST_CHECK( value.day == 15 );
@@ -907,7 +907,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetDBTimestampOffsetTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetDBTimestampOffset( 2 );
+        auto nullableValue = reader->GetDBTimeStampOffset( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
 
         BOOST_CHECK( nullableValue.value( ).year == 2011 );

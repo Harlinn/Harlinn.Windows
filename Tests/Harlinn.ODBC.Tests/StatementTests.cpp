@@ -1714,7 +1714,7 @@ BOOST_AUTO_TEST_CASE( ColumnBinaryLengthTest15 )
     rc = statement.Prepare( L"SELECT Id, DateTimeOffsetValue FROM TestTable1" );
     BOOST_CHECK( rc == Result::Success );
     auto columnBinaryLength = statement.ColumnBinaryLength( 2 );
-    BOOST_CHECK( columnBinaryLength == sizeof( ODBC::TimestampOffset ) );
+    BOOST_CHECK( columnBinaryLength == sizeof( ODBC::TimeStampOffset ) );
 }
 
 // --run_test=StatementTests/ColumnBinaryLengthTest16

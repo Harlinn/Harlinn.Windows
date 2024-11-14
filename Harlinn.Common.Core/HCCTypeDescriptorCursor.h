@@ -173,7 +173,6 @@ namespace Harlinn::Common::Core::Persistent
         constexpr bool IsFixedSizeArrayType( ) const noexcept
         {
             return ( typeId_ == static_cast<Byte>( Types::ContainerTypeId::StdArray ) ||
-                typeId_ == static_cast<Byte>( Types::ContainerTypeId::Array ) ||
                 typeId_ == static_cast<Byte>( Types::UtilityTypeId::Array ) ) && Modifiers( ) == ( ModifierFlags::Array | ModifierFlags::Fixed );
         }
 
@@ -619,7 +618,6 @@ namespace Harlinn::Common::Core::Persistent
         constexpr bool IsFixedSizeArrayType( ) const noexcept
         {
             return ( descriptor_[offset_] == static_cast<Byte>( Types::ContainerTypeId::StdArray ) ||
-                descriptor_[offset_] == static_cast<Byte>( Types::ContainerTypeId::Array ) ||
                 descriptor_[offset_] == static_cast<Byte>( Types::UtilityTypeId::Array ) ) && Modifiers( ) == ( ModifierFlags::Array | ModifierFlags::Fixed );
         }
 

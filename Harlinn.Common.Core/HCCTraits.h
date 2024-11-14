@@ -30,9 +30,6 @@ namespace Harlinn::Common::Core
     template<typename T>
     class Vector;
 
-    template<typename T, size_t N>
-    class Array;
-
     template<size_t N>
     class ByteArray;
 
@@ -314,18 +311,6 @@ namespace Harlinn::Common::Core
     constexpr bool IsBasicStringView = Core::Internal::IsBasicStringViewImpl<std::remove_cvref_t<T>>;
 
 
-
-    namespace Internal
-    {
-        template<typename T>
-        constexpr bool IsCoreArrayImpl = false;
-
-        template<typename T, size_t N>
-        constexpr bool IsCoreArrayImpl<Array<T, N>> = true;
-    }
-    template<typename T>
-    constexpr bool IsCoreArray = Core::Internal::IsCoreArrayImpl<std::remove_cvref_t<T>>;
-
     namespace Internal
     {
         template<typename T>
@@ -372,13 +357,12 @@ namespace Harlinn::Common::Core
                                 IsBasicString<T> ||
                                 IsBasicStringView<T> ||
 #endif
-                                IsCoreArray<T> ||
                                 IsCoreByteArray<T> ||
                                 IsCoreVector<T>;
 
 
     template<typename T>
-    constexpr bool IsArrayContainer = IsStdArray<T> || IsCoreArray<T> || IsCoreByteArray<T>;
+    constexpr bool IsArrayContainer = IsStdArray<T> || IsCoreByteArray<T>;
 
     template<typename T>
     constexpr bool IsVectorContainer = IsStdVector<T> || IsCoreVector<T>;
@@ -1063,7 +1047,6 @@ namespace Harlinn::Common::Core
             StdBasicStringView,
             BasicString,
             BasicStringView,
-            Array,
             ByteArray,
             Vector
         };
@@ -1217,36 +1200,6 @@ namespace Harlinn::Common::Core
                 static constexpr size_t Count = 0;
                 static constexpr bool IsView = false;
                 static constexpr ContainerTypeId TypeId = ContainerTypeId::Unknown;
-            };
-
-
-            template<typename RT, typename T, size_t N>
-            struct ContainerTypeTraits<RT, Array<T, N>> : ContainerTypeTraitsBase<Array<T, N>, RT>
-            {
-                using Base = ContainerTypeTraitsBase<Array<T, N>, RT>;
-                static constexpr bool IsFixedSize = true;
-                static constexpr size_t Count = N;
-                static constexpr ContainerTypeId TypeId = ContainerTypeId::Array;
-
-                static constexpr size_t SizeOf( const Array<T, N>& object ) noexcept
-                {
-                    if constexpr ( IsFixedSize<Base::ElementType>::value )
-                    {
-                        return Count * PackedSizeOf<Base::ElementType>::value;
-                    }
-                    else
-                    {
-                        using ElementTypeTraits = TypeTraits<Base::ElementType>;
-                        size_t result = 0;
-                        for ( size_t i = 0; i < Count; ++i )
-                        {
-                            const auto& item = object[i];
-                            result += ElementTypeTraits::SizeOf( item );
-                        }
-                        return result;
-                    }
-                }
-
             };
 
             template<typename RT, size_t N>

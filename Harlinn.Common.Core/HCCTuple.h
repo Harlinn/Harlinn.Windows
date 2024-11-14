@@ -375,21 +375,6 @@ namespace Harlinn::Common::Core
         {
         };
 
-        // Array as a tuple; ends recursion at 0
-        template <typename T, typename... Types>
-        struct AsTuple<Array<T, 0>, Types...>
-        {
-            using type = Tuple<Types...>;
-        };
-
-        // Array as a tuple; counts down to 0
-        template <typename T, size_t N, typename... Types>
-        struct AsTuple<Array<T, N>, Types...>
-            : AsTuple<Array<T, N - 1>, T, Types...>
-        {
-        };
-
-
         // repeats _Nx for each _Ty in a parameter pack
         template <size_t _Nx, typename T>
         struct _Repeat_for : std::integral_constant<size_t, _Nx>

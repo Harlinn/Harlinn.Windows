@@ -74,7 +74,7 @@ template<size_t N>
 class ArrayPoints
 {
     SSizeT id_;
-    Array<TimeseriesPoint,N> values_;
+    std::array<TimeseriesPoint,N> values_;
 public:
     ArrayPoints( SSizeT id )
         : id_( id )
@@ -206,7 +206,7 @@ void ArrayAssignTest1a( )
 
     for ( SSizeT i = 0; i < InterationCount; ++i )
     {
-        Array<TimeseriesPoint, ItemCount> points;
+        std::array<TimeseriesPoint, ItemCount> points;
         for ( SSizeT j = 0; j < ItemCount; ++j )
         {
             SSizeT value = ( i * ItemCount ) + ( j + 1 );
@@ -278,7 +278,7 @@ void ArrayAssignTest1b( )
 
     for ( SSizeT i = 0; i < InterationCount; ++i )
     {
-        Array<TimeseriesPoint, ItemCount> points;
+        std::array<TimeseriesPoint, ItemCount> points;
         auto it = points.begin( );
         for ( SSizeT j = 0; j < ItemCount; ++j )
         {
@@ -353,7 +353,7 @@ void ArrayAssignTest1c( )
 
     for ( SSizeT i = 0; i < InterationCount; ++i )
     {
-        Array<Byte, ItemCount> points;
+        std::array<Byte, ItemCount> points;
         auto it = points.begin( );
         for ( SSizeT j = 0; j < ItemCount; ++j )
         {
@@ -428,7 +428,7 @@ void ArrayAssignTest1d( )
 
     for ( SSizeT i = 0; i < InterationCount; ++i )
     {
-        Array<Byte, ItemCount> points;
+        std::array<Byte, ItemCount> points;
         auto it = points.begin( );
         for ( SSizeT j = 0; j < ItemCount; ++j )
         {
@@ -501,7 +501,7 @@ void ArrayCopyTest1a( )
 #endif
     printf( "Copies a byte array: %lld iterations, array size %lld\n", InterationCount, ItemCount );
 
-    Array<Byte, ItemCount> source_1;
+    std::array<Byte, ItemCount> source_1;
     for ( SSizeT j = 0; j < ItemCount; ++j )
     {
         Byte value = static_cast<Byte>( __rdtsc( ) + j );
@@ -528,7 +528,7 @@ void ArrayCopyTest1a( )
 
     for ( SSizeT i = 0; i < InterationCount; ++i )
     {
-        Array<Byte, ItemCount> points;
+        std::array<Byte, ItemCount> points;
         std::copy( source_1.begin( ), source_1.end( ), points.begin( ) );
     }
 

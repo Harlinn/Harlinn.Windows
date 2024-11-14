@@ -737,8 +737,8 @@ namespace Harlinn::Common::Core
     }
 
     template<typename T>
-        requires ( std::is_pointer_v<T> && ( std::is_same_v<char, std::remove_const_t< std::remove_pointer_t<T> > > || std::is_same_v<wchar_t, std::remove_const_t< std::remove_pointer_t<T> > > ) )
-    [[nodiscard]] inline constexpr size_t LengthOf( T str ) noexcept
+        requires std::is_same_v<T,char> || std::is_same_v<T, wchar_t>
+    [[nodiscard]] inline constexpr size_t LengthOf( const T* str ) noexcept
     {
         return Core::Internal::LengthOf( str );
     }

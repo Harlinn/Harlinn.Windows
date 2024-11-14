@@ -34,12 +34,24 @@ namespace Harlinn::Common::Core
         { t1.data( ) } ->std::convertible_to<typename T::const_pointer>;
     };
 
+    /// <summary>
+    /// Matches most common string classes with sequential memory layout. 
+    /// Do not assume that they are zero terminated
+    /// </summary>
     template<typename T>
     concept SimpleCharSpanLike = SimpleSpanLike<T> && ( std::is_same_v<typename T::value_type, char> || std::is_same_v<typename T::value_type, wchar_t> );
 
+    /// <summary>
+    /// Matches most common char string classes with sequential memory layout. 
+    /// Do not assume that they are zero terminated
+    /// </summary>
     template<typename T>
     concept SimpleAnsiCharSpanLike = SimpleSpanLike<T> && std::is_same_v<typename T::value_type, char>;
 
+    /// <summary>
+    /// Matches most common wchar_t string classes with sequential memory layout. 
+    /// Do not assume that they are zero terminated
+    /// </summary>
     template<typename T>
     concept SimpleWideCharSpanLike = SimpleSpanLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
 
@@ -67,12 +79,21 @@ namespace Harlinn::Common::Core
         };
     }
 
+    /// <summary>
+    /// Matches most common zero terminated C++ string classes with sequential memory layout. 
+    /// </summary>
     template<typename T>
     concept SimpleStringLike = Internal::SimpleStringLikeImpl<T> && (std::is_same_v<typename T::value_type, wchar_t> || std::is_same_v<typename T::value_type, char> );
 
+    /// <summary>
+    /// Matches most common zero terminated C++ wchar_t string classes with sequential memory layout. 
+    /// </summary>
     template<typename T>
     concept SimpleWideStringLike = Internal::SimpleStringLikeImpl<T> && std::is_same_v<typename T::value_type, wchar_t>;
 
+    /// <summary>
+    /// Matches most common zero terminated C++ char string classes with sequential memory layout. 
+    /// </summary>
     template<typename T>
     concept SimpleAnsiStringLike = Internal::SimpleStringLikeImpl<T> && std::is_same_v<typename T::value_type, char>;
 
@@ -99,12 +120,25 @@ namespace Harlinn::Common::Core
         };
     }
 
+    /// <summary>
+    /// Matches zero terminated C++ string classes with sequential memory layout 
+    /// that implements an API similar to std::basic_string instantiated for either 
+    /// char or wchar_t. 
+    /// </summary>
     template<typename T>
     concept StringLike = Internal::StringLikeImpl<T> && ( std::is_same_v<typename T::value_type, wchar_t> || std::is_same_v<typename T::value_type, char> );
 
+    /// <summary>
+    /// Matches zero terminated C++ string classes with sequential memory layout 
+    /// that implements an API similar to std::basic_string instantiated for wchar_t. 
+    /// </summary>
     template<typename T>
     concept WideStringLike = Internal::StringLikeImpl<T> && std::is_same_v<typename T::value_type, wchar_t>;
 
+    /// <summary>
+    /// Matches zero terminated C++ string classes with sequential memory layout 
+    /// that implements an API similar to std::basic_string instantiated for char. 
+    /// </summary>
     template<typename T>
     concept AnsiStringLike = Internal::StringLikeImpl<T> && std::is_same_v<typename T::value_type, char>;
 

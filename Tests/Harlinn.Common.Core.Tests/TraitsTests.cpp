@@ -274,8 +274,6 @@ BOOST_AUTO_TEST_CASE( IsContainerTest1 )
 {
     constexpr bool stdarrayIsContainer = IsContainer<std::array<Byte, 1>>;
     BOOST_CHECK( stdarrayIsContainer == true );
-    constexpr bool arrayIsContainer = IsContainer<Array<Byte, 1>>;
-    BOOST_CHECK( arrayIsContainer == true );
     constexpr bool byteArrayIsContainer = IsContainer<ByteArray<1>>;
     BOOST_CHECK( byteArrayIsContainer == true );
 
@@ -2519,100 +2517,9 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest24 )
     BOOST_CHECK( isReference_8 == true );
 }
 
+
 // --run_test=TraitsTests/TypeTraitsTest25
 BOOST_AUTO_TEST_CASE( TypeTraitsTest25 )
-{
-    using Type = Array<Int32, 4>;
-
-    using TypeTraits_1 = Types::TypeTraits<Type>;
-
-    constexpr bool isArray = TypeTraits_1::TypeId == Types::ContainerTypeId::Array;
-    BOOST_CHECK( isArray == true );
-
-    constexpr bool isContainer1 = TypeTraits_1::IsContainer;
-    BOOST_CHECK( isContainer1 == true );
-    constexpr bool isConst_1 = TypeTraits_1::IsConst;
-    BOOST_CHECK( isConst_1 == false );
-    constexpr bool isVolatile_1 = TypeTraits_1::IsVolatile;
-    BOOST_CHECK( isVolatile_1 == false );
-    constexpr bool isReference_1 = TypeTraits_1::IsReference;
-    BOOST_CHECK( isReference_1 == false );
-
-    using TypeTraits_2 = Types::TypeTraits<const Type>;
-    constexpr bool isContainer2 = TypeTraits_2::IsContainer;
-    BOOST_CHECK( isContainer2 == true );
-    constexpr bool isConst_2 = TypeTraits_2::IsConst;
-    BOOST_CHECK( isConst_2 == true );
-    constexpr bool isVolatile_2 = TypeTraits_2::IsVolatile;
-    BOOST_CHECK( isVolatile_2 == false );
-    constexpr bool isReference_2 = TypeTraits_2::IsReference;
-    BOOST_CHECK( isReference_2 == false );
-
-
-    using TypeTraits_3 = Types::TypeTraits<Type&>;
-    constexpr bool isContainer3 = TypeTraits_3::IsContainer;
-    BOOST_CHECK( isContainer3 == true );
-    constexpr bool isConst_3 = TypeTraits_3::IsConst;
-    BOOST_CHECK( isConst_3 == false );
-    constexpr bool isVolatile_3 = TypeTraits_3::IsVolatile;
-    BOOST_CHECK( isVolatile_3 == false );
-    constexpr bool isReference_3 = TypeTraits_3::IsReference;
-    BOOST_CHECK( isReference_3 == true );
-
-
-    using TypeTraits_4 = Types::TypeTraits<volatile Type>;
-    constexpr bool isContainer4 = TypeTraits_4::IsContainer;
-    BOOST_CHECK( isContainer4 == true );
-    constexpr bool isConst_4 = TypeTraits_4::IsConst;
-    BOOST_CHECK( isConst_4 == false );
-    constexpr bool isVolatile_4 = TypeTraits_4::IsVolatile;
-    BOOST_CHECK( isVolatile_4 == true );
-    constexpr bool isReference_4 = TypeTraits_4::IsReference;
-    BOOST_CHECK( isReference_4 == false );
-
-    using TypeTraits_5 = Types::TypeTraits<const Type&>;
-    constexpr bool isContainer5 = TypeTraits_5::IsContainer;
-    BOOST_CHECK( isContainer5 == true );
-    constexpr bool isConst_5 = TypeTraits_5::IsConst;
-    BOOST_CHECK( isConst_5 == true );
-    constexpr bool isVolatile_5 = TypeTraits_5::IsVolatile;
-    BOOST_CHECK( isVolatile_5 == false );
-    constexpr bool isReference_5 = TypeTraits_5::IsReference;
-    BOOST_CHECK( isReference_5 == true );
-
-    using TypeTraits_6 = Types::TypeTraits<volatile Type&>;
-    constexpr bool isContainer6 = TypeTraits_6::IsContainer;
-    BOOST_CHECK( isContainer6 == true );
-    constexpr bool isConst_6 = TypeTraits_6::IsConst;
-    BOOST_CHECK( isConst_6 == false );
-    constexpr bool isVolatile_6 = TypeTraits_6::IsVolatile;
-    BOOST_CHECK( isVolatile_6 == true );
-    constexpr bool isReference_6 = TypeTraits_6::IsReference;
-    BOOST_CHECK( isReference_6 == true );
-
-    using TypeTraits_7 = Types::TypeTraits<const volatile Type>;
-    constexpr bool isContainer7 = TypeTraits_7::IsContainer;
-    BOOST_CHECK( isContainer7 == true );
-    constexpr bool isConst_7 = TypeTraits_7::IsConst;
-    BOOST_CHECK( isConst_7 == true );
-    constexpr bool isVolatile_7 = TypeTraits_7::IsVolatile;
-    BOOST_CHECK( isVolatile_7 == true );
-    constexpr bool isReference_7 = TypeTraits_7::IsReference;
-    BOOST_CHECK( isReference_7 == false );
-
-    using TypeTraits_8 = Types::TypeTraits<const volatile Type&>;
-    constexpr bool isContainer8 = TypeTraits_8::IsContainer;
-    BOOST_CHECK( isContainer8 == true );
-    constexpr bool isConst_8 = TypeTraits_8::IsConst;
-    BOOST_CHECK( isConst_8 == true );
-    constexpr bool isVolatile_8 = TypeTraits_8::IsVolatile;
-    BOOST_CHECK( isVolatile_8 == true );
-    constexpr bool isReference_8 = TypeTraits_8::IsReference;
-    BOOST_CHECK( isReference_8 == true );
-}
-
-// --run_test=TraitsTests/TypeTraitsTest26
-BOOST_AUTO_TEST_CASE( TypeTraitsTest26 )
 {
     using Type = ByteArray<4>;
 
@@ -2703,8 +2610,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest26 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest27
-BOOST_AUTO_TEST_CASE( TypeTraitsTest27 )
+// --run_test=TraitsTests/TypeTraitsTest26
+BOOST_AUTO_TEST_CASE( TypeTraitsTest26 )
 {
     using Type = std::vector<Byte>;
 
@@ -2795,8 +2702,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest27 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest28
-BOOST_AUTO_TEST_CASE( TypeTraitsTest28 )
+// --run_test=TraitsTests/TypeTraitsTest27
+BOOST_AUTO_TEST_CASE( TypeTraitsTest27 )
 {
     using Type = std::unordered_map<int,double>;
 
@@ -2887,10 +2794,102 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest28 )
     BOOST_CHECK( isReference_8 == true );
 }
 
+// --run_test=TraitsTests/TypeTraitsTest28
+BOOST_AUTO_TEST_CASE( TypeTraitsTest28 )
+{
+    using Type = AnsiString;
+
+    using TypeTraits_1 = Types::TypeTraits<Type>;
+
+    constexpr bool isBasicString = TypeTraits_1::TypeId == Types::ContainerTypeId::BasicString;
+    BOOST_CHECK( isBasicString == true );
+
+    constexpr bool isContainer1 = TypeTraits_1::IsContainer;
+    BOOST_CHECK( isContainer1 == true );
+    constexpr bool isConst_1 = TypeTraits_1::IsConst;
+    BOOST_CHECK( isConst_1 == false );
+    constexpr bool isVolatile_1 = TypeTraits_1::IsVolatile;
+    BOOST_CHECK( isVolatile_1 == false );
+    constexpr bool isReference_1 = TypeTraits_1::IsReference;
+    BOOST_CHECK( isReference_1 == false );
+
+    using TypeTraits_2 = Types::TypeTraits<const Type>;
+    constexpr bool isContainer2 = TypeTraits_2::IsContainer;
+    BOOST_CHECK( isContainer2 == true );
+    constexpr bool isConst_2 = TypeTraits_2::IsConst;
+    BOOST_CHECK( isConst_2 == true );
+    constexpr bool isVolatile_2 = TypeTraits_2::IsVolatile;
+    BOOST_CHECK( isVolatile_2 == false );
+    constexpr bool isReference_2 = TypeTraits_2::IsReference;
+    BOOST_CHECK( isReference_2 == false );
+
+
+    using TypeTraits_3 = Types::TypeTraits<Type&>;
+    constexpr bool isContainer3 = TypeTraits_3::IsContainer;
+    BOOST_CHECK( isContainer3 == true );
+    constexpr bool isConst_3 = TypeTraits_3::IsConst;
+    BOOST_CHECK( isConst_3 == false );
+    constexpr bool isVolatile_3 = TypeTraits_3::IsVolatile;
+    BOOST_CHECK( isVolatile_3 == false );
+    constexpr bool isReference_3 = TypeTraits_3::IsReference;
+    BOOST_CHECK( isReference_3 == true );
+
+
+    using TypeTraits_4 = Types::TypeTraits<volatile Type>;
+    constexpr bool isContainer4 = TypeTraits_4::IsContainer;
+    BOOST_CHECK( isContainer4 == true );
+    constexpr bool isConst_4 = TypeTraits_4::IsConst;
+    BOOST_CHECK( isConst_4 == false );
+    constexpr bool isVolatile_4 = TypeTraits_4::IsVolatile;
+    BOOST_CHECK( isVolatile_4 == true );
+    constexpr bool isReference_4 = TypeTraits_4::IsReference;
+    BOOST_CHECK( isReference_4 == false );
+
+    using TypeTraits_5 = Types::TypeTraits<const Type&>;
+    constexpr bool isContainer5 = TypeTraits_5::IsContainer;
+    BOOST_CHECK( isContainer5 == true );
+    constexpr bool isConst_5 = TypeTraits_5::IsConst;
+    BOOST_CHECK( isConst_5 == true );
+    constexpr bool isVolatile_5 = TypeTraits_5::IsVolatile;
+    BOOST_CHECK( isVolatile_5 == false );
+    constexpr bool isReference_5 = TypeTraits_5::IsReference;
+    BOOST_CHECK( isReference_5 == true );
+
+    using TypeTraits_6 = Types::TypeTraits<volatile Type&>;
+    constexpr bool isContainer6 = TypeTraits_6::IsContainer;
+    BOOST_CHECK( isContainer6 == true );
+    constexpr bool isConst_6 = TypeTraits_6::IsConst;
+    BOOST_CHECK( isConst_6 == false );
+    constexpr bool isVolatile_6 = TypeTraits_6::IsVolatile;
+    BOOST_CHECK( isVolatile_6 == true );
+    constexpr bool isReference_6 = TypeTraits_6::IsReference;
+    BOOST_CHECK( isReference_6 == true );
+
+    using TypeTraits_7 = Types::TypeTraits<const volatile Type>;
+    constexpr bool isContainer7 = TypeTraits_7::IsContainer;
+    BOOST_CHECK( isContainer7 == true );
+    constexpr bool isConst_7 = TypeTraits_7::IsConst;
+    BOOST_CHECK( isConst_7 == true );
+    constexpr bool isVolatile_7 = TypeTraits_7::IsVolatile;
+    BOOST_CHECK( isVolatile_7 == true );
+    constexpr bool isReference_7 = TypeTraits_7::IsReference;
+    BOOST_CHECK( isReference_7 == false );
+
+    using TypeTraits_8 = Types::TypeTraits<const volatile Type&>;
+    constexpr bool isContainer8 = TypeTraits_8::IsContainer;
+    BOOST_CHECK( isContainer8 == true );
+    constexpr bool isConst_8 = TypeTraits_8::IsConst;
+    BOOST_CHECK( isConst_8 == true );
+    constexpr bool isVolatile_8 = TypeTraits_8::IsVolatile;
+    BOOST_CHECK( isVolatile_8 == true );
+    constexpr bool isReference_8 = TypeTraits_8::IsReference;
+    BOOST_CHECK( isReference_8 == true );
+}
+
 // --run_test=TraitsTests/TypeTraitsTest29
 BOOST_AUTO_TEST_CASE( TypeTraitsTest29 )
 {
-    using Type = AnsiString;
+    using Type = WideString;
 
     using TypeTraits_1 = Types::TypeTraits<Type>;
 
@@ -2982,12 +2981,12 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest29 )
 // --run_test=TraitsTests/TypeTraitsTest30
 BOOST_AUTO_TEST_CASE( TypeTraitsTest30 )
 {
-    using Type = WideString;
+    using Type = std::string_view;
 
     using TypeTraits_1 = Types::TypeTraits<Type>;
 
-    constexpr bool isBasicString = TypeTraits_1::TypeId == Types::ContainerTypeId::BasicString;
-    BOOST_CHECK( isBasicString == true );
+    constexpr bool isStdBasicStringView = TypeTraits_1::TypeId == Types::ContainerTypeId::StdBasicStringView;
+    BOOST_CHECK( isStdBasicStringView == true );
 
     constexpr bool isContainer1 = TypeTraits_1::IsContainer;
     BOOST_CHECK( isContainer1 == true );
@@ -3074,7 +3073,7 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest30 )
 // --run_test=TraitsTests/TypeTraitsTest31
 BOOST_AUTO_TEST_CASE( TypeTraitsTest31 )
 {
-    using Type = std::string_view;
+    using Type = std::wstring_view;
 
     using TypeTraits_1 = Types::TypeTraits<Type>;
 
@@ -3166,98 +3165,6 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest31 )
 // --run_test=TraitsTests/TypeTraitsTest32
 BOOST_AUTO_TEST_CASE( TypeTraitsTest32 )
 {
-    using Type = std::wstring_view;
-
-    using TypeTraits_1 = Types::TypeTraits<Type>;
-
-    constexpr bool isStdBasicStringView = TypeTraits_1::TypeId == Types::ContainerTypeId::StdBasicStringView;
-    BOOST_CHECK( isStdBasicStringView == true );
-
-    constexpr bool isContainer1 = TypeTraits_1::IsContainer;
-    BOOST_CHECK( isContainer1 == true );
-    constexpr bool isConst_1 = TypeTraits_1::IsConst;
-    BOOST_CHECK( isConst_1 == false );
-    constexpr bool isVolatile_1 = TypeTraits_1::IsVolatile;
-    BOOST_CHECK( isVolatile_1 == false );
-    constexpr bool isReference_1 = TypeTraits_1::IsReference;
-    BOOST_CHECK( isReference_1 == false );
-
-    using TypeTraits_2 = Types::TypeTraits<const Type>;
-    constexpr bool isContainer2 = TypeTraits_2::IsContainer;
-    BOOST_CHECK( isContainer2 == true );
-    constexpr bool isConst_2 = TypeTraits_2::IsConst;
-    BOOST_CHECK( isConst_2 == true );
-    constexpr bool isVolatile_2 = TypeTraits_2::IsVolatile;
-    BOOST_CHECK( isVolatile_2 == false );
-    constexpr bool isReference_2 = TypeTraits_2::IsReference;
-    BOOST_CHECK( isReference_2 == false );
-
-
-    using TypeTraits_3 = Types::TypeTraits<Type&>;
-    constexpr bool isContainer3 = TypeTraits_3::IsContainer;
-    BOOST_CHECK( isContainer3 == true );
-    constexpr bool isConst_3 = TypeTraits_3::IsConst;
-    BOOST_CHECK( isConst_3 == false );
-    constexpr bool isVolatile_3 = TypeTraits_3::IsVolatile;
-    BOOST_CHECK( isVolatile_3 == false );
-    constexpr bool isReference_3 = TypeTraits_3::IsReference;
-    BOOST_CHECK( isReference_3 == true );
-
-
-    using TypeTraits_4 = Types::TypeTraits<volatile Type>;
-    constexpr bool isContainer4 = TypeTraits_4::IsContainer;
-    BOOST_CHECK( isContainer4 == true );
-    constexpr bool isConst_4 = TypeTraits_4::IsConst;
-    BOOST_CHECK( isConst_4 == false );
-    constexpr bool isVolatile_4 = TypeTraits_4::IsVolatile;
-    BOOST_CHECK( isVolatile_4 == true );
-    constexpr bool isReference_4 = TypeTraits_4::IsReference;
-    BOOST_CHECK( isReference_4 == false );
-
-    using TypeTraits_5 = Types::TypeTraits<const Type&>;
-    constexpr bool isContainer5 = TypeTraits_5::IsContainer;
-    BOOST_CHECK( isContainer5 == true );
-    constexpr bool isConst_5 = TypeTraits_5::IsConst;
-    BOOST_CHECK( isConst_5 == true );
-    constexpr bool isVolatile_5 = TypeTraits_5::IsVolatile;
-    BOOST_CHECK( isVolatile_5 == false );
-    constexpr bool isReference_5 = TypeTraits_5::IsReference;
-    BOOST_CHECK( isReference_5 == true );
-
-    using TypeTraits_6 = Types::TypeTraits<volatile Type&>;
-    constexpr bool isContainer6 = TypeTraits_6::IsContainer;
-    BOOST_CHECK( isContainer6 == true );
-    constexpr bool isConst_6 = TypeTraits_6::IsConst;
-    BOOST_CHECK( isConst_6 == false );
-    constexpr bool isVolatile_6 = TypeTraits_6::IsVolatile;
-    BOOST_CHECK( isVolatile_6 == true );
-    constexpr bool isReference_6 = TypeTraits_6::IsReference;
-    BOOST_CHECK( isReference_6 == true );
-
-    using TypeTraits_7 = Types::TypeTraits<const volatile Type>;
-    constexpr bool isContainer7 = TypeTraits_7::IsContainer;
-    BOOST_CHECK( isContainer7 == true );
-    constexpr bool isConst_7 = TypeTraits_7::IsConst;
-    BOOST_CHECK( isConst_7 == true );
-    constexpr bool isVolatile_7 = TypeTraits_7::IsVolatile;
-    BOOST_CHECK( isVolatile_7 == true );
-    constexpr bool isReference_7 = TypeTraits_7::IsReference;
-    BOOST_CHECK( isReference_7 == false );
-
-    using TypeTraits_8 = Types::TypeTraits<const volatile Type&>;
-    constexpr bool isContainer8 = TypeTraits_8::IsContainer;
-    BOOST_CHECK( isContainer8 == true );
-    constexpr bool isConst_8 = TypeTraits_8::IsConst;
-    BOOST_CHECK( isConst_8 == true );
-    constexpr bool isVolatile_8 = TypeTraits_8::IsVolatile;
-    BOOST_CHECK( isVolatile_8 == true );
-    constexpr bool isReference_8 = TypeTraits_8::IsReference;
-    BOOST_CHECK( isReference_8 == true );
-}
-
-// --run_test=TraitsTests/TypeTraitsTest33
-BOOST_AUTO_TEST_CASE( TypeTraitsTest33 )
-{
     using Type = std::span<Byte,12>;
 
     using TypeTraits_1 = Types::TypeTraits<Type>;
@@ -3347,8 +3254,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest33 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest34
-BOOST_AUTO_TEST_CASE( TypeTraitsTest34 )
+// --run_test=TraitsTests/TypeTraitsTest33
+BOOST_AUTO_TEST_CASE( TypeTraitsTest33 )
 {
     using Type = std::vector<bool>;
 
@@ -3437,8 +3344,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest34 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest35
-BOOST_AUTO_TEST_CASE( TypeTraitsTest35 )
+// --run_test=TraitsTests/TypeTraitsTest34
+BOOST_AUTO_TEST_CASE( TypeTraitsTest34 )
 {
     using Type = std::deque<Currency>;
 
@@ -3527,8 +3434,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest35 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest36
-BOOST_AUTO_TEST_CASE( TypeTraitsTest36 )
+// --run_test=TraitsTests/TypeTraitsTest35
+BOOST_AUTO_TEST_CASE( TypeTraitsTest35 )
 {
     using Type = std::forward_list<Currency>;
 
@@ -3617,8 +3524,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest36 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest37
-BOOST_AUTO_TEST_CASE( TypeTraitsTest37 )
+// --run_test=TraitsTests/TypeTraitsTest36
+BOOST_AUTO_TEST_CASE( TypeTraitsTest36 )
 {
     using Type = std::list<Currency>;
 
@@ -3707,8 +3614,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest37 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest38
-BOOST_AUTO_TEST_CASE( TypeTraitsTest38 )
+// --run_test=TraitsTests/TypeTraitsTest37
+BOOST_AUTO_TEST_CASE( TypeTraitsTest37 )
 {
     using Type = std::set<Currency>;
 
@@ -3797,8 +3704,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest38 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest39
-BOOST_AUTO_TEST_CASE( TypeTraitsTest39 )
+// --run_test=TraitsTests/TypeTraitsTest38
+BOOST_AUTO_TEST_CASE( TypeTraitsTest38 )
 {
     using Type = std::map<Currency,std::string>;
 
@@ -3887,8 +3794,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest39 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest40
-BOOST_AUTO_TEST_CASE( TypeTraitsTest40 )
+// --run_test=TraitsTests/TypeTraitsTest39
+BOOST_AUTO_TEST_CASE( TypeTraitsTest39 )
 {
     using Type = std::multiset<Currency>;
 
@@ -3977,8 +3884,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest40 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest41
-BOOST_AUTO_TEST_CASE( TypeTraitsTest41 )
+// --run_test=TraitsTests/TypeTraitsTest40
+BOOST_AUTO_TEST_CASE( TypeTraitsTest40 )
 {
     using Type = std::multimap<Currency,std::string>;
 
@@ -4067,8 +3974,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest41 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest42
-BOOST_AUTO_TEST_CASE( TypeTraitsTest42 )
+// --run_test=TraitsTests/TypeTraitsTest41
+BOOST_AUTO_TEST_CASE( TypeTraitsTest41 )
 {
     using Type = std::unordered_set<Currency>;
 
@@ -4157,8 +4064,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest42 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest43
-BOOST_AUTO_TEST_CASE( TypeTraitsTest43 )
+// --run_test=TraitsTests/TypeTraitsTest42
+BOOST_AUTO_TEST_CASE( TypeTraitsTest42 )
 {
     using Type = std::unordered_multiset<Currency>;
 
@@ -4247,8 +4154,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest43 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest44
-BOOST_AUTO_TEST_CASE( TypeTraitsTest44 )
+// --run_test=TraitsTests/TypeTraitsTest43
+BOOST_AUTO_TEST_CASE( TypeTraitsTest43 )
 {
     using Type = std::unordered_multimap<Currency,std::string>;
 
@@ -4337,8 +4244,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest44 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest45
-BOOST_AUTO_TEST_CASE( TypeTraitsTest45 )
+// --run_test=TraitsTests/TypeTraitsTest44
+BOOST_AUTO_TEST_CASE( TypeTraitsTest44 )
 {
     using Type = std::stack<Currency>;
 
@@ -4427,8 +4334,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest45 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest46
-BOOST_AUTO_TEST_CASE( TypeTraitsTest46 )
+// --run_test=TraitsTests/TypeTraitsTest45
+BOOST_AUTO_TEST_CASE( TypeTraitsTest45 )
 {
     using Type = std::queue<Currency>;
 
@@ -4517,8 +4424,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest46 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest47
-BOOST_AUTO_TEST_CASE( TypeTraitsTest47 )
+// --run_test=TraitsTests/TypeTraitsTest46
+BOOST_AUTO_TEST_CASE( TypeTraitsTest46 )
 {
     using Type = std::priority_queue<Currency>;
 
@@ -4607,8 +4514,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest47 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest48
-BOOST_AUTO_TEST_CASE( TypeTraitsTest48 )
+// --run_test=TraitsTests/TypeTraitsTest47
+BOOST_AUTO_TEST_CASE( TypeTraitsTest47 )
 {
     using Type = std::optional<Currency>;
 
@@ -4696,8 +4603,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest48 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest49
-BOOST_AUTO_TEST_CASE( TypeTraitsTest49 )
+// --run_test=TraitsTests/TypeTraitsTest48
+BOOST_AUTO_TEST_CASE( TypeTraitsTest48 )
 {
     using Type = std::shared_ptr<Currency>;
 
@@ -4785,8 +4692,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest49 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest50
-BOOST_AUTO_TEST_CASE( TypeTraitsTest50 )
+// --run_test=TraitsTests/TypeTraitsTest49
+BOOST_AUTO_TEST_CASE( TypeTraitsTest49 )
 {
     using Type = std::unique_ptr<Currency>;
 
@@ -4875,8 +4782,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest50 )
 }
 
 
-// --run_test=TraitsTests/TypeTraitsTest51
-BOOST_AUTO_TEST_CASE( TypeTraitsTest51 )
+// --run_test=TraitsTests/TypeTraitsTest50
+BOOST_AUTO_TEST_CASE( TypeTraitsTest50 )
 {
     using Type = std::pair<Currency,std::string>;
 
@@ -4964,8 +4871,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest51 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest52
-BOOST_AUTO_TEST_CASE( TypeTraitsTest52 )
+// --run_test=TraitsTests/TypeTraitsTest51
+BOOST_AUTO_TEST_CASE( TypeTraitsTest51 )
 {
     using Type = std::variant<Currency, std::string>;
 
@@ -5053,8 +4960,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest52 )
     BOOST_CHECK( isReference_8 == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest53
-BOOST_AUTO_TEST_CASE( TypeTraitsTest53 )
+// --run_test=TraitsTests/TypeTraitsTest52
+BOOST_AUTO_TEST_CASE( TypeTraitsTest52 )
 {
     using Type = std::variant<Currency, std::string>;
     using TypeTraits = Types::TypeTraits<Type>;
@@ -5068,8 +4975,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest53 )
     BOOST_CHECK( isStdBasicString == true );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest54
-BOOST_AUTO_TEST_CASE( TypeTraitsTest54 )
+// --run_test=TraitsTests/TypeTraitsTest53
+BOOST_AUTO_TEST_CASE( TypeTraitsTest53 )
 {
     using Type = std::variant<std::tuple<Currency>, std::pair<std::string,bool&>>;
     using TypeTraits = Types::TypeTraits<Type>;
@@ -5099,8 +5006,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest54 )
 }
 
 
-// --run_test=TraitsTests/TypeTraitsTest55
-BOOST_AUTO_TEST_CASE( TypeTraitsTest55 )
+// --run_test=TraitsTests/TypeTraitsTest54
+BOOST_AUTO_TEST_CASE( TypeTraitsTest54 )
 {
     using Type = Byte[2];
     constexpr auto isArray_1 = IsArray<Type>;
@@ -5120,8 +5027,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest55 )
 }
 
 
-// --run_test=TraitsTests/TypeTraitsTest56
-BOOST_AUTO_TEST_CASE( TypeTraitsTest56 )
+// --run_test=TraitsTests/TypeTraitsTest55
+BOOST_AUTO_TEST_CASE( TypeTraitsTest55 )
 {
     using Type = std::array<Byte,2>;
     constexpr auto isStdArray_1 = IsStdArray<Type>;
@@ -5140,8 +5047,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest56 )
     BOOST_CHECK( isStdArray_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest57
-BOOST_AUTO_TEST_CASE( TypeTraitsTest57 )
+// --run_test=TraitsTests/TypeTraitsTest56
+BOOST_AUTO_TEST_CASE( TypeTraitsTest56 )
 {
     using Type = std::vector<Byte>;
     constexpr auto isStdVector_1 = IsStdVector<Type>;
@@ -5160,8 +5067,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest57 )
     BOOST_CHECK( isStdVector_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest58
-BOOST_AUTO_TEST_CASE( TypeTraitsTest58 )
+// --run_test=TraitsTests/TypeTraitsTest57
+BOOST_AUTO_TEST_CASE( TypeTraitsTest57 )
 {
     using Type = std::vector<bool>;
     constexpr auto isStdVectorBool_1 = IsStdVectorBool<Type>;
@@ -5180,8 +5087,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest58 )
     BOOST_CHECK( isStdVectorBool_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest59
-BOOST_AUTO_TEST_CASE( TypeTraitsTest59 )
+// --run_test=TraitsTests/TypeTraitsTest58
+BOOST_AUTO_TEST_CASE( TypeTraitsTest58 )
 {
     using Type = std::deque<Byte>;
     constexpr auto isStdDeque_1 = IsStdDeque<Type>;
@@ -5200,8 +5107,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest59 )
     BOOST_CHECK( isStdDeque_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest60
-BOOST_AUTO_TEST_CASE( TypeTraitsTest60 )
+// --run_test=TraitsTests/TypeTraitsTest59
+BOOST_AUTO_TEST_CASE( TypeTraitsTest59 )
 {
     using Type = std::forward_list<Byte>;
     constexpr auto isStdForwardList_1 = IsStdForwardList<Type>;
@@ -5220,8 +5127,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest60 )
     BOOST_CHECK( isStdForwardList_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest61
-BOOST_AUTO_TEST_CASE( TypeTraitsTest61 )
+// --run_test=TraitsTests/TypeTraitsTest60
+BOOST_AUTO_TEST_CASE( TypeTraitsTest60 )
 {
     using Type = std::list<Byte>;
     constexpr auto isStdList_1 = IsStdList<Type>;
@@ -5240,8 +5147,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest61 )
     BOOST_CHECK( isStdList_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest62
-BOOST_AUTO_TEST_CASE( TypeTraitsTest62 )
+// --run_test=TraitsTests/TypeTraitsTest61
+BOOST_AUTO_TEST_CASE( TypeTraitsTest61 )
 {
     using Type = std::set<Byte>;
     constexpr auto isStdSet_1 = IsStdSet<Type>;
@@ -5260,8 +5167,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest62 )
     BOOST_CHECK( isStdSet_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest63
-BOOST_AUTO_TEST_CASE( TypeTraitsTest63 )
+// --run_test=TraitsTests/TypeTraitsTest62
+BOOST_AUTO_TEST_CASE( TypeTraitsTest62 )
 {
     using Type = std::map<Byte,std::string>;
     constexpr auto isStdMap_1 = IsStdMap<Type>;
@@ -5280,8 +5187,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest63 )
     BOOST_CHECK( isStdMap_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest64
-BOOST_AUTO_TEST_CASE( TypeTraitsTest64 )
+// --run_test=TraitsTests/TypeTraitsTest63
+BOOST_AUTO_TEST_CASE( TypeTraitsTest63 )
 {
     using Type = std::multiset<Byte>;
     constexpr auto isStdMultiset_1 = IsStdMultiset<Type>;
@@ -5300,8 +5207,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest64 )
     BOOST_CHECK( isStdMultiset_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest65
-BOOST_AUTO_TEST_CASE( TypeTraitsTest65 )
+// --run_test=TraitsTests/TypeTraitsTest64
+BOOST_AUTO_TEST_CASE( TypeTraitsTest64 )
 {
     using Type = std::multimap<Byte, std::string>;
     constexpr auto isStdMultimap_1 = IsStdMultimap<Type>;
@@ -5320,8 +5227,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest65 )
     BOOST_CHECK( isStdMultimap_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest66
-BOOST_AUTO_TEST_CASE( TypeTraitsTest66 )
+// --run_test=TraitsTests/TypeTraitsTest65
+BOOST_AUTO_TEST_CASE( TypeTraitsTest65 )
 {
     using Type = std::stack<Byte>;
     constexpr auto isStdStack_1 = IsStdStack<Type>;
@@ -5340,8 +5247,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest66 )
     BOOST_CHECK( isStdStack_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest67
-BOOST_AUTO_TEST_CASE( TypeTraitsTest67 )
+// --run_test=TraitsTests/TypeTraitsTest66
+BOOST_AUTO_TEST_CASE( TypeTraitsTest66 )
 {
     using Type = std::queue<Byte>;
     constexpr auto isStdQueue_1 = IsStdQueue<Type>;
@@ -5360,8 +5267,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest67 )
     BOOST_CHECK( isStdQueue_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest68
-BOOST_AUTO_TEST_CASE( TypeTraitsTest68 )
+// --run_test=TraitsTests/TypeTraitsTest67
+BOOST_AUTO_TEST_CASE( TypeTraitsTest67 )
 {
     using Type = std::priority_queue<Byte>;
     constexpr auto isStdPriorityQueue_1 = IsStdPriorityQueue<Type>;
@@ -5380,8 +5287,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest68 )
     BOOST_CHECK( isStdPriorityQueue_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest69
-BOOST_AUTO_TEST_CASE( TypeTraitsTest69 )
+// --run_test=TraitsTests/TypeTraitsTest68
+BOOST_AUTO_TEST_CASE( TypeTraitsTest68 )
 {
     using Type = std::span<Byte>;
     constexpr auto isStdSpan_1 = IsStdSpan<Type>;
@@ -5400,8 +5307,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest69 )
     BOOST_CHECK( isStdSpan_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest70
-BOOST_AUTO_TEST_CASE( TypeTraitsTest70 )
+// --run_test=TraitsTests/TypeTraitsTest69
+BOOST_AUTO_TEST_CASE( TypeTraitsTest69 )
 {
     using Type = std::string;
     constexpr auto isStdBasicString_1 = IsStdBasicString<Type>;
@@ -5420,8 +5327,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest70 )
     BOOST_CHECK( isStdBasicString_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest71
-BOOST_AUTO_TEST_CASE( TypeTraitsTest71 )
+// --run_test=TraitsTests/TypeTraitsTest70
+BOOST_AUTO_TEST_CASE( TypeTraitsTest70 )
 {
     using Type = std::string_view;
     constexpr auto isStdBasicStringView_1 = IsStdBasicStringView<Type>;
@@ -5440,28 +5347,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest71 )
     BOOST_CHECK( isStdBasicStringView_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest72
-BOOST_AUTO_TEST_CASE( TypeTraitsTest72 )
-{
-    using Type = Array<Byte,5>;
-    constexpr auto isCoreArray_1 = IsCoreArray<Type>;
-    BOOST_CHECK( isCoreArray_1 == true );
-    constexpr auto isCoreArray_1b = Internal::IsCoreArrayImpl<Type>;
-    BOOST_CHECK( isCoreArray_1b == true );
-
-    constexpr auto isCoreArray_2 = IsCoreArray<Type&>;
-    BOOST_CHECK( isCoreArray_2 == true );
-    constexpr auto isCoreArray_2b = Internal::IsCoreArrayImpl<Type&>;
-    BOOST_CHECK( isCoreArray_2b == false );
-
-    constexpr auto isCoreArray_3 = IsCoreArray<Type&&>;
-    BOOST_CHECK( isCoreArray_3 == true );
-    constexpr auto isCoreArray_3b = Internal::IsCoreArrayImpl<Type&&>;
-    BOOST_CHECK( isCoreArray_3b == false );
-}
-
-// --run_test=TraitsTests/TypeTraitsTest73
-BOOST_AUTO_TEST_CASE( TypeTraitsTest73 )
+// --run_test=TraitsTests/TypeTraitsTest71
+BOOST_AUTO_TEST_CASE( TypeTraitsTest71 )
 {
     using Type = ByteArray<5>;
     constexpr auto isCoreByteArray_1 = IsCoreByteArray<Type>;
@@ -5480,8 +5367,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest73 )
     BOOST_CHECK( isCoreByteArray_3b == false );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest74
-BOOST_AUTO_TEST_CASE( TypeTraitsTest74 )
+// --run_test=TraitsTests/TypeTraitsTest72
+BOOST_AUTO_TEST_CASE( TypeTraitsTest72 )
 {
     using Type = Vector<Byte>;
     constexpr auto isCoreVector_1 = IsCoreVector<Type>;
@@ -5793,72 +5680,7 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest101 )
     BOOST_CHECK( packedSize == 15 );
 }
 
-// --run_test=TraitsTests/TypeTraitsTest102
-BOOST_AUTO_TEST_CASE( TypeTraitsTest102 )
-{
-    constexpr char charArg = {};
-    constexpr double doubleArg = 1.0;
 
-    constexpr Tuple< Array<Byte, 6>, char[5], double, Tuple<int, Array<float,3>> > tupleArg;
-
-    constexpr bool isSupported = TypeListTest::IsSupported( charArg, doubleArg, "Hello", tupleArg );
-    BOOST_CHECK( isSupported == true );
-
-    constexpr bool isFixedSize = TypeListTest::IsFixedSize( charArg, doubleArg, "Hello", tupleArg );
-    BOOST_CHECK( isFixedSize == true );
-
-    constexpr size_t packedSize = TypeListTest::PackedSizeOf( charArg, doubleArg, "Hello", tupleArg );
-    BOOST_CHECK( packedSize == 50 );
-}
-
-// --run_test=TraitsTests/TypeTraitsTest103
-BOOST_AUTO_TEST_CASE( TypeTraitsTest103 )
-{
-    using Type1 = Tuple<char[30], double, double>;
-    using Type2 = Array<Type1, 5>;
-    using Type3 = Tuple<int, Type2[2]>;
-
-    using Type4 = Tuple<wchar_t[30], Int32, UInt32>;
-    using Type5 = Array<Type4, 5>;
-    using Type6 = Tuple<int, Type5[2]>;
-
-    constexpr Type3 tupleArg1;
-    constexpr Type6 tupleArg2;
-
-    constexpr bool isSupported = TypeListTest::IsSupported( tupleArg1, tupleArg2 );
-    BOOST_CHECK( isSupported == true );
-
-    constexpr bool isFixedSize = TypeListTest::IsFixedSize( tupleArg1, tupleArg2 );
-    BOOST_CHECK( isFixedSize == true );
-
-    constexpr size_t packedSize = TypeListTest::PackedSizeOf( tupleArg1, tupleArg2 );
-    BOOST_CHECK( packedSize == 1148 );
-}
-
-// --run_test=TraitsTests/TypeTraitsTest104
-BOOST_AUTO_TEST_CASE( TypeTraitsTest104 )
-{
-    using BasicTypeTuple = Tuple<bool, char, SByte, Byte, wchar_t, Int16, UInt16, Int32, long, UInt32, unsigned long, Int64, UInt64, float, double, TimeSpan, DateTime, Currency, Guid>;
-    using CoreArrayType = Array<BasicTypeTuple, 5>;
-    using ArrayType = BasicTypeTuple[5][2];
-    using ArrayTuple = Tuple<CoreArrayType, ArrayType>;
-
-    using Type4 = Tuple<wchar_t[30], Int32, UInt32>;
-    using Type5 = Array<Type4, 5>;
-    using Type6 = Tuple<int, Type5[2]>;
-
-    constexpr ArrayTuple tupleArg1;
-    constexpr Type6 tupleArg2;
-
-    constexpr bool isSupported = TypeListTest::IsSupported( tupleArg1, tupleArg2 );
-    BOOST_CHECK( isSupported == true );
-
-    constexpr bool isFixedSize = TypeListTest::IsFixedSize( tupleArg1, tupleArg2 );
-    BOOST_CHECK( isFixedSize == true );
-
-    constexpr size_t packedSize = TypeListTest::PackedSizeOf( tupleArg1, tupleArg2 );
-    BOOST_CHECK( packedSize == 2094 );
-}
 
 // --run_test=TraitsTests/TypeTraitsTest105
 BOOST_AUTO_TEST_CASE( TypeTraitsTest105 )
