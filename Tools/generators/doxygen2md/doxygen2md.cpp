@@ -16,11 +16,14 @@
 
 #include "doxygen2mdOptions.h"
 #include <HCCDoxygen.h>
+#include <HCCStringBuilder.h>
+
 
 
 int main(int argc, char* argv[] )
 {
     using namespace Harlinn::Common::Core;
+    using namespace Doxygen2Md;
 
     Doxygen2MdOptions options;
     

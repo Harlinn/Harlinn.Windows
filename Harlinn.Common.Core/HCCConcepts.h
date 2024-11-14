@@ -21,82 +21,92 @@
 
 namespace Harlinn::Common::Core
 {
+    /// <summary>
+    /// Matches most containers with sequential memory layout.
+    /// </summary>
     template<typename T>
-    concept SimpleSpanLike = requires ( T t1 )
+    concept SimpleSpanLike = std::is_base_of_v<std::random_access_iterator_tag,typename std::iterator_traits<typename T::const_iterator>::iterator_category> && requires ( T t1 )
     {
-        { t1[ 0 ] } ->std::convertible_to<typename T::value_type>;
-        { t1.begin( ) } ->std::same_as<typename T::iterator>;
-        { t1.end( ) } ->std::same_as<typename T::iterator>;
+        { t1[ 0 ] } ->std::convertible_to<typename T::const_reference>;
+        { t1.begin( ) } ->std::convertible_to<typename T::const_iterator>;
+        { t1.end( ) } ->std::convertible_to<typename T::const_iterator>;
         { t1.size( ) } ->std::same_as<typename T::size_type>;
-        { t1.data( ) } ->std::same_as<typename T::pointer>;
+        { t1.data( ) } ->std::convertible_to<typename T::const_pointer>;
     };
 
     template<typename T>
-    concept SimpleConstSpanLike = requires ( T t1 )
-    {
-        { t1[ 0 ] } ->std::convertible_to<const typename T::value_type>;
-        { t1.begin( ) } ->std::same_as<typename T::const_iterator>;
-        { t1.end( ) } ->std::same_as<typename T::const_iterator>;
-        { t1.size( ) } ->std::same_as<typename T::size_type>;
-        { t1.data( ) } ->std::same_as<typename T::const_pointer>;
-    };
+    concept SimpleCharSpanLike = SimpleSpanLike<T> && ( std::is_same_v<typename T::value_type, char> || std::is_same_v<typename T::value_type, wchar_t> );
 
+    template<typename T>
+    concept SimpleAnsiCharSpanLike = SimpleSpanLike<T> && std::is_same_v<typename T::value_type, char>;
+
+    template<typename T>
+    concept SimpleWideCharSpanLike = SimpleSpanLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
 
 
     template<typename T>
     concept SpanLike = SimpleSpanLike<T> && requires ( T t1 )
     {
-        { t1[ 0 ] } ->std::same_as<typename T::reference>;
         { t1.rbegin( ) } ->std::same_as<typename T::reverse_iterator>;
         { t1.rend( ) } ->std::same_as<typename T::reverse_iterator>;
         { t1.front() } ->std::same_as<typename T::reference>;
         { t1.back( ) } ->std::same_as<typename T::reference>;
     };
 
-    template<typename T>
-    concept SimpleStringLike = requires ( T t1 )
+    namespace Internal
     {
-        { t1[ 0 ] } ->std::convertible_to<typename T::value_type>;
-        { t1.begin( ) } ->std::same_as<typename T::iterator>;
-        { t1.end( ) } ->std::same_as<typename T::iterator>;
-        { t1.size( ) } ->std::same_as<typename T::size_type>;
-        { t1.c_str( ) } ->std::same_as<typename T::const_pointer>;
-        { t1.data( ) } ->std::same_as<typename T::pointer>;
-    };
+        template<typename T>
+        concept SimpleStringLikeImpl = std::is_base_of_v<std::random_access_iterator_tag, typename std::iterator_traits<typename T::const_iterator>::iterator_category> && requires ( T t1 )
+        {
+            { t1[ 0 ] } ->std::convertible_to<typename T::const_reference>;
+            { t1.begin( ) } ->std::convertible_to<typename T::const_iterator>;
+            { t1.end( ) } ->std::convertible_to<typename T::const_iterator>;
+            { t1.size( ) } ->std::same_as<typename T::size_type>;
+            { t1.c_str( ) } ->std::same_as<typename T::const_pointer>;
+            { t1.data( ) } ->std::convertible_to<typename T::const_pointer>;
+        };
+    }
 
     template<typename T>
-    concept SimpleWideStringLike = SimpleStringLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
+    concept SimpleStringLike = Internal::SimpleStringLikeImpl<T> && (std::is_same_v<typename T::value_type, wchar_t> || std::is_same_v<typename T::value_type, char> );
 
     template<typename T>
-    concept SimpleAnsiStringLike = SimpleStringLike<T> && std::is_same_v<typename T::value_type, char>;
-
+    concept SimpleWideStringLike = Internal::SimpleStringLikeImpl<T> && std::is_same_v<typename T::value_type, wchar_t>;
 
     template<typename T>
-    concept StringLike = SimpleStringLike<T> && requires ( T t1, const T t2, typename T::size_type sz )
+    concept SimpleAnsiStringLike = Internal::SimpleStringLikeImpl<T> && std::is_same_v<typename T::value_type, char>;
+
+    namespace Internal
     {
-        { t1[ 0 ] } ->std::same_as<typename T::reference>;
-        { t1.rbegin( ) } ->std::same_as<typename T::reverse_iterator>;
-        { t1.rend( ) } ->std::same_as<typename T::reverse_iterator>;
-        { t1.front( ) } ->std::convertible_to<typename T::value_type>;
-        { t1.back( ) } ->std::convertible_to<typename T::value_type>;
-        { t1.resize( sz ) };
-        
+        template<typename T>
+        concept StringLikeImpl = SimpleStringLikeImpl<T> && requires ( T t1, const T t2, typename T::size_type sz )
+        {
+            { t1.rbegin( ) } ->std::same_as<typename T::reverse_iterator>;
+            { t1.rend( ) } ->std::same_as<typename T::reverse_iterator>;
+            { t1.front( ) } ->std::convertible_to<typename T::value_type>;
+            { t1.back( ) } ->std::convertible_to<typename T::value_type>;
+            { t1.resize( sz ) };
 
-        { t2[ 0 ] } ->std::same_as<typename T::const_reference>;
-        { t2.begin( ) } ->std::same_as<typename T::const_iterator>;
-        { t2.end( ) } ->std::same_as<typename T::const_iterator>;
-        { t2.rbegin( ) } ->std::same_as<typename T::const_reverse_iterator>;
-        { t2.rend( ) } ->std::same_as<typename T::const_reverse_iterator>;
-        { t2.front( ) } ->std::convertible_to<typename T::value_type>;
-        { t2.back( ) } ->std::convertible_to<typename T::value_type>;
-        { t2.data( ) } ->std::same_as<typename T::const_pointer>;
-    };
+
+            { t2[ 0 ] } ->std::same_as<typename T::const_reference>;
+            { t2.begin( ) } ->std::same_as<typename T::const_iterator>;
+            { t2.end( ) } ->std::same_as<typename T::const_iterator>;
+            { t2.rbegin( ) } ->std::same_as<typename T::const_reverse_iterator>;
+            { t2.rend( ) } ->std::same_as<typename T::const_reverse_iterator>;
+            { t2.front( ) } ->std::convertible_to<typename T::value_type>;
+            { t2.back( ) } ->std::convertible_to<typename T::value_type>;
+            { t2.data( ) } ->std::same_as<typename T::const_pointer>;
+        };
+    }
 
     template<typename T>
-    concept WideStringLike = StringLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
+    concept StringLike = Internal::StringLikeImpl<T> && ( std::is_same_v<typename T::value_type, wchar_t> || std::is_same_v<typename T::value_type, char> );
 
     template<typename T>
-    concept AnsiStringLike = StringLike<T> && std::is_same_v<typename T::value_type, char>;
+    concept WideStringLike = Internal::StringLikeImpl<T> && std::is_same_v<typename T::value_type, wchar_t>;
+
+    template<typename T>
+    concept AnsiStringLike = Internal::StringLikeImpl<T> && std::is_same_v<typename T::value_type, char>;
 
     static_assert( AnsiStringLike< std::string > );
     static_assert( WideStringLike< std::wstring > );
@@ -107,25 +117,6 @@ namespace Harlinn::Common::Core
         { v.AddRef( ) } ->std::convertible_to<UInt32>;
         { v.Release( ) } ->std::convertible_to<UInt32>;
     };
-
-
-    template<typename T>
-    concept SimpleStringViewLike = requires ( T t1 )
-    {
-        { t1[ 0 ] } ->std::convertible_to<typename T::value_type>;
-        { t1.begin( ) } ->std::same_as<typename T::iterator>;
-        { t1.end( ) } ->std::same_as<typename T::iterator>;
-        { t1.size( ) } ->std::same_as<typename T::size_type>;
-        { t1.data( ) } ->std::same_as<typename T::pointer>;
-    };
-
-    
-    template<typename T>
-    concept SimpleWideStringViewLike = SimpleStringViewLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
-
-    template<typename T>
-    concept SimpleAnsiStringViewLike = SimpleStringViewLike<T> && std::is_same_v<typename T::value_type, char>;
-
 
 }
 

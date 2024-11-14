@@ -741,6 +741,13 @@ namespace Harlinn::Common::Core::RapidXml
             return {};
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, Ch>
+        XmlNode<Ch> FirstNode( const SpanT& name, bool case_sensitive = true ) const
+        {
+            return FirstNode( name.data( ), name.size( ), case_sensitive );
+        }
+
         XmlNode<Ch> LastNode( const Ch* n = 0, std::size_t nsize = 0, bool case_sensitive = true ) const
         {
             rapidxml::xml_node<Ch>* data = Data( );
@@ -750,6 +757,13 @@ namespace Harlinn::Common::Core::RapidXml
                 return XmlNode<Ch>( node );
             }
             return {};
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, Ch>
+        XmlNode<Ch> LastNode( const SpanT& name, bool case_sensitive = true ) const
+        {
+            return LastNode( name.data( ), name.size( ), case_sensitive );
         }
 
         XmlNode<Ch> PreviousSibling( const Ch* n = 0, std::size_t nsize = 0, bool case_sensitive = true ) const
@@ -763,6 +777,14 @@ namespace Harlinn::Common::Core::RapidXml
             return {};
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, Ch>
+        XmlNode<Ch> PreviousSibling( const SpanT& name, bool case_sensitive = true ) const
+        {
+            return PreviousSibling( name.data( ), name.size( ), case_sensitive );
+        }
+
+
         XmlNode<Ch> NextSibling( const Ch* n = 0, std::size_t nsize = 0, bool case_sensitive = true ) const
         {
             rapidxml::xml_node<Ch>* data = Data( );
@@ -773,6 +795,14 @@ namespace Harlinn::Common::Core::RapidXml
             }
             return {};
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, Ch>
+        XmlNode<Ch> NextSibling( const SpanT& name, bool case_sensitive = true ) const
+        {
+            return NextSibling( name.data( ), name.size( ), case_sensitive );
+        }
+
 
         XmlAttribute<Ch> FirstAttribute( const Ch* n = 0, std::size_t nsize = 0, bool case_sensitive = true ) const
         {
@@ -785,6 +815,13 @@ namespace Harlinn::Common::Core::RapidXml
             return {};
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, Ch>
+        XmlNode<Ch> FirstAttribute( const SpanT& name, bool case_sensitive = true ) const
+        {
+            return FirstAttribute( name.data( ), name.size( ), case_sensitive );
+        }
+
         XmlAttribute<Ch> LastAttribute( const Ch* n = 0, std::size_t nsize = 0, bool case_sensitive = true ) const
         {
             rapidxml::xml_attribute<Ch>* data = Data( );
@@ -794,6 +831,13 @@ namespace Harlinn::Common::Core::RapidXml
                 return XmlAttribute<Ch>( attr );
             }
             return {};
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, Ch>
+        XmlNode<Ch> LastAttribute( const SpanT& name, bool case_sensitive = true ) const
+        {
+            return LastAttribute( name.data( ), name.size( ), case_sensitive );
         }
 
 

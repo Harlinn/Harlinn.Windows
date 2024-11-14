@@ -48,6 +48,7 @@ namespace Harlinn::Common::Core
         }
 
 
+
         void AppendLine( )
         {
             if constexpr ( isWide )

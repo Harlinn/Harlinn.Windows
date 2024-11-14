@@ -25,7 +25,7 @@
 #include <HCCIOBufferStream.h>
 #include <HCCLib.h>
 
-
+#pragma comment(lib,"Shlwapi.lib")
 
 namespace Harlinn::Common::Core::IO
 {
@@ -488,6 +488,28 @@ namespace Harlinn::Common::Core::IO
     {
         return QueryFullPathName( fileName.c_str(), bufferLength, buffer, filePart );
     }
+
+    inline [[nodiscard]] bool QueryRelativePathTo( const wchar_t* fromPath, DWORD fromAttributes, const wchar_t* relativeToPath, DWORD toAttributes, wchar_t* resultPath )
+    {
+        return PathRelativePathToW( resultPath, fromPath, fromAttributes, relativeToPath, toAttributes );
+    }
+
+    inline [[nodiscard]] bool QueryRelativePathTo( const char* fromPath, DWORD fromAttributes, const char* relativeToPath, DWORD toAttributes, char* resultPath )
+    {
+        return PathRelativePathToA( resultPath, fromPath, fromAttributes, relativeToPath, toAttributes );
+    }
+
+    template<SimpleWideStringLike StringT1, SimpleWideStringLike StringT2>
+    inline [[nodiscard]] bool QueryRelativePathTo( const StringT1& fromPath, DWORD fromAttributes, const StringT2& relativeToPath, DWORD toAttributes, wchar_t* resultPath )
+    {
+        return PathRelativePathToW( resultPath, fromPath.c_str(), fromAttributes, relativeToPath.c_str( ), toAttributes );
+    }
+    template<SimpleAnsiStringLike StringT1, SimpleAnsiStringLike StringT2>
+    inline [[nodiscard]] bool QueryRelativePathTo( const StringT1& fromPath, DWORD fromAttributes, const StringT2& relativeToPath, DWORD toAttributes, char* resultPath )
+    {
+        return PathRelativePathToA( resultPath, fromPath.c_str( ), fromAttributes, relativeToPath.c_str( ), toAttributes );
+    }
+
 
     inline [[nodiscard]] DWORD QueryTempPath( DWORD bufferLength, char* buffer )
     {
@@ -1634,14 +1656,17 @@ namespace Harlinn::Common::Core::IO
         static constexpr int MaxPath = 260;
         static constexpr int MaxDirectoryLength = 255;
 
+
+
         
         template<typename StringT>
-            requires (IsWideString<StringT> || IsAnsiString<StringT> || IsWideStringView<StringT> || IsAnsiStringView<StringT>)
+            //requires (IsWideString<StringT> || IsAnsiString<StringT> || IsWideStringView<StringT> || IsAnsiStringView<StringT>)
+            requires SimpleWideStringLike<StringT> || SimpleAnsiStringLike<StringT>
         static bool IsDirectorySeparator(const StringT& str) noexcept
         {
             using StringType = std::remove_cvref_t<StringT>;
             using CharT = typename StringType::value_type;
-            return str.length() == 1 && ((str[0] == static_cast<CharT>(DirectorySeparatorChar)) || (str[0] == static_cast<CharT>(AltDirectorySeparatorChar)));
+            return str.size() == 1 && ((str[0] == static_cast<CharT>(DirectorySeparatorChar)) || (str[0] == static_cast<CharT>(AltDirectorySeparatorChar)));
         }
 
         template<typename StringT>
@@ -1677,6 +1702,20 @@ namespace Harlinn::Common::Core::IO
             else
             {
                 return StringT( 1, static_cast< CharT >( DirectorySeparatorChar ) );
+            }
+        }
+
+        template<SimpleStringLike StringT>
+        static StringT RemoveTrailingDirectorySeparator( const StringT& path )
+        {
+            using CharT = typename StringT::value_type;
+            if ( EndsWithDirectorySeparator( path ) )
+            {
+                return StringT( path.data( ), path.size( ) - 1 );
+            }
+            else
+            {
+                return path;
             }
         }
 
@@ -1920,6 +1959,48 @@ namespace Harlinn::Common::Core::IO
             return {};
         }
 
+        template<StringLike StringT>
+        static StringT RelativePath( const StringT& fromPath, DWORD fromAttributes, const StringT& relativeToPath, DWORD toAttributes )
+        {
+            using CharT = std::remove_cvref_t<typename StringT::value_type>;
+            CharT buffer[ MAX_PATH + 1 ];
+            auto rc = QueryRelativePathTo( fromPath, fromAttributes, relativeToPath, toAttributes, buffer );
+            if ( !rc )
+            {
+                ThrowLastOSError( );
+            }
+            return StringT( buffer );
+        }
+
+        template<StringLike StringT>
+        static StringT RelativePath( const StringT& fromDirectory, const StringT& relativeToFilePath )
+        {
+            DWORD fromAttributes = FILE_ATTRIBUTE_DIRECTORY;
+            DWORD toAttributes = FILE_ATTRIBUTE_NORMAL;
+            return RelativePath<StringT>( fromDirectory, fromAttributes, relativeToFilePath, toAttributes );
+        }
+
+        template<typename Ch,StringLike StringT>
+            requires std::is_same_v<std::remove_cvref_t<typename StringT::value_type>, Ch>
+        static StringT RelativePath( const Ch* fromPath, DWORD fromAttributes, const Ch* relativeToPath, DWORD toAttributes )
+        {
+            using CharT = std::remove_cvref_t<typename StringT::value_type>;
+            CharT buffer[ MAX_PATH + 1 ];
+            auto rc = QueryRelativePathTo( fromPath, fromAttributes, relativeToPath, toAttributes, buffer );
+            if ( !rc )
+            {
+                ThrowLastOSError( );
+            }
+            return StringT( buffer );
+        }
+        template<typename Ch, StringLike StringT>
+            requires std::is_same_v<std::remove_cvref_t<typename StringT::value_type>, Ch>
+        static StringT RelativePath( const Ch* fromDirectory, const Ch* relativeToFilePath )
+        {
+            DWORD fromAttributes = FILE_ATTRIBUTE_DIRECTORY;
+            DWORD toAttributes = FILE_ATTRIBUTE_NORMAL;
+            return RelativePath<StringT>( fromDirectory, fromAttributes, relativeToFilePath, toAttributes );
+        }
         
         template<typename CharT>
             requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> )

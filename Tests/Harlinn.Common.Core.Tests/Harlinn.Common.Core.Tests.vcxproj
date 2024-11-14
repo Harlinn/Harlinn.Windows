@@ -191,6 +191,7 @@
     <ClCompile Include="BufferStreamTests.cpp" />
     <ClCompile Include="ComImplTests.cpp" />
     <ClCompile Include="ComInterfacesTests.cpp" />
+    <ClCompile Include="ConceptsTests.cpp" />
     <ClCompile Include="ConcurrentQueueTests.cpp" />
     <ClCompile Include="DirectoryUtilsTests.cpp" />
     <ClCompile Include="EseOptionsTests.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="FormatStringParserTests.cpp" />
     <ClCompile Include="HtmlNamedCharactersTests.cpp" />
     <ClCompile Include="IntervalTests.cpp" />
+    <ClCompile Include="IOPathTests.cpp" />
     <ClCompile Include="ListTests.cpp" />
     <ClCompile Include="LoggerLevelTests.cpp" />
     <ClCompile Include="PersistentPrinterTests.cpp" />

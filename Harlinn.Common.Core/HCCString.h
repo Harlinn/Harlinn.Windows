@@ -1406,6 +1406,21 @@ namespace Harlinn::Common::Core
             return data_ ? data_->buffer_ : nullptr;
         }
 
+        template<typename T>
+            requires std::is_same_v<typename T::value_type, value_type> && std::is_constructible_v<T,const value_type*,size_t> && std::is_constructible_v<T>
+        T To( ) const
+        {
+            if ( data_ && data_->size_ )
+            {
+                return T( data_->buffer, data_->size_ );
+            }
+            else
+            {
+                return T();
+            }
+        }
+
+
         [[nodiscard]] size_t Hash( ) const noexcept
         {
             if ( data_ )

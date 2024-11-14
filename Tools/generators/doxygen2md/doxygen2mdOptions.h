@@ -22,53 +22,55 @@
 
 using namespace Harlinn::Common::Core;
 
-class Doxygen2MdOptions
+namespace Doxygen2Md
 {
-    bool help_;
-    std::string inputDirectory_;
-    std::string outputDirectory_;
-public:
-    Doxygen2MdOptions( ) = default;
-    
-    bool Help() const { return help_; }
-    const WideString InputDirectory() const { return ToWideString( inputDirectory_ ); }
-    const WideString OutputDirectory( ) const { return ToWideString( outputDirectory_ ); }
-
-
-    bool IsValid( ) const
+    class Doxygen2MdOptions
     {
-        return ( inputDirectory_.empty( ) == false ) &&
-            IO::Directory::Exist( inputDirectory_ ) &&
-            ( outputDirectory_.empty( ) == false ) &&
-            ( help_ == false );
-    }
+        bool help_;
+        std::string inputDirectory_;
+        std::string outputDirectory_;
+    public:
+        Doxygen2MdOptions( ) = default;
 
-    bool Parse( int argc, char* argv[ ] )
-    {
-        namespace po = boost::program_options;
-        
-        po::options_description desc( "doxygen2md options" );
-        desc.add_options( )
-            ( "help", po::value<bool>( &help_ )->default_value(false), "produce help message" )
-            ( "doxygen,I", po::value< std::string >(&inputDirectory_ ), "directory containing doxygen generated xml files." )
-            ( "md,O", po::value< std::string >( &outputDirectory_ ), "markdown destination directory." )
-            ;
+        bool Help( ) const { return help_; }
+        const WideString InputDirectory( ) const { return ToWideString( inputDirectory_ ); }
+        const WideString OutputDirectory( ) const { return ToWideString( outputDirectory_ ); }
 
-        po::variables_map vm;
-        po::store( po::parse_command_line( argc, argv, desc ), vm );
-        po::notify( vm );
 
-        if ( IsValid( ) == false )
+        bool IsValid( ) const
         {
-            desc.print( std::cout );
-            return false;
+            return ( inputDirectory_.empty( ) == false ) &&
+                IO::Directory::Exist( inputDirectory_ ) &&
+                ( outputDirectory_.empty( ) == false ) &&
+                ( help_ == false );
         }
-        return true;
-    }
+
+        bool Parse( int argc, char* argv[ ] )
+        {
+            namespace po = boost::program_options;
+
+            po::options_description desc( "doxygen2md options" );
+            desc.add_options( )
+                ( "help", po::value<bool>( &help_ )->default_value( false ), "produce help message" )
+                ( "doxygen,I", po::value< std::string >( &inputDirectory_ ), "directory containing doxygen generated xml files." )
+                ( "md,O", po::value< std::string >( &outputDirectory_ ), "markdown destination directory." )
+                ;
+
+            po::variables_map vm;
+            po::store( po::parse_command_line( argc, argv, desc ), vm );
+            po::notify( vm );
+
+            if ( IsValid( ) == false )
+            {
+                desc.print( std::cout );
+                return false;
+            }
+            return true;
+        }
 
 
 
-};
+    };
 
-
+}
 #endif

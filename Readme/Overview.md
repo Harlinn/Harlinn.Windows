@@ -11,7 +11,7 @@ source libraries.
 
 ![Developed using Dear ImGui and ImPlot](./Images/ImGuiDemo2.png)
 
-There are currently 630 projects in the solution, and this article provides a high-level overview of what's inside.
+There are currently 636 projects in the solution, and this article provides a high-level overview of what's inside.
 
 ### Why did I not use cmake and vcpkg? 
 This is a good question, and initially I tried to do just that, but there were some snags:

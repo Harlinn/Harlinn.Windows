@@ -1637,7 +1637,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             pInterface->RSSetViewports( numberOfViewports, viewports );
         }
 
-        template<SimpleConstSpanLike SpanT>
+        template<SimpleSpanLike SpanT>
             requires std::is_convertible_v<typename SpanT::value_type, const D3D12_VIEWPORT>
         void RSSetViewports( const SpanT& viewports ) const
         {
@@ -1674,7 +1674,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             pInterface->RSSetScissorRects( numberOfScissorRectangles, scissorRectangles );
         }
 
-        template<SimpleConstSpanLike SpanT>
+        template<SimpleSpanLike SpanT>
             requires std::is_convertible_v<typename SpanT::value_type, const D3D12_RECT>
         void RSSetViewports( const SpanT& scissorRectangles ) const
         {
@@ -1748,7 +1748,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             pInterface->ResourceBarrier( numberOfBarriers, barriers );
         }
 
-        template<SimpleConstSpanLike SpanT>
+        template<SimpleSpanLike SpanT>
             requires std::is_convertible_v<typename SpanT::value_type, const D3D12_RESOURCE_BARRIER>
         void ResourceBarrier( const SpanT& barriers ) const
         {

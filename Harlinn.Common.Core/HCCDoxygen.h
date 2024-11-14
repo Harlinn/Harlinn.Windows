@@ -2761,6 +2761,15 @@ namespace Harlinn::Common::Core::Doxygen
                 compoundDef_ = compoundDef;
             }
 
+            DoxLanguage Language( ) const
+            {
+                if ( compoundDef_ )
+                {
+                    return compoundDef_->Language();
+                }
+                return {};
+            }
+
         };
 
         class MemberDef : public Member
@@ -2857,6 +2866,13 @@ namespace Harlinn::Common::Core::Doxygen
                 : Base( typeSystem )
             {
             }
+
+            bool IsNested( )
+            {
+                auto owner = Owner( );
+                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
+            }
+
         };
 
         class Class : public Internal::TypeContainerBase<Structure::MemberType::Class>
@@ -2867,6 +2883,12 @@ namespace Harlinn::Common::Core::Doxygen
             explicit Class( Structure::TypeSystem* typeSystem )
                 : Base( typeSystem )
             {
+            }
+
+            bool IsNested( )
+            {
+                auto owner = Owner( );
+                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
             }
 
         };
@@ -2881,6 +2903,12 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
 
+            bool IsNested( )
+            {
+                auto owner = Owner( );
+                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
+            }
+
         };
 
         class Interface : public Internal::TypeContainerBase<Structure::MemberType::Interface>
@@ -2893,6 +2921,11 @@ namespace Harlinn::Common::Core::Doxygen
             {
             }
 
+            bool IsNested( )
+            {
+                auto owner = Owner( );
+                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
+            }
         };
 
         class Enum : public Internal::ContainerBase<Structure::MemberType::Enum>
@@ -2906,6 +2939,12 @@ namespace Harlinn::Common::Core::Doxygen
             explicit Enum( Structure::TypeSystem* typeSystem )
                 : Base( typeSystem )
             {
+            }
+
+            bool IsNested( )
+            {
+                auto owner = Owner( );
+                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
             }
 
             const Doxygen::CompoundDefTypePtr& CompoundDef( ) const
@@ -2958,6 +2997,13 @@ namespace Harlinn::Common::Core::Doxygen
                 : Base( typeSystem )
             {
             }
+
+            bool IsMemberFunction( )
+            {
+                auto owner = Owner( );
+                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
+            }
+
         };
 
         class Define : public Internal::MemberDefBase<Structure::MemberType::Define>
@@ -2974,6 +3020,8 @@ namespace Harlinn::Common::Core::Doxygen
         class Property : public Internal::MemberDefBase<Structure::MemberType::Property>
         {
         public:
+            
+
             using Base = Internal::MemberDefBase<Structure::MemberType::Property>;
 
             explicit Property( Structure::TypeSystem* typeSystem )
@@ -3000,6 +3048,12 @@ namespace Harlinn::Common::Core::Doxygen
                 : Base( typeSystem )
             {
             }
+
+            bool IsMemberVariable( )
+            {
+                auto owner = Owner( );
+                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
+            }
         };
         class Typedef : public Internal::MemberDefBase<Structure::MemberType::Typedef>
         {
@@ -3010,6 +3064,13 @@ namespace Harlinn::Common::Core::Doxygen
                 : Base( typeSystem )
             {
             }
+
+            bool IsNested( )
+            {
+                auto owner = Owner( );
+                return owner != nullptr && owner->MemberType( ) != Structure::MemberType::Namespace;
+            }
+
         };
         class Signal : public Internal::MemberDefBase<Structure::MemberType::Signal>
         {
