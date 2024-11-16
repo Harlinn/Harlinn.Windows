@@ -456,19 +456,19 @@ namespace Harlinn::Common::Core
             auto result = wcstoul( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
                 result > UINT8_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return 0xFF & result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     Byte ParseByte( const char* str, int radix )
@@ -479,19 +479,19 @@ namespace Harlinn::Common::Core
             auto result = strtoul( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
                 result > UINT8_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return 0xFF & result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -546,19 +546,19 @@ namespace Harlinn::Common::Core
             auto result = wcstol( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == LONG_MAX || result == LONG_MIN ) && errno == ERANGE ) ||
                 result < INT8_MIN || result > INT8_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return 0xFF & result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     SByte ParseSByte( const char* str, int radix )
@@ -569,19 +569,19 @@ namespace Harlinn::Common::Core
             auto result = strtol( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == LONG_MAX || result == LONG_MIN ) && errno == ERANGE ) ||
                 result < INT8_MIN || result > INT8_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return 0xFF & result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -637,19 +637,19 @@ namespace Harlinn::Common::Core
             auto result = wcstol( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == LONG_MAX || result == LONG_MIN ) && errno == ERANGE ) ||
                 result < INT16_MIN || result > INT16_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return 0xFFFF & result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     Int16 ParseInt16( const char* str, int radix )
@@ -660,19 +660,19 @@ namespace Harlinn::Common::Core
             auto result = strtol( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == LONG_MAX || result == LONG_MIN ) && errno == ERANGE ) ||
                 result < INT16_MIN || result > INT16_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return 0xFFFF & result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -727,19 +727,19 @@ namespace Harlinn::Common::Core
             auto result = wcstoul( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
                 result > UINT16_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return 0xFFFF & result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     UInt16 ParseUInt16( const char* str, int radix )
@@ -750,19 +750,19 @@ namespace Harlinn::Common::Core
             auto result = strtoul( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
                 result > UINT16_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return 0xFFFF & result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -818,19 +818,19 @@ namespace Harlinn::Common::Core
             auto result = wcstol( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == LONG_MAX || result == LONG_MIN ) && errno == ERANGE ) ||
                 result < INT32_MIN || result > INT32_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     Int32 ParseInt32( const char* str, int radix )
@@ -841,19 +841,19 @@ namespace Harlinn::Common::Core
             auto result = strtol( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == LONG_MAX || result == LONG_MIN ) && errno == ERANGE ) ||
                 result < INT32_MIN || result > INT32_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -909,19 +909,19 @@ namespace Harlinn::Common::Core
             auto result = wcstoul( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
                 result > UINT32_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     UInt32 ParseUInt32( const char* str, int radix )
@@ -932,19 +932,19 @@ namespace Harlinn::Common::Core
             auto result = strtoul( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
                 result > UINT32_MAX )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
 
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -999,17 +999,17 @@ namespace Harlinn::Common::Core
             auto result = wcstoll( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == LLONG_MAX || result == LLONG_MIN ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     Int64 ParseInt64( const char* str, int radix )
@@ -1020,17 +1020,17 @@ namespace Harlinn::Common::Core
             auto result = strtoll( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == LLONG_MAX || result == LLONG_MIN ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -1087,17 +1087,17 @@ namespace Harlinn::Common::Core
             auto result = wcstoull( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( result == ULLONG_MAX && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     UInt64 ParseUInt64( const char* str, int radix )
@@ -1108,17 +1108,17 @@ namespace Harlinn::Common::Core
             auto result = strtoull( str, &end, radix );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( result == ULLONG_MAX && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -1175,17 +1175,17 @@ namespace Harlinn::Common::Core
             auto result = wcstof( str, &end );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     Single ParseSingle( const char* str )
@@ -1196,17 +1196,17 @@ namespace Harlinn::Common::Core
             auto result = strtof( str, &end );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -1270,17 +1270,17 @@ namespace Harlinn::Common::Core
             auto result = _wcstof_l( str, &end, invariantLocale );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     Single ParseSingleInvariant( const char* str )
@@ -1292,17 +1292,17 @@ namespace Harlinn::Common::Core
             auto result = _strtof_l( str, &end, invariantLocale );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -1362,17 +1362,17 @@ namespace Harlinn::Common::Core
             auto result = wcstod( str, &end );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     Double ParseDouble( const char* str )
@@ -1383,17 +1383,17 @@ namespace Harlinn::Common::Core
             auto result = strtod( str, &end );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 
@@ -1453,17 +1453,17 @@ namespace Harlinn::Common::Core
             auto result = _wcstod_l( str, &end, invariantLocale );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
     double ParseDoubleInvariant( const char* str )
@@ -1475,17 +1475,17 @@ namespace Harlinn::Common::Core
             auto result = _strtod_l( str, &end, invariantLocale );
             if ( result == 0 && str == end )
             {
-                throw ArgumentException( L"Not a number", "str" );
+                throw ArgumentException( L"Not a number", L"str" );
             }
             if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
             {
-                throw ArgumentException( L"Value out of range", "str" );
+                throw ArgumentException( L"Value out of range", L"str" );
             }
             return result;
         }
         else
         {
-            throw ArgumentException( L"Not a number", "str" );
+            throw ArgumentException( L"Not a number", L"str" );
         }
     }
 

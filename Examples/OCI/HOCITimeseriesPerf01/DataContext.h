@@ -36,7 +36,16 @@ public:
     const OCI::ServiceContext& ServiceContext( ) const;
 
     std::unique_ptr<OwnedObjectTypeData> CreateOwnedObjectType( const WideString& name, const WideString& description ) const;
+    std::unique_ptr<OwnedObjectTypeData> CreateOwnedObjectType( const wchar_t* name, const wchar_t* description ) const
+    {
+        return CreateOwnedObjectType( WideString( name ), WideString( description ) );
+    }
+
     std::unique_ptr<OwnedObjectTypeData> CreateOwnedObjectType( const Guid& id, const WideString& name, const WideString& description ) const;
+    std::unique_ptr<OwnedObjectTypeData> CreateOwnedObjectType( const Guid& id, const wchar_t* name, const wchar_t* description ) const
+    {
+        return CreateOwnedObjectType( id, WideString( name ), WideString( description ) );
+    }
     std::unique_ptr<OwnedObjectTypeData> FindOwnedObjectType( const Guid& id ) const;
     std::unique_ptr<OwnedObjectTypeData> FindOwnedObjectType( const WideString& name ) const;
     std::unordered_map<Guid, std::unique_ptr<OwnedObjectTypeData> > ReadOwnedObjectTypes( ) const;
@@ -46,6 +55,10 @@ public:
     
 
     std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& type, const WideString& name, const WideString& description ) const;
+    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& type, const wchar_t* name, const wchar_t* description ) const
+    {
+        return CreateOwnedObject( type, WideString( name ), WideString( description ) );
+    }
     std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& type, const WideString& name, const WideString& description, const IO::MemoryStream& data ) const;
     std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& type, const WideString& name, const WideString& description ) const;
     std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const WideString& name, const WideString& description ) const;

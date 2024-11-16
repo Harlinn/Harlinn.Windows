@@ -65,7 +65,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp::Databases::MsSql
     void CSharpMsSqlSimpleDatabaseReadersGenerator::CreateReader( const ClassInfo& classInfo )
     {
         auto className = CSharpHelper::GetSimpleDataReaderName( classInfo );
-        WideString baseClassName = L"DataReaderWrapper";
+        WideString baseClassName{ L"DataReaderWrapper" };
         if ( classInfo.IsTopLevel( ) == false )
         {
             auto baseClass = classInfo.BaseClass( );

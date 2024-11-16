@@ -44,7 +44,7 @@ namespace
 
         Engine( bool createNewDatabase = true )
         {
-            instance = Ese::Instance( "TestInstance" );
+            instance = Ese::Instance( L"TestInstance" );
             instance.SetCreatePathIfNotExist( );
             instance.SetExceptionAction( Ese::ExceptionAction::None );
             instance.SetSystemPath( DatabaseSystemPath );
@@ -103,14 +103,14 @@ BOOST_AUTO_TEST_CASE( StaticAssertsTest )
 // --run_test=EseTests/InstanceConstructorTest
 BOOST_AUTO_TEST_CASE( InstanceConstructorTest )
 {
-    Ese::Instance instance( "TestInstance" );
+    Ese::Instance instance( L"TestInstance" );
     BOOST_TEST( instance.IsValid() );
 }
 
 // --run_test=EseTests/InstanceMoveConstructorTest
 BOOST_AUTO_TEST_CASE( InstanceMoveConstructorTest )
 {
-    Ese::Instance instance1( "TestInstance" );
+    Ese::Instance instance1( L"TestInstance" );
     BOOST_TEST( instance1.IsValid() );
     Ese::Instance instance2 = std::move( instance1 );
     BOOST_TEST( instance1.IsValid() == false );
@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE( InstanceMoveConstructorTest )
 // --run_test=EseTests/InstanceInitializationTest
 BOOST_AUTO_TEST_CASE( InstanceInitializationTest )
 {
-    Ese::Instance instance( "TestInstance" );
+    Ese::Instance instance( L"TestInstance" );
     BOOST_TEST( instance.IsValid() );
     instance.SetCreatePathIfNotExist( );
     instance.SetExceptionAction( Ese::ExceptionAction::None );
@@ -1907,12 +1907,12 @@ public:
 
 };
 
-WideString SensorEngine::SensorValueTableName = L"SV";
-WideString SensorEngine::SensorValueIndexName = L"ISV";
-WideString SensorEngine::SensorColumnName = L"S";
-WideString SensorEngine::TimestampColumnName = L"T";
-WideString SensorEngine::FlagsColumnName = L"F";
-WideString SensorEngine::ValueColumnName = L"V";
+WideString SensorEngine::SensorValueTableName{ L"SV" };
+WideString SensorEngine::SensorValueIndexName{ L"ISV" };
+WideString SensorEngine::SensorColumnName{ L"S" };
+WideString SensorEngine::TimestampColumnName{ L"T" };
+WideString SensorEngine::FlagsColumnName{ L"F" };
+WideString SensorEngine::ValueColumnName{ L"V" };
 
 
 // --run_test=EseTests/CreateSensorValueTableTest1

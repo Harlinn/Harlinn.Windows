@@ -24,19 +24,19 @@ namespace Harlinn::Common::Core::Logging
     {
         if ( level == Level::None )
         {
-            return L"None";
+            return StringT(L"None");
         }
         else if ( level == Level::SystemStart )
         {
-            return L"Start";
+            return StringT( L"Start" );
         }
         else if ( level == Level::SystemStop )
         {
-            return L"Stop";
+            return StringT( L"Stop" );
         }
         else if ( level == Level::All )
         {
-            return L"All";
+            return StringT( L"All" );
         }
         else
         {
@@ -115,19 +115,19 @@ namespace Harlinn::Common::Core::Logging
     {
         if ( level == Level::None )
         {
-            return "None";
+            return StringT("None");
         }
         else if ( level == Level::SystemStart )
         {
-            return "Start";
+            return StringT( "Start" );
         }
         else if ( level == Level::SystemStop )
         {
-            return "Stop";
+            return StringT( "Stop" );
         }
         else if ( level == Level::All )
         {
-            return "All";
+            return StringT( "All" );
         }
         else
         {

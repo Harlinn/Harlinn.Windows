@@ -47,6 +47,10 @@ namespace Harlinn::Common::Core
             return static_cast< DerivedType& >( *this );
         }
     protected:
+        DerivedType& Add( const CharType* name, ValueType value )
+        {
+            return Add( StringType( name ), value );
+        }
         const Entry* Find( const StringType& name ) const
         {
             size_t count = entries_.size( );

@@ -45,8 +45,8 @@ BOOST_AUTO_TEST_CASE( ServerStartStopTest1 )
 {
     try
     {
-        AnsiString serverEndpoint = "tcp://*:42500";
-        AnsiString serverInprocEndpoint = "inproc://server-inproc";
+        AnsiString serverEndpoint{ "tcp://*:42500" };
+        AnsiString serverInprocEndpoint{ "inproc://server-inproc" };
         Context context;
         ZMQServer server( context, L"TestServer", serverEndpoint, serverInprocEndpoint );
         server.Start( );
@@ -70,18 +70,18 @@ BOOST_AUTO_TEST_CASE( NotificationClientServerTest1 )
         EventWaitHandle eventWaitHandle1( true );
         EventWaitHandle eventWaitHandle2( true );
 
-        AnsiString serverListenEndpoint = "tcp://*:42500";
-        AnsiString serverListenInprocEndpoint = "inproc://server-inproc";
+        AnsiString serverListenEndpoint{ "tcp://*:42500" };
+        AnsiString serverListenInprocEndpoint{ "inproc://server-inproc" };
 
-        AnsiString notificationListenEndpoint1 = "tcp://*:42501";
-        AnsiString notificationListenInprocEndpoint1 = "inproc://notify-inproc1";
+        AnsiString notificationListenEndpoint1{ "tcp://*:42501" };
+        AnsiString notificationListenInprocEndpoint1{ "inproc://notify-inproc1" };
 
-        AnsiString notificationListenEndpoint2 = "tcp://*:42502";
-        AnsiString notificationListenInprocEndpoint2 = "inproc://notify-inproc2";
+        AnsiString notificationListenEndpoint2{ "tcp://*:42502" };
+        AnsiString notificationListenInprocEndpoint2{ "inproc://notify-inproc2" };
 
-        AnsiString serverEndpoint = "tcp://127.0.0.1:42500";
-        AnsiString notificationEndpoint1 = "tcp://127.0.0.1:42501";
-        AnsiString notificationEndpoint2 = "tcp://127.0.0.1:42502";
+        AnsiString serverEndpoint{ "tcp://127.0.0.1:42500" };
+        AnsiString notificationEndpoint1{ "tcp://127.0.0.1:42501" };
+        AnsiString notificationEndpoint2{ "tcp://127.0.0.1:42502" };
 
         Context context;
         ZMQNotificationServer server( context, L"TestServer", serverListenEndpoint, serverListenInprocEndpoint );
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE( NotificationClientServerTest1 )
         ZMQWriteStream zmqWriteStream( client1.ClientSocket() );
         IO::BinaryWriter<ZMQWriteStream> writer( zmqWriteStream );
 
-        WideString text = L"Message";
+        WideString text{ L"Message" };
 
         writer.Write( text );
         zmqWriteStream.Flush( );

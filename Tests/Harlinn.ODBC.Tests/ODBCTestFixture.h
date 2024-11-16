@@ -21,8 +21,8 @@ class LocalFixture
 {
 public:
     using WideString = Harlinn::Common::Core::WideString;
-    WideString DataSource = L"Ajaworks";
-    WideString DatabaseName = L"AjaworksDev";
+    WideString DataSource{ L"Ajaworks" };
+    WideString DatabaseName{ L"AjaworksDev" };
 
 
     LocalFixture( )

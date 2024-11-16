@@ -591,7 +591,7 @@ void DeviceContextExampleForm::DrawStateNormal( const DeviceContextHandle& dc, R
     auto height = Windows::Environment::SystemMetrics::CaptionHeight( );
     rect.top = rect.top + ( ( ( rect.bottom - rect.top ) / 2 ) - ( height / 2 ) );
 
-    std::wstring s( L"DrawState Normal" );
+    WideString s( L"DrawState Normal" );
     dc.DrawStateW( s, rect.left, rect.top, DrawStateFlags::Normal );
 }
 
@@ -600,7 +600,7 @@ void DeviceContextExampleForm::DrawStatePrefix( const DeviceContextHandle& dc, R
     auto height = Windows::Environment::SystemMetrics::CaptionHeight( );
     rect.top = rect.top + ( ( ( rect.bottom - rect.top ) / 2 ) - ( height / 2 ) );
 
-    std::wstring s( L"DrawState &Prefix" );
+    WideString s( L"DrawState &Prefix" );
     dc.DrawStateW( s, rect.left, rect.top, DrawStateFlags::Prefix );
 }
 
@@ -609,7 +609,7 @@ void DeviceContextExampleForm::DrawStateDithered( const DeviceContextHandle& dc,
     auto height = Windows::Environment::SystemMetrics::CaptionHeight( );
     rect.top = rect.top + ( ( ( rect.bottom - rect.top ) / 2 ) - ( height / 2 ) );
 
-    std::wstring s( L"DrawState Dithered" );
+    WideString s( L"DrawState Dithered" );
     dc.DrawStateW( s, rect.left, rect.top, DrawStateFlags::Dithered );
 }
 
@@ -618,7 +618,7 @@ void DeviceContextExampleForm::DrawStateDisabled( const DeviceContextHandle& dc,
     auto height = Windows::Environment::SystemMetrics::CaptionHeight( );
     rect.top = rect.top + ( ( ( rect.bottom - rect.top ) / 2 ) - ( height / 2 ) );
 
-    std::wstring s( L"DrawState Disabled" );
+    WideString s( L"DrawState Disabled" );
     dc.DrawStateW( s, rect.left, rect.top, DrawStateFlags::Disabled );
 }
 
@@ -627,7 +627,7 @@ void DeviceContextExampleForm::DrawStateMono( const DeviceContextHandle& dc, REC
     auto height = Windows::Environment::SystemMetrics::CaptionHeight( );
     rect.top = rect.top + ( ( ( rect.bottom - rect.top ) / 2 ) - ( height / 2 ) );
 
-    std::wstring s( L"DrawState Mono" );
+    WideString s( L"DrawState Mono" );
     BrushHandle brush( RGB( 0xFF, 0, 0 ) );
     dc.DrawStateW( brush, s, rect.left, rect.top, DrawStateFlags::Mono );
 }
@@ -637,7 +637,7 @@ void DeviceContextExampleForm::DrawStateHidePrefix( const DeviceContextHandle& d
     auto height = Windows::Environment::SystemMetrics::CaptionHeight( );
     rect.top = rect.top + ( ( ( rect.bottom - rect.top ) / 2 ) - ( height / 2 ) );
 
-    std::wstring s( L"DrawState &Prefix" );
+    WideString s( L"DrawState &Prefix" );
     dc.DrawStateW( s, rect.left, rect.top, DrawStateFlags::HidePrefix );
 }
 
@@ -646,7 +646,7 @@ void DeviceContextExampleForm::DrawStatePrefixOnly( const DeviceContextHandle& d
     auto height = Windows::Environment::SystemMetrics::CaptionHeight( );
     rect.top = rect.top + ( ( ( rect.bottom - rect.top ) / 2 ) - ( height / 2 ) );
 
-    std::wstring s( L"DrawState &Prefix" );
+    WideString s( L"DrawState &Prefix" );
     dc.DrawStateW( s, rect.left, rect.top, DrawStateFlags::PrefixOnly );
 }
 
@@ -655,7 +655,7 @@ void DeviceContextExampleForm::DrawStateRight( const DeviceContextHandle& dc, RE
     auto height = Windows::Environment::SystemMetrics::CaptionHeight( );
     rect.top = rect.top + ( ( ( rect.bottom - rect.top ) / 2 ) - ( height / 2 ) );
 
-    std::wstring s( L"DrawState Right" );
+    WideString s( L"DrawState Right" );
     dc.DrawStateW( s, rect.left, rect.top, rect.right - rect.left, height, DrawStateFlags::Right );
 }
 

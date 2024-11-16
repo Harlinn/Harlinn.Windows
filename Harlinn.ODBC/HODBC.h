@@ -6993,9 +6993,10 @@ namespace Harlinn::ODBC
             return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_UINTEGER );
         }
 
-        Result SetWideStringAttribute( SQLINTEGER attributeId, const WideString& value ) const
+        template<SimpleWideStringLike StringT>
+        Result SetWideStringAttribute( SQLINTEGER attributeId, const StringT& value ) const
         {
-            auto rc = SetAttributeW( attributeId, const_cast<wchar_t*>(value.c_str( )), static_cast<SQLINTEGER>( value.length( )*sizeof(wchar_t) ) );
+            auto rc = SetAttributeW( attributeId, const_cast<wchar_t*>(value.c_str( )), static_cast<SQLINTEGER>( value.size( )*sizeof(wchar_t) ) );
             return rc;
         }
 
@@ -7088,7 +7089,8 @@ namespace Harlinn::ODBC
         }
 
 
-        Result SetCurrentCatalog( const WideString& currentCatalog ) const
+        template<SimpleWideStringLike StringT>
+        Result SetCurrentCatalog( const StringT& currentCatalog ) const
         {
             auto rc = SetWideStringAttribute( SQL_ATTR_CURRENT_CATALOG, currentCatalog );
             return rc;

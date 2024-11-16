@@ -137,7 +137,7 @@ void Viewer::OpenURL(PCWSTR sURL)
         }
 
         // build the topology.  Here we are using the TopoBuilder helper class.
-        topologyBuilder_.RenderURL(sURL, videoDisplayWindow_);
+        topologyBuilder_.RenderURL(WideString(sURL), videoDisplayWindow_);
 
         // get the topology from the TopoBuilder
         auto& topology = topologyBuilder_.GetTopology();

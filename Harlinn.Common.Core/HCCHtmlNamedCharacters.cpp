@@ -2586,11 +2586,11 @@ namespace Harlinn::Common::Core::Html
             }
             else
             {
-                return { text , textLength };
+                return WideString{ text , textLength };
             }
 
         }
-        return {};
+        return WideString{};
     }
 
 }

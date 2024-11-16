@@ -475,7 +475,7 @@ namespace Harlinn::Common::Core::IO
     {
         wchar_t buffer[ (2*MAX_PATH) + 1 ] = { 0, };
         GetModuleFileNameW( nullptr, buffer, sizeof( buffer ) / sizeof( wchar_t ) );
-        return buffer;
+        return WideString(buffer);
     }
     AnsiString File::GetExecutableA( )
     {

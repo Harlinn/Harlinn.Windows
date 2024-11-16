@@ -61,7 +61,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyTypeName = CppHelper::GetMemberFieldType( *primaryKey );
 
-        WideString baseClassName = L"BaseColumnData";
+        WideString baseClassName( L"BaseColumnData" );
 
         auto shortName = classInfo.ShortName( );
         auto shortname = shortName.ToLower( );
@@ -86,7 +86,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         auto memberCount = members.size( );
         auto shortName = classInfo.ShortName( ).ToLower( );
 
-        WriteLine( L"    WideString {}::BaseQuery = L\"SELECT \\r\\n\"", className );
+        WriteLine( L"    WideString {}::BaseQuery{{ L\"SELECT \\r\\n\"", className );
         for ( size_t i = 0; i < memberCount; i++ )
         {
             const auto& member = *members[ i ];
@@ -143,15 +143,15 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
             }
             else
             {
-                WriteLine( L"        L\"  LEFT JOIN [{}] {} ON({}.{} = {}.{} )\";", tableName, derivedShortName, shortName, primaryKeyName, derivedShortName, primaryKeyName );
+                WriteLine( L"        L\"  LEFT JOIN [{}] {} ON({}.{} = {}.{} )\"}};", tableName, derivedShortName, shortName, primaryKeyName, derivedShortName, primaryKeyName );
             }
 
         }
 
         
         
-        WriteLine( L"    WideString {}::BaseViewName = L\"{}\";", className, viewName );
-        WriteLine( L"    WideString {}::ViewAliasName = L\"{}\";", className, shortName );
+        WriteLine( L"    WideString {}::BaseViewName{{ L\"{}\"}};", className, viewName );
+        WriteLine( L"    WideString {}::ViewAliasName{{ L\"{}\"}};", className, shortName );
         WriteLine( );
     }
     

@@ -37,14 +37,23 @@ void SendCommand( ZMQNotificationClient& client, const WideString& commandString
     client.Receive( message );
 }
 
+void SendCommand( ZMQNotificationClient& client, const wchar_t* commandString, const WideString& argumentString )
+{
+    SendCommand( client, WideString( commandString ), argumentString );
+}
+void SendCommand( ZMQNotificationClient& client, const wchar_t* commandString, const wchar_t* argumentString )
+{
+    SendCommand( client, WideString( commandString ), WideString( argumentString ) );
+}
+
 int main()
 {
     try
     {
-        WideString notificationEndpoint = L"tcp://127.0.0.1:42501";
-        AnsiString serverEndpoint = "tcp://127.0.0.1:42500";
-        AnsiString notificationListenEndpoint = "tcp://*:42501";
-        AnsiString notificationListenInprocEndpoint = "inproc://notify-inproc";
+        WideString notificationEndpoint{ L"tcp://127.0.0.1:42501" };
+        AnsiString serverEndpoint{ "tcp://127.0.0.1:42500" };
+        AnsiString notificationListenEndpoint{ "tcp://*:42501" };
+        AnsiString notificationListenInprocEndpoint{ "inproc://notify-inproc" };
 
         Context context;
         ZMQNotificationClient client( context, L"TestClient1", serverEndpoint, notificationListenEndpoint, notificationListenInprocEndpoint );

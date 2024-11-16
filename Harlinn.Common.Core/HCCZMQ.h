@@ -550,9 +550,20 @@ namespace Harlinn::Common::Core::ZeroMq
         Thread thread_;
     public:
         boost::signals2::signal<void( ZMQServer* sender, IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )> OnProcess;
+
         ZMQServer( ZeroMq::Context& context, const WideString& threadName, const AnsiString& serverEndpoint, const AnsiString& serverInprocEndpoint )
             : context_( context ), threadName_( threadName ), serverEndpoint_( serverEndpoint ), serverInprocEndpoint_( serverInprocEndpoint )
         { }
+
+        ZMQServer( ZeroMq::Context& context, const wchar_t* threadName, const AnsiString& serverEndpoint, const AnsiString& serverInprocEndpoint )
+            : context_( context ), threadName_( threadName ), serverEndpoint_( serverEndpoint ), serverInprocEndpoint_( serverInprocEndpoint )
+        {
+        }
+
+        ZMQServer( ZeroMq::Context& context, const wchar_t* threadName, const char* serverEndpoint, const char* serverInprocEndpoint )
+            : context_( context ), threadName_( threadName ), serverEndpoint_( serverEndpoint ), serverInprocEndpoint_( serverInprocEndpoint )
+        {
+        }
 
         ZeroMq::Context& Context( )
         {
@@ -993,6 +1004,15 @@ namespace Harlinn::Common::Core::ZeroMq
         ZMQNotificationServer( ZeroMq::Context& context, const WideString& threadName, const AnsiString& serverEndpoint, const AnsiString& serverInprocEndpoint )
             : Base( context, threadName, serverEndpoint, serverInprocEndpoint )
         { }
+        ZMQNotificationServer( ZeroMq::Context& context, const wchar_t* threadName, const AnsiString& serverEndpoint, const AnsiString& serverInprocEndpoint )
+            : Base( context, threadName, serverEndpoint, serverInprocEndpoint )
+        {
+        }
+        ZMQNotificationServer( ZeroMq::Context& context, const wchar_t* threadName, const char* serverEndpoint, const char* serverInprocEndpoint )
+            : Base( context, threadName, serverEndpoint, serverInprocEndpoint )
+        {
+        }
+
     private:
         NotificationEntry* FindClient( const AnsiString& clientEndpoint )
         {
@@ -1097,7 +1117,18 @@ namespace Harlinn::Common::Core::ZeroMq
         Socket clientSocket_;
     public:
         using Base = ZMQServer;
+
         ZMQNotificationClient( ZeroMq::Context& context, const WideString& threadName, const AnsiString& serverEndpoint, const AnsiString& notificationEndpoint, const AnsiString& notificationInprocEndpoint )
+            : Base( context, threadName, notificationEndpoint, notificationInprocEndpoint ), serverEndpoint_( serverEndpoint ), clientSocket_( context, SocketType::req )
+        {
+        }
+
+        ZMQNotificationClient( ZeroMq::Context& context, const wchar_t* threadName, const AnsiString& serverEndpoint, const AnsiString& notificationEndpoint, const AnsiString& notificationInprocEndpoint )
+            : Base( context, threadName, notificationEndpoint, notificationInprocEndpoint ), serverEndpoint_( serverEndpoint ), clientSocket_( context, SocketType::req )
+        {
+        }
+
+        ZMQNotificationClient( ZeroMq::Context& context, const wchar_t* threadName, const char* serverEndpoint, const char* notificationEndpoint, const char* notificationInprocEndpoint )
             : Base( context, threadName, notificationEndpoint, notificationInprocEndpoint ), serverEndpoint_( serverEndpoint ), clientSocket_( context, SocketType::req )
         {
         }

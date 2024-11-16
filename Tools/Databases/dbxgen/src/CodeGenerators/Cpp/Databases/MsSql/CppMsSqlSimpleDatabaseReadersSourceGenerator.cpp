@@ -70,7 +70,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         auto memberCount = members.size( );
         auto shortName = classInfo.ShortName( ).ToLower( );
 
-        WriteLine( L"    WideString {}::BaseQuery = L\"SELECT \\r\\n\"", className );
+        WriteLine( L"    WideString {}::BaseQuery{{ L\"SELECT \\r\\n\"", className );
         for ( size_t i = 0; i < memberCount; i++ )
         {
             const auto& member = *members[ i ];
@@ -98,11 +98,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
 
             }
         }
-        WriteLine( L"        L\"FROM [{}] {} \\r\\n\";", viewName, shortName );
+        WriteLine( L"        L\"FROM [{}] {} \\r\\n\"}};", viewName, shortName );
 
 
-        WriteLine( L"    WideString {}::BaseViewName = L\"{}\";", className, viewName );
-        WriteLine( L"    WideString {}::ViewAliasName = L\"{}\";", className, shortName );
+        WriteLine( L"    WideString {}::BaseViewName{{ L\"{}\"}};", className, viewName );
+        WriteLine( L"    WideString {}::ViewAliasName{{ L\"{}\"}};", className, shortName );
         WriteLine( );
     }
 

@@ -83,6 +83,14 @@ namespace Harlinn::Tools::DbXGen::Metadata
         MemberInfo( const std::shared_ptr<Metadata::ClassInfo>& owner, Metadata::MemberInfoType type, const WideString& name, const WideString& typeName, ODBC::NativeType nativeType, const WideString& nativeTypeName, ODBC::SqlType sqlType, const WideString& sqlTypeName )
             : owner_( owner ), type_( type ), name_( name ), typeName_( typeName ), nativeType_( nativeType ), nativeTypeName_( nativeTypeName ), sqlType_( sqlType ), sqlTypeName_( sqlTypeName )
         { }
+        MemberInfo( const std::shared_ptr<Metadata::ClassInfo>& owner, Metadata::MemberInfoType type, const wchar_t* name, const wchar_t* typeName, ODBC::NativeType nativeType, const wchar_t* nativeTypeName, ODBC::SqlType sqlType, const wchar_t* sqlTypeName )
+            : owner_( owner ), type_( type ), name_( name ), typeName_( typeName ), nativeType_( nativeType ), nativeTypeName_( nativeTypeName ), sqlType_( sqlType ), sqlTypeName_( sqlTypeName )
+        {
+        }
+        MemberInfo( const std::shared_ptr<Metadata::ClassInfo>& owner, Metadata::MemberInfoType type, const WideString& name, const wchar_t* typeName, ODBC::NativeType nativeType, const wchar_t* nativeTypeName, ODBC::SqlType sqlType, const wchar_t* sqlTypeName )
+            : owner_( owner ), type_( type ), name_( name ), typeName_( typeName ), nativeType_( nativeType ), nativeTypeName_( nativeTypeName ), sqlType_( sqlType ), sqlTypeName_( sqlTypeName )
+        {
+        }
     public:
         virtual ~MemberInfo( ) = default;
 

@@ -468,7 +468,7 @@ int main( int argc, char* argv[] )
     }
     catch ( std::exception& exc )
     {
-        AnsiString message = exc.what( );
+        AnsiString message( exc.what( ) );
         printf( "Exception: %s", message.c_str( ) );
     }
     application->Stop( );

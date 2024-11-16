@@ -679,8 +679,8 @@ namespace Harlinn::Common::Core::Ese
         std::shared_ptr<Ese::UninitializedInstanceOptions> uninitializedInstanceOptions_;
         std::optional<bool> enableBackup_;
         std::optional<WideString> backupDirectory_;
-        WideString name_ = L"Default";
-        WideString displayName_ = L"Default";
+        WideString name_{ L"Default" };
+        WideString displayName_{ L"Default" };
         std::optional<Ese::InitFlags> initFlags_;
     public:
         using Element = Xml::Dom::Element;
@@ -858,7 +858,7 @@ namespace Harlinn::Common::Core::Ese
         std::shared_ptr<Ese::InstanceOptions> instanceOptions_;
         std::shared_ptr<Ese::GlobalOptions> globalOptions_;
         std::map<WideString, std::shared_ptr<DatabaseOptions>> databases_;
-        WideString currentDatabaseName_ = L"Default";
+        WideString currentDatabaseName_{ L"Default" };
     public:
         using Element = Xml::Dom::Element;
         Options( )
@@ -969,7 +969,7 @@ namespace Harlinn::Common::Core::Ese
             }
         }
 
-        static std::shared_ptr<Options> LoadFromFile( const WideString& filename, const WideString& elementTagName = L"StorageEngine" )
+        static std::shared_ptr<Options> LoadFromFile( const WideString& filename, const WideString& elementTagName = WideString(L"StorageEngine") )
         {
             Xml::Dom::Document document = Xml::Dom::Document::Create( );
             document.SetAsync( false );
@@ -991,6 +991,15 @@ namespace Harlinn::Common::Core::Ese
                 }
             }
             return {};
+        }
+
+        static std::shared_ptr<Options> LoadFromFile( const wchar_t* filename, const WideString& elementTagName = WideString( L"StorageEngine" ) )
+        {
+            return LoadFromFile( WideString( filename ), elementTagName );
+        }
+        static std::shared_ptr<Options> LoadFromFile( const wchar_t* filename, const wchar_t* elementTagName )
+        {
+            return LoadFromFile( WideString( filename ), WideString( elementTagName ) );
         }
 
 

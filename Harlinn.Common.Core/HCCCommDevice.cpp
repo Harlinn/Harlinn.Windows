@@ -24,7 +24,7 @@ namespace Harlinn::Common::Core::IO
         wchar_t buffer[16];
         buffer[0] = 0;
         swprintf_s( buffer, L"COM%d", portNumber_ );
-        return buffer;
+        return WideString(buffer);
     }
 
     SerialPorts::SerialPorts( )

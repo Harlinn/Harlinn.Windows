@@ -201,7 +201,7 @@ class MyForm : public Form
 
     Direct2D direct2D_;
     Direct2DControl direct2DControl_;
-    std::wstring titleText_;
+    WideString titleText_;
     Primitives::Primitive* curretPrimitive_ = nullptr;
 public:
     typedef Form Base;

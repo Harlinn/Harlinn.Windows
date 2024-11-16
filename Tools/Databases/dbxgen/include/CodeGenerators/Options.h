@@ -35,7 +35,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         template<typename OwnerT>
         WideString GetOutputDirectory( const OwnerT& owner, const WideString& outputDirectory )
         {
-            return IO::Path::Combine( owner.OutputDirectory( ), outputDirectory);
+            return IO::Path::Combine<WideString>( owner.OutputDirectory( ), outputDirectory);
         }
 
 
@@ -86,6 +86,16 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         {
         }
 
+        OptionsContainer( const OwnerType& owner, const wchar_t* outputDirectory )
+            : owner_( owner ), outputDirectory_( outputDirectory )
+        {
+        }
+
+        OptionsContainer( const OwnerType& owner, const wchar_t* outputDirectory, const wchar_t* namespaceName )
+            : owner_( owner ), outputDirectory_( outputDirectory ), namespace_( namespaceName )
+        {
+        }
+
         const OwnerType& Owner( ) const
         {
             return owner_;
@@ -108,6 +118,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
             }
         }
 
+        WideString Namespace( const wchar_t* separator ) const
+        {
+            return Namespace( WideString( separator ) );
+        }
+
         const WideString& DllExport( ) const
         {
             return Internal::GetDllExport( owner_ );
@@ -126,13 +141,23 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         WideString filename_;
         WideString namespace_;
     public:
-        OptionsFile( const OwnerType& owner, const WideString& outputDirectory )
-            : owner_( owner ), filename_( outputDirectory )
+        OptionsFile( const OwnerType& owner, const WideString& filename )
+            : owner_( owner ), filename_( filename )
         {
         }
 
-        OptionsFile( const OwnerType& owner, const WideString& outputDirectory, const WideString& namespaceName )
-            : owner_( owner ), filename_( outputDirectory ), namespace_( namespaceName )
+        OptionsFile( const OwnerType& owner, const WideString& filename, const WideString& namespaceName )
+            : owner_( owner ), filename_( filename ), namespace_( namespaceName )
+        {
+        }
+
+        OptionsFile( const OwnerType& owner, const wchar_t* filename )
+            : owner_( owner ), filename_( filename )
+        {
+        }
+
+        OptionsFile( const OwnerType& owner, const wchar_t* filename, const wchar_t* namespaceName )
+            : owner_( owner ), filename_( filename ), namespace_( namespaceName )
         {
         }
 
@@ -148,7 +173,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
 
         WideString Filename( ) const
         {
-            return IO::Path::Combine( OutputDirectory( ), filename_ );
+            WideString outputDirectory(OutputDirectory( ));
+            return IO::Path::Combine<WideString>( outputDirectory, filename_ );
         }
 
         WideString Namespace( const WideString& separator ) const
@@ -162,6 +188,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
                 return Internal::GetNamespace( separator, owner_ );
             }
         }
+        WideString Namespace( const wchar_t* separator ) const
+        {
+            return Namespace( WideString( separator ) );
+        }
+
 
         const WideString& DllExport( ) const
         {
@@ -560,6 +591,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
                 return namespace_;
             }
 
+            WideString Namespace( const wchar_t* separator ) const
+            {
+                return namespace_;
+            }
+
             const WideString& DllExport( ) const
             {
                 return dllexport_;
@@ -622,9 +658,9 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         class CppTestOptions
         {
             const Options& owner_;
-            WideString outputDirectory_ = L"%HCC_HOME%\\Tests\\ODBC\\Barrelman.Tests\\Generated\\Cpp";
-            WideString namespace_ = L"Barrelman";
-            WideString dllexport_ = L"BARRELMAN_EXPORT";
+            WideString outputDirectory_{ L"%HCC_HOME%\\Tests\\ODBC\\Barrelman.Tests\\Generated\\Cpp" };
+            WideString namespace_{ L"Barrelman" };
+            WideString dllexport_{ L"BARRELMAN_EXPORT" };
             CppDataTestOptions data_;
             CppDatabaseTestOptions database_;
         public:
@@ -924,8 +960,8 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
         class CSharpOptions
         {
             const Options& owner_;
-            WideString outputDirectory_ = L"%HCC_HOME%\\DotNet\\Examples\\Barrelman\\Barrelman.Data";
-            WideString namespace_ = L"Barrelman";
+            WideString outputDirectory_{ L"%HCC_HOME%\\DotNet\\Examples\\Barrelman\\Barrelman.Data" };
+            WideString namespace_{ L"Barrelman" };
             CSharpDataOptions data_;
             Databases::CSharpDatabasesOptions databases_;
             CSharpEntitiesOptions entities_;

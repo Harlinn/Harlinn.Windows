@@ -1707,7 +1707,7 @@ namespace Harlinn::Common::Core::Services
         
     public:
         Service( Services::ServiceControlAccepted serviceControlAccepted = Services::ServiceControlAccepted::Stop, Services::ServiceType serviceType = Services::ServiceType::WindowsOwnProcess )
-            : Base( DerivedType::ServiceName( ), DerivedType::ServiceDisplayName(), serviceControlAccepted, serviceType )
+            : Base( WideString(DerivedType::ServiceName( )), WideString( DerivedType::ServiceDisplayName()), serviceControlAccepted, serviceType )
         {
         }
 

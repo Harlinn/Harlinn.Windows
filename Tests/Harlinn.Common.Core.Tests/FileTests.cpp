@@ -42,11 +42,11 @@ BOOST_AUTO_TEST_CASE( WriteReadTest1 )
 
     std::vector<AnsiString> lines1(
         {
-            { "line1" },
-            { "line2" },
-            { "line3" },
-            { "line4" },
-            { "line5" }
+            { AnsiString("line1") },
+            { AnsiString("line2") },
+            { AnsiString("line3") },
+            { AnsiString("line4") },
+            { AnsiString("line5") }
         } );
 
     fileStream.WriteFile( lines1 );
@@ -66,11 +66,11 @@ BOOST_AUTO_TEST_CASE( WriteReadTest2 )
 
     std::vector<AnsiString> lines1(
         {
-            { "line1" },
-            { "line2" },
-            { "line3" },
-            { "line4" },
-            { "line5" }
+            { AnsiString("line1") },
+            { AnsiString("line2") },
+            { AnsiString("line3") },
+            { AnsiString("line4") },
+            { AnsiString("line5") }
         } );
 
     IO::File::WriteAllLines( filename, lines1 );
@@ -113,11 +113,11 @@ BOOST_AUTO_TEST_CASE( WriteReadTest4 )
 
     std::vector<AnsiString> expectedLines(
         {
-            { "line1" },
-            { "line2" },
-            { "line3" },
-            { "line4" },
-            { "line5" }
+            { AnsiString("line1") },
+            { AnsiString("line2") },
+            { AnsiString("line3") },
+            { AnsiString("line4") },
+            { AnsiString("line5") }
         } );
 
     AnsiString lines1( "line1\r\nline2\r\nline3\r\nline4\r\nline5" );

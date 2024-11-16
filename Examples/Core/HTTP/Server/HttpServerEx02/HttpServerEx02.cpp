@@ -51,7 +51,7 @@ int main()
         serverHandler->OnProcess.connect( []( const Http::Server::HttpRequestDispatcher& dispatcher, const Http::Server::HttpRequest& request, Http::Server::HttpResponse& response )
         {
             auto& body = response.Body( );
-            AnsiString html = "<body><em>Hello</em> from Example HTTP Server</body>";
+            AnsiString html( "<body><em>Hello</em> from Example HTTP Server</body>");
             body.Write( html.c_str(), html.size() );
         } );
         

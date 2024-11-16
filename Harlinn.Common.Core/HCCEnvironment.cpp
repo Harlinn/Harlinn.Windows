@@ -204,7 +204,7 @@ namespace Harlinn::Common::Core::Environment
             return WideString( );
         }
 
-        return buffer;
+        return WideString(buffer);
     }
 
     AnsiString Where( const char* fileName )
@@ -222,7 +222,7 @@ namespace Harlinn::Common::Core::Environment
             }
             return {};
         }
-        return buffer;
+        return AnsiString( buffer );
     }
 
     WideString Where( const wchar_t* path, const wchar_t* fileName )
@@ -241,7 +241,7 @@ namespace Harlinn::Common::Core::Environment
             return WideString( );
         }
 
-        return buffer;
+        return WideString(buffer);
     }
     AnsiString Where( const char* path, const char* fileName )
     {
@@ -258,7 +258,7 @@ namespace Harlinn::Common::Core::Environment
             }
             return {};
         }
-        return buffer;
+        return AnsiString(buffer);
     }
 
 

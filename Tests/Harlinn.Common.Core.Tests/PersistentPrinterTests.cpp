@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE( SimpleBooleanTest1 )
     ValueType argumentValue = true;
 
     // The format string that will be used to format the data
-    AnsiString formatString ="{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE( SimpleBooleanTest2 )
     ValueType argumentValue = true;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "Arg={}";
+    AnsiString formatString{ "Arg={}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE( SimpleSByteTest1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE( SimpleSByteTest2 )
     ValueType argumentValue = 0b10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:b}";
+    AnsiString formatString{ "{:b}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -261,7 +261,7 @@ BOOST_AUTO_TEST_CASE( SimpleSByteTest3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -312,7 +312,7 @@ BOOST_AUTO_TEST_CASE( SimpleByteTest1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -363,7 +363,7 @@ BOOST_AUTO_TEST_CASE( SimpleByteTest2 )
     ValueType argumentValue = 0b10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:b}";
+    AnsiString formatString{ "{:b}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -415,7 +415,7 @@ BOOST_AUTO_TEST_CASE( SimpleByteTest3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -466,7 +466,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt16Test1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -517,7 +517,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt16Test2 )
     ValueType argumentValue = 0b10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:b}";
+    AnsiString formatString{ "{:b}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -569,7 +569,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt16Test3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -620,7 +620,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt16Test1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -671,7 +671,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt16Test2 )
     ValueType argumentValue = 0b10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:b}";
+    AnsiString formatString{ "{:b}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -723,7 +723,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt16Test3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -774,7 +774,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt32Test1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -825,7 +825,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt32Test2 )
     ValueType argumentValue = 0b10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:b}";
+    AnsiString formatString{ "{:b}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -877,7 +877,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt32Test3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -928,7 +928,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt32Test1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -979,7 +979,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt32Test2 )
     ValueType argumentValue = 0b10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:b}";
+    AnsiString formatString{ "{:b}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1031,7 +1031,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt32Test3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1083,7 +1083,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt64Test1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1134,7 +1134,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt64Test2 )
     ValueType argumentValue = 0b10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:b}";
+    AnsiString formatString{ "{:b}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1186,7 +1186,7 @@ BOOST_AUTO_TEST_CASE( SimpleInt64Test3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1237,7 +1237,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt64Test1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1288,7 +1288,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt64Test2 )
     ValueType argumentValue = 0b10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:b}";
+    AnsiString formatString{ "{:b}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1340,7 +1340,7 @@ BOOST_AUTO_TEST_CASE( SimpleUInt64Test3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1391,7 +1391,7 @@ BOOST_AUTO_TEST_CASE( SimpleSingleTest1 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1442,7 +1442,7 @@ BOOST_AUTO_TEST_CASE( SimpleSingleTest2 )
     ValueType argumentValue = 10;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{:e}";
+    AnsiString formatString{ "{:e}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1494,7 +1494,7 @@ BOOST_AUTO_TEST_CASE( SimpleSingleTest3 )
     ValueType argumentValue2 = 11;
 
     // The format string that will be used to format the data
-    AnsiString formatString = "first:({}), second:({})";
+    AnsiString formatString{ "first:({}), second:({})" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1546,7 +1546,7 @@ BOOST_AUTO_TEST_CASE( SimpleCStringTest1 )
     auto argumentValue = "12345678901234567890";
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1597,7 +1597,7 @@ BOOST_AUTO_TEST_CASE( SimpleVectorBoolTest1 )
     std::vector<bool> argumentValue = { true, false };
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string
@@ -1648,7 +1648,7 @@ BOOST_AUTO_TEST_CASE( SimpleVectorTest1 )
     std::vector<double> argumentValue = { .01, .02 };
 
     // The format string that will be used to format the data
-    AnsiString formatString = "{}";
+    AnsiString formatString{ "{}" };
 
     // The stream that will provide the serialized binary 
     // representation of the arguments to the format string

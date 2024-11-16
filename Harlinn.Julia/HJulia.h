@@ -526,12 +526,12 @@ namespace Harlinn::Julia
 
         AnsiString ToString( ) const
         {
-            return jl_string_ptr( value_ );
+            return AnsiString(jl_string_ptr( value_ ));
         }
         template<>
         AnsiString As<AnsiString>( ) const
         {
-            return jl_string_ptr( value_ );
+            return AnsiString(jl_string_ptr( value_ ));
         }
         template<>
         AnsiStringView As<AnsiStringView>( ) const

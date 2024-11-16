@@ -70,25 +70,25 @@ namespace Harlinn::Common::Core
             using Base = Enum<ColumnType>;
             ColumnTypeConverter( )
             {
-                Add( L"None", ColumnType::None );
-                Add( L"Boolean", ColumnType::Boolean );
-                Add( L"Byte", ColumnType::Byte );
-                Add( L"Short", ColumnType::Short );
-                Add( L"Long", ColumnType::Long );
-                Add( L"Currency", ColumnType::Currency );
-                Add( L"Single", ColumnType::Single );
-                Add( L"Double", ColumnType::Double );
-                Add( L"DateTime", ColumnType::DateTime );
-                Add( L"Binary", ColumnType::Binary );
-                Add( L"Text", ColumnType::Text );
-                Add( L"LongBinary", ColumnType::LongBinary );
-                Add( L"LongText", ColumnType::LongText );
-                Add( L"SLV", ColumnType::SLV );
-                Add( L"UnsignedLong", ColumnType::UnsignedLong );
-                Add( L"LongLong", ColumnType::LongLong );
-                Add( L"Guid", ColumnType::Guid );
-                Add( L"UnsignedShort", ColumnType::UnsignedShort );
-                Add( L"UnsignedLongLong", ColumnType::UnsignedLongLong );
+                Add( WideString(L"None"), ColumnType::None );
+                Add( WideString(L"Boolean"), ColumnType::Boolean );
+                Add( WideString(L"Byte"), ColumnType::Byte );
+                Add( WideString(L"Short"), ColumnType::Short );
+                Add( WideString(L"Long"), ColumnType::Long );
+                Add( WideString(L"Currency"), ColumnType::Currency );
+                Add( WideString(L"Single"), ColumnType::Single );
+                Add( WideString(L"Double"), ColumnType::Double );
+                Add( WideString(L"DateTime"), ColumnType::DateTime );
+                Add( WideString(L"Binary"), ColumnType::Binary );
+                Add( WideString(L"Text"), ColumnType::Text );
+                Add( WideString(L"LongBinary"), ColumnType::LongBinary );
+                Add( WideString(L"LongText"), ColumnType::LongText );
+                Add( WideString(L"SLV"), ColumnType::SLV );
+                Add( WideString(L"UnsignedLong"), ColumnType::UnsignedLong );
+                Add( WideString(L"LongLong"), ColumnType::LongLong );
+                Add( WideString(L"Guid"), ColumnType::Guid );
+                Add( WideString(L"UnsignedShort"), ColumnType::UnsignedShort );
+                Add( WideString(L"UnsignedLongLong"), ColumnType::UnsignedLongLong );
             }
         };
 
@@ -130,22 +130,22 @@ namespace Harlinn::Common::Core
             using Base = Flags<ColumnFlags>;
             ColumnFlagsConverter( )
             {
-                Add( L"None", ColumnFlags::None );
-                Add( L"Fixed", ColumnFlags::Fixed );
-                Add( L"Tagged", ColumnFlags::Tagged );
-                Add( L"NotNULL", ColumnFlags::NotNULL );
-                Add( L"Version", ColumnFlags::Version );
-                Add( L"Autoincrement", ColumnFlags::Autoincrement );
-                Add( L"Updatable", ColumnFlags::Updatable );
-                Add( L"TemporaryTableKey", ColumnFlags::TemporaryTableKey );
-                Add( L"TemporaryTableDescending", ColumnFlags::TemporaryTableDescending );
-                Add( L"MultiValued", ColumnFlags::MultiValued );
-                Add( L"EscrowUpdate", ColumnFlags::EscrowUpdate );
-                Add( L"Unversioned", ColumnFlags::Unversioned );
-                Add( L"Finalize", ColumnFlags::Finalize );
-                Add( L"UserDefinedDefault", ColumnFlags::UserDefinedDefault );
-                Add( L"DeleteOnZero", ColumnFlags::DeleteOnZero );
-                Add( L"Compressed", ColumnFlags::Compressed );
+                Add( WideString(L"None"), ColumnFlags::None );
+                Add( WideString(L"Fixed"), ColumnFlags::Fixed );
+                Add( WideString(L"Tagged"), ColumnFlags::Tagged );
+                Add( WideString(L"NotNULL"), ColumnFlags::NotNULL );
+                Add( WideString(L"Version"), ColumnFlags::Version );
+                Add( WideString(L"Autoincrement"), ColumnFlags::Autoincrement );
+                Add( WideString(L"Updatable"), ColumnFlags::Updatable );
+                Add( WideString(L"TemporaryTableKey"), ColumnFlags::TemporaryTableKey );
+                Add( WideString(L"TemporaryTableDescending"), ColumnFlags::TemporaryTableDescending );
+                Add( WideString(L"MultiValued"), ColumnFlags::MultiValued );
+                Add( WideString(L"EscrowUpdate"), ColumnFlags::EscrowUpdate );
+                Add( WideString(L"Unversioned"), ColumnFlags::Unversioned );
+                Add( WideString(L"Finalize"), ColumnFlags::Finalize );
+                Add( WideString(L"UserDefinedDefault"), ColumnFlags::UserDefinedDefault );
+                Add( WideString(L"DeleteOnZero"), ColumnFlags::DeleteOnZero );
+                Add( WideString(L"Compressed"), ColumnFlags::Compressed );
             }
         };
         ColumnFlagsConverter columnFlagsConverter;
@@ -187,25 +187,25 @@ namespace Harlinn::Common::Core
             using Base = Flags<IndexFlags>;
             IndexFlagsConverter( )
             {
-                Add( L"None", IndexFlags::None );
-                Add( L"Unique", IndexFlags::Unique );
-                Add( L"Primary", IndexFlags::Primary );
-                Add( L"DisallowNull", IndexFlags::DisallowNull );
-                Add( L"IgnoreNull", IndexFlags::IgnoreNull );
-                Add( L"IgnoreAnyNull", IndexFlags::IgnoreAnyNull );
-                Add( L"IgnoreFirstNull", IndexFlags::IgnoreFirstNull );
-                Add( L"LazyFlush", IndexFlags::LazyFlush );
-                Add( L"Empty", IndexFlags::Empty );
-                Add( L"Unversioned", IndexFlags::Unversioned );
-                Add( L"SortNullsHigh", IndexFlags::SortNullsHigh );
-                Add( L"Unicode", IndexFlags::Unicode );
-                Add( L"Tuples", IndexFlags::Tuples );
-                Add( L"TupleLimits", IndexFlags::TupleLimits );
-                Add( L"CrossProduct", IndexFlags::CrossProduct );
-                Add( L"KeyMost", IndexFlags::KeyMost );
-                Add( L"DisallowTruncation", IndexFlags::DisallowTruncation );
-                Add( L"NestedTable", IndexFlags::NestedTable );
-                Add( L"DotNetGuid", IndexFlags::DotNetGuid );
+                Add( WideString(L"None"), IndexFlags::None );
+                Add( WideString(L"Unique"), IndexFlags::Unique );
+                Add( WideString(L"Primary"), IndexFlags::Primary );
+                Add( WideString(L"DisallowNull"), IndexFlags::DisallowNull );
+                Add( WideString(L"IgnoreNull"), IndexFlags::IgnoreNull );
+                Add( WideString(L"IgnoreAnyNull"), IndexFlags::IgnoreAnyNull );
+                Add( WideString(L"IgnoreFirstNull"), IndexFlags::IgnoreFirstNull );
+                Add( WideString(L"LazyFlush"), IndexFlags::LazyFlush );
+                Add( WideString(L"Empty"), IndexFlags::Empty );
+                Add( WideString(L"Unversioned"), IndexFlags::Unversioned );
+                Add( WideString(L"SortNullsHigh"), IndexFlags::SortNullsHigh );
+                Add( WideString(L"Unicode"), IndexFlags::Unicode );
+                Add( WideString(L"Tuples"), IndexFlags::Tuples );
+                Add( WideString(L"TupleLimits"), IndexFlags::TupleLimits );
+                Add( WideString(L"CrossProduct"), IndexFlags::CrossProduct );
+                Add( WideString(L"KeyMost"), IndexFlags::KeyMost );
+                Add( WideString(L"DisallowTruncation"), IndexFlags::DisallowTruncation );
+                Add( WideString(L"NestedTable"), IndexFlags::NestedTable );
+                Add( WideString(L"DotNetGuid"), IndexFlags::DotNetGuid );
             }
         };
         IndexFlagsConverter indexFlagsConverter;
@@ -245,14 +245,14 @@ namespace Harlinn::Common::Core
             using Base = Flags<RetrieveFlags>;
             RetrieveFlagsConverter( )
             {
-                Add( L"None", RetrieveFlags::None );
-                Add( L"Copy", RetrieveFlags::Copy );
-                Add( L"FromIndex", RetrieveFlags::FromIndex );
-                Add( L"FromPrimaryBookmark", RetrieveFlags::FromPrimaryBookmark );
-                Add( L"Tag", RetrieveFlags::Tag );
-                Add( L"Null", RetrieveFlags::Null );
-                Add( L"IgnoreDefault", RetrieveFlags::IgnoreDefault );
-                Add( L"Tuple", RetrieveFlags::Tuple );
+                Add( WideString(L"None"), RetrieveFlags::None );
+                Add( WideString(L"Copy"), RetrieveFlags::Copy );
+                Add( WideString(L"FromIndex"), RetrieveFlags::FromIndex );
+                Add( WideString(L"FromPrimaryBookmark"), RetrieveFlags::FromPrimaryBookmark );
+                Add( WideString(L"Tag"), RetrieveFlags::Tag );
+                Add( WideString(L"Null"), RetrieveFlags::Null );
+                Add( WideString(L"IgnoreDefault"), RetrieveFlags::IgnoreDefault );
+                Add( WideString(L"Tuple"), RetrieveFlags::Tuple );
             }
         };
         RetrieveFlagsConverter retrieveFlagsConverter;
@@ -292,18 +292,18 @@ namespace Harlinn::Common::Core
             using Base = Flags<SetFlags>;
             SetFlagsConverter( )
             {
-                Add( L"None", SetFlags::None );
-                Add( L"AppendLV", SetFlags::AppendLV );
-                Add( L"OverwriteLV", SetFlags::OverwriteLV );
-                Add( L"RevertToDefaultValue", SetFlags::RevertToDefaultValue );
-                Add( L"SeparateLV", SetFlags::SeparateLV );
-                Add( L"SizeLV", SetFlags::SizeLV );
-                Add( L"UniqueMultiValues", SetFlags::UniqueMultiValues );
-                Add( L"UniqueNormalizedMultiValues", SetFlags::UniqueNormalizedMultiValues );
-                Add( L"ZeroLength", SetFlags::ZeroLength );
-                Add( L"IntrinsicLV", SetFlags::IntrinsicLV );
-                Add( L"Compressed", SetFlags::Compressed );
-                Add( L"Uncompressed", SetFlags::Uncompressed );
+                Add( WideString(L"None"), SetFlags::None );
+                Add( WideString(L"AppendLV"), SetFlags::AppendLV );
+                Add( WideString(L"OverwriteLV"), SetFlags::OverwriteLV );
+                Add( WideString(L"RevertToDefaultValue"), SetFlags::RevertToDefaultValue );
+                Add( WideString(L"SeparateLV"), SetFlags::SeparateLV );
+                Add( WideString(L"SizeLV"), SetFlags::SizeLV );
+                Add( WideString(L"UniqueMultiValues"), SetFlags::UniqueMultiValues );
+                Add( WideString(L"UniqueNormalizedMultiValues"), SetFlags::UniqueNormalizedMultiValues );
+                Add( WideString(L"ZeroLength"), SetFlags::ZeroLength );
+                Add( WideString(L"IntrinsicLV"), SetFlags::IntrinsicLV );
+                Add( WideString(L"Compressed"), SetFlags::Compressed );
+                Add( WideString(L"Uncompressed"), SetFlags::Uncompressed );
             }
         };
         SetFlagsConverter setFlagsConverter;

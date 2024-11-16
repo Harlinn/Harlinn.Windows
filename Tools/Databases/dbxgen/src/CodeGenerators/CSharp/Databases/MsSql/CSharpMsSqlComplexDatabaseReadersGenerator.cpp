@@ -68,7 +68,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp::Databases::MsSql
     void CSharpMsSqlComplexDatabaseReadersGenerator::CreateReader( const ClassInfo& classInfo )
     {
         auto className = CSharpHelper::GetComplexDataReaderName( classInfo );
-        WideString baseClassName = L"DataReaderWrapper";
+        WideString baseClassName(L"DataReaderWrapper");
 
         WriteLine( L"    public class {} : {}", className, baseClassName );
         WriteLine( L"    {" );

@@ -1738,7 +1738,14 @@ namespace Harlinn::OCI
 
         HO_EXPORT bool Exists( const WideString& objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown ) const;
 
+        bool Exists( const wchar_t* objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown ) const
+        {
+            return Exists( WideString(objectName), parameterType );
+        }
+
         HO_EXPORT OCI::Describe Describe( const WideString& objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown, bool showInvisibleColumns = false ) const;
+        HO_EXPORT OCI::Describe Describe( const wchar_t* objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown, bool showInvisibleColumns = false ) const;
+
         HO_EXPORT OCI::Describe Describe( const OCI::Type& type ) const;
         HO_EXPORT OCI::Describe Describe( const OCI::Ref& typeRef ) const;
         HO_EXPORT OCI::Describe Describe( OCIType* type ) const;

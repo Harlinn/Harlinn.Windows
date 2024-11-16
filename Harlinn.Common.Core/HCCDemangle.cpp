@@ -114,7 +114,9 @@ namespace Harlinn::Common::Core::Demangle
             void advance_to_next_char( );
 
             [[noreturn]] void bad_code( char c, const AnsiString& desc );
+            [[noreturn]] void bad_code( char c, const char* desc );
             [[noreturn]] void general_error( const AnsiString& e );
+            [[noreturn]] void general_error( const char* e );
 
             // Given a stack and a position character, safely resolve and return the reference.
             DemangledTypePtr resolve_reference( ReferenceStack& stack, char poschar );
@@ -158,8 +160,11 @@ namespace Harlinn::Common::Core::Demangle
 
             // Some helper functions to make debugging a little prettier.
             void progress( const AnsiString& msg );
+            void progress( const char* msg );
             void print_stack( ReferenceStack const& stack, const AnsiString& msg );
+            void print_stack( ReferenceStack const& stack, const char* msg );
             void stack_debug( ReferenceStack const& stack, size_t position, const AnsiString& msg );
+            void stack_debug( ReferenceStack const& stack, size_t position, const char* msg );
             save_stack push_names( );
             save_stack push_types( );
 
@@ -169,7 +174,7 @@ namespace Harlinn::Common::Core::Demangle
                 if ( stack.size( ) < 10 )
                 {
                     stack.push_back( std::make_shared<DemangledType>( *name ) );
-                    stack_debug( stack, stack.size( ) - 1, stack_name );
+                    stack_debug( stack, stack.size( ) - 1, AnsiString(stack_name) );
                 }
             }
 
@@ -205,7 +210,7 @@ namespace Harlinn::Common::Core::Demangle
             if ( demangler.debug )
             {
                 std::cerr << "Popping " << name << " stack" << std::endl;
-                demangler.print_stack( original, name );
+                demangler.print_stack( original, AnsiString( name ) );
             }
         }
 
@@ -293,7 +298,7 @@ namespace Harlinn::Common::Core::Demangle
         {
             if ( offset >= mangled.size( ) )
             {
-                general_error( "Attempt to read past end of mangled string." );
+                general_error( AnsiString("Attempt to read past end of mangled string.") );
             }
             return mangled[ offset ];
         }
@@ -304,7 +309,19 @@ namespace Harlinn::Common::Core::Demangle
             throw Error( error );
         }
 
+        [[noreturn]] void VisualStudioDemangler::bad_code( char c, const char* desc )
+        {
+            error = Format( "Unrecognized {} code '{}' at offset {}", desc, c, offset );
+            throw Error( error );
+        }
+
         [[noreturn]] void VisualStudioDemangler::general_error( const AnsiString& e )
+        {
+            error = e;
+            throw Error( error );
+        }
+
+        [[noreturn]] void VisualStudioDemangler::general_error( const char* e )
         {
             error = e;
             throw Error( error );
@@ -318,6 +335,11 @@ namespace Harlinn::Common::Core::Demangle
             }
         }
 
+        void VisualStudioDemangler::progress( const char* msg )
+        {
+            progress( AnsiString( msg ) );
+        }
+
         void VisualStudioDemangler::print_stack( ReferenceStack const& stack, const AnsiString& msg )
         {
             std::cerr << "The full " << msg << " stack currently contains:" << std::endl;
@@ -327,6 +349,11 @@ namespace Harlinn::Common::Core::Demangle
                 std::cerr << "  " << p << " : " << str( t ) << std::endl;
                 p++;
             }
+        }
+
+        void VisualStudioDemangler::print_stack( ReferenceStack const& stack, const char* msg )
+        {
+            return print_stack( stack, AnsiString( msg ) );
         }
 
         void VisualStudioDemangler::stack_debug( ReferenceStack const& stack, size_t position, const AnsiString& msg )
@@ -346,6 +373,11 @@ namespace Harlinn::Common::Core::Demangle
 
             std::cerr << "Pushing " << msg << " position " << position << " in stack refers to " << entry << std::endl;
             print_stack( stack, msg );
+        }
+
+        void VisualStudioDemangler::stack_debug( ReferenceStack const& stack, size_t position, const char* msg )
+        {
+            stack_debug( stack, position, AnsiString( msg ) );
         }
 
         DemangledTypePtr& VisualStudioDemangler::process_calling_convention( DemangledTypePtr& t )
@@ -368,7 +400,7 @@ namespace Harlinn::Common::Core::Demangle
                 case 'L': t->is_exported = true;  t->calling_convention = "__unknown"; break;
                 case 'M': t->is_exported = false; t->calling_convention = "__clrcall"; break;
                 default:
-                    bad_code( c, "calling convention" );
+                    bad_code( c, AnsiString( "calling convention" ) );
             }
 
             advance_to_next_char( );
@@ -409,7 +441,7 @@ namespace Harlinn::Common::Core::Demangle
                                 return ( d - 'a' );
                             else if ( d >= 'A' && d <= 'F' )
                                 return ( d - 'A' );
-                            else bad_code( d, "hex digit" ); };
+                            else bad_code( d, AnsiString( "hex digit") ); };
                         int val = xdigit( c ) * 16;
                         c = get_next_char( );
                         val += xdigit( c );
@@ -2384,7 +2416,7 @@ namespace Harlinn::Common::Core::Demangle
                 case Code::CLASS: case Code::STRUCT: case Code::UNION: case Code::ENUM:
                     if ( !stream.attr[ TextAttribute::DISABLE_PREFIXES ] )
                     {
-                        stream << name.simple_code << ' ';
+                        stream << static_cast<Int32>(name.simple_code) << ' ';
                     }
                     do_name( name.name );
                     break;
@@ -2406,7 +2438,7 @@ namespace Harlinn::Common::Core::Demangle
                     }
                     else
                     {
-                        stream << name.simple_code;
+                        stream << static_cast< Int32 >( name.simple_code );
                     }
                     break;
 
@@ -2417,7 +2449,7 @@ namespace Harlinn::Common::Core::Demangle
                     break;
 
                 default:
-                    stream << name.simple_code;
+                    stream << static_cast< Int32 >( name.simple_code );
             }
         }
 
@@ -2718,35 +2750,35 @@ namespace Harlinn::Common::Core::Demangle
     {
         static std::vector<std::pair<const TextAttribute, const AnsiString>> names{
             {TextAttribute::SPACE_AFTER_COMMA,
-                "Add a space after a comma"},
+            AnsiString("Add a space after a comma")},
             { TextAttribute::SPACE_BETWEEN_TEMPLATE_BRACKETS,
-             "Output spaces between adjacent identical template brackets" },
+             AnsiString( "Output spaces between adjacent identical template brackets" ) },
             { TextAttribute::VERBOSE_CONSTANT_STRING,
-             "Include partial string content for constant string symbols" },
+             AnsiString( "Include partial string content for constant string symbols" ) },
             { TextAttribute::CDTOR_CLASS_TEMPLATE_PARAMETERS,
-             "Output a class's template parameters on the ctor or dtor name as well" },
+             AnsiString( "Output a class's template parameters on the ctor or dtor name as well" ) },
             { TextAttribute::USER_DEFINED_CONVERSION_TEMPLATE_BEFORE_TYPE,
-             "On templated user-defined conversion operators, put the template before the type" },
+             AnsiString( "On templated user-defined conversion operators, put the template before the type" ) },
             { TextAttribute::OUTPUT_NEAR,
-             "Include the near keyword on symbols marked as near" },
+             AnsiString( "Include the near keyword on symbols marked as near" ) },
             { TextAttribute::MS_SIMPLE_TYPES,
-             "Use Microsoft legacy names for [u]intX_t, like __int64" },
+             AnsiString( "Use Microsoft legacy names for [u]intX_t, like __int64" ) },
             { TextAttribute::OUTPUT_THUNKS,
-             "Output [thunk]: in front of thunks" },
+             AnsiString( "Output [thunk]: in front of thunks" ) },
             { TextAttribute::OUTPUT_EXTERN,
-             "Include extern \"C\" on names mangled(!) as extern \"C\"" },
+             AnsiString( "Include extern \"C\" on names mangled(!) as extern \"C\"") },
             { TextAttribute::OUTPUT_ANONYMOUS_NUMBERS,
-             "Include namespace numbers in anonymous namespace outputs" },
+             AnsiString( "Include namespace numbers in anonymous namespace outputs") },
             { TextAttribute::DISCARD_CV_ON_RETURN_POINTER,
-             "Discard const on pointer return values" },
+             AnsiString( "Discard const on pointer return values") },
             { TextAttribute::MS_QUALIFIERS,
-             "Output Microsoft type qualifiers (__restrict, __unaligned)" },
+             AnsiString( "Output Microsoft type qualifiers (__restrict, __unaligned)") },
             { TextAttribute::OUTPUT_PTR64,
-             "Output __ptr64" },
+             AnsiString( "Output __ptr64") },
             { TextAttribute::DISABLE_PREFIXES,
-             "Disable enum/class/struct/union prefixes" },
+             AnsiString( "Disable enum/class/struct/union prefixes") },
             { TextAttribute::BROKEN_UNDNAME,
-             "Include incorrect output that matches undname.exe when possible" },
+             AnsiString( "Include incorrect output that matches undname.exe when possible") },
         };
 
         return names;

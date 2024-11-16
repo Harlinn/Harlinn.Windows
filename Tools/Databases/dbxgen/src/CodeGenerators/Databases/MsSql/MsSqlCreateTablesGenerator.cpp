@@ -56,7 +56,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Databases::MsSql
     }
     WideString MsSqlCreateTablesGenerator::GetColumnNullable( const Metadata::MemberInfo& member )
     {
-        return member.Nullable( ) ? L"NULL" : L"NOT NULL";
+        return WideString::From( member.Nullable( ) ? L"NULL" : L"NOT NULL" );
     }
     WideString MsSqlCreateTablesGenerator::GetTableName( const Metadata::ClassInfo& classInfo )
     {

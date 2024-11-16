@@ -61,7 +61,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
     WideString CppEnumsGenerator::GetUnderlyingType( const EnumInfo& enumInfo )
     {
-        WideString result = L"Int32";
+        WideString result( L"Int32" );
         auto valueType = enumInfo.ValueType( );
         switch ( valueType )
         {
@@ -140,7 +140,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
         const auto& model = Model( );
         const auto& classes = model.Classes( );
 
-        WideString enumName = L"Kind";
+        WideString enumName( L"Kind" );
         
 
         WriteLine( L"    enum class {} : Int32", enumName );

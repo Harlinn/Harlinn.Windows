@@ -36,7 +36,7 @@ namespace Harlinn::Windows::MF
 {
 
 #ifndef IF_EQUAL_RETURN
-#define IF_EQUAL_RETURN(param, val) if(val == param) return L#val
+#define IF_EQUAL_RETURN(param, val) if(val == param) return WideString(L#val)
 #endif
 
     HW_EXPORT WideString GetGUIDNameConst(const Guid& guid)

@@ -512,7 +512,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest1 )
 {
     using Type = bool;
     Type value = true;
-    WideString expectedResult = L"True";
+    WideString expectedResult{ L"True" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -522,7 +522,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest2 )
 {
     using Type = SByte;
     Type value = 1;
-    WideString expectedResult = L"1";
+    WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -532,7 +532,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest3 )
 {
     using Type = Byte;
     Type value = 1;
-    WideString expectedResult = L"1";
+    WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -542,7 +542,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest4 )
 {
     using Type = Int16;
     Type value = 1;
-    WideString expectedResult = L"1";
+    WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -552,7 +552,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest5 )
 {
     using Type = UInt16;
     Type value = 1;
-    WideString expectedResult = L"1";
+    WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -562,7 +562,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest6 )
 {
     using Type = Int32;
     Type value = 1;
-    WideString expectedResult = L"1";
+    WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -572,7 +572,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest7 )
 {
     using Type = UInt32;
     Type value = 1;
-    WideString expectedResult = L"1";
+    WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -582,7 +582,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest8 )
 {
     using Type = Int64;
     Type value = 1;
-    WideString expectedResult = L"1";
+    WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -592,7 +592,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest9 )
 {
     using Type = UInt64;
     Type value = 1;
-    WideString expectedResult = L"1";
+    WideString expectedResult{ L"1" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -602,7 +602,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest10 )
 {
     using Type = float;
     Type value = 1;
-    WideString expectedResult = L"1.000000";
+    WideString expectedResult{ L"1.000000" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -612,7 +612,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest11 )
 {
     using Type = Double;
     Type value = 1;
-    WideString expectedResult = L"1.000000";
+    WideString expectedResult{ L"1.000000" };
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -692,7 +692,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest1 )
 {
     using Type = bool;
     Type value = true;
-    AnsiString expectedResult = "True";
+    AnsiString expectedResult{ "True" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -702,7 +702,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest2 )
 {
     using Type = SByte;
     Type value = 1;
-    AnsiString expectedResult = "1";
+    AnsiString expectedResult{ "1" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -712,7 +712,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest3 )
 {
     using Type = Byte;
     Type value = 1;
-    AnsiString expectedResult = "1";
+    AnsiString expectedResult{ "1" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -722,7 +722,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest4 )
 {
     using Type = Int16;
     Type value = 1;
-    AnsiString expectedResult = "1";
+    AnsiString expectedResult{ "1" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -732,7 +732,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest5 )
 {
     using Type = UInt16;
     Type value = 1;
-    AnsiString expectedResult = "1";
+    AnsiString expectedResult{ "1" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -742,7 +742,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest6 )
 {
     using Type = Int32;
     Type value = 1;
-    AnsiString expectedResult = "1";
+    AnsiString expectedResult{ "1" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -752,7 +752,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest7 )
 {
     using Type = UInt32;
     Type value = 1;
-    AnsiString expectedResult = "1";
+    AnsiString expectedResult{ "1" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -762,7 +762,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest8 )
 {
     using Type = Int64;
     Type value = 1;
-    AnsiString expectedResult = "1";
+    AnsiString expectedResult{ "1" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -772,7 +772,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest9 )
 {
     using Type = UInt64;
     Type value = 1;
-    AnsiString expectedResult = "1";
+    AnsiString expectedResult{ "1" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -782,7 +782,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest10 )
 {
     using Type = float;
     Type value = 1;
-    AnsiString expectedResult = "1.000000";
+    AnsiString expectedResult{ "1.000000" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
@@ -792,7 +792,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest11 )
 {
     using Type = Double;
     Type value = 1;
-    AnsiString expectedResult = "1.000000";
+    AnsiString expectedResult{ "1.000000" };
     auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }

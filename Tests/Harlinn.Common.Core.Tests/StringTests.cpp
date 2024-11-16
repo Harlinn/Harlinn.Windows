@@ -3265,8 +3265,8 @@ BOOST_AUTO_TEST_CASE( StringReplaceTest40W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    StringType::value_type lookFor = 'B';
+    StringType text{ "AABBCCDDEEFF" };
+    StringType::value_type lookFor{ 'B' };
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOf( lookFor );
@@ -3279,8 +3279,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest1A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest1W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    StringType::value_type lookFor = L'B';
+    StringType text{ L"AABBCCDDEEFF" };
+    StringType::value_type lookFor{ L'B' };
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOf( lookFor );
@@ -3293,8 +3293,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest1W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest2A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    StringType lookFor = "BC";
+    StringType text{ "AABBCCDDEEFF" };
+    StringType lookFor{ "BC" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IndexOf( lookFor );
@@ -3307,8 +3307,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest2A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest2W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    StringType lookFor = L"BC";
+    StringType text{ L"AABBCCDDEEFF" };
+    StringType lookFor{ L"BC" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IndexOf( lookFor );
@@ -3321,8 +3321,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest2W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::string_view lookFor = "BC";
+    StringType text{ "AABBCCDDEEFF" };
+    std::string_view lookFor{ "BC" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IndexOf( lookFor );
@@ -3335,8 +3335,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest3A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest3W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::wstring_view lookFor = L"BC";
+    StringType text{L"AABBCCDDEEFF" };
+    std::wstring_view lookFor{ L"BC" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IndexOf( lookFor );
@@ -3349,8 +3349,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest3W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::string lookFor = "BC";
+    StringType text{ "AABBCCDDEEFF" };
+    std::string lookFor{ "BC" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IndexOf( lookFor );
@@ -3363,8 +3363,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest4A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest4W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::wstring lookFor = L"BC";
+    StringType text{ L"AABBCCDDEEFF" };
+    std::wstring lookFor{ L"BC" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IndexOf( lookFor );
@@ -3377,8 +3377,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest4W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest5A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = "BC";
+    StringType text{ "AABBCCDDEEFF" };
+    const StringType::value_type* lookFor{ "BC" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IndexOf( lookFor );
@@ -3391,8 +3391,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest5A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest5W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = L"BC";
+    StringType text{ L"AABBCCDDEEFF" };
+    const StringType::value_type* lookFor{ L"BC" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IndexOf( lookFor );
@@ -3406,8 +3406,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest5W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest6A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    StringType::value_type lookFor = 'B';
+    StringType text{ "AABBCCAABBCC" };
+    StringType::value_type lookFor{ 'B' };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 8;
 
@@ -3421,8 +3421,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest6A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest6W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    StringType::value_type lookFor = L'B';
+    StringType text{ L"AABBCCAABBCC" };
+    StringType::value_type lookFor{ L'B' };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 8;
 
@@ -3436,8 +3436,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest6W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    StringType lookFor = "BC";
+    StringType text{ "AABBCCAABBCC" };
+    StringType lookFor{ "BC" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3451,8 +3451,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest7A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest7W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    StringType lookFor = L"BC";
+    StringType text{ L"AABBCCAABBCC" };
+    StringType lookFor{ L"BC" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3466,8 +3466,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest7W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest8A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    std::string_view lookFor = "BC";
+    StringType text{ "AABBCCAABBCC" };
+    std::string_view lookFor{ "BC" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3481,8 +3481,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest8A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest8W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    std::wstring_view lookFor = L"BC";
+    StringType text{ L"AABBCCAABBCC" };
+    std::wstring_view lookFor{ L"BC" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3496,8 +3496,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest8W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    std::string lookFor = "BC";
+    StringType text{ "AABBCCAABBCC" };
+    std::string lookFor{ "BC" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3511,8 +3511,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest9A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest9W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    std::wstring lookFor = L"BC";
+    StringType text{ L"AABBCCAABBCC" };
+    std::wstring lookFor{ L"BC" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3526,8 +3526,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest9W )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    const StringType::value_type* lookFor = "BC";
+    StringType text{ "AABBCCAABBCC" };
+    const StringType::value_type* lookFor{ "BC" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3541,8 +3541,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest10A )
 BOOST_AUTO_TEST_CASE( StringIndexOfTest10W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    const StringType::value_type* lookFor = L"BC";
+    StringType text{ L"AABBCCAABBCC" };
+    const StringType::value_type* lookFor{ L"BC" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3557,8 +3557,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfTest10W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    StringType::value_type lookFor = 'b';
+    StringType text{ "AABBCCDDEEFF" };
+    StringType::value_type lookFor{ 'b' };
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOf( lookFor );
@@ -3571,8 +3571,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest1A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest1W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    StringType::value_type lookFor = L'b';
+    StringType text{ L"AABBCCDDEEFF" };
+    StringType::value_type lookFor{ L'b' };
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOf( lookFor );
@@ -3585,8 +3585,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest1W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest2A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    StringType lookFor = "bc";
+    StringType text{ "AABBCCDDEEFF" };
+    StringType lookFor{ "bc" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IIndexOf( lookFor );
@@ -3599,8 +3599,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest2A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest2W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    StringType lookFor = L"bc";
+    StringType text{ L"AABBCCDDEEFF" };
+    StringType lookFor{ L"bc" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IIndexOf( lookFor );
@@ -3613,8 +3613,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest2W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::string_view lookFor = "bc";
+    StringType text{ "AABBCCDDEEFF" };
+    std::string_view lookFor{ "bc" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IIndexOf( lookFor );
@@ -3627,8 +3627,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest3A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest3W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::wstring_view lookFor = L"bc";
+    StringType text{ L"AABBCCDDEEFF" };
+    std::wstring_view lookFor{ L"bc" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IIndexOf( lookFor );
@@ -3641,8 +3641,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest3W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::string lookFor = "bc";
+    StringType text{ "AABBCCDDEEFF" };
+    std::string lookFor{ "bc" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IIndexOf( lookFor );
@@ -3655,8 +3655,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest4A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest4W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::wstring lookFor = L"bc";
+    StringType text{ L"AABBCCDDEEFF" };
+    std::wstring lookFor{ L"bc" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IIndexOf( lookFor );
@@ -3669,8 +3669,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest4W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest5A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = "bc";
+    StringType text{ "AABBCCDDEEFF" };
+    const StringType::value_type* lookFor{ "bc" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IIndexOf( lookFor );
@@ -3683,8 +3683,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest5A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest5W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = L"bc";
+    StringType text{ L"AABBCCDDEEFF" };
+    const StringType::value_type* lookFor{ L"bc" };
     StringType::size_type expectedIndex = 3;
 
     auto index = text.IIndexOf( lookFor );
@@ -3698,8 +3698,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest5W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest6A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    StringType::value_type lookFor = 'b';
+    StringType text{ "AABBCCAABBCC" };
+    StringType::value_type lookFor{ 'b' };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 8;
 
@@ -3713,8 +3713,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest6A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest6W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    StringType::value_type lookFor = L'b';
+    StringType text{ L"AABBCCAABBCC" };
+    StringType::value_type lookFor{ L'b' };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 8;
 
@@ -3728,8 +3728,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest6W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    StringType lookFor = "bc";
+    StringType text{ "AABBCCAABBCC" };
+    StringType lookFor{ "bc" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3743,8 +3743,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest7A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest7W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    StringType lookFor = L"bc";
+    StringType text{ L"AABBCCAABBCC" };
+    StringType lookFor{ L"bc" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3758,8 +3758,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest7W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest8A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    std::string_view lookFor = "bc";
+    StringType text{ "AABBCCAABBCC" };
+    std::string_view lookFor{ "bc" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3773,8 +3773,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest8A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest8W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    std::wstring_view lookFor = L"bc";
+    StringType text{ L"AABBCCAABBCC" };
+    std::wstring_view lookFor{ L"bc" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3788,8 +3788,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest8W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    std::string lookFor = "bc";
+    StringType text{ "AABBCCAABBCC" };
+    std::string lookFor{ "bc" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3803,8 +3803,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest9A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest9W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    std::wstring lookFor = L"bc";
+    StringType text{ L"AABBCCAABBCC" };
+    std::wstring lookFor{ L"bc" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3818,8 +3818,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest9W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCAABBCC";
-    const StringType::value_type* lookFor = "bc";
+    StringType text{ "AABBCCAABBCC" };
+    const StringType::value_type* lookFor{ "bc" };
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3833,8 +3833,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest10A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfTest10W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCAABBCC";
-    const StringType::value_type* lookFor = L"bc";
+    StringType text{L"AABBCCAABBCC"};
+    const StringType::value_type* lookFor{L"bc"};
     StringType::size_type startAtIndex = 6;
     StringType::size_type expectedIndex = 9;
 
@@ -3849,8 +3849,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfTest10W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    StringType lookFor = "BC";
+    StringType text{"AABBCCDDEEFF"};
+    StringType lookFor{"BC"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -3864,8 +3864,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest1A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest1W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    StringType lookFor = L"BC";
+    StringType text{L"AABBCCDDEEFF"};
+    StringType lookFor{L"BC"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -3879,7 +3879,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest2A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "BC";
+    StringType lookFor{"BC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -3893,7 +3893,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest2W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"BC";
+    StringType lookFor{L"BC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -3907,7 +3907,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest2W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -3921,7 +3921,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest3A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest3W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -3935,8 +3935,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest3W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = "BC";
+    StringType text{"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{"BC"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -3950,8 +3950,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest4A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest4W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = L"BC";
+    StringType text{L"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{L"BC"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -3965,7 +3965,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest5A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "BC";
+    const StringType::value_type* lookFor{"BC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -3979,7 +3979,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest5W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"BC";
+    const StringType::value_type* lookFor{L"BC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -3993,8 +3993,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest5W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest6A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4007,8 +4007,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest6A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest6W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4021,8 +4021,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest6W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::basic_string<StringType::value_type> lookFor = "BC";
+    StringType text{"AABBCCDDEEFF"};
+    std::basic_string<StringType::value_type> lookFor{"BC"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4036,8 +4036,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest7A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest7W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::basic_string<StringType::value_type> lookFor = L"BC";
+    StringType text{L"AABBCCDDEEFF"};
+    std::basic_string<StringType::value_type> lookFor{L"BC"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4051,7 +4051,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest8A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "BC";
+    std::basic_string<StringType::value_type> lookFor{"BC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4065,7 +4065,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest8W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"BC";
+    std::basic_string<StringType::value_type> lookFor{L"BC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4079,7 +4079,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest8W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4093,7 +4093,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest9A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest9W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4109,8 +4109,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest9W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::basic_string_view<StringType::value_type> lookFor = "BC";
+    StringType text{"AABBCCDDEEFF"};
+    std::basic_string_view<StringType::value_type> lookFor{"BC"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4124,8 +4124,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest10A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest10W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::basic_string_view<StringType::value_type> lookFor = L"BC";
+    StringType text{L"AABBCCDDEEFF"};
+    std::basic_string_view<StringType::value_type> lookFor{L"BC"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4139,7 +4139,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest11A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "BC";
+    std::basic_string_view<StringType::value_type> lookFor{"BC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4153,7 +4153,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest11W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"BC";
+    std::basic_string_view<StringType::value_type> lookFor{L"BC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyOf( lookFor );
@@ -4167,7 +4167,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest11W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest12A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4181,7 +4181,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest12A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest12W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4196,8 +4196,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyOfTest12W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    StringType lookFor = "bc";
+    StringType text{"AABBCCDDEEFF"};
+    StringType lookFor{"bc"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4211,8 +4211,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest1A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest1W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    StringType lookFor = L"bc";
+    StringType text{L"AABBCCDDEEFF"};
+    StringType lookFor{L"bc"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4226,7 +4226,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest2A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "bc";
+    StringType lookFor{"bc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4240,7 +4240,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest2W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"bc";
+    StringType lookFor{L"bc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4254,7 +4254,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest2W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4268,7 +4268,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest3A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest3W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4282,8 +4282,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest3W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = "bc";
+    StringType text{"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{"bc"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4297,8 +4297,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest4A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest4W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = L"bc";
+    StringType text{L"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{L"bc"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4312,7 +4312,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest5A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "bc";
+    const StringType::value_type* lookFor{"bc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4326,7 +4326,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest5W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"bc";
+    const StringType::value_type* lookFor{L"bc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4340,8 +4340,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest5W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest6A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4354,8 +4354,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest6A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest6W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4368,8 +4368,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest6W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::basic_string<StringType::value_type> lookFor = "bc";
+    StringType text{"AABBCCDDEEFF"};
+    std::basic_string<StringType::value_type> lookFor{"bc"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4383,8 +4383,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest7A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest7W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::basic_string<StringType::value_type> lookFor = L"bc";
+    StringType text{L"AABBCCDDEEFF"};
+    std::basic_string<StringType::value_type> lookFor{L"bc"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4398,7 +4398,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest8A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "bc";
+    std::basic_string<StringType::value_type> lookFor{"bc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4412,7 +4412,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest8W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"bc";
+    std::basic_string<StringType::value_type> lookFor{L"bc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4426,7 +4426,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest8W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4440,7 +4440,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest9A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest9W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4456,8 +4456,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest9W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::basic_string_view<StringType::value_type> lookFor = "bc";
+    StringType text{"AABBCCDDEEFF"};
+    std::basic_string_view<StringType::value_type> lookFor{"bc"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4471,8 +4471,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest10A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest10W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::basic_string_view<StringType::value_type> lookFor = L"bc";
+    StringType text{L"AABBCCDDEEFF"};
+    std::basic_string_view<StringType::value_type> lookFor{L"bc"};
     StringType::size_type expectedIndex = 2;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4486,7 +4486,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest11A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "bc";
+    std::basic_string_view<StringType::value_type> lookFor{"bc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4500,7 +4500,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest11W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"bc";
+    std::basic_string_view<StringType::value_type> lookFor{L"bc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyOf( lookFor );
@@ -4514,7 +4514,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest11W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest12A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4528,7 +4528,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest12A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest12W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -4542,8 +4542,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyOfTest12W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    StringType lookFor = "AB";
+    StringType text{"AABBCCDDEEFF"};
+    StringType lookFor{"AB"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4557,8 +4557,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest1A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest1W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    StringType lookFor = L"AB";
+    StringType text{L"AABBCCDDEEFF"};
+    StringType lookFor{L"AB"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4572,7 +4572,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest2A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "AB";
+    StringType lookFor{"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4586,7 +4586,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest2W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"AB";
+    StringType lookFor{L"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4599,7 +4599,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest2W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     StringType lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -4613,7 +4613,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest3A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest3W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     StringType lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -4628,8 +4628,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest3W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::basic_string<StringType::value_type> lookFor = "AB";
+    StringType text{"AABBCCDDEEFF"};
+    std::basic_string<StringType::value_type> lookFor{"AB"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4643,8 +4643,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest4A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest4W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::basic_string<StringType::value_type> lookFor = L"AB";
+    StringType text{L"AABBCCDDEEFF"};
+    std::basic_string<StringType::value_type> lookFor{L"AB"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4658,7 +4658,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest5A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "AB";
+    std::basic_string<StringType::value_type> lookFor{"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4672,7 +4672,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest5W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"AB";
+    std::basic_string<StringType::value_type> lookFor{L"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4685,7 +4685,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest5W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest6A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -4699,7 +4699,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest6A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest6W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -4714,8 +4714,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest6W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::basic_string_view<StringType::value_type> lookFor = "AB";
+    StringType text{"AABBCCDDEEFF"};
+    std::basic_string_view<StringType::value_type> lookFor{"AB"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4729,8 +4729,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest7A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest7W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::basic_string_view<StringType::value_type> lookFor = L"AB";
+    StringType text{L"AABBCCDDEEFF"};
+    std::basic_string_view<StringType::value_type> lookFor{L"AB"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4744,7 +4744,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest8A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "AB";
+    std::basic_string_view<StringType::value_type> lookFor{"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4758,7 +4758,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest8W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"AB";
+    std::basic_string_view<StringType::value_type> lookFor{L"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4771,7 +4771,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest8W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -4785,7 +4785,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest9A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest9W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -4800,8 +4800,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest9W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = "AB";
+    StringType text{"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{"AB"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4815,8 +4815,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest10A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest10W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = L"AB";
+    StringType text{L"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{L"AB"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4830,7 +4830,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest11A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "AB";
+    const StringType::value_type* lookFor{"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4844,7 +4844,7 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest11W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"AB";
+    const StringType::value_type* lookFor{L"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4857,8 +4857,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest11W )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest12A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4871,8 +4871,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest12A )
 BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest12W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.IndexOfAnyBut( lookFor );
@@ -4885,8 +4885,8 @@ BOOST_AUTO_TEST_CASE( StringIndexOfAnyButTest12W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    StringType lookFor = "ab";
+    StringType text{"AABBCCDDEEFF"};
+    StringType lookFor{"ab"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -4900,8 +4900,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest1A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest1W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    StringType lookFor = L"ab";
+    StringType text{L"AABBCCDDEEFF"};
+    StringType lookFor{L"ab"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -4915,7 +4915,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest2A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "ab";
+    StringType lookFor{"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -4929,7 +4929,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest2W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"ab";
+    StringType lookFor{L"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -4942,7 +4942,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest2W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     StringType lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -4956,7 +4956,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest3A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest3W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     StringType lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -4971,8 +4971,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest3W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::basic_string<StringType::value_type> lookFor = "ab";
+    StringType text{"AABBCCDDEEFF"};
+    std::basic_string<StringType::value_type> lookFor{"ab"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -4986,8 +4986,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest4A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest4W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::basic_string<StringType::value_type> lookFor = L"ab";
+    StringType text{L"AABBCCDDEEFF"};
+    std::basic_string<StringType::value_type> lookFor{L"ab"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5001,7 +5001,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest5A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "ab";
+    std::basic_string<StringType::value_type> lookFor{"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5015,7 +5015,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest5W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"ab";
+    std::basic_string<StringType::value_type> lookFor{L"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5028,7 +5028,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest5W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest6A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -5042,7 +5042,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest6A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest6W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -5057,8 +5057,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest6W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    std::basic_string_view<StringType::value_type> lookFor = "ab";
+    StringType text{"AABBCCDDEEFF"};
+    std::basic_string_view<StringType::value_type> lookFor{"ab"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5072,8 +5072,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest7A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest7W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    std::basic_string_view<StringType::value_type> lookFor = L"ab";
+    StringType text{L"AABBCCDDEEFF"};
+    std::basic_string_view<StringType::value_type> lookFor{L"ab"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5087,7 +5087,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest8A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "ab";
+    std::basic_string_view<StringType::value_type> lookFor{"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5101,7 +5101,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest8W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"ab";
+    std::basic_string_view<StringType::value_type> lookFor{L"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5114,7 +5114,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest8W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
+    StringType text{"AABBCCDDEEFF"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -5128,7 +5128,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest9A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest9W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
+    StringType text{L"AABBCCDDEEFF"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 0;
 
@@ -5143,8 +5143,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest9W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = "ab";
+    StringType text{"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{"ab"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5158,8 +5158,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest10A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest10W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = L"ab";
+    StringType text{L"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{L"ab"};
     StringType::size_type expectedIndex = 4;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5173,7 +5173,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest11A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "ab";
+    const StringType::value_type* lookFor{"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5187,7 +5187,7 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest11W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"ab";
+    const StringType::value_type* lookFor{L"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5200,8 +5200,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest11W )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest12A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBCCDDEEFF";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5214,8 +5214,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest12A )
 BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest12W )
 {
     using StringType = WideString;
-    StringType text = L"AABBCCDDEEFF";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"AABBCCDDEEFF"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.IIndexOfAnyBut( lookFor );
@@ -5229,8 +5229,8 @@ BOOST_AUTO_TEST_CASE( StringIIndexOfAnyButTest12W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    StringType lookFor = "AB";
+    StringType text{"AABBAABB"};
+    StringType lookFor{"AB"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5243,8 +5243,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest1A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest1W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    StringType lookFor = L"AB";
+    StringType text{L"AABBAABB"};
+    StringType lookFor{L"AB"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5258,8 +5258,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest1W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest2A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    StringType lookFor = "AABBAABB";
+    StringType text{"AABBAABB"};
+    StringType lookFor{"AABBAABB"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5272,8 +5272,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest2A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest2W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    StringType lookFor = L"AABBAABB";
+    StringType text{L"AABBAABB"};
+    StringType lookFor{L"AABBAABB"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5287,8 +5287,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest2W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    StringType lookFor = "AABBAABBC";
+    StringType text{"AABBAABB"};
+    StringType lookFor{"AABBAABBC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5301,8 +5301,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest3A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest3W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    StringType lookFor = L"AABBAABBC";
+    StringType text{L"AABBAABB"};
+    StringType lookFor{L"AABBAABBC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5316,8 +5316,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest3W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    StringType lookFor = "AC";
+    StringType text{"AABBAABB"};
+    StringType lookFor{"AC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5330,8 +5330,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest4A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest4W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    StringType lookFor = L"AC";
+    StringType text{L"AABBAABB"};
+    StringType lookFor{L"AC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5344,7 +5344,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest4W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest5A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
+    StringType text{"AABBAABB"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -5358,7 +5358,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest5A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest5W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
+    StringType text{L"AABBAABB"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -5373,7 +5373,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest6A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "AB";
+    StringType lookFor{"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5387,7 +5387,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest6W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"AB";
+    StringType lookFor{L"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5429,8 +5429,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest7W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest8A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = "AB";
+    StringType text{"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{"AB"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5443,8 +5443,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest8A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest8W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = L"AB";
+    StringType text{L"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{L"AB"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5458,8 +5458,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest8W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = "AABBAABB";
+    StringType text{"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{"AABBAABB"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5472,8 +5472,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest9A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest9W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = L"AABBAABB";
+    StringType text{L"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{L"AABBAABB"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5487,8 +5487,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest9W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = "AABBAABBC";
+    StringType text{"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{"AABBAABBC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5501,8 +5501,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest10A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest10W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = L"AABBAABBC";
+    StringType text{L"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{L"AABBAABBC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5516,8 +5516,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest10W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest11A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = "AC";
+    StringType text{"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{"AC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5530,8 +5530,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest11A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest11W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = L"AC";
+    StringType text{L"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{L"AC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5544,7 +5544,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest11W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest12A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
+    StringType text{"AABBAABB"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -5558,7 +5558,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest12A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest12W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
+    StringType text{L"AABBAABB"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -5573,7 +5573,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest13A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "AB";
+    std::basic_string<StringType::value_type> lookFor{"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5587,7 +5587,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest13W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"AB";
+    std::basic_string<StringType::value_type> lookFor{L"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5630,8 +5630,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest14W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest15A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = "AB";
+    StringType text{"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{"AB"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5644,8 +5644,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest15A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest15W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = L"AB";
+    StringType text{L"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{L"AB"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5659,8 +5659,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest15W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest16A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = "AABBAABB";
+    StringType text{"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{"AABBAABB"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5673,8 +5673,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest16A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest16W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = L"AABBAABB";
+    StringType text{L"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{L"AABBAABB"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5688,8 +5688,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest16W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest17A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = "AABBAABBC";
+    StringType text{"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{"AABBAABBC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5702,8 +5702,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest17A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest17W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = L"AABBAABBC";
+    StringType text{L"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{L"AABBAABBC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5717,8 +5717,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest17W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest18A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = "AC";
+    StringType text{"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{"AC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5731,8 +5731,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest18A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest18W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = L"AC";
+    StringType text{L"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{L"AC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5745,7 +5745,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest18W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest19A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
+    StringType text{"AABBAABB"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -5759,7 +5759,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest19A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest19W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
+    StringType text{L"AABBAABB"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -5774,7 +5774,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest20A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "AB";
+    std::basic_string_view<StringType::value_type> lookFor{"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5788,7 +5788,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest20W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"AB";
+    std::basic_string_view<StringType::value_type> lookFor{L"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5830,8 +5830,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest21W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest22A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = "AB";
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{"AB"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5844,8 +5844,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest22A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest22W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = L"AB";
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{L"AB"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5859,8 +5859,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest22W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest23A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = "AABBAABB";
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{"AABBAABB"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5873,8 +5873,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest23A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest23W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = L"AABBAABB";
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{L"AABBAABB"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5888,8 +5888,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest23W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest24A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = "AABBAABBC";
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{"AABBAABBC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5902,8 +5902,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest24A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest24W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = L"AABBAABBC";
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{L"AABBAABBC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5917,8 +5917,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest24W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest25A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = "AC";
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{"AC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5931,8 +5931,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest25A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest25W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = L"AC";
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{L"AC"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5945,8 +5945,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest25W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest26A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5959,8 +5959,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest26A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfTest26W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5974,7 +5974,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest27A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "AB";
+    const StringType::value_type* lookFor{"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -5988,7 +5988,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest27W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"AB";
+    const StringType::value_type* lookFor{L"AB"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -6003,7 +6003,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest28A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -6017,7 +6017,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest28W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOf( lookFor );
@@ -6031,8 +6031,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfTest28W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    StringType lookFor = "ab";
+    StringType text{"AABBAABB"};
+    StringType lookFor{"ab"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6045,8 +6045,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest1A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest1W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    StringType lookFor = L"ab";
+    StringType text{L"AABBAABB"};
+    StringType lookFor{L"ab"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6060,8 +6060,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest1W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest2A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    StringType lookFor = "aabbaabb";
+    StringType text{"AABBAABB"};
+    StringType lookFor{"aabbaabb"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6074,8 +6074,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest2A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest2W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    StringType lookFor = L"aabbaabb";
+    StringType text{L"AABBAABB"};
+    StringType lookFor{L"aabbaabb"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6089,8 +6089,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest2W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    StringType lookFor = "aabbaabbc";
+    StringType text{"AABBAABB"};
+    StringType lookFor{"aabbaabbc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6103,8 +6103,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest3A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest3W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    StringType lookFor = L"aabbaabbc";
+    StringType text{L"AABBAABB"};
+    StringType lookFor{L"aabbaabbc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6118,8 +6118,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest3W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    StringType lookFor = "ac";
+    StringType text{"AABBAABB"};
+    StringType lookFor{"ac"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6132,8 +6132,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest4A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest4W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    StringType lookFor = L"ac";
+    StringType text{L"AABBAABB"};
+    StringType lookFor{L"ac"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6146,7 +6146,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest4W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest5A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
+    StringType text{"AABBAABB"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -6160,7 +6160,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest5A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest5W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
+    StringType text{L"AABBAABB"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -6175,7 +6175,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest6A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "ab";
+    StringType lookFor{"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6189,7 +6189,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest6W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"ab";
+    StringType lookFor{L"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6231,8 +6231,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest7W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest8A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = "ab";
+    StringType text{"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{"ab"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6245,8 +6245,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest8A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest8W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = L"ab";
+    StringType text{L"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{L"ab"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6260,8 +6260,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest8W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = "aabbaabb";
+    StringType text{"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{"aabbaabb"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6274,8 +6274,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest9A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest9W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = L"aabbaabb";
+    StringType text{L"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{L"aabbaabb"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6289,8 +6289,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest9W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = "aabbaabbc";
+    StringType text{"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{"aabbaabbc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6303,8 +6303,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest10A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest10W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = L"aabbaabbc";
+    StringType text{L"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{L"aabbaabbc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6318,8 +6318,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest10W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest11A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = "ac";
+    StringType text{"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{"ac"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6332,8 +6332,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest11A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest11W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string<StringType::value_type> lookFor = L"ac";
+    StringType text{L"AABBAABB"};
+    std::basic_string<StringType::value_type> lookFor{L"ac"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6346,7 +6346,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest11W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest12A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
+    StringType text{"AABBAABB"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -6360,7 +6360,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest12A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest12W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
+    StringType text{L"AABBAABB"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -6375,7 +6375,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest13A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "ab";
+    std::basic_string<StringType::value_type> lookFor{"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6389,7 +6389,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest13W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"ab";
+    std::basic_string<StringType::value_type> lookFor{L"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6432,8 +6432,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest14W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest15A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = "ab";
+    StringType text{"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{"ab"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6446,8 +6446,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest15A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest15W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = L"ab";
+    StringType text{L"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{L"ab"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6461,8 +6461,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest15W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest16A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = "aabbaabb";
+    StringType text{"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{"aabbaabb"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6475,8 +6475,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest16A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest16W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = L"aabbaabb";
+    StringType text{L"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{L"aabbaabb"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6490,8 +6490,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest16W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest17A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = "aabbaabbc";
+    StringType text{"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{"aabbaabbc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6504,8 +6504,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest17A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest17W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = L"aabbaabbc";
+    StringType text{L"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{L"aabbaabbc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6519,8 +6519,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest17W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest18A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = "ac";
+    StringType text{"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{"ac"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6533,8 +6533,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest18A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest18W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    std::basic_string_view<StringType::value_type> lookFor = L"ac";
+    StringType text{L"AABBAABB"};
+    std::basic_string_view<StringType::value_type> lookFor{L"ac"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6547,7 +6547,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest18W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest19A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
+    StringType text{"AABBAABB"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -6561,7 +6561,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest19A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest19W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
+    StringType text{L"AABBAABB"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -6576,7 +6576,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest20A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "ab";
+    std::basic_string_view<StringType::value_type> lookFor{"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6590,7 +6590,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest20W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"ab";
+    std::basic_string_view<StringType::value_type> lookFor{L"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6632,8 +6632,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest21W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest22A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = "ab";
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{"ab"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6646,8 +6646,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest22A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest22W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = L"ab";
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{L"ab"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6661,8 +6661,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest22W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest23A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = "aabbaabb";
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{"aabbaabb"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6675,8 +6675,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest23A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest23W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = L"aabbaabb";
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{L"aabbaabb"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6690,8 +6690,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest23W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest24A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = "aabbaabbc";
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{"aabbaabbc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6704,8 +6704,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest24A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest24W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = L"aabbaabbc";
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{L"aabbaabbc"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6719,8 +6719,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest24W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest25A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = "ac";
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{"ac"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6733,8 +6733,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest25A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest25W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = L"ac";
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{L"ac"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6747,8 +6747,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest25W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest26A )
 {
     using StringType = AnsiString;
-    StringType text = "AABBAABB";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"AABBAABB"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6761,8 +6761,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest26A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfTest26W )
 {
     using StringType = WideString;
-    StringType text = L"AABBAABB";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"AABBAABB"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6776,7 +6776,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest27A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "ab";
+    const StringType::value_type* lookFor{"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6790,7 +6790,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest27W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"ab";
+    const StringType::value_type* lookFor{L"ab"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6805,7 +6805,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest28A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6819,7 +6819,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest28W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOf( lookFor );
@@ -6832,8 +6832,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfTest28W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "9876";
+    StringType text{"0123456"};
+    StringType lookFor{"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -6846,8 +6846,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest1A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest1W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"9876";
+    StringType text{L"0123456"};
+    StringType lookFor{L"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -6861,8 +6861,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest1W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest2A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "987";
+    StringType text{"0123456"};
+    StringType lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -6875,8 +6875,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest2A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest2W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"987";
+    StringType text{L"0123456"};
+    StringType lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -6890,8 +6890,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest2W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "0987";
+    StringType text{"0123456"};
+    StringType lookFor{"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -6904,8 +6904,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest3A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest3W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"0987";
+    StringType text{L"0123456"};
+    StringType lookFor{L"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -6920,7 +6920,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest4A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "0987";
+    StringType lookFor{"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -6934,7 +6934,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest4W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"0987";
+    StringType lookFor{L"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -6948,7 +6948,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest4W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest5A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -6962,7 +6962,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest5A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest5W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7005,8 +7005,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest6W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "9876";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7019,8 +7019,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest7A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest7W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"9876";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7034,8 +7034,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest7W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest8A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "987";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7048,8 +7048,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest8A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest8W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"987";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7063,8 +7063,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest8W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "0987";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7077,8 +7077,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest9A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest9W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"0987";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7093,7 +7093,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest10A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "0987";
+    std::basic_string<StringType::value_type> lookFor{"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7107,7 +7107,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest10W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"0987";
+    std::basic_string<StringType::value_type> lookFor{L"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7121,7 +7121,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest10W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest11A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7135,7 +7135,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest11A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest11W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7179,8 +7179,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest12W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest13A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "9876";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7193,8 +7193,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest13A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest13W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"9876";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7208,8 +7208,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest13W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest14A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "987";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7222,8 +7222,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest14A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest14W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7237,8 +7237,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest14W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest15A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "0987";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7251,8 +7251,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest15A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest15W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"0987";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7267,7 +7267,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest16A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "0987";
+    std::basic_string_view<StringType::value_type> lookFor{"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7281,7 +7281,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest16W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"0987";
+    std::basic_string_view<StringType::value_type> lookFor{L"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7295,7 +7295,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest16W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest17A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7309,7 +7309,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest17A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest17W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7352,8 +7352,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest18W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest19A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "9876";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7366,8 +7366,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest19A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest19W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"9876";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7381,8 +7381,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest19W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest20A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "987";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7395,8 +7395,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest20A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest20W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"987";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7410,8 +7410,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest20W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest21A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "0987";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7424,8 +7424,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest21A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest21W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"0987";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7440,7 +7440,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest22A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "0987";
+    const StringType::value_type* lookFor{"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7454,7 +7454,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest22W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"0987";
+    const StringType::value_type* lookFor{L"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7468,8 +7468,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest22W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest23A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7482,8 +7482,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest23A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest23W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7498,7 +7498,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest24A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7512,7 +7512,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest24W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyOf( lookFor );
@@ -7525,8 +7525,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyOfTest24W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "9876";
+    StringType text{"0123456"};
+    StringType lookFor{"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7539,8 +7539,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest1A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest1W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"9876";
+    StringType text{L"0123456"};
+    StringType lookFor{L"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7554,8 +7554,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest1W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest2A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "987";
+    StringType text{"0123456"};
+    StringType lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7568,8 +7568,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest2A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest2W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"987";
+    StringType text{L"0123456"};
+    StringType lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7583,8 +7583,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest2W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "0987";
+    StringType text{"0123456"};
+    StringType lookFor{"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7597,8 +7597,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest3A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest3W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"0987";
+    StringType text{L"0123456"};
+    StringType lookFor{L"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7613,7 +7613,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest4A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "0987";
+    StringType lookFor{"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7627,7 +7627,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest4W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"0987";
+    StringType lookFor{L"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7641,7 +7641,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest4W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest5A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7655,7 +7655,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest5A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest5W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     StringType lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7698,8 +7698,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest6W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "9876";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7712,8 +7712,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest7A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest7W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"9876";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7727,8 +7727,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest7W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest8A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "987";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7741,8 +7741,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest8A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest8W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"987";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7756,8 +7756,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest8W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "0987";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7770,8 +7770,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest9A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest9W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"0987";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7786,7 +7786,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest10A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "0987";
+    std::basic_string<StringType::value_type> lookFor{"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7800,7 +7800,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest10W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"0987";
+    std::basic_string<StringType::value_type> lookFor{L"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7814,7 +7814,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest10W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest11A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7828,7 +7828,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest11A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest11W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -7872,8 +7872,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest12W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest13A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "9876";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7886,8 +7886,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest13A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest13W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"9876";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7901,8 +7901,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest13W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest14A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "987";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7915,8 +7915,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest14A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest14W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7930,8 +7930,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest14W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest15A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "0987";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7944,8 +7944,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest15A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest15W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"0987";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7960,7 +7960,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest16A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "0987";
+    std::basic_string_view<StringType::value_type> lookFor{"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7974,7 +7974,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest16W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"0987";
+    std::basic_string_view<StringType::value_type> lookFor{L"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -7988,7 +7988,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest16W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest17A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -8002,7 +8002,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest17A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest17W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = StringType::npos;
 
@@ -8045,8 +8045,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest18W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest19A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "9876";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8059,8 +8059,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest19A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest19W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"9876";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"9876"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8074,8 +8074,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest19W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest20A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "987";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8088,8 +8088,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest20A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest20W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"987";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8103,8 +8103,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest20W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest21A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "0987";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8117,8 +8117,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest21A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest21W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"0987";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"0987"};
     StringType::size_type expectedIndex = 0;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8133,7 +8133,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest22A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "0987";
+    const StringType::value_type* lookFor{"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8147,7 +8147,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest22W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"0987";
+    const StringType::value_type* lookFor{L"0987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8161,8 +8161,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest22W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest23A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8175,8 +8175,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest23A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest23W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8191,7 +8191,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest24A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8205,7 +8205,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest24W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyOf( lookFor );
@@ -8218,8 +8218,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyOfTest24W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "9876";
+    StringType text{"0123456"};
+    StringType lookFor{"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8232,8 +8232,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest1A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest1W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"9876";
+    StringType text{L"0123456"};
+    StringType lookFor{L"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8246,8 +8246,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest1W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest2A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "0123456";
+    StringType text{"0123456"};
+    StringType lookFor{"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8260,8 +8260,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest2A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest2W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"0123456";
+    StringType text{L"0123456"};
+    StringType lookFor{L"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8274,8 +8274,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest2W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "987";
+    StringType text{"0123456"};
+    StringType lookFor{"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8288,8 +8288,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest3A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest3W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"987";
+    StringType text{L"0123456"};
+    StringType lookFor{L"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8303,7 +8303,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest3W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     StringType lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -8317,7 +8317,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest4A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest4W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     StringType lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -8333,7 +8333,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest5A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "987";
+    StringType lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8347,7 +8347,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest5W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"987";
+    StringType lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8389,8 +8389,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest6W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "9876";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8403,8 +8403,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest7A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest7W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"9876";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8417,8 +8417,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest7W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest8A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "0123456";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8431,8 +8431,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest8A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest8W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"0123456";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8445,8 +8445,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest8W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "987";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8459,8 +8459,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest9A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest9W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"987";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8474,7 +8474,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest9W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -8488,7 +8488,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest10A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest10W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -8504,7 +8504,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest11A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "987";
+    std::basic_string<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8518,7 +8518,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest11W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"987";
+    std::basic_string<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8560,8 +8560,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest12W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest13A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "9876";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8574,8 +8574,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest13A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest13W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"9876";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8588,8 +8588,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest13W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest14A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "0123456";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8602,8 +8602,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest14A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest14W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"0123456";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8616,8 +8616,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest14W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest15A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "987";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8630,8 +8630,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest15A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest15W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8645,7 +8645,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest15W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest16A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -8659,7 +8659,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest16A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest16W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -8675,7 +8675,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest17A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "987";
+    std::basic_string_view<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8689,7 +8689,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest17W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    std::basic_string_view<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8731,8 +8731,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest18W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest19A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "9876";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8745,8 +8745,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest19A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest19W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"9876";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8759,8 +8759,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest19W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest20A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "0123456";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8773,8 +8773,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest20A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest20W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"0123456";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8787,8 +8787,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest20W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest21A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "987";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8801,8 +8801,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest21A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest21W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"987";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8816,8 +8816,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest21W )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest22A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8830,8 +8830,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest22A )
 BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest22W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8846,7 +8846,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest23A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "987";
+    const StringType::value_type* lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8860,7 +8860,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest23W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"987";
+    const StringType::value_type* lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8875,7 +8875,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest24A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8889,7 +8889,7 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest24W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.LastIndexOfAnyBut( lookFor );
@@ -8902,8 +8902,8 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest24W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "9876";
+    StringType text{"0123456"};
+    StringType lookFor{"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -8916,8 +8916,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest1A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest1W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"9876";
+    StringType text{L"0123456"};
+    StringType lookFor{L"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -8930,8 +8930,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest1W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest2A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "0123456";
+    StringType text{"0123456"};
+    StringType lookFor{"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -8944,8 +8944,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest2A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest2W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"0123456";
+    StringType text{L"0123456"};
+    StringType lookFor{L"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -8958,8 +8958,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest2W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest3A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    StringType lookFor = "987";
+    StringType text{"0123456"};
+    StringType lookFor{"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -8972,8 +8972,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest3A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest3W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    StringType lookFor = L"987";
+    StringType text{L"0123456"};
+    StringType lookFor{L"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -8987,7 +8987,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest3W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest4A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     StringType lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -9001,7 +9001,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest4A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest4W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     StringType lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -9017,7 +9017,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest5A )
 {
     using StringType = AnsiString;
     StringType text;
-    StringType lookFor = "987";
+    StringType lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9031,7 +9031,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest5W )
 {
     using StringType = WideString;
     StringType text;
-    StringType lookFor = L"987";
+    StringType lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9073,8 +9073,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest6W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest7A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "9876";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9087,8 +9087,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest7A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest7W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"9876";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9101,8 +9101,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest7W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest8A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "0123456";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9115,8 +9115,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest8A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest8W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"0123456";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9129,8 +9129,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest8W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest9A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string<StringType::value_type> lookFor = "987";
+    StringType text{"0123456"};
+    std::basic_string<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9143,8 +9143,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest9A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest9W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string<StringType::value_type> lookFor = L"987";
+    StringType text{L"0123456"};
+    std::basic_string<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9158,7 +9158,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest9W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest10A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -9172,7 +9172,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest10A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest10W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     std::basic_string<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -9188,7 +9188,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest11A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = "987";
+    std::basic_string<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9202,7 +9202,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest11W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string<StringType::value_type> lookFor = L"987";
+    std::basic_string<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9244,8 +9244,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest12W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest13A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "9876";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9258,8 +9258,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest13A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest13W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"9876";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9272,8 +9272,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest13W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest14A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "0123456";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9286,8 +9286,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest14A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest14W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"0123456";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9300,8 +9300,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest14W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest15A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    std::basic_string_view<StringType::value_type> lookFor = "987";
+    StringType text{"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9314,8 +9314,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest15A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest15W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    StringType text{L"0123456"};
+    std::basic_string_view<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9329,7 +9329,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest15W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest16A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
+    StringType text{"0123456"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -9343,7 +9343,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest16A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest16W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
+    StringType text{L"0123456"};
     std::basic_string_view<StringType::value_type> lookFor;
     StringType::size_type expectedIndex = 6;
 
@@ -9359,7 +9359,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest17A )
 {
     using StringType = AnsiString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = "987";
+    std::basic_string_view<StringType::value_type> lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9373,7 +9373,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest17W )
 {
     using StringType = WideString;
     StringType text;
-    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    std::basic_string_view<StringType::value_type> lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9415,8 +9415,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest18W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest19A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "9876";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9429,8 +9429,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest19A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest19W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"9876";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"9876"};
     StringType::size_type expectedIndex = 5;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9443,8 +9443,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest19W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest20A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "0123456";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9457,8 +9457,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest20A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest20W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"0123456";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"0123456"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9471,8 +9471,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest20W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest21A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = "987";
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9485,8 +9485,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest21A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest21W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = L"987";
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{L"987"};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9500,8 +9500,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest21W )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest22A )
 {
     using StringType = AnsiString;
-    StringType text = "0123456";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{"0123456"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9514,8 +9514,8 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest22A )
 BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest22W )
 {
     using StringType = WideString;
-    StringType text = L"0123456";
-    const StringType::value_type* lookFor = nullptr;
+    StringType text{L"0123456"};
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = 6;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9530,7 +9530,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest23A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = "987";
+    const StringType::value_type* lookFor{"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9544,7 +9544,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest23W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = L"987";
+    const StringType::value_type* lookFor{L"987"};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9559,7 +9559,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest24A )
 {
     using StringType = AnsiString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9573,7 +9573,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest24W )
 {
     using StringType = WideString;
     StringType text;
-    const StringType::value_type* lookFor = nullptr;
+    const StringType::value_type* lookFor{nullptr};
     StringType::size_type expectedIndex = StringType::npos;
 
     auto index = text.ILastIndexOfAnyBut( lookFor );
@@ -9587,7 +9587,7 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest24W )
 BOOST_AUTO_TEST_CASE( StringOStreamOperatorTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "The Text";
+    StringType text{"The Text"};
     
     std::ostringstream dest;
 
@@ -9605,7 +9605,7 @@ BOOST_AUTO_TEST_CASE( StringOStreamOperatorTest1A )
 BOOST_AUTO_TEST_CASE( StringOStreamOperatorTest1W )
 {
     using StringType = WideString;
-    StringType text = L"The Text";
+    StringType text{L"The Text"};
 
     std::wostringstream dest;
 
@@ -9624,7 +9624,7 @@ BOOST_AUTO_TEST_CASE( StringOStreamOperatorTest1W )
 BOOST_AUTO_TEST_CASE( StringIStreamOperatorTest1A )
 {
     using StringType = AnsiString;
-    StringType text = "The Text";
+    StringType text{"The Text"};
 
     std::istringstream source( text.c_str() );
 
@@ -9643,7 +9643,7 @@ BOOST_AUTO_TEST_CASE( StringIStreamOperatorTest1A )
 BOOST_AUTO_TEST_CASE( StringIStreamOperatorTest1w )
 {
     using StringType = WideString;
-    StringType text = L"The Text";
+    StringType text{L"The Text"};
 
     std::wistringstream source( text.c_str( ) );
 
@@ -9660,7 +9660,7 @@ BOOST_AUTO_TEST_CASE( StringIStreamOperatorTest1w )
 // --run_test=StringTests/SplitTest1A
 BOOST_AUTO_TEST_CASE( SplitTest1A )
 {
-    AnsiString source = "Debug | Info | Error";
+    AnsiString source{ "Debug | Info | Error" };
     AnsiStringView sourceView = source;
     std::vector<std::string_view> result1;
     std::vector<std::string_view> result2;
@@ -9683,7 +9683,7 @@ BOOST_AUTO_TEST_CASE( SplitTest1A )
 // --run_test=StringTests/SplitTest1W
 BOOST_AUTO_TEST_CASE( SplitTest1W )
 {
-    WideString source = L"Debug | Info | Error";
+    WideString source{ L"Debug | Info | Error" };
     WideStringView sourceView = source;
     std::vector<std::wstring_view> result1;
     std::vector<std::wstring_view> result2;
@@ -9706,7 +9706,7 @@ BOOST_AUTO_TEST_CASE( SplitTest1W )
 // --run_test=StringTests/SplitTest2A
 BOOST_AUTO_TEST_CASE( SplitTest2A )
 {
-    AnsiString source = ",";
+    AnsiString source{ "," };
     AnsiStringView sourceView = source;
     std::vector<std::string_view> result1;
     std::vector<std::string_view> result2;
@@ -9729,7 +9729,7 @@ BOOST_AUTO_TEST_CASE( SplitTest2A )
 // --run_test=StringTests/SplitTest3A
 BOOST_AUTO_TEST_CASE( SplitTest3A )
 {
-    AnsiString source = "";
+    AnsiString source { "" };
     AnsiStringView sourceView = source;
     std::vector<std::string_view> result1;
     std::vector<std::string_view> result2;
@@ -9752,7 +9752,7 @@ BOOST_AUTO_TEST_CASE( SplitTest3A )
 // --run_test=StringTests/SplitTest4A
 BOOST_AUTO_TEST_CASE( SplitTest4A )
 {
-    AnsiString source = "0";
+    AnsiString source { "0" };
     AnsiStringView sourceView = source;
     std::vector<std::string_view> result1;
     std::vector<std::string_view> result2;
@@ -9798,7 +9798,7 @@ BOOST_AUTO_TEST_CASE( FormatStringTest )
 // --run_test=StringTests/TrimTrailingTest1a
 BOOST_AUTO_TEST_CASE( TrimTrailingTest1a )
 {
-    WideString str1 = L" a ";
+    WideString str1{ L" a " };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L" a";
     BOOST_TEST( areEqual );
@@ -9807,7 +9807,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest1a )
 // --run_test=StringTests/TrimTrailingTest1b
 BOOST_AUTO_TEST_CASE( TrimTrailingTest1b )
 {
-    AnsiString str1 = " a ";
+    AnsiString str1{ " a " };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == " a";
     BOOST_TEST( areEqual );
@@ -9816,7 +9816,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest1b )
 // --run_test=StringTests/TrimTrailingTest1c
 BOOST_AUTO_TEST_CASE( TrimTrailingTest1c )
 {
-    std::wstring_view str1 = L" a ";
+    std::wstring_view str1{ L" a " };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L" a";
     BOOST_TEST( areEqual );
@@ -9825,7 +9825,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest1c )
 // --run_test=StringTests/TrimTrailingTest1d
 BOOST_AUTO_TEST_CASE( TrimTrailingTest1d )
 {
-    std::string_view str1 = " a ";
+    std::string_view str1{ " a " };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == " a";
     BOOST_TEST( areEqual );
@@ -9835,7 +9835,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest1d )
 // --run_test=StringTests/TrimTrailingTest2a
 BOOST_AUTO_TEST_CASE( TrimTrailingTest2a )
 {
-    WideString str1 = L" ";
+    WideString str1{ L" " };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -9844,7 +9844,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest2a )
 // --run_test=StringTests/TrimTrailingTest2b
 BOOST_AUTO_TEST_CASE( TrimTrailingTest2b )
 {
-    AnsiString str1 = " ";
+    AnsiString str1{ " " };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -9853,7 +9853,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest2b )
 // --run_test=StringTests/TrimTrailingTest2c
 BOOST_AUTO_TEST_CASE( TrimTrailingTest2c )
 {
-    std::wstring_view str1 = L" ";
+    std::wstring_view str1{ L" " };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -9862,7 +9862,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest2c )
 // --run_test=StringTests/TrimTrailingTest2d
 BOOST_AUTO_TEST_CASE( TrimTrailingTest2d )
 {
-    std::string_view str1 = " ";
+    std::string_view str1{ " " };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -9871,7 +9871,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest2d )
 // --run_test=StringTests/TrimTrailingTest3a
 BOOST_AUTO_TEST_CASE( TrimTrailingTest3a )
 {
-    WideString str1 = L"";
+    WideString str1 { L"" };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -9880,7 +9880,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest3a )
 // --run_test=StringTests/TrimTrailingTest3b
 BOOST_AUTO_TEST_CASE( TrimTrailingTest3b )
 {
-    AnsiString str1 = "";
+    AnsiString str1{ "" };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -9889,7 +9889,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest3b )
 // --run_test=StringTests/TrimTrailingTest3c
 BOOST_AUTO_TEST_CASE( TrimTrailingTest3c )
 {
-    std::wstring_view str1 = L"";
+    std::wstring_view str1{ L"" };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -9898,7 +9898,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest3c )
 // --run_test=StringTests/TrimTrailingTest3d
 BOOST_AUTO_TEST_CASE( TrimTrailingTest3d )
 {
-    std::string_view str1 = "";
+    std::string_view str1{ "" };
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -9909,7 +9909,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest3d )
 // --run_test=StringTests/TrimLeadingTest1a
 BOOST_AUTO_TEST_CASE( TrimLeadingTest1a )
 {
-    WideString str1 = L" a ";
+    WideString str1{ L" a " };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == L"a ";
     BOOST_TEST( areEqual );
@@ -9918,7 +9918,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest1a )
 // --run_test=StringTests/TrimLeadingTest1b
 BOOST_AUTO_TEST_CASE( TrimLeadingTest1b )
 {
-    AnsiString str1 = " a ";
+    AnsiString str1{ " a " };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == "a ";
     BOOST_TEST( areEqual );
@@ -9945,7 +9945,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest1d )
 // --run_test=StringTests/TrimLeadingTest2a
 BOOST_AUTO_TEST_CASE( TrimLeadingTest2a )
 {
-    WideString str1 = L" ";
+    WideString str1{ L" " };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -9954,7 +9954,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest2a )
 // --run_test=StringTests/TrimLeadingTest2b
 BOOST_AUTO_TEST_CASE( TrimLeadingTest2b )
 {
-    AnsiString str1 = " ";
+    AnsiString str1{ " " };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -9963,7 +9963,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest2b )
 // --run_test=StringTests/TrimLeadingTest2c
 BOOST_AUTO_TEST_CASE( TrimLeadingTest2c )
 {
-    std::wstring_view str1 = L" ";
+    std::wstring_view str1{ L" " };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -9972,7 +9972,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest2c )
 // --run_test=StringTests/TrimLeadingTest2d
 BOOST_AUTO_TEST_CASE( TrimLeadingTest2d )
 {
-    std::string_view str1 = " ";
+    std::string_view str1{ " " };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -9982,7 +9982,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest2d )
 // --run_test=StringTests/TrimLeadingTest3a
 BOOST_AUTO_TEST_CASE( TrimLeadingTest3a )
 {
-    WideString str1 = L"";
+    WideString str1{ L"" };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -9991,7 +9991,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest3a )
 // --run_test=StringTests/TrimLeadingTest3b
 BOOST_AUTO_TEST_CASE( TrimLeadingTest3b )
 {
-    AnsiString str1 = "";
+    AnsiString str1{ "" };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -10000,7 +10000,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest3b )
 // --run_test=StringTests/TrimLeadingTest3c
 BOOST_AUTO_TEST_CASE( TrimLeadingTest3c )
 {
-    std::wstring_view str1 = L"";
+    std::wstring_view str1{ L"" };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -10010,7 +10010,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest3c )
 // --run_test=StringTests/TrimLeadingTest3d
 BOOST_AUTO_TEST_CASE( TrimLeadingTest3d )
 {
-    std::string_view str1 = "";
+    std::string_view str1{ "" };
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -10020,7 +10020,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest3d )
 // --run_test=StringTests/TrimTest1a
 BOOST_AUTO_TEST_CASE( TrimTest1a )
 {
-    WideString str1 = L" a ";
+    WideString str1{ L" a " };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"a";
     BOOST_TEST( areEqual );
@@ -10029,7 +10029,7 @@ BOOST_AUTO_TEST_CASE( TrimTest1a )
 // --run_test=StringTests/TrimTest1b
 BOOST_AUTO_TEST_CASE( TrimTest1b )
 {
-    AnsiString str1 = " a ";
+    AnsiString str1{ " a " };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "a";
     BOOST_TEST( areEqual );
@@ -10038,7 +10038,7 @@ BOOST_AUTO_TEST_CASE( TrimTest1b )
 // --run_test=StringTests/TrimTest1c
 BOOST_AUTO_TEST_CASE( TrimTest1c )
 {
-    std::wstring_view str1 = L" a ";
+    std::wstring_view str1{ L" a " };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"a";
     BOOST_TEST( areEqual );
@@ -10047,7 +10047,7 @@ BOOST_AUTO_TEST_CASE( TrimTest1c )
 // --run_test=StringTests/TrimTest1d
 BOOST_AUTO_TEST_CASE( TrimTest1d )
 {
-    std::string_view str1 = " a ";
+    std::string_view str1{ " a " };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "a";
     BOOST_TEST( areEqual );
@@ -10056,7 +10056,7 @@ BOOST_AUTO_TEST_CASE( TrimTest1d )
 // --run_test=StringTests/TrimTest2a
 BOOST_AUTO_TEST_CASE( TrimTest2a )
 {
-    WideString str1 = L" ";
+    WideString str1{ L" " };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -10065,7 +10065,7 @@ BOOST_AUTO_TEST_CASE( TrimTest2a )
 // --run_test=StringTests/TrimTest2b
 BOOST_AUTO_TEST_CASE( TrimTest2b )
 {
-    AnsiString str1 = " ";
+    AnsiString str1{ " " };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -10074,7 +10074,7 @@ BOOST_AUTO_TEST_CASE( TrimTest2b )
 // --run_test=StringTests/TrimTest2c
 BOOST_AUTO_TEST_CASE( TrimTest2c )
 {
-    std::wstring_view str1 = L" ";
+    std::wstring_view str1{ L" " };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -10083,7 +10083,7 @@ BOOST_AUTO_TEST_CASE( TrimTest2c )
 // --run_test=StringTests/TrimTest2d
 BOOST_AUTO_TEST_CASE( TrimTest2d )
 {
-    std::string_view str1 = " ";
+    std::string_view str1{ " " };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -10092,7 +10092,7 @@ BOOST_AUTO_TEST_CASE( TrimTest2d )
 // --run_test=StringTests/TrimTest3a
 BOOST_AUTO_TEST_CASE( TrimTest3a )
 {
-    WideString str1 = L"";
+    WideString str1{ L"" };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -10101,7 +10101,7 @@ BOOST_AUTO_TEST_CASE( TrimTest3a )
 // --run_test=StringTests/TrimTest3b
 BOOST_AUTO_TEST_CASE( TrimTest3b )
 {
-    AnsiString str1 = "";
+    AnsiString str1{ "" };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -10110,7 +10110,7 @@ BOOST_AUTO_TEST_CASE( TrimTest3b )
 // --run_test=StringTests/TrimTest3c
 BOOST_AUTO_TEST_CASE( TrimTest3c )
 {
-    std::wstring_view str1 = L"";
+    std::wstring_view str1{ L"" };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -10119,7 +10119,7 @@ BOOST_AUTO_TEST_CASE( TrimTest3c )
 // --run_test=StringTests/TrimTest3d
 BOOST_AUTO_TEST_CASE( TrimTest3d )
 {
-    std::string_view str1 = "";
+    std::string_view str1{ "" };
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -10139,8 +10139,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest001d )
 // --run_test=StringTests/ParseBooleanTest1A
 BOOST_AUTO_TEST_CASE( ParseBooleanTest1A )
 {
-    AnsiString TrueStr = "True";
-    AnsiString FalseStr = "False";
+    AnsiString TrueStr{ "True" };
+    AnsiString FalseStr{ "False" };
     bool value = Parse<bool>( TrueStr );
     bool equal = value == true;
     BOOST_TEST( equal );

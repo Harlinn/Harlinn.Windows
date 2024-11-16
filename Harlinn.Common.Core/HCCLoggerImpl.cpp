@@ -67,7 +67,7 @@ namespace Harlinn::Common::Core::Logging
     HCC_EXPORT std::shared_ptr<LogManager> LogManager::instance_;
 
     LogManager::LogManager( const std::shared_ptr<LoggerOptions>& options )
-        : Base( L"Logging::LogManager" ), options_( options ), processInfo_( Types::ProcessInfo::Create( ) ), bufferManager_( this )
+        : Base( WideString(L"Logging::LogManager") ), options_( options ), processInfo_( Types::ProcessInfo::Create( ) ), bufferManager_( this )
     {
 
     }

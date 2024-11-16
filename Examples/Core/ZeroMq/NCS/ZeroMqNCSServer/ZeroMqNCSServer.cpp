@@ -30,8 +30,8 @@ int main()
 {
     try
     {
-        AnsiString serverListenEndpoint = "tcp://*:42500";
-        AnsiString serverListenInprocEndpoint = "inproc://server-inproc";
+        AnsiString serverListenEndpoint{ "tcp://*:42500" };
+        AnsiString serverListenInprocEndpoint{ "inproc://server-inproc" };
 
         Context context;
         ZMQNotificationServer server( context, L"TestServer", serverListenEndpoint, serverListenInprocEndpoint );

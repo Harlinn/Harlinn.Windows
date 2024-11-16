@@ -179,10 +179,6 @@ namespace Harlinn::OCI
             rc = OCIAttrSet( ociDescribe, OCI_HTYPE_DESCRIBE, &invscols, 0, OCI_ATTR_SHOW_INVISIBLE_COLUMNS, errorHandle );
             error.CheckResult( rc );
         }
-
-        
-
-        
         rc = OCIDescribeAny( (OCISvcCtx*)Handle( ), errorHandle, (OraText*)objectName.data( ), static_cast<UInt32>( objectName.length( ) * sizeof( wchar_t ) ), 
             OCI_OTYPE_NAME, OCI_DEFAULT, static_cast<Byte>( parameterType ), ociDescribe );
         error.CheckResult( rc );
@@ -190,6 +186,12 @@ namespace Harlinn::OCI
         return result;
 
     }
+
+    OCI::Describe ServiceContext::Describe( const wchar_t* objectName, OCI::ParameterType parameterType, bool showInvisibleColumns ) const
+    {
+        return Describe( WideString( objectName ), parameterType, showInvisibleColumns );
+    }
+
     OCI::Describe ServiceContext::Describe( const OCI::Type& type ) const
     {
         return Describe( (OCIType*)type.Handle( ) );

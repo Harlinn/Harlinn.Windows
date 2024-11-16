@@ -24,8 +24,8 @@ namespace Harlinn::Tools::DbXGen::Metadata
 {
     class ModelInfo : public std::enable_shared_from_this<ModelInfo>
     {
-        WideString name_ = L"Model";
-        WideString discriminatorName_ = L"Kind";
+        WideString name_{ L"Model" };
+        WideString discriminatorName_{ L"Kind" };
         std::unordered_map<WideString, std::shared_ptr<EnumInfo>> enums_;
         std::unordered_map<WideString, std::shared_ptr<TypeInfo>> types_;
         std::unordered_map<WideString, std::shared_ptr<ClassInfo>> classes_;

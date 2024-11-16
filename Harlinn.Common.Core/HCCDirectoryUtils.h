@@ -52,7 +52,19 @@ namespace Harlinn::Common::Core
         static WideString GetRootDirectory(const WideString& executableDirectory)
         {
             auto dir = ToLower(executableDirectory);
-            static WideString toRemove[] = { L"bin\\",L"bin",L"x64\\release\\",L"x64\\release",L"x64\\debug\\", L"x64\\debug", L"release\\",L"release",L"debug\\", L"debug" };
+            static WideString toRemove[] = 
+            { 
+                WideString(L"bin\\"),
+                WideString(L"bin"),
+                WideString(L"x64\\release\\"),
+                WideString(L"x64\\release"),
+                WideString(L"x64\\debug\\"),
+                WideString(L"x64\\debug"),
+                WideString(L"release\\"),
+                WideString(L"release"),
+                WideString(L"debug\\"),
+                WideString(L"debug")
+            };
             for (auto& str : toRemove)
             {
                 if (dir.ends_with(str))
@@ -120,6 +132,12 @@ namespace Harlinn::Common::Core
                 return result;
             }
         }
+
+        StringType ExpandDirectory( const CharType* subDirectory ) const
+        {
+            return ExpandDirectory( StringType( subDirectory ) );
+        }
+
 
         /// <summary>
         /// <p>

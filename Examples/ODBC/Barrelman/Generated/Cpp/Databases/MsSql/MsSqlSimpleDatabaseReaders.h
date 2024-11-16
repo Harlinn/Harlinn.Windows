@@ -41,7 +41,7 @@ namespace Barrelman::Databases::MsSql
         }
         static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, bool& value )
         {
-            statement.BindBooleanColumn( fieldId, reinterpret_cast< bool* >( &value ), static_cast<SQLLEN*>(nullptr) );
+            statement.BindBooleanColumn( fieldId, reinterpret_cast< bool* >( &value ), nullptr );
         }
         static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBBoolean& value )
         {

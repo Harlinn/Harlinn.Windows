@@ -68,7 +68,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyTypeName = CppHelper::GetMemberFieldType( *primaryKey );
 
-        WideString baseClassName = L"BaseColumnData";
+        WideString baseClassName( L"BaseColumnData" );
 
         WriteLine( L"    class {} : public {}", className, baseClassName );
         WriteLine( L"    {" );

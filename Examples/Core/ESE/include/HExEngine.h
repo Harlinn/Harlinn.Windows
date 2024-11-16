@@ -451,7 +451,7 @@ namespace Harlinn::Common::Core::Examples
         std::unordered_map<Int64, std::unique_ptr<SessionType> > sessions_;
     public:
         EngineT( const EngineOptions& options, const char* instanceName )
-            : options_( options ), instance_( instanceName )
+            : options_( options ), instance_( WideString::From(instanceName) )
         {
             ProcessOptions( );
         }

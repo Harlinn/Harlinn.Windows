@@ -50,7 +50,7 @@ namespace Harlinn::Java
 
         bool FindJdkJVM( HKEY rootKey, hcc::WideString& location )
         {
-            hcc::WideString keyPath = L"SOFTWARE\\JavaSoft\\JDK";
+            hcc::WideString keyPath( L"SOFTWARE\\JavaSoft\\JDK" );
             DWORD rc = NO_ERROR;
             HKEY jrtKey = nullptr;
             if ( rc = RegOpenKeyExW( rootKey, keyPath.c_str(), 0, KEY_READ, &jrtKey ) )

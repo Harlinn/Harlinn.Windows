@@ -25,7 +25,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
 
     WideString CSharpHelper::GetNotNullableBaseType( const MemberInfo& member )
     {
-        WideString result = L"<unknown>";
+        WideString result( L"<unknown>" );
         auto memberInfoType = member.Type( );
         switch ( memberInfoType )
         {
@@ -146,7 +146,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
 
     WideString CSharpHelper::GetBaseType( const MemberInfo& member )
     {
-        WideString result = L"<unknown>";
+        WideString result( L"<unknown>" );
         auto memberInfoType = member.Type( );
         switch ( memberInfoType )
         {
@@ -424,126 +424,126 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
         {
             static const std::unordered_set<WideString> keywords =
             {
-                {L"abstract"},
-                {L"as"},
-                {L"base"},
-                {L"bool"},
-                {L"break"},
-                {L"byte"},
-                {L"case"},
-                {L"catch"},
-                {L"char"},
-                {L"checked"},
-                {L"class"},
-                {L"const"},
-                {L"continue"},
-                {L"decimal"},
-                {L"default"},
-                {L"delegate"},
-                {L"do"},
-                {L"double"},
-                {L"else"},
-                {L"enum"},
-                {L"event"},
-                {L"explicit"},
-                {L"extern"},
-                {L"false"},
-                {L"finally"},
-                {L"fixed"},
-                {L"float"},
-                {L"for"},
-                {L"foreach"},
-                {L"goto"},
-                {L"if"},
-                {L"implicit"},
-                {L"in"},
-                {L"int"},
-                {L"interface"},
-                {L"internal"},
-                {L"is"},
-                {L"lock"},
-                {L"long"},
-                {L"namespace"},
-                {L"new"},
-                {L"null"},
-                {L"object"},
-                {L"operator"},
-                {L"out"},
-                {L"override"},
-                {L"params"},
-                {L"private"},
-                {L"protected"},
-                {L"public"},
-                {L"readonly"},
-                {L"ref"},
-                {L"return"},
-                {L"sbyte"},
-                {L"sealed"},
-                {L"short"},
-                {L"sizeof"},
-                {L"stackalloc"},
-                {L"static"},
-                {L"string"},
-                {L"struct"},
-                {L"switch"},
-                {L"this"},
-                {L"throw"},
-                {L"true"},
-                {L"try"},
-                {L"typeof"},
-                {L"uint"},
-                {L"ulong"},
-                {L"unchecked"},
-                {L"unsafe"},
-                {L"ushort"},
-                {L"using"},
-                {L"virtual"},
-                {L"void"},
-                {L"volatile"},
-                {L"while"},
-                {L"add"},
-                {L"allows"},
-                {L"alias"},
-                {L"and"},
-                {L"ascending"},
-                {L"args"},
-                {L"async"},
-                {L"await"},
-                {L"by"},
-                {L"descending"},
-                {L"dynamic"},
-                {L"equals"},
-                {L"file"},
-                {L"from"},
-                {L"get"},
-                {L"global"},
-                {L"group"},
-                {L"init"},
-                {L"into"},
-                {L"join"},
-                {L"let"},
-                {L"nameof"},
-                {L"nint"},
-                {L"not"},
-                {L"notnull"},
-                {L"nuint"},
-                {L"on"},
-                {L"or"},
-                {L"orderby"},
-                {L"partial"},
-                {L"record"},
-                {L"remove"},
-                {L"required"},
-                {L"scoped"},
-                {L"select"},
-                {L"set"},
-                {L"unmanaged"},
-                {L"value"},
-                {L"var"},
-                {L"when"},
-                {L"where"},
-                {L"with"},
-                { L"yield"}
+                {WideString(L"abstract")},
+                {WideString(L"as")},
+                {WideString(L"base")},
+                {WideString(L"bool")},
+                {WideString(L"break")},
+                {WideString(L"byte")},
+                {WideString(L"case")},
+                {WideString(L"catch")},
+                {WideString(L"char")},
+                {WideString(L"checked")},
+                {WideString(L"class")},
+                {WideString(L"const")},
+                {WideString(L"continue")},
+                {WideString(L"decimal")},
+                {WideString(L"default")},
+                {WideString(L"delegate")},
+                {WideString(L"do")},
+                {WideString(L"double")},
+                {WideString(L"else")},
+                {WideString(L"enum")},
+                {WideString(L"event")},
+                {WideString(L"explicit")},
+                {WideString(L"extern")},
+                {WideString(L"false")},
+                {WideString(L"finally")},
+                {WideString(L"fixed")},
+                {WideString(L"float")},
+                {WideString(L"for")},
+                {WideString(L"foreach")},
+                {WideString(L"goto")},
+                {WideString(L"if")},
+                {WideString(L"implicit")},
+                {WideString(L"in")},
+                {WideString(L"int")},
+                {WideString(L"interface")},
+                {WideString(L"internal")},
+                {WideString(L"is")},
+                {WideString(L"lock")},
+                {WideString(L"long")},
+                {WideString(L"namespace")},
+                {WideString(L"new")},
+                {WideString(L"null")},
+                {WideString(L"object")},
+                {WideString(L"operator")},
+                {WideString(L"out")},
+                {WideString(L"override")},
+                {WideString(L"params")},
+                {WideString(L"private")},
+                {WideString(L"protected")},
+                {WideString(L"public")},
+                {WideString(L"readonly")},
+                {WideString(L"ref")},
+                {WideString(L"return")},
+                {WideString(L"sbyte")},
+                {WideString(L"sealed")},
+                {WideString(L"short")},
+                {WideString(L"sizeof")},
+                {WideString(L"stackalloc")},
+                {WideString(L"static")},
+                {WideString(L"string")},
+                {WideString(L"struct")},
+                {WideString(L"switch")},
+                {WideString(L"this")},
+                {WideString(L"throw")},
+                {WideString(L"true")},
+                {WideString(L"try")},
+                {WideString(L"typeof")},
+                {WideString(L"uint")},
+                {WideString(L"ulong")},
+                {WideString(L"unchecked")},
+                {WideString(L"unsafe")},
+                {WideString(L"ushort")},
+                {WideString(L"using")},
+                {WideString(L"virtual")},
+                {WideString(L"void")},
+                {WideString(L"volatile")},
+                {WideString(L"while")},
+                {WideString(L"add")},
+                {WideString(L"allows")},
+                {WideString(L"alias")},
+                {WideString(L"and")},
+                {WideString(L"ascending")},
+                {WideString(L"args")},
+                {WideString(L"async")},
+                {WideString(L"await")},
+                {WideString(L"by")},
+                {WideString(L"descending")},
+                {WideString(L"dynamic")},
+                {WideString(L"equals")},
+                {WideString(L"file")},
+                {WideString(L"from")},
+                {WideString(L"get")},
+                {WideString(L"global")},
+                {WideString(L"group")},
+                {WideString(L"init")},
+                {WideString(L"into")},
+                {WideString(L"join")},
+                {WideString(L"let")},
+                {WideString(L"nameof")},
+                {WideString(L"nint")},
+                {WideString(L"not")},
+                {WideString(L"notnull")},
+                {WideString(L"nuint")},
+                {WideString(L"on")},
+                {WideString(L"or")},
+                {WideString(L"orderby")},
+                {WideString(L"partial")},
+                {WideString(L"record")},
+                {WideString(L"remove")},
+                {WideString(L"required")},
+                {WideString(L"scoped")},
+                {WideString(L"select")},
+                {WideString(L"set")},
+                {WideString(L"unmanaged")},
+                {WideString(L"value")},
+                {WideString(L"var")},
+                {WideString(L"when")},
+                {WideString(L"where")},
+                {WideString(L"with")},
+                {WideString(L"yield")}
             };
             return keywords.contains( word );
         }
@@ -561,7 +561,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
 
     WideString CSharpHelper::GetDataTypeBaseClassName( const ClassInfo& classInfo )
     {
-        WideString result = L"<Unknown>";
+        WideString result( L"<Unknown>" );
         if ( classInfo.IsTopLevel( ) )
         {
             auto primaryKey = classInfo.PrimaryKey( );
@@ -594,7 +594,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
 
     WideString CSharpHelper::GetEntityTypeBaseClassName( const ClassInfo& classInfo )
     {
-        WideString result = L"<Unknown>";
+        WideString result( L"<Unknown>" );
         if ( classInfo.IsTopLevel( ) )
         {
             auto primaryKey = classInfo.PrimaryKey( );
@@ -655,7 +655,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
 
     WideString CSharpHelper::GetSerializationWriteFunction( const MemberInfo& member )
     {
-        WideString result = L"Write";
+        WideString result( L"Write" );
         auto memberType = member.Type( );
         if ( memberType == MemberInfoType::Binary )
         {
@@ -665,7 +665,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
     }
     WideString CSharpHelper::GetSerializationReadFunction( const MemberInfo& member )
     {
-        WideString result = L"<unknown>";
+        WideString result( L"<unknown>" );
         auto memberInfoType = member.Type( );
         switch ( memberInfoType )
         {
@@ -814,7 +814,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
 
     WideString CSharpHelper::GetDataReaderGetFunctionName( const MemberInfo& member )
     {
-        WideString result = L"<unknown>";
+        WideString result( L"<unknown>" );
         auto memberInfoType = member.Type( );
         switch ( memberInfoType )
         {
@@ -1043,7 +1043,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
     {
         if ( classInfo.IsTopLevel( ) )
         {
-            return L"objectState, id";
+            return WideString(L"objectState, id");
         }
         else
         {
@@ -1431,7 +1431,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
 
     WideString CSharpHelper::GetSqlCommandParametersAddFunctionName( const MemberInfo& member )
     {
-        WideString result = L"<Unknown>";
+        WideString result( L"<Unknown>" );
         auto memberType = member.Type( );
         switch ( memberType )
         {
@@ -1769,19 +1769,19 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
     }
     WideString CSharpHelper::GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"At", classInfo, indexInfo, indexDepth, indexMemberCount );
+        return GetByIndexFunctionName( WideString(L"At"), classInfo, indexInfo, indexDepth, indexMemberCount );
     }
     WideString CSharpHelper::GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"From", classInfo, indexInfo, indexDepth, indexMemberCount );
+        return GetByIndexFunctionName( WideString( L"From"), classInfo, indexInfo, indexDepth, indexMemberCount );
     }
     WideString CSharpHelper::GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"Until", classInfo, indexInfo, indexDepth, indexMemberCount );
+        return GetByIndexFunctionName( WideString( L"Until"), classInfo, indexInfo, indexDepth, indexMemberCount );
     }
     WideString CSharpHelper::GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"Over", classInfo, indexInfo, indexDepth, indexMemberCount );
+        return GetByIndexFunctionName( WideString( L"Over" ), classInfo, indexInfo, indexDepth, indexMemberCount );
     }
 
     WideString CSharpHelper::GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )

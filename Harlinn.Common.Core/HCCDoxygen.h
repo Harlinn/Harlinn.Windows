@@ -3209,7 +3209,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::MemberKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseMemberKind( str );
     }
@@ -3218,7 +3218,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::MemberKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseMemberKind( str );
+        return Doxygen::ParseMemberKind( BasicString<CharT>( str ) );
     }
 
 
@@ -3264,7 +3264,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxGraphRelation, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxGraphRelation( str );
     }
@@ -3273,7 +3273,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxGraphRelation, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxGraphRelation( str );
+        return Doxygen::ParseDoxGraphRelation( BasicString<CharT>(str) );
     }
 
     /////////
@@ -3318,7 +3318,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxRefKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxRefKind( str );
     }
@@ -3327,7 +3327,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxRefKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxRefKind( str );
+        return Doxygen::ParseDoxRefKind( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -3372,7 +3372,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxMemberKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxMemberKind( str );
     }
@@ -3381,7 +3381,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxMemberKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxMemberKind( str );
+        return Doxygen::ParseDoxMemberKind( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -3426,7 +3426,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxProtectionKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxProtectionKind( str );
     }
@@ -3435,7 +3435,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxProtectionKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxProtectionKind( str );
+        return Doxygen::ParseDoxProtectionKind( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -3480,7 +3480,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxRefQualifierKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxRefQualifierKind( str );
     }
@@ -3489,7 +3489,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxRefQualifierKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxRefQualifierKind( str );
+        return Doxygen::ParseDoxRefQualifierKind( BasicString<CharT>( str ) );
     }
 
 
@@ -3535,7 +3535,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxLanguage, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxLanguage( str );
     }
@@ -3544,7 +3544,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxLanguage, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxLanguage( str );
+        return Doxygen::ParseDoxLanguage( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -3589,7 +3589,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxVirtualKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxVirtualKind( str );
     }
@@ -3598,7 +3598,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxVirtualKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxVirtualKind( str );
+        return Doxygen::ParseDoxVirtualKind( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -3643,7 +3643,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxCompoundKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxCompoundKind( str );
     }
@@ -3652,7 +3652,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxCompoundKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxCompoundKind( str );
+        return Doxygen::ParseDoxCompoundKind( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -3697,7 +3697,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxSectionKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxSectionKind( str );
     }
@@ -3706,7 +3706,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxSectionKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxSectionKind( str );
+        return Doxygen::ParseDoxSectionKind( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -3751,7 +3751,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxHighlightClass, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxHighlightClass( str );
     }
@@ -3760,7 +3760,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxHighlightClass, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxHighlightClass( str );
+        return Doxygen::ParseDoxHighlightClass( BasicString<CharT>( str ) );
     }
     /////////
     HCC_EXPORT WideString ToWideString( Doxygen::DoxSimpleSectKind value );
@@ -3804,7 +3804,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxSimpleSectKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxSimpleSectKind( str );
     }
@@ -3813,7 +3813,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxSimpleSectKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxSimpleSectKind( str );
+        return Doxygen::ParseDoxSimpleSectKind( BasicString<CharT>(str) );
     }
 
     /////////
@@ -3858,7 +3858,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxCheck, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxCheck( str );
     }
@@ -3867,7 +3867,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxCheck, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxCheck( str );
+        return Doxygen::ParseDoxCheck( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -3912,7 +3912,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxImageKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxImageKind( str );
     }
@@ -3921,7 +3921,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxImageKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxImageKind( str );
+        return Doxygen::ParseDoxImageKind( BasicString<CharT>( str ) );
     }
 
 
@@ -3968,7 +3968,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxPlantumlEngine, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxPlantumlEngine( str );
     }
@@ -3977,7 +3977,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxPlantumlEngine, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxPlantumlEngine( str );
+        return Doxygen::ParseDoxPlantumlEngine( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -4022,7 +4022,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxParamListKind, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxParamListKind( str );
     }
@@ -4031,7 +4031,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxParamListKind, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxParamListKind( str );
+        return Doxygen::ParseDoxParamListKind( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -4076,7 +4076,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxParamDir, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxParamDir( str );
     }
@@ -4085,7 +4085,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxParamDir, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxParamDir( str );
+        return Doxygen::ParseDoxParamDir( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -4130,7 +4130,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxAccessor, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxAccessor( str );
     }
@@ -4139,7 +4139,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxAccessor, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxAccessor( str );
+        return Doxygen::ParseDoxAccessor( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -4184,7 +4184,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxAlign, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxAlign( str );
     }
@@ -4193,7 +4193,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxAlign, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxAlign( str );
+        return Doxygen::ParseDoxAlign( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -4238,7 +4238,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxVerticalAlign, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxVerticalAlign( str );
     }
@@ -4247,7 +4247,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxVerticalAlign, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxVerticalAlign( str );
+        return Doxygen::ParseDoxVerticalAlign( BasicString<CharT>( str ) );
     }
 
     /////////
@@ -4292,7 +4292,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxOlType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxOlType( str );
     }
@@ -4301,7 +4301,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxOlType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxOlType( str );
+        return Doxygen::ParseDoxOlType( BasicString<CharT>( str ) );
     }
 
 
@@ -4347,7 +4347,7 @@ namespace Harlinn::Common::Core
 
     template<typename T, typename StringT>
         requires std::is_same_v<Doxygen::DoxCmdGroupType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
-    inline T Parse( const WideString& str )
+    inline T Parse( const StringT& str )
     {
         return Doxygen::ParseDoxCmdGroupType( str );
     }
@@ -4356,7 +4356,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<Doxygen::DoxCmdGroupType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
-        return Doxygen::ParseDoxCmdGroupType( str );
+        return Doxygen::ParseDoxCmdGroupType( BasicString<CharT>( str ) );
     }
 
 

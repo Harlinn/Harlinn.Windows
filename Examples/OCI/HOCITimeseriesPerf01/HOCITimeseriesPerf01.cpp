@@ -23,9 +23,9 @@ struct LoginInfo
 {
 public:
 
-    std::wstring Username;
-    std::wstring Password;
-    std::wstring Alias;
+    WideString Username;
+    WideString Password;
+    WideString Alias;
 
     LoginInfo( )
     {
@@ -50,9 +50,9 @@ public:
             auto password = element.Attribute( L"Password" );
             auto alias = element.Attribute( L"Alias" );
 
-            Username = username.As<std::wstring>( );
-            Password = password.As<std::wstring>( );
-            Alias = alias.As<std::wstring>( );
+            Username = username.As<WideString>( );
+            Password = password.As<WideString>( );
+            Alias = alias.As<WideString>( );
         }
 
     }

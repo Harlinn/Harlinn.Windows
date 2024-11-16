@@ -3001,6 +3001,10 @@ namespace Harlinn::Common::Core::Ese
             instance_ = instance;
         }
 
+        Instance( const wchar_t* instanceName, const wchar_t* displayName = nullptr, InitFlags initFlags = InitFlags::None )
+            : Instance(WideString( instanceName ), displayName != nullptr? WideString( displayName ) : WideString( ), initFlags )
+        { }
+
 
         inline Instance( const InstanceOptions& instanceOptions );
 

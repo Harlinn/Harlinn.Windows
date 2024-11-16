@@ -1189,7 +1189,7 @@ namespace Harlinn::Common::Core::Security
                 ThrowLastOSError( );
             }
 
-            SecurityIdInfo result{ {buffer.data( ), bufferSize},{domain.data( ),domainSize}, static_cast<SecurityIdType>( accountType ) };
+            SecurityIdInfo result{ WideString{buffer.data( ), bufferSize},WideString{domain.data( ),domainSize}, static_cast<SecurityIdType>( accountType ) };
             return result;
         }
 
@@ -7744,7 +7744,7 @@ namespace Harlinn::Common::Core::Environment
 
 
         User( const USER_INFO_1* info )
-            : Base( info->usri1_name ),
+            : Base( WideString( info->usri1_name ) ),
               passwordAge_( TimeSpan::FromSeconds( info->usri1_password_age ) ),
               privilege_( static_cast<UserPrivilege>( info->usri1_priv ) ),
               homeDirectory_( info->usri1_home_dir? info->usri1_home_dir:L"" ),
@@ -7898,7 +7898,7 @@ namespace Harlinn::Common::Core::Environment
             if ( rc == NERR_Success )
             {
                 WKSTA_INFO_100* info = infoPtr.As<WKSTA_INFO_100>();
-                WideString result = info->wki100_langroup;
+                WideString result( info->wki100_langroup );
                 return result;
             }
             else

@@ -98,7 +98,9 @@ public:
         }
     }
 
-
+    PerformanceTest( const wchar_t* testName )
+        : PerformanceTest( WideString( testName ) )
+    { }
 
     bool AllOfByteVector( size_t iteration )
     {

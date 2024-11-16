@@ -15,8 +15,8 @@ using namespace Barrelman::Types;
 class StoredProceduresLocalFixture
 {
 public:
-    WideString DataSource = L"Barrelman";
-    WideString DatabaseName = L"Barrelman";
+    WideString DataSource{ L"Barrelman" };
+    WideString DatabaseName{ L"Barrelman" };
 
     StoredProceduresLocalFixture( ) = default;
     ~StoredProceduresLocalFixture( ) = default;

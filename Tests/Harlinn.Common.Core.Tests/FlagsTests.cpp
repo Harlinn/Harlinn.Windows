@@ -33,7 +33,7 @@ BOOST_FIXTURE_TEST_SUITE( FlagsTests, LocalFixture )
 // --run_test=FlagsTests/EseColumnTypeToWideStringTest
 BOOST_AUTO_TEST_CASE( EseColumnTypeToWideStringTest )
 {
-    WideString expected = L"DateTime";
+    WideString expected( L"DateTime" );
     auto str1 = ToWideString( Ese::ColumnType::DateTime );
     auto str2 = Format(L"{}", Ese::ColumnType::DateTime );
     bool equals = str1 == expected;
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE( EseColumnTypeToWideStringTest )
 // --run_test=FlagsTests/TryParseEseColumnTypeTest
 BOOST_AUTO_TEST_CASE( TryParseEseColumnTypeTest )
 {
-    WideString str = L" DateTime ";
+    WideString str( L" DateTime " );
     auto expected = Ese::ColumnType::DateTime;
     Ese::ColumnType value{};
     auto succeeded = TryParse( str, value );
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE( TryParseEseColumnTypeTest )
 // --run_test=FlagsTests/EseColumnFlagsToWideStringTest
 BOOST_AUTO_TEST_CASE( EseColumnFlagsToWideStringTest )
 {
-    WideString expected = L"Fixed|NotNULL";
+    WideString expected( L"Fixed|NotNULL" );
     auto str1 = ToWideString( Ese::ColumnFlags::Fixed | Ese::ColumnFlags::NotNULL );
     auto str2 = Format( L"{}", Ese::ColumnFlags::Fixed | Ese::ColumnFlags::NotNULL );
     bool equals = str1 == expected;
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE( EseColumnFlagsToWideStringTest )
 // --run_test=FlagsTests/TryParseEseColumnFlagsTest
 BOOST_AUTO_TEST_CASE( TryParseEseColumnFlagsTest )
 {
-    WideString str = L" NotNULL | Fixed ";
+    WideString str( L" NotNULL | Fixed ");
     auto expected = Ese::ColumnFlags::Fixed | Ese::ColumnFlags::NotNULL;
     Ese::ColumnFlags value{};
     auto succeeded = TryParse( str, value );

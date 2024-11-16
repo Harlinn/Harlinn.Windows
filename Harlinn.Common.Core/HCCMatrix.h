@@ -605,7 +605,7 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
-                return "[]";
+                return AnsiString("[]");
             }
         }
 

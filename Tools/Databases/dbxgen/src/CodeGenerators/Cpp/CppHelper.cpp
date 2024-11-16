@@ -54,7 +54,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
     WideString CppHelper::GetNotNullableBaseType( const MemberInfo& member )
     {
-        WideString result = L"<unknown>";
+        WideString result( L"<unknown>" );
         auto memberInfoType = member.Type( );
         switch ( memberInfoType )
         {
@@ -191,7 +191,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
     WideString CppHelper::GetBaseType( const MemberInfo& member )
     {
-        WideString result = L"<unknown>";
+        WideString result( L"<unknown>" );
         auto memberInfoType = member.Type( );
         switch ( memberInfoType )
         {
@@ -569,103 +569,103 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
         {
             static const std::unordered_set<WideString> keywords = 
             {
-                {L"alignas"},
-                {L"alignof"},
-                {L"and"},
-                {L"and_eq"},
-                {L"asm"},
-                {L"atomic_cancel"},
-                {L"atomic_commit"},
-                {L"atomic_noexcept"},
-                {L"auto"},
-                {L"bitand"},
-                {L"bitor"},
-                {L"bool"},
-                {L"break"},
-                {L"case"},
-                {L"catch"},
-                {L"char"},
-                {L"char8_t"},
-                {L"char16_t"},
-                {L"char32_t"},
-                {L"class"},
-                {L"compl"},
-                {L"concept"},
-                {L"const"},
-                {L"consteval"},
-                {L"constexpr"},
-                {L"constinit"},
-                {L"const_cast"},
-                {L"continue"},
-                {L"co_await"},
-                {L"co_return"},
-                {L"co_yield"},
-                {L"decltype"},
-                {L"default"},
-                {L"delete"},
-                {L"do"},
-                {L"double"},
-                {L"dynamic_cast"},
-                {L"else"},
-                {L"enum"},
-                {L"explicit"},
-                {L"export"},
-                {L"extern"},
-                {L"false"},
-                {L"float"},
-                {L"for"},
-                {L"friend"},
-                {L"goto"},
-                {L"if"},
-                {L"inline"},
-                {L"int"},
-                {L"long"},
-                {L"mutable"},
-                {L"namespace"},
-                {L"new"},
-                {L"noexcept"},
-                {L"not"},
-                {L"not_eq"},
-                {L"nullptr"},
-                {L"operator"},
-                {L"or"},
-                {L"or_eq"},
-                {L"private"},
-                {L"protected"},
-                {L"public"},
-                {L"reflexpr"},
-                {L"register"},
-                {L"reinterpret_cast"},
-                {L"requires"},
-                {L"return"},
-                {L"short"},
-                {L"signed"},
-                {L"sizeof"},
-                {L"static"},
-                {L"static_assert"},
-                {L"static_cast"},
-                {L"struct"},
-                {L"switch"},
-                {L"synchronized"},
-                {L"template"},
-                {L"this"},
-                {L"thread_local"},
-                {L"throw"},
-                {L"true"},
-                {L"try"},
-                {L"typedef"},
-                {L"typeid"},
-                {L"typename"},
-                {L"union"},
-                {L"unsigned"},
-                {L"using"},
-                {L"virtual"},
-                {L"void"},
-                {L"volatile"},
-                {L"wchar_t"},
-                {L"while"},
-                {L"xor"},
-                {L"xor_eq"}
+                {WideString(L"alignas")},
+                {WideString(L"alignof")},
+                {WideString(L"and")},
+                {WideString(L"and_eq")},
+                {WideString(L"asm")},
+                {WideString(L"atomic_cancel")},
+                {WideString(L"atomic_commit")},
+                {WideString(L"atomic_noexcept")},
+                {WideString(L"auto")},
+                {WideString(L"bitand")},
+                {WideString(L"bitor")},
+                {WideString(L"bool")},
+                {WideString(L"break")},
+                {WideString(L"case")},
+                {WideString(L"catch")},
+                {WideString(L"char")},
+                {WideString(L"char8_t")},
+                {WideString(L"char16_t")},
+                {WideString(L"char32_t")},
+                {WideString(L"class")},
+                {WideString(L"compl")},
+                {WideString(L"concept")},
+                {WideString(L"const")},
+                {WideString(L"consteval")},
+                {WideString(L"constexpr")},
+                {WideString(L"constinit")},
+                {WideString(L"const_cast")},
+                {WideString(L"continue")},
+                {WideString(L"co_await")},
+                {WideString(L"co_return")},
+                {WideString(L"co_yield")},
+                {WideString(L"decltype")},
+                {WideString(L"default")},
+                {WideString(L"delete")},
+                {WideString(L"do")},
+                {WideString(L"double")},
+                {WideString(L"dynamic_cast")},
+                {WideString(L"else")},
+                {WideString(L"enum")},
+                {WideString(L"explicit")},
+                {WideString(L"export")},
+                {WideString(L"extern")},
+                {WideString(L"false")},
+                {WideString(L"float")},
+                {WideString(L"for")},
+                {WideString(L"friend")},
+                {WideString(L"goto")},
+                {WideString(L"if")},
+                {WideString(L"inline")},
+                {WideString(L"int")},
+                {WideString(L"long")},
+                {WideString(L"mutable")},
+                {WideString(L"namespace")},
+                {WideString(L"new")},
+                {WideString(L"noexcept")},
+                {WideString(L"not")},
+                {WideString(L"not_eq")},
+                {WideString(L"nullptr")},
+                {WideString(L"operator")},
+                {WideString(L"or")},
+                {WideString(L"or_eq")},
+                {WideString(L"private")},
+                {WideString(L"protected")},
+                {WideString(L"public")},
+                {WideString(L"reflexpr")},
+                {WideString(L"register")},
+                {WideString(L"reinterpret_cast")},
+                {WideString(L"requires")},
+                {WideString(L"return")},
+                {WideString(L"short")},
+                {WideString(L"signed")},
+                {WideString(L"sizeof")},
+                {WideString(L"static")},
+                {WideString(L"static_assert")},
+                {WideString(L"static_cast")},
+                {WideString(L"struct")},
+                {WideString(L"switch")},
+                {WideString(L"synchronized")},
+                {WideString(L"template")},
+                {WideString(L"this")},
+                {WideString(L"thread_local")},
+                {WideString(L"throw")},
+                {WideString(L"true")},
+                {WideString(L"try")},
+                {WideString(L"typedef")},
+                {WideString(L"typeid")},
+                {WideString(L"typename")},
+                {WideString(L"union")},
+                {WideString(L"unsigned")},
+                {WideString(L"using")},
+                {WideString(L"virtual")},
+                {WideString(L"void")},
+                {WideString(L"volatile")},
+                {WideString(L"wchar_t")},
+                {WideString(L"while")},
+                {WideString(L"xor")},
+                {WideString(L"xor_eq")}
             };
             return keywords.contains( word );
         }
@@ -815,7 +815,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
 
     WideString CppHelper::GetMemberNullableFieldType( const MemberInfo& member )
     {
-        WideString result = L"<unknown>";
+        WideString result( L"<unknown>" );
         auto memberInfoType = member.Type( );
         switch ( memberInfoType )
         {
@@ -1171,14 +1171,29 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
             case MemberInfoType::String:
             {
                 const auto& stringMember = static_cast< const StringMemberInfo& >( member );
-                if ( stringMember.Size( ) )
+                if ( IsBindable( member ) )
                 {
-                    auto text = member.Name( ).SubString( 0, stringMember.Size( ) );
-                    result = Format( L"L\"{}\"", text );
+                    if ( stringMember.Size( ) )
+                    {
+                        auto text = member.Name( ).SubString( 0, stringMember.Size( ) );
+                        result = Format( L"L\"{}\"", text );
+                    }
+                    else
+                    {
+                        result = Format( L"L\"{}\"", member.Name( ) );
+                    }
                 }
                 else
                 {
-                    result = Format( L"L\"{}\"", member.Name( ) );
+                    if ( stringMember.Size( ) )
+                    {
+                        auto text = member.Name( ).SubString( 0, stringMember.Size( ) );
+                        result = Format( L"WideString(L\"{}\")", text );
+                    }
+                    else
+                    {
+                        result = Format( L"WideString(L\"{}\")", member.Name( ) );
+                    }
                 }
             }
             break;
@@ -1776,19 +1791,19 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
     }
     WideString CppHelper::GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"At", classInfo, indexInfo, indexDepth, indexMemberCount );
+        return GetByIndexFunctionName( WideString(L"At"), classInfo, indexInfo, indexDepth, indexMemberCount );
     }
     WideString CppHelper::GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"From", classInfo, indexInfo, indexDepth, indexMemberCount );
+        return GetByIndexFunctionName( WideString( L"From" ), classInfo, indexInfo, indexDepth, indexMemberCount );
     }
     WideString CppHelper::GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"Until", classInfo, indexInfo, indexDepth, indexMemberCount );
+        return GetByIndexFunctionName( WideString( L"Until" ), classInfo, indexInfo, indexDepth, indexMemberCount );
     }
     WideString CppHelper::GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )
     {
-        return GetByIndexFunctionName( L"Over", classInfo, indexInfo, indexDepth, indexMemberCount );
+        return GetByIndexFunctionName( WideString( L"Over" ), classInfo, indexInfo, indexDepth, indexMemberCount );
     }
 
     WideString CppHelper::GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexDepth, size_t indexMemberCount )

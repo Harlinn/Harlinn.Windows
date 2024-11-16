@@ -864,6 +864,12 @@ namespace Harlinn::Common::Core::LMDBEx
             return result;
         }
 
+        template<typename TableInfoType>
+        TableInfoType* AddTable( const char* name )
+        {
+            return AddTable<TableInfoType>( AnsiString( name ) );
+        }
+
         TableInfo* FindTable( const AnsiStringView& tableName ) const
         {
             auto it = tables_.find( tableName );
@@ -893,6 +899,11 @@ namespace Harlinn::Common::Core::LMDBEx
             return nullptr;
         }
 
+        template<typename IndexInfoType>
+        IndexInfoType* AddIndex( const char* tableName, const char* name )
+        {
+            return AddIndex<IndexInfoType>( AnsiString( tableName ), AnsiString( name ) );
+        }
 
 
         template<typename HashIndexInfoType>
@@ -910,6 +921,13 @@ namespace Harlinn::Common::Core::LMDBEx
             }
             return nullptr;
         }
+
+        template<typename HashIndexInfoType>
+        HashIndexInfoType* AddHashIndex( const char* tableName, const char* name )
+        {
+            return AddHashIndex<HashIndexInfoType>( AnsiString( tableName ), AnsiString( name ) );
+        }
+
     };
 
 

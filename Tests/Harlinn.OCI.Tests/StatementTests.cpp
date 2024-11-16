@@ -39,10 +39,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest1 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := SYSDATE();" \
-        L"END;";
+        L"END;");
 
     {
         auto statement = serviceContext.CreateStatement( sql );
@@ -77,10 +77,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest1a )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := SYSDATE();" \
-        L"END;";
+        L"END;");
     {
         auto statement = serviceContext.CreateStatement( sql );
 
@@ -106,10 +106,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest2 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := SYSTIMESTAMP();" \
-        L"END;";
+        L"END;");
     {
         auto statement = serviceContext.CreateStatement( sql );
 
@@ -133,10 +133,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest3 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := 1;" \
-        L"END;";
+        L"END;");
 
     {
         auto statement = serviceContext.CreateStatement( sql );
@@ -160,10 +160,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest4 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := 1;" \
-        L"END;";
+        L"END;");
     {
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<SByte>( 1 );
@@ -187,10 +187,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest5 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := 1;" \
-        L"END;";
+        L"END;");
     {
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<Byte>( 1 );
@@ -213,10 +213,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest6 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := 1;" \
-        L"END;";
+        L"END;");
     {
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<Int16>( 1 );
@@ -239,10 +239,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest7 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := 1;" \
-        L"END;";
+        L"END;");
 
     {
         auto statement = serviceContext.CreateStatement( sql );
@@ -266,10 +266,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest8 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := 1;" \
-        L"END;";
+        L"END;");
     {
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<Int32>( 1 );
@@ -292,10 +292,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest9 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := 1;" \
-        L"END;";
+        L"END;");
     {
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<UInt32>( 1 );
@@ -318,10 +318,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest10 )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql =
+        WideString sql( 
             L"BEGIN"\
             L" :result := 1;" \
-            L"END;";
+            L"END;");
 
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<Int64>( 1 );
@@ -344,10 +344,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest11 )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql =
+        WideString sql( 
             L"BEGIN"\
             L" :result := 1;" \
-            L"END;";
+            L"END;");
 
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<UInt64>( 1 );
@@ -370,10 +370,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest12 )
 
     serviceContext.SessionBegin( );
 
-    WideString sql =
+    WideString sql( 
         L"BEGIN"\
         L" :result := 1;" \
-        L"END;";
+        L"END;");
     {
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<float>( 1 );
@@ -396,10 +396,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest13 )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql =
+        WideString sql( 
             L"BEGIN"\
             L" :result := 1;" \
-            L"END;";
+            L"END;");
 
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<Double>( 1 );
@@ -422,10 +422,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest14 )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql =
+        WideString sql( 
             L"BEGIN"\
             L" :result := 1;" \
-            L"END;";
+            L"END;");
 
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<WideString>( 1 );
@@ -449,10 +449,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest15 )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql =
+        WideString sql( 
             L"BEGIN"\
             L" :result := 1;" \
-            L"END;";
+            L"END;");
 
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<StringBind>( 1 );
@@ -476,10 +476,10 @@ BOOST_AUTO_TEST_CASE( ExecuteTest16 )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql =
+        WideString sql( 
             L"BEGIN"\
             L" :result := :value;" \
-            L"END;";
+            L"END;");
 
         auto statement = serviceContext.CreateStatement( sql );
         auto result = statement.Bind<Guid>( 1 );
@@ -505,8 +505,7 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest1a )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql =
-            L"SELECT * FROM ALL_USERS WHERE USERNAME<>:1";
+        WideString sql(L"SELECT * FROM ALL_USERS WHERE USERNAME<>:1");
         WideString myName( L"ESPEN" );
         auto statement = serviceContext.CreateStatement( sql, myName );
         auto reader = statement.ExecuteReader<DataReader>( );
@@ -535,8 +534,7 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest1 )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql =
-            L"SELECT * FROM ALL_USERS";
+        WideString sql(L"SELECT * FROM ALL_USERS");
 
         auto statement = serviceContext.CreateStatement( sql );
 
@@ -566,7 +564,7 @@ BOOST_AUTO_TEST_CASE( ExecuteArrayReaderTest1 )
 
     serviceContext.SessionBegin( );
     {
-        WideString sql = L"SELECT * FROM ALL_USERS";
+        WideString sql(L"SELECT * FROM ALL_USERS");
 
         auto statement = serviceContext.CreateStatement( sql );
 
@@ -1068,7 +1066,7 @@ BOOST_AUTO_TEST_CASE( EngineTest1 )
     session.OwnedObjectTypeDelete( );
     session.Commit( );
 
-    OwnedObjectType ownedObjectType( L"Type1", L"Description" );
+    OwnedObjectType ownedObjectType( WideString(L"Type1"), WideString( L"Description" ) );
     session.Insert( ownedObjectType );
     session.Commit( );
     

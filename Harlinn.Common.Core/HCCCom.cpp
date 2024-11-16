@@ -141,9 +141,9 @@ namespace Harlinn::Common::Core
             {
                 return result;
             }
-            if (Com::Internal::CheckIfInterfaceIsSupported<IUnknown>(unknown)) { result.push_back(L"IUnknown"); }
+            if (Com::Internal::CheckIfInterfaceIsSupported<IUnknown>(unknown)) { result.emplace_back(WideString(L"IUnknown")); }
 
-#define X( Itf, BaseItf ) if (Com::Internal::CheckIfInterfaceIsSupported<Itf>(unknown)) { result.push_back(L#Itf); }
+#define X( Itf, BaseItf ) if (Com::Internal::CheckIfInterfaceIsSupported<Itf>(unknown)) { result.emplace_back(WideString(L#Itf)); }
 #include "HCCComInterfaces.xm"
 #undef X
             return result;

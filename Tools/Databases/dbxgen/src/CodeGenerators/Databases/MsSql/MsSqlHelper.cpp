@@ -31,7 +31,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Databases::MsSql
 
     WideString MsSqlHelper::GetColumnType( const MemberInfo& member )
     {
-        WideString result = L"<unknown>";
+        WideString result{ L"<unknown>" };
         auto memberInfoType = member.Type( );
         switch ( memberInfoType )
         {

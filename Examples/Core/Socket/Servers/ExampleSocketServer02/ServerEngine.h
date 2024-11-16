@@ -263,12 +263,12 @@ namespace Harlinn::Common::Core::Examples
         template<IO::StreamWriter StreamWriterT>
         void InvalidSession( IO::BinaryWriter<StreamWriterT>& replyWriter, UInt64 sessionId )
         {
-            WriteFault( replyWriter, sessionId, 0 , L"Invalid session id" );
+            WriteFault( replyWriter, sessionId, 0 , WideString(L"Invalid session id") );
         }
         template<IO::StreamWriter StreamWriterT>
         void UnknownException( IO::BinaryWriter<StreamWriterT>& replyWriter, UInt64 sessionId )
         {
-            WriteFault( replyWriter, sessionId, 0, L"Unknown exception" );
+            WriteFault( replyWriter, sessionId, 0, WideString( L"Unknown exception" ) );
         }
 
         template<IO::StreamWriter StreamWriterT>

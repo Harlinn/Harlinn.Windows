@@ -406,7 +406,7 @@ namespace Harlinn::CIMTool
     };
 
     inline PropertiesNode::PropertiesNode( ClassObjectNode* owner )
-        : Base( owner, NextId( ), "Properties" )
+        : Base( owner, NextId( ), hcc::AnsiString("Properties") )
     {
     }
 
@@ -590,7 +590,7 @@ namespace Harlinn::CIMTool
         ConnectionManager connectionManager_;
     public:
         ExplorerWindow( Renderable* owner, const hw::Size& initialSize )
-            : Base( owner, "Explorer", initialSize, ImGuiWindowFlags_None ), connectionManager_(this)
+            : Base( owner, hcc::AnsiString("Explorer"), initialSize, ImGuiWindowFlags_None ), connectionManager_(this)
         {
         }
     protected:
@@ -609,7 +609,7 @@ namespace Harlinn::CIMTool
     private:
     public:
         PropertiesWindow( Renderable* owner, const hw::Size& initialSize )
-            : Base( owner, "Properties", initialSize, ImGuiWindowFlags_None )
+            : Base( owner, hcc::AnsiString( "Properties"), initialSize, ImGuiWindowFlags_None )
         {
         }
     protected:
@@ -628,7 +628,7 @@ namespace Harlinn::CIMTool
     private:
     public:
         FileMenu( Renderable* owner )
-            : Base( owner, "File" )
+            : Base( owner, hcc::AnsiString( "File") )
         {
 
         }
@@ -641,7 +641,7 @@ namespace Harlinn::CIMTool
     private:
     public:
         EditMenu( Renderable* owner )
-            : Base( owner, "Edit" )
+            : Base( owner, hcc::AnsiString( "Edit" ))
         {
 
         }
@@ -654,7 +654,7 @@ namespace Harlinn::CIMTool
     private:
     public:
         ViewMenu( Renderable* owner )
-            : Base( owner, "View" )
+            : Base( owner, hcc::AnsiString( "View" ) )
         {
 
         }

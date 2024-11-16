@@ -93,11 +93,11 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         WriteLine( L"        }" );
         WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, bool& value )" );
         WriteLine( L"        {" );
-        WriteLine( L"            statement.BindBooleanColumn( fieldId, reinterpret_cast< Byte* >( &value ), nullptr );" );
+        WriteLine( L"            statement.BindBooleanColumn( fieldId, reinterpret_cast< bool* >( &value ), nullptr );" );
         WriteLine( L"        }" );
         WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBBoolean& value )" );
         WriteLine( L"        {" );
-        WriteLine( L"            statement.BindBooleanColumn( fieldId, reinterpret_cast< Byte* >( value.data() ), value.Indicator() );" );
+        WriteLine( L"            statement.BindBooleanColumn( fieldId, reinterpret_cast< bool* >( value.data() ), value.Indicator() );" );
         WriteLine( L"        }" );
         WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, SByte& value )" );
         WriteLine( L"        {" );
@@ -331,7 +331,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp::Databases::MsSql
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyTypeName = CppHelper::GetMemberFieldType( *primaryKey );
 
-        WideString baseClassName = L"BaseColumnData";
+        WideString baseClassName( L"BaseColumnData" );
         if ( classInfo.IsTopLevel( ) == false )
         {
             auto baseClass = classInfo.BaseClass( );

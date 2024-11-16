@@ -27,7 +27,7 @@ namespace Harlinn::Common::Core
     HCC_EXPORT Application* Application::instance_ = nullptr;
 
     Application::Application( const std::shared_ptr<ApplicationOptions>& options )
-        : Base(L"Core::Application" ), options_( options )
+        : Base(WideString(L"Core::Application") ), options_( options )
     {
         Logging::LogManager::SetOptions( options->LoggerOptions( ) );
 

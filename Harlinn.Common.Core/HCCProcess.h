@@ -297,6 +297,10 @@ namespace Harlinn::Common::Core
         {
         }
 
+        ProcessOptions( const wchar_t* applicationName, const wchar_t* commandLine, ProcessCreationFlags creationFlags = ProcessCreationFlags::ProfileUser )
+            :applicationName_( applicationName ), commandLine_( commandLine ), processAttributes_( nullptr ), threadAttributes_( nullptr ), inheritHandles_( false ), creationFlags_( creationFlags )
+        { }
+
         const WideString& ApplicationName( ) const noexcept
         {
             return applicationName_;

@@ -379,7 +379,7 @@ namespace Harlinn::Common::Core::Logging
         }
         else
         {
-            return L"<null>";
+            return WideString(L"<null>");
         }
     }
     inline [[nodiscard]] AnsiString ToAnsiString( const std::shared_ptr<LogManagerStatistics>& statistics )
@@ -390,7 +390,7 @@ namespace Harlinn::Common::Core::Logging
         }
         else
         {
-            return "<null>";
+            return AnsiString("<null>");
         }
     }
 

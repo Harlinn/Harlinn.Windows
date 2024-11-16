@@ -244,7 +244,7 @@ public:
             auto& data = entry.second;
             if ( data->Description().length() == 0  )
             {
-                data->SetDescription( L"Updated Description" );
+                data->SetDescription( WideString(L"Updated Description") );
                 if ( Update( data ) == false )
                 {
                     auto changedData = Select( data->Id() );

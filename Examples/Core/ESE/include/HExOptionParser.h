@@ -37,7 +37,7 @@ namespace Harlinn::Common::Core::Examples
         _wsplitpath( filename.c_str( ), drive, directory, nullptr, nullptr );
         wchar_t buffer[_MAX_PATH + 1];
         _wmakepath( buffer, drive, directory, nullptr, nullptr );
-        return buffer;
+        return WideString(buffer);
     }
 
     inline bool ParseOptions( int argc, char* argv[], EngineOptions& options )

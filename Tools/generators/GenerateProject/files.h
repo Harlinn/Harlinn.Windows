@@ -150,6 +150,17 @@ namespace GenerateProject
             return false;
         }
 
+        bool SetTagValue( const char* tagName, const AnsiString& newValue )
+        {
+            return SetTagValue( AnsiString( tagName ), newValue );
+        }
+
+        bool SetTagValue( const char* tagName, const char* newValue )
+        {
+            return SetTagValue( AnsiString( tagName ), AnsiString( newValue) );
+        }
+
+
         bool Replace( const AnsiString& oldValue, const AnsiString& newValue )
         {
             auto startOffset = contents_.find( oldValue );

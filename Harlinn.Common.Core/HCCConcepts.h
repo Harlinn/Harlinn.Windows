@@ -61,9 +61,32 @@ namespace Harlinn::Common::Core
     {
         { t1.rbegin( ) } ->std::same_as<typename T::reverse_iterator>;
         { t1.rend( ) } ->std::same_as<typename T::reverse_iterator>;
-        { t1.front() } ->std::same_as<typename T::reference>;
-        { t1.back( ) } ->std::same_as<typename T::reference>;
+        { t1.front() } ->std::convertible_to<const typename T::value_type>;
+        { t1.back( ) } ->std::convertible_to<const typename T::value_type>;
     };
+
+    /// <summary>
+    /// Matches most common string classes with sequential memory layout. 
+    /// Do not assume that they are zero terminated
+    /// </summary>
+    template<typename T>
+    concept CharSpanLike = SpanLike<T> && ( std::is_same_v<typename T::value_type, char> || std::is_same_v<typename T::value_type, wchar_t> );
+
+    /// <summary>
+    /// Matches most common char string classes with sequential memory layout. 
+    /// Do not assume that they are zero terminated
+    /// </summary>
+    template<typename T>
+    concept AnsiCharSpanLike = SpanLike<T> && std::is_same_v<typename T::value_type, char>;
+
+    /// <summary>
+    /// Matches most common wchar_t string classes with sequential memory layout. 
+    /// Do not assume that they are zero terminated
+    /// </summary>
+    template<typename T>
+    concept WideCharSpanLike = SpanLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
+
+
 
     namespace Internal
     {
@@ -100,13 +123,18 @@ namespace Harlinn::Common::Core
     namespace Internal
     {
         template<typename T>
-        concept StringLikeImpl = SimpleStringLikeImpl<T> && requires ( T t1, const T t2, typename T::size_type sz )
+        concept StringLikeImpl = SimpleStringLikeImpl<T> && 
+            requires ( T t1, const T t2, typename T::size_type sz, typename T::size_type pos, const typename T::value_type* ptr, typename T::value_type value )
         {
             { t1.rbegin( ) } ->std::same_as<typename T::reverse_iterator>;
             { t1.rend( ) } ->std::same_as<typename T::reverse_iterator>;
             { t1.front( ) } ->std::convertible_to<typename T::value_type>;
             { t1.back( ) } ->std::convertible_to<typename T::value_type>;
             { t1.resize( sz ) };
+            { t1.reserve( sz ) };
+            { t1.append( ptr, sz ) };
+            { t1.append( ptr ) };
+            { t1.append( sz, value ) };
 
 
             { t2[ 0 ] } ->std::same_as<typename T::const_reference>;
@@ -117,6 +145,17 @@ namespace Harlinn::Common::Core
             { t2.front( ) } ->std::convertible_to<typename T::value_type>;
             { t2.back( ) } ->std::convertible_to<typename T::value_type>;
             { t2.data( ) } ->std::same_as<typename T::const_pointer>;
+            { t2.empty( ) } ->std::same_as<bool>;
+            { t2.find( ptr ) } ->std::same_as<typename T::size_type>;
+            { t2.find( ptr, pos ) } ->std::same_as<typename T::size_type>;
+            { t2.find( ptr, pos, sz ) } ->std::same_as<typename T::size_type>;
+            { t2.find( value, pos ) } ->std::same_as<typename T::size_type>;
+            { t2.find_first_of( ptr ) } ->std::same_as<typename T::size_type>;
+            { t2.find_first_of( ptr, pos ) } ->std::same_as<typename T::size_type>;
+            { t2.find_first_of( ptr, pos, sz ) } ->std::same_as<typename T::size_type>;
+            { t2.find_last_of( ptr ) } ->std::same_as<typename T::size_type>;
+            { t2.find_last_of( ptr, pos ) } ->std::same_as<typename T::size_type>;
+            { t2.find_last_of( ptr, pos, sz ) } ->std::same_as<typename T::size_type>;
         };
     }
 

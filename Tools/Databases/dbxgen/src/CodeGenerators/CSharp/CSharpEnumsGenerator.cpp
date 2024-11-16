@@ -55,7 +55,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
 
     WideString CSharpEnumsGenerator::GetUnderlyingType( const EnumInfo& enumInfo )
     {
-        WideString result = L"int";
+        WideString result( L"int" );
         auto valueType = enumInfo.ValueType( );
         switch ( valueType )
         {
@@ -138,7 +138,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::CSharp
         const auto& model = Model( );
         const auto& classes = model.Classes( );
 
-        WideString enumName = L"Kind";
+        WideString enumName( L"Kind" );
 
 
         WriteLine( L"    public enum {} : int", enumName );

@@ -24,7 +24,7 @@ namespace Doxygen2Md
     {
         WideString DirectoryName( const WideString& outputDirectory, Doxygen::Structure::Namespace* nspace )
         {
-            auto directory = IO::Path::Combine( outputDirectory, nspace->Name( ) );
+            auto directory = IO::Path::Combine<WideString>( outputDirectory, nspace->Name( ) );
             return directory;
         }
 
@@ -90,7 +90,7 @@ namespace Doxygen2Md
         WideString FileName( const WideString& outputDirectory, Doxygen::Structure::Member* member )
         {
             auto fileName = FileName( member );
-            return IO::Path::Combine( outputDirectory, fileName );
+            return IO::Path::Combine<WideString>( outputDirectory, fileName );
         }
 
         void Collect( const WideString& outputDirectory, Doxygen::Structure::Member* member, std::map<WideString, WideString>& idToFilenameMap )
@@ -155,7 +155,7 @@ namespace Doxygen2Md
                                 {
                                     auto qualifiedName = Html::Decode( xmlFileEntryNode.Read<WideString>( "qualifiedname" ) );
                                     auto fileName = Html::Decode( xmlFileEntryNode.Read<WideString>( "filename" ) );
-                                    auto path = IO::Path::FullPath( IO::Path::Combine( outputDirectory, fileName ) );
+                                    auto path = IO::Path::FullPath( IO::Path::Combine<WideString>( outputDirectory, fileName ) );
                                     auto fileEntry = std::make_unique<FileEntry>( qualifiedName, path );
                                     fileList->emplace( qualifiedName, std::move(fileEntry) );
                                 }

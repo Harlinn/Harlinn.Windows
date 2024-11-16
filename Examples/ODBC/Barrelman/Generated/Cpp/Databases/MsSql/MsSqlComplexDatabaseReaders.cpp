@@ -6,7 +6,7 @@
 namespace Barrelman::Databases::MsSql
 {
 
-    WideString ComplexAisMessageColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexAisMessageColumnData::BaseQuery{ L"SELECT \r\n"
         L"  am.[Id], \r\n"
         L"  am.[EntityType], \r\n"
         L"  am.[RowVersion], \r\n"
@@ -236,9 +236,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [AisStaticDataReportPartAMessage] asdrpa ON(am.[Id] = asdrpa.[Id] ) \r\n"
         L"  LEFT JOIN [AisStaticDataReportPartBMessage] asdrpb ON(am.[Id] = asdrpb.[Id] ) \r\n"
         L"  LEFT JOIN [AisUtcAndDateInquiryMessage] auadim ON(am.[Id] = auadim.[Id] ) \r\n"
-        L"  LEFT JOIN [AisUtcAndDateResponseMessage] auadrm ON(am.[Id] = auadrm.[Id] )";
-    WideString ComplexAisMessageColumnData::BaseViewName = L"AisMessageView";
-    WideString ComplexAisMessageColumnData::ViewAliasName = L"am";
+        L"  LEFT JOIN [AisUtcAndDateResponseMessage] auadrm ON(am.[Id] = auadrm.[Id] )"};
+    WideString ComplexAisMessageColumnData::BaseViewName{ L"AisMessageView"};
+    WideString ComplexAisMessageColumnData::ViewAliasName{ L"am"};
 
     void ComplexAisMessageColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -454,7 +454,7 @@ namespace Barrelman::Databases::MsSql
             abbmData_ = statement.GetDBWideString(ABBM_DATA_FIELD_ID);
     }
 
-    WideString ComplexAisPositionReportClassAMessageBaseColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexAisPositionReportClassAMessageBaseColumnData::BaseQuery{ L"SELECT \r\n"
         L"  aprcab.[Id], \r\n"
         L"  aprcab.[EntityType], \r\n"
         L"  aprcab.[RowVersion], \r\n"
@@ -479,9 +479,9 @@ namespace Barrelman::Databases::MsSql
         L"FROM [AisPositionReportClassAMessageBaseView] aprcab \r\n"
         L"  LEFT JOIN [AisPositionReportClassAAssignedScheduleMessage] aprcasm ON(aprcab.[Id] = aprcasm.[Id] ) \r\n"
         L"  LEFT JOIN [AisPositionReportClassAMessage] aprca ON(aprcab.[Id] = aprca.[Id] ) \r\n"
-        L"  LEFT JOIN [AisPositionReportClassAResponseToInterrogationMessage] aprcatim ON(aprcab.[Id] = aprcatim.[Id] )";
-    WideString ComplexAisPositionReportClassAMessageBaseColumnData::BaseViewName = L"AisPositionReportClassAMessageBaseView";
-    WideString ComplexAisPositionReportClassAMessageBaseColumnData::ViewAliasName = L"aprcab";
+        L"  LEFT JOIN [AisPositionReportClassAResponseToInterrogationMessage] aprcatim ON(aprcab.[Id] = aprcatim.[Id] )"};
+    WideString ComplexAisPositionReportClassAMessageBaseColumnData::BaseViewName{ L"AisPositionReportClassAMessageBaseView"};
+    WideString ComplexAisPositionReportClassAMessageBaseColumnData::ViewAliasName{ L"aprcab"};
 
     void ComplexAisPositionReportClassAMessageBaseColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -509,7 +509,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexAisStaticDataReportMessageColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexAisStaticDataReportMessageColumnData::BaseQuery{ L"SELECT \r\n"
         L"  asdrm.[Id], \r\n"
         L"  asdrm.[EntityType], \r\n"
         L"  asdrm.[RowVersion], \r\n"
@@ -535,9 +535,9 @@ namespace Barrelman::Databases::MsSql
         L"  asdrpb.[Spare] \r\n"
         L"FROM [AisStaticDataReportMessageView] asdrm \r\n"
         L"  LEFT JOIN [AisStaticDataReportPartAMessage] asdrpa ON(asdrm.[Id] = asdrpa.[Id] ) \r\n"
-        L"  LEFT JOIN [AisStaticDataReportPartBMessage] asdrpb ON(asdrm.[Id] = asdrpb.[Id] )";
-    WideString ComplexAisStaticDataReportMessageColumnData::BaseViewName = L"AisStaticDataReportMessageView";
-    WideString ComplexAisStaticDataReportMessageColumnData::ViewAliasName = L"asdrm";
+        L"  LEFT JOIN [AisStaticDataReportPartBMessage] asdrpb ON(asdrm.[Id] = asdrpb.[Id] )"};
+    WideString ComplexAisStaticDataReportMessageColumnData::BaseViewName{ L"AisStaticDataReportMessageView"};
+    WideString ComplexAisStaticDataReportMessageColumnData::ViewAliasName{ L"asdrm"};
 
     void ComplexAisStaticDataReportMessageColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -567,7 +567,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexCameraCommandColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexCameraCommandColumnData::BaseQuery{ L"SELECT \r\n"
         L"  cc.[Id], \r\n"
         L"  cc.[EntityType], \r\n"
         L"  cc.[RowVersion], \r\n"
@@ -629,9 +629,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [CameraCommandSetInfraRedLamp] ccsirl ON(cc.[Id] = ccsirl.[Id] ) \r\n"
         L"  LEFT JOIN [CameraCommandSetWasher] cwa ON(cc.[Id] = cwa.[Id] ) \r\n"
         L"  LEFT JOIN [CameraCommandSetWiper] cwi ON(cc.[Id] = cwi.[Id] ) \r\n"
-        L"  LEFT JOIN [CameraCommandStop] ccs ON(cc.[Id] = ccs.[Id] )";
-    WideString ComplexCameraCommandColumnData::BaseViewName = L"CameraCommandView";
-    WideString ComplexCameraCommandColumnData::ViewAliasName = L"cc";
+        L"  LEFT JOIN [CameraCommandStop] ccs ON(cc.[Id] = ccs.[Id] )"};
+    WideString ComplexCameraCommandColumnData::BaseViewName{ L"CameraCommandView"};
+    WideString ComplexCameraCommandColumnData::ViewAliasName{ L"cc"};
 
     void ComplexCameraCommandColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -685,7 +685,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexCatalogElementColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexCatalogElementColumnData::BaseQuery{ L"SELECT \r\n"
         L"  ce.[Id], \r\n"
         L"  ce.[EntityType], \r\n"
         L"  ce.[RowVersion], \r\n"
@@ -694,9 +694,9 @@ namespace Barrelman::Databases::MsSql
         L"  e.[ElementType] \r\n"
         L"FROM [CatalogElementView] ce \r\n"
         L"  LEFT JOIN [Catalog] c ON(ce.[Id] = c.[Id] ) \r\n"
-        L"  LEFT JOIN [Element] e ON(ce.[Id] = e.[Id] )";
-    WideString ComplexCatalogElementColumnData::BaseViewName = L"CatalogElementView";
-    WideString ComplexCatalogElementColumnData::ViewAliasName = L"ce";
+        L"  LEFT JOIN [Element] e ON(ce.[Id] = e.[Id] )"};
+    WideString ComplexCatalogElementColumnData::BaseViewName{ L"CatalogElementView"};
+    WideString ComplexCatalogElementColumnData::ViewAliasName{ L"ce"};
 
     void ComplexCatalogElementColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -709,7 +709,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexIdentityColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexIdentityColumnData::BaseQuery{ L"SELECT \r\n"
         L"  i.[Id], \r\n"
         L"  i.[EntityType], \r\n"
         L"  i.[RowVersion], \r\n"
@@ -721,9 +721,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [Callsign] c ON(i.[Id] = c.[Id] ) \r\n"
         L"  LEFT JOIN [InternationalMaritimeOrganizationNumber] imon ON(i.[Id] = imon.[Id] ) \r\n"
         L"  LEFT JOIN [MaritimeMobileServiceIdentity] mmsi ON(i.[Id] = mmsi.[Id] ) \r\n"
-        L"  LEFT JOIN [Name] n ON(i.[Id] = n.[Id] )";
-    WideString ComplexIdentityColumnData::BaseViewName = L"IdentityView";
-    WideString ComplexIdentityColumnData::ViewAliasName = L"i";
+        L"  LEFT JOIN [Name] n ON(i.[Id] = n.[Id] )"};
+    WideString ComplexIdentityColumnData::BaseViewName{ L"IdentityView"};
+    WideString ComplexIdentityColumnData::ViewAliasName{ L"i"};
 
     void ComplexIdentityColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -737,7 +737,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexItemColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexItemColumnData::BaseQuery{ L"SELECT \r\n"
         L"  i.[Id], \r\n"
         L"  i.[EntityType], \r\n"
         L"  i.[RowVersion], \r\n"
@@ -841,9 +841,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [Aircraft] a ON(i.[Id] = a.[Id] ) \r\n"
         L"  LEFT JOIN [AisAidToNavigation] aatn ON(i.[Id] = aatn.[Id] ) \r\n"
         L"  LEFT JOIN [Vehicle] v ON(i.[Id] = v.[Id] ) \r\n"
-        L"  LEFT JOIN [Vessel] vsl ON(i.[Id] = vsl.[Id] )";
-    WideString ComplexItemColumnData::BaseViewName = L"ItemView";
-    WideString ComplexItemColumnData::ViewAliasName = L"i";
+        L"  LEFT JOIN [Vessel] vsl ON(i.[Id] = vsl.[Id] )"};
+    WideString ComplexItemColumnData::BaseViewName{ L"ItemView"};
+    WideString ComplexItemColumnData::ViewAliasName{ L"i"};
 
     void ComplexItemColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -937,7 +937,7 @@ namespace Barrelman::Databases::MsSql
             dDescription_ = statement.GetDBWideString(D_DESCRIPTION_FIELD_ID);
     }
 
-    WideString ComplexDeviceColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexDeviceColumnData::BaseQuery{ L"SELECT \r\n"
         L"  d.[Id], \r\n"
         L"  d.[EntityType], \r\n"
         L"  d.[RowVersion], \r\n"
@@ -1004,9 +1004,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [TrackerDevice] td ON(d.[Id] = td.[Id] ) \r\n"
         L"  LEFT JOIN [AisDevice] ad ON(d.[Id] = ad.[Id] ) \r\n"
         L"  LEFT JOIN [RadarDevice] rd ON(d.[Id] = rd.[Id] ) \r\n"
-        L"  LEFT JOIN [WeatherStationDevice] wsd ON(d.[Id] = wsd.[Id] )";
-    WideString ComplexDeviceColumnData::BaseViewName = L"DeviceView";
-    WideString ComplexDeviceColumnData::ViewAliasName = L"d";
+        L"  LEFT JOIN [WeatherStationDevice] wsd ON(d.[Id] = wsd.[Id] )"};
+    WideString ComplexDeviceColumnData::BaseViewName{ L"DeviceView"};
+    WideString ComplexDeviceColumnData::ViewAliasName{ L"d"};
 
     void ComplexDeviceColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1071,7 +1071,7 @@ namespace Barrelman::Databases::MsSql
             description_ = statement.GetWideString(D_DESCRIPTION_FIELD_ID);
     }
 
-    WideString ComplexTrackerDeviceColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexTrackerDeviceColumnData::BaseQuery{ L"SELECT \r\n"
         L"  td.[Id], \r\n"
         L"  td.[EntityType], \r\n"
         L"  td.[RowVersion], \r\n"
@@ -1104,9 +1104,9 @@ namespace Barrelman::Databases::MsSql
         L"  td.[Description] \r\n"
         L"FROM [TrackerDeviceView] td \r\n"
         L"  LEFT JOIN [AisDevice] ad ON(td.[Id] = ad.[Id] ) \r\n"
-        L"  LEFT JOIN [RadarDevice] rd ON(td.[Id] = rd.[Id] )";
-    WideString ComplexTrackerDeviceColumnData::BaseViewName = L"TrackerDeviceView";
-    WideString ComplexTrackerDeviceColumnData::ViewAliasName = L"td";
+        L"  LEFT JOIN [RadarDevice] rd ON(td.[Id] = rd.[Id] )"};
+    WideString ComplexTrackerDeviceColumnData::BaseViewName{ L"TrackerDeviceView"};
+    WideString ComplexTrackerDeviceColumnData::ViewAliasName{ L"td"};
 
     void ComplexTrackerDeviceColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1146,7 +1146,7 @@ namespace Barrelman::Databases::MsSql
             description_ = statement.GetWideString(TD_DESCRIPTION_FIELD_ID);
     }
 
-    WideString ComplexTrackableItemColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexTrackableItemColumnData::BaseQuery{ L"SELECT \r\n"
         L"  ti.[Id], \r\n"
         L"  ti.[EntityType], \r\n"
         L"  ti.[RowVersion], \r\n"
@@ -1176,9 +1176,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [Aircraft] a ON(ti.[Id] = a.[Id] ) \r\n"
         L"  LEFT JOIN [AisAidToNavigation] aatn ON(ti.[Id] = aatn.[Id] ) \r\n"
         L"  LEFT JOIN [Vehicle] v ON(ti.[Id] = v.[Id] ) \r\n"
-        L"  LEFT JOIN [Vessel] vsl ON(ti.[Id] = vsl.[Id] )";
-    WideString ComplexTrackableItemColumnData::BaseViewName = L"TrackableItemView";
-    WideString ComplexTrackableItemColumnData::ViewAliasName = L"ti";
+        L"  LEFT JOIN [Vessel] vsl ON(ti.[Id] = vsl.[Id] )"};
+    WideString ComplexTrackableItemColumnData::BaseViewName{ L"TrackableItemView"};
+    WideString ComplexTrackableItemColumnData::ViewAliasName{ L"ti"};
 
     void ComplexTrackableItemColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1210,7 +1210,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexNamespaceElementColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexNamespaceElementColumnData::BaseQuery{ L"SELECT \r\n"
         L"  ne.[Id], \r\n"
         L"  ne.[EntityType], \r\n"
         L"  ne.[RowVersion], \r\n"
@@ -1219,9 +1219,9 @@ namespace Barrelman::Databases::MsSql
         L"  ne.[Description] \r\n"
         L"FROM [NamespaceElementView] ne \r\n"
         L"  LEFT JOIN [ElementType] et ON(ne.[Id] = et.[Id] ) \r\n"
-        L"  LEFT JOIN [Namespace] n ON(ne.[Id] = n.[Id] )";
-    WideString ComplexNamespaceElementColumnData::BaseViewName = L"NamespaceElementView";
-    WideString ComplexNamespaceElementColumnData::ViewAliasName = L"ne";
+        L"  LEFT JOIN [Namespace] n ON(ne.[Id] = n.[Id] )"};
+    WideString ComplexNamespaceElementColumnData::BaseViewName{ L"NamespaceElementView"};
+    WideString ComplexNamespaceElementColumnData::ViewAliasName{ L"ne"};
 
     void ComplexNamespaceElementColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1237,7 +1237,7 @@ namespace Barrelman::Databases::MsSql
             description_ = statement.GetWideString(NE_DESCRIPTION_FIELD_ID);
     }
 
-    WideString ComplexPropertyColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexPropertyColumnData::BaseQuery{ L"SELECT \r\n"
         L"  p.[Id], \r\n"
         L"  p.[EntityType], \r\n"
         L"  p.[RowVersion], \r\n"
@@ -1312,9 +1312,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [TimeSpanProperty] tsp ON(p.[Id] = tsp.[Id] ) \r\n"
         L"  LEFT JOIN [UInt16Property] u16p ON(p.[Id] = u16p.[Id] ) \r\n"
         L"  LEFT JOIN [UInt32Property] u32p ON(p.[Id] = u32p.[Id] ) \r\n"
-        L"  LEFT JOIN [UInt64Property] u64p ON(p.[Id] = u64p.[Id] )";
-    WideString ComplexPropertyColumnData::BaseViewName = L"PropertyView";
-    WideString ComplexPropertyColumnData::ViewAliasName = L"p";
+        L"  LEFT JOIN [UInt64Property] u64p ON(p.[Id] = u64p.[Id] )"};
+    WideString ComplexPropertyColumnData::BaseViewName{ L"PropertyView"};
+    WideString ComplexPropertyColumnData::ViewAliasName{ L"p"};
 
     void ComplexPropertyColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1363,7 +1363,7 @@ namespace Barrelman::Databases::MsSql
             bpValue_ = statement.GetDBBinary(BP_VALUE_FIELD_ID);
     }
 
-    WideString ComplexTimeseriesPropertyColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexTimeseriesPropertyColumnData::BaseQuery{ L"SELECT \r\n"
         L"  tp.[Id], \r\n"
         L"  tp.[EntityType], \r\n"
         L"  tp.[RowVersion], \r\n"
@@ -1403,9 +1403,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [TimeSpanTimeseriesProperty] tstp ON(tp.[Id] = tstp.[Id] ) \r\n"
         L"  LEFT JOIN [UInt16TimeseriesProperty] u16tp ON(tp.[Id] = u16tp.[Id] ) \r\n"
         L"  LEFT JOIN [UInt32TimeseriesProperty] u32tp ON(tp.[Id] = u32tp.[Id] ) \r\n"
-        L"  LEFT JOIN [UInt64TimeseriesProperty] u64tp ON(tp.[Id] = u64tp.[Id] )";
-    WideString ComplexTimeseriesPropertyColumnData::BaseViewName = L"TimeseriesPropertyView";
-    WideString ComplexTimeseriesPropertyColumnData::ViewAliasName = L"tp";
+        L"  LEFT JOIN [UInt64TimeseriesProperty] u64tp ON(tp.[Id] = u64tp.[Id] )"};
+    WideString ComplexTimeseriesPropertyColumnData::BaseViewName{ L"TimeseriesPropertyView"};
+    WideString ComplexTimeseriesPropertyColumnData::ViewAliasName{ L"tp"};
 
     void ComplexTimeseriesPropertyColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1434,7 +1434,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexPropertyDefinitionColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexPropertyDefinitionColumnData::BaseQuery{ L"SELECT \r\n"
         L"  pd.[Id], \r\n"
         L"  pd.[EntityType], \r\n"
         L"  pd.[RowVersion], \r\n"
@@ -1545,9 +1545,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [TimeSpanPropertyDefinition] tspd ON(pd.[Id] = tspd.[Id] ) \r\n"
         L"  LEFT JOIN [UInt16PropertyDefinition] u16pd ON(pd.[Id] = u16pd.[Id] ) \r\n"
         L"  LEFT JOIN [UInt32PropertyDefinition] u32pd ON(pd.[Id] = u32pd.[Id] ) \r\n"
-        L"  LEFT JOIN [UInt64PropertyDefinition] u64pd ON(pd.[Id] = u64pd.[Id] )";
-    WideString ComplexPropertyDefinitionColumnData::BaseViewName = L"PropertyDefinitionView";
-    WideString ComplexPropertyDefinitionColumnData::ViewAliasName = L"pd";
+        L"  LEFT JOIN [UInt64PropertyDefinition] u64pd ON(pd.[Id] = u64pd.[Id] )"};
+    WideString ComplexPropertyDefinitionColumnData::BaseViewName{ L"PropertyDefinitionView"};
+    WideString ComplexPropertyDefinitionColumnData::ViewAliasName{ L"pd"};
 
     void ComplexPropertyDefinitionColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1632,7 +1632,7 @@ namespace Barrelman::Databases::MsSql
             bpdDefaultValue_ = statement.GetDBBinary(BPD_DEFAULTVALUE_FIELD_ID);
     }
 
-    WideString ComplexTimeseriesPropertyDefinitionColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexTimeseriesPropertyDefinitionColumnData::BaseQuery{ L"SELECT \r\n"
         L"  tpd.[Id], \r\n"
         L"  tpd.[EntityType], \r\n"
         L"  tpd.[RowVersion], \r\n"
@@ -1682,9 +1682,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [TimeSpanTimeseriesPropertyDefinition] tstpd ON(tpd.[Id] = tstpd.[Id] ) \r\n"
         L"  LEFT JOIN [UInt16TimeseriesPropertyDefinition] u16tpd ON(tpd.[Id] = u16tpd.[Id] ) \r\n"
         L"  LEFT JOIN [UInt32TimeseriesPropertyDefinition] u32tpd ON(tpd.[Id] = u32tpd.[Id] ) \r\n"
-        L"  LEFT JOIN [UInt64TimeseriesPropertyDefinition] u64tpd ON(tpd.[Id] = u64tpd.[Id] )";
-    WideString ComplexTimeseriesPropertyDefinitionColumnData::BaseViewName = L"TimeseriesPropertyDefinitionView";
-    WideString ComplexTimeseriesPropertyDefinitionColumnData::ViewAliasName = L"tpd";
+        L"  LEFT JOIN [UInt64TimeseriesPropertyDefinition] u64tpd ON(tpd.[Id] = u64tpd.[Id] )"};
+    WideString ComplexTimeseriesPropertyDefinitionColumnData::BaseViewName{ L"TimeseriesPropertyDefinitionView"};
+    WideString ComplexTimeseriesPropertyDefinitionColumnData::ViewAliasName{ L"tpd"};
 
     void ComplexTimeseriesPropertyDefinitionColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1726,7 +1726,7 @@ namespace Barrelman::Databases::MsSql
             description_ = statement.GetWideString(TPD_DESCRIPTION_FIELD_ID);
     }
 
-    WideString ComplexRadarCommandColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexRadarCommandColumnData::BaseQuery{ L"SELECT \r\n"
         L"  rc.[Id], \r\n"
         L"  rc.[EntityType], \r\n"
         L"  rc.[RowVersion], \r\n"
@@ -1736,9 +1736,9 @@ namespace Barrelman::Databases::MsSql
         L"  rc.[DeviceCommandSourceId], \r\n"
         L"  rc.[Reply] \r\n"
         L"FROM [RadarCommandView] rc \r\n"
-        L"  LEFT JOIN [RadarCommandGetStatus] rcgs ON(rc.[Id] = rcgs.[Id] )";
-    WideString ComplexRadarCommandColumnData::BaseViewName = L"RadarCommandView";
-    WideString ComplexRadarCommandColumnData::ViewAliasName = L"rc";
+        L"  LEFT JOIN [RadarCommandGetStatus] rcgs ON(rc.[Id] = rcgs.[Id] )"};
+    WideString ComplexRadarCommandColumnData::BaseViewName{ L"RadarCommandView"};
+    WideString ComplexRadarCommandColumnData::ViewAliasName{ L"rc"};
 
     void ComplexRadarCommandColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1753,7 +1753,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexRadarCommandReplyColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexRadarCommandReplyColumnData::BaseQuery{ L"SELECT \r\n"
         L"  rcr.[Id], \r\n"
         L"  rcr.[EntityType], \r\n"
         L"  rcr.[RowVersion], \r\n"
@@ -1768,9 +1768,9 @@ namespace Barrelman::Databases::MsSql
         L"  rcrgs.[Tx], \r\n"
         L"  rcr.[Message] \r\n"
         L"FROM [RadarCommandReplyView] rcr \r\n"
-        L"  LEFT JOIN [RadarCommandReplyGetStatus] rcrgs ON(rcr.[Id] = rcrgs.[Id] )";
-    WideString ComplexRadarCommandReplyColumnData::BaseViewName = L"RadarCommandReplyView";
-    WideString ComplexRadarCommandReplyColumnData::ViewAliasName = L"rcr";
+        L"  LEFT JOIN [RadarCommandReplyGetStatus] rcrgs ON(rcr.[Id] = rcrgs.[Id] )"};
+    WideString ComplexRadarCommandReplyColumnData::BaseViewName{ L"RadarCommandReplyView"};
+    WideString ComplexRadarCommandReplyColumnData::ViewAliasName{ L"rcr"};
 
     void ComplexRadarCommandReplyColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1793,7 +1793,7 @@ namespace Barrelman::Databases::MsSql
             message_ = statement.GetWideString(RCR_MESSAGE_FIELD_ID);
     }
 
-    WideString ComplexSecurityIdentifierColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexSecurityIdentifierColumnData::BaseQuery{ L"SELECT \r\n"
         L"  si.[Id], \r\n"
         L"  si.[EntityType], \r\n"
         L"  si.[RowVersion], \r\n"
@@ -1803,9 +1803,9 @@ namespace Barrelman::Databases::MsSql
         L"  si.[Description] \r\n"
         L"FROM [SecurityIdentifierView] si \r\n"
         L"  LEFT JOIN [SecurityLogin] sl ON(si.[Id] = sl.[Id] ) \r\n"
-        L"  LEFT JOIN [SecurityRole] sr ON(si.[Id] = sr.[Id] )";
-    WideString ComplexSecurityIdentifierColumnData::BaseViewName = L"SecurityIdentifierView";
-    WideString ComplexSecurityIdentifierColumnData::ViewAliasName = L"si";
+        L"  LEFT JOIN [SecurityRole] sr ON(si.[Id] = sr.[Id] )"};
+    WideString ComplexSecurityIdentifierColumnData::BaseViewName{ L"SecurityIdentifierView"};
+    WideString ComplexSecurityIdentifierColumnData::ViewAliasName{ L"si"};
 
     void ComplexSecurityIdentifierColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -1822,7 +1822,7 @@ namespace Barrelman::Databases::MsSql
             description_ = statement.GetWideString(SI_DESCRIPTION_FIELD_ID);
     }
 
-    WideString ComplexTimeseriesCatalogElementColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexTimeseriesCatalogElementColumnData::BaseQuery{ L"SELECT \r\n"
         L"  tce.[Id], \r\n"
         L"  tce.[EntityType], \r\n"
         L"  tce.[RowVersion], \r\n"
@@ -1958,9 +1958,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [UInt32Timeseries] u32t ON(tce.[Id] = u32t.[Id] ) \r\n"
         L"  LEFT JOIN [RadomeStatusTimeseries] rst ON(tce.[Id] = rst.[Id] ) \r\n"
         L"  LEFT JOIN [UInt64Timeseries] u64t ON(tce.[Id] = u64t.[Id] ) \r\n"
-        L"  LEFT JOIN [TimeseriesCatalog] tc ON(tce.[Id] = tc.[Id] )";
-    WideString ComplexTimeseriesCatalogElementColumnData::BaseViewName = L"TimeseriesCatalogElementView";
-    WideString ComplexTimeseriesCatalogElementColumnData::ViewAliasName = L"tce";
+        L"  LEFT JOIN [TimeseriesCatalog] tc ON(tce.[Id] = tc.[Id] )"};
+    WideString ComplexTimeseriesCatalogElementColumnData::BaseViewName{ L"TimeseriesCatalogElementView"};
+    WideString ComplexTimeseriesCatalogElementColumnData::ViewAliasName{ L"tce"};
 
     void ComplexTimeseriesCatalogElementColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -2026,7 +2026,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexTimeseriesColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexTimeseriesColumnData::BaseQuery{ L"SELECT \r\n"
         L"  t.[Id], \r\n"
         L"  t.[EntityType], \r\n"
         L"  t.[RowVersion], \r\n"
@@ -2160,9 +2160,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [UInt16Timeseries] u16t ON(t.[Id] = u16t.[Id] ) \r\n"
         L"  LEFT JOIN [UInt32Timeseries] u32t ON(t.[Id] = u32t.[Id] ) \r\n"
         L"  LEFT JOIN [RadomeStatusTimeseries] rst ON(t.[Id] = rst.[Id] ) \r\n"
-        L"  LEFT JOIN [UInt64Timeseries] u64t ON(t.[Id] = u64t.[Id] )";
-    WideString ComplexTimeseriesColumnData::BaseViewName = L"TimeseriesView";
-    WideString ComplexTimeseriesColumnData::ViewAliasName = L"t";
+        L"  LEFT JOIN [UInt64Timeseries] u64t ON(t.[Id] = u64t.[Id] )"};
+    WideString ComplexTimeseriesColumnData::BaseViewName{ L"TimeseriesView"};
+    WideString ComplexTimeseriesColumnData::ViewAliasName{ L"t"};
 
     void ComplexTimeseriesColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -2228,7 +2228,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexBooleanTimeseriesColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexBooleanTimeseriesColumnData::BaseQuery{ L"SELECT \r\n"
         L"  bots.[Id], \r\n"
         L"  bots.[EntityType], \r\n"
         L"  bots.[RowVersion], \r\n"
@@ -2261,9 +2261,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [RadarEnableSensitivityTimeControlTimeseries] restct ON(bots.[Id] = restct.[Id] ) \r\n"
         L"  LEFT JOIN [RadarPowerOnTimeseries] rpot ON(bots.[Id] = rpot.[Id] ) \r\n"
         L"  LEFT JOIN [RadarSaveSettingsTimeseries] rsst ON(bots.[Id] = rsst.[Id] ) \r\n"
-        L"  LEFT JOIN [RadarTrackingTimeseries] rtt ON(bots.[Id] = rtt.[Id] )";
-    WideString ComplexBooleanTimeseriesColumnData::BaseViewName = L"BooleanTimeseriesView";
-    WideString ComplexBooleanTimeseriesColumnData::ViewAliasName = L"bots";
+        L"  LEFT JOIN [RadarTrackingTimeseries] rtt ON(bots.[Id] = rtt.[Id] )"};
+    WideString ComplexBooleanTimeseriesColumnData::BaseViewName{ L"BooleanTimeseriesView"};
+    WideString ComplexBooleanTimeseriesColumnData::ViewAliasName{ L"bots"};
 
     void ComplexBooleanTimeseriesColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -2289,7 +2289,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexDoubleTimeseriesColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexDoubleTimeseriesColumnData::BaseQuery{ L"SELECT \r\n"
         L"  dt.[Id], \r\n"
         L"  dt.[EntityType], \r\n"
         L"  dt.[RowVersion], \r\n"
@@ -2350,9 +2350,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [WeatherStationRelativeHumidityTimeseries] wsrht ON(dt.[Id] = wsrht.[Id] ) \r\n"
         L"  LEFT JOIN [WeatherStationWaterTemperatureTimeseries] wswtt ON(dt.[Id] = wswtt.[Id] ) \r\n"
         L"  LEFT JOIN [WeatherStationWindDirectionTimeseries] wswdt ON(dt.[Id] = wswdt.[Id] ) \r\n"
-        L"  LEFT JOIN [WeatherStationWindSpeedTimeseries] wswst ON(dt.[Id] = wswst.[Id] )";
-    WideString ComplexDoubleTimeseriesColumnData::BaseViewName = L"DoubleTimeseriesView";
-    WideString ComplexDoubleTimeseriesColumnData::ViewAliasName = L"dt";
+        L"  LEFT JOIN [WeatherStationWindSpeedTimeseries] wswst ON(dt.[Id] = wswst.[Id] )"};
+    WideString ComplexDoubleTimeseriesColumnData::BaseViewName{ L"DoubleTimeseriesView"};
+    WideString ComplexDoubleTimeseriesColumnData::ViewAliasName{ L"dt"};
 
     void ComplexDoubleTimeseriesColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -2392,7 +2392,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexGeoPosition2DTimeseriesColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexGeoPosition2DTimeseriesColumnData::BaseQuery{ L"SELECT \r\n"
         L"  gp2d.[Id], \r\n"
         L"  gp2d.[EntityType], \r\n"
         L"  gp2d.[RowVersion], \r\n"
@@ -2401,9 +2401,9 @@ namespace Barrelman::Databases::MsSql
         L"  gp2d.[MaxRetention], \r\n"
         L"  aatnpt.[AidToNavigation] \r\n"
         L"FROM [GeoPosition2DTimeseriesView] gp2d \r\n"
-        L"  LEFT JOIN [AisAidToNavigationPositionTimeseries] aatnpt ON(gp2d.[Id] = aatnpt.[Id] )";
-    WideString ComplexGeoPosition2DTimeseriesColumnData::BaseViewName = L"GeoPosition2DTimeseriesView";
-    WideString ComplexGeoPosition2DTimeseriesColumnData::ViewAliasName = L"gp2d";
+        L"  LEFT JOIN [AisAidToNavigationPositionTimeseries] aatnpt ON(gp2d.[Id] = aatnpt.[Id] )"};
+    WideString ComplexGeoPosition2DTimeseriesColumnData::BaseViewName{ L"GeoPosition2DTimeseriesView"};
+    WideString ComplexGeoPosition2DTimeseriesColumnData::ViewAliasName{ L"gp2d"};
 
     void ComplexGeoPosition2DTimeseriesColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -2417,7 +2417,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexInt32TimeseriesColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexInt32TimeseriesColumnData::BaseQuery{ L"SELECT \r\n"
         L"  i32t.[Id], \r\n"
         L"  i32t.[EntityType], \r\n"
         L"  i32t.[RowVersion], \r\n"
@@ -2446,9 +2446,9 @@ namespace Barrelman::Databases::MsSql
         L"  LEFT JOIN [RadarSector2StartTimeseries] rs2st ON(i32t.[Id] = rs2st.[Id] ) \r\n"
         L"  LEFT JOIN [RadarSensitivityTimeControlLevelTimeseries] rstclt ON(i32t.[Id] = rstclt.[Id] ) \r\n"
         L"  LEFT JOIN [RadarTuningTimeseries] ratuts ON(i32t.[Id] = ratuts.[Id] ) \r\n"
-        L"  LEFT JOIN [VesselPersonsOnBoardTimeseries] vpobt ON(i32t.[Id] = vpobt.[Id] )";
-    WideString ComplexInt32TimeseriesColumnData::BaseViewName = L"Int32TimeseriesView";
-    WideString ComplexInt32TimeseriesColumnData::ViewAliasName = L"i32t";
+        L"  LEFT JOIN [VesselPersonsOnBoardTimeseries] vpobt ON(i32t.[Id] = vpobt.[Id] )"};
+    WideString ComplexInt32TimeseriesColumnData::BaseViewName{ L"Int32TimeseriesView"};
+    WideString ComplexInt32TimeseriesColumnData::ViewAliasName{ L"i32t"};
 
     void ComplexInt32TimeseriesColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -2472,7 +2472,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexUInt32TimeseriesColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexUInt32TimeseriesColumnData::BaseQuery{ L"SELECT \r\n"
         L"  u32t.[Id], \r\n"
         L"  u32t.[EntityType], \r\n"
         L"  u32t.[RowVersion], \r\n"
@@ -2481,9 +2481,9 @@ namespace Barrelman::Databases::MsSql
         L"  u32t.[MaxRetention], \r\n"
         L"  rst.[Radome] \r\n"
         L"FROM [UInt32TimeseriesView] u32t \r\n"
-        L"  LEFT JOIN [RadomeStatusTimeseries] rst ON(u32t.[Id] = rst.[Id] )";
-    WideString ComplexUInt32TimeseriesColumnData::BaseViewName = L"UInt32TimeseriesView";
-    WideString ComplexUInt32TimeseriesColumnData::ViewAliasName = L"u32t";
+        L"  LEFT JOIN [RadomeStatusTimeseries] rst ON(u32t.[Id] = rst.[Id] )"};
+    WideString ComplexUInt32TimeseriesColumnData::BaseViewName{ L"UInt32TimeseriesView"};
+    WideString ComplexUInt32TimeseriesColumnData::ViewAliasName{ L"u32t"};
 
     void ComplexUInt32TimeseriesColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -2497,7 +2497,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexTrackBaseColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexTrackBaseColumnData::BaseQuery{ L"SELECT \r\n"
         L"  tb.[Id], \r\n"
         L"  tb.[EntityType], \r\n"
         L"  tb.[RowVersion], \r\n"
@@ -2506,9 +2506,9 @@ namespace Barrelman::Databases::MsSql
         L"  tb.[Timestamp] \r\n"
         L"FROM [TrackBaseView] tb \r\n"
         L"  LEFT JOIN [Track] t ON(tb.[Id] = t.[Id] ) \r\n"
-        L"  LEFT JOIN [Track3D] t3d ON(tb.[Id] = t3d.[Id] )";
-    WideString ComplexTrackBaseColumnData::BaseViewName = L"TrackBaseView";
-    WideString ComplexTrackBaseColumnData::ViewAliasName = L"tb";
+        L"  LEFT JOIN [Track3D] t3d ON(tb.[Id] = t3d.[Id] )"};
+    WideString ComplexTrackBaseColumnData::BaseViewName{ L"TrackBaseView"};
+    WideString ComplexTrackBaseColumnData::ViewAliasName{ L"tb"};
 
     void ComplexTrackBaseColumnData::BindColumns( const ODBC::Statement& statement )
     {
@@ -2521,7 +2521,7 @@ namespace Barrelman::Databases::MsSql
     }
 
 
-    WideString ComplexZoneColumnData::BaseQuery = L"SELECT \r\n"
+    WideString ComplexZoneColumnData::BaseQuery{ L"SELECT \r\n"
         L"  z.[Id], \r\n"
         L"  z.[EntityType], \r\n"
         L"  z.[RowVersion], \r\n"
@@ -2538,9 +2538,9 @@ namespace Barrelman::Databases::MsSql
         L"  pz.[Polygon] \r\n"
         L"FROM [ZoneView] z \r\n"
         L"  LEFT JOIN [CircularZone] cz ON(z.[Id] = cz.[Id] ) \r\n"
-        L"  LEFT JOIN [PolygonZone] pz ON(z.[Id] = pz.[Id] )";
-    WideString ComplexZoneColumnData::BaseViewName = L"ZoneView";
-    WideString ComplexZoneColumnData::ViewAliasName = L"z";
+        L"  LEFT JOIN [PolygonZone] pz ON(z.[Id] = pz.[Id] )"};
+    WideString ComplexZoneColumnData::BaseViewName{ L"ZoneView"};
+    WideString ComplexZoneColumnData::ViewAliasName{ L"z"};
 
     void ComplexZoneColumnData::BindColumns( const ODBC::Statement& statement )
     {

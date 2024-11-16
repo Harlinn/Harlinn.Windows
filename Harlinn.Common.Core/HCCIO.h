@@ -1645,58 +1645,135 @@ namespace Harlinn::Common::Core::IO
 
 
 
-    class Path
+    namespace Path
     {
-    public:
-        static constexpr char DirectorySeparatorChar = '\\';
-        static constexpr char AltDirectorySeparatorChar = '/';
-        static constexpr char VolumeSeparatorChar = ':';
-        static constexpr char PathSeparator = ';';
+        constexpr char DirectorySeparatorChar = '\\';
+        constexpr char AltDirectorySeparatorChar = '/';
+        constexpr char VolumeSeparatorChar = ':';
+        constexpr char PathSeparator = ';';
 
-        static constexpr int MaxPath = 260;
-        static constexpr int MaxDirectoryLength = 255;
-
+        constexpr int MaxPath = 260;
+        constexpr int MaxDirectoryLength = 255;
 
 
-        
-        template<typename StringT>
-            //requires (IsWideString<StringT> || IsAnsiString<StringT> || IsWideStringView<StringT> || IsAnsiStringView<StringT>)
-            requires SimpleWideStringLike<StringT> || SimpleAnsiStringLike<StringT>
-        static bool IsDirectorySeparator(const StringT& str) noexcept
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline [[nodiscard]] 
+        constexpr bool IsDirectorySeparator( CharT c ) noexcept
         {
-            using StringType = std::remove_cvref_t<StringT>;
-            using CharT = typename StringType::value_type;
-            return str.size() == 1 && ((str[0] == static_cast<CharT>(DirectorySeparatorChar)) || (str[0] == static_cast<CharT>(AltDirectorySeparatorChar)));
+            return c == static_cast< CharT >( DirectorySeparatorChar ) || c == static_cast< CharT >( AltDirectorySeparatorChar );
         }
 
-        template<typename StringT>
-            requires (IsWideString<StringT> || IsAnsiString<StringT> || IsWideStringView<StringT> || IsAnsiStringView<StringT>)
-        static bool EndsWithDirectorySeparator(const StringT& str) noexcept
+        
+        template<CharSpanLike StringT>
+        inline [[nodiscard]] 
+        bool IsDirectorySeparator(const StringT& str) noexcept
+        {
+            using CharT = typename StringT::value_type;
+            return str.size() == 1 && IsDirectorySeparator( str[0] );
+        }
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline [[nodiscard]]
+        constexpr bool IsValidDriveChar( CharT value )
+        {
+            return static_cast<UInt32>( ( value | 0x20 ) - 'a' ) <= static_cast< UInt32 >( 'z' - 'a' );
+        }
+
+
+        /// <summary>
+        /// Returns a value that indicates whether the specified path ends in a directory separator.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the CharSpanLike concept.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path to analyze.
+        /// </param>
+        /// <returns>
+        /// true if the specified path ends in a directory separator, otherwise false.
+        /// </returns>
+        template<CharSpanLike StringT>
+        inline [[nodiscard]] 
+        bool EndsWithDirectorySeparator(const StringT& path) noexcept
         {
             using StringType = std::remove_cvref_t<StringT>;
             using CharT = typename StringType::value_type;
-            if (str.length() > 0)
+            if ( path.size() > 0)
             {
-                CharT last = str.back();
-                return (last == static_cast<CharT>(DirectorySeparatorChar)) || (last == static_cast<CharT>(AltDirectorySeparatorChar));
+                CharT last = path.back();
+                return IsDirectorySeparator( last );
             }
             return false;
         }
 
-        template<SimpleStringLike StringT>
-        static StringT EnsurePathEndsWithDirectorySeparator( const StringT& path )
+        /// <summary>
+        /// Returns a value that indicates whether the specified path ends in a directory separator.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the CharSpanLike concept.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path to analyze.
+        /// </param>
+        /// <returns>
+        /// true if the specified path ends in a directory separator, otherwise false.
+        /// </returns>
+        template<CharSpanLike StringT>
+        inline [[nodiscard]] 
+        bool EndsInDirectorySeparator( const StringT& path ) noexcept
+        {
+            return EndsWithDirectorySeparator( path );
+        }
+
+        /// <summary>
+        /// Adds a directory separator to the argument path if
+        /// it does not end with a directory separator.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="SpanT">
+        /// A type that matches the CharSpanLike concept. The type of SpanT::value_type
+        /// must be of the same type as StringT::value_type.
+        /// </typeparam>
+        /// <param name="path">
+        /// A path with or without a directory separator at the end.
+        /// </param>
+        /// <returns>
+        /// The path with a directory separator at the end.
+        /// </returns>
+        template<StringLike StringT,CharSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type,typename StringT::value_type> &&
+                std::is_constructible_v<StringT,const typename StringT::value_type*, typename StringT::size_type> &&
+                std::is_constructible_v<StringT, typename StringT::size_type, typename StringT::value_type>
+        inline [[nodiscard]] 
+        StringT EnsurePathEndsWithDirectorySeparator( const SpanT& path )
         {
             using CharT = typename StringT::value_type;
             if ( path.size( ) )
             {
                 CharT last = path.back( );
-                if ( ( last == static_cast< CharT >( DirectorySeparatorChar ) ) || ( last == static_cast< CharT >( AltDirectorySeparatorChar ) ) == false )
+                if ( IsDirectorySeparator( last ) == false )
                 {
-                    return path + static_cast< CharT >( DirectorySeparatorChar );
+                    StringT result;
+                    result.resize( path.size( ) + 1 );
+                    auto newEnd = std::copy( path.begin( ), path.end( ), result.data( ) );
+                    *newEnd = static_cast< CharT >( DirectorySeparatorChar );
+                    return result;
                 }
                 else
                 {
-                    return path;
+                    if constexpr ( StringLike<SpanT> )
+                    {
+                        return path;
+                    }
+                    else
+                    {
+                        StringT result( path.data(), path.size() );
+                        return result;
+                    }
                 }
             }
             else
@@ -1705,8 +1782,51 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
-        template<SimpleStringLike StringT>
-        static StringT RemoveTrailingDirectorySeparator( const StringT& path )
+        /// <summary>
+        /// Adds a directory separator to the argument path if
+        /// it does not end with a directory separator.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value and the argument path.
+        /// </typeparam>
+        /// <param name="path">
+        /// A path with or without a directory separator at the end.
+        /// </param>
+        /// <returns>
+        /// The path with a directory separator at the end.
+        /// </returns>
+        template<StringLike StringT>
+            requires std::is_constructible_v<StringT, const typename StringT::value_type*, typename StringT::size_type> &&
+                std::is_constructible_v<StringT, typename StringT::size_type, typename StringT::value_type>
+        inline [[nodiscard]] 
+        StringT EnsurePathEndsWithDirectorySeparator( const StringT& path )
+        {
+            return EnsurePathEndsWithDirectorySeparator<StringT, StringT>( path );
+        }
+
+        /// <summary>
+        /// Trims one trailing directory separator beyond the root of the specified path.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="SpanT">
+        /// A type that matches the CharSpanLike concept. The type of SpanT::value_type
+        /// must be of the same type as StringT::value_type.
+        /// </typeparam>
+        /// <param name="path">
+        /// A path with or without a directory separator at the end.
+        /// </param>
+        /// <returns>
+        /// The path without a directory separator at the end.
+        /// </returns>
+        template<StringLike StringT,CharSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type,typename StringT::value_type> &&
+                std::is_constructible_v<StringT,const typename StringT::value_type*, typename StringT::size_type> 
+        inline [[nodiscard]] 
+        StringT RemoveTrailingDirectorySeparator( const SpanT& path )
         {
             using CharT = typename StringT::value_type;
             if ( EndsWithDirectorySeparator( path ) )
@@ -1715,57 +1835,119 @@ namespace Harlinn::Common::Core::IO
             }
             else
             {
-                return path;
+                if constexpr ( StringLike<SpanT> )
+                {
+                    return path;
+                }
+                else
+                {
+                    StringT result( path.data( ), path.size( ) );
+                    return result;
+                }
             }
         }
 
-
-
-        template<typename StringT>
-            requires (IsWideString<StringT> || IsAnsiString<StringT> || IsWideStringView<StringT> || IsAnsiStringView<StringT>)
-        static bool StartsWithDirectorySeparator(const StringT& str) noexcept
+        /// <summary>
+        /// Trims one trailing directory separator beyond the root of the specified path.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value and the argument path.
+        /// </typeparam>
+        /// <param name="path">
+        /// A path with or without a directory separator at the end.
+        /// </param>
+        /// <returns>
+        /// The path without a directory separator at the end.
+        /// </returns>
+        template<StringLike StringT>
+            requires std::is_constructible_v<StringT,const typename StringT::value_type*, typename StringT::size_type> 
+        inline [[nodiscard]] 
+        StringT RemoveTrailingDirectorySeparator( const StringT& path )
         {
-            using StringType = std::remove_cvref_t<StringT>;
-            using CharT = typename StringType::value_type;
-            if (str.length() > 0)
+            return RemoveTrailingDirectorySeparator<StringT, StringT>( path );
+        }
+
+
+        /// <summary>
+        /// Returns a value that indicates whether the specified path starts with a directory separator.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the CharSpanLike concept.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path to analyze.
+        /// </param>
+        /// <returns>
+        /// true if the specified path starts with in a directory separator, otherwise false.
+        /// </returns>
+        template<CharSpanLike StringT>
+        inline [[nodiscard]] 
+        bool StartsWithDirectorySeparator(const StringT& path) noexcept
+        {
+            using CharT = typename StringT::value_type;
+            if ( path.size() > 0)
             {
-                CharT first = str.front();
-                return (first == static_cast<CharT>(DirectorySeparatorChar)) || (first == static_cast<CharT>(AltDirectorySeparatorChar));
+                CharT first = path.front();
+                return IsDirectorySeparator( first );
             }
             return false;
         }
 
-
-        template<StringLike StringT, SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
-            requires (std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename SpanT1::value_type> > && std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename SpanT2::value_type> > )
-        static [[nodiscard]] StringT Combine( const SpanT1& startOfPath, const SpanT2& remainingPath )
+        /// <summary>
+        /// Combines strings into a path.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="SpanT1">
+        /// A type that matches the CharSpanLike concept.
+        /// </typeparam>
+        /// <typeparam name="SpanT2">
+        /// A type that matches the CharSpanLike concept.
+        /// </typeparam>
+        /// <returns>
+        /// The combined path.
+        /// </returns>
+        template<StringLike StringT, CharSpanLike SpanT1, CharSpanLike SpanT2>
+            requires (std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename SpanT1::value_type> > && 
+                        std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename SpanT2::value_type> > )
+        inline [[nodiscard]] 
+        StringT Combine( const SpanT1& startOfPath, const SpanT2& remainingPath )
         {
             using CharT = typename StringT::value_type;
 
-            if ( !EndsWith( startOfPath, static_cast< CharT >( '\\' ) ) &&
-                !EndsWith( startOfPath, static_cast< CharT >( '/' ) ) &&
-                !StartsWith( remainingPath, static_cast< CharT >( '\\' ) ) &&
-                !StartsWith( remainingPath, static_cast< CharT >( '/' ) ) )
+            if ( !EndsWith( startOfPath, static_cast< CharT >( DirectorySeparatorChar ) ) &&
+                !EndsWith( startOfPath, static_cast< CharT >( AltDirectorySeparatorChar ) ) &&
+                !StartsWith( remainingPath, static_cast< CharT >( DirectorySeparatorChar ) ) &&
+                !StartsWith( remainingPath, static_cast< CharT >( AltDirectorySeparatorChar ) ) )
             {
                 
-                if constexpr ( IsStdBasicString<StringT> )
+                if constexpr ( std::is_constructible_v<StringT, const SpanT1&, CharT, const SpanT2&> )
+                {
+                    StringT result( startOfPath, static_cast< CharT >( DirectorySeparatorChar ), remainingPath );
+                    return result;
+                    
+                }
+                else
                 {
                     StringT result;
                     result.reserve( startOfPath.size( ) + 1 + remainingPath.size( ) );
                     result.append( startOfPath.data( ), startOfPath.size( ) );
-                    result.append( static_cast< CharT >( '\\' ) );
+                    result.append( 1, static_cast< CharT >( DirectorySeparatorChar ) );
                     result.append( remainingPath.data( ), remainingPath.size( ) );
-                    return result;
-                }
-                else
-                {
-                    StringT result( startOfPath, static_cast< CharT >( '\\' ), remainingPath );
                     return result;
                 }
             }
             else
             {
-                if constexpr ( IsStdBasicString<StringT> )
+                if constexpr ( std::is_constructible_v<StringT, const SpanT1&, const SpanT2&> )
+                {
+                    StringT result( startOfPath, remainingPath );
+                    return result;
+                }
+                else
                 {
                     StringT result;
                     result.reserve( startOfPath.size( ) + remainingPath.size( ) );
@@ -1773,62 +1955,96 @@ namespace Harlinn::Common::Core::IO
                     result.append( remainingPath.data( ), remainingPath.size( ) );
                     return result;
                 }
-                else
-                {
-                    StringT result( startOfPath, remainingPath );
-                    return result;
-                }
             }
         }
 
-        template<StringLike StringT, SimpleSpanLike SpanT>
-            requires ( std::is_same_v<typename StringT::value_type, typename SpanT::value_type> )
-        static [[nodiscard]] StringT Combine( const SpanT& startOfPath, const typename StringT::value_type* remainingPath )
+        template<StringLike StringT, CharSpanLike SpanT, typename CharT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<typename StringT::value_type, typename SpanT::value_type> &&
+                std::is_same_v<CharT, typename StringT::value_type> &&
+                    (StringLike<SpanT> == false)
+        inline [[nodiscard]] 
+        StringT Combine( const SpanT& startOfPath, const CharT* remainingPath )
         {
-            using CharT = typename StringT::value_type;
             std::span<const CharT> remainingPathView( remainingPath, LengthOf( remainingPath ) );
-            return Combine<StringT>( startOfPath, remainingPathView );
+            return Combine<StringT, SpanT, std::span<const CharT>>( startOfPath, remainingPathView );
         }
-        template<StringLike StringT>
-        static [[nodiscard]] StringT Combine( const StringT& startOfPath, const typename StringT::value_type* remainingPath )
+        template<StringLike StringT, typename CharT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<CharT, typename StringT::value_type>
+        inline [[nodiscard]] 
+        StringT Combine( const StringT& startOfPath, const CharT* remainingPath )
         {
-            using CharT = typename StringT::value_type;
             std::span<const CharT> remainingPathView( remainingPath, LengthOf( remainingPath ) );
-            return Combine<StringT>( startOfPath, remainingPathView );
+            return Combine<StringT, StringT, std::span<const CharT>>( startOfPath, remainingPathView );
         }
+
+        template<StringLike StringT, CharSpanLike SpanT, typename CharT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<typename StringT::value_type, typename SpanT::value_type> &&
+                std::is_same_v<CharT, typename StringT::value_type> &&
+                    ( StringLike<SpanT> == false )
+        inline [[nodiscard]] 
+        StringT Combine( const CharT* startOfPath, const SpanT& remainingPath )
+        {
+            std::span<const CharT> startOfPathView( startOfPath, LengthOf( startOfPath ) );
+            return Combine<StringT, std::span<const CharT>, SpanT>( startOfPathView, remainingPath );
+        }
+
+        template<StringLike StringT, typename CharT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<CharT, typename StringT::value_type>
+        inline [[nodiscard]] 
+        StringT Combine( const CharT* startOfPath, const StringT& remainingPath )
+        {
+            std::span<const CharT> startOfPathView( startOfPath, LengthOf( startOfPath ) );
+            return Combine<StringT, std::span<const CharT>, StringT>( startOfPathView, remainingPath );
+        }
+
+        /*
         template<StringLike StringT1, StringLike StringT2>
-        static [[nodiscard]] StringT1 Combine( const StringT1& startOfPath, const StringT2& remainingPath )
+        inline [[nodiscard]] StringT1 Combine( const StringT1& startOfPath, const StringT2& remainingPath )
         {
-            using CharT = typename StringT2::value_type;
-            std::span<const CharT> remainingPathView( remainingPath.c_str(), remainingPath.size() );
-            return Combine<StringT1>( startOfPath, remainingPathView );
+            return Combine<StringT1, StringT1, StringT2>( startOfPath, remainingPath );
         }
-
+        */
         
-    private:
-        template<SimpleStringLike StringT>
-        static void CheckInvalidPathChars( const StringT& path )
+        namespace Internal
         {
-            using CharT = typename StringT::value_type;
-            for ( auto c : path )
+            template<SimpleStringLike StringT>
+            static void CheckInvalidPathChars( const StringT& path )
             {
-                if ( c == static_cast< CharT >( '\"' ) || c == static_cast< CharT >( '<' ) || c == static_cast< CharT >( '>' ) || c == static_cast< CharT >( '|' ) || c < 32 )
+                using CharT = typename StringT::value_type;
+                for ( auto c : path )
                 {
-                    throw ArgumentException( "Invalid path character" );
+                    if ( c == static_cast< CharT >( '\"' ) || 
+                        c == static_cast< CharT >( '<' ) || 
+                        c == static_cast< CharT >( '>' ) || 
+                        c == static_cast< CharT >( '|' ) || c < 32 )
+                    {
+                        throw ArgumentException( "Invalid path character" );
+                    }
                 }
             }
         }
-    public:
+    
 
         template<StringLike StringT>
-        static [[nodiscard]] StringT ChangeExtension( const StringT& path, const StringT& newExtension )
+        inline [[nodiscard]] StringT ChangeExtension( const StringT& path, const StringT& newExtension )
         {
             using size_type = typename StringT::size_type;
             using CharT = typename StringT::value_type;
             if ( path.empty( ) == false )
             {
-                CheckInvalidPathChars( path );
-                CharT stopCharacters[ ] = { static_cast< CharT >( '.' ), static_cast< CharT >( DirectorySeparatorChar ), static_cast< CharT >( AltDirectorySeparatorChar ), static_cast< CharT >( VolumeSeparatorChar ), static_cast< CharT >( '\x00' ) };
+                Internal::CheckInvalidPathChars( path );
+                CharT stopCharacters[ ] = 
+                { 
+                    static_cast< CharT >( '.' ), 
+                    static_cast< CharT >( DirectorySeparatorChar ), 
+                    static_cast< CharT >( AltDirectorySeparatorChar ), 
+                    static_cast< CharT >( VolumeSeparatorChar ), 
+                    static_cast< CharT >( '\x00' ) 
+                };
 
 
                 size_type index = path.find_last_of( stopCharacters );
@@ -1855,7 +2071,7 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<StringLike StringT>
-        static [[nodiscard]] StringT LongPathName( const StringT& path )
+        inline [[nodiscard]] StringT LongPathName( const StringT& path )
         {
             using CharT = typename StringT::value_type;
             if ( path.empty( ) == false )
@@ -1887,7 +2103,7 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<StringLike StringT>
-        static [[nodiscard]] StringT ShortPathName( const StringT& path )
+        inline [[nodiscard]] StringT ShortPathName( const StringT& path )
         {
             using CharT = typename StringT::value_type;
             if ( path.empty( ) == false )
@@ -1919,7 +2135,7 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<StringLike StringT>
-        static [[nodiscard]] StringT FullPath( const StringT& path, typename StringT::size_type* indexOfFileName = nullptr )
+        inline [[nodiscard]] StringT FullPath( const StringT& path, typename StringT::size_type* indexOfFileName = nullptr )
         {
             using CharT = typename StringT::value_type;
             if ( path.empty( ) == false )
@@ -1960,7 +2176,7 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<StringLike StringT>
-        static StringT RelativePath( const StringT& fromPath, DWORD fromAttributes, const StringT& relativeToPath, DWORD toAttributes )
+        inline StringT RelativePath( const StringT& fromPath, DWORD fromAttributes, const StringT& relativeToPath, DWORD toAttributes )
         {
             using CharT = std::remove_cvref_t<typename StringT::value_type>;
             CharT buffer[ MAX_PATH + 1 ];
@@ -1973,7 +2189,7 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<StringLike StringT>
-        static StringT RelativePath( const StringT& fromDirectory, const StringT& relativeToFilePath )
+        inline StringT RelativePath( const StringT& fromDirectory, const StringT& relativeToFilePath )
         {
             DWORD fromAttributes = FILE_ATTRIBUTE_DIRECTORY;
             DWORD toAttributes = FILE_ATTRIBUTE_NORMAL;
@@ -1982,7 +2198,7 @@ namespace Harlinn::Common::Core::IO
 
         template<typename Ch,StringLike StringT>
             requires std::is_same_v<std::remove_cvref_t<typename StringT::value_type>, Ch>
-        static StringT RelativePath( const Ch* fromPath, DWORD fromAttributes, const Ch* relativeToPath, DWORD toAttributes )
+        inline StringT RelativePath( const Ch* fromPath, DWORD fromAttributes, const Ch* relativeToPath, DWORD toAttributes )
         {
             using CharT = std::remove_cvref_t<typename StringT::value_type>;
             CharT buffer[ MAX_PATH + 1 ];
@@ -1995,7 +2211,7 @@ namespace Harlinn::Common::Core::IO
         }
         template<typename Ch, StringLike StringT>
             requires std::is_same_v<std::remove_cvref_t<typename StringT::value_type>, Ch>
-        static StringT RelativePath( const Ch* fromDirectory, const Ch* relativeToFilePath )
+        inline StringT RelativePath( const Ch* fromDirectory, const Ch* relativeToFilePath )
         {
             DWORD fromAttributes = FILE_ATTRIBUTE_DIRECTORY;
             DWORD toAttributes = FILE_ATTRIBUTE_NORMAL;
@@ -2004,7 +2220,7 @@ namespace Harlinn::Common::Core::IO
         
         template<typename CharT>
             requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> )
-        static BasicString<CharT> GetParentDirectory( const CharT* path )
+        inline BasicString<CharT> GetParentDirectory( const CharT* path )
         {
             CharT drive[ _MAX_DRIVE + 1 ];
             CharT dir[ _MAX_DIR + 1 ];
@@ -2025,14 +2241,14 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<StringLike StringT>
-        static BasicString<typename StringT::value_type> GetParentDirectory( const StringT& path )
+        inline BasicString<typename StringT::value_type> GetParentDirectory( const StringT& path )
         {
             return GetParentDirectory( path.c_str() );
         }
 
         // Compares two paths to determine if they share a common prefix. 
         // A prefix is one of these types: "C:\\", ".", "..", "..\\"
-        HCC_EXPORT static size_t CommonPrefix( const wchar_t* path1, const wchar_t* path2, wchar_t* commonPrefix = nullptr );
+        HCC_EXPORT size_t CommonPrefix( const wchar_t* path1, const wchar_t* path2, wchar_t* commonPrefix = nullptr );
 
 
         
@@ -2040,7 +2256,7 @@ namespace Harlinn::Common::Core::IO
         // Searches a path and determines if it is relative
         template<typename CharT>
             requires (std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t>)
-        static bool IsRelative( const CharT* path )
+        inline bool IsRelative( const CharT* path )
         {
             if ( !path || !*path )
             {
@@ -2055,7 +2271,7 @@ namespace Harlinn::Common::Core::IO
 
         // Searches a path and determines if it is relative
         template<SimpleStringLike StringT>
-        static bool IsRelative( const StringT& path )
+        inline bool IsRelative( const StringT& path )
         {
             return IsRelative( path.c_str() );
         }
@@ -2063,7 +2279,7 @@ namespace Harlinn::Common::Core::IO
         // Determines whether a path string refers to the root of a volume
         template<typename CharT>
             requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> )
-        static bool IsRoot( const CharT* path )
+        inline bool IsRoot( const CharT* path )
         {
             if ( path && *path )
             {
@@ -2104,9 +2320,21 @@ namespace Harlinn::Common::Core::IO
             return false;
         }
 
+        template<SimpleCharSpanLike StringT>
+        inline bool IsPathRooted( const StringT& path )
+        {
+            using CharT = StringT::value_type;
+            auto length = path.size( );
+
+            return ( length >= 1 && IsDirectorySeparator( path[ 0 ] ) )
+                || ( length >= 2 && IsValidDriveChar( path[ 0 ] ) && path[ 1 ] == static_cast< CharT >(Path::VolumeSeparatorChar) );
+
+        }
+
+
         // Determines whether a path string refers to the root of a volume
         template<SimpleStringLike StringT>
-        static bool IsRoot( const StringT& path )
+        inline bool IsRoot( const StringT& path )
         {
             return IsRoot( path.c_str( ) );
         }
@@ -2115,7 +2343,7 @@ namespace Harlinn::Common::Core::IO
         // Convention (UNC) path, as opposed to a path based on a drive letter
         template<typename CharT>
             requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> )
-        static bool IsUNC( const CharT* path )
+        inline bool IsUNC( const CharT* path )
         {
             if ( path && ( path[ 0 ] == static_cast< CharT >( '\\' ) ) && ( path[ 1 ] == static_cast< CharT >( '\\' ) ) && ( path[ 2 ] != static_cast< CharT >( '?' ) ) )
             {
@@ -2127,7 +2355,7 @@ namespace Harlinn::Common::Core::IO
         // Determines if a path string is a valid Universal Naming 
         // Convention (UNC) path, as opposed to a path based on a drive letter
         template<SimpleStringLike StringT>
-        static bool IsUNC( const WideString& path )
+        inline bool IsUNC( const WideString& path )
         {
             return IsUNC( path.c_str( ) );
         }
@@ -2807,8 +3035,19 @@ namespace Harlinn::Common::Core::IO
                 path_.resize(path_.length() - 1);
             }
             path_ = Path::FullPath(path);
-            
         }
+        FileSystemEntries( const CharType* path, const CharType* searchPattern )
+            : FileSystemEntries( StringType(path), StringType( searchPattern ) )
+        { }
+
+        FileSystemEntries( const StringType& path, const CharType* searchPattern )
+            : FileSystemEntries( path, StringType( searchPattern ) )
+        { }
+
+        FileSystemEntries( const CharType* path, const StringType& searchPattern )
+            : FileSystemEntries( StringType( path ), searchPattern )
+        { }
+
         FileSystemEntries(const StringType& searchPattern)
             : searchPattern_(searchPattern), searchHandle_(INVALID_HANDLE_VALUE)
         {
@@ -3398,7 +3637,7 @@ namespace Harlinn::Common::Core
         {
             auto* data = reinterpret_cast<const char*>(stream.Buffer( ));
             auto dataSize = static_cast<size_t>(stream.Size( ));
-            return { data, dataSize };
+            return AnsiString{ data, dataSize };
         }
         else
         {
@@ -3411,7 +3650,7 @@ namespace Harlinn::Common::Core
         {
             auto* data = reinterpret_cast< const wchar_t* >( stream.Buffer( ) );
             auto dataSize = static_cast< size_t >( stream.Size( ) ) / sizeof( wchar_t );
-            return { data, dataSize };
+            return WideString{ data, dataSize };
         }
         else
         {

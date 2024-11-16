@@ -138,7 +138,7 @@ namespace Harlinn::Common::Core::Services
             while ( serviceStartTable->lpServiceName && serviceStartTable->lpServiceProc )
             {
                 counter++;
-                WideString serviceName = serviceStartTable->lpServiceName;
+                WideString serviceName(serviceStartTable->lpServiceName);
                 serviceNameMap_.emplace( serviceName, std::make_unique<Internal::ServiceEntry>( serviceName, counter, serviceStartTable->lpServiceProc ) );
                 serviceStartTable++;
             }
@@ -181,6 +181,11 @@ namespace Harlinn::Common::Core::Services
                 return it->second.get( );
             }
             return nullptr;
+        }
+
+        Internal::ServiceEntry* Find( const wchar_t* serviceName )
+        {
+            return Find( WideString( serviceName ) );
         }
 
         Internal::ServiceEntry* Find( const SERVICE_STATUS_HANDLE serviceStatusHandle )
