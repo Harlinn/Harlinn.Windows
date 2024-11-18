@@ -124,7 +124,7 @@ namespace Harlinn::Common::Core
     {
         template<typename T>
         concept StringLikeImpl = SimpleStringLikeImpl<T> && 
-            requires ( T t1, const T t2, typename T::size_type sz, typename T::size_type pos, const typename T::value_type* ptr, typename T::value_type value )
+            requires ( T t1, const T t2, typename T::size_type sz, typename T::size_type pos, typename T::size_type count, const typename T::value_type* ptr, typename T::value_type value )
         {
             { t1.rbegin( ) } ->std::same_as<typename T::reverse_iterator>;
             { t1.rend( ) } ->std::same_as<typename T::reverse_iterator>;
@@ -156,6 +156,7 @@ namespace Harlinn::Common::Core
             { t2.find_last_of( ptr ) } ->std::same_as<typename T::size_type>;
             { t2.find_last_of( ptr, pos ) } ->std::same_as<typename T::size_type>;
             { t2.find_last_of( ptr, pos, sz ) } ->std::same_as<typename T::size_type>;
+            { t2.substr( pos, count ) } ->std::same_as<T>;
         };
     }
 

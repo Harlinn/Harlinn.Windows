@@ -995,6 +995,20 @@ namespace Harlinn::Common::Core
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
+        explicit BasicString( const SpanT& span1, const CharType* string2, size_type size2 )
+            : data_( Initialize( span1.data( ), span1.size( ), string2, size2 ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, CharType>
+        explicit BasicString( const CharType* string1, size_type size1, const SpanT& span2 )
+            : data_( Initialize( string1, size1, span2.data( ), span2.size( ) ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, CharType>
         explicit BasicString( CharType value, size_type count, const SpanT& span )
             : data_( Initialize( value, count, span.data( ), span.size( ) ) )
         {

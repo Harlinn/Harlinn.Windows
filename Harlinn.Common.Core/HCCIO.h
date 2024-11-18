@@ -1658,34 +1658,44 @@ namespace Harlinn::Common::Core::IO
 
         template<typename CharT>
             requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
-        inline [[nodiscard]] 
-        constexpr bool IsDirectorySeparator( CharT c ) noexcept
+        constexpr inline [[nodiscard]]
+        bool IsDirectorySeparator( CharT c ) noexcept
         {
             return c == static_cast< CharT >( DirectorySeparatorChar ) || c == static_cast< CharT >( AltDirectorySeparatorChar );
         }
 
         
-        template<CharSpanLike StringT>
-        inline [[nodiscard]] 
-        bool IsDirectorySeparator(const StringT& str) noexcept
+        template<SimpleCharSpanLike SpanT>
+        constexpr inline [[nodiscard]]
+        bool IsDirectorySeparator(const SpanT& str) noexcept
         {
-            using CharT = typename StringT::value_type;
+            using CharT = typename SpanT::value_type;
             return str.size() == 1 && IsDirectorySeparator( str[0] );
         }
+
         template<typename CharT>
             requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
-        inline [[nodiscard]]
-        constexpr bool IsValidDriveChar( CharT value )
+        constexpr inline [[nodiscard]]
+        bool IsValidDriveChar( CharT value ) noexcept
         {
             return static_cast<UInt32>( ( value | 0x20 ) - 'a' ) <= static_cast< UInt32 >( 'z' - 'a' );
         }
+
+        template<SimpleCharSpanLike SpanT>
+        constexpr inline [[nodiscard]]
+        bool IsValidDriveChar(const SpanT& str) noexcept
+        {
+            using CharT = typename SpanT::value_type;
+            return str.size() == 1 && IsValidDriveChar( str[0] );
+        }
+
 
 
         /// <summary>
         /// Returns a value that indicates whether the specified path ends in a directory separator.
         /// </summary>
-        /// <typeparam name="StringT">
-        /// A type that matches the CharSpanLike concept.
+        /// <typeparam name="SpanT">
+        /// A type that matches the SimpleCharSpanLike concept.
         /// </typeparam>
         /// <param name="path">
         /// The path to analyze.
@@ -1693,16 +1703,13 @@ namespace Harlinn::Common::Core::IO
         /// <returns>
         /// true if the specified path ends in a directory separator, otherwise false.
         /// </returns>
-        template<CharSpanLike StringT>
-        inline [[nodiscard]] 
-        bool EndsWithDirectorySeparator(const StringT& path) noexcept
+        template<SimpleCharSpanLike SpanT>
+        constexpr inline [[nodiscard]]
+        bool EndsWithDirectorySeparator(const SpanT& path) noexcept
         {
-            using StringType = std::remove_cvref_t<StringT>;
-            using CharT = typename StringType::value_type;
-            if ( path.size() > 0)
+            if ( path.size( ) )
             {
-                CharT last = path.back();
-                return IsDirectorySeparator( last );
+                return IsDirectorySeparator( path[ path.size( ) - 1 ] );
             }
             return false;
         }
@@ -1710,8 +1717,34 @@ namespace Harlinn::Common::Core::IO
         /// <summary>
         /// Returns a value that indicates whether the specified path ends in a directory separator.
         /// </summary>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="path">
+        /// A pointer to the zero terminated path to analyze.
+        /// </param>
+        /// <returns>
+        /// true if the specified path ends in a directory separator, otherwise false.
+        /// </returns>
+        template<typename CharT>
+            requires std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char>
+        constexpr inline [[nodiscard]]
+        bool EndsWithDirectorySeparator(const CharT* path) noexcept
+        {
+            if ( path && path[ 0 ] )
+            {
+                std::basic_string_view<CharT> pathView( path );
+                return IsDirectorySeparator( pathView[ pathView.size( ) - 1 ] );
+            }
+            return false;
+        }
+
+
+        /// <summary>
+        /// Returns a value that indicates whether the specified path ends in a directory separator.
+        /// </summary>
         /// <typeparam name="StringT">
-        /// A type that matches the CharSpanLike concept.
+        /// A type that matches the SimpleCharSpanLike concept.
         /// </typeparam>
         /// <param name="path">
         /// The path to analyze.
@@ -1719,23 +1752,151 @@ namespace Harlinn::Common::Core::IO
         /// <returns>
         /// true if the specified path ends in a directory separator, otherwise false.
         /// </returns>
-        template<CharSpanLike StringT>
-        inline [[nodiscard]] 
+        template<SimpleCharSpanLike StringT>
+        constexpr inline [[nodiscard]]
         bool EndsInDirectorySeparator( const StringT& path ) noexcept
         {
             return EndsWithDirectorySeparator( path );
         }
 
         /// <summary>
+        /// Returns a value that indicates whether the specified path ends in a directory separator.
+        /// </summary>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="path">
+        /// A pointer to the zero terminated path to analyze.
+        /// </param>
+        /// <returns>
+        /// true if the specified path ends in a directory separator, otherwise false.
+        /// </returns>
+        template<typename CharT>
+            requires std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char>
+        constexpr inline [[nodiscard]]
+        bool EndsInDirectorySeparator(const CharT* path) noexcept
+        {
+            return EndsWithDirectorySeparator( path );
+        }
+
+        /// <summary>
+        /// Returns a value that indicates whether the specified path starts with a directory separator.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// A type that matches the SimpleCharSpanLike concept.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path to analyze.
+        /// </param>
+        /// <returns>
+        /// true if the specified path starts with a directory separator, otherwise false.
+        /// </returns>
+        template<SimpleCharSpanLike SpanT>
+        constexpr inline [[nodiscard]]
+        bool StartsWithDirectorySeparator( const SpanT& path ) noexcept
+        {
+            if ( path.size( ) )
+            {
+                return IsDirectorySeparator( path[ 0 ] );
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns a value that indicates whether the specified path starts with a directory separator.
+        /// </summary>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="path">
+        /// A pointer to the zero terminated path to analyze.
+        /// </param>
+        /// <returns>
+        /// true if the specified path starts with a directory separator, otherwise false.
+        /// </returns>
+        template<typename CharT>
+            requires std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char>
+        constexpr inline [[nodiscard]]
+        bool StartsWithDirectorySeparator(const CharT* path) noexcept
+        {
+            if ( path && path[ 0 ] )
+            {
+                return IsDirectorySeparator( path[ 0 ] );
+            }
+            return false;
+        }
+
+
+        namespace Internal
+        {
+            /// <summary>
+            /// Adds a directory separator to the argument path if
+            /// it does not end with a directory separator.
+            /// </summary>
+            /// <typeparam name="ResultT">
+            /// A type that matches the StringLike concept specifying the 
+            /// type of the returned value.
+            /// </typeparam>
+            /// <typeparam name="SpanT">
+            /// A type that matches the SimpleCharSpanLike concept. The type of SpanT::value_type
+            /// must be of the same type as StringT::value_type.
+            /// </typeparam>
+            /// <param name="path">
+            /// A path with or without a directory separator at the end.
+            /// </param>
+            /// <returns>
+            /// The path with a directory separator at the end.
+            /// </returns>
+            template<StringLike ResultT, SimpleCharSpanLike SpanT>
+                requires std::is_same_v<typename SpanT::value_type, typename ResultT::value_type> &&
+                    std::is_constructible_v<ResultT, const typename ResultT::value_type*, typename ResultT::size_type> &&
+                    std::is_constructible_v<ResultT, typename ResultT::size_type, typename ResultT::value_type>
+            inline [[nodiscard]]
+            ResultT EnsurePathEndsWithDirectorySeparatorImpl( const SpanT& path )
+            {
+                using CharT = typename ResultT::value_type;
+                auto length = path.size( );
+                if ( length )
+                {
+                    CharT last = path[ length - 1];
+                    if ( IsDirectorySeparator( last ) == false )
+                    {
+                        ResultT result;
+                        result.resize( length + 1 );
+                        auto newEnd = std::copy( path.begin( ), path.end( ), result.data( ) );
+                        *newEnd = static_cast< CharT >( DirectorySeparatorChar );
+                        return result;
+                    }
+                    else
+                    {
+                        if constexpr ( StringLike<SpanT> )
+                        {
+                            return path;
+                        }
+                        else
+                        {
+                            ResultT result( path.data( ), path.size( ) );
+                            return result;
+                        }
+                    }
+                }
+                else
+                {
+                    return ResultT( 1, static_cast< CharT >( DirectorySeparatorChar ) );
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds a directory separator to the argument path if
         /// it does not end with a directory separator.
         /// </summary>
-        /// <typeparam name="StringT">
+        /// <typeparam name="ResultT">
         /// A type that matches the StringLike concept specifying the 
         /// type of the returned value.
         /// </typeparam>
         /// <typeparam name="SpanT">
-        /// A type that matches the CharSpanLike concept. The type of SpanT::value_type
+        /// A type that matches the SimpleCharSpanLike concept. The type of SpanT::value_type
         /// must be of the same type as StringT::value_type.
         /// </typeparam>
         /// <param name="path">
@@ -1744,24 +1905,108 @@ namespace Harlinn::Common::Core::IO
         /// <returns>
         /// The path with a directory separator at the end.
         /// </returns>
-        template<StringLike StringT,CharSpanLike SpanT>
-            requires std::is_same_v<typename SpanT::value_type,typename StringT::value_type> &&
-                std::is_constructible_v<StringT,const typename StringT::value_type*, typename StringT::size_type> &&
-                std::is_constructible_v<StringT, typename StringT::size_type, typename StringT::value_type>
-        inline [[nodiscard]] 
-        StringT EnsurePathEndsWithDirectorySeparator( const SpanT& path )
+        template<StringLike ResultT, SimpleCharSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, typename ResultT::value_type> &&
+                std::is_constructible_v<ResultT, const typename ResultT::value_type*, typename ResultT::size_type> &&
+                std::is_constructible_v<ResultT, typename ResultT::size_type, typename ResultT::value_type> &&
+                (StringLike<SpanT> == false)
+        inline [[nodiscard]]
+        ResultT EnsurePathEndsWithDirectorySeparator( const SpanT& path )
         {
-            using CharT = typename StringT::value_type;
-            if ( path.size( ) )
+            return Internal::EnsurePathEndsWithDirectorySeparatorImpl<ResultT, SpanT>( path );
+        }
+
+        /// <summary>
+        /// Adds a directory separator to the argument path if
+        /// it does not end with a directory separator.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the argument path.
+        /// </typeparam>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <param name="path">
+        /// A path with or without a directory separator at the end.
+        /// </param>
+        /// <returns>
+        /// The path with a directory separator at the end.
+        /// </returns>
+        template<StringLike StringT, StringLike ResultT = StringT>
+            requires std::is_same_v<typename ResultT::value_type, typename StringT::value_type> &&
+                std::is_constructible_v<ResultT, const typename StringT::value_type*, typename StringT::size_type> &&
+                std::is_constructible_v<ResultT, typename StringT::size_type, typename StringT::value_type>
+        inline [[nodiscard]]
+        ResultT EnsurePathEndsWithDirectorySeparator( const StringT& path )
+        {
+            return Internal::EnsurePathEndsWithDirectorySeparatorImpl<ResultT, StringT>( path );
+        }
+        
+        /// <summary>
+        /// Adds a directory separator to the argument path if
+        /// it does not end with a directory separator.
+        /// </summary>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <param name="path">
+        /// A path with or without a directory separator at the end.
+        /// </param>
+        /// <returns>
+        /// The path with a directory separator at the end.
+        /// </returns>
+        template<StringLike ResultT, typename CharT>
+            requires std::is_same_v<CharT, typename ResultT::value_type> &&
+                ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> ) &&
+                std::is_constructible_v<ResultT, const typename ResultT::value_type*, typename ResultT::size_type> &&
+                std::is_constructible_v<ResultT, typename ResultT::size_type, typename ResultT::value_type>
+        inline [[nodiscard]]
+        ResultT EnsurePathEndsWithDirectorySeparator( const CharT* path )
+        {
+            if ( path && path[ 0 ] )
             {
-                CharT last = path.back( );
-                if ( IsDirectorySeparator( last ) == false )
+                std::basic_string_view<CharT> pathView( path );
+                return Internal::EnsurePathEndsWithDirectorySeparatorImpl<ResultT, std::basic_string_view<CharT>>( pathView );
+            }
+            return ResultT( 1, static_cast<CharT>(DirectorySeparatorChar) );
+        }
+
+        namespace Internal
+        { 
+            /// <summary>
+            /// Trims one trailing directory separator beyond the root of the specified path.
+            /// </summary>
+            /// <typeparam name="ResultT">
+            /// A type that matches the StringLike concept specifying the 
+            /// type of the returned value.
+            /// </typeparam>
+            /// <typeparam name="SpanT">
+            /// A type that matches the SimpleCharSpanLike concept. The type of SpanT::value_type
+            /// must be of the same type as ResultT::value_type.
+            /// </typeparam>
+            /// <param name="path">
+            /// A path with or without a directory separator at the end.
+            /// </param>
+            /// <returns>
+            /// The path without a directory separator at the end.
+            /// </returns>
+            template<StringLike ResultT,SimpleCharSpanLike SpanT>
+                requires std::is_same_v<typename SpanT::value_type,typename ResultT::value_type> &&
+                    std::is_constructible_v<ResultT,const typename ResultT::value_type*, typename ResultT::size_type>
+            inline [[nodiscard]] 
+            ResultT RemoveTrailingDirectorySeparatorImpl( const SpanT& path )
+            {
+                using CharT = typename ResultT::value_type;
+                if ( EndsWithDirectorySeparator( path ) )
                 {
-                    StringT result;
-                    result.resize( path.size( ) + 1 );
-                    auto newEnd = std::copy( path.begin( ), path.end( ), result.data( ) );
-                    *newEnd = static_cast< CharT >( DirectorySeparatorChar );
-                    return result;
+                    return ResultT( path.data( ), path.size( ) - 1 );
                 }
                 else
                 {
@@ -1771,50 +2016,22 @@ namespace Harlinn::Common::Core::IO
                     }
                     else
                     {
-                        StringT result( path.data(), path.size() );
+                        ResultT result( path.data( ), path.size( ) );
                         return result;
                     }
                 }
             }
-            else
-            {
-                return StringT( 1, static_cast< CharT >( DirectorySeparatorChar ) );
-            }
         }
-
-        /// <summary>
-        /// Adds a directory separator to the argument path if
-        /// it does not end with a directory separator.
-        /// </summary>
-        /// <typeparam name="StringT">
-        /// A type that matches the StringLike concept specifying the 
-        /// type of the returned value and the argument path.
-        /// </typeparam>
-        /// <param name="path">
-        /// A path with or without a directory separator at the end.
-        /// </param>
-        /// <returns>
-        /// The path with a directory separator at the end.
-        /// </returns>
-        template<StringLike StringT>
-            requires std::is_constructible_v<StringT, const typename StringT::value_type*, typename StringT::size_type> &&
-                std::is_constructible_v<StringT, typename StringT::size_type, typename StringT::value_type>
-        inline [[nodiscard]] 
-        StringT EnsurePathEndsWithDirectorySeparator( const StringT& path )
-        {
-            return EnsurePathEndsWithDirectorySeparator<StringT, StringT>( path );
-        }
-
         /// <summary>
         /// Trims one trailing directory separator beyond the root of the specified path.
         /// </summary>
-        /// <typeparam name="StringT">
+        /// <typeparam name="ResultT">
         /// A type that matches the StringLike concept specifying the 
         /// type of the returned value.
         /// </typeparam>
         /// <typeparam name="SpanT">
-        /// A type that matches the CharSpanLike concept. The type of SpanT::value_type
-        /// must be of the same type as StringT::value_type.
+        /// A type that matches the SimpleCharSpanLike concept. The type of SpanT::value_type
+        /// must be of the same type as ResultT::value_type.
         /// </typeparam>
         /// <param name="path">
         /// A path with or without a directory separator at the end.
@@ -1822,37 +2039,27 @@ namespace Harlinn::Common::Core::IO
         /// <returns>
         /// The path without a directory separator at the end.
         /// </returns>
-        template<StringLike StringT,CharSpanLike SpanT>
-            requires std::is_same_v<typename SpanT::value_type,typename StringT::value_type> &&
-                std::is_constructible_v<StringT,const typename StringT::value_type*, typename StringT::size_type> 
+        template<StringLike ResultT,SimpleCharSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type,typename ResultT::value_type> &&
+                std::is_constructible_v<ResultT,const typename ResultT::value_type*, typename ResultT::size_type> &&
+                    ( StringLike<SpanT> == false )
         inline [[nodiscard]] 
-        StringT RemoveTrailingDirectorySeparator( const SpanT& path )
+        ResultT RemoveTrailingDirectorySeparator( const SpanT& path )
         {
-            using CharT = typename StringT::value_type;
-            if ( EndsWithDirectorySeparator( path ) )
-            {
-                return StringT( path.data( ), path.size( ) - 1 );
-            }
-            else
-            {
-                if constexpr ( StringLike<SpanT> )
-                {
-                    return path;
-                }
-                else
-                {
-                    StringT result( path.data( ), path.size( ) );
-                    return result;
-                }
-            }
+            return Internal::RemoveTrailingDirectorySeparatorImpl<ResultT, SpanT>( path );
         }
+
 
         /// <summary>
         /// Trims one trailing directory separator beyond the root of the specified path.
         /// </summary>
         /// <typeparam name="StringT">
         /// A type that matches the StringLike concept specifying the 
-        /// type of the returned value and the argument path.
+        /// type of the argument path.
+        /// </typeparam>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
         /// </typeparam>
         /// <param name="path">
         /// A path with or without a directory separator at the end.
@@ -1860,161 +2067,421 @@ namespace Harlinn::Common::Core::IO
         /// <returns>
         /// The path without a directory separator at the end.
         /// </returns>
-        template<StringLike StringT>
-            requires std::is_constructible_v<StringT,const typename StringT::value_type*, typename StringT::size_type> 
+        template<StringLike StringT, StringLike ResultT = StringT>
+            requires std::is_same_v<typename StringT::value_type,typename ResultT::value_type> &&
+                std::is_constructible_v<ResultT,const typename ResultT::value_type*, typename ResultT::size_type>
         inline [[nodiscard]] 
-        StringT RemoveTrailingDirectorySeparator( const StringT& path )
+        ResultT RemoveTrailingDirectorySeparator( const StringT& path )
         {
-            return RemoveTrailingDirectorySeparator<StringT, StringT>( path );
+            return Internal::RemoveTrailingDirectorySeparatorImpl<ResultT, StringT>( path );
         }
 
-
         /// <summary>
-        /// Returns a value that indicates whether the specified path starts with a directory separator.
+        /// Trims one trailing directory separator beyond the root of the specified path.
         /// </summary>
-        /// <typeparam name="StringT">
-        /// A type that matches the CharSpanLike concept.
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
         /// </typeparam>
         /// <param name="path">
-        /// The path to analyze.
+        /// A path with or without a directory separator at the end.
         /// </param>
         /// <returns>
-        /// true if the specified path starts with in a directory separator, otherwise false.
+        /// The path without a directory separator at the end.
         /// </returns>
-        template<CharSpanLike StringT>
+        template<StringLike ResultT,typename CharT>
+            requires std::is_same_v<CharT,typename ResultT::value_type> &&
+                ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> ) &&
+                std::is_constructible_v<ResultT,const typename ResultT::value_type*, typename ResultT::size_type>
         inline [[nodiscard]] 
-        bool StartsWithDirectorySeparator(const StringT& path) noexcept
+        ResultT RemoveTrailingDirectorySeparator( const CharT* path )
         {
-            using CharT = typename StringT::value_type;
-            if ( path.size() > 0)
+            if ( path && path[ 0 ] )
             {
-                CharT first = path.front();
-                return IsDirectorySeparator( first );
+                std::basic_string_view<CharT> pathView( path );
+                return Internal::RemoveTrailingDirectorySeparatorImpl<ResultT, std::basic_string_view<CharT>>( pathView );
             }
-            return false;
+            return ResultT();
         }
 
+        namespace Internal
+        {
+            /// <summary>
+            /// Combines strings into a path, and, if necessary, inserts a 
+            /// directory separator between the the two parts.
+            /// </summary>
+            /// <typeparam name="ResultT">
+            /// A type that matches the StringLike concept specifying the 
+            /// type of the returned value.
+            /// </typeparam>
+            /// <typeparam name="SpanT1">
+            /// A type that matches the SimpleCharSpanLike concept.
+            /// </typeparam>
+            /// <typeparam name="SpanT2">
+            /// A type that matches the SimpleCharSpanLike concept.
+            /// </typeparam>
+            /// <param name="startOfPath">
+            /// The first part of the path.
+            /// </param>
+            /// <param name="remainingPath">
+            /// The second part of the path.
+            /// </param>
+            /// <returns>
+            /// The combined path.
+            /// </returns>
+            template<StringLike ResultT, SimpleCharSpanLike SpanT1, SimpleCharSpanLike SpanT2>
+                requires ( std::is_same_v<typename ResultT::value_type, std::remove_cvref_t< typename SpanT1::value_type> >&&
+                    std::is_same_v<typename ResultT::value_type, std::remove_cvref_t< typename SpanT2::value_type> > )
+            inline [[nodiscard]]
+            ResultT CombineImpl( const SpanT1& startOfPath, const SpanT2& remainingPath )
+            {
+                using CharT = typename ResultT::value_type;
+                using SizeType = typename ResultT::size_type;
+
+                auto startOfPathEndsWithDirectorySeparator = EndsWithDirectorySeparator( startOfPath );
+                auto remainingPathStartsWithDirectorySeparator = StartsWithDirectorySeparator( remainingPath );
+
+                if ( !startOfPathEndsWithDirectorySeparator && !remainingPathStartsWithDirectorySeparator )
+                {
+                    if constexpr ( std::is_constructible_v<ResultT, const SpanT1&, CharT, const SpanT2&> )
+                    {
+                        ResultT result( startOfPath, static_cast< CharT >( DirectorySeparatorChar ), remainingPath );
+                        return result;
+
+                    }
+                    else
+                    {
+                        ResultT result;
+                        result.reserve( startOfPath.size( ) + 1 + remainingPath.size( ) );
+                        result.append( startOfPath.data( ), startOfPath.size( ) );
+                        result.append( 1, static_cast< CharT >( DirectorySeparatorChar ) );
+                        result.append( remainingPath.data( ), remainingPath.size( ) );
+                        return result;
+                    }
+                }
+                else
+                {
+                    if constexpr ( std::is_constructible_v<ResultT, const SpanT1&, const SpanT2&> &&
+                        std::is_constructible_v<ResultT, const CharT*, SizeType, const SpanT2&> )
+                    {
+                        if ( startOfPathEndsWithDirectorySeparator && remainingPathStartsWithDirectorySeparator )
+                        {
+                            ResultT result( startOfPath.data(), startOfPath.size() - 1, remainingPath );
+                            return result;
+                        }
+                        else
+                        {
+                            ResultT result( startOfPath, remainingPath );
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        ResultT result;
+                        auto remainingPathSize = remainingPath.size( );
+                        if ( startOfPathEndsWithDirectorySeparator && remainingPathStartsWithDirectorySeparator )
+                        {
+                            auto startOfPathSize = startOfPath.size( ) - 1;
+                            result.reserve( startOfPathSize + remainingPathSize );
+                            result.append( startOfPath.data( ), startOfPathSize );
+                        }
+                        else
+                        {
+                            result.reserve( startOfPath.size( ) + remainingPathSize );
+                            result.append( startOfPath.data( ), startOfPath.size( ) );
+                        }
+                        result.append( remainingPath.data( ), remainingPathSize );
+                        return result;
+                    }
+                }
+            }
+        }
         /// <summary>
-        /// Combines strings into a path.
+        /// Combines strings into a path, and, if necessary, inserts a 
+        /// directory separator between the the two parts.
         /// </summary>
-        /// <typeparam name="StringT">
+        /// <typeparam name="ResultT">
         /// A type that matches the StringLike concept specifying the 
         /// type of the returned value.
         /// </typeparam>
         /// <typeparam name="SpanT1">
-        /// A type that matches the CharSpanLike concept.
+        /// A type that matches the SimpleCharSpanLike concept,
+        /// but not the StringLike concept if SpanT2 matches the
+        /// StringLike concept.
         /// </typeparam>
         /// <typeparam name="SpanT2">
-        /// A type that matches the CharSpanLike concept.
+        /// A type that matches the SimpleCharSpanLike concept,
+        /// but not the StringLike concept if SpanT1 matches the
+        /// StringLike concept.
         /// </typeparam>
+        /// <param name="startOfPath">
+        /// The first part of the path.
+        /// </param>
+        /// <param name="remainingPath">
+        /// The second part of the path.
+        /// </param>
         /// <returns>
         /// The combined path.
         /// </returns>
-        template<StringLike StringT, CharSpanLike SpanT1, CharSpanLike SpanT2>
-            requires (std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename SpanT1::value_type> > && 
-                        std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename SpanT2::value_type> > )
-        inline [[nodiscard]] 
-        StringT Combine( const SpanT1& startOfPath, const SpanT2& remainingPath )
+        /// <remarks>
+        /// Use this overload when the type of the result cannot be deduced
+        /// from either of the argument types.
+        /// </remarks>
+        template<StringLike ResultT, SimpleCharSpanLike SpanT1, SimpleCharSpanLike SpanT2>
+            requires ( std::is_same_v<typename ResultT::value_type, std::remove_cvref_t< typename SpanT1::value_type> > &&
+                std::is_same_v<typename ResultT::value_type, std::remove_cvref_t< typename SpanT2::value_type> > ) &&
+                    ( StringLike<SpanT1> == false && StringLike<SpanT2> == false )
+        inline [[nodiscard]]
+        ResultT Combine( const SpanT1& startOfPath, const SpanT2& remainingPath )
         {
-            using CharT = typename StringT::value_type;
-
-            if ( !EndsWith( startOfPath, static_cast< CharT >( DirectorySeparatorChar ) ) &&
-                !EndsWith( startOfPath, static_cast< CharT >( AltDirectorySeparatorChar ) ) &&
-                !StartsWith( remainingPath, static_cast< CharT >( DirectorySeparatorChar ) ) &&
-                !StartsWith( remainingPath, static_cast< CharT >( AltDirectorySeparatorChar ) ) )
-            {
-                
-                if constexpr ( std::is_constructible_v<StringT, const SpanT1&, CharT, const SpanT2&> )
-                {
-                    StringT result( startOfPath, static_cast< CharT >( DirectorySeparatorChar ), remainingPath );
-                    return result;
-                    
-                }
-                else
-                {
-                    StringT result;
-                    result.reserve( startOfPath.size( ) + 1 + remainingPath.size( ) );
-                    result.append( startOfPath.data( ), startOfPath.size( ) );
-                    result.append( 1, static_cast< CharT >( DirectorySeparatorChar ) );
-                    result.append( remainingPath.data( ), remainingPath.size( ) );
-                    return result;
-                }
-            }
-            else
-            {
-                if constexpr ( std::is_constructible_v<StringT, const SpanT1&, const SpanT2&> )
-                {
-                    StringT result( startOfPath, remainingPath );
-                    return result;
-                }
-                else
-                {
-                    StringT result;
-                    result.reserve( startOfPath.size( ) + remainingPath.size( ) );
-                    result.append( startOfPath.data( ), startOfPath.size( ) );
-                    result.append( remainingPath.data( ), remainingPath.size( ) );
-                    return result;
-                }
-            }
+            return Internal::CombineImpl<ResultT, SpanT1, SpanT2>( startOfPath, remainingPath );
         }
 
-        template<StringLike StringT, CharSpanLike SpanT, typename CharT>
+        /// <summary>
+        /// Combines strings into a path, and, if necessary, inserts a 
+        /// directory separator between the the two parts.
+        /// </summary>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="SpanT">
+        /// A type that matches the SimpleCharSpanLike concept,
+        /// but not the StringLike concept.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <param name="startOfPath">
+        /// The first part of the path.
+        /// </param>
+        /// <param name="remainingPath">
+        /// A pointer to a zero terminated string containing the second part of the path.
+        /// </param>
+        /// <returns>
+        /// The combined path.
+        /// </returns>
+        /// <remarks>
+        /// Use this overload when the type of the result cannot be deduced
+        /// from the startOfPath argument type.
+        /// </remarks>
+        template<StringLike ResultT, SimpleCharSpanLike SpanT, typename CharT>
             requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
-                std::is_same_v<typename StringT::value_type, typename SpanT::value_type> &&
-                std::is_same_v<CharT, typename StringT::value_type> &&
+                std::is_same_v<typename ResultT::value_type, typename SpanT::value_type> &&
+                std::is_same_v<CharT, typename ResultT::value_type> &&
                     (StringLike<SpanT> == false)
         inline [[nodiscard]] 
-        StringT Combine( const SpanT& startOfPath, const CharT* remainingPath )
+        ResultT Combine( const SpanT& startOfPath, const CharT* remainingPath )
         {
-            std::span<const CharT> remainingPathView( remainingPath, LengthOf( remainingPath ) );
-            return Combine<StringT, SpanT, std::span<const CharT>>( startOfPath, remainingPathView );
+            std::basic_string_view<CharT> remainingPathView( remainingPath );
+            return Internal::CombineImpl<ResultT, SpanT, std::basic_string_view<CharT>>( startOfPath, remainingPathView );
         }
-        template<StringLike StringT, typename CharT>
+        /// <summary>
+        /// Combines strings into a path, and, if necessary, inserts a 
+        /// directory separator between the the two parts.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept. The purpose
+        /// of this overload is to let this type be deduced
+        /// from the startOfPath parameter.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value. By default this type is deduced
+        /// from the type of StringT. 
+        /// </typeparam>
+        /// <param name="startOfPath">
+        /// The first part of the path.
+        /// </param>
+        /// <param name="remainingPath">
+        /// A pointer to a zero terminated string containing the second part of the path.
+        /// </param>
+        /// <returns>
+        /// The combined path.
+        /// </returns>
+        /// <remarks>
+        /// Use this overload when the type of the result can be deduced
+        /// from the startOfPath argument type.
+        /// </remarks>
+        template<StringLike StringT, typename CharT, StringLike ResultT = StringT>
             requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
-                std::is_same_v<CharT, typename StringT::value_type>
+                std::is_same_v<CharT, typename StringT::value_type> &&
+                    std::is_same_v<CharT, typename ResultT::value_type>
         inline [[nodiscard]] 
-        StringT Combine( const StringT& startOfPath, const CharT* remainingPath )
+        ResultT Combine( const StringT& startOfPath, const CharT* remainingPath )
         {
-            std::span<const CharT> remainingPathView( remainingPath, LengthOf( remainingPath ) );
-            return Combine<StringT, StringT, std::span<const CharT>>( startOfPath, remainingPathView );
+            std::basic_string_view<CharT> remainingPathView( remainingPath );
+            return Internal::CombineImpl<ResultT, StringT, std::basic_string_view<CharT>>( startOfPath, remainingPathView );
         }
 
-        template<StringLike StringT, CharSpanLike SpanT, typename CharT>
+        /// <summary>
+        /// Combines strings into a path, and, if necessary, inserts a 
+        /// directory separator between the the two parts.
+        /// </summary>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <typeparam name="SpanT">
+        /// A type that matches the SimpleCharSpanLike concept,
+        /// but not the StringLike concept.
+        /// </typeparam>
+        /// <param name="startOfPath">
+        /// The first part of the path.
+        /// </param>
+        /// <param name="remainingPath">
+        /// A pointer to a zero terminated string containing the second part of the path.
+        /// </param>
+        /// <returns>
+        /// The combined path.
+        /// </returns>
+        /// <remarks>
+        /// Use this overload when the type of the result cannot be deduced
+        /// from the remainingPath argument type.
+        /// </remarks>
+        template<StringLike ResultT, typename CharT, SimpleCharSpanLike SpanT>
             requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
-                std::is_same_v<typename StringT::value_type, typename SpanT::value_type> &&
-                std::is_same_v<CharT, typename StringT::value_type> &&
+                std::is_same_v<typename ResultT::value_type, typename SpanT::value_type> &&
+                std::is_same_v<CharT, typename ResultT::value_type> &&
                     ( StringLike<SpanT> == false )
         inline [[nodiscard]] 
-        StringT Combine( const CharT* startOfPath, const SpanT& remainingPath )
+        ResultT Combine( const CharT* startOfPath, const SpanT& remainingPath )
         {
-            std::span<const CharT> startOfPathView( startOfPath, LengthOf( startOfPath ) );
-            return Combine<StringT, std::span<const CharT>, SpanT>( startOfPathView, remainingPath );
+            std::basic_string_view<CharT> startOfPathView( startOfPath );
+            return Internal::CombineImpl<ResultT, std::basic_string_view<CharT>, SpanT>( startOfPathView, remainingPath );
         }
 
-        template<StringLike StringT, typename CharT>
+        /// <summary>
+        /// Combines strings into a path, and, if necessary, inserts a 
+        /// directory separator between the the two parts.
+        /// </summary>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept. The purpose
+        /// of this overload is to let this type be deduced
+        /// from the startOfPath parameter.
+        /// </typeparam>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value. By default this type is deduced
+        /// from the type of StringT. 
+        /// </typeparam>
+        /// <param name="startOfPath">
+        /// The first part of the path.
+        /// </param>
+        /// <param name="remainingPath">
+        /// A pointer to a zero terminated string containing the second part of the path.
+        /// </param>
+        /// <returns>
+        /// The combined path.
+        /// </returns>
+        /// <remarks>
+        /// Use this overload when the type of the result can be deduced
+        /// from the remainingPath argument type.
+        /// </remarks>
+        template<typename CharT, StringLike StringT, StringLike ResultT = StringT>
             requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
                 std::is_same_v<CharT, typename StringT::value_type>
         inline [[nodiscard]] 
-        StringT Combine( const CharT* startOfPath, const StringT& remainingPath )
+        ResultT Combine( const CharT* startOfPath, const StringT& remainingPath )
         {
-            std::span<const CharT> startOfPathView( startOfPath, LengthOf( startOfPath ) );
-            return Combine<StringT, std::span<const CharT>, StringT>( startOfPathView, remainingPath );
+            std::basic_string_view<CharT> startOfPathView( startOfPath );
+            return Internal::CombineImpl<ResultT, std::basic_string_view<CharT>, StringT>( startOfPathView, remainingPath );
         }
 
-        /*
-        template<StringLike StringT1, StringLike StringT2>
-        inline [[nodiscard]] StringT1 Combine( const StringT1& startOfPath, const StringT2& remainingPath )
+        /// <summary>
+        /// Combines strings into a path, and, if necessary, inserts a 
+        /// directory separator between the the two parts.
+        /// </summary>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <param name="startOfPath">
+        /// A pointer to a zero terminated string containing the first part of the path.
+        /// </param>
+        /// <param name="remainingPath">
+        /// A pointer to a zero terminated string containing the second part of the path.
+        /// </param>
+        /// <returns>
+        /// The combined path.
+        /// </returns>
+        template<StringLike ResultT, typename CharT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<CharT, typename ResultT::value_type>
+        inline [[nodiscard]] 
+        ResultT Combine( const CharT* startOfPath, const CharT* remainingPath )
         {
-            return Combine<StringT1, StringT1, StringT2>( startOfPath, remainingPath );
+            std::basic_string_view<CharT> startOfPathView( startOfPath );
+            std::basic_string_view<CharT> remainingPathView( remainingPath );
+            return Internal::CombineImpl<ResultT, std::basic_string_view<CharT>, std::basic_string_view<CharT>>( startOfPathView, remainingPathView );
         }
-        */
+
+        /// <summary>
+        /// Combines strings into a path, and, if necessary, inserts a 
+        /// directory separator between the the two parts.
+        /// </summary>
+        /// <typeparam name="StringT1">
+        /// A type that matches the SimpleCharSpanLike concept. 
+        /// </typeparam>
+        /// <typeparam name="StringT2">
+        /// A type that matches the SimpleCharSpanLike concept. 
+        /// </typeparam>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value. By default this type is deduced
+        /// from the type of StringT1 or StringT2 as long as at least 
+        /// one of the types satisfies the StringLike concept. When both
+        /// satisfies the StringLike concept, ResultT is deduced to be 
+        /// of type StringT1.
+        /// </typeparam>
+        /// <param name="startOfPath">
+        /// The first part of the path.
+        /// </param>
+        /// <param name="remainingPath">
+        /// The second part of the path.
+        /// </param>
+        /// <returns>
+        /// The combined path.
+        /// </returns>
+        /// <remarks>
+        /// Use this overload when the type of the result can be deduced
+        /// from the remainingPath argument type.
+        /// </remarks>
+        template<SimpleCharSpanLike StringT1, SimpleCharSpanLike StringT2, StringLike ResultT = std::conditional_t<StringLike<StringT1>, StringT1, StringT2 >>
+            requires std::is_same_v<typename StringT1::value_type, std::remove_cvref_t< typename StringT2::value_type> >
+        inline [[nodiscard]] ResultT Combine( const StringT1& startOfPath, const StringT2& remainingPath )
+        {
+            return Internal::CombineImpl<ResultT, StringT1, StringT2>( startOfPath, remainingPath );
+        }
+        
         
         namespace Internal
         {
-            template<SimpleStringLike StringT>
-            static void CheckInvalidPathChars( const StringT& path )
+            template<SimpleCharSpanLike SpanT>
+            static void CheckInvalidPathChars( const SpanT& path )
             {
-                using CharT = typename StringT::value_type;
+                using CharT = std::remove_cvref_t< typename SpanT::value_type >;
                 for ( auto c : path )
                 {
                     if ( c == static_cast< CharT >( '\"' ) || 
@@ -2026,52 +2493,325 @@ namespace Harlinn::Common::Core::IO
                     }
                 }
             }
-        }
-    
 
-        template<StringLike StringT>
-        inline [[nodiscard]] StringT ChangeExtension( const StringT& path, const StringT& newExtension )
-        {
-            using size_type = typename StringT::size_type;
-            using CharT = typename StringT::value_type;
-            if ( path.empty( ) == false )
+            /// <summary>
+            /// Changes the extension of a path string.
+            /// </summary>
+            /// <typeparam name="ResultT">
+            /// A type that matches the StringLike concept specifying the 
+            /// type of the returned value.
+            /// </typeparam>
+            /// <typeparam name="SpanT1">
+            /// A type that matches the SimpleCharSpanLike concept.
+            /// </typeparam>
+            /// <typeparam name="SpanT2">
+            /// A type that matches the SimpleCharSpanLike concept.
+            /// </typeparam>
+            /// <param name="path">
+            /// The path.
+            /// </param>
+            /// <param name="newExtension">
+            /// The new extension for the path.
+            /// </param>
+            /// <returns>
+            /// The path with the new extension.
+            /// </returns>
+            template<StringLike ResultT, SimpleCharSpanLike SpanT1, SimpleCharSpanLike SpanT2>
+                requires std::is_same_v<typename ResultT::value_type, std::remove_cvref_t< typename SpanT1::value_type> >&&
+                    std::is_same_v<typename ResultT::value_type, std::remove_cvref_t< typename SpanT2::value_type> >
+            inline [[nodiscard]] 
+            ResultT ChangeExtensionImpl( const SpanT1& path, const SpanT2& newExtension )
             {
-                Internal::CheckInvalidPathChars( path );
-                CharT stopCharacters[ ] = 
-                { 
-                    static_cast< CharT >( '.' ), 
-                    static_cast< CharT >( DirectorySeparatorChar ), 
-                    static_cast< CharT >( AltDirectorySeparatorChar ), 
-                    static_cast< CharT >( VolumeSeparatorChar ), 
-                    static_cast< CharT >( '\x00' ) 
-                };
-
-
-                size_type index = path.find_last_of( stopCharacters );
-                StringT result = path;
-                if ( index != StringT::npos )
+                using size_type = typename ResultT::size_type;
+                using CharT = typename ResultT::value_type;
+                if ( path.empty( ) == false )
                 {
-                    if ( path[ index ] == static_cast< CharT >( '.' ) )
+                    Internal::CheckInvalidPathChars( path );
+                    CharT stopCharacters[ ] =
                     {
-                        result = path.substr( 0, index );
-                    }
-                }
+                        static_cast< CharT >( '.' ),
+                        static_cast< CharT >( DirectorySeparatorChar ),
+                        static_cast< CharT >( AltDirectorySeparatorChar ),
+                        static_cast< CharT >( VolumeSeparatorChar ),
+                        static_cast< CharT >( '\x00' )
+                    };
 
-                if ( newExtension.empty( ) == false )
-                {
-                    if ( newExtension[ 0 ] != static_cast< CharT >( '.' ) )
+
+                    size_type index = path.find_last_of( stopCharacters );
+                    ResultT result( path );
+                    if ( index != ResultT::npos )
                     {
-                        result += static_cast< CharT >( '.' );
+                        if ( path[ index ] == static_cast< CharT >( '.' ) )
+                        {
+                            result = path.substr( 0, index );
+                        }
                     }
-                    result += newExtension;
+
+                    if ( newExtension.empty( ) == false )
+                    {
+                        if ( newExtension[ 0 ] != static_cast< CharT >( '.' ) )
+                        {
+                            result += static_cast< CharT >( '.' );
+                        }
+                        result += newExtension;
+                    }
+                    return result;
                 }
-                return result;
+                return ResultT();
             }
-            return {};
         }
 
-        template<StringLike StringT>
-        inline [[nodiscard]] StringT LongPathName( const StringT& path )
+        /// <summary>
+        /// Changes the extension of a path string.
+        /// </summary>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="SpanT1">
+        /// A type that matches the SimpleCharSpanLike concept,
+        /// but not the StringLike concept if SpanT2 matches the
+        /// StringLike concept.
+        /// </typeparam>
+        /// <typeparam name="SpanT2">
+        /// A type that matches the SimpleCharSpanLike concept,
+        /// but not the StringLike concept if SpanT1 matches the
+        /// StringLike concept.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="newExtension">
+        /// The new extension for the path.
+        /// </param>
+        /// <returns>
+        /// The path with the new extension.
+        /// </returns>
+        template<StringLike ResultT, SimpleCharSpanLike SpanT1, SimpleCharSpanLike SpanT2>
+            requires ( std::is_same_v<typename ResultT::value_type, std::remove_cvref_t< typename SpanT1::value_type> > &&
+                std::is_same_v<typename ResultT::value_type, std::remove_cvref_t< typename SpanT2::value_type> > ) && 
+                    ( StringLike<SpanT1> == false && StringLike<SpanT2> == false )
+        inline [[nodiscard]]
+        ResultT ChangeExtension( const SpanT1& path, const SpanT2& newExtension )
+        {
+            return Internal::ChangeExtensionImpl<ResultT, SpanT1, SpanT2>( path, newExtension );
+        }
+
+        /// <summary>
+        /// Changes the extension of a path string.
+        /// </summary>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="SpanT">
+        /// A type that matches the SimpleCharSpanLike concept,
+        /// but not the StringLike concept.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="newExtension">
+        /// The new extension for the path.
+        /// </param>
+        /// <returns>
+        /// The path with the new extension.
+        /// </returns>
+        template<StringLike ResultT, SimpleCharSpanLike SpanT, typename CharT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<typename ResultT::value_type, typename SpanT::value_type> &&
+                std::is_same_v<CharT, typename ResultT::value_type> &&
+                    (StringLike<SpanT> == false)
+        inline [[nodiscard]] 
+        ResultT ChangeExtension( const SpanT& path, const CharT* newExtension )
+        {
+            std::basic_string_view<CharT> newExtensionView( newExtension );
+            return Internal::ChangeExtensionImpl<ResultT, SpanT, std::basic_string_view<CharT>>( path, newExtensionView );
+        }
+        /// <summary>
+        /// Changes the extension of a path string.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept. The purpose
+        /// of this overload is to let this type be deduced
+        /// from the startOfPath parameter.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value. By default this type is deduced
+        /// from the type of StringT. 
+        /// </typeparam>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="newExtension">
+        /// The new extension for the path.
+        /// </param>
+        /// <returns>
+        /// The path with the new extension.
+        /// </returns>
+        template<StringLike StringT, typename CharT, StringLike ResultT = StringT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<CharT, typename ResultT::value_type>
+        inline [[nodiscard]] 
+        ResultT ChangeExtension( const StringT& path, const CharT* newExtension )
+        {
+            std::basic_string_view<CharT> newExtensionView( newExtension );
+            return Internal::ChangeExtensionImpl<ResultT, StringT, std::basic_string_view<CharT>>( path, newExtensionView );
+        }
+
+        /// <summary>
+        /// Changes the extension of a path string.
+        /// </summary>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <typeparam name="SpanT">
+        /// A type that matches the SimpleCharSpanLike concept,
+        /// but not the StringLike concept.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="newExtension">
+        /// The new extension for the path.
+        /// </param>
+        /// <returns>
+        /// The path with the new extension.
+        /// </returns>
+        template<StringLike ResultT, typename CharT, SimpleCharSpanLike SpanT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<typename ResultT::value_type, typename SpanT::value_type> &&
+                std::is_same_v<CharT, typename ResultT::value_type> &&
+                    ( StringLike<SpanT> == false )
+        inline [[nodiscard]] 
+        ResultT ChangeExtension( const CharT* path, const SpanT& newExtension )
+        {
+            std::basic_string_view<CharT> pathView( path );
+            return Internal::ChangeExtensionImpl<ResultT, std::basic_string_view<CharT>, SpanT>( pathView, newExtension );
+        }
+        
+        /// <summary>
+        /// Changes the extension of a path string.
+        /// </summary>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <typeparam name="StringT">
+        /// A type that matches the StringLike concept. The purpose
+        /// of this overload is to let this type be deduced
+        /// from the startOfPath parameter.
+        /// </typeparam>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value. By default this type is deduced
+        /// from the type of StringT. 
+        /// </typeparam>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="newExtension">
+        /// The new extension for the path.
+        /// </param>
+        /// <returns>
+        /// The path with the new extension.
+        /// </returns>
+        template<typename CharT, StringLike StringT, StringLike ResultT = StringT>
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<CharT, typename ResultT::value_type>
+        inline [[nodiscard]] 
+        ResultT ChangeExtension( const CharT* path, const StringT& newExtension )
+        {
+            std::basic_string_view<CharT> pathView( path );
+            return Internal::ChangeExtensionImpl<ResultT, std::basic_string_view<CharT>, StringT>( pathView, newExtension );
+        }
+
+        /// <summary>
+        /// Changes the extension of a path string.
+        /// </summary>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value.
+        /// </typeparam>
+        /// <typeparam name="CharT">
+        /// Either char or wchar_t. The type of CharT
+        /// must be of the same type as ResultT::value_type.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="newExtension">
+        /// The new extension for the path.
+        /// </param>
+        /// <returns>
+        /// The path with the new extension.
+        /// </returns>
+        template<StringLike ResultT, typename CharT >
+            requires ( std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t> ) && 
+                std::is_same_v<CharT, typename ResultT::value_type>
+        inline [[nodiscard]] 
+        ResultT ChangeExtension( const CharT* path, const CharT* newExtension )
+        {
+            std::basic_string_view<CharT> pathView( path );
+            std::basic_string_view<CharT> newExtensionView( newExtension );
+            return Internal::ChangeExtensionImpl<ResultT, std::basic_string_view<CharT>, std::basic_string_view<CharT>>( pathView, newExtensionView );
+        }
+
+        /// <summary>
+        /// Changes the extension of a path string.
+        /// </summary>
+        /// <typeparam name="StringT1">
+        /// A type that matches the SimpleCharSpanLike concept. 
+        /// </typeparam>
+        /// <typeparam name="StringT2">
+        /// A type that matches the SimpleCharSpanLike concept. 
+        /// </typeparam>
+        /// <typeparam name="ResultT">
+        /// A type that matches the StringLike concept specifying the 
+        /// type of the returned value. By default this type is deduced
+        /// from the type of StringT1 or StringT2 as long as at least 
+        /// one of the types satisfies the StringLike concept. When both
+        /// satisfies the StringLike concept, ResultT is deduced to be 
+        /// of type StringT1.
+        /// </typeparam>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="newExtension">
+        /// The new extension for the path.
+        /// </param>
+        /// <returns>
+        /// The path with the new extension.
+        /// </returns>
+        template<SimpleCharSpanLike StringT1, SimpleCharSpanLike StringT2, StringLike ResultT = std::conditional_t<StringLike<StringT1>, StringT1, StringT2 >>
+            requires std::is_same_v<typename StringT1::value_type, std::remove_cvref_t< typename StringT2::value_type> >
+        inline [[nodiscard]] 
+        ResultT ChangeExtension( const StringT1& path, const StringT2& newExtension )
+        {
+            return Internal::ChangeExtensionImpl<ResultT, StringT1, StringT2>( path, newExtension );
+        }
+
+        /// <summary>
+        /// Converts the specified path to its long form.
+        /// </summary>
+        template<StringLike StringT, StringLike ResultT = StringT>
+            requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> >
+        inline [[nodiscard]] 
+        ResultT LongPathName( const StringT& path )
         {
             using CharT = typename StringT::value_type;
             if ( path.empty( ) == false )
@@ -2084,7 +2824,7 @@ namespace Harlinn::Common::Core::IO
                 }
                 if ( length > ( sizeof( buffer ) / sizeof( CharT ) ) )
                 {
-                    StringT result;
+                    ResultT result;
                     result.resize( length - 1 );
                     length = QueryLongPathName( path.c_str( ), result.data( ), length );
                     if ( length == 0 )
@@ -2095,15 +2835,33 @@ namespace Harlinn::Common::Core::IO
                 }
                 else
                 {
-                    StringT result( buffer, length );
+                    ResultT result( buffer, length );
                     return result;
                 }
             }
-            return {};
+            return ResultT();
         }
 
-        template<StringLike StringT>
-        inline [[nodiscard]] StringT ShortPathName( const StringT& path )
+        /// <summary>
+        /// Converts the specified path to its long form.
+        /// </summary>
+        template<StringLike ResultT, typename CharT>
+            requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> ) &&
+                std::is_same_v<CharT, typename ResultT::value_type>
+        inline [[nodiscard]] 
+        ResultT LongPathName( const CharT* path )
+        {
+            std::basic_string_view<CharT> pathView( path );
+            return LongPathName<std::basic_string_view<CharT>, ResultT>( pathView );
+        }
+
+        /// <summary>
+        /// Retrieves the short path form of the specified path.
+        /// </summary>
+        template<StringLike StringT, StringLike ResultT = StringT>
+            requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> >
+        inline [[nodiscard]]
+        ResultT ShortPathName( const StringT& path )
         {
             using CharT = typename StringT::value_type;
             if ( path.empty( ) == false )
