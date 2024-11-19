@@ -2805,42 +2805,69 @@ namespace Harlinn::Common::Core::IO
             return Internal::ChangeExtensionImpl<ResultT, StringT1, StringT2>( path, newExtension );
         }
 
-        /// <summary>
-        /// Converts the specified path to its long form.
-        /// </summary>
-        template<StringLike StringT, StringLike ResultT = StringT>
-            requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> >
-        inline [[nodiscard]] 
-        ResultT LongPathName( const StringT& path )
+        namespace Internal
         {
-            using CharT = typename StringT::value_type;
-            if ( path.empty( ) == false )
+            /// <summary>
+            /// Converts the specified path to its long form.
+            /// </summary>
+            template<StringLike ResultT, SimpleStringLike StringT>
+                requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> >
+            inline [[nodiscard]]
+            ResultT LongPathNameImpl( const StringT& path )
             {
-                CharT buffer[ MAX_PATH + 1 ] = { 0, };
-                auto length = QueryLongPathName( path.c_str( ), buffer, sizeof( buffer ) / sizeof( CharT ) );
-                if ( length == 0 )
+                using CharT = typename StringT::value_type;
+                if ( path.empty( ) == false )
                 {
-                    ThrowLastOSError( );
-                }
-                if ( length > ( sizeof( buffer ) / sizeof( CharT ) ) )
-                {
-                    ResultT result;
-                    result.resize( length - 1 );
-                    length = QueryLongPathName( path.c_str( ), result.data( ), length );
+                    CharT buffer[ MAX_PATH + 1 ] = { 0, };
+                    auto length = QueryLongPathName( path.c_str( ), buffer, sizeof( buffer ) / sizeof( CharT ) );
                     if ( length == 0 )
                     {
                         ThrowLastOSError( );
                     }
-                    return result;
+                    if ( length > ( sizeof( buffer ) / sizeof( CharT ) ) )
+                    {
+                        ResultT result;
+                        result.resize( length - 1 );
+                        length = QueryLongPathName( path.c_str( ), result.data( ), length );
+                        if ( length == 0 )
+                        {
+                            ThrowLastOSError( );
+                        }
+                        return result;
+                    }
+                    else
+                    {
+                        ResultT result( buffer, length );
+                        return result;
+                    }
                 }
-                else
-                {
-                    ResultT result( buffer, length );
-                    return result;
-                }
+                return ResultT( );
             }
-            return ResultT();
         }
+
+        /// <summary>
+        /// Converts the specified path to its long form.
+        /// </summary>
+        template<StringLike ResultT, SimpleStringLike StringT>
+            requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> > &&
+                ( StringLike<StringT> == false )
+        inline [[nodiscard]]
+        ResultT LongPathName( const StringT& path )
+        {
+            return Internal::LongPathNameImpl<ResultT, StringT>( path );
+        }
+
+        /// <summary>
+        /// Converts the specified path to its long form.
+        /// </summary>
+        template<StringLike StringT, StringLike ResultT=StringT >
+            requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> > 
+        inline [[nodiscard]]
+        ResultT LongPathName( const StringT& path )
+        {
+            return Internal::LongPathNameImpl<ResultT, StringT>( path );
+        }
+
 
         /// <summary>
         /// Converts the specified path to its long form.
@@ -2852,7 +2879,59 @@ namespace Harlinn::Common::Core::IO
         ResultT LongPathName( const CharT* path )
         {
             std::basic_string_view<CharT> pathView( path );
-            return LongPathName<std::basic_string_view<CharT>, ResultT>( pathView );
+            return Internal::LongPathNameImpl<ResultT,std::basic_string_view<CharT> >( pathView );
+        }
+
+        namespace Internal
+        {
+            /// <summary>
+            /// Retrieves the short path form of the specified path.
+            /// </summary>
+            template<StringLike ResultT, SimpleStringLike StringT>
+                requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> >
+            inline [[nodiscard]]
+            ResultT ShortPathNameImpl( const StringT& path )
+            {
+                using CharT = typename ResultT::value_type;
+                if ( path.empty( ) == false )
+                {
+                    CharT buffer[ MAX_PATH + 1 ] = { 0, };
+                    auto length = QueryShortPathName( path.c_str( ), buffer, sizeof( buffer ) / sizeof( CharT ) );
+                    if ( length == 0 )
+                    {
+                        ThrowLastOSError( );
+                    }
+                    if ( length > ( sizeof( buffer ) / sizeof( CharT ) ) )
+                    {
+                        ResultT result;
+                        result.resize( length - 1 );
+                        length = QueryShortPathName( path.c_str( ), result.data( ), length );
+                        if ( length == 0 )
+                        {
+                            ThrowLastOSError( );
+                        }
+                        return result;
+                    }
+                    else
+                    {
+                        ResultT result( buffer, length );
+                        return result;
+                    }
+                }
+                return ResultT();
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the short path form of the specified path.
+        /// </summary>
+        template<StringLike ResultT, SimpleStringLike StringT>
+            requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> > &&
+                ( StringLike<StringT> == false )
+        inline [[nodiscard]]
+        ResultT ShortPathName( const StringT& path )
+        {
+            return Internal::ShortPathNameImpl<ResultT, StringT>( path );
         }
 
         /// <summary>
@@ -2863,75 +2942,108 @@ namespace Harlinn::Common::Core::IO
         inline [[nodiscard]]
         ResultT ShortPathName( const StringT& path )
         {
-            using CharT = typename StringT::value_type;
-            if ( path.empty( ) == false )
-            {
-                CharT buffer[ MAX_PATH + 1 ] = { 0, };
-                auto length = QueryShortPathName( path.c_str( ), buffer, sizeof( buffer ) / sizeof( CharT ) );
-                if ( length == 0 )
-                {
-                    ThrowLastOSError( );
-                }
-                if ( length > ( sizeof( buffer ) / sizeof( CharT ) ) )
-                {
-                    StringT result;
-                    result.resize( length - 1 );
-                    length = QueryShortPathName( path.c_str( ), result.data( ), length );
-                    if ( length == 0 )
-                    {
-                        ThrowLastOSError( );
-                    }
-                    return result;
-                }
-                else
-                {
-                    StringT result( buffer, length );
-                    return result;
-                }
-            }
-            return {};
+            return Internal::ShortPathNameImpl<ResultT, StringT>( path );
         }
 
-        template<StringLike StringT>
-        inline [[nodiscard]] StringT FullPath( const StringT& path, typename StringT::size_type* indexOfFileName = nullptr )
+        /// <summary>
+        /// Retrieves the short path form of the specified path.
+        /// </summary>
+        template<StringLike ResultT, typename CharT>
+            requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> ) &&
+                std::is_same_v<CharT, typename ResultT::value_type>
+        inline [[nodiscard]] 
+        ResultT ShortPathName( const CharT* path )
         {
-            using CharT = typename StringT::value_type;
-            if ( path.empty( ) == false )
+            std::basic_string_view<CharT> pathView( path );
+            return Internal::ShortPathNameImpl<ResultT,std::basic_string_view<CharT> >( pathView );
+        }
+
+
+
+        namespace Internal
+        { 
+            /// <summary>
+            /// Retrieves the full path and file name of the specified file.
+            /// </summary>
+            template<StringLike ResultT, SimpleStringLike StringT>
+                requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> >
+            inline [[nodiscard]] 
+            ResultT FullPathImpl( const StringT& path, typename ResultT::size_type* indexOfFileName = nullptr )
             {
-                CharT* filePart;
-                CharT buffer[ MAX_PATH + 1 ] = { 0, };
-                auto length = QueryFullPathName( path.c_str( ), sizeof( buffer ) / sizeof( CharT ), buffer, &filePart );
-                if ( length == 0 )
+                using CharT = typename ResultT::value_type;
+                if ( path.empty( ) == false )
                 {
-                    ThrowLastOSError( );
-                }
-                if ( length >= ( sizeof( buffer ) / sizeof( CharT ) ) )
-                {
-                    StringT result;
-                    result.resize( length - 1 );
-                    length = QueryFullPathName( path.c_str( ), length, result.data( ), &filePart );
+                    CharT* filePart;
+                    CharT buffer[ MAX_PATH + 1 ] = { 0, };
+                    auto length = QueryFullPathName( path.c_str( ), sizeof( buffer ) / sizeof( CharT ), buffer, &filePart );
                     if ( length == 0 )
                     {
                         ThrowLastOSError( );
                     }
-                    if ( indexOfFileName )
+                    if ( length >= ( sizeof( buffer ) / sizeof( CharT ) ) )
                     {
-                        *indexOfFileName = filePart - result.c_str( );
+                        ResultT result;
+                        result.resize( length - 1 );
+                        length = QueryFullPathName( path.c_str( ), length, result.data( ), &filePart );
+                        if ( length == 0 )
+                        {
+                            ThrowLastOSError( );
+                        }
+                        if ( indexOfFileName )
+                        {
+                            *indexOfFileName = filePart - result.c_str( );
+                        }
+                        return result;
                     }
-                    return result;
-                }
-                else
-                {
-                    if ( indexOfFileName )
+                    else
                     {
-                        *indexOfFileName = filePart - buffer;
+                        if ( indexOfFileName )
+                        {
+                            *indexOfFileName = filePart - buffer;
+                        }
+                        ResultT result( buffer, length );
+                        return result;
                     }
-                    StringT result( buffer, length );
-                    return result;
                 }
+                return ResultT();
             }
-            return {};
         }
+        /// <summary>
+        /// Retrieves the full path and file name of the specified file.
+        /// </summary>
+        template<StringLike ResultT, SimpleStringLike StringT>
+            requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> > &&
+                ( StringLike<StringT> == false )
+        inline [[nodiscard]] 
+        StringT FullPath( const StringT& path, typename ResultT::size_type* indexOfFileName = nullptr )
+        {
+            return Internal::FullPathImpl<ResultT, StringT>( path );
+        }
+
+        /// <summary>
+        /// Retrieves the full path and file name of the specified file.
+        /// </summary>
+        template<StringLike StringT, StringLike ResultT = StringT>
+            requires std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename ResultT::value_type> > 
+        inline [[nodiscard]] 
+        StringT FullPath( const StringT& path, typename ResultT::size_type* indexOfFileName = nullptr )
+        {
+            return Internal::FullPathImpl<ResultT, StringT>( path );
+        }
+
+        /// <summary>
+        /// Retrieves the full path and file name of the specified file.
+        /// </summary>
+        template<StringLike ResultT, typename CharT>
+            requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> ) &&
+                std::is_same_v<CharT, typename ResultT::value_type>
+        inline [[nodiscard]] 
+        ResultT FullPath( const CharT* path, typename ResultT::size_type* indexOfFileName = nullptr )
+        {
+            std::basic_string_view<CharT> pathView( path );
+            return Internal::FullPathImpl<ResultT,std::basic_string_view<CharT> >( pathView, indexOfFileName );
+        }
+
 
         template<StringLike StringT>
         inline StringT RelativePath( const StringT& fromPath, DWORD fromAttributes, const StringT& relativeToPath, DWORD toAttributes )

@@ -528,5 +528,337 @@ BOOST_AUTO_TEST_CASE( ChangeExtensionTest1 )
     BOOST_CHECK( check );
 }
 
+// --run_test=IOPathTests/ChangeExtensionTest2
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest2 )
+{
+    std::string path( "c:\\folder\\file.txt" );
+    std::string_view newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest3
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest3 )
+{
+    std::string_view path( "c:\\folder\\file.txt" );
+    std::string newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest4
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest4 )
+{
+    std::string path( "c:\\folder\\file.txt" );
+    std::string newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest5
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest5 )
+{
+    std::string path( "c:\\folder\\file.txt" );
+    const char* newExtension = ".cpp";
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest6
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest6 )
+{
+    const char* path = "c:\\folder\\file.txt";
+    std::string newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest7
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest7 )
+{
+    std::string_view path( "c:\\folder\\file.txt" );
+    const char* newExtension = ".cpp";
+    auto result = IO::Path::ChangeExtension<std::string>( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest8
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest8 )
+{
+    const char* path = "c:\\folder\\file.txt";
+    std::string_view newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension<std::string>( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest9
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest9 )
+{
+    const char* path = "c:\\folder\\file.txt";
+    const char* newExtension = ".cpp";
+    auto result = IO::Path::ChangeExtension<std::string>( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest10
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest10 )
+{
+    std::wstring_view path( L"c:\\folder\\file.txt" );
+    std::wstring_view newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension<std::wstring>( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest11
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest11 )
+{
+    std::wstring path( L"c:\\folder\\file.txt" );
+    std::wstring_view newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest12
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest12 )
+{
+    std::wstring_view path( L"c:\\folder\\file.txt" );
+    std::wstring newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest13
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest13 )
+{
+    std::wstring path( L"c:\\folder\\file.txt" );
+    std::wstring newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest14
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest14 )
+{
+    std::wstring path( L"c:\\folder\\file.txt" );
+    const wchar_t* newExtension = L".cpp";
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest15
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest15 )
+{
+    const wchar_t* path = L"c:\\folder\\file.txt";
+    std::wstring newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest16
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest16 )
+{
+    std::wstring_view path( L"c:\\folder\\file.txt" );
+    const wchar_t* newExtension = L".cpp";
+    auto result = IO::Path::ChangeExtension<std::wstring>( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest17
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest17 )
+{
+    const wchar_t* path = L"c:\\folder\\file.txt";
+    std::wstring_view newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension<std::wstring>( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest18
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest18 )
+{
+    const wchar_t* path = L"c:\\folder\\file.txt";
+    const wchar_t* newExtension = L".cpp";
+    auto result = IO::Path::ChangeExtension<std::wstring>( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest19
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest19 )
+{
+    AnsiStringView path( "c:\\folder\\file.txt" );
+    AnsiStringView newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension<AnsiString>( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest20
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest20 )
+{
+    AnsiString path( "c:\\folder\\file.txt" );
+    AnsiStringView newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest21
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest21 )
+{
+    AnsiStringView path( "c:\\folder\\file.txt" );
+    AnsiString newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest22
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest22 )
+{
+    AnsiString path( "c:\\folder\\file.txt" );
+    AnsiString newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest23
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest23 )
+{
+    AnsiString path( "c:\\folder\\file.txt" );
+    const char* newExtension = ".cpp";
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest24
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest24 )
+{
+    const char* path = "c:\\folder\\file.txt";
+    AnsiString newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest25
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest25 )
+{
+    AnsiStringView path( "c:\\folder\\file.txt" );
+    const char* newExtension = ".cpp";
+    auto result = IO::Path::ChangeExtension<AnsiString>( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest26
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest26 )
+{
+    const char* path = "c:\\folder\\file.txt";
+    AnsiStringView newExtension( ".cpp" );
+    auto result = IO::Path::ChangeExtension<AnsiString>( path, newExtension );
+    bool check = result == "c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest27
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest27 )
+{
+    WideStringView path( L"c:\\folder\\file.txt" );
+    WideStringView newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension<WideString>( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest28
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest28 )
+{
+    WideString path( L"c:\\folder\\file.txt" );
+    WideStringView newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest29
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest29 )
+{
+    WideStringView path( L"c:\\folder\\file.txt" );
+    WideString newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest30
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest30 )
+{
+    WideString path( L"c:\\folder\\file.txt" );
+    WideString newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest31
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest31 )
+{
+    WideString path( L"c:\\folder\\file.txt" );
+    const wchar_t* newExtension = L".cpp";
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest32
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest32 )
+{
+    const wchar_t* path = L"c:\\folder\\file.txt";
+    WideString newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest33
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest33 )
+{
+    WideStringView path( L"c:\\folder\\file.txt" );
+    const wchar_t* newExtension = L".cpp";
+    auto result = IO::Path::ChangeExtension<WideString>( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+// --run_test=IOPathTests/ChangeExtensionTest34
+BOOST_AUTO_TEST_CASE( ChangeExtensionTest34 )
+{
+    const wchar_t* path = L"c:\\folder\\file.txt";
+    WideStringView newExtension( L".cpp" );
+    auto result = IO::Path::ChangeExtension<WideString>( path, newExtension );
+    bool check = result == L"c:\\folder\\file.cpp";
+    BOOST_CHECK( check );
+}
+
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

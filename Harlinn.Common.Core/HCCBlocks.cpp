@@ -18,7 +18,7 @@
 #include <HCCBlocks.h>
 #include <HCCMemory.h>
 
-namespace Harlinn::Common::Core::Blocks
+namespace Harlinn::Common::Core::IO::Blocks
 {
     namespace
     {

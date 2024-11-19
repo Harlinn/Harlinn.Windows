@@ -23,7 +23,7 @@
 
 #include <HCCIO.h>
 
-namespace Harlinn::Common::Core::Blocks
+namespace Harlinn::Common::Core::IO::Blocks
 {
     constexpr size_t BlockSize = 32 * 1024;
     constexpr size_t CacheSize = 10000;

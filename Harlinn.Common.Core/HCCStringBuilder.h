@@ -27,7 +27,7 @@ namespace Harlinn::Common::Core
         requires std::is_same_v<T,char> || std::is_same_v<T, wchar_t>
     class StringBuilder
     {
-        Blocks::Stream stream_;
+        IO::Blocks::Stream stream_;
         static constexpr bool isWide = std::is_same_v<T, wchar_t>;
     public:
         using value_type = T;

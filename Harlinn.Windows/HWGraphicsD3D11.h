@@ -25,6 +25,9 @@
 
 namespace Harlinn::Windows::Graphics::D3D11
 {
+    /// <summary>
+    /// A device-child object accesses data used by a device.
+    /// </summary>
     class D3D11DeviceChild : public Unknown
     {
     public:
@@ -59,7 +62,10 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-
+    /// <summary>
+    /// The depth-stencil-state object holds a description for depth-stencil 
+    /// state that you can bind to the output-merger stage.
+    /// </summary>
     class D3D11DepthStencilState : public D3D11DeviceChild
     {
     public:
@@ -73,6 +79,10 @@ namespace Harlinn::Windows::Graphics::D3D11
     };
 
 
+    /// <summary>
+    /// The blend-state object holds a description for blending state 
+    /// that you can bind to the output-merger stage.
+    /// </summary>
     class D3D11BlendState : public D3D11DeviceChild
     {
     public:
@@ -85,6 +95,10 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
+    /// <summary>
+    /// The rasterizer-state object holds a description for rasterizer 
+    /// state that you can bind to the rasterizer stage.
+    /// </summary>
     class D3D11RasterizerState : public D3D11DeviceChild
     {
     public:
@@ -97,6 +111,9 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
+    /// <summary>
+    /// A resource object provides common actions on all resources.
+    /// </summary>
     class D3D11Resource : public D3D11DeviceChild
     {
     public:
@@ -121,6 +138,10 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
+    /// <summary>
+    /// A buffer object accesses a buffer resource, which is unstructured 
+    /// memory. Buffers typically store vertex or index data.
+    /// </summary>
     class D3D11Buffer : public D3D11Resource
     {
     public:
@@ -133,6 +154,9 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
+    /// <summary>
+    /// A 1D texture object accesses texel data, which is structured memory.
+    /// </summary>
     class D3D11Texture1D : public D3D11Resource
     {
     public:
@@ -145,6 +169,9 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
+    /// <summary>
+    /// A 2D texture object manages texel data, which is structured memory.
+    /// </summary>
     class D3D11Texture2D : public D3D11Resource
     {
     public:

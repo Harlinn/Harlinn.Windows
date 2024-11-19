@@ -2058,6 +2058,11 @@ namespace Harlinn::Windows::Graphics::D3D12
     };
 
 
+    /// <summary>
+    /// Encapsulates a list of graphics commands for rendering, extending the 
+    /// GraphicsCommandList class to support programmable sample positions, atomic copies for implementing 
+    /// late-latch techniques, and optional depth-bounds testing.
+    /// </summary>
     class GraphicsCommandList1 : public GraphicsCommandList
     {
     public:
@@ -2102,6 +2107,11 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Encapsulates a list of graphics commands for rendering, extending 
+    /// the GraphicsCommandList1 class to support writing immediate values 
+    /// directly to a buffer.
+    /// </summary>
     class GraphicsCommandList2 : public GraphicsCommandList1
     {
     public:
@@ -2117,6 +2127,11 @@ namespace Harlinn::Windows::Graphics::D3D12
     };
 
 
+    /// <summary>
+    /// Provides methods for submitting command lists, synchronizing 
+    /// command list execution, instrumenting the command queue, and 
+    /// updating resource tile mappings.
+    /// </summary>
     class CommandQueue : public Pageable
     {
     public:
@@ -2214,6 +2229,11 @@ namespace Harlinn::Windows::Graphics::D3D12
 
     };
 
+    /// <summary>
+    /// Represents a virtual adapter; it is used to create command allocators, 
+    /// command lists, command queues, fences, resources, pipeline state objects, 
+    /// heaps, root signatures, samplers, and many resource views.
+    /// </summary>
     class Device : public Object
     {
     public:
@@ -2773,6 +2793,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Manages a pipeline library, in particular loading and retrieving individual PSOs.
+    /// </summary>
     class PipelineLibrary : public DeviceChild
     {
     public:
@@ -2815,6 +2838,10 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Manages a pipeline library. This class extends the PipelineLibrary 
+    /// class to load PSOs from a pipeline state stream description.
+    /// </summary>
     class PipelineLibrary1 : public PipelineLibrary
     {
     public:
@@ -2830,7 +2857,10 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
-
+    /// <summary>
+    /// Represents a virtual adapter, and expands on the range of 
+    /// methods provided by the Device class.
+    /// </summary>
     class Device1 : public Device
     {
     public:
@@ -2860,7 +2890,10 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
-
+    /// <summary>
+    /// Represents a virtual adapter. This class extends the Device1 class 
+    /// to create pipeline state objects from pipeline state stream descriptions.
+    /// </summary>
     class Device2 : public Device1
     {
     public:
@@ -2876,6 +2909,11 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Represents a virtual adapter. This class extends the Device2 class 
+    /// to support the creation of special-purpose diagnostic heaps in system 
+    /// memory that persist even in the event of a GPU-fault or device-removed scenario.
+    /// </summary>
     class Device3 : public Device2
     {
     public:
@@ -2906,7 +2944,12 @@ namespace Harlinn::Windows::Graphics::D3D12
 
     };
 
-
+    /// <summary>
+    /// Offers base functionality that allows for a consistent way to 
+    /// monitor the validity of a session across the different types 
+    /// of sessions. The only type of session currently available is 
+    /// of type ProtectedResourceSession.
+    /// </summary>
     class ProtectedSession : public DeviceChild
     {
     public:
@@ -2928,6 +2971,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Monitors the validity of a protected resource session. 
+    /// </summary>
     class ProtectedResourceSession : public ProtectedSession
     {
     public:
@@ -2942,6 +2988,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Represents a virtual adapter.
+    /// </summary>
     class Device4 : public Device3
     {
     public:
@@ -2991,6 +3040,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Represents an application-defined callback used for being notified of lifetime changes of an object.
+    /// </summary>
     class LifetimeOwner : public Unknown
     {
     public:
@@ -3040,6 +3092,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Represents facilities for controlling the lifetime a lifetime-tracked object.
+    /// </summary>
     class LifetimeTracker : public DeviceChild
     {
     public:
@@ -3055,6 +3110,12 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Represents a variable amount of configuration state, including shaders, 
+    /// that an application manages as a single unit and which is given to a 
+    /// driver atomically to process, such as compile or optimize. 
+    /// Create a state object by calling Device5::CreateStateObject.
+    /// </summary>
     class StateObject : public Pageable
     {
     public:
@@ -3065,6 +3126,10 @@ namespace Harlinn::Windows::Graphics::D3D12
 
     };
 
+    /// <summary>
+    /// Provides methods for getting and setting the properties of an StateObject. 
+    /// To retrieve an instance of this type, call StateObject::As&ltStateObjectProperties&gt().
+    /// </summary>
     class StateObjectProperties : public Unknown
     {
     public:
@@ -3097,6 +3162,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Represents a virtual adapter.
+    /// </summary>
     class Device5 : public Device4
     {
     public:
@@ -3158,6 +3226,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// This class controls Device Removed Extended Data (DRED) settings.
+    /// </summary>
     class DeviceRemovedExtendedDataSettings : public Unknown
     {
     public:
@@ -3198,6 +3269,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Provides runtime access to Device Removed Extended Data (DRED) data.
+    /// </summary>
     class DeviceRemovedExtendedData : public Unknown
     {
     public:
@@ -3242,6 +3316,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Represents a virtual adapter.
+    /// </summary>
     class Device6 : public Device5
     {
     public:
@@ -3257,6 +3334,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Monitors the validity of a protected resource session.
+    /// </summary>
     class ProtectedResourceSession1 : public ProtectedResourceSession
     {
     public:
@@ -3271,7 +3351,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
-
+    /// <summary>
+    /// Represents a virtual adapter
+    /// </summary>
     class Device7 : public Device6
     {
     public:
@@ -3294,6 +3376,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Represents a virtual adapter.
+    /// </summary>
     class Device8 : public Device7
     {
     public:
@@ -3378,6 +3463,9 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Encapsulates a list of graphics commands for rendering.
+    /// </summary>
     class GraphicsCommandList3 : public GraphicsCommandList2
     {
     public:
@@ -3392,6 +3480,24 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Represents a meta command. A meta command is a Direct3D 12 object representing 
+    /// an algorithm that is accelerated by independent hardware vendors (IHVs). It's 
+    /// an opaque reference to a command generator that is implemented by the driver.
+    /// </para>
+    /// <para>
+    /// The lifetime of a meta command is tied to the lifetime of the command list that 
+    /// references it. So, you should only free a meta command if no command list referencing 
+    /// it is currently executing on the GPU.
+    /// </para>
+    /// <para>
+    /// A meta command can encapsulate a set of pipeline state objects (PSOs), bindings, 
+    /// intermediate resource states, and Draw/Dispatch calls. You can think of the signature 
+    /// of a meta command as being similar to a C-style function, with multiple in/out 
+    /// parameters, and no return value.
+    /// </para>
+    /// </summary>
     class MetaCommand : public Pageable
     {
     public:
@@ -3406,6 +3512,11 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+
+    /// <summary>
+    /// Encapsulates a list of graphics commands for rendering, extending the 
+    /// GraphicsCommandList3 class to support ray tracing and render passes.
+    /// </summary>
     class GraphicsCommandList4 : public GraphicsCommandList3
     {
     public:
@@ -3469,6 +3580,10 @@ namespace Harlinn::Windows::Graphics::D3D12
     };
 
 
+    /// <summary>
+    /// This class is used to configure the runtime for tools such as PIX. 
+    /// Its not intended or supported for any other scenario
+    /// </summary>
     class Tools : public Unknown
     {
     public:
@@ -3489,6 +3604,10 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    /// <summary>
+    /// Encapsulates a list of graphics commands for rendering, extending 
+    /// the GraphicsCommandList4 class to support variable-rate shading (VRS).
+    /// </summary>
     class GraphicsCommandList5 : public GraphicsCommandList4
     {
     public:
@@ -3524,6 +3643,24 @@ namespace Harlinn::Windows::Graphics::D3D12
     };
 
 
+    /// <summary>
+    /// Creates a device that represents the display adapter.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of device to create, which must be Device or a class  
+    /// that inherits the Device class.
+    /// </typeparam>
+    /// <param name="adapter">
+    /// A pointer to the video adapter to use when creating a device. 
+    /// Pass NULL to use the default adapter, which is the first adapter 
+    /// that is enumerated by DXGI::Factory1::EnumAdapters.
+    /// </param>
+    /// <param name="minimumFeatureLevel">
+    /// The minimum D3D_FEATURE_LEVEL required for successful device creation.
+    /// </param>
+    /// <returns>
+    /// The newly created device.
+    /// </returns>
     template<typename T = Device>
         requires std::is_base_of_v<Device, T>
     inline T CreateDevice( IUnknown* adapter, D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 )

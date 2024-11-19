@@ -27,7 +27,7 @@ namespace Doxygen2Md
     class MarkdownStream
     {
         WideString filename_;
-        Blocks::Stream stream_;
+        IO::Blocks::Stream stream_;
     public:
         MarkdownStream( const WideString& filename )
             : filename_( filename )

@@ -36,7 +36,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators
     {
         friend class NestedCodeStream;
         WideString filename_;
-        Blocks::Stream stream_;
+        IO::Blocks::Stream stream_;
     public:
         CodeStream( const WideString& filename )
             : filename_( filename )

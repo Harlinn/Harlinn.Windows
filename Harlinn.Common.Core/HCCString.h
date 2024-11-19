@@ -1724,15 +1724,18 @@ namespace Harlinn::Common::Core
             Append( first, last );
         }
 
-
-        void Append( const BasicString<CharType>& other )
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<CharType, typename SpanT::value_type>
+        void Append( const SpanT& other )
         {
             auto otherLength = other.size( );
             auto* dest = Extend( otherLength );
             MemCopy( dest, other.data( ), otherLength );
         }
 
-        void append( const BasicString<CharType>& other )
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<CharType, typename SpanT::value_type>
+        void append( const SpanT& other )
         {
             Append( other );
         }
@@ -1771,9 +1774,10 @@ namespace Harlinn::Common::Core
         }
 
         BasicString<CharType>& operator += ( const CharType* other ) { Append( other ); return *this; }
-        BasicString<CharType>& operator += ( const BasicString<CharType>& other ) { Append( other ); return *this; }
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<CharType, typename SpanT::value_type>
+        BasicString<CharType>& operator += ( const SpanT& other ) { Append( other ); return *this; }
         BasicString<CharType>& operator += ( CharType c ) { Append( c ); return *this; }
-        BasicString<CharType>& operator += ( const std::basic_string<CharType>& other ) { Append( other.c_str(), other.size() ); return *this; }
 
         iterator Insert( const_iterator pos, CharType ch )
         {
@@ -6369,7 +6373,29 @@ namespace Harlinn::Common::Core
 #endif
     namespace Html
     {
+        /// <summary>
+        /// Converts a string to an HTML-encoded string.
+        /// </summary>
+        /// <param name="text"></param>
+        /// A pointer to the text to encode.
+        /// <param name="textLength">
+        /// The length of the text to encode.
+        /// </param>
+        /// <returns>
+        /// The HTML-encoded string.
+        /// </returns>
         HCC_EXPORT WideString Encode( const wchar_t* text, size_t textLength );
+        /// <summary>
+        /// Converts a string that has been HTML-encoded for HTTP transmission into a decoded string.
+        /// </summary>
+        /// <param name="text"></param>
+        /// A pointer to the text to decode.
+        /// <param name="textLength">
+        /// The length of the text to decode.
+        /// </param>
+        /// <returns>
+        /// The HTML-decoded string.
+        /// </returns>
         HCC_EXPORT WideString Decode( const wchar_t* text, size_t textLength );
 
         template<typename StringT>

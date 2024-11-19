@@ -201,8 +201,8 @@ namespace Harlinn::Common::Core::Http::Server
         HttpRequestState requestState_;
         HttpServerRequestQueue* requestQueue_;
             
-        Blocks::Stream bodyStream_;
-        Blocks::Block* currentReceiveBodyBlock_ = nullptr;
+        IO::Blocks::Stream bodyStream_;
+        IO::Blocks::Block* currentReceiveBodyBlock_ = nullptr;
     public:
         constexpr HttpRequest( HttpServerRequestQueue* requestQueue ) noexcept
             : Base{}, requestData_{}, requestState_( HttpRequestState::New ), requestQueue_( requestQueue ) 
@@ -212,7 +212,7 @@ namespace Harlinn::Common::Core::Http::Server
         {
             if ( currentReceiveBodyBlock_ )
             {
-                Blocks::Block::Free( currentReceiveBodyBlock_ );
+                IO::Blocks::Block::Free( currentReceiveBodyBlock_ );
             }
         }
 
@@ -223,7 +223,7 @@ namespace Harlinn::Common::Core::Http::Server
             bodyStream_.Clear( );
             if ( currentReceiveBodyBlock_ )
             {
-                Blocks::Block::Free( currentReceiveBodyBlock_ );
+                IO::Blocks::Block::Free( currentReceiveBodyBlock_ );
             }
         }
 
@@ -240,11 +240,11 @@ namespace Harlinn::Common::Core::Http::Server
             return requestQueue_;
         }
 
-        constexpr Blocks::Stream& Body( ) noexcept
+        constexpr IO::Blocks::Stream& Body( ) noexcept
         {
             return bodyStream_;
         }
-        constexpr const Blocks::Stream& Body( ) const noexcept
+        constexpr const IO::Blocks::Stream& Body( ) const noexcept
         {
             return bodyStream_;
         }
@@ -257,7 +257,7 @@ namespace Harlinn::Common::Core::Http::Server
         using Base = Http::Response;
     private:
         HttpServerRequestQueue* requestQueue_;
-        Blocks::Stream bodyStream_;
+        IO::Blocks::Stream bodyStream_;
     public:
         constexpr HttpResponse( HttpServerRequestQueue* requestQueue ) noexcept
             : requestQueue_( requestQueue )
@@ -270,11 +270,11 @@ namespace Harlinn::Common::Core::Http::Server
 
         }
 
-        constexpr Blocks::Stream& Body( ) noexcept
+        constexpr IO::Blocks::Stream& Body( ) noexcept
         {
             return bodyStream_;
         }
-        constexpr const Blocks::Stream& Body( ) const noexcept
+        constexpr const IO::Blocks::Stream& Body( ) const noexcept
         {
             return bodyStream_;
         }
@@ -349,11 +349,11 @@ namespace Harlinn::Common::Core::Http::Server
                 nextReceiving_ = nextReceiving;
             }
 
-            constexpr Blocks::Stream& Body( ) noexcept
+            constexpr IO::Blocks::Stream& Body( ) noexcept
             {
                 return request_.Body( );
             }
-            constexpr const Blocks::Stream& Body( ) const noexcept
+            constexpr const IO::Blocks::Stream& Body( ) const noexcept
             {
                 return request_.Body( );
             }
@@ -369,12 +369,12 @@ namespace Harlinn::Common::Core::Http::Server
         private:
             HttpReceiveRequest* receiveRequest_;
         public:
-            HttpReceiveBodyRequest( HttpReceiveRequest* receiveRequest, Blocks::Block* currentReceiveBodyBlock )
+            HttpReceiveBodyRequest( HttpReceiveRequest* receiveRequest, IO::Blocks::Block* currentReceiveBodyBlock )
                 : Base( receiveRequest->Handle( ),
                     receiveRequest->Request( ).RequestId,
                     Http::ReceiveRequestEntityBodyFlags::None,
                     currentReceiveBodyBlock->data( ),
-                    Blocks::Block::DataSize ), receiveRequest_( receiveRequest )
+                    IO::Blocks::Block::DataSize ), receiveRequest_( receiveRequest )
             {
             }
 
@@ -392,7 +392,7 @@ namespace Harlinn::Common::Core::Http::Server
             HttpReceiveRequest* receiveRequest_;
             Http::Response response_;
             Http::CachePolicy cachePolicy_;
-            Blocks::Stream bodyStream_;
+            IO::Blocks::Stream bodyStream_;
         public:
             HttpSendRequest( HttpReceiveRequest* receiveRequest )
                 : Base( receiveRequest->Handle( ),
@@ -402,11 +402,11 @@ namespace Harlinn::Common::Core::Http::Server
             {
             }
 
-            constexpr Blocks::Stream& Body( ) noexcept
+            constexpr IO::Blocks::Stream& Body( ) noexcept
             {
                 return bodyStream_;
             }
-            constexpr const Blocks::Stream& Body( ) const noexcept
+            constexpr const IO::Blocks::Stream& Body( ) const noexcept
             {
                 return bodyStream_;
             }

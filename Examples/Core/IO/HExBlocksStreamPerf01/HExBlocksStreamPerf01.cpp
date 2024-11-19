@@ -36,7 +36,7 @@ int main()
     stopwatch.Start( );
     for ( size_t i = 0; i < Iterations; ++i )
     {
-        Blocks::Stream stream;
+        IO::Blocks::Stream stream;
         size_t value = i+1;
         for ( size_t j = 0; j < Values; ++j )
         {

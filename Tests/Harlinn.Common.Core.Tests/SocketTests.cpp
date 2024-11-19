@@ -33,7 +33,7 @@ namespace
         std::atomic<bool> stopped_;
         std::atomic<size_t> clientConnects_;
         Thread thread_;
-        Blocks::Stream received_;
+        IO::Blocks::Stream received_;
         IO::Sockets::TcpSocket listenSocket_;
         EventWaitHandle startEvent_;
         EventWaitHandle clientEvent_;
@@ -153,7 +153,7 @@ namespace
             return clientConnects_.load( );
         }
 
-        Blocks::Stream& Received( )
+        IO::Blocks::Stream& Received( )
         {
             return received_;
         }

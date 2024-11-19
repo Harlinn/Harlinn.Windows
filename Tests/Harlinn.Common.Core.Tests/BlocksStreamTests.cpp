@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE( WriteTest1 )
     std::array<Byte, 3> array3{ 3,3,3 };
     auto expectedSize = array1.size( ) + array2.size( ) + array3.size( );
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     blocksStream.Write( array1.data( ), array1.size( ) );
     blocksStream.Write( array2.data( ), array2.size( ) );
     blocksStream.Write( array3.data( ), array3.size( ) );
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE( SetPositionTest1 )
     std::array<Byte, 3> array2{ 2,2,2 };
     std::array<Byte, 3> array3{ 3,3,3 };
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     blocksStream.Write( array1.data( ), array1.size( ) );
     blocksStream.Write( array2.data( ), array2.size( ) );
     blocksStream.Write( array3.data( ), array3.size( ) );
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE( SeekTest1 )
     std::array<Byte, 3> array3{ 3,3,3 };
     auto expectedSize = array1.size( ) + array2.size( ) + array3.size( );
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     blocksStream.Write( array1.data( ), array1.size( ) );
     blocksStream.Write( array2.data( ), array2.size( ) );
     blocksStream.Write( array3.data( ), array3.size( ) );
@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE( SeekTest2 )
     std::array<Byte, 3> array3{ 3,3,3 };
     auto expectedSize = array1.size( ) + array2.size( ) + array3.size( );
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     blocksStream.Write( array1.data( ), array1.size( ) );
     blocksStream.Write( array2.data( ), array2.size( ) );
     blocksStream.Write( array3.data( ), array3.size( ) );
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE( SeekTest3 )
     std::array<Byte, 3> array3{ 3,3,3 };
     auto expectedSize = array1.size( ) + array2.size( ) + array3.size( );
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     blocksStream.Write( array1.data( ), array1.size( ) );
     blocksStream.Write( array2.data( ), array2.size( ) );
     blocksStream.Write( array3.data( ), array3.size( ) );
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE( SeekTest4 )
     std::array<Byte, 4> array4{ 4,4,4,4 };
     auto expectedSize = array1.size( ) + array2.size( ) + array3.size( );
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     blocksStream.Write( array1.data( ), array1.size( ) );
     blocksStream.Write( array2.data( ), array2.size( ) );
     blocksStream.Write( array3.data( ), array3.size( ) );
@@ -176,7 +176,7 @@ BOOST_AUTO_TEST_CASE( SeekTest4 )
 BOOST_AUTO_TEST_CASE( SizeTest1 )
 {
     constexpr size_t expectedSize = 1024 * 1024;
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     blocksStream.SetSize( expectedSize );
     auto size = blocksStream.Size( );
     BOOST_CHECK( size == expectedSize );
@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE( SizeTest1 )
 // --run_test=BlocksStreamTests/CanReadTest1
 BOOST_AUTO_TEST_CASE( CanReadTest1 )
 {
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     auto value = blocksStream.CanRead( );
     BOOST_CHECK( value );
 }
@@ -195,7 +195,7 @@ BOOST_AUTO_TEST_CASE( CanReadTest1 )
 // --run_test=BlocksStreamTests/CanWriteTest1
 BOOST_AUTO_TEST_CASE( CanWriteTest1 )
 {
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     auto value = blocksStream.CanWrite( );
     BOOST_CHECK( value );
 }
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE( CanWriteTest1 )
 // --run_test=BlocksStreamTests/CanSeekTest1
 BOOST_AUTO_TEST_CASE( CanSeekTest1 )
 {
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     auto value = blocksStream.CanSeek( );
     BOOST_CHECK( value );
 }
@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE( CanSeekTest1 )
 // --run_test=BlocksStreamTests/CanTimeoutTest1
 BOOST_AUTO_TEST_CASE( CanTimeoutTest1 )
 {
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     auto value = blocksStream.CanTimeout( );
     BOOST_CHECK( value == false );
 }
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE( ReadTest1 )
 
     auto expectedSize = array1.size( ) + array2.size( ) + array3.size( );
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     blocksStream.Write( array1.data( ), array1.size( ) );
     blocksStream.Write( array2.data( ), array2.size( ) );
     blocksStream.Write( array3.data( ), array3.size( ) );
@@ -253,13 +253,13 @@ BOOST_AUTO_TEST_CASE( ReadTest1 )
 // --run_test=BlocksStreamTests/WriteTest2
 BOOST_AUTO_TEST_CASE( WriteTest2 )
 {
-    constexpr size_t BlockDataSize = Blocks::Stream::BlockDataSize;
+    constexpr size_t BlockDataSize = IO::Blocks::Stream::BlockDataSize;
     constexpr size_t InitialSize = 1024*1024*24;
 
     std::vector<Byte> vector1( InitialSize, static_cast<Byte>( 1 ) );
     std::vector<Byte> vector2( InitialSize, static_cast<Byte>( 2 ) );
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     std::array<size_t, 5> writeSizes{1,2,3,4,5};
     size_t i = 0;
     while ( i < InitialSize )
@@ -281,7 +281,7 @@ BOOST_AUTO_TEST_CASE( WriteTest2 )
 // --run_test=BlocksStreamTests/WriteTest3
 BOOST_AUTO_TEST_CASE( WriteTest3 )
 {
-    constexpr size_t BlockDataSize = Blocks::Stream::BlockDataSize;
+    constexpr size_t BlockDataSize = IO::Blocks::Stream::BlockDataSize;
     constexpr size_t InitialSize = 1024 * 1024 * 24;
 
     std::vector<Byte> vector1( InitialSize, static_cast<Byte>( 1 ) );
@@ -289,7 +289,7 @@ BOOST_AUTO_TEST_CASE( WriteTest3 )
     std::vector<Byte> vector3( InitialSize, static_cast<Byte>( 1 ) );
     std::vector<Byte> vector4( InitialSize, static_cast<Byte>( 4 ) );
 
-    Blocks::Stream blocksStream;
+    IO::Blocks::Stream blocksStream;
     std::array<size_t, 5> writeSizes{ 1,2,3,4,5 };
     size_t i = 0;
     while ( i < InitialSize )
@@ -350,7 +350,7 @@ BOOST_AUTO_TEST_CASE( BoolTest1 )
     std::optional<bool> optional2 = value1;
     std::optional<bool> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -383,7 +383,7 @@ BOOST_AUTO_TEST_CASE( SByteTest1 )
     std::optional<SByte> optional2 = value1;
     std::optional<SByte> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -417,7 +417,7 @@ BOOST_AUTO_TEST_CASE( ByteTest1 )
     std::optional<Byte> optional2 = value1;
     std::optional<Byte> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -450,7 +450,7 @@ BOOST_AUTO_TEST_CASE( Int16Test1 )
     std::optional<Int16> optional2 = value1;
     std::optional<Int16> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -484,7 +484,7 @@ BOOST_AUTO_TEST_CASE( UInt16Test1 )
     std::optional<UInt16> optional2 = value1;
     std::optional<UInt16> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -518,7 +518,7 @@ BOOST_AUTO_TEST_CASE( Int32Test1 )
     std::optional<Int32> optional2 = value1;
     std::optional<Int32> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -552,7 +552,7 @@ BOOST_AUTO_TEST_CASE( UInt32Test1 )
     std::optional<UInt32> optional2 = value1;
     std::optional<UInt32> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -585,7 +585,7 @@ BOOST_AUTO_TEST_CASE( Int64Test1 )
     std::optional<Int64> optional2 = value1;
     std::optional<Int64> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -619,7 +619,7 @@ BOOST_AUTO_TEST_CASE( UInt64Test1 )
     std::optional<UInt64> optional2 = value1;
     std::optional<UInt64> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -654,7 +654,7 @@ BOOST_AUTO_TEST_CASE( SingleTest1 )
     std::optional<float> optional2 = value1;
     std::optional<float> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -689,7 +689,7 @@ BOOST_AUTO_TEST_CASE( DoubleTest1 )
     std::optional<Double> optional2 = value1;
     std::optional<Double> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -723,7 +723,7 @@ BOOST_AUTO_TEST_CASE( DateTimeTest1 )
     std::optional<DateTime> optional2 = value1;
     std::optional<DateTime> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -757,7 +757,7 @@ BOOST_AUTO_TEST_CASE( TimeSpanTest1 )
     std::optional<TimeSpan> optional2 = value1;
     std::optional<TimeSpan> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -791,7 +791,7 @@ BOOST_AUTO_TEST_CASE( GuidTest1 )
     std::optional<Guid> optional2 = value1;
     std::optional<Guid> optional3 = value2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -822,7 +822,7 @@ BOOST_AUTO_TEST_CASE( StringTest1 )
     AnsiString value1( "s1" );
     AnsiString value2( "s2" );
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( value1 );
     writer.Write( value2 );
@@ -842,7 +842,7 @@ BOOST_AUTO_TEST_CASE( BoolTest2 )
     std::vector<bool> values1{ true,false };
     std::vector<bool> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -860,7 +860,7 @@ BOOST_AUTO_TEST_CASE( BoolTest3 )
     std::vector<bool> values1;
     std::vector<bool> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -877,7 +877,7 @@ BOOST_AUTO_TEST_CASE( SByteTest2 )
     std::vector<SByte> values1{ 10,20 };
     std::vector<SByte> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -895,7 +895,7 @@ BOOST_AUTO_TEST_CASE( SByteTest3 )
     std::vector<SByte> values1;
     std::vector<SByte> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -911,7 +911,7 @@ BOOST_AUTO_TEST_CASE( ByteTest2 )
     std::vector<Byte> values1{ 10,20 };
     std::vector<Byte> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -929,7 +929,7 @@ BOOST_AUTO_TEST_CASE( ByteTest3 )
     std::vector<Byte> values1;
     std::vector<Byte> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -945,7 +945,7 @@ BOOST_AUTO_TEST_CASE( Int16Test2 )
     std::vector<Int16> values1{ 10,20 };
     std::vector<Int16> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -963,7 +963,7 @@ BOOST_AUTO_TEST_CASE( Int16Test3 )
     std::vector<Int16> values1;
     std::vector<Int16> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -979,7 +979,7 @@ BOOST_AUTO_TEST_CASE( UInt16Test2 )
     std::vector<UInt16> values1{ 10,20 };
     std::vector<UInt16> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -997,7 +997,7 @@ BOOST_AUTO_TEST_CASE( UInt16Test3 )
     std::vector<UInt16> values1;
     std::vector<UInt16> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1013,7 +1013,7 @@ BOOST_AUTO_TEST_CASE( Int32Test2 )
     std::vector<Int32> values1{ 10,20 };
     std::vector<Int32> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1031,7 +1031,7 @@ BOOST_AUTO_TEST_CASE( Int32Test3 )
     std::vector<Int32> values1;
     std::vector<Int32> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1047,7 +1047,7 @@ BOOST_AUTO_TEST_CASE( UInt32Test2 )
     std::vector<UInt32> values1{ 10,20 };
     std::vector<UInt32> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1065,7 +1065,7 @@ BOOST_AUTO_TEST_CASE( UInt32Test3 )
     std::vector<UInt32> values1;
     std::vector<UInt32> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1081,7 +1081,7 @@ BOOST_AUTO_TEST_CASE( Int64Test2 )
     std::vector<Int64> values1{ 10,20 };
     std::vector<Int64> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1099,7 +1099,7 @@ BOOST_AUTO_TEST_CASE( Int64Test3 )
     std::vector<Int64> values1;
     std::vector<Int64> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1115,7 +1115,7 @@ BOOST_AUTO_TEST_CASE( UInt64Test2 )
     std::vector<UInt64> values1{ 10,20 };
     std::vector<UInt64> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1133,7 +1133,7 @@ BOOST_AUTO_TEST_CASE( UInt64Test3 )
     std::vector<UInt64> values1;
     std::vector<UInt64> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1149,7 +1149,7 @@ BOOST_AUTO_TEST_CASE( SingleTest2 )
     std::vector<float> values1{ 10,20 };
     std::vector<float> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1167,7 +1167,7 @@ BOOST_AUTO_TEST_CASE( SingleTest3 )
     std::vector<float> values1;
     std::vector<float> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1183,7 +1183,7 @@ BOOST_AUTO_TEST_CASE( DoubleTest2 )
     std::vector<Double> values1{ 10,20 };
     std::vector<Double> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1201,7 +1201,7 @@ BOOST_AUTO_TEST_CASE( DoubleTest3 )
     std::vector<Double> values1;
     std::vector<Double> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1217,7 +1217,7 @@ BOOST_AUTO_TEST_CASE( DateTimeTest2 )
     std::vector<DateTime> values1{ DateTime( 10LL ),DateTime( 20LL ) };
     std::vector<DateTime> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1235,7 +1235,7 @@ BOOST_AUTO_TEST_CASE( DateTimeTest3 )
     std::vector<DateTime> values1;
     std::vector<DateTime> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1251,7 +1251,7 @@ BOOST_AUTO_TEST_CASE( TimeSpanTest2 )
     std::vector<TimeSpan> values1{ TimeSpan( 10LL ),TimeSpan( 20LL ) };
     std::vector<TimeSpan> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1269,7 +1269,7 @@ BOOST_AUTO_TEST_CASE( TimeSpanTest3 )
     std::vector<TimeSpan> values1;
     std::vector<TimeSpan> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1287,7 +1287,7 @@ BOOST_AUTO_TEST_CASE( GuidTest2 )
     std::vector<Guid> values1{ Guid( L"{67C4E44A-D623-4264-84F8-E7EA902FA441}" ),Guid( L"{5263FE0A-BE9E-4D90-A864-235A64C7171D}" ) };
     std::vector<Guid> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
@@ -1305,7 +1305,7 @@ BOOST_AUTO_TEST_CASE( GuidTest3 )
     std::vector<Guid> values1;
     std::vector<Guid> values2;
 
-    Blocks::Stream stream;
+    IO::Blocks::Stream stream;
     IO::BinaryWriter writer( stream );
     writer.Write( values1 );
     stream.SetPosition( 0 );
