@@ -37,7 +37,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class CommandQueue;
 }
 
-namespace Harlinn::Windows::DXGI
+namespace Harlinn::Windows::Graphics::DXGI
 {
     class Object;
     class DeviceSubObject;
@@ -104,7 +104,11 @@ namespace Harlinn::Windows::DXGI
     };
 
 
-
+    /// <summary>
+    /// This is the base class for all DXGI objects; DXGI::Object supports 
+    /// associating caller-defined (private data) with an object and 
+    /// retrieval of an interface to the parent object.
+    /// </summary>
     class Object : public Unknown
     {
     public:
@@ -177,6 +181,10 @@ namespace Harlinn::Windows::DXGI
 
     };
 
+    /// <summary>
+    /// Base class for objects that are tied to the device 
+    /// so that they can retrieve a pointer to it.
+    /// </summary>
     class DeviceSubObject : public Object
     {
     public:
@@ -210,6 +218,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Allows resource sharing and identifies the memory that a resource resides in.
+    /// </summary>
     class Resource : public DeviceSubObject
     {
     public:
@@ -246,6 +257,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Represents a keyed mutex, which allows exclusive access to a shared resource that is used by multiple devices.
+    /// </summary>
     class KeyedMutex : public DeviceSubObject
     {
     public:
@@ -273,6 +287,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Implements methods for image-data objects.
+    /// </summary>
     class Surface : public DeviceSubObject
     {
     public:
@@ -303,7 +320,11 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// The Surface1 class extends the Surface class by adding support for 
+    /// using Windows Graphics Device Interface (GDI) to render to a 
+    /// Microsoft DirectX Graphics Infrastructure (DXGI) surface.
+    /// </summary>
     class Surface1 : public Surface
     {
     public:
@@ -327,6 +348,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The Adapter class represents a display subsystem (including one or more GPUs, DACs and video memory).
+    /// </summary>
     class Adapter : public Object
     {
     public:
@@ -357,6 +381,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// An Output object represents an adapter output (such as a monitor).
+    /// </summary>
     class Output : public Object
     {
     public:
@@ -448,6 +475,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// A SwapChain object implements one or more surfaces for storing 
+    /// rendered data before presenting it to an output.
+    /// </summary>
     class SwapChain : public DeviceSubObject
     {
     public:
@@ -627,7 +658,10 @@ namespace Harlinn::Windows::DXGI
     };
 
 
-
+    /// <summary>
+    /// The Factory class implements methods for generating DXGI 
+    /// objects (which handle full screen transitions).
+    /// </summary>
     class Factory : public Object
     {
     public:
@@ -689,6 +723,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// An Device class implements a derived class for DXGI objects that produce image data.
+    /// </summary>
     class Device : public Object
     {
     public:
@@ -740,6 +777,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The Adapter1 class represents a display sub-system (including one or more GPU's, DACs and video memory).
+    /// </summary>
     class Adapter1 : public Adapter
     {
     public:
@@ -777,7 +817,9 @@ namespace Harlinn::Windows::DXGI
 
     };
 
-
+    /// <summary>
+    /// The Factory1 class implements methods for generating DXGI objects.
+    /// </summary>
     class Factory1 : public Factory
     {
     public:
@@ -837,9 +879,6 @@ namespace Harlinn::Windows::DXGI
             return Adapter1( );
         }
 
-        
-
-
 
         bool IsCurrent( void ) const
         {
@@ -848,6 +887,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The Device1 class implements a derived class for DXGI objects that produce image data.
+    /// </summary>
     class Device1 : public Device
     {
     public:
@@ -870,6 +912,11 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The DisplayControl class exposes methods to indicate user preference for 
+    /// the operating system's stereoscopic 3D display behavior and to set 
+    /// stereoscopic 3D display status to enable or disable.
+    /// </summary>
     class DisplayControl : public Unknown
     {
     public:
@@ -890,7 +937,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// The OutputDuplication class accesses and manipulates the duplicated desktop image.
+    /// </summary>
     class OutputDuplication : public Object
     {
     public:
@@ -955,6 +1004,10 @@ namespace Harlinn::Windows::DXGI
     };
 
 
+    /// <summary>
+    /// The Surface2 class extends the Surface1 class by adding support for 
+    /// subresource surfaces and getting a handle to a shared resource.
+    /// </summary>
     class Surface2 : public Surface1
     {
     public:
@@ -970,6 +1023,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The Resource1 class extends the Resource class by adding support for 
+    /// creating a subresource surface object and for creating a handle to a shared resource.
+    /// </summary>
     class Resource1 : public Resource
     {
     public:
@@ -992,6 +1049,11 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The Device2 class implements a derived class for DXGI objects that produce image data. 
+    /// The class exposes methods to block CPU processing until the GPU completes processing, 
+    /// and to offer resources to the operating system.
+    /// </summary>
     class Device2 : public Device1
     {
     public:
@@ -1021,7 +1083,11 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// Provides presentation capabilities that are enhanced from SwapChain. 
+    /// These presentation capabilities consist of specifying dirty rectangles 
+    /// and scroll rectangle to optimize the presentation.
+    /// </summary>
     class SwapChain1 : public SwapChain
     {
     public:
@@ -1130,6 +1196,11 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The Factory2 class includes methods to create a newer version 
+    /// swap chain with more features than SwapChain and to monitor 
+    /// stereoscopic 3D capabilities.
+    /// </summary>
     class Factory2 : public Factory1
     {
     public:
@@ -1241,6 +1312,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The Adapter2 class represents a display subsystem, which 
+    /// includes one or more GPUs, DACs, and video memory.
+    /// </summary>
     class Adapter2 : public Adapter1
     {
     public:
@@ -1256,6 +1331,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// An Output1 object represents an adapter output (such as a monitor).
+    /// </summary>
     class Output1 : public Output
     {
     public:
@@ -1292,6 +1370,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// The Device3 class implements a derived class for DXGI objects that produce image data. 
+    /// The class exposes a method to trim graphics memory usage by the DXGI device.
+    /// </summary>
     class Device3 : public Device2
     {
     public:
@@ -1306,7 +1388,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// Extends SwapChain1 with methods to support swap back buffer 
+    /// scaling and lower-latency swap chains.
+    /// </summary>
     class SwapChain2 : public SwapChain1
     {
     public:
@@ -1363,6 +1448,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Represents an adapter output (such as a monitor). The Output2 class exposes 
+    /// a method to check for multiplane overlay support on the primary output adapter.
+    /// </summary>
     class Output2 : public Output1
     {
     public:
@@ -1377,7 +1466,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// Enables creating Microsoft DirectX Graphics Infrastructure (DXGI) objects.
+    /// </summary>
     class Factory3 : public Factory2
     {
     public:
@@ -1400,7 +1491,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// Represents a swap chain that is used by desktop media apps to 
+    /// decode video data and show it on a DirectComposition surface.
+    /// </summary>
     class DecodeSwapChain : public Unknown
     {
     public:
@@ -1471,6 +1565,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Creates swap chains for desktop media apps that use 
+    /// DirectComposition surfaces to decode and display video.
+    /// </summary>
     class FactoryMedia : public Unknown
     {
     public:
@@ -1505,6 +1603,9 @@ namespace Harlinn::Windows::DXGI
     };
 
 
+    /// <summary>
+    /// This swap chain class allows desktop media applications to request a seamless change to a specific refresh rate.
+    /// </summary>
     class SwapChainMedia : public Unknown
     {
     public:
@@ -1534,6 +1635,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Represents an adapter output (such as a monitor). The Output3 class 
+    /// exposes a method to check for overlay support.
+    /// </summary>
     class Output3 : public Output2
     {
     public:
@@ -1549,6 +1654,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Extends SwapChain2 with methods to support getting the index of 
+    /// the swap chain's current back buffer and support for color space.
+    /// </summary>
     class SwapChain3 : public SwapChain2
     {
     public:
@@ -1592,7 +1701,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// Represents an adapter output (such as a monitor). The Output4 class 
+    /// exposes a method to check for overlay color space support.
+    /// </summary>
     class Output4 : public Output3
     {
     public:
@@ -1609,6 +1721,9 @@ namespace Harlinn::Windows::DXGI
     };
 
 
+    /// <summary>
+    /// Enables creating Microsoft DirectX Graphics Infrastructure (DXGI) objects.
+    /// </summary>
     class Factory4 : public Factory3
     {
     public:
@@ -1672,6 +1787,9 @@ namespace Harlinn::Windows::DXGI
 
     };
 
+    /// <summary>
+    /// This class adds some memory residency methods, for budgeting and reserving physical memory.
+    /// </summary>
     class Adapter3 : public Adapter2
     {
     public:
@@ -1720,7 +1838,11 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// Represents an adapter output (such as a monitor). The Output5 class 
+    /// exposes a single method to specify a list of supported formats for 
+    /// full screen surfaces.
+    /// </summary>
     class Output5 : public Output4
     {
     public:
@@ -1736,6 +1858,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// This class exposes a single method for setting video metadata.
+    /// </summary>
     class SwapChain4 : public SwapChain3
     {
     public:
@@ -1751,6 +1876,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// This class provides updated methods to offer and reclaim resources.
+    /// </summary>
     class Device4 : public Device3
     {
     public:
@@ -1773,7 +1901,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
-
+    /// <summary>
+    /// This class introduces a single method to support variable refresh rate displays.
+    /// </summary>
     class Factory5 : public Factory4
     {
     public:
@@ -1797,6 +1927,11 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// This class represents a display subsystem, and extends 
+    /// Adapter3 to introduce a method to check for an adapter's 
+    /// compatibility with Arbitrary Code Guard (ACG).
+    /// </summary>
     class Adapter4 : public Adapter3
     {
     public:
@@ -1812,6 +1947,10 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Represents an adapter output (such as a monitor). The Output6 class 
+    /// introduces methods to provide specific monitor capabilities.
+    /// </summary>
     class Output6 : public Output5
     {
     public:
@@ -1835,6 +1974,9 @@ namespace Harlinn::Windows::DXGI
     };
 
 
+    /// <summary>
+    /// This class introduces a single method that enumerates graphics adapters based on a given GPU preference.
+    /// </summary>
     class Factory6 : public Factory5
     {
     public:
@@ -1868,6 +2010,9 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// This class enables registration for notifications to detect adapter enumeration state changes.
+    /// </summary>
     class Factory7 : public Factory6
     {
     public:
@@ -1900,6 +2045,18 @@ namespace Harlinn::Windows::DXGI
         }
     };
 
+    /// <summary>
+    /// Creates a DXGI 1.3 factory that you can use to generate other DXGI objects.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Either Factory2 or a class derived from Factory2. Defaults to Factory7.
+    /// </typeparam>
+    /// <param name="debug">
+    /// If true explicitly request that DXGIDebug.dll be loaded.
+    /// </param>
+    /// <returns>
+    /// The newly created factory.
+    /// </returns>
     template<typename T = Factory7>
         requires std::is_base_of_v< Factory2, T>
     T CreateFactory( bool debug = false )

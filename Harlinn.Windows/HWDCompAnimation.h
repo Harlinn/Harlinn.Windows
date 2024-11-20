@@ -20,12 +20,17 @@
 #include <HWDef.h>
 #include <HCCVariant.h>
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::DirectComposition
 {
-    class DCompositionAnimation : public Unknown
+    /// <summary>
+    /// Represents a function for animating one or more properties of one or 
+    /// more Microsoft DirectComposition objects. Any object property that takes 
+    /// a scalar value can be animated.
+    /// </summary>
+    class Animation : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionAnimation, Unknown, IDCompositionAnimation, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Animation, Unknown, IDCompositionAnimation, IUnknown)
     public:
         void Reset() const
         {

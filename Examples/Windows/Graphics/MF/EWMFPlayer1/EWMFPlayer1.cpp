@@ -25,7 +25,7 @@
 
 class MyForm : public Form
 {
-    Player* player_ = nullptr;
+    Com::HeapObject<Player>* player_ = nullptr;
 public:
     using Base = Form;
     MyForm()
@@ -65,7 +65,7 @@ void MyForm::DoOnHandleCreated()
 {
     Base::DoOnHandleCreated();
     auto windowHandle = GetHandle();
-    player_ = new Player(windowHandle);
+    player_ = new Com::HeapObject<Player>(windowHandle);
 }
 void MyForm::DoBeforeHandleDestroy()
 {

@@ -19,7 +19,7 @@
 #include <HWHandles.h>
 #include <HCCException.h>
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Graphics
 {
     namespace Imaging
     {

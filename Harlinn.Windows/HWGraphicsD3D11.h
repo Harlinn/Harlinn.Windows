@@ -25,13 +25,84 @@
 
 namespace Harlinn::Windows::Graphics::D3D11
 {
+    class DeviceChild;
+    class DepthStencilState;
+    class BlendState;
+    class RasterizerState;
+    class Resource;
+    class Buffer;
+    class Texture1D;
+    class Texture2D;
+    class Texture3D;
+    class View;
+    class ShaderResourceView;
+    class RenderTargetView;
+    class DepthStencilView;
+    class UnorderedAccessView;
+    class VertexShader;
+    class HullShader;
+    class DomainShader;
+    class GeometryShader;
+    class PixelShader;
+    class ComputeShader;
+    class InputLayout;
+    class SamplerState;
+    class Asynchronous;
+    class Query;
+    class Predicate;
+    class Counter;
+    class ClassInstance;
+    class ClassLinkage;
+    class CommandList;
+    class DeviceContext;
+    class VideoDecoder;
+    class VideoProcessorEnumerator;
+    class VideoProcessor;
+    class AuthenticatedChannel;
+    class CryptoSession;
+    class VideoDecoderOutputView;
+    class VideoProcessorInputView;
+    class VideoProcessorOutputView;
+    class VideoContext;
+    class VideoDevice;
+    class Device;
+    class BlendState1;
+    class RasterizerState1;
+    class DeviceContextState;
+    class DeviceContext1;
+    class VideoContext1;
+    class VideoDevice1;
+    class VideoProcessorEnumerator1;
+    class Device1;
+    class UserDefinedAnnotation;
+    class DeviceContext2;
+    class Device2;
+    class Texture2D1;
+    class Texture3D1;
+    class RasterizerState2;
+    class ShaderResourceView1;
+    class RenderTargetView1;
+    class UnorderedAccessView1;
+    class Query1;
+    class DeviceContext3;
+    class Fence;
+    class DeviceContext4;
+    class Device3;
+    class Device4;
+    class Device5;
+    class Multithread;
+    class VideoContext2;
+    class VideoDevice2;
+    class VideoContext3;
+
+
     /// <summary>
     /// A device-child object accesses data used by a device.
     /// </summary>
-    class D3D11DeviceChild : public Unknown
+    class DeviceChild : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DeviceChild, Unknown)
+        HCC_COM_STANDARD_METHODS_IMPL(DeviceChild, Unknown, ID3D11DeviceChild, IUnknown )
     public:
         void GetDevice(ID3D11Device** device) const
         {
@@ -66,10 +137,10 @@ namespace Harlinn::Windows::Graphics::D3D11
     /// The depth-stencil-state object holds a description for depth-stencil 
     /// state that you can bind to the output-merger stage.
     /// </summary>
-    class D3D11DepthStencilState : public D3D11DeviceChild
+    class DepthStencilState : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DepthStencilState, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(DepthStencilState, DeviceChild, ID3D11DepthStencilState, ID3D11DeviceChild )
     public:
         void GetDesc(D3D11_DEPTH_STENCIL_DESC* desc) const
         {
@@ -83,10 +154,10 @@ namespace Harlinn::Windows::Graphics::D3D11
     /// The blend-state object holds a description for blending state 
     /// that you can bind to the output-merger stage.
     /// </summary>
-    class D3D11BlendState : public D3D11DeviceChild
+    class BlendState : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11BlendState, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(BlendState, DeviceChild, ID3D11BlendState, ID3D11DeviceChild )
     public:
         void GetDesc(D3D11_BLEND_DESC* desc) const
         {
@@ -99,10 +170,10 @@ namespace Harlinn::Windows::Graphics::D3D11
     /// The rasterizer-state object holds a description for rasterizer 
     /// state that you can bind to the rasterizer stage.
     /// </summary>
-    class D3D11RasterizerState : public D3D11DeviceChild
+    class RasterizerState : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11RasterizerState, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(RasterizerState, DeviceChild, ID3D11RasterizerState, ID3D11DeviceChild )
     public:
         void GetDesc(D3D11_RASTERIZER_DESC* desc) const
         {
@@ -114,10 +185,10 @@ namespace Harlinn::Windows::Graphics::D3D11
     /// <summary>
     /// A resource object provides common actions on all resources.
     /// </summary>
-    class D3D11Resource : public D3D11DeviceChild
+    class Resource : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Resource, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(Resource, DeviceChild, ID3D11Resource, ID3D11DeviceChild )
     public:
         void GetType(D3D11_RESOURCE_DIMENSION* resourceDimension) const
         {
@@ -142,10 +213,10 @@ namespace Harlinn::Windows::Graphics::D3D11
     /// A buffer object accesses a buffer resource, which is unstructured 
     /// memory. Buffers typically store vertex or index data.
     /// </summary>
-    class D3D11Buffer : public D3D11Resource
+    class Buffer : public Resource
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Buffer, D3D11Resource)
+        HCC_COM_STANDARD_METHODS_IMPL(Buffer, Resource, ID3D11Buffer, ID3D11Resource )
     public:
         void GetDesc(D3D11_BUFFER_DESC* desc) const
         {
@@ -157,10 +228,10 @@ namespace Harlinn::Windows::Graphics::D3D11
     /// <summary>
     /// A 1D texture object accesses texel data, which is structured memory.
     /// </summary>
-    class D3D11Texture1D : public D3D11Resource
+    class Texture1D : public Resource
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Texture1D, D3D11Resource)
+        HCC_COM_STANDARD_METHODS_IMPL(Texture1D, Resource, ID3D11Texture1D, ID3D11Resource )
     public:
         void GetDesc(D3D11_TEXTURE1D_DESC* desc) const
         {
@@ -172,10 +243,10 @@ namespace Harlinn::Windows::Graphics::D3D11
     /// <summary>
     /// A 2D texture object manages texel data, which is structured memory.
     /// </summary>
-    class D3D11Texture2D : public D3D11Resource
+    class Texture2D : public Resource
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Texture2D, D3D11Resource)
+        HCC_COM_STANDARD_METHODS_IMPL(Texture2D, Resource, ID3D11Texture2D, ID3D11Resource )
     public:
         void GetDesc(D3D11_TEXTURE2D_DESC* desc) const
         {
@@ -184,10 +255,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Texture3D : public D3D11Resource
+    /// <summary>
+    /// A 3D texture object accesses texel data, which is structured memory.
+    /// </summary>
+    class Texture3D : public Resource
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Texture3D, D3D11Resource)
+        HCC_COM_STANDARD_METHODS_IMPL(Texture3D, Resource, ID3D11Texture3D, ID3D11Resource )
     public:
         void GetDesc(D3D11_TEXTURE3D_DESC* desc) const
         {
@@ -197,10 +271,13 @@ namespace Harlinn::Windows::Graphics::D3D11
     };
 
 
-    class D3D11View : public D3D11DeviceChild
+    /// <summary>
+    /// A view object specifies the parts of a resource the pipeline can access during rendering.
+    /// </summary>
+    class View : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11View, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(View, DeviceChild, ID3D11View, ID3D11DeviceChild )
     public:
         void GetResource(ID3D11Resource** resource) const
         {
@@ -209,11 +286,15 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-
-    class D3D11ShaderResourceView : public D3D11View
+    /// <summary>
+    /// A shader-resource-view object specifies the sub-resources a shader 
+    /// can access during rendering. Examples of shader resources include 
+    /// a constant buffer, a texture buffer, and a texture.
+    /// </summary>
+    class ShaderResourceView : public View
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11ShaderResourceView, D3D11View)
+        HCC_COM_STANDARD_METHODS_IMPL(ShaderResourceView, View, ID3D11ShaderResourceView, ID3D11View )
     public:
         void GetDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) const
         {
@@ -222,11 +303,14 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-
-    class D3D11RenderTargetView : public D3D11View
+    /// <summary>
+    /// A render-target-view object identifies the render-target 
+    /// sub-resources that can be accessed during rendering.
+    /// </summary>
+    class RenderTargetView : public View
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11RenderTargetView, D3D11View)
+        HCC_COM_STANDARD_METHODS_IMPL(RenderTargetView, View, ID3D11RenderTargetView, ID3D11View )
     public:
         void GetDesc(D3D11_RENDER_TARGET_VIEW_DESC* desc) const
         {
@@ -235,10 +319,14 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11DepthStencilView : public D3D11View
+    /// <summary>
+    /// A depth-stencil-view object accesses a texture resource during 
+    /// depth-stencil testing.
+    /// </summary>
+    class DepthStencilView : public View
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DepthStencilView, D3D11View)
+        HCC_COM_STANDARD_METHODS_IMPL(DepthStencilView, View, ID3D11DepthStencilView, ID3D11View )
     public:
         void GetDesc(D3D11_DEPTH_STENCIL_VIEW_DESC* desc) const
         {
@@ -247,10 +335,14 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11UnorderedAccessView : public D3D11View
+    /// <summary>
+    /// A view object specifies the parts of a resource the pipeline can 
+    /// access during rendering.
+    /// </summary>
+    class UnorderedAccessView : public View
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11UnorderedAccessView, D3D11View)
+        HCC_COM_STANDARD_METHODS_IMPL(UnorderedAccessView, View, ID3D11UnorderedAccessView, ID3D11View )
     public:
         void GetDesc(D3D11_UNORDERED_ACCESS_VIEW_DESC* desc) const
         {
@@ -259,66 +351,100 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VertexShader : public D3D11DeviceChild
+    /// <summary>
+    /// A vertex-shader object manages an executable program (a vertex shader) 
+    /// that controls the vertex-shader stage.
+    /// </summary>
+    class VertexShader : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VertexShader, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(VertexShader, DeviceChild, ID3D11VertexShader, ID3D11DeviceChild )
     public:
 
     };
 
-    class D3D11HullShader : public D3D11DeviceChild
+    /// <summary>
+    /// A hull-shader object manages an executable program (a hull shader) 
+    /// that controls the hull-shader stage.
+    /// </summary>
+    class HullShader : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11HullShader, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(HullShader, DeviceChild, ID3D11HullShader, ID3D11DeviceChild )
     public:
 
     };
 
-    class D3D11DomainShader : public D3D11DeviceChild
+    /// <summary>
+    /// A domain-shader object manages an executable program (a domain shader) 
+    /// that controls the domain-shader stage.
+    /// </summary>
+    class DomainShader : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DomainShader, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(DomainShader, DeviceChild, ID3D11DomainShader, ID3D11DeviceChild )
     public:
 
     };
 
-    class D3D11GeometryShader : public D3D11DeviceChild
+    /// <summary>
+    /// A geometry-shader object manages an executable program (a geometry shader) 
+    /// that controls the geometry-shader stage.
+    /// </summary>
+    class GeometryShader : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11GeometryShader, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(GeometryShader, DeviceChild, ID3D11GeometryShader, ID3D11DeviceChild )
     public:
 
     };
 
-    class D3D11PixelShader : public D3D11DeviceChild
+    /// <summary>
+    /// A pixel-shader object manages an executable program (a pixel shader) 
+    /// that controls the pixel-shader stage.
+    /// </summary>
+    class PixelShader : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11PixelShader, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(PixelShader, DeviceChild, ID3D11PixelShader, ID3D11DeviceChild )
     public:
 
     };
 
-    class D3D11ComputeShader : public D3D11DeviceChild
+    /// <summary>
+    /// A compute-shader object manages an executable program (a compute shader) 
+    /// that controls the compute-shader stage.
+    /// </summary>
+    class ComputeShader : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11ComputeShader, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(ComputeShader, DeviceChild, ID3D11ComputeShader, ID3D11DeviceChild )
     public:
 
     };
 
-    class D3D11InputLayout : public D3D11DeviceChild
+    /// <summary>
+    /// An input-layout interface holds a definition of how to feed 
+    /// vertex data that is laid out in memory into the input-assembler 
+    /// stage of the graphics pipeline.
+    /// </summary>
+    class InputLayout : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11InputLayout, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(InputLayout, DeviceChild, ID3D11InputLayout, ID3D11DeviceChild )
     public:
 
     };
 
-    class D3D11SamplerState : public D3D11DeviceChild
+    /// <summary>
+    /// The sampler-state object holds a description for sampler state 
+    /// that you can bind to any shader stage of the pipeline for 
+    /// reference by texture sample operations.
+    /// </summary>
+    class SamplerState : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11SamplerState, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(SamplerState, DeviceChild, ID3D11SamplerState, ID3D11DeviceChild )
     public:
         void GetDesc(D3D11_SAMPLER_DESC* desc) const
         {
@@ -327,10 +453,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Asynchronous : public D3D11DeviceChild
+    /// <summary>
+    /// This object encapsulates methods for retrieving data from the GPU asynchronously.
+    /// </summary>
+    class Asynchronous : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Asynchronous, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(Asynchronous, DeviceChild, ID3D11Asynchronous, ID3D11DeviceChild )
     public:
         UINT GetDataSize() const
         {
@@ -339,10 +468,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Query : public D3D11Asynchronous
+    /// <summary>
+    /// A query object queries information from the GPU.
+    /// </summary>
+    class Query : public Asynchronous
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Query, D3D11Asynchronous)
+        HCC_COM_STANDARD_METHODS_IMPL(Query, Asynchronous, ID3D11Query, ID3D11Asynchronous )
     public:
         void GetDesc(D3D11_QUERY_DESC* desc) const
         {
@@ -351,17 +483,24 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Predicate : public D3D11Query
+    /// <summary>
+    /// A predicate object determines whether geometry should be processed 
+    /// depending on the results of a previous draw call.
+    /// </summary>
+    class Predicate : public Query
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Predicate, D3D11Query)
+        HCC_COM_STANDARD_METHODS_IMPL(Predicate, Query, ID3D11Predicate, ID3D11Query )
     public:
     };
 
-    class D3D11Counter : public D3D11Asynchronous
+    /// <summary>
+    /// This object encapsulates methods for measuring GPU performance.
+    /// </summary>
+    class Counter : public Asynchronous
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Counter, D3D11Asynchronous)
+        HCC_COM_STANDARD_METHODS_IMPL(Counter, Asynchronous, ID3D11Counter, ID3D11Asynchronous )
     public:
         void GetDesc(D3D11_COUNTER_DESC* desc) const
         {
@@ -370,10 +509,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11ClassInstance : public D3D11DeviceChild
+    /// <summary>
+    /// This object encapsulates an HLSL class.
+    /// </summary>
+    class ClassInstance : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11ClassInstance, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(ClassInstance, DeviceChild, ID3D11ClassInstance, ID3D11DeviceChild )
     public:
         void GetClassLinkage(ID3D11ClassLinkage** ppLinkage) const
         {
@@ -400,10 +542,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11ClassLinkage : public D3D11DeviceChild
+    /// <summary>
+    /// This object encapsulates an HLSL dynamic linkage.
+    /// </summary>
+    class ClassLinkage : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11ClassLinkage, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(ClassLinkage, DeviceChild, ID3D11ClassLinkage, ID3D11DeviceChild )
     public:
         void GetClassInstance( LPCSTR classInstanceName, UINT instanceIndex, ID3D11ClassInstance** instance) const
         {
@@ -420,10 +565,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11CommandList : public D3D11DeviceChild
+    /// <summary>
+    /// This object encapsulates a list of graphics commands for play back.
+    /// </summary>
+    class CommandList : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11CommandList, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(CommandList, DeviceChild, ID3D11CommandList, ID3D11DeviceChild )
     public:
         UINT GetContextFlags() const
         {
@@ -432,10 +580,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11DeviceContext : public D3D11DeviceChild
+    /// <summary>
+    /// Represents a device context which generates rendering commands.
+    /// </summary>
+    class DeviceContext : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DeviceContext, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(DeviceContext, DeviceChild, ID3D11DeviceContext, ID3D11DeviceChild )
     public:
         void VSSetConstantBuffers( UINT startSlot, UINT numberOfBuffers, ID3D11Buffer* const* constantBuffers) const
         {
@@ -1089,10 +1240,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoDecoder : public D3D11DeviceChild
+    /// <summary>
+    /// Represents a hardware-accelerated video decoder for Microsoft Direct3D 11.
+    /// </summary>
+    class VideoDecoder : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoDecoder, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoDecoder, DeviceChild, ID3D11VideoDecoder, ID3D11DeviceChild )
     public:
         void GetCreationParameters( D3D11_VIDEO_DECODER_DESC* videoDecoderDesc, D3D11_VIDEO_DECODER_CONFIG* videoDecoderConfig) const
         {
@@ -1109,10 +1263,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoProcessorEnumerator : public D3D11DeviceChild
+    /// <summary>
+    /// Enumerates the video processor capabilities of a Microsoft Direct3D 11 device.
+    /// </summary>
+    class VideoProcessorEnumerator : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoProcessorEnumerator, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoProcessorEnumerator, DeviceChild, ID3D11VideoProcessorEnumerator, ID3D11DeviceChild )
     public:
         void GetVideoProcessorContentDesc( D3D11_VIDEO_PROCESSOR_CONTENT_DESC* contentDesc) const
         {
@@ -1157,10 +1314,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoProcessor : public D3D11DeviceChild
+    /// <summary>
+    /// Represents a video processor for Microsoft Direct3D 11.
+    /// </summary>
+    class VideoProcessor : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoProcessor, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoProcessor, DeviceChild, ID3D11VideoProcessor, ID3D11DeviceChild )
     public:
         void GetContentDesc(D3D11_VIDEO_PROCESSOR_CONTENT_DESC* videoProcessorContentDesc) const
         {
@@ -1175,10 +1335,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11AuthenticatedChannel : public D3D11DeviceChild
+    /// <summary>
+    /// Provides a communication channel with the graphics driver or the Microsoft Direct3D runtime.
+    /// </summary>
+    class AuthenticatedChannel : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11AuthenticatedChannel, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(AuthenticatedChannel, DeviceChild, ID3D11AuthenticatedChannel, ID3D11DeviceChild )
     public:
         void GetCertificateSize(UINT* certificateSize) const
         {
@@ -1201,10 +1364,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11CryptoSession : public D3D11DeviceChild
+    /// <summary>
+    /// Represents a cryptographic session.
+    /// </summary>
+    class CryptoSession : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11CryptoSession, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(CryptoSession, DeviceChild, ID3D11CryptoSession, ID3D11DeviceChild )
     public:
         void GetCryptoType(Guid* cryptoType) const
         {
@@ -1239,10 +1405,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoDecoderOutputView : public D3D11View
+    /// <summary>
+    /// Identifies the output surfaces that can be accessed during video decoding.
+    /// </summary>
+    class VideoDecoderOutputView : public View
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoDecoderOutputView, D3D11View)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoDecoderOutputView, View, ID3D11VideoDecoderOutputView, ID3D11View )
     public:
         void GetDesc(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC* desc) const
         {
@@ -1251,10 +1420,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoProcessorInputView : public D3D11View
+    /// <summary>
+    /// Identifies the input surfaces that can be accessed during video processing.
+    /// </summary>
+    class VideoProcessorInputView : public View
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoProcessorInputView, D3D11View)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoProcessorInputView, View, ID3D11VideoProcessorInputView, ID3D11View )
     public:
         void GetDesc(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC* desc) const
         {
@@ -1263,10 +1435,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoProcessorOutputView : public D3D11View
+    /// <summary>
+    /// Identifies the output surfaces that can be accessed during video processing.
+    /// </summary>
+    class VideoProcessorOutputView : public View
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoProcessorOutputView, D3D11View)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoProcessorOutputView, View, ID3D11VideoProcessorOutputView, ID3D11View )
     public:
         void GetDesc(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* desc) const
         {
@@ -1275,10 +1450,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoContext : public D3D11DeviceChild
+    /// <summary>
+    /// Provides the video functionality of a Microsoft Direct3D 11 device.
+    /// </summary>
+    class VideoContext : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoContext, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoContext, DeviceChild, ID3D11VideoContext, ID3D11DeviceChild )
     public:
         void GetDecoderBuffer( ID3D11VideoDecoder* decoder, D3D11_VIDEO_DECODER_BUFFER_TYPE type, UINT* bufferSize, void** buffer) const
         {
@@ -1645,10 +1823,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoDevice : public Unknown
+    /// <summary>
+    /// Provides the video decoding and video processing capabilities of a Microsoft Direct3D 11 device.
+    /// </summary>
+    class VideoDevice : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoDevice, Unknown)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoDevice, Unknown, ID3D11VideoDevice, IUnknown )
     public:
         void CreateVideoDecoder( const D3D11_VIDEO_DECODER_DESC* videoDesc, const D3D11_VIDEO_DECODER_CONFIG* config, ID3D11VideoDecoder** decoder) const
         {
@@ -1769,10 +1950,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Device : public Unknown
+    /// <summary>
+    /// The device object represents a virtual adapter; it is used to create resources.
+    /// </summary>
+    class Device : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Device, Unknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Device, Unknown, ID3D11Device, IUnknown )
     public:
         void CreateBuffer( const D3D11_BUFFER_DESC* bufferDesc, const D3D11_SUBRESOURCE_DATA* initialData, ID3D11Buffer** buffer) const
         {
@@ -2050,10 +2234,15 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11BlendState1 : public D3D11BlendState
+    /// <summary>
+    /// The blend-state object holds a description for blending state that 
+    /// you can bind to the output-merger stage. This blend-state object 
+    /// supports logical operations as well as blending operations.
+    /// </summary>
+    class BlendState1 : public BlendState
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11BlendState1, D3D11BlendState)
+        HCC_COM_STANDARD_METHODS_IMPL(BlendState1, BlendState, ID3D11BlendState1, ID3D11BlendState )
     public:
         void GetDesc1(D3D11_BLEND_DESC1* blendDesc1) const
         {
@@ -2062,10 +2251,15 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11RasterizerState1 : public D3D11RasterizerState
+    /// <summary>
+    /// The rasterizer-state object holds a description for rasterizer 
+    /// state that you can bind to the rasterizer stage. This rasterizer-state 
+    /// class supports forced sample count.
+    /// </summary>
+    class RasterizerState1 : public RasterizerState
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11RasterizerState1, D3D11RasterizerState)
+        HCC_COM_STANDARD_METHODS_IMPL(RasterizerState1, RasterizerState, ID3D11RasterizerState1, ID3D11RasterizerState )
     public:
         void GetDesc1(D3D11_RASTERIZER_DESC1* rasterizerDesc1) const
         {
@@ -2074,17 +2268,24 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3DDeviceContextState : public D3D11DeviceChild
+    /// <summary>
+    /// Represents a context state object, which holds state and 
+    /// behavior information about a Microsoft Direct3D device.
+    /// </summary>
+    class DeviceContextState : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3DDeviceContextState, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(DeviceContextState, DeviceChild, ID3DDeviceContextState, ID3D11DeviceChild )
     public:
     };
 
-    class D3D11DeviceContext1 : public D3D11DeviceContext
+    /// <summary>
+    /// Represents a device context; it is used to render commands.
+    /// </summary>
+    class DeviceContext1 : public DeviceContext
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DeviceContext1, D3D11DeviceContext)
+        HCC_COM_STANDARD_METHODS_IMPL(DeviceContext1, DeviceContext, ID3D11DeviceContext1, ID3D11DeviceContext )
     public:
         void CopySubresourceRegion1( ID3D11Resource* dstResource, UINT dstSubresource, UINT dstX, UINT dstY, UINT dstZ, ID3D11Resource* srcResource, UINT srcSubresource, const D3D11_BOX* srcBox, UINT copyFlags) const
         {
@@ -2201,10 +2402,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoContext1 : public D3D11VideoContext
+    /// <summary>
+    /// Provides the video functionality of a Microsoft Direct3D 11 device.
+    /// </summary>
+    class VideoContext1 : public VideoContext
     {
     public:                                                
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoContext1, D3D11VideoContext)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoContext1, VideoContext, ID3D11VideoContext1, ID3D11VideoContext )
     public:
         void SubmitDecoderBuffers1( ID3D11VideoDecoder* decoder, UINT numBuffers, const D3D11_VIDEO_DECODER_BUFFER_DESC1* bufferDesc) const
         {
@@ -2297,10 +2501,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoDevice1 : public D3D11VideoDevice
+    /// <summary>
+    /// Provides the video decoding and video processing capabilities of a Microsoft Direct3D 11 device.
+    /// </summary>
+    class VideoDevice1 : public VideoDevice
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoDevice1, D3D11VideoDevice)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoDevice1, VideoDevice, ID3D11VideoDevice1, ID3D11VideoDevice )
     public:
         void GetCryptoSessionPrivateDataSize( const GUID* cryptoType, const GUID* decoderProfile, const GUID* keyExchangeType, UINT* privateInputSize, UINT* privateOutputSize) const
         {
@@ -2331,10 +2538,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoProcessorEnumerator1 : public D3D11VideoProcessorEnumerator
+    /// <summary>
+    /// Enumerates the video processor capabilities of a Microsoft Direct3D 11 device.
+    /// </summary>
+    class VideoProcessorEnumerator1 : public VideoProcessorEnumerator
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoProcessorEnumerator1, D3D11VideoProcessorEnumerator)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoProcessorEnumerator1, VideoProcessorEnumerator, ID3D11VideoProcessorEnumerator1, ID3D11VideoProcessorEnumerator )
     public:
         void CheckVideoProcessorFormatConversion( DXGI_FORMAT inputFormat, DXGI_COLOR_SPACE_TYPE inputColorSpace, DXGI_FORMAT outputFormat, DXGI_COLOR_SPACE_TYPE outputColorSpace, BOOL* supported) const
         {
@@ -2344,10 +2554,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Device1 : public D3D11Device
+    /// <summary>
+    /// The device interface represents a virtual adapter; it is used to create resources.
+    /// </summary>
+    class Device1 : public Device
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Device1, D3D11Device)
+        HCC_COM_STANDARD_METHODS_IMPL(Device1, Device, ID3D11Device1, ID3D11Device )
     public:
         void GetImmediateContext1(ID3D11DeviceContext1** immediateContext) const
         {
@@ -2398,10 +2611,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3DUserDefinedAnnotation : public Unknown
+    /// <summary>
+    /// Enables an application to describe conceptual sections and markers within the application's code flow. 
+    /// </summary>
+    class UserDefinedAnnotation : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3DUserDefinedAnnotation, Unknown)
+        HCC_COM_STANDARD_METHODS_IMPL(UserDefinedAnnotation, Unknown, ID3DUserDefinedAnnotation, IUnknown )
     public:
         INT BeginEvent(LPCWSTR name) const
         {
@@ -2428,11 +2644,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-
-    class D3D11DeviceContext2 : public D3D11DeviceContext1
+    /// <summary>
+    /// The device context interface represents a device context; it is used to render commands.
+    /// </summary>
+    class DeviceContext2 : public DeviceContext1
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DeviceContext2, D3D11DeviceContext1)
+        HCC_COM_STANDARD_METHODS_IMPL(DeviceContext2, DeviceContext1, ID3D11DeviceContext2, ID3D11DeviceContext1 )
     public:
         void UpdateTileMappings( ID3D11Resource* tiledResource, UINT numTiledResourceRegions, const D3D11_TILED_RESOURCE_COORDINATE* tiledResourceRegionStartCoordinates, const D3D11_TILE_REGION_SIZE* tiledResourceRegionSizes, ID3D11Buffer* tilePool, UINT numRanges, const UINT* rangeFlags, const UINT* tilePoolStartOffsets, const UINT* rangeTileCounts, UINT flags) const
         {
@@ -2498,10 +2716,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Device2 : public D3D11Device1
+    /// <summary>
+    /// The Device2 class represents a virtual adapter; it is used to create resources.
+    /// </summary>
+    class Device2 : public Device1
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Device2, D3D11Device1)
+        HCC_COM_STANDARD_METHODS_IMPL(Device2, Device1, ID3D11Device2, ID3D11Device1 )
     public:
         void GetImmediateContext2( ID3D11DeviceContext2** immediateContext) const
         {
@@ -2530,11 +2751,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-
-    class D3D11Texture2D1 : public D3D11Texture2D
+    /// <summary>
+    /// Represents texel data, which is structured memory.
+    /// </summary>
+    class Texture2D1 : public Texture2D
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Texture2D1, D3D11Texture2D)
+        HCC_COM_STANDARD_METHODS_IMPL(Texture2D1, Texture2D, ID3D11Texture2D1, ID3D11Texture2D )
     public:
         void GetDesc1(D3D11_TEXTURE2D_DESC1* desc) const
         {
@@ -2543,10 +2766,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Texture3D1 : public D3D11Texture3D
+    /// <summary>
+    /// A 3D texture object represents texel data, which is structured memory.
+    /// </summary>
+    class Texture3D1 : public Texture3D
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Texture3D1, D3D11Texture3D)
+        HCC_COM_STANDARD_METHODS_IMPL(Texture3D1, Texture3D, ID3D11Texture3D1, ID3D11Texture3D )
     public:
         void GetDesc1(D3D11_TEXTURE3D_DESC1* desc) const
         {
@@ -2555,10 +2781,15 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11RasterizerState2 : public D3D11RasterizerState1
+    /// <summary>
+    /// The rasterizer-state object holds a description for rasterizer 
+    /// state that you can bind to the rasterizer stage. This rasterizer-state 
+    /// class supports forced sample count and conservative rasterization mode.
+    /// </summary>
+    class RasterizerState2 : public RasterizerState1
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11RasterizerState2, D3D11RasterizerState1)
+        HCC_COM_STANDARD_METHODS_IMPL(RasterizerState2, RasterizerState1, ID3D11RasterizerState2, ID3D11RasterizerState1 )
     public:
         void GetDesc2(D3D11_RASTERIZER_DESC2* desc) const
         {
@@ -2567,10 +2798,15 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11ShaderResourceView1 : public D3D11ShaderResourceView
+    /// <summary>
+    /// A shader-resource-view object represents the subresources a shader 
+    /// can access during rendering. Examples of shader resources include 
+    /// a constant buffer, a texture buffer, and a texture.
+    /// </summary>
+    class ShaderResourceView1 : public ShaderResourceView
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11ShaderResourceView1, D3D11ShaderResourceView)
+        HCC_COM_STANDARD_METHODS_IMPL(ShaderResourceView1, ShaderResourceView, ID3D11ShaderResourceView1, ID3D11ShaderResourceView )
     public:
         void GetDesc1(D3D11_SHADER_RESOURCE_VIEW_DESC1* desc) const
         {
@@ -2579,10 +2815,14 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11RenderTargetView1 : public D3D11RenderTargetView
+    /// <summary>
+    /// A render-target-view object represents the render-target subresources 
+    /// that can be accessed during rendering.
+    /// </summary>
+    class RenderTargetView1 : public RenderTargetView
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11RenderTargetView1, D3D11RenderTargetView)
+        HCC_COM_STANDARD_METHODS_IMPL(RenderTargetView1, RenderTargetView, ID3D11RenderTargetView1, ID3D11RenderTargetView )
     public:
         void GetDesc1(D3D11_RENDER_TARGET_VIEW_DESC1* desc) const
         {
@@ -2591,10 +2831,14 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11UnorderedAccessView1 : public D3D11UnorderedAccessView
+    /// <summary>
+    /// An unordered-access-view object represents the parts of a 
+    /// resource the pipeline can access during rendering.
+    /// </summary>
+    class UnorderedAccessView1 : public UnorderedAccessView
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11UnorderedAccessView1, D3D11UnorderedAccessView)
+        HCC_COM_STANDARD_METHODS_IMPL(UnorderedAccessView1, UnorderedAccessView, ID3D11UnorderedAccessView1, ID3D11UnorderedAccessView )
     public:
         void GetDesc1(D3D11_UNORDERED_ACCESS_VIEW_DESC1* desc) const
         {
@@ -2603,10 +2847,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Query1 : public D3D11Query
+    /// <summary>
+    /// Represents a query object for querying information from the graphics processing unit (GPU).
+    /// </summary>
+    class Query1 : public Query
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Query1, D3D11Query)
+        HCC_COM_STANDARD_METHODS_IMPL(Query1, Query, ID3D11Query1, ID3D11Query )
     public:
         void GetDesc1(D3D11_QUERY_DESC1* desc) const
         {
@@ -2615,10 +2862,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11DeviceContext3 : public D3D11DeviceContext2
+    /// <summary>
+    /// The device context class represents a device context; it is used to render commands.
+    /// </summary>
+    class DeviceContext3 : public DeviceContext2
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DeviceContext3, D3D11DeviceContext2)
+        HCC_COM_STANDARD_METHODS_IMPL(DeviceContext3, DeviceContext2, ID3D11DeviceContext3, ID3D11DeviceContext2 )
     public:
         void Flush1(D3D11_CONTEXT_TYPE contextType, HANDLE hEvent) const
         {
@@ -2639,10 +2889,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Fence : public D3D11DeviceChild
+    /// <summary>
+    /// Represents a fence, an object used for synchronization of the CPU and one or more GPUs.
+    /// </summary>
+    class Fence : public DeviceChild
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Fence, D3D11DeviceChild)
+        HCC_COM_STANDARD_METHODS_IMPL(Fence, DeviceChild, ID3D11Fence, ID3D11DeviceChild )
     public:
         void CreateSharedHandle( const SECURITY_ATTRIBUTES* securityAttributes, DWORD access, LPCWSTR name, HANDLE* handle) const
         {
@@ -2665,10 +2918,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11DeviceContext4 : public D3D11DeviceContext3
+    /// <summary>
+    /// The device context interface represents a device context; it is used to render commands.
+    /// </summary>
+    class DeviceContext4 : public DeviceContext3
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11DeviceContext4, D3D11DeviceContext3)
+        HCC_COM_STANDARD_METHODS_IMPL(DeviceContext4, DeviceContext3, ID3D11DeviceContext4, ID3D11DeviceContext3 )
     public:
         void Signal( ID3D11Fence* fence, UINT64 Value) const
         {
@@ -2685,11 +2941,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-
-    class D3D11Device3 : public D3D11Device2
+    /// <summary>
+    /// The device interface represents a virtual adapter; it is used to create resources.
+    /// </summary>
+    class Device3 : public Device2
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Device3, D3D11Device2)
+        HCC_COM_STANDARD_METHODS_IMPL(Device3, Device2, ID3D11Device3, ID3D11Device2 )
     public:
         void CreateTexture2D1( const D3D11_TEXTURE2D_DESC1* desc, const D3D11_SUBRESOURCE_DATA* initialData, ID3D11Texture2D1** texture2D) const
         {
@@ -2766,11 +3024,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-
-    class D3D11Device4 : public D3D11Device3
+    /// <summary>
+    /// The device class represents a virtual adapter; it is used to create resources.
+    /// </summary>
+    class Device4 : public Device3
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Device4, D3D11Device3)
+        HCC_COM_STANDARD_METHODS_IMPL(Device4, Device3, ID3D11Device4, ID3D11Device3 )
     public:
         void RegisterDeviceRemovedEvent(HANDLE hEvent, DWORD* cookie) const
         {
@@ -2787,10 +3047,13 @@ namespace Harlinn::Windows::Graphics::D3D11
     };
 
 
-    class D3D11Device5 : public D3D11Device4
+    /// <summary>
+    /// The device class represents a virtual adapter; it is used to create resources.
+    /// </summary>
+    class Device5 : public Device4
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Device5, D3D11Device4)
+        HCC_COM_STANDARD_METHODS_IMPL(Device5, Device4, ID3D11Device5, ID3D11Device4 )
     public:
         void OpenSharedFence( HANDLE hFence, const Guid& returnedInterfaceId, void** fence) const
         {
@@ -2807,10 +3070,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11Multithread : public Unknown
+    /// <summary>
+    /// Provides threading protection for critical sections of a multi-threaded application.
+    /// </summary>
+    class Multithread : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11Multithread, Unknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Multithread, Unknown, ID3D11Multithread, IUnknown )
     public:
         void Enter() const
         {
@@ -2837,11 +3103,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-
-    class D3D11VideoContext2 : public D3D11VideoContext1
+    /// <summary>
+    /// Provides the video functionality of a Microsoft Direct3D 11 device.
+    /// </summary>
+    class VideoContext2 : public VideoContext1
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoContext2, D3D11VideoContext1)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoContext2, VideoContext1, ID3D11VideoContext2, ID3D11VideoContext1 )
     public:
         void VideoProcessorSetOutputHDRMetaData( ID3D11VideoProcessor* videoProcessor, DXGI_HDR_METADATA_TYPE type, UINT metaDataSize, const void* metaData) const
         {
@@ -2868,10 +3136,15 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoDevice2 : public D3D11VideoDevice1
+    /// <summary>
+    /// Provides the video decoding and video processing capabilities of a Microsoft 
+    /// Direct3D 11 device. Adds the CheckFeatureSupport method for querying for 
+    /// decoding capabilities.
+    /// </summary>
+    class VideoDevice2 : public VideoDevice1
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoDevice2, D3D11VideoDevice1)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoDevice2, VideoDevice1, ID3D11VideoDevice2, ID3D11VideoDevice1 )
     public:
         void CheckFeatureSupport(D3D11_FEATURE_VIDEO feature, void* featureSupportData, UINT featureSupportDataSize) const
         {
@@ -2888,10 +3161,14 @@ namespace Harlinn::Windows::Graphics::D3D11
         }
     };
 
-    class D3D11VideoContext3 : public D3D11VideoContext2
+    /// <summary>
+    /// Provides the video functionality of a Microsoft Direct3D 11 device. This class provides 
+    /// the DecoderBeginFrame1 method, which provides support for decode histograms.
+    /// </summary>
+    class VideoContext3 : public VideoContext2
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11VideoContext3, D3D11VideoContext2)
+        HCC_COM_STANDARD_METHODS_IMPL(VideoContext3, VideoContext2, ID3D11VideoContext3, ID3D11VideoContext2 )
     public:
         void DecoderBeginFrame1( ID3D11VideoDecoder* decoder, ID3D11VideoDecoderOutputView* videoDecoderOutputView, UINT contentKeySize, const void* contentKey, UINT numComponentHistograms, const UINT* histogramOffsets, ID3D11Buffer* const* histogramBuffers) const
         {

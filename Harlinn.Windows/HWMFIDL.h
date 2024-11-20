@@ -161,7 +161,12 @@ namespace Harlinn::Windows
 
 
 
-
+    /// <summary>
+    /// Provides playback controls for protected and unprotected content. 
+    /// The Media Session and the protected media path (PMP) session objects 
+    /// expose this interface. This interface is the primary interface that 
+    /// applications use to control the Media Foundation pipeline.
+    /// </summary>
     class MFMediaSession : public MFMediaEventGenerator
     {
     public:
@@ -272,7 +277,9 @@ namespace Harlinn::Windows
 
     };
 
-
+    /// <summary>
+    /// Creates a media source from a URL or a byte stream. 
+    /// </summary>
     class MFSourceResolver : public Unknown
     {
     public:
@@ -355,7 +362,14 @@ namespace Harlinn::Windows
         }
     };
 
-    
+    /// <summary>
+    /// Base class for media source objects.
+    /// 
+    /// Media sources are objects that generate media data.For example, 
+    /// the data might come from a video file, a network stream, or a hardware 
+    /// device, such as a camera.Each media source contains one or more streams, 
+    /// and each stream delivers data of one type, such as audio or video.
+    /// </summary>
     class MFMediaSource : public MFMediaEventGenerator
     {
     public:
@@ -421,6 +435,14 @@ namespace Harlinn::Windows
         };
     };
 
+    /// <summary>
+    /// <para>
+    /// Extends the MFMediaSource class to provide additional capabilities for a media source.
+    /// </para>
+    /// <para>
+    /// To get an instance of this object call <code>MFMediaSource::As&lt;MFMediaSource&gt;()</code>
+    /// </para>
+    /// </summary>
     class MFMediaSourceEx : public MFMediaSource
     {
     public:
@@ -448,6 +470,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// 
+    /// </summary>
     class MFClockConsumer : public Unknown
     {
     public:
@@ -468,6 +493,11 @@ namespace Harlinn::Windows
         }
     };
 
+    
+
+    /// <summary>
+    /// Represents one stream in a media source.
+    /// </summary>
     class MFMediaStream : public MFMediaEventGenerator
     {
     public:
@@ -495,7 +525,10 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// This class is the base class for all Media Foundation media sinks. 
+    /// Stream sinks handle the actual processing of data on each stream.
+    /// </summary>
     class MFMediaSink : public Unknown
     {
     public:
@@ -637,7 +670,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Represents a stream on a media sink object.
+    /// </summary>
     class MFStreamSink : public MFMediaEventGenerator
     {
     public:
@@ -686,6 +721,18 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Allocates video samples for a video media sink.
+    /// </para>
+    /// <para>
+    /// The stream sinks on the enhanced video renderer (EVR) expose this interface as 
+    /// a service. To obtain a pointer to the interface, call MFGetService::GetService using 
+    /// the service identifier MR_VIDEO_ACCELERATION_SERVICE. Custom media sinks can also 
+    /// implement this interface. The Media Session uses this interface to allocate samples 
+    /// for the EVR, unless the upstream decoder supports DirectX Video Acceleration (DXVA).
+    /// </para>
+    /// </summary>
     class MFVideoSampleAllocator : public Unknown
     {
     public:
@@ -720,7 +767,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// The callback for the IMFVideoSampleAllocatorCallback interface.
+    /// </summary>
     class MFVideoSampleAllocatorNotify : public Unknown
     {
     public:
@@ -734,7 +783,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// The callback for the IMFVideoSampleAllocatorCallback interface.
+    /// </summary>
     class MFVideoSampleAllocatorNotifyEx : public MFVideoSampleAllocatorNotify
     {
     public:
@@ -748,7 +799,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Enables an application to track video samples allocated by the enhanced video renderer (EVR).
+    /// </summary>
     class MFVideoSampleAllocatorCallback : public Unknown
     {
     public:
@@ -769,6 +822,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Allocates video samples that contain Microsoft Direct3D 11 texture surfaces.
+    /// </summary>
     class MFVideoSampleAllocatorEx : public MFVideoSampleAllocator
     {
     public:
@@ -782,6 +838,10 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides functionality for getting the MFDXGIDeviceManager 
+    /// from the Microsoft Media Foundation video rendering sink.
+    /// </summary>
     class MFDXGIDeviceManagerSource : public Unknown
     {
     public:
@@ -795,7 +855,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Configures the Video Processor MFT.
+    /// </summary>
     class MFVideoProcessorControl : public Unknown
     {
     public:
@@ -845,6 +907,9 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// Configures the Video Processor MFT.
+    /// </summary>
     class MFVideoProcessorControl2 : public MFVideoProcessorControl
     {
     public:
@@ -920,7 +985,12 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Represents a topology. A topology describes a collection of media sources, sinks, and 
+    /// transforms that are connected in a certain order. These objects are represented within 
+    /// the topology by topology nodes, which expose the IMFTopologyNode interface. A topology 
+    /// describes the path of multimedia data through these nodes.
+    /// </summary>
     class MFTopology : public MFAttributes
     {
     public:
@@ -1034,6 +1104,16 @@ namespace Harlinn::Windows
     }
 
 
+    /// <summary>
+    /// Represents a node in a topology. The following node types are supported:
+    /// 
+    /// <list type="bullet">
+    ///     <item>Output node.Represents a media sink.</item>
+    ///     <item>Source node.Represents a media stream.</item>
+    ///     <item>Transform node.Represents a Media Foundation Transform( MFT ).</item>
+    ///     <item>Tee node.Delivers a media stream to two or more nodes.</item>
+    /// </list>
+    /// </summary>
     class MFTopologyNode : public MFAttributes
     {
     public:
@@ -1221,7 +1301,9 @@ namespace Harlinn::Windows
     }
 
 
-
+    /// <summary>
+    /// Queries an object for a specified service interface.
+    /// </summary>
     class MFGetService : public Unknown
     {
     public:
@@ -1254,7 +1336,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Provides timing information from a clock in Microsoft Media Foundation.
+    /// </summary>
     class MFClock : public Unknown
     {
     public:
@@ -1297,7 +1381,10 @@ namespace Harlinn::Windows
     };
 
 
-
+    /// <summary>
+    /// Represents a presentation clock, which is used to schedule when 
+    /// samples are rendered and to synchronize multiple streams.
+    /// </summary>
     class MFPresentationClock : public MFClock
     {
     public:
@@ -1369,6 +1456,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides the clock times for the presentation clock.
+    /// </summary>
     class MFPresentationTimeSource : public MFClock
     {
     public:
@@ -1390,6 +1480,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Receives state-change notifications from the presentation clock.
+    /// </summary>
     class MFClockStateSink : public Unknown
     {
     public:
@@ -1432,7 +1525,10 @@ namespace Harlinn::Windows
     };
 
 
-    
+    /// <summary>
+    /// Describes the details of a presentation. A presentation is a set of 
+    /// related media streams that share a common presentation time.
+    /// </summary>
     class MFPresentationDescriptor : public MFAttributes
     {
     public:
@@ -1497,7 +1593,9 @@ namespace Harlinn::Windows
         return MFPresentationDescriptor(itf);
     }
 
-    
+    /// <summary>
+    /// Gets information about one stream in a media source.
+    /// </summary>
     class MFStreamDescriptor : public MFAttributes
     {
     public:
@@ -1541,7 +1639,9 @@ namespace Harlinn::Windows
     }
 
 
-
+    /// <summary>
+    /// Gets and sets media types on an object, such as a media source or media sink.
+    /// </summary>
     class MFMediaTypeHandler : public Unknown
     {
     public:
@@ -1615,7 +1715,9 @@ namespace Harlinn::Windows
         return MFMediaTypeHandler(itf);
     }
 
-
+    /// <summary>
+    /// Provides a timer that invokes a callback at a specified time.
+    /// </summary>
     class MFTimer : public Unknown
     {
     public:
@@ -1636,7 +1738,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Exposed by some Media Foundation objects that must be explicitly shut down.
+    /// </summary>
     class MFShutdown : public Unknown
     {
     public:
@@ -1657,7 +1761,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Converts a partial topology into a full topology. The topology loader exposes this interface.
+    /// </summary>
     class MFTopoLoader : public Unknown
     {
     public:
@@ -1679,6 +1785,15 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Enables playback of protected content by providing the application with a 
+    /// pointer to a content enabler object.
+    /// </para>
+    /// <para>
+    /// Applications that play protected content should implement this interface.
+    /// </para>
+    /// </summary>
     class MFContentProtectionManager : public Unknown
     {
     public:
@@ -1699,6 +1814,12 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Implements one step that must be performed for the user to access media 
+    /// content. For example, the steps might be individualization followed by 
+    /// license acquisition. Each of these steps would be encapsulated by a 
+    /// content enabler object that exposes the IMFContentEnabler interface.
+    /// </summary>
     class MFContentEnabler : public Unknown
     {
     public:
@@ -1755,6 +1876,12 @@ namespace Harlinn::Windows
     };
 
 
+    /// <summary>
+    /// Manages metadata for an object. Metadata is information that describes a 
+    /// media file, stream, or other content. Metadata consists of individual 
+    /// properties, where each property contains a descriptive name and a value. 
+    /// A property may be associated with a particular language.
+    /// </summary>
     class MFMetadata : public Unknown
     {
     public:

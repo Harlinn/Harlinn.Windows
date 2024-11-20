@@ -101,7 +101,7 @@ namespace Harlinn::Windows
         }
         dxgiFactory_ = DXGI::CreateFactory<DXGI::Factory4>( true );
 #else
-        dxgiFactory_ = DXGI::CreateFactory<DXGI::Factory4>( false );
+        dxgiFactory_ = Graphics::DXGI::CreateFactory<Graphics::DXGI::Factory4>( false );
 #endif
         hardwareAdapter_ = dxgiFactory_.FindAdapter( D3D_FEATURE_LEVEL_12_1 );
         device_ = Graphics::D3D12::CreateDevice( hardwareAdapter_, D3D_FEATURE_LEVEL_12_1 );
@@ -199,7 +199,7 @@ namespace Harlinn::Windows
         return result;
     }
 
-    DXGI::SwapChain4 DXContext::CreateSwapChain( HWND windowHandle )
+    Graphics::DXGI::SwapChain4 DXContext::CreateSwapChain( HWND windowHandle )
     {
         RECT clientRect{};
         GetClientRect( windowHandle, &clientRect );
@@ -230,7 +230,7 @@ namespace Harlinn::Windows
         swapChainDesc.Scaling = DXGI_SCALING_NONE;
         swapChainDesc.Stereo = FALSE;
 
-        auto result = dxgiFactory_.CreateSwapChainForHwnd<DXGI::SwapChain4>( commandQueue_, windowHandle, &swapChainDesc );
+        auto result = dxgiFactory_.CreateSwapChainForHwnd<Graphics::DXGI::SwapChain4>( commandQueue_, windowHandle, &swapChainDesc );
         result.SetMaximumFrameLatency( BACK_BUFFERS_COUNT );
         return result;
     }
@@ -334,7 +334,7 @@ namespace Harlinn::Windows
         sd.Width = width;
         sd.Height = height;
 
-        auto dxgiFactory = swapChain_.GetParent<DXGI::Factory4>( );
+        auto dxgiFactory = swapChain_.GetParent<Graphics::DXGI::Factory4>( );
 
         swapChain_.ResetPtr();
         CloseHandle( swapChainWaitableObject_ );

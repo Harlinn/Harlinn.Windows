@@ -82,6 +82,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Graphics
     {
+        using namespace Harlinn::Windows::Graphics;
+
         void PreparePresentSDR( );
         void PreparePresentHDR( );
         void CompositeOverlays( GraphicsContext& Context );
@@ -183,7 +185,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ColorBuffer g_DisplayPlane[ SWAP_CHAIN_BUFFER_COUNT ];
         UINT g_CurrentBuffer = 0;
 
-        DXGI::SwapChain1 s_SwapChain1;
+        Graphics::DXGI::SwapChain1 s_SwapChain1;
 
         RootSignature s_PresentRS;
         GraphicsPSO s_BlendUIPSO( L"Core: BlendUI" );
@@ -239,7 +241,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
         ASSERT( s_SwapChain1 == nullptr, "Graphics has already been initialized" );
 
-        auto dxgiFactory = DXGI::Factory4::Create( );
+        auto dxgiFactory = Graphics::DXGI::Factory4::Create( );
 
         //Microsoft::WRL::ComPtr<IDXGIFactory4> dxgiFactory;
         //ASSERT_SUCCEEDED( CreateDXGIFactory2( 0, MY_IID_PPV_ARGS( &dxgiFactory ) ) );
@@ -278,9 +280,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
 #if CONDITIONALLY_ENABLE_HDR_OUTPUT
         {
-            DXGI::SwapChain4 swapChain = s_SwapChain1.As<DXGI::SwapChain4>();
-            DXGI::Output output = swapChain.GetContainingOutput( );
-            DXGI::Output6 output6 = output.As<DXGI::Output6>( );
+            Graphics::DXGI::SwapChain4 swapChain = s_SwapChain1.As<Graphics::DXGI::SwapChain4>();
+            Graphics::DXGI::Output output = swapChain.GetContainingOutput( );
+            Graphics::DXGI::Output6 output6 = output.As<Graphics::DXGI::Output6>( );
 
             auto colorSpaceSupport = swapChain.CheckColorSpaceSupport( DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 );
             if ( colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT ) 

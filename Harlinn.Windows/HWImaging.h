@@ -27,7 +27,10 @@ namespace Harlinn::Windows
     class Control;
     class BitmapHandle;
     using Unknown = Common::Core::Unknown;
+}
 
+namespace Harlinn::Windows::Graphics
+{
     namespace Imaging
     {
 
@@ -61,7 +64,7 @@ namespace Harlinn::Windows
     classType (const classType & other) \
      : baseClassType ( reinterpret_cast< const baseClassType & > (other) ) \
      { } \
-    classType (classType && other) \
+    classType (classType && other) noexcept \
      : baseClassType ( reinterpret_cast< baseClassType && >( other ) ) \
      { } \
     classType & operator = (const classType & other) \
@@ -69,7 +72,7 @@ namespace Harlinn::Windows
        baseClassType :: operator = ( reinterpret_cast< const baseClassType & > (other) ); \
        return *this; \
      } \
-    classType & operator = (classType && other) \
+    classType & operator = (classType && other) noexcept \
      { \
        baseClassType :: operator = ( reinterpret_cast< baseClassType && > (other) ); \
        return *this; \
@@ -81,7 +84,9 @@ namespace Harlinn::Windows
 
 
         typedef UINT32 Color;
-
+        /// <summary>
+        /// Represents a rectangle for Windows Imaging Component (WIC) API.
+        /// </summary>
         class Rectangle
         {
             INT x;
@@ -618,29 +623,29 @@ namespace Harlinn::Windows
         class ImagingFactory;
         class ImagingObject : public Unknown
         {
-            ImagingFactory* factory;
+            ImagingFactory* factory_ = nullptr;
         protected:
             ImagingFactory* Factory( ) const
             {
-                return factory;
+                return factory_;
             }
         public:
             typedef Unknown Base;
 
             ImagingObject( )
                 : Base( ),
-                factory( nullptr )
+                 factory_( nullptr )
             {
             }
             explicit ImagingObject( IUnknown* theInterface, bool addref = false )
                 : Base( reinterpret_cast<IUnknown*>( theInterface ), addref ),
-                factory( nullptr )
+                  factory_( nullptr )
             {
             }
 
             ImagingObject( ImagingFactory* theFactory, IUnknown* theInterface )
                 : Base( reinterpret_cast<IUnknown*>( theInterface ) ),
-                factory( theFactory )
+                  factory_( theFactory )
             {
             }
         protected:
@@ -651,24 +656,25 @@ namespace Harlinn::Windows
         public:
             ImagingObject( const ImagingObject& other )
                 : Base( reinterpret_cast<const Base&> ( other ) ),
-                factory( other.factory )
+                  factory_( other.factory_ )
             {
             }
-            ImagingObject( ImagingObject&& other )
+            ImagingObject( ImagingObject&& other ) noexcept
                 : Base( reinterpret_cast<Base&&>( other ) ),
-                factory( other.factory )
+                  factory_( other.factory_ )
             {
+                other.factory_ = nullptr;
             }
             ImagingObject& operator = ( const ImagingObject& other )
             {
                 Base :: operator = ( reinterpret_cast<const Base&> ( other ) );
-                factory = other.factory;
+                factory_ = other.factory_;
                 return *this;
             }
-            ImagingObject& operator = ( ImagingObject&& other )
+            ImagingObject& operator = ( ImagingObject&& other ) noexcept
             {
                 Base :: operator = ( reinterpret_cast<Base&&> ( other ) );
-                factory = other.factory;
+                std::swap( factory_, other.factory_ );
                 return *this;
             }
 
@@ -676,7 +682,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods for accessing and building a color table, primarily for indexed pixel formats.
+        /// </summary>
         class Palette : public ImagingObject
         {
         public:
@@ -712,6 +720,9 @@ namespace Harlinn::Windows
         class ColorTransform;
         class Bitmap;
 
+        /// <summary>
+        /// Exposes methods that refers to a source from which pixels are retrieved, but cannot be written back to.
+        /// </summary>
         class BitmapSource : public ImagingObject
         {
         public:
@@ -746,6 +757,11 @@ namespace Harlinn::Windows
 
         };
 
+        /// <summary>
+        /// Represents a BitmapSource that converts the image data from one 
+        /// pixel format to another, handling dithering and halftoning to 
+        /// indexed formats, palette translation and alpha thresholding.
+        /// </summary>
         class FormatConverter : public BitmapSource
         {
         public:
@@ -759,6 +775,9 @@ namespace Harlinn::Windows
 
         };
 
+        /// <summary>
+        /// Represents a resized version of the input bitmap using a resampling or filtering algorithm.
+        /// </summary>
         class BitmapScaler : public BitmapSource
         {
         public:
@@ -769,7 +788,9 @@ namespace Harlinn::Windows
             HW_EXPORT BitmapScaler& Initialize( const BitmapSource& theSource, const Size& theSize, BitmapInterpolationMode mode = BitmapInterpolationMode::Fant );
         };
 
-
+        /// <summary>
+        /// Exposes methods that produce a clipped version of the input bitmap for a specified rectangular region of interest.
+        /// </summary>
         class BitmapClipper : public BitmapSource
         {
         public:
@@ -780,6 +801,11 @@ namespace Harlinn::Windows
 
         };
 
+        /// <summary>
+        /// Exposes methods that produce a flipped (horizontal or vertical) 
+        /// and/or rotated (by 90 degree increments) bitmap source. The flip 
+        /// is done before the rotation.
+        /// </summary>
         class BitmapFlipRotator : public BitmapSource
         {
         public:
@@ -790,6 +816,9 @@ namespace Harlinn::Windows
 
         };
 
+        /// <summary>
+        /// Exposes methods that support the Lock method.
+        /// </summary>
         class BitmapLock : public ImagingObject
         {
         public:
@@ -809,6 +838,10 @@ namespace Harlinn::Windows
 
         };
 
+        /// <summary>
+        /// Defines methods that add the concept of writeability and static 
+        /// in-memory representations of bitmaps to BitmapSource.
+        /// </summary>
         class Bitmap : public BitmapSource
         {
         public:
@@ -822,7 +855,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods for color management.
+        /// </summary>
         class ColorContext : public ImagingObject
         {
         public:
@@ -844,7 +879,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods that transforms a BitmapSource from one color context to another.
+        /// </summary>
         class ColorTransform : public BitmapSource
         {
         public:
@@ -857,6 +894,11 @@ namespace Harlinn::Windows
 
 
         class MetadataQueryWriter;
+        /// <summary>
+        /// Exposes methods used for in-place metadata editing. A fast 
+        /// metadata encoder enables you to add and remove metadata to 
+        /// an image without having to fully re-encode the image.
+        /// </summary>
         class FastMetadataEncoder : public ImagingObject
         {
         public:
@@ -868,7 +910,10 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Represents a Windows Imaging Component (WIC) stream for 
+        /// referencing imaging and metadata content.
+        /// </summary>
         class Stream : public ImagingObject /*IStream*/
         {
         public:
@@ -882,7 +927,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods that provide enumeration services for individual metadata items.
+        /// </summary>
         class EnumMetadataItem : public ImagingObject
         {
         public:
@@ -900,7 +947,9 @@ namespace Harlinn::Windows
             HW_EXPORT EnumMetadataItem Clone( ) const;
         };
 
-
+        /// <summary>
+        /// Exposes methods for retrieving metadata blocks and items from a decoder or its image frames using a metadata query expression.
+        /// </summary>
         class MetadataQueryReader : public ImagingObject
         {
         public:
@@ -921,7 +970,11 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods for setting or removing metadata blocks 
+        /// and items to an encoder or its image frames using a 
+        /// metadata query expression.
+        /// </summary>
         class MetadataQueryWriter : public MetadataQueryReader
         {
         public:
@@ -935,6 +988,9 @@ namespace Harlinn::Windows
 
         class BitmapFrameEncode;
         class BitmapEncoderInfo;
+        /// <summary>
+        /// Defines methods for setting an encoder's properties such as thumbnails, frames, and palettes.
+        /// </summary>
         class BitmapEncoder : public ImagingObject
         {
         public:
@@ -965,7 +1021,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Represents an encoder's individual image frames.
+        /// </summary>
         class BitmapFrameEncode : public ImagingObject
         {
         public:
@@ -1001,6 +1059,10 @@ namespace Harlinn::Windows
 
         };
 
+        /// <summary>
+        /// Encodes ID2D1Image interfaces to an BitmapEncoder. The input 
+        /// images can be larger than the maximum device texture size.
+        /// </summary>
         class ImageEncoder : public ImagingObject
         {
         public:
@@ -1016,6 +1078,11 @@ namespace Harlinn::Windows
 
         class BitmapDecoderInfo;
         class BitmapFrameDecode;
+        /// <summary>
+        /// Exposes methods that represent a decoder. The class 
+        /// provides access to the decoder's properties such as 
+        /// global thumbnails (if supported), frames, and palette.
+        /// </summary>
         class BitmapDecoder : public ImagingObject
         {
         public:
@@ -1048,7 +1115,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods for offloading certain operations to the underlying BitmapSource implementation.
+        /// </summary>
         class BitmapSourceTransform : public ImagingObject
         {
         public:
@@ -1065,7 +1134,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Defines methods for decoding individual image frames of an encoded file.
+        /// </summary>
         class BitmapFrameDecode : public BitmapSource
         {
         public:
@@ -1080,6 +1151,9 @@ namespace Harlinn::Windows
 
         };
 
+        /// <summary>
+        /// Exposes methods for obtaining information about and controlling progressive decoding.
+        /// </summary>
         class ProgressiveLevelControl : public ImagingObject
         {
         public:
@@ -1100,7 +1174,9 @@ namespace Harlinn::Windows
             HW_EXPORT virtual HRESULT STDMETHODCALLTYPE Notify( ULONG uFrameNum, WICProgressOperation operation, double dblProgress );
         };
 
-
+        /// <summary>
+        /// Exposes methods used for progress notification for encoders and decoders.
+        /// </summary>
         class BitmapCodecProgressNotification : public ImagingObject
         {
         public:
@@ -1111,7 +1187,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods that provide component information.
+        /// </summary>
         class ComponentInfo : public ImagingObject
         {
         public:
@@ -1139,6 +1217,9 @@ namespace Harlinn::Windows
         };
 
         class FormatConverter;
+        /// <summary>
+        /// Exposes methods that provide information about a pixel format converter.
+        /// </summary>
         class FormatConverterInfo : public ComponentInfo
         {
         public:
@@ -1151,6 +1232,9 @@ namespace Harlinn::Windows
         };
 
 
+        /// <summary>
+        /// Exposes methods that provide information about a particular codec.
+        /// </summary>
         class BitmapCodecInfo : public ComponentInfo
         {
         public:
@@ -1185,7 +1269,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods that provide information about an encoder.
+        /// </summary>
         class BitmapEncoderInfo : public BitmapCodecInfo
         {
         public:
@@ -1197,6 +1283,9 @@ namespace Harlinn::Windows
         };
 
 
+        /// <summary>
+        /// Exposes methods that provide information about a decoder.
+        /// </summary>
         class BitmapDecoderInfo : public BitmapCodecInfo
         {
         public:
@@ -1211,7 +1300,9 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods that provide information about a pixel format.
+        /// </summary>
         class PixelFormatInfo : public ComponentInfo
         {
         public:
@@ -1235,7 +1326,10 @@ namespace Harlinn::Windows
 
         };
 
-
+        /// <summary>
+        /// Exposes methods used to create components for the Windows Imaging Component (WIC) 
+        /// such as decoders, encoders and pixel format converters.
+        /// </summary>
         class ImagingFactory : public ImagingObject
         {
         public:

@@ -17,7 +17,7 @@
 #include "pch.h"
 #include <HWDWrite.h>
 
-namespace Harlinn::Windows::DirectWrite
+namespace Harlinn::Windows::Graphics::DirectWrite
 {
     // ================================================================
     // FontFileLoader

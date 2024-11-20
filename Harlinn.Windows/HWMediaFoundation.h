@@ -41,7 +41,7 @@ namespace Harlinn::Windows::MF
     using Init = MediaFoundation;
 
 
-    class IMFAsyncCallbackImplBase abstract : public Com::ObjectBase<IMFAsyncCallbackImplBase, IMFAsyncCallback>,  public Com::IUnknownImpl<IMFAsyncCallbackImplBase, IMFAsyncCallback>
+    class IMFAsyncCallbackImplBase abstract : public Com::ObjectBase<IMFAsyncCallbackImplBase, IMFAsyncCallback>
     {
         DWORD flags_ = 0;
         DWORD queue_ = 0;
@@ -53,7 +53,7 @@ namespace Harlinn::Windows::MF
         using ObjectBaseType::Release;
 
 
-        IMFAsyncCallbackImplBase(DWORD flags = 0, DWORD queue = MFASYNC_CALLBACK_QUEUE_MULTITHREADED)
+        explicit IMFAsyncCallbackImplBase(DWORD flags = 0, DWORD queue = MFASYNC_CALLBACK_QUEUE_MULTITHREADED)
             : flags_(flags), queue_(queue) 
         {}
 
@@ -124,7 +124,7 @@ namespace Harlinn::Windows::MF
     MFAsyncCallback MakeIMFAsyncCallback(DWORD callbackFlags, DWORD queueId, Function&& function, Args&&... args)
     {
         using CallbackType = Internal::IMFAsyncCallbackFunctionImpl<Function, Args...>;
-        CallbackType* callbackPtr = new CallbackType(callbackFlags, queueId, std::forward<Function>(function), std::forward<Args>(args)...);
+        auto* callbackPtr = new Com::HeapObject<CallbackType>(callbackFlags, queueId, std::forward<Function>(function), std::forward<Args>(args)...);
         return MFAsyncCallback(callbackPtr);
     }
 
@@ -132,7 +132,7 @@ namespace Harlinn::Windows::MF
     MFAsyncCallback MakeIMFAsyncCallback(Function&& function, Args&&... args)
     {
         using CallbackType = Internal::IMFAsyncCallbackFunctionImpl<Function, Args...>;
-        CallbackType* callbackPtr = new CallbackType(0, MFASYNC_CALLBACK_QUEUE_MULTITHREADED, std::forward<Function>(function), std::forward<Args>(args)...);
+        auto* callbackPtr = new Com::HeapObject<CallbackType>(0, MFASYNC_CALLBACK_QUEUE_MULTITHREADED, std::forward<Function>(function), std::forward<Args>(args)...);
         return MFAsyncCallback(callbackPtr);
     }
 

@@ -19,12 +19,63 @@
 
 #include "HWDCompAnimation.h"
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::DirectComposition
 {
-    class DCompositionDevice : public Unknown
+    class Device;
+    class Target;
+    class Visual;
+    class Effect;
+    class Transform3D;
+    class Transform;
+    class TranslateTransform;
+    class ScaleTransform;
+    class RotateTransform;
+    class SkewTransform;
+    class MatrixTransform;
+    class EffectGroup;
+    class TranslateTransform3D;
+    class ScaleTransform3D;
+    class RotateTransform3D;
+    class MatrixTransform3D;
+    class Clip;
+    class RectangleClip;
+    class Surface;
+    class VirtualSurface;
+    class Device2;
+    class DesktopDevice;
+    class DeviceDebug;
+    class SurfaceFactory;
+    class Visual2;
+    class VisualDebug;
+    class Visual3;
+    class Device3;
+    class FilterEffect;
+    class GaussianBlurEffect;
+    class BrightnessEffect;
+    class ColorMatrixEffect;
+    class ShadowEffect;
+    class HueRotationEffect;
+    class SaturationEffect;
+    class TurbulenceEffect;
+    class LinearTransferEffect;
+    class TableTransferEffect;
+    class CompositeEffect;
+    class BlendEffect;
+    class ArithmeticCompositeEffect;
+    class AffineTransform2DEffect;
+    class DelegatedInkTrail;
+    class InkTrailDevice;
+
+
+
+    /// <summary>
+    /// Serves as a factory for all other Microsoft DirectComposition objects 
+    /// and provides methods to control transactional composition.
+    /// </summary>
+    class Device : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionDevice, Unknown, IDCompositionDevice, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Device, Unknown, IDCompositionDevice, IUnknown)
     public:
         // Commits all DirectComposition commands pending on this device.
         void Commit() const
@@ -219,10 +270,14 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionTarget : public Unknown
+    /// <summary>
+    /// Represents a binding between a Microsoft DirectComposition visual tree 
+    /// and a destination on top of which the visual tree should be composed.
+    /// </summary>
+    class Target : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionTarget, Unknown, IDCompositionTarget, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Target, Unknown, IDCompositionTarget, IUnknown)
     public:
         void SetRoot(IDCompositionVisual* visual) const
         {
@@ -233,10 +288,13 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class DCompositionVisual : public Unknown
+    /// <summary>
+    /// Represents a Microsoft DirectComposition visual.
+    /// </summary>
+    class Visual : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionVisual, Unknown, IDCompositionVisual, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Visual, Unknown, IDCompositionVisual, IUnknown)
     public:
         // Changes the value of OffsetX property
         void SetOffsetX(float offsetX ) const
@@ -378,31 +436,43 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionEffect : public Unknown
+    /// <summary>
+    /// Represents a bitmap effect that modifies the rasterization of a visual's subtree.
+    /// </summary>
+    class Effect : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionEffect, Unknown, IDCompositionEffect, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Effect, Unknown, IDCompositionEffect, IUnknown)
     public:
     };
 
-    class DCompositionTransform3D : public DCompositionEffect
+    /// <summary>
+    /// Represents a 3D transformation effect that can be used to modify the rasterization of a visual subtree.
+    /// </summary>
+    class Transform3D : public Effect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionTransform3D, DCompositionEffect, IDCompositionTransform3D, IDCompositionEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(Transform3D, Effect, IDCompositionTransform3D, IDCompositionEffect)
     public:
     };
 
-    class DCompositionTransform : public DCompositionTransform3D
+    /// <summary>
+    /// Represents a 2D transformation that can be used to modify the coordinate space of a visual subtree.
+    /// </summary>
+    class Transform : public Transform3D
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionTransform, DCompositionTransform3D, IDCompositionTransform, IDCompositionTransform3D)
+        HCC_COM_STANDARD_METHODS_IMPL(Transform, Transform3D, IDCompositionTransform, IDCompositionTransform3D)
     public:
     };
 
-    class DCompositionTranslateTransform : public DCompositionTransform
+    /// <summary>
+    /// Represents a 2D transformation that affects only the offset of a visual along the x-axis and y-axis.
+    /// </summary>
+    class TranslateTransform : public Transform
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionTranslateTransform, DCompositionTransform, IDCompositionTranslateTransform, IDCompositionTransform)
+        HCC_COM_STANDARD_METHODS_IMPL(TranslateTransform, Transform, IDCompositionTranslateTransform, IDCompositionTransform)
     public:
         // Changes the value of the OffsetX property.
         void SetOffsetX(float offsetX) const
@@ -437,10 +507,15 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionScaleTransform : public DCompositionTransform
+    /// <summary>
+    /// Represents a 2D transformation that affects the scale of a visual 
+    /// along the x-axis and y-axis. The coordinate system is scaled from 
+    /// the specified center point.
+    /// </summary>
+    class ScaleTransform : public Transform
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionScaleTransform, DCompositionTransform, IDCompositionScaleTransform, IDCompositionTransform)
+        HCC_COM_STANDARD_METHODS_IMPL(ScaleTransform, Transform, IDCompositionScaleTransform, IDCompositionTransform)
     public:
         // Changes the value of the ScaleX property.
         void SetScaleX(float scaleX) const
@@ -507,10 +582,15 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionRotateTransform : public DCompositionTransform
+    /// <summary>
+    /// Represents a 2D transformation that affects the rotation of a 
+    /// visual around the z-axis. The coordinate system is rotated 
+    /// around the specified center point.
+    /// </summary>
+    class RotateTransform : public Transform
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionRotateTransform, DCompositionTransform, IDCompositionRotateTransform, IDCompositionTransform)
+        HCC_COM_STANDARD_METHODS_IMPL(RotateTransform, Transform, IDCompositionRotateTransform, IDCompositionTransform)
     public:
         // Changes the value of the Angle property.
         void SetAngle(float angle) const
@@ -562,10 +642,15 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class DCompositionSkewTransform : public DCompositionTransform
+    /// <summary>
+    /// Represents a 2D transformation that affects the skew of a visual 
+    /// along the x-axis and y-axis. The coordinate system is skewed 
+    /// around the specified center point.
+    /// </summary>
+    class SkewTransform : public Transform
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionSkewTransform, DCompositionTransform, IDCompositionSkewTransform, IDCompositionTransform)
+        HCC_COM_STANDARD_METHODS_IMPL(SkewTransform, Transform, IDCompositionSkewTransform, IDCompositionTransform)
     public:
         // Changes the value of the AngleX property.
         void SetAngleX(float angleX) const
@@ -633,10 +718,13 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class DCompositionMatrixTransform : public DCompositionTransform
+    /// <summary>
+    /// Represents an arbitrary affine 2D transformation defined by a 3-by-2 matrix.
+    /// </summary>
+    class MatrixTransform : public Transform
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionMatrixTransform, DCompositionTransform, IDCompositionMatrixTransform, IDCompositionTransform)
+        HCC_COM_STANDARD_METHODS_IMPL(MatrixTransform, Transform, IDCompositionMatrixTransform, IDCompositionTransform)
     public:
         // Changes all values of the matrix of this transform.
         void SetMatrix(const D2D_MATRIX_3X2_F& matrix) const
@@ -664,10 +752,14 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class DCompositionEffectGroup : public DCompositionEffect
+    /// <summary>
+    /// Represents a group of bitmap effects that are applied together to modify 
+    /// the rasterization of a visual's subtree.
+    /// </summary>
+    class EffectGroup : public Effect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionEffectGroup, DCompositionEffect, IDCompositionEffectGroup, IDCompositionEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(EffectGroup, Effect, IDCompositionEffectGroup, IDCompositionEffect)
     public:
         // Changes the opacity property.
         void SetOpacity(float opacity) const
@@ -694,10 +786,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionTranslateTransform3D : public DCompositionTransform3D
+    /// <summary>
+    /// Represents a 3D transformation that affects the offset of a visual along the x-axis, y-axis, and z-axis.
+    /// </summary>
+    class TranslateTransform3D : public Transform3D
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionTranslateTransform3D, DCompositionTransform3D, IDCompositionTranslateTransform3D, IDCompositionTransform3D)
+        HCC_COM_STANDARD_METHODS_IMPL(TranslateTransform3D, Transform3D, IDCompositionTranslateTransform3D, IDCompositionTransform3D)
     public:
         // Changes the value of the OffsetX property.
         void SetOffsetX(float offsetX) const
@@ -748,10 +843,15 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionScaleTransform3D : public DCompositionTransform3D
+    /// <summary>
+    /// Represents a 3D transformation effect that affects the scale of a 
+    /// visual along the x-axis, y-axis, and z-axis. The coordinate system 
+    /// is scaled from the specified center point.
+    /// </summary>
+    class ScaleTransform3D : public Transform3D
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionScaleTransform3D, DCompositionTransform3D, IDCompositionScaleTransform3D, IDCompositionTransform3D)
+        HCC_COM_STANDARD_METHODS_IMPL(ScaleTransform3D, Transform3D, IDCompositionScaleTransform3D, IDCompositionTransform3D)
     public:
         // Changes the value of the ScaleX property.
         void SetScaleX(float scaleX) const
@@ -851,10 +951,15 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionRotateTransform3D : public DCompositionTransform3D
+    /// <summary>
+    /// Represents a 3D transformation that affects the rotation of a visual 
+    /// along an arbitrary axis in 3D space. The coordinate system is rotated 
+    /// around the specified center point.
+    /// </summary>
+    class RotateTransform3D : public Transform3D
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionRotateTransform3D, DCompositionTransform3D, IDCompositionRotateTransform3D, IDCompositionTransform3D)
+        HCC_COM_STANDARD_METHODS_IMPL(RotateTransform3D, Transform3D, IDCompositionRotateTransform3D, IDCompositionTransform3D)
     public:
         // Changes the value of the Angle property.
         void SetAngle(float angle) const
@@ -969,10 +1074,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionMatrixTransform3D : public DCompositionTransform3D
+    /// <summary>
+    /// Represents an arbitrary 3D transformation defined by a 4-by-4 matrix.
+    /// </summary>
+    class MatrixTransform3D : public Transform3D
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionMatrixTransform3D, DCompositionTransform3D, IDCompositionMatrixTransform3D, IDCompositionTransform3D)
+        HCC_COM_STANDARD_METHODS_IMPL(MatrixTransform3D, Transform3D, IDCompositionMatrixTransform3D, IDCompositionTransform3D)
     public:
         // Changes all values of the matrix of this transform.
         void SetMatrix(const D3DMATRIX& matrix) const
@@ -999,18 +1107,26 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionClip : public Unknown
+    /// <summary>
+    /// Represents a clip object that is used to restrict the rendering of a visual subtree to a rectangular area.
+    /// </summary>
+    class Clip : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionClip, Unknown, IDCompositionClip, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Clip, Unknown, IDCompositionClip, IUnknown)
     public:
 
     };
 
-    class DCompositionRectangleClip : public DCompositionClip
+    /// <summary>
+    /// Represents a clip object that restricts the rendering of a visual subtree 
+    /// to the specified rectangular region. Optionally, the clip object may have 
+    /// rounded corners specified.
+    /// </summary>
+    class RectangleClip : public Clip
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionRectangleClip, DCompositionClip, IDCompositionRectangleClip, IDCompositionClip)
+        HCC_COM_STANDARD_METHODS_IMPL(RectangleClip, Clip, IDCompositionRectangleClip, IDCompositionClip)
     public:
         // Changes the value of the Left property.
         void SetLeft(float left) const
@@ -1222,10 +1338,15 @@ namespace Harlinn::Windows::Graphics
 
     };
 
-    class DCompositionSurface : public Unknown
+    /// <summary>
+    /// Represents a physical bitmap that can be associated with a visual for 
+    /// composition in a visual tree. This interface can also be used to 
+    /// update the bitmap contents.
+    /// </summary>
+    class Surface : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionSurface, Unknown, IDCompositionSurface, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Surface, Unknown, IDCompositionSurface, IUnknown)
     public:
         void BeginDraw(const RECT* updateRect, const Guid& iid, void** updateObject, POINT* updateOffset) const
         {
@@ -1263,10 +1384,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionVirtualSurface : public DCompositionSurface
+    /// <summary>
+    /// Represents a sparsely allocated bitmap that can be associated with a visual for composition in a visual tree.
+    /// </summary>
+    class VirtualSurface : public Surface
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionVirtualSurface, DCompositionSurface, IDCompositionVirtualSurface, IDCompositionSurface)
+        HCC_COM_STANDARD_METHODS_IMPL(VirtualSurface, Surface, IDCompositionVirtualSurface, IDCompositionSurface)
     public:
         void Resize(UINT width, UINT height) const
         {
@@ -1283,11 +1407,14 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-
-    class DCompositionDevice2 : public Unknown
+    /// <summary>
+    /// Serves as a factory for all other Microsoft DirectComposition objects and provides 
+    /// methods to control transactional composition.
+    /// </summary>
+    class Device2 : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionDevice2, Unknown, IDCompositionDevice2, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Device2, Unknown, IDCompositionDevice2, IUnknown)
     public:
         // Commits all DirectComposition commands pending on this device.
         void Commit() const
@@ -1458,10 +1585,15 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionDesktopDevice : public DCompositionDevice2
+    /// <summary>
+    /// An application must use the DesktopDevice class in order to use DirectComposition 
+    /// in a Windows desktop application. This interface allows the application to connect 
+    /// a visual tree to a window and to host layered child windows for composition
+    /// </summary>
+    class DesktopDevice : public Device2
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionDesktopDevice, DCompositionDevice2, IDCompositionDesktopDevice, IDCompositionDevice2)
+        HCC_COM_STANDARD_METHODS_IMPL(DesktopDevice, Device2, IDCompositionDesktopDevice, IDCompositionDevice2)
     public:
         void CreateTargetForHwnd(HWND hwnd, BOOL topmost, IDCompositionTarget** target) const
         {
@@ -1487,10 +1619,15 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionDeviceDebug : public Unknown
+    /// <summary>
+    /// Provides access to rendering features that help with application debugging and 
+    /// performance tuning. This interface can be queried from the 
+    /// DirectComposition device interface.
+    /// </summary>
+    class DeviceDebug : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionDeviceDebug, Unknown, IDCompositionDeviceDebug, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(DeviceDebug, Unknown, IDCompositionDeviceDebug, IUnknown)
     public:
         // Enables debug counters
         void EnableDebugCounters() const
@@ -1509,11 +1646,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-
-    class DCompositionSurfaceFactory : public Unknown
+    /// <summary>
+    /// Creates surface and virtual surface objects associated with an application-provided rendering device.
+    /// </summary>
+    class SurfaceFactory : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionSurfaceFactory, Unknown, IDCompositionSurfaceFactory, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(SurfaceFactory, Unknown, IDCompositionSurfaceFactory, IUnknown)
     public:
         // Creates a DirectComposition surface object
         void CreateSurface(UINT width, UINT height, DXGI_FORMAT pixelFormat, DXGI_ALPHA_MODE alphaMode, IDCompositionSurface** surface) const
@@ -1532,13 +1671,16 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionVisual2 : public DCompositionVisual
+    /// <summary>
+    /// Represents a single DirectComposition visual in a visual tree.
+    /// </summary>
+    class Visual2 : public Visual
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionVisual2, DCompositionVisual, IDCompositionVisual2, IDCompositionVisual)
+        HCC_COM_STANDARD_METHODS_IMPL(Visual2, Visual, IDCompositionVisual2, IDCompositionVisual)
     public:
         // Changes the interpretation of the opacity property of an effect group
-    // associated with this visual
+        // associated with this visual
         void SetOpacityMode(DCOMPOSITION_OPACITY_MODE mode) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -1555,11 +1697,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-
-    class DCompositionVisualDebug : public DCompositionVisual2
+    /// <summary>
+    /// Introduces debug related functions for a visual.
+    /// </summary>
+    class VisualDebug : public Visual2
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionVisualDebug, DCompositionVisual2, IDCompositionVisualDebug, IDCompositionVisual2)
+        HCC_COM_STANDARD_METHODS_IMPL(VisualDebug, Visual2, IDCompositionVisualDebug, IDCompositionVisual2)
     public:
         // Enable heat map
         void EnableHeatMap(const D2D1_COLOR_F& color) const
@@ -1594,10 +1738,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionVisual3 : public DCompositionVisualDebug
+    /// <summary>
+    /// Represents a single DirectComposition visual in a visual tree.
+    /// </summary>
+    class Visual3 : public VisualDebug
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionVisual3, DCompositionVisualDebug, IDCompositionVisual3, IDCompositionVisualDebug)
+        HCC_COM_STANDARD_METHODS_IMPL(Visual3, VisualDebug, IDCompositionVisual3, IDCompositionVisualDebug)
     public:
         // Sets depth mode property associated with this visual
         void SetDepthMode(DCOMPOSITION_DEPTH_MODE mode) const
@@ -1664,10 +1811,14 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionDevice3 : public DCompositionDevice2
+    /// <summary>
+    /// Serves as a factory for all other Microsoft DirectComposition objects 
+    /// and provides methods to control transactional composition.
+    /// </summary>
+    class Device3 : public Device2
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionDevice3, DCompositionDevice2, IDCompositionDevice3, IDCompositionDevice2)
+        HCC_COM_STANDARD_METHODS_IMPL(Device3, Device2, IDCompositionDevice3, IDCompositionDevice2)
     public:
         // Effect creation calls, each creates an interface around a D2D1Effect
         void CreateGaussianBlurEffect(IDCompositionGaussianBlurEffect** gaussianBlurEffect) const
@@ -1762,10 +1913,14 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionFilterEffect : public DCompositionEffect
+    /// <summary>
+    /// FilterEffect exposes a subset of Direct2D's image effects through 
+    /// DirectComposition for use in CSS filters in the browser platform.
+    /// </summary>
+    class FilterEffect : public Effect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionFilterEffect, DCompositionEffect, IDCompositionFilterEffect, IDCompositionEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(FilterEffect, Effect, IDCompositionFilterEffect, IDCompositionEffect)
     public:
         void SetInput(UINT index, IUnknown* input, UINT flags) const
         {
@@ -1775,10 +1930,14 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionGaussianBlurEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The Gaussian blur effect is used to blur an image by a Gaussian function, 
+    /// typically to reduce image noise and reduce detail.
+    /// </summary>
+    class GaussianBlurEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionGaussianBlurEffect, DCompositionFilterEffect, IDCompositionGaussianBlurEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(GaussianBlurEffect, FilterEffect, IDCompositionGaussianBlurEffect, IDCompositionFilterEffect)
     public:
         // Changes the amount of blur to be applied.
         void SetStandardDeviation(float amount) const
@@ -1805,10 +1964,13 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class DCompositionBrightnessEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The brightness effect controls the brightness of the image.
+    /// </summary>
+    class BrightnessEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionBrightnessEffect, DCompositionFilterEffect, IDCompositionBrightnessEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(BrightnessEffect, FilterEffect, IDCompositionBrightnessEffect, IDCompositionFilterEffect)
     public:
         // Changes the value of white point property.
         void SetWhitePoint(const D2D1_VECTOR_2F& whitePoint) const
@@ -1887,10 +2049,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionColorMatrixEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The color matrix effect alters the RGBA values of a bitmap.
+    /// </summary>
+    class ColorMatrixEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionColorMatrixEffect, DCompositionFilterEffect, IDCompositionColorMatrixEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(ColorMatrixEffect, FilterEffect, IDCompositionColorMatrixEffect, IDCompositionFilterEffect)
     public:
         // Changes all values of the matrix for a color transform
         void SetMatrix(const D2D1_MATRIX_5X4_F& matrix) const
@@ -1933,10 +2098,16 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionShadowEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The shadow effect is used to generate a shadow from the alpha channel 
+    /// of an image. The shadow is more opaque for higher alpha values and more 
+    /// transparent for lower alpha values. You can set the amount of blur and 
+    /// the color of the shadow.
+    /// </summary>
+    class ShadowEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionShadowEffect, DCompositionFilterEffect, IDCompositionShadowEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(ShadowEffect, FilterEffect, IDCompositionShadowEffect, IDCompositionFilterEffect)
     public:
         // Changes the amount of blur to be applied.
         void SetStandardDeviation(float amount ) const
@@ -2018,10 +2189,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionHueRotationEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The hue rotate effect alters the hue of an image by applying a color matrix based on the rotation angle.
+    /// </summary>
+    class HueRotationEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionHueRotationEffect, DCompositionFilterEffect, IDCompositionHueRotationEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(HueRotationEffect, FilterEffect, IDCompositionHueRotationEffect, IDCompositionFilterEffect)
     public:
         // Changes the angle of rotation
         void SetAngle(float amountDegrees) const
@@ -2040,10 +2214,13 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class DCompositionSaturationEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// This effect is used to alter the saturation of an image. The saturation effect is a specialization of the color matrix effect.
+    /// </summary>
+    class SaturationEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionSaturationEffect, DCompositionFilterEffect, IDCompositionSaturationEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(SaturationEffect, FilterEffect, IDCompositionSaturationEffect, IDCompositionFilterEffect)
     public:
         // Changes the amount of saturation to be applied.
         void SetSaturation(float ratio) const
@@ -2062,10 +2239,13 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class DCompositionTurbulenceEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The turbulence effect is used to generate a bitmap based on the Perlin noise function. The turbulence effect has no input image.
+    /// </summary>
+    class TurbulenceEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionTurbulenceEffect, DCompositionFilterEffect, IDCompositionTurbulenceEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(TurbulenceEffect, FilterEffect, IDCompositionTurbulenceEffect, IDCompositionFilterEffect)
     public:
         // Changes the starting offset of the turbulence
         void SetOffset(const D2D1_VECTOR_2F& offset) const
@@ -2124,10 +2304,15 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionLinearTransferEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The linear transfer effect is used to map the color intensities of an 
+    /// image using a linear function created from a list of values you 
+    /// provide for each channel.
+    /// </summary>
+    class LinearTransferEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionLinearTransferEffect, DCompositionFilterEffect, IDCompositionLinearTransferEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(LinearTransferEffect, FilterEffect, IDCompositionLinearTransferEffect, IDCompositionFilterEffect)
     public:
         void SetRedYIntercept(float redYIntercept) const
         {
@@ -2277,10 +2462,15 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionTableTransferEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The table transfer effect is used to map the color intensities 
+    /// of an image using a transfer function created from interpolating 
+    /// a list of values you provide.
+    /// </summary>
+    class TableTransferEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionTableTransferEffect, DCompositionFilterEffect, IDCompositionTableTransferEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(TableTransferEffect, FilterEffect, IDCompositionTableTransferEffect, IDCompositionFilterEffect)
     public:
         void SetRedTable(const float* tableValues, UINT count) const
         {
@@ -2404,10 +2594,17 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionCompositeEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The composite effect is used to combine 2 or more images. This effect has 
+    /// 13 different composite modes. The composite effect accepts 2 or more inputs. 
+    /// When you specify 2 images, destination is the first input (index 0) and 
+    /// the source is the second input (index 1). If you specify more than 2 inputs, 
+    /// the images are composited starting with the first input and the second and so on.
+    /// </summary>
+    class CompositeEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionCompositeEffect, DCompositionFilterEffect, IDCompositionCompositeEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(CompositeEffect, FilterEffect, IDCompositionCompositeEffect, IDCompositionFilterEffect)
     public:
         // Changes the composite mode.
         void SetMode(D2D1_COMPOSITE_MODE mode) const
@@ -2418,10 +2615,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionBlendEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The Blend Effect is used to combine 2 images.
+    /// </summary>
+    class BlendEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionBlendEffect, DCompositionFilterEffect, IDCompositionBlendEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(BlendEffect, FilterEffect, IDCompositionBlendEffect, IDCompositionFilterEffect)
     public:
         void SetMode(D2D1_BLEND_MODE mode) const
         {
@@ -2431,10 +2631,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionArithmeticCompositeEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The arithmetic composite effect is used to combine 2 images using a weighted sum of pixels from the input images.
+    /// </summary>
+    class ArithmeticCompositeEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionArithmeticCompositeEffect, DCompositionFilterEffect, IDCompositionArithmeticCompositeEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(ArithmeticCompositeEffect, FilterEffect, IDCompositionArithmeticCompositeEffect, IDCompositionFilterEffect)
     public:
         void SetCoefficients(const D2D1_VECTOR_4F& coefficients) const
         {
@@ -2507,10 +2710,13 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionAffineTransform2DEffect : public DCompositionFilterEffect
+    /// <summary>
+    /// The arithmetic composite effect is used to combine 2 images using a weighted sum of pixels from the input images.
+    /// </summary>
+    class AffineTransform2DEffect : public FilterEffect
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionAffineTransform2DEffect, DCompositionFilterEffect, IDCompositionAffineTransform2DEffect, IDCompositionFilterEffect)
+        HCC_COM_STANDARD_METHODS_IMPL(AffineTransform2DEffect, FilterEffect, IDCompositionAffineTransform2DEffect, IDCompositionFilterEffect)
     public:
         void SetInterpolationMode(D2D1_2DAFFINETRANSFORM_INTERPOLATION_MODE interpolationMode) const
         {
@@ -2562,10 +2768,10 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionDelegatedInkTrail : public Unknown
+    class DelegatedInkTrail : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionDelegatedInkTrail, Unknown, IDCompositionDelegatedInkTrail, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(DelegatedInkTrail, Unknown, IDCompositionDelegatedInkTrail, IUnknown)
     public:
         void AddTrailPoints(const DCompositionInkTrailPoint* inkPoints, UINT inkPointsCount, UINT* generationId) const
         {
@@ -2597,10 +2803,10 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class DCompositionInkTrailDevice : public Unknown
+    class InkTrailDevice : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL(DCompositionInkTrailDevice, Unknown, IDCompositionInkTrailDevice, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(InkTrailDevice, Unknown, IDCompositionInkTrailDevice, IUnknown)
     public:
         void CreateDelegatedInkTrail(IDCompositionDelegatedInkTrail** inkTrail) const
         {

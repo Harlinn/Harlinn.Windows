@@ -25,10 +25,10 @@ namespace Harlinn::Common::Core::Com
     namespace Internal
     {
         template<typename StreamT, typename DerivedT, typename InterfaceT = ISequentialStream>
-        class ISequentialStreamOnStreamImpl : public ObjectBase<InterfaceT>, public IUnknownImpl<DerivedT, InterfaceT>
+        class ISequentialStreamOnStreamImpl : public ObjectBase<DerivedT, InterfaceT>
         {
         public:
-            using Base = ObjectBase<InterfaceT>;
+            using Base = ObjectBase<DerivedT, InterfaceT>;
             using StreamType = StreamT;
             using InterfaceType = InterfaceT;
         protected:

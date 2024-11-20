@@ -29,18 +29,16 @@ namespace
         }
     };
 
-
-    class ObjectImpl : public Com::ObjectBase<ObjectImpl, IEnumString, IEnumVARIANT>,
-        public Com::IUnknownImpl<ObjectImpl, IEnumString>,
-        public Com::IUnknownImpl<ObjectImpl, IEnumVARIANT>
+    class ObjectImpl : public Com::ObjectBase<ObjectImpl, IEnumString, IEnumVARIANT>
     {
         int value_ = 0;
     public:
         using ObjectBaseType = Com::ObjectBase<ObjectImpl, IEnumString, IEnumVARIANT>;
+        /*
         using ObjectBaseType::QueryInterface;
         using ObjectBaseType::AddRef;
         using ObjectBaseType::Release;
-
+        */
 
         virtual HRESULT __stdcall Next( ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched )
         {
@@ -124,7 +122,7 @@ BOOST_FIXTURE_TEST_SUITE( ComImplTests, LocalFixture )
 BOOST_AUTO_TEST_CASE( ObjectImplTest )
 {
 
-    ObjectImpl* impl = new ObjectImpl( );
+    auto* impl = new Com::HeapObject<ObjectImpl>( );
 
     IEnumString* pEnumString = nullptr;
     IEnumVARIANT* pEnumVARIANT = nullptr;

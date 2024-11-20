@@ -3128,7 +3128,7 @@ namespace Harlinn::Windows::Graphics::D3D12
 
     /// <summary>
     /// Provides methods for getting and setting the properties of an StateObject. 
-    /// To retrieve an instance of this type, call StateObject::As&ltStateObjectProperties&gt().
+    /// To retrieve an instance of this type, call StateObject::As&lt;StateObjectProperties&gt;().
     /// </summary>
     class StateObjectProperties : public Unknown
     {

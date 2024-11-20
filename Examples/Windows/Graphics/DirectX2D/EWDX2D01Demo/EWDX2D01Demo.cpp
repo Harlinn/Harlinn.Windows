@@ -31,6 +31,7 @@
 
 
 using namespace Harlinn::Windows;
+using namespace Harlinn::Windows::Graphics;
 
 class MyForm : public Form
 {

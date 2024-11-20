@@ -28,7 +28,7 @@ namespace Harlinn::Windows
 
     BitmapHandle BitmapHandle::LoadFromFile( const WideString& theFileMame )
     {
-        using namespace Imaging;
+        using namespace Graphics::Imaging;
 
         auto factory = ImagingFactory::Create( );
         auto decoder = factory.CreateDecoderFromFilename( theFileMame );

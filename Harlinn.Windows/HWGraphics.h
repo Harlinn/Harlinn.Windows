@@ -31,12 +31,12 @@ namespace Harlinn::Windows
 {
     class Control;
 }
-namespace Harlinn::Windows::DXGI
+namespace Harlinn::Windows::Graphics::DXGI
 {
     class Surface;
 }
 
-namespace Harlinn::Windows::DirectWrite
+namespace Harlinn::Windows::Graphics::DirectWrite
 {
     class RenderingParams;
     class TextFormat;
@@ -44,7 +44,7 @@ namespace Harlinn::Windows::DirectWrite
     class FontFace;
 }
 
-namespace Harlinn::Windows::Imaging
+namespace Harlinn::Windows::Graphics::Imaging
 {
     class BitmapSource;
     class ColorContext;

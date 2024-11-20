@@ -22,10 +22,14 @@
 
 namespace Harlinn::Windows::Graphics::D3D11On12
 {
-    class D3D11On12Device : public Unknown
+    class Device;
+    class Device1;
+    class Device2;
+
+    class Device : public Unknown
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11On12Device, Unknown)
+        HCC_COM_STANDARD_METHODS_IMPL(Device, Unknown, ID3D11On12Device, IUnknown )
     public:
         void CreateWrappedResource(IUnknown* resource12, const D3D11_RESOURCE_FLAGS* flags11, D3D12_RESOURCE_STATES inState, D3D12_RESOURCE_STATES outState, const Guid& riid, void** resource11) const
         {
@@ -47,10 +51,10 @@ namespace Harlinn::Windows::Graphics::D3D11On12
         }
     };
 
-    class D3D11On12Device1 : public D3D11On12Device
+    class Device1 : public Device
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11On12Device1, D3D11On12Device)
+        HCC_COM_STANDARD_METHODS_IMPL(Device1, Device, ID3D11On12Device1, ID3D11On12Device )
     public:
         void GetD3D12Device(const Guid& riid, void** device) const
         {
@@ -60,10 +64,10 @@ namespace Harlinn::Windows::Graphics::D3D11On12
         }
     };
 
-    class D3D11On12Device2 : public D3D11On12Device1
+    class Device2 : public Device1
     {
     public:
-        HCC_COM_STANDARD_METHODS_IMPL2(D3D11On12Device2, D3D11On12Device1)
+        HCC_COM_STANDARD_METHODS_IMPL(Device2, Device1, ID3D11On12Device2, ID3D11On12Device1 )
     public:
         void UnwrapUnderlyingResource( ID3D11Resource* resource11, ID3D12CommandQueue* commandQueue, const Guid& riid, void** resource12) const
         {

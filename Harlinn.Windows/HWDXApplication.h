@@ -60,8 +60,8 @@ namespace Harlinn::Windows
         };
     private:
         UINT frameIndex_ = 0;
-        DXGI::Factory4 dxgiFactory_;
-        DXGI::Adapter4 hardwareAdapter_;
+        Graphics::DXGI::Factory4 dxgiFactory_;
+        Graphics::DXGI::Adapter4 hardwareAdapter_;
         DX::Device device_;
         EventWaitHandle fenceEvent_;
         DX::Fence fence_;
@@ -71,7 +71,7 @@ namespace Harlinn::Windows
         DX::CommandQueue commandQueue_;
         std::array<FrameContext, FRAMES_IN_FLIGHT_COUNT> frameContexts_ = {};
         UInt64 fenceLastSignaledValue_ = 0;
-        DXGI::SwapChain4 swapChain_;
+        Graphics::DXGI::SwapChain4 swapChain_;
         HANDLE swapChainWaitableObject_ = nullptr;
         std::array<DX::Resource, BACK_BUFFERS_COUNT> renderTargetResources_;
         std::array<D3D12_CPU_DESCRIPTOR_HANDLE, BACK_BUFFERS_COUNT>  renderTargetDescriptors_ = {};
@@ -128,7 +128,7 @@ namespace Harlinn::Windows
         {
             return fenceLastSignaledValue_;
         }
-        const DXGI::SwapChain4& SwapChain( ) const
+        const Graphics::DXGI::SwapChain4& SwapChain( ) const
         {
             return swapChain_;
         }
@@ -154,7 +154,7 @@ namespace Harlinn::Windows
         HW_EXPORT virtual DX::CommandQueue CreateCommandQueue( );
         HW_EXPORT void SetupFrameContexts( );
         HW_EXPORT virtual DX::GraphicsCommandList CreateCommandList( const DX::CommandAllocator& commandAllocator );
-        HW_EXPORT virtual DXGI::SwapChain4 CreateSwapChain( HWND windowHandle );
+        HW_EXPORT virtual Graphics::DXGI::SwapChain4 CreateSwapChain( HWND windowHandle );
 
     public:
         HW_EXPORT virtual void CleanupDeviceD3D( );

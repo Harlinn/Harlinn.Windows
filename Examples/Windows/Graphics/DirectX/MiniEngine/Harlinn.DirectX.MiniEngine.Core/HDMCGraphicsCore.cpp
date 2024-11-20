@@ -46,6 +46,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Graphics
     {
+        using namespace Harlinn::Windows::Graphics;
 #ifndef RELEASE
         const GUID WKPDID_D3DDebugObjectName = { 0x429b8c22,0x9188,0x4b0c, { 0x87,0x42,0xac,0xb0,0xbf,0x85,0xc2,0x00 } };
 #endif
@@ -120,10 +121,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             LUID luid = pDevice.GetAdapterLuid( );
 
             // Obtain the DXGI factory
-            DXGI::Factory4 dxgiFactory = DXGI::Factory4::Create( );;
+            Graphics::DXGI::Factory4 dxgiFactory = Graphics::DXGI::Factory4::Create( );;
 
 
-            auto pAdapter = dxgiFactory.EnumAdapterByLuid<DXGI::Adapter2>( luid );
+            auto pAdapter = dxgiFactory.EnumAdapterByLuid<Graphics::DXGI::Adapter2>( luid );
 
             if ( pAdapter )
             {
@@ -210,7 +211,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
 
         // Obtain the DXGI factory
-        auto dxgiFactory = DXGI::Factory6::Create( dxgiFactoryFlags );
+        auto dxgiFactory = Graphics::DXGI::Factory6::Create( dxgiFactoryFlags );
 
         // Create the D3D graphics device
 

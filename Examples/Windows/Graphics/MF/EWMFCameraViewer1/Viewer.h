@@ -40,7 +40,7 @@ enum class PlayerState
     Closing
 };
 
-class Viewer : public Com::ObjectBase<Viewer, IMFAsyncCallback>, public Com::IUnknownImpl<Viewer, IMFAsyncCallback>
+class Viewer : public Com::ObjectBase<Viewer, IMFAsyncCallback>
 {
 public:
     using Base = Com::ObjectBase<Viewer, IMFAsyncCallback>;

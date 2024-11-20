@@ -78,7 +78,7 @@ public:
 
     void InitializeDXGI( )
     {
-        DXGI::Device1 dxgiDevice = d3dDevice_.As<DXGI::Device1>( );
+        Graphics::DXGI::Device1 dxgiDevice = d3dDevice_.As<Graphics::DXGI::Device1>( );
         // Ensure that DXGI doesn't queue more than one frame at a time.
         dxgiDevice.SetMaximumFrameLatency( 1 );
         device_ = factory_.CreateDevice( dxgiDevice );
@@ -97,7 +97,7 @@ public:
     }
 
 
-    DXGI::SwapChain1 CreateSwapChain( Control* constrol )
+    Graphics::DXGI::SwapChain1 CreateSwapChain( Control* constrol )
     {
         DXGI_SWAP_CHAIN_DESC1 swapChainDesc{ 0, };
         swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -107,13 +107,13 @@ public:
         swapChainDesc.Scaling = DXGI_SCALING_NONE;
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 
-        DXGI::Device1 dxgiDevice = d3dDevice_.As<DXGI::Device1>( );
+        Graphics::DXGI::Device1 dxgiDevice = d3dDevice_.As<Graphics::DXGI::Device1>( );
 
-        DXGI::Adapter dxgiAdapter = dxgiDevice.GetAdapter( );
-        auto dxgiFactory = dxgiAdapter.GetParent<DXGI::Factory2>( );
+        Graphics::DXGI::Adapter dxgiAdapter = dxgiDevice.GetAdapter( );
+        auto dxgiFactory = dxgiAdapter.GetParent<Graphics::DXGI::Factory2>( );
 
-        DXGI::SwapChain1 dxgiSwapChain;
-        dxgiSwapChain = dxgiFactory.CreateSwapChainForHwnd<DXGI::SwapChain1>( dxgiDevice, constrol->GetHandle( ), &swapChainDesc );
+        Graphics::DXGI::SwapChain1 dxgiSwapChain;
+        dxgiSwapChain = dxgiFactory.CreateSwapChainForHwnd<Graphics::DXGI::SwapChain1>( dxgiDevice, constrol->GetHandle( ), &swapChainDesc );
 
         return dxgiSwapChain;
     }
@@ -124,7 +124,7 @@ class Direct2DControl
 {
     Control* control_;
     Direct2D& direct2D_;
-    DXGI::SwapChain1 dxgiSwapChain_;
+    Graphics::DXGI::SwapChain1 dxgiSwapChain_;
     Graphics::DeviceContext6 deviceContext_;
 public:
     Direct2DControl( Direct2D& direct2D, Control* control )
@@ -162,7 +162,7 @@ private:
 
     void InitializeTargetBitmap( )
     {
-        DXGI::Surface backBuffer = dxgiSwapChain_.GetBuffer<IDXGISurface>( 0 );
+        Graphics::DXGI::Surface backBuffer = dxgiSwapChain_.GetBuffer<IDXGISurface>( 0 );
 
         auto bitmapProperties = D2D1::BitmapProperties1( D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
             D2D1::PixelFormat( DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE ) );

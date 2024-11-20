@@ -577,6 +577,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// This class provides methods for enumerating Microsoft DirectX Media Objects (DMOs). 
+    /// </summary>
     class EnumDMO : public Unknown
     {
     public:
@@ -618,6 +621,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// The MediaObjectInPlace class provides methods for processing data in place. 
+    /// </summary>
     class MediaObjectInPlace : public Unknown
     {
     public:
@@ -660,6 +666,9 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// The DMOQualityControl class supports quality control on a Microsoft DirectX Media Object (DMO).
+    /// </summary>
     class DMOQualityControl : public Unknown
     {
     public:
@@ -697,6 +706,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// The DMOVideoOutputOptimizations class supports video optimizations on a Microsoft DirectX Media Object (DMO).
+    /// </summary>
     class DMOVideoOutputOptimizations : public Unknown
     {
     public:

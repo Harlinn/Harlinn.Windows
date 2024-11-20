@@ -36,7 +36,7 @@ namespace Harlinn::Windows::MF
 
 
 
-    class StreamingStreamSink : public Com::IUknownImpl<StreamingStreamSink, IMFStreamSink, IMFMediaTypeHandler>
+    class StreamingStreamSink : public Com::IUknownImpl<StreamingStreamSink,StreamingStreamSink, IMFStreamSink, IMFMediaTypeHandler>
     {
         DWORD streamId_ = 0;
 

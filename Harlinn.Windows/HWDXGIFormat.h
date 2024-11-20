@@ -19,7 +19,7 @@
 
 #include "HWDef.h"
 
-namespace Harlinn::Windows::DXGI
+namespace Harlinn::Windows::Graphics::DXGI
 {
     /// <summary>
     /// Resource data formats, including fully-typed and type-less formats.

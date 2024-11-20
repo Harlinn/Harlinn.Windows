@@ -19,9 +19,12 @@
 
 #include <HWGraphics.h>
 
-namespace Harlinn::Windows::DirectWrite
+namespace Harlinn::Windows::Graphics::DirectWrite
 {
     class FontFileStream;
+    /// <summary>
+    /// Handles loading font file resources of a particular type from a font file reference key into a font file stream object.
+    /// </summary>
     class FontFileLoader : public Unknown
     {
     public:
@@ -33,6 +36,12 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT FontFileStream CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
     };
 
+    /// <summary>
+    /// A built-in implementation of the IDWriteFontFileLoader interface, that 
+    /// operates on local font files and exposes local font file information 
+    /// from the font file reference key. Font file references created using 
+    /// CreateFontFileReference use this font file loader.
+    /// </summary>
     class LocalFontFileLoader : public FontFileLoader
     {
     public:
@@ -40,7 +49,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( LocalFontFileLoader, FontFileLoader, IDWriteLocalFontFileLoader, IDWriteFontFileLoader )
 
-            HW_EXPORT LocalFontFileLoader& GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, UINT32* filePathLength );
+        HW_EXPORT LocalFontFileLoader& GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, UINT32* filePathLength );
         HW_EXPORT UINT32 GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
 
         HW_EXPORT LocalFontFileLoader& GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, WCHAR* filePath, UINT32 filePathSize );
@@ -50,6 +59,9 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT FILETIME GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
     };
 
+    /// <summary>
+    /// Loads font file data from a custom font file loader.
+    /// </summary>
     class FontFileStream : public Unknown
     {
     public:
@@ -57,7 +69,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileStream, Unknown, IDWriteFontFileStream, IUnknown )
 
-            HW_EXPORT FontFileStream& ReadFileFragment( void const** fragmentStart, UINT64 fileOffset, UINT64 fragmentSize, void** fragmentContext );
+        HW_EXPORT FontFileStream& ReadFileFragment( void const** fragmentStart, UINT64 fileOffset, UINT64 fragmentSize, void** fragmentContext );
         HW_EXPORT FontFileStream& ReleaseFileFragment( void* fragmentContext );
 
         HW_EXPORT FontFileStream& GetFileSize( UINT64* fileSize );
@@ -67,7 +79,11 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT UINT64 GetLastWriteTime( );
     };
 
-
+    /// <summary>
+    /// Represents a font file. Applications such as font managers or font viewers can call 
+    /// FontFile::Analyze to find out if a particular file is a font file, and whether it 
+    /// is a font type that is supported by the font system.
+    /// </summary>
     class FontFile : public Unknown
     {
     public:
@@ -75,7 +91,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFile, Unknown, IDWriteFontFile, IUnknown )
 
-            HW_EXPORT FontFile& GetReferenceKey( void const** fontFileReferenceKey, UINT32* fontFileReferenceKeySize );
+        HW_EXPORT FontFile& GetReferenceKey( void const** fontFileReferenceKey, UINT32* fontFileReferenceKeySize );
         HW_EXPORT FontFile& GetLoader( IDWriteFontFileLoader** fontFileLoader );
         HW_EXPORT FontFileLoader GetLoader( );
         HW_EXPORT FontFile& Analyze( BOOL* isSupportedFontType, DWRITE_FONT_FILE_TYPE* fontFileType, DWRITE_FONT_FACE_TYPE* fontFaceType, UINT32* numberOfFaces );
@@ -84,6 +100,10 @@ namespace Harlinn::Windows::DirectWrite
     };
 
 
+    /// <summary>
+    /// Represents text rendering settings such as ClearType level, enhanced contrast, 
+    /// and gamma correction for glyph rasterization and filtering.
+    /// </summary>
     class RenderingParams : public Unknown
     {
     public:
@@ -91,7 +111,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( RenderingParams, Unknown, IDWriteRenderingParams, IUnknown )
 
-            HW_EXPORT FLOAT GetGamma( );
+        HW_EXPORT FLOAT GetGamma( );
         HW_EXPORT FLOAT GetEnhancedContrast( );
         HW_EXPORT FLOAT GetClearTypeLevel( );
         HW_EXPORT DWRITE_PIXEL_GEOMETRY GetPixelGeometry( );
@@ -102,6 +122,10 @@ namespace Harlinn::Windows::DirectWrite
 
 
 
+    /// <summary>
+    /// Exposes various font data such as metrics, names, and glyph outlines. 
+    /// It contains font face type, appropriate file references, and face identification data.
+    /// </summary>
     class FontFace : public Unknown
     {
     public:
@@ -109,7 +133,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFace, Unknown, IDWriteFontFace, IUnknown )
 
-            HW_EXPORT DWRITE_FONT_FACE_TYPE GetType( );
+        HW_EXPORT DWRITE_FONT_FACE_TYPE GetType( );
         HW_EXPORT FontFace& GetFiles( _Inout_ UINT32* numberOfFiles, IDWriteFontFile** fontFiles );
         HW_EXPORT UINT32 GetNumberOfFiles( );
         HW_EXPORT std::shared_ptr< std::vector<FontFile> > GetFiles( );
@@ -133,6 +157,9 @@ namespace Harlinn::Windows::DirectWrite
     };
 
     class FontFileEnumerator;
+    /// <summary>
+    /// Used to construct a collection of fonts given a particular type of key.
+    /// </summary>
     class FontCollectionLoader : public Unknown
     {
     public:
@@ -140,10 +167,14 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontCollectionLoader, Unknown, IDWriteFontCollectionLoader, IUnknown )
 
-            HW_EXPORT FontCollectionLoader& CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontFileEnumerator** fontFileEnumerator );
+        HW_EXPORT FontCollectionLoader& CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontFileEnumerator** fontFileEnumerator );
         HW_EXPORT FontFileEnumerator CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize );
     };
 
+    /// <summary>
+    /// Encapsulates a collection of font files. The font system uses this 
+    /// interface to enumerate font files when building a font collection.
+    /// </summary>
     class FontFileEnumerator : public Unknown
     {
     public:
@@ -151,7 +182,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileEnumerator, Unknown, IDWriteFontFileEnumerator, IUnknown )
 
-            HW_EXPORT FontFileEnumerator& MoveNext( BOOL* hasCurrentFile );
+        HW_EXPORT FontFileEnumerator& MoveNext( BOOL* hasCurrentFile );
         HW_EXPORT bool MoveNext( );
 
         HW_EXPORT FontFileEnumerator& GetCurrentFontFile( IDWriteFontFile** fontFile );
@@ -159,6 +190,9 @@ namespace Harlinn::Windows::DirectWrite
     };
 
 
+    /// <summary>
+    /// Represents a collection of strings indexed by locale name.
+    /// </summary>
     class LocalizedStrings : public Unknown
     {
     public:
@@ -166,7 +200,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( LocalizedStrings, Unknown, IDWriteLocalizedStrings, IUnknown )
 
-            HW_EXPORT UINT32 GetCount( );
+        HW_EXPORT UINT32 GetCount( );
         HW_EXPORT LocalizedStrings& FindLocaleName( WCHAR const* localeName, UINT32* index, BOOL* exists );
         HW_EXPORT bool FindLocaleName( WCHAR const* localeName, UINT32* index );
 
@@ -185,6 +219,12 @@ namespace Harlinn::Windows::DirectWrite
 
     class FontFamily;
     class Font;
+    /// <summary>
+    /// An object that encapsulates a set of fonts, such as the set of 
+    /// fonts installed on the system, or the set of fonts in a particular 
+    /// directory. The font collection API can be used to discover what font 
+    /// families and fonts are available, and to obtain some metadata about the fonts.
+    /// </summary>
     class FontCollection : public Unknown
     {
     public:
@@ -192,7 +232,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontCollection, Unknown, IDWriteFontCollection, IUnknown )
 
-            HW_EXPORT UINT32 GetFontFamilyCount( );
+        HW_EXPORT UINT32 GetFontFamilyCount( );
         HW_EXPORT FontCollection& GetFontFamily( UINT32 index, IDWriteFontFamily** fontFamily );
         HW_EXPORT FontFamily GetFontFamily( UINT32 index );
         HW_EXPORT std::shared_ptr< std::vector<FontFamily> > GetFontFamilies( );
@@ -204,6 +244,9 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT Font GetFontFromFontFace( IDWriteFontFace* fontFace );
     };
 
+    /// <summary>
+    /// Represents a list of fonts.
+    /// </summary>
     class FontList : public Unknown
     {
     public:
@@ -211,14 +254,16 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontList, Unknown, IDWriteFontList, IUnknown )
 
-            HW_EXPORT FontList& GetFontCollection( IDWriteFontCollection** fontCollection );
+        HW_EXPORT FontList& GetFontCollection( IDWriteFontCollection** fontCollection );
         HW_EXPORT FontCollection GetFontCollection( );
         HW_EXPORT UINT32 GetFontCount( );
         HW_EXPORT FontList& GetFont( UINT32 index, IDWriteFont** font );
         HW_EXPORT Font GetFont( UINT32 index );
     };
 
-
+    /// <summary>
+    /// Represents a family of related fonts.
+    /// </summary>
     class FontFamily : public FontList
     {
     public:
@@ -226,7 +271,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFamily, FontList, IDWriteFontFamily, IDWriteFontList )
 
-            HW_EXPORT FontFamily& GetFamilyNames( IDWriteLocalizedStrings** names );
+        HW_EXPORT FontFamily& GetFamilyNames( IDWriteLocalizedStrings** names );
         HW_EXPORT LocalizedStrings GetFamilyNames( );
 
         HW_EXPORT FontFamily& GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFont** matchingFont );
@@ -236,7 +281,11 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT FontList GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style );
     };
 
-
+    /// <summary>
+    /// Represents a physical font in a font collection. This interface is used to create 
+    /// font faces from physical fonts, or to retrieve information such as font face 
+    /// metrics or face names from existing font faces.
+    /// </summary>
     class Font : public Unknown
     {
     public:
@@ -244,7 +293,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Font, Unknown, IDWriteFont, IUnknown )
 
-            HW_EXPORT Font& GetFontFamily( IDWriteFontFamily** fontFamily );
+        HW_EXPORT Font& GetFontFamily( IDWriteFontFamily** fontFamily );
         HW_EXPORT FontFamily GetFontFamily( );
         HW_EXPORT DWRITE_FONT_WEIGHT GetWeight( );
         HW_EXPORT DWRITE_FONT_STRETCH GetStretch( );
@@ -263,6 +312,10 @@ namespace Harlinn::Windows::DirectWrite
 
 
     class InlineObject;
+    /// <summary>
+    /// The TextFormat class describes the font and paragraph properties 
+    /// used to format text, and it describes locale information.
+    /// </summary>
     class TextFormat : public Unknown
     {
     public:
@@ -270,7 +323,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextFormat, Unknown, IDWriteTextFormat, IUnknown )
 
-            HW_EXPORT TextFormat& SetTextAlignment( DWRITE_TEXT_ALIGNMENT textAlignment );
+        HW_EXPORT TextFormat& SetTextAlignment( DWRITE_TEXT_ALIGNMENT textAlignment );
         HW_EXPORT TextFormat& SetParagraphAlignment( DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment );
         HW_EXPORT TextFormat& SetWordWrapping( DWRITE_WORD_WRAPPING wordWrapping );
         HW_EXPORT TextFormat& SetReadingDirection( DWRITE_READING_DIRECTION readingDirection );
@@ -304,7 +357,9 @@ namespace Harlinn::Windows::DirectWrite
 
     
 
-
+    /// <summary>
+    /// Represents a font typography setting.
+    /// </summary>
     class Typography : public Unknown
     {
     public:
@@ -312,7 +367,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Typography, Unknown, IDWriteTypography, IUnknown )
 
-            HW_EXPORT Typography& AddFontFeature( DWRITE_FONT_FEATURE fontFeature );
+        HW_EXPORT Typography& AddFontFeature( DWRITE_FONT_FEATURE fontFeature );
         HW_EXPORT Typography& AddFontFeatures( std::shared_ptr< std::vector<DWRITE_FONT_FEATURE> > fontFeatures );
         HW_EXPORT UINT32 GetFontFeatureCount( );
         HW_EXPORT Typography& GetFontFeature( UINT32 fontFeatureIndex, DWRITE_FONT_FEATURE* fontFeature );
@@ -320,7 +375,13 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT std::shared_ptr< std::vector<DWRITE_FONT_FEATURE> > GetFontFeatures( );
     };
 
-
+    /// <summary>
+    /// Implemented by the text analyzer's client to provide text to the analyzer. 
+    /// It allows the separation between the logical view of text as a continuous 
+    /// stream of characters identifiable by unique text positions, and the actual 
+    /// memory layout of potentially discrete blocks of text in the client's 
+    /// backing store.
+    /// </summary>
     class TextAnalysisSource : public Unknown
     {
     public:
@@ -328,7 +389,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalysisSource, Unknown, IDWriteTextAnalysisSource, IUnknown )
 
-            HW_EXPORT TextAnalysisSource& GetTextAtPosition( UINT32 textPosition, WCHAR const** textString, UINT32* textLength );
+        HW_EXPORT TextAnalysisSource& GetTextAtPosition( UINT32 textPosition, WCHAR const** textString, UINT32* textLength );
         HW_EXPORT TextAnalysisSource& GetTextBeforePosition( UINT32 textPosition, WCHAR const** textString, UINT32* textLength );
         HW_EXPORT DWRITE_READING_DIRECTION GetParagraphReadingDirection( );
         HW_EXPORT TextAnalysisSource& GetLocaleName( UINT32 textPosition, UINT32* textLength, _Outptr_result_z_ WCHAR const** localeName );
@@ -336,6 +397,9 @@ namespace Harlinn::Windows::DirectWrite
     };
 
 
+    /// <summary>
+    /// This interface is implemented by the text analyzer's client to receive the output of a given text analysis.
+    /// </summary>
     class TextAnalysisSink : public Unknown
     {
     public:
@@ -343,12 +407,17 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalysisSink, Unknown, IDWriteTextAnalysisSink, IUnknown )
 
-            HW_EXPORT TextAnalysisSink& SetScriptAnalysis( UINT32 textPosition, UINT32 textLength, DWRITE_SCRIPT_ANALYSIS const* scriptAnalysis );
+        HW_EXPORT TextAnalysisSink& SetScriptAnalysis( UINT32 textPosition, UINT32 textLength, DWRITE_SCRIPT_ANALYSIS const* scriptAnalysis );
         HW_EXPORT TextAnalysisSink& SetLineBreakpoints( UINT32 textPosition, UINT32 textLength, DWRITE_LINE_BREAKPOINT const* lineBreakpoints );
         HW_EXPORT TextAnalysisSink& SetBidiLevel( UINT32 textPosition, UINT32 textLength, UINT8 explicitLevel, UINT8 resolvedLevel );
         HW_EXPORT TextAnalysisSink& SetNumberSubstitution( UINT32 textPosition, UINT32 textLength, IDWriteNumberSubstitution* numberSubstitution );
     };
 
+    /// <summary>
+    /// Analyzes various text properties for complex script processing such as 
+    /// bidirectional (bidi) support for languages like Arabic, determination of 
+    /// line break opportunities, glyph placement, and number substitution.
+    /// </summary>
     class TextAnalyzer : public Unknown
     {
     public:
@@ -356,11 +425,11 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalyzer, Unknown, IDWriteTextAnalyzer, IUnknown )
 
-            HW_EXPORT TextAnalyzer& AnalyzeScript(
-                IDWriteTextAnalysisSource* analysisSource,
-                UINT32 textPosition,
-                UINT32 textLength,
-                IDWriteTextAnalysisSink* analysisSink );
+        HW_EXPORT TextAnalyzer& AnalyzeScript(
+            IDWriteTextAnalysisSource* analysisSource,
+            UINT32 textPosition,
+            UINT32 textLength,
+            IDWriteTextAnalysisSink* analysisSink );
 
         HW_EXPORT TextAnalyzer& AnalyzeBidi(
             IDWriteTextAnalysisSource* analysisSource,
@@ -443,6 +512,10 @@ namespace Harlinn::Windows::DirectWrite
             DWRITE_GLYPH_OFFSET* glyphOffsets );
     };
 
+    /// <summary>
+    /// Wraps an application-defined inline graphic, allowing DWrite to 
+    /// query metrics as if the graphic were a glyph inline with the text.
+    /// </summary>
     class InlineObject : public Unknown
     {
     public:
@@ -450,7 +523,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( InlineObject, Unknown, IDWriteInlineObject, IUnknown )
 
-            HW_EXPORT InlineObject& Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect );
+        HW_EXPORT InlineObject& Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect );
 
         HW_EXPORT InlineObject& GetMetrics( DWRITE_INLINE_OBJECT_METRICS* metrics );
 
@@ -459,6 +532,11 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT InlineObject& GetBreakConditions( DWRITE_BREAK_CONDITION* breakConditionBefore, DWRITE_BREAK_CONDITION* breakConditionAfter );
     };
 
+    /// <summary>
+    /// Defines the pixel snapping properties such as pixels per 
+    /// DIP(device-independent pixel) and the current transform 
+    /// matrix of a text renderer.
+    /// </summary>
     class PixelSnapping : public Unknown
     {
     public:
@@ -466,14 +544,16 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( PixelSnapping, Unknown, IDWritePixelSnapping, IUnknown )
 
-            HW_EXPORT PixelSnapping& IsPixelSnappingDisabled( void* clientDrawingContext, BOOL* isDisabled );
+        HW_EXPORT PixelSnapping& IsPixelSnappingDisabled( void* clientDrawingContext, BOOL* isDisabled );
 
         HW_EXPORT PixelSnapping& GetCurrentTransform( void* clientDrawingContext, DWRITE_MATRIX* transform );
 
         HW_EXPORT PixelSnapping& GetPixelsPerDip( void* clientDrawingContext, FLOAT* pixelsPerDip );
     };
 
-
+    /// <summary>
+    /// Represents a set of application-defined callbacks that perform rendering of text, inline objects, and decorations such as underlines.
+    /// </summary>
     class TextRenderer : public PixelSnapping
     {
     public:
@@ -481,7 +561,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextRenderer, PixelSnapping, IDWriteTextRenderer, IDWritePixelSnapping )
 
-            HW_EXPORT TextRenderer& DrawGlyphRun( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, DWRITE_GLYPH_RUN_DESCRIPTION const* glyphRunDescription, IUnknown* clientDrawingEffect );
+        HW_EXPORT TextRenderer& DrawGlyphRun( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, DWRITE_GLYPH_RUN_DESCRIPTION const* glyphRunDescription, IUnknown* clientDrawingEffect );
 
         HW_EXPORT TextRenderer& DrawUnderline( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_UNDERLINE const* underline, IUnknown* clientDrawingEffect );
 
@@ -490,13 +570,15 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT TextRenderer& DrawInlineObject( void* clientDrawingContext, FLOAT originX, FLOAT originY, IDWriteInlineObject* inlineObject, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect );
     };
 
-
+    /// <summary>
+    /// The TextLayout class represents a block of text after it has been fully analyzed and formatted.
+    /// </summary>
     class TextLayout : public TextFormat
     {
     public:
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextLayout, TextFormat, IDWriteTextLayout, IDWriteTextFormat )
 
-            HW_EXPORT TextLayout& SetMaxWidth( FLOAT maxWidth );
+        HW_EXPORT TextLayout& SetMaxWidth( FLOAT maxWidth );
         HW_EXPORT TextLayout& SetMaxHeight( FLOAT maxHeight );
 
         HW_EXPORT TextLayout& SetFontCollection( IDWriteFontCollection* fontCollection, DWRITE_TEXT_RANGE textRange );
@@ -577,7 +659,9 @@ namespace Harlinn::Windows::DirectWrite
     
 
 
-
+    /// <summary>
+    /// Encapsulates a 32-bit device independent bitmap and device context, which can be used for rendering glyphs.
+    /// </summary>
     class BitmapRenderTarget : public Unknown
     {
     public:
@@ -585,7 +669,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( BitmapRenderTarget, Unknown, IDWriteBitmapRenderTarget, IUnknown )
 
-            HW_EXPORT BitmapRenderTarget& DrawGlyphRun( FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, IDWriteRenderingParams* renderingParams, COLORREF textColor, RECT* blackBoxRect = nullptr );
+        HW_EXPORT BitmapRenderTarget& DrawGlyphRun( FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, IDWriteRenderingParams* renderingParams, COLORREF textColor, RECT* blackBoxRect = nullptr );
 
         HW_EXPORT HDC GetMemoryDC( );
 
@@ -603,6 +687,11 @@ namespace Harlinn::Windows::DirectWrite
     };
 
 
+    /// <summary>
+    /// Provides interoperability with GDI, such as methods to convert a font 
+    /// face to a LOGFONT structure, or to convert a GDI font description into 
+    /// a font face. It is also used to create bitmap render target objects.
+    /// </summary>
     class GdiInterop : public Unknown
     {
     public:
@@ -610,7 +699,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( GdiInterop, Unknown, IDWriteGdiInterop, IUnknown )
 
-            HW_EXPORT GdiInterop& CreateFontFromLOGFONT( LOGFONTW const* logFont, IDWriteFont** font );
+        HW_EXPORT GdiInterop& CreateFontFromLOGFONT( LOGFONTW const* logFont, IDWriteFont** font );
 
         HW_EXPORT GdiInterop& ConvertFontToLOGFONT( IDWriteFont* font, LOGFONTW* logFont, BOOL* isSystemFont );
 
@@ -621,7 +710,9 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT GdiInterop& CreateBitmapRenderTarget( HDC hdc, UINT32 width, UINT32 height, IDWriteBitmapRenderTarget** renderTarget );
     };
 
-
+    /// <summary>
+    /// Contains low-level information used to render a glyph run.
+    /// </summary>
     class GlyphRunAnalysis : public Unknown
     {
     public:
@@ -629,14 +720,16 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( GlyphRunAnalysis, Unknown, IDWriteGlyphRunAnalysis, IUnknown )
 
-            HW_EXPORT GlyphRunAnalysis& GetAlphaTextureBounds( DWRITE_TEXTURE_TYPE textureType, RECT* textureBounds );
+        HW_EXPORT GlyphRunAnalysis& GetAlphaTextureBounds( DWRITE_TEXTURE_TYPE textureType, RECT* textureBounds );
 
         HW_EXPORT GlyphRunAnalysis& CreateAlphaTexture( DWRITE_TEXTURE_TYPE textureType, RECT const* textureBounds, BYTE* alphaValues, UINT32 bufferSize );
 
         HW_EXPORT GlyphRunAnalysis& GetAlphaBlendParams( IDWriteRenderingParams* renderingParams, FLOAT* blendGamma, FLOAT* blendEnhancedContrast, FLOAT* blendClearTypeLevel );
     };
 
-
+    /// <summary>
+    /// Used to create all subsequent DirectWrite objects. This class is the root factory for all DirectWrite objects.
+    /// </summary>
     class Factory : public Unknown
     {
     public:
@@ -644,7 +737,7 @@ namespace Harlinn::Windows::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Factory, Unknown, IDWriteFactory, IUnknown )
 
-            HW_EXPORT Factory( DWRITE_FACTORY_TYPE factoryType );
+        HW_EXPORT Factory( DWRITE_FACTORY_TYPE factoryType );
 
         HW_EXPORT Factory& GetSystemFontCollection( IDWriteFontCollection** fontCollection, BOOL checkForUpdates = FALSE );
         HW_EXPORT FontCollection GetSystemFontCollection( bool checkForUpdates = false );

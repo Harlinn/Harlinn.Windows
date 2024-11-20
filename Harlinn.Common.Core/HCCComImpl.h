@@ -22,77 +22,75 @@
 
 namespace Harlinn::Common::Core::Com
 {
-    
-
-    /// <summary>
-    /// Base class for COM object implementations, it implements
-    /// <code>
-    /// virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override;
-    /// </code>
-    /// on behalf of derived templates.
-    /// </summary>
-    /// <typeparam name="DerivedT">
-    /// The type that gets instantiated.
-    /// </typeparam>
-    /// <typeparam name="...InterfaceTypes">
-    /// <p>
-    /// The list of COM interfaces that is implemented by DerivedT that DerivedT can be 
-    /// unambiguously be cast to. This means that no interface can be derived from any
-    /// other interface that is part of this parameter pack.
-    /// </p>
-    /// <p>
-    /// Interface inheritance is implemented through specializations of
-    /// 
-    /// </p>
-    /// </typeparam>
-    template<typename DerivedT, typename ... InterfaceTypes >
-    class __declspec( novtable ) Interfaces //: public InterfaceTypes...
+    template<typename T>
+    concept InterfaceQueryable = requires( T t, REFIID riid, void** ppvObject, bool addRef )
     {
-    public:
-        using DerivedType = DerivedT;
-    private:
-        template<typename InterfaceType, typename ...RemainingInterfaceTypes>
-        void* QueryItf( const Guid& iid ) const
-        {
-            using Itf = Com::Interface<InterfaceType>;
-            const DerivedType* self = static_cast<const DerivedType*>( this );
-            auto* ptr = Itf::QueryInterface( iid, static_cast<const InterfaceType*>(self) );
-            if ( !ptr )
-            {
-                if constexpr ( sizeof...( RemainingInterfaceTypes ) > 0 )
-                {
-                    ptr = QueryItf<RemainingInterfaceTypes...>( iid );
-                }
-            }
-            return ptr;
-        }
-    public:
-        HRESULT QueryInterfaceImpl( const IID& iid, void** result, bool addRef = true )
-        {
-            if ( !result )
-            {
-                return E_POINTER;
-            }
-            void* ptr = QueryItf<InterfaceTypes...>( iid );
-            if ( ptr )
-            {
-                *result = ptr;
-                if ( addRef )
-                {
-                    DerivedType* self = static_cast< DerivedType* >( this );
-                    self->AddRef( );
-                }
-                return S_OK;
-            }
-            else
-            {
-                *result = nullptr;
-                return E_NOINTERFACE;
-            }
-        }
+        { t.QueryInterfaceImpl( riid, ppvObject, addRef ) }->std::same_as<HRESULT>;
     };
 
+    template<typename T>
+    concept IUnknownImplLike = InterfaceQueryable<T> && requires( T t, REFIID riid, void** ppvObject, bool addRef )
+    {
+        { t.AddRefImpl( ) }->std::same_as<ULONG>;
+        { t.ReleaseImpl( ) }->std::same_as<ULONG>;
+    };
 
+    
+    namespace Internal
+    {
+        /// <summary>
+        /// Base class for COM object implementations, it implements
+        /// <code>
+        /// virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override;
+        /// </code>
+        /// on behalf of derived templates.
+        /// </summary>
+        /// <typeparam name="DerivedT">
+        /// The type that gets instantiated.
+        /// </typeparam>
+        /// <typeparam name="...InterfaceTypes">
+        /// <p>
+        /// The list of COM interfaces that is implemented by DerivedT that DerivedT can be 
+        /// unambiguously be cast to. This means that no interface can be derived from any
+        /// other interface that is part of this parameter pack.
+        /// </p>
+        /// <p>
+        /// Interface inheritance is implemented through specializations of
+        /// 
+        /// </p>
+        /// </typeparam>
+        template<typename DerivedT, typename ... InterfaceTypes >
+        class __declspec( novtable ) Interfaces : public InterfaceTypes...
+        {
+        public:
+            using DerivedType = DerivedT;
+        protected:
+            template<typename InterfaceType, typename ...RemainingInterfaceTypes>
+            void* QueryItf_( const Guid& iid ) const
+            {
+                using Itf = Com::Interface<InterfaceType>;
+                const DerivedType* self = static_cast< const DerivedType* >( this );
+                auto* ptr = Itf::QueryInterface( iid, static_cast< const InterfaceType* >( self ) );
+                if ( !ptr )
+                {
+                    if constexpr ( sizeof...( RemainingInterfaceTypes ) > 0 )
+                    {
+                        ptr = QueryItf_<RemainingInterfaceTypes...>( iid );
+                    }
+                }
+                return ptr;
+            }
+
+            void* QueryItf( const Guid& iid ) const
+            {
+                return QueryItf_<InterfaceTypes...>( iid );
+            }
+
+        public:
+            
+        };
+    }
+    /*
     template<typename DerivedT, typename ... InterfaceTypes>
     class ObjectBase : public Interfaces<DerivedT, InterfaceTypes...>
     {
@@ -137,43 +135,163 @@ namespace Harlinn::Common::Core::Com
             return result;
         }
     };
+    */
+    
 
 
 
 
 
-
-
-    template<typename DerivedT, typename InterfaceT>
-    class __declspec( novtable ) IUnknownImpl : public InterfaceT
+    template<typename DerivedT, typename ... InterfaceTypes>
+    class __declspec( novtable ) ObjectBase : public Internal::Interfaces<DerivedT, InterfaceTypes...>
     {
     public:
+        using Base = Internal::Interfaces<DerivedT, InterfaceTypes...>;
         using DerivedType = DerivedT;
-        using InterfaceType = IUnknown;
-
-        virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override
-        {
-            auto& self = *static_cast< DerivedType* >( this );
-            return self.QueryInterfaceImpl( iid, result );
-        }
-
-        virtual ULONG __stdcall AddRef( ) override
-        {
-            auto& self = *static_cast< DerivedType* >( this );
-            return self.AddRefImpl( );
-        }
-
-        virtual ULONG __stdcall Release( ) override
-        {
-            auto& self = *static_cast< DerivedType* >( this );
-            return self.ReleaseImpl( );
-        }
-
+        ObjectBase( ) = default;
     };
 
+    namespace Internal
+    {
+        template<typename BaseT>
+        class __declspec( novtable ) StackObjectImpl : public BaseT
+        {
+            ULONG referenceCount_ = 1;
+        public:
+            using Base = BaseT;
+            template<typename ...Args>
+            explicit StackObjectImpl( Args&&... args )
+                : Base( std::forward<Args>( args )... )
+            {
+            }
 
-    template<typename DerivedT, typename InterfaceT>
-    class __declspec( novtable ) IDispatchImpl : public IUnknownImpl<DerivedT, InterfaceT>
+            virtual ULONG AddRef( ) override
+            {
+                ULONG result = InterlockedIncrement( &referenceCount_ );
+                return result;
+            }
+
+            virtual ULONG Release( ) override
+            {
+                ULONG result = InterlockedDecrement( &referenceCount_ );
+                return result;
+            }
+        protected:
+            using Base::QueryItf;
+            HRESULT QueryInterfaceImpl( const IID& iid, void** result, bool addRef = true )
+            {
+                if ( !result )
+                {
+                    return E_POINTER;
+                }
+                void* ptr = QueryItf( iid );
+                if ( ptr )
+                {
+                    *result = ptr;
+                    if ( addRef )
+                    {
+                        AddRef( );
+                    }
+                    return S_OK;
+                }
+                else
+                {
+                    *result = nullptr;
+                    return E_NOINTERFACE;
+                }
+            }
+        public:
+            virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override
+            {
+                return QueryInterfaceImpl( iid, result );
+            }
+        };
+
+        template<typename BaseT>
+        class __declspec( novtable ) HeapObjectImpl : public BaseT
+        {
+            ULONG referenceCount_ = 1;
+        public:
+            using Base = BaseT;
+            template<typename ...Args>
+            explicit HeapObjectImpl( Args&&... args )
+                : Base( std::forward<Args>( args )... )
+            { }
+
+            ULONG AddRef( )
+            {
+                ULONG result = InterlockedIncrement( &referenceCount_ );
+                return result;
+            }
+
+            ULONG Release( )
+            {
+                ULONG result = InterlockedDecrement( &referenceCount_ );
+                if ( result == 0 )
+                {
+                    delete this;
+                }
+                return result;
+            }
+        protected:
+            using Base::QueryItf;
+            HRESULT QueryInterfaceImpl( const IID& iid, void** result, bool addRef = true )
+            {
+                if ( !result )
+                {
+                    return E_POINTER;
+                }
+                void* ptr = QueryItf( iid );
+                if ( ptr )
+                {
+                    *result = ptr;
+                    if ( addRef )
+                    {
+                        AddRef( );
+                    }
+                    return S_OK;
+                }
+                else
+                {
+                    *result = nullptr;
+                    return E_NOINTERFACE;
+                }
+            }
+        public:
+            virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override
+            {
+                return QueryInterfaceImpl( iid, result );
+            }
+
+            
+        };
+    }
+
+    template<typename BaseT>
+    class StackObject : public Internal::StackObjectImpl<BaseT>
+    {
+    public:
+        using Base = Internal::StackObjectImpl<BaseT>;
+        template<typename ...Args>
+        explicit StackObject( Args&&... args )
+            : Base( std::forward<Args>( args )... )
+        {
+        }
+    };
+    template<typename BaseT>
+    class HeapObject : public Internal::HeapObjectImpl<BaseT>
+    {
+    public:
+        using Base = Internal::HeapObjectImpl<BaseT>;
+        template<typename ...Args>
+        explicit HeapObject( Args&&... args )
+            : Base( std::forward<Args>( args )... )
+        {
+        }
+    };
+
+    template<IUnknownImplLike DerivedT, typename ... InterfaceTypes>
+    class __declspec( novtable ) IDispatchImpl : public ObjectBase<DerivedT, InterfaceTypes...>
     {
         TypeInfo typeInfo_;
     public:
@@ -196,7 +314,7 @@ namespace Harlinn::Common::Core::Com
         /// the number is 0.
         /// </param>
         /// <returns></returns>
-        virtual HRESULT __stdcall GetTypeInfoCount( UINT* result )
+        virtual HRESULT __stdcall GetTypeInfoCount( UINT* result ) override
         {
             if ( result )
             {
@@ -236,7 +354,7 @@ namespace Harlinn::Common::Core::Com
         /// The requested type information object.
         /// </param>
         /// <returns></returns>
-        virtual HRESULT __stdcall GetTypeInfo( UINT typeInfoIndex, LCID localeId, ITypeInfo** typeInfo )
+        virtual HRESULT __stdcall GetTypeInfo( UINT typeInfoIndex, LCID localeId, ITypeInfo** typeInfo ) override
         {
             auto itf = typeInfo_.GetInterfacePointer<ITypeInfo>( );
             return itf->QueryInterface( typeInfo );
@@ -248,13 +366,13 @@ namespace Harlinn::Common::Core::Com
         }
 
 
-        virtual HRESULT __stdcall GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT cNames, LCID lcid, DISPID* rgDispId )
+        virtual HRESULT __stdcall GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT cNames, LCID lcid, DISPID* rgDispId ) override
         {
             auto itf = typeInfo_.GetInterfacePointer<ITypeInfo>( );
             return itf->GetIDsOfNames( rgszNames, cNames, rgDispId );
         }
 
-        virtual HRESULT __stdcall Invoke( DISPID memberId, REFIID riid, LCID lcid, WORD flags, DISPPARAMS* parameters, VARIANT* result, EXCEPINFO* exceptionInfo, UINT* argumentError )
+        virtual HRESULT __stdcall Invoke( DISPID memberId, REFIID riid, LCID lcid, WORD flags, DISPPARAMS* parameters, VARIANT* result, EXCEPINFO* exceptionInfo, UINT* argumentError ) override
         {
             auto itf = typeInfo_.GetInterfacePointer<ITypeInfo>( );
             DerivedType* self = static_cast<DerivedType*>( this );
@@ -270,7 +388,7 @@ namespace Harlinn::Common::Core::Com
     class EnumConnectionsImpl;
 
     template<typename DerivedT, typename ObjectBaseT, typename ConnectionInterfaceT, typename InterfaceT>
-    class __declspec( novtable ) IConnectionPointImpl : public IUnknownImpl<DerivedT, InterfaceT>
+    class __declspec( novtable ) IConnectionPointImpl : public ObjectBase<DerivedT, InterfaceT>
     {
     public:
         using DerivedType = DerivedT;
@@ -415,7 +533,7 @@ namespace Harlinn::Common::Core::Com
     };
 
     template<typename ConnectionPointT, typename ObjectBaseT>
-    class EnumConnectionsImpl : public ObjectBaseT, public IUnknownImpl<EnumConnectionsImpl<ConnectionPointT, ObjectBaseT>, IEnumConnections>
+    class EnumConnectionsImpl : public ObjectBaseT, public ObjectBase<EnumConnectionsImpl<ConnectionPointT, ObjectBaseT>, IEnumConnections>
     {
     public:
         using ConnectionPointType = ConnectionPointT;
