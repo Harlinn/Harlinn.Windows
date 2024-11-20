@@ -20,7 +20,7 @@
 #include <HWDef.h>
 #include <HCCCom.h>
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
     class CameraUIControlEventCallback : public Unknown
     {

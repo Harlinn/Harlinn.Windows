@@ -23,7 +23,7 @@
 
 using namespace Harlinn::Common::Core;
 using namespace Harlinn::Windows;
-using namespace Harlinn::Windows::MF;
+using namespace Harlinn::Windows::Media;
 
 namespace
 {

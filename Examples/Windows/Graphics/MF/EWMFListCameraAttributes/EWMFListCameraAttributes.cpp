@@ -18,6 +18,7 @@
 #include <HWStrmif.h>
 
 using namespace Harlinn::Windows;
+using namespace Harlinn::Windows::Media;
 using namespace Harlinn::Windows::DirectShow;
 using namespace Harlinn::Common::Core;
 
@@ -45,9 +46,9 @@ int main()
 {
     Harlinn::Common::Core::ComInitialize initialize;
 
-    MF::MediaFoundation mediaFoundation;
+    MediaFoundation mediaFoundation;
 
-    auto videoDeviceSources = MF::DeviceSources::CreateVideoDeviceSources();
+    auto videoDeviceSources = DeviceSources::CreateVideoDeviceSources();
 
     for (int i = 0; i < videoDeviceSources.size(); i++)
     {

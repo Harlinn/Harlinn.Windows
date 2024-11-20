@@ -22,10 +22,8 @@
 
 #pragma comment(lib, "wmcodecdspuuid.lib")
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
-    namespace MF
-    {
         /// <summary>
         /// Returned by MFTransform::ProcessOutput
         /// </summary>
@@ -126,9 +124,6 @@ namespace Harlinn::Windows
         };
 
         static_assert(sizeof(TransformOutputDataBuffer) == sizeof(MFT_OUTPUT_DATA_BUFFER));
-
-
-    }
 
 
     class MFTransform : public Unknown
@@ -459,9 +454,9 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
-        MF::TransformOutputResult ProcessOutput( DWORD dwFlags, DWORD cOutputBufferCount, MFT_OUTPUT_DATA_BUFFER* pOutputSamples, DWORD* pdwStatus) const
+        Media::TransformOutputResult ProcessOutput( DWORD dwFlags, DWORD cOutputBufferCount, MFT_OUTPUT_DATA_BUFFER* pOutputSamples, DWORD* pdwStatus) const
         {
-            MF::TransformOutputResult result = MF::TransformOutputResult::Success;
+            Media::TransformOutputResult result = Media::TransformOutputResult::Success;
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->ProcessOutput(dwFlags, cOutputBufferCount, pOutputSamples, pdwStatus);
             switch (hr)
@@ -469,10 +464,10 @@ namespace Harlinn::Windows
                 case S_OK:
                     break;
                 case MF_E_TRANSFORM_NEED_MORE_INPUT:
-                    result = MF::TransformOutputResult::NeedMoreInput;
+                    result = Media::TransformOutputResult::NeedMoreInput;
                     break;
                 case MF_E_TRANSFORM_STREAM_CHANGE:
-                    result = MF::TransformOutputResult::StreamChange;
+                    result = Media::TransformOutputResult::StreamChange;
                     break;
                 default:
                     HCC_COM_CHECK_HRESULT2(hr, pInterface);
@@ -480,12 +475,12 @@ namespace Harlinn::Windows
             }
             return result;
         }
-        MF::TransformOutputResult ProcessOutput(DWORD flags, DWORD outputBufferCount, MF::TransformOutputDataBuffer* outputSamples, DWORD* status) const
+        Media::TransformOutputResult ProcessOutput(DWORD flags, DWORD outputBufferCount, Media::TransformOutputDataBuffer* outputSamples, DWORD* status) const
         {
             return ProcessOutput(flags, outputBufferCount, reinterpret_cast<MFT_OUTPUT_DATA_BUFFER*>(outputSamples), status);
         }
 
-        MF::TransformOutputResult ProcessOutput(DWORD flags, MF::TransformOutputDataBuffer& outputSamples, DWORD* status) const
+        Media::TransformOutputResult ProcessOutput(DWORD flags, Media::TransformOutputDataBuffer& outputSamples, DWORD* status) const
         {
             return ProcessOutput(flags, 1 ,&outputSamples, status);
         }

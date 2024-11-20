@@ -22,7 +22,7 @@
 #pragma comment(lib,"Mf.lib")
 #pragma comment(lib,"strmiids.lib")
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
     class MFMediaSession;
     class MFSourceResolver;
@@ -1937,7 +1937,17 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Gets metadata from a media source or other object.
+    /// </para>
+    /// <para>
+    /// If a media source supports this functionality, it exposes this as a service. 
+    /// To get an instance of this class from a media source, call MFGetService::GetService. 
+    /// The service identifier is MF_METADATA_PROVIDER_SERVICE. Other types of object 
+    /// can expose this functionality through As&ltMFMetadataProvider;&gt;( ).
+    /// </para>
+    /// </summary>
     class MFMetadataProvider : public Unknown
     {
     public:
@@ -1951,7 +1961,15 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Queries the range of playback rates that are supported, including reverse playback.
+    /// </para>
+    /// <para>
+    /// To get an instance of this class, call MFGetService::GetService with the service 
+    /// identifier MF_RATE_CONTROL_SERVICE.
+    /// </para>
+    /// </summary>
     class MFRateSupport : public Unknown
     {
     public:
@@ -1979,6 +1997,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Gets or sets the playback rate.
+    /// </summary>
     class MFRateControl : public Unknown
     {
     public:
@@ -1999,7 +2020,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Converts between Society of Motion Picture and Television Engineers (SMPTE) time codes and 100-nanosecond time units.
+    /// </summary>
     class MFTimecodeTranslate : public Unknown
     {
     public:
@@ -2034,6 +2057,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// For a particular seek position, gets the two nearest key frames.
+    /// </summary>
     class MFSeekInfo : public Unknown
     {
     public:
@@ -2047,6 +2073,19 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Controls the master volume level of the audio session associated with the streaming audio renderer (SAR) and the audio capture source.
+    /// </para>
+    /// <para>
+    /// The SAR and the audio capture source expose this functionality as a service. 
+    /// To get an instance of this class, call MFGetService::GetService. For the SAR, 
+    /// use the service identifier MR_POLICY_VOLUME_SERVICE. For the audio capture 
+    /// source, use the service identifier MR_CAPTURE_POLICY_VOLUME_SERVICE. You can 
+    /// call GetService directly on the SAR or the audio capture source, or call it on 
+    /// the Media Session
+    /// </para>
+    /// </summary>
     class MFSimpleAudioVolume : public Unknown
     {
     public:
@@ -2082,6 +2121,17 @@ namespace Harlinn::Windows
     };
 
 
+    /// <summary>
+    /// <para>
+    /// Controls the volume levels of individual audio channels.
+    /// </para>
+    /// <para>
+    /// The streaming audio renderer (SAR) exposes this functionality as a service. To get 
+    /// an instance of this class, call MFGetService::GetService with the service identifier 
+    /// MR_STREAM_VOLUME_SERVICE. You can call GetService directly on the SAR or call it 
+    /// on the Media Session.
+    /// </para>
+    /// </summary>
     class MFAudioStreamVolume : public Unknown
     {
     public:
@@ -2123,6 +2173,17 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Configures the audio session that is associated with the streaming audio renderer (SAR). 
+    /// Use this interface to change how the audio session appears in the Windows volume control.
+    /// </para>
+    /// <para>
+    /// The SAR exposes this functionality as a service. To get an instance of this class, call 
+    /// MFGetService::GetService with the service identifier MR_AUDIO_POLICY_SERVICE. You can 
+    /// call GetService directly on the SAR or call it on the Media Session.
+    /// </para>
+    /// </summary>
     class MFAudioPolicy : public Unknown
     {
     public:
@@ -2171,7 +2232,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Callback interface to get media data from the sample-grabber sink.
+    /// </summary>
     class MFSampleGrabberSinkCallback : public MFClockStateSink
     {
     public:
@@ -2199,7 +2262,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Extends the IMFSampleGrabberSinkCallback interface.
+    /// </summary>
     class MFSampleGrabberSinkCallback2 : public MFSampleGrabberSinkCallback
     {
     public:
@@ -2213,6 +2278,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Controls the work queues created by the Media Session.
+    /// </summary>
     class MFWorkQueueServices : public Unknown
     {
     public:
@@ -2303,6 +2371,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Extends the MFWorkQueueServices class.
+    /// </summary>
     class MFWorkQueueServicesEx : public MFWorkQueueServices
     {
     public:
@@ -2330,6 +2401,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Adjusts playback quality. 
+    /// </summary>
     class MFQualityManager : public Unknown
     {
     public:
@@ -2386,7 +2460,22 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Enables the quality manager to adjust the audio or video quality of a component in the pipeline.
+    /// </para>
+    /// <para>
+    /// This interface is exposed by pipeline components that can adjust their quality. 
+    /// Typically it is exposed by decoders and stream sinks. For example, the enhanced 
+    /// video renderer (EVR) implements this interface. However, media sources can also 
+    /// implement this interface.
+    /// </para>
+    /// <para>
+    /// To get an instance of this class from a media source, call MFGetService::GetService 
+    /// with the service identifier MF_QUALITY_SERVICES. For all other pipeline objects 
+    /// (transforms and media sinks), call As&lt;MFQualityAdvise&gt;().
+    /// </para>
+    /// </summary>
     class MFQualityAdvise : public Unknown
     {
     public:
@@ -2428,7 +2517,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Enables a pipeline object to adjust its own audio or video quality, in response to quality messages.
+    /// </summary>
     class MFQualityAdvise2 : public MFQualityAdvise
     {
     public:
@@ -2442,7 +2533,18 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Queries an object for the number of quality modes it supports. Quality 
+    /// modes are used to adjust the trade-off between quality and speed when 
+    /// rendering audio or video.
+    /// </para>
+    /// <para>
+    /// The default presenter for the enhanced video renderer (EVR) implements 
+    /// this interface. The EVR uses the interface to respond to quality messages 
+    /// from the quality manager.
+    /// </para>
+    /// </summary>
     class MFQualityAdviseLimits : public Unknown
     {
     public:
@@ -2462,7 +2564,14 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
     };
-
+    /// <summary>
+    /// <para>
+    /// Notifies a pipeline object to register itself with the Multimedia Class Scheduler Service (MMCSS).
+    /// </para>
+    /// <para>
+    /// Any pipeline object that creates worker threads should implement this interface.
+    /// </para>
+    /// </summary>
     class MFRealTimeClient : public Unknown
     {
     public:
@@ -2490,6 +2599,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Notifies a pipeline object to register itself with the Multimedia Class Scheduler Service (MMCSS).
+    /// </summary>
     class MFRealTimeClientEx : public Unknown
     {
     public:
@@ -2517,6 +2629,10 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Implemented by the Sequencer Source. The sequencer source enables an 
+    /// application to create a sequence of topologies.
+    /// </summary>
     class MFSequencerSource : public Unknown
     {
     public:
@@ -2566,7 +2682,10 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Enables an application to get a topology from the sequencer source. This 
+    /// interface is exposed by the sequencer source object.
+    /// </summary>
     class MFMediaSourceTopologyProvider : public Unknown
     {
     public:
@@ -2579,7 +2698,9 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
     };
-
+    /// <summary>
+    /// Provides notifications to the sequencer source.
+    /// </summary>
     class MFMediaSourcePresentationProvider : public Unknown
     {
     public:
@@ -2593,7 +2714,15 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Updates the attributes of one or more nodes in the Media Session's current topology.
+    /// </para>
+    /// <para>
+    /// The Media Session exposes this functionality as a service. To get an instance of this 
+    /// class, call MFGetService::GetService.The service identifier is MF_TOPONODE_ATTRIBUTE_EDITOR_SERVICE.
+    /// </para>
+    /// </summary>
     class MFTopologyNodeAttributeEditor : public Unknown
     {
     public:
@@ -2607,7 +2736,15 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Controls how a byte stream buffers data from a network.
+    /// </para>
+    /// <para>
+    /// To get an instance of this class, call As&lt;MFByteStreamBuffering&gt;() 
+    /// on the byte stream object.
+    /// </para>
+    /// </summary>
     class MFByteStreamBuffering : public Unknown
     {
     public:
@@ -2635,6 +2772,17 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Controls how a network byte stream transfers data to a local cache. Optionally, 
+    /// this functionality is exposed by byte streams that read data from a network, 
+    /// for example, through HTTP.
+    /// </para>
+    /// <para>
+    /// To get an instance of this class, call As&lt;MFByteStreamBuffering&gt;() 
+    /// on the byte stream object.
+    /// </para>
+    /// </summary>
     class MFByteStreamCacheControl : public Unknown
     {
     public:
@@ -2648,6 +2796,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Seeks a byte stream by time position.
+    /// </summary>
     class MFByteStreamTimeSeek : public Unknown
     {
     public:
@@ -2675,6 +2826,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Controls how a network byte stream transfers data to a local cache.
+    /// </summary>
     class MFByteStreamCacheControl2 : public MFByteStreamCacheControl
     {
     public:
@@ -2702,6 +2856,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Sets and retrieves user-name and password information for authentication purposes.
+    /// </summary>
     class MFNetCredential : public Unknown
     {
     public:
@@ -2743,6 +2900,22 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Implemented by applications to provide user credentials for a network source.
+    /// </para>
+    /// <para>
+    /// To use this interface, implement it in your application. Then create a property 
+    /// store object and set the MFNETSOURCE_CREDENTIAL_MANAGER property. The value of 
+    /// the property is a pointer to your application's IMFNetCredentialManager interface. 
+    /// Then pass the property store to one of the source resolver's creation functions, 
+    /// such as MFSourceResolver::CreateObjectFromURL, in the props parameter.
+    /// </para>
+    /// <para>
+    /// Media Foundation does not provide a default implementation of this interface. 
+    /// Applications that support authentication must implement this interface.
+    /// </para>
+    /// </summary>
     class MFNetCredentialManager : public Unknown
     {
     public:
@@ -2770,7 +2943,19 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Gets credentials from the credential cache.
+    /// </para>
+    /// <para>
+    /// This functionality is implemented by the credential cache object. Applications that 
+    /// implement the IMFNetCredentialManager interface can use this object to store the 
+    /// user's credentials.
+    /// </para>
+    /// <para>
+    ///  To create the credential cache object, call MFNetCredentialCache::Create()
+    /// </para>
+    /// </summary>
     class MFNetCredentialCache : public Unknown
     {
     public:
@@ -2806,7 +2991,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Implemented by a client and called by Microsoft Media Foundation to get the client Secure Sockets Layer (SSL) certificate requested by the server.
+    /// </summary>
     class MFSSLCertificateManager : public Unknown
     {
     public:
@@ -2848,7 +3035,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Notifies the application when a byte stream requests a URL, and enables the application to block URL redirection.
+    /// </summary>
     class MFNetResourceFilter : public Unknown
     {
     public:
@@ -2869,7 +3058,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Callback interface to receive notifications from a network source on the progress of an asynchronous open operation.
+    /// </summary>
     class MFSourceOpenMonitor : public Unknown
     {
     public:
@@ -2883,6 +3074,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Determines the proxy to use when connecting to a server. The network source uses this interface.
+    /// </summary>
     class MFNetProxyLocator : public Unknown
     {
     public:
@@ -2932,6 +3126,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Creates a proxy locator object, which determines the proxy to use.
+    /// </summary>
     class MFNetProxyLocatorFactory : public Unknown
     {
     public:
@@ -2945,6 +3142,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Persists media data from a source byte stream to an application-provided byte stream.
+    /// </summary>
     class MFSaveJob : public Unknown
     {
     public:
@@ -2979,6 +3179,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Configures a network scheme plug-in.
+    /// </summary>
     class MFNetSchemeHandlerConfig : public Unknown
     {
     public:
@@ -3006,7 +3209,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Creates a media source or a byte stream from a URL.
+    /// </summary>
     class MFSchemeHandler : public Unknown
     {
     public:
@@ -3051,7 +3256,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Creates a media source from a byte stream.
+    /// </summary>
     class MFByteStreamHandler : public Unknown
     {
     public:
@@ -3086,6 +3293,10 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Implemented by components that provide input trust authorities (ITAs). This 
+    /// class is used to get the ITA for each of the component's streams.
+    /// </summary>
     class MFTrustedInput : public Unknown
     {
     public:
@@ -3099,7 +3310,11 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Enables other components in the protected media path (PMP) to use the input 
+    /// protection system provided by an input trust authorities (ITA). An ITA is a 
+    /// component that implements an input protection system for media content. 
+    /// </summary>
     class MFInputTrustAuthority : public Unknown
     {
     public:
@@ -3148,7 +3363,12 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Implemented by components that provide output trust authorities (OTAs). 
+    /// Any Media Foundation transform (MFT) or media sink that is designed to 
+    /// work within the protected media path (PMP) and also sends protected 
+    /// content outside the Media Foundation pipeline must implement this interface.
+    /// </summary>
     class MFTrustedOutput : public Unknown
     {
     public:
@@ -3176,6 +3396,13 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Encapsulates the functionality of one or more output protection systems that a trusted 
+    /// output supports. This functionality is exposed by output trust authority (OTA) objects. 
+    /// Each OTA represents a single action that the trusted output can perform, such as play, 
+    /// copy, or transcode. An OTA can represent more than one physical output if each output 
+    /// performs the same action.
+    /// </summary>
     class MFOutputTrustAuthority : public Unknown
     {
     public:
@@ -3196,6 +3423,11 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Encapsulates a usage policy from an input trust authority (ITA). Output 
+    /// trust authorities (OTAs) use this interface to query which protection 
+    /// systems they are required to enforce by the ITA.
+    /// </summary>
     class MFOutputPolicy : public MFAttributes
     {
     public:
@@ -3223,6 +3455,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Encapsulates information about an output protection system and its corresponding configuration data.
+    /// </summary>
     class MFOutputSchema : public MFAttributes
     {
     public:
@@ -3250,6 +3485,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Establishes a one-way secure channel between two objects.
+    /// </summary>
     class MFSecureChannel : public Unknown
     {
     public:
@@ -3270,6 +3508,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides encryption for media data inside the protected media path (PMP).
+    /// </summary>
     class MFSampleProtection : public Unknown
     {
     public:
@@ -3311,6 +3552,14 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Enables a media sink to receive samples before the presentation clock is started.
+    /// </para>
+    /// <para>
+    /// To get an instance of this class, call As&lt;MFMediaSinkPreroll&gt;() on the media sink.
+    /// </para>
+    /// </summary>
     class MFMediaSinkPreroll : public Unknown
     {
     public:
@@ -3324,6 +3573,17 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Optionally supported by media sinks to perform required tasks before shutdown. 
+    /// This functionality is typically exposed by archive sinks—that is, media sinks 
+    /// that write to a file. It is used to perform tasks such as flushing data to 
+    /// disk or updating a file header.
+    /// </para>
+    /// <para>
+    /// To get an instance of this class, call As&lt;MFFinalizableMediaSink&gt;() on the media sink.
+    /// </para>
+    /// </summary>
     class MFFinalizableMediaSink : public MFMediaSink
     {
     public:
@@ -3344,6 +3604,11 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Passes configuration information to the media sinks that are used for streaming 
+    /// the content. Optionally, this functionality is supported by media sinks. 
+    /// The built-in ASF streaming media sink and the MP3 media sink implement this interface.
+    /// </summary>
     class MFStreamingSinkConfig : public Unknown
     {
     public:
@@ -3357,6 +3622,11 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Exposed by objects that act as a proxy for a remote object. To obtain 
+    /// an instance of this class, call MFGetService::GetService with the 
+    /// service identifier MF_REMOTE_PROXY.
+    /// </summary>
     class MFRemoteProxy : public Unknown
     {
     public:
@@ -3377,6 +3647,15 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Marshals an interface pointer to and from a stream.
+    /// </para>
+    /// <para>
+    /// Stream objects that support IStream can expose this interface to provide 
+    /// custom marshaling for interface pointers.
+    /// </para>
+    /// </summary>
     class MFObjectReferenceStream : public Unknown
     {
     public:
@@ -3397,6 +3676,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Enables a media source in the application process to create objects in the protected media path (PMP) process.
+    /// </summary>
     class MFPMPHost : public Unknown
     {
     public:
@@ -3424,6 +3706,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Enables a media source to receive an instance of the MFPMPHost class.
+    /// </summary>
     class MFPMPClient : public Unknown
     {
     public:
@@ -3437,6 +3722,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Enables two instances of the Media Session to share the same protected media path (PMP) process.
+    /// </summary>
     class MFPMPServer : public Unknown
     {
     public:
@@ -3472,7 +3760,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Modifies a topology for use in a Terminal Services environment.
+    /// </summary>
     class MFRemoteDesktopPlugin : public Unknown
     {
     public:
@@ -3494,7 +3784,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Sets and retrieves Synchronized Accessible Media Interchange (SAMI) styles on the SAMI Media Source.
+    /// </summary>
     class MFSAMIStyle : public Unknown
     {
     public:
@@ -3529,12 +3821,31 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// The transcode profile stores configuration settings that the topology builder 
+    /// uses to generate the transcode topology for the output file. These configuration 
+    /// settings are specified by the caller and include audio and video stream properties, 
+    /// encoder settings, and container settings that are specified by the caller.
+    /// </para>
+    /// <para>
+    /// To create the transcode profile object, call MFCreateTranscodeProfile. The configured transcode profile is passed to MFCreateTranscodeTopology, which creates the transcode topology with the appropriate settings.
+    /// </para>
+    /// <para>
+    /// </para>
+    /// </summary>
     class MFTranscodeProfile : public Unknown
     {
     public:
         HCC_COM_STANDARD_METHODS_IMPL(MFTranscodeProfile, Unknown, IMFTranscodeProfile, IUnknown)
     public:
+        static MFTranscodeProfile Create( )
+        {
+            IMFTranscodeProfile* result = nullptr;
+            auto hr = MFCreateTranscodeProfile( &result );
+            HCC_COM_CHECK_HRESULT( hr );
+            return MFTranscodeProfile( result );
+        }
         void SetAudioAttributes( IMFAttributes* attributes) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -3578,6 +3889,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Implemented by the transcode sink activation object.
+    /// </summary>
     class MFTranscodeSinkInfoProvider : public Unknown
     {
     public:
@@ -3612,6 +3926,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Enables an application to use a Media Foundation transform (MFT) that has restrictions on its use.
+    /// </summary>
     class MFFieldOfUseMFTUnlock : public Unknown
     {
     public:
@@ -3626,6 +3943,16 @@ namespace Harlinn::Windows
     };
 
 
+    /// <summary>
+    /// <para>
+    /// Registers Media Foundation transforms (MFTs) in the caller's process.
+    /// </para>
+    /// <para>
+    /// The Media Session exposes this functionality as a service. To obtain 
+    /// an instance of this class, call the MFGetService::GetService method on 
+    /// the Media Session with the service identifier MF_LOCAL_MFT_REGISTRATION_SERVICE.
+    /// </para>
+    /// </summary>
     class MFLocalMFTRegistration : public Unknown
     {
     public:
@@ -3667,6 +3994,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Allows a media source to create a Windows Runtime object in the Protected Media Path (PMP) process.
+    /// </summary>
     class MFPMPHostApp : public Unknown
     {
     public:
@@ -3694,6 +4024,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides a mechanism for a media source to implement content protection functionality in a Windows Store apps.
+    /// </summary>
     class MFPMPClientApp : public Unknown
     {
     public:
@@ -3707,7 +4040,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Represents a request for a sample from a MediaStreamSource.
+    /// </summary>
     class MFMediaStreamSourceSampleRequest : public Unknown
     {
     public:
@@ -3721,12 +4056,29 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Tracks the reference counts on a video media sample. Call 
+    /// MFTrackedSample::Create to create objects of this class.
+    /// </summary>
     class MFTrackedSample : public Unknown
     {
     public:
         HCC_COM_STANDARD_METHODS_IMPL(MFTrackedSample, Unknown, IMFTrackedSample, IUnknown)
     public:
+        static MFTrackedSample Create(IUnknown* unknownOfSurface)
+        {
+            IMFSample* itf = nullptr;
+            auto hr = MFCreateVideoSampleFromSurface( unknownOfSurface, &itf );
+            HCC_COM_CHECK_HRESULT( hr );
+            MFSample sample( itf );
+            return sample.As<MFTrackedSample>( );
+        }
+        static MFTrackedSample Create( const Unknown& unknownOfSurface )
+        {
+            auto surfaceItf = unknownOfSurface.GetInterfacePointer( );
+            return Create( surfaceItf );
+        }
+
         void SetAllocator( IMFAsyncCallback* sampleAllocator, IUnknown* state) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -3735,6 +4087,11 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides a method that allows content protection systems to perform a 
+    /// handshake with the protected environment. This is needed because the 
+    /// CreateFile and DeviceIoControl APIs are not available to Windows Store apps.
+    /// </summary>
     class MFProtectedEnvironmentAccess : public Unknown
     {
     public:
@@ -3755,6 +4112,12 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides a method that allows content protection systems to get 
+    /// the procedure address of a function in the signed library. This 
+    /// method provides the same functionality as GetProcAddress which 
+    /// is not available to Windows Store apps.
+    /// </summary>
     class MFSignedLibrary : public Unknown
     {
     public:
@@ -3768,7 +4131,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Provides a method that retrieves system id data.
+    /// </summary>
     class MFSystemId : public Unknown
     {
     public:
@@ -3789,7 +4154,10 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Allows a decryptor to communicate with the security processor that implements 
+    /// the hardware decryption for a protection system.
+    /// </summary>
     class MFContentProtectionDevice : public Unknown
     {
     public:
@@ -3810,6 +4178,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Allows a decryptor to manage hardware keys and decrypt hardware samples.
+    /// </summary>
     class MFContentDecryptorContext : public Unknown
     {
     public:
@@ -3822,7 +4193,9 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
     };
-
+    /// <summary>
+    /// Implemented by clients that want to enforce a cross origin policy for HTML5 media downloads.
+    /// </summary>
     class MFNetCrossOriginSupport : public Unknown
     {
     public:
@@ -3850,6 +4223,12 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Applications implement this interface to override the default implementation 
+    /// of the HTTP and HTTPS protocols used by Microsoft Media Foundation. Applications 
+    /// provide the IMFHttpDownloadRequest interface to Media Foundation through the 
+    /// CreateRequest method on the MFHttpDownloadSession interface.
+    /// </summary>
     class MFHttpDownloadRequest : public Unknown
     {
     public:
@@ -3967,7 +4346,10 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
     };
-
+    /// <summary>
+    /// Applications implement this interface to override the default implementation 
+    /// of the HTTP and HTTPS protocols used by Microsoft Media Foundation.
+    /// </summary>
     class MFHttpDownloadSession : public Unknown
     {
     public:
@@ -3995,7 +4377,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Applications implement this interface in order to provide custom a custom HTTP or HTTPS download implementation.
+    /// </summary>
     class MFHttpDownloadSessionProvider : public Unknown
     {
     public:
@@ -4042,6 +4426,11 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Represents a sensor device that can belong to a sensor group, which is represented 
+    /// by the MFSensorGroup class. The term "device" in this context could refer to a 
+    /// physical device, a custom media source, or a frame provider.
+    /// </summary>
     class MFSensorDevice : public Unknown
     {
     public:
@@ -4111,7 +4500,13 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Represents a group of sensor devices from which an MFMediaSource can be created. 
+    /// The term "device" in this context could refer to a physical device, a custom 
+    /// media source, or a frame provider. A sensor group may actually contain multiple 
+    /// sensor devices, or it could contain only a single device, but it still behaves 
+    /// as a sensor group.
+    /// </summary>
     class MFSensorGroup : public Unknown
     {
     public:
@@ -4176,6 +4571,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides methods for cloning and querying the properties of a sensor stream.
+    /// </summary>
     class MFSensorStream : public MFAttributes
     {
     public:
@@ -4202,7 +4600,11 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
     };
-
+    /// <summary>
+    /// The interface implemented by sensor transforms to allow the media 
+    /// pipeline to query requirements of the sensor transform and to create 
+    /// a runtime instance of the sensor transform.
+    /// </summary>
     class MFSensorTransformFactory : public Unknown
     {
     public:
@@ -4244,7 +4646,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Describes a media foundation sensor profile.
+    /// </summary>
     class MFSensorProfile : public Unknown
     {
     public:
@@ -4279,6 +4683,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Contains a collection of media foundation sensor profile objects.
+    /// </summary>
     class MFSensorProfileCollection : public Unknown
     {
     public:
@@ -4325,6 +4732,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Represents the activity of a process associated with a sensor.
+    /// </summary>
     class MFSensorProcessActivity : public Unknown
     {
     public:
@@ -4359,7 +4769,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Represents an activity report for a sensor.
+    /// </summary>
     class MFSensorActivityReport : public Unknown
     {
     public:
@@ -4395,7 +4807,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Provides access to IMFSensorActivityReport objects that describe the current activity of a sensor.
+    /// </summary>
     class MFSensorActivitiesReport : public Unknown
     {
     public:
@@ -4408,11 +4822,25 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        ULONG Count( ) const
+        {
+            ULONG result = 0;
+            GetCount( &result );
+            return result;
+        }
+
         void GetActivityReport( ULONG index, IMFSensorActivityReport** sensorActivityReport) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->GetActivityReport(index, sensorActivityReport);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
+        }
+        MFSensorActivityReport GetActivityReport( ULONG index ) const
+        {
+            IMFSensorActivityReport* itf = nullptr;
+            GetActivityReport( index, &itf );
+            MFSensorActivityReport result( itf );
+            return result;
         }
 
         void GetActivityReportByDeviceName( LPCWSTR symbolicName, IMFSensorActivityReport** sensorActivityReport) const
@@ -4421,9 +4849,24 @@ namespace Harlinn::Windows
             HRESULT hr = pInterface->GetActivityReportByDeviceName(symbolicName, sensorActivityReport);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
+        MFSensorActivityReport GetActivityReportByDeviceName( LPCWSTR symbolicName ) const
+        {
+            IMFSensorActivityReport* itf = nullptr;
+            GetActivityReportByDeviceName( symbolicName, &itf );
+            MFSensorActivityReport result( itf );
+            return result;
+        }
+        template<WideStringLike StringT>
+        MFSensorActivityReport GetActivityReportByDeviceName( const StringT& symbolicName ) const
+        {
+            return GetActivityReportByDeviceName( symbolicName.c_str( ) );
+        }
+
     };
 
-
+    /// <summary>
+    /// Interface implemented by the client to receive callbacks when sensor activity reports are available.
+    /// </summary>
     class MFSensorActivitiesReportCallback : public Unknown
     {
     public:
@@ -4437,6 +4880,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides methods for controlling a sensor activity monitor.
+    /// </summary>
     class MFSensorActivityMonitor : public Unknown
     {
     public:
@@ -4575,7 +5021,11 @@ namespace Harlinn::Windows
     };
 
 
-
+    /// <summary>
+    /// This class is used to configure a capture device's extended properties. Supported 
+    /// properties and capabilities are defined in the header file defined in ksmedia.h as 
+    /// constants with the naming convention KSCAMERA_EXTENDEDPROP_.
+    /// </summary>
     class MFExtendedCameraControl : public Unknown
     {
     public:
@@ -4622,7 +5072,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Allows apps to retrieve an instance of MFExtendedCameraControl, which is used to configure a capture device's extended properties.
+    /// </summary>
     class MFExtendedCameraController : public Unknown
     {
     public:
@@ -4634,9 +5086,20 @@ namespace Harlinn::Windows
             HRESULT hr = pInterface->GetExtendedCameraControl(streamIndex, propertyId, extendedCameraControl);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
+
+        MFExtendedCameraControl GetExtendedCameraControl( DWORD streamIndex, ULONG propertyId ) const
+        {
+            IMFExtendedCameraControl* extendedCameraControl = nullptr;
+            GetExtendedCameraControl( streamIndex, propertyId, &extendedCameraControl );
+            MFExtendedCameraControl result( extendedCameraControl );
+            return result;
+        }
+
     };
 
-
+    /// <summary>
+    /// This class is used to retrieve the current relative panel location for a display region.
+    /// </summary>
     class MFRelativePanelReport : public Unknown
     {
     public:
@@ -4650,7 +5113,10 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Monitors the panel associated with a display, so that the app receives 
+    /// notifications when the relative location of the panel changes.
+    /// </summary>
     class MFRelativePanelWatcher : public MFShutdown
     {
     public:
@@ -4678,6 +5144,10 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides the camera occlusion state associated with a state change detected by 
+    /// a MFCameraOcclusionStateMonitor.
+    /// </summary>
     class MFCameraOcclusionStateReport : public Unknown
     {
     public:
@@ -4704,6 +5174,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Implemented by applications to receive camera occlusion state change notifications.
+    /// </summary>
     class MFCameraOcclusionStateMonitor : public Unknown
     {
     public:
@@ -4730,6 +5203,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Allocates video samples for a video media sink with specialized functionality for video capture devices.
+    /// </summary>
     class MFVideoCaptureSampleAllocator : public MFVideoSampleAllocator
     {
     public:
@@ -4743,6 +5219,11 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Implemented by video capture sources and transforms. Allows the system to provide 
+    /// components with a sample allocator to allocate samples using memory that is accessible 
+    /// from within a container.
+    /// </summary>
     class MFSampleAllocatorControl : public Unknown
     {
     public:

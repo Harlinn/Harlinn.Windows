@@ -21,7 +21,7 @@
 #include <HCCCOM.h>
 #include <HWCommon.h>
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
     /// <summary>
     /// Wrapper for the IMediaBuffer interface which provides methods 

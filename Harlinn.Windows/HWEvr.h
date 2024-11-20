@@ -21,7 +21,7 @@ limitations under the License.
 
 #pragma comment(lib,"evr.lib")
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
     class MFVideoPositionMapper : public Unknown
     {

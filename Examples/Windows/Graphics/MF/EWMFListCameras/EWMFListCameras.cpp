@@ -26,9 +26,9 @@ int main()
 {
     Harlinn::Common::Core::ComInitialize initialize;
     
-    MF::MediaFoundation mediaFoundation;
+    Media::MediaFoundation mediaFoundation;
 
-    auto videoDeviceSources = MF::DeviceSources::CreateVideoDeviceSources();
+    auto videoDeviceSources = Media::DeviceSources::CreateVideoDeviceSources();
 
     for (int i = 0; i < videoDeviceSources.size(); i++)
     {

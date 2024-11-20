@@ -21,13 +21,13 @@
 #include <HWMFLive555.h>
 
 using namespace Harlinn::Windows;
-using namespace Harlinn::Windows::LiveMedia;
+using namespace Harlinn::Windows::Media::LiveMedia;
 using namespace Harlinn::Common::Core;
 
 int main()
 {
     Harlinn::Common::Core::ComInitialize initialize;
-    MF::MediaFoundation mediaFoundation;
+    Media::MediaFoundation mediaFoundation;
 
     OutPacketBuffer::maxSize = 300000;
 

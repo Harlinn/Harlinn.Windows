@@ -56,7 +56,7 @@ void TopologyBuilder::CreateMediaSource( const WideString& url )
     }
     else
     { 
-        auto videoDeviceSources = MF::DeviceSources::CreateVideoDeviceSources();
+        auto videoDeviceSources = DeviceSources::CreateVideoDeviceSources();
 
         if(videoDeviceSources.size())
         {

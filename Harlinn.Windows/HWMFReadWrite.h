@@ -22,8 +22,11 @@
 
 #pragma comment(lib, "mfreadwrite.lib")
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
+    /// <summary>
+    /// Creates an instance of either the sink writer or the source reader.
+    /// </summary>
     class MFReadWriteClassFactory : public Unknown
     {
     public:
@@ -44,7 +47,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Microsoft Media Foundation source reader object.
+    /// </summary>
     class MFSourceReader : public Unknown
     {
     public:
@@ -200,6 +205,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Extends the MFSourceReader class.
+    /// </summary>
     class MFSourceReaderEx : public MFSourceReader
     {
     public:
@@ -235,6 +243,9 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// Callback interface for the Microsoft Media Foundation source reader.
+    /// </summary>
     class MFSourceReaderCallback : public Unknown
     {
     public:
@@ -263,7 +274,9 @@ namespace Harlinn::Windows
     };
 
 
-
+    /// <summary>
+    /// Extends the MFSourceReaderCallback class.
+    /// </summary>
     class MFSourceReaderCallback2 : public MFSourceReaderCallback
     {
     public:
@@ -284,6 +297,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Microsoft Media Foundation sink writer
+    /// </summary>
     class MFSinkWriter : public Unknown
     {
     public:
@@ -384,6 +400,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Extends the MFSinkWriter class.
+    /// </summary>
     class MFSinkWriterEx : public MFSinkWriter
     {
     public:
@@ -397,6 +416,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Provides additional functionality on the sink writer for dynamically changing the media type and encoder configuration.
+    /// </summary>
     class MFSinkWriterEncoderConfig : public Unknown
     {
     public:
@@ -417,7 +439,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Callback interface for the Microsoft Media Foundation sink writer.
+    /// </summary>
     class MFSinkWriterCallback : public Unknown
     {
     public:
@@ -438,6 +462,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Extends the MFSinkWriterCallback class.
+    /// </summary>
     class MFSinkWriterCallback2 : public MFSinkWriterCallback
     {
     public:

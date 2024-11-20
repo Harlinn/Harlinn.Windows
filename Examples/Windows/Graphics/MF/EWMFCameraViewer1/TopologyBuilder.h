@@ -25,6 +25,7 @@
 #include <HWEVR.h>
 
 using namespace Harlinn::Windows;
+using namespace Harlinn::Windows::Media;
 
 class TopologyBuilder
 {

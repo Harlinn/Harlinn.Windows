@@ -20,7 +20,7 @@
 #include <HCCPropSys.h>
 #include <HWDef.h>
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
     class MMNotificationClient : public Unknown
     {

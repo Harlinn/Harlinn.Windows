@@ -20,6 +20,7 @@
 #include <HWMediaFoundation.h>
 
 using namespace Harlinn::Windows;
+using namespace Harlinn::Windows::Media;
 
 
 void CheckUrl(const wchar_t* url)
@@ -38,7 +39,7 @@ void CheckUrl(const wchar_t* url)
 int wmain(int argc, wchar_t** argv)
 {
     ComInitialize initialize;
-    MF::MediaFoundation mediaFoundation;
+    MediaFoundation mediaFoundation;
 
     const wchar_t* url = L"rtsp://127.0.0.1:44554/sample_h264_100kbit.mp4";
     //const wchar_t* url = L"C:\\Src\\Harlinn.Windows\\Data\\SeaSurveillance.Media.Server\\Movies\\bbb_sunflower_1080p_30fps_normal.mp4";

@@ -25,7 +25,7 @@
 #include <HWMFReadWrite.h>
 #include <HWStrmif.h>
 
-namespace Harlinn::Windows::LiveMedia
+namespace Harlinn::Windows::Media::LiveMedia
 {
 
 	class MediaFoundationH264LiveSource : public FramedSource
@@ -81,7 +81,7 @@ namespace Harlinn::Windows::LiveMedia
 
 		bool Initialise( )
 		{
-			auto deviceSources = MF::DeviceSources::CreateVideoDeviceSources( );
+			auto deviceSources = Media::DeviceSources::CreateVideoDeviceSources( );
 			
 			// Get the first available webcam.
 			auto deviceSource = deviceSources[ DeviceIndex ];
@@ -100,7 +100,7 @@ namespace Harlinn::Windows::LiveMedia
 
 			encoderTransform_ = Unknown::CoCreateInstanceFromClassId<MFTransform>( CLSID_CMSH264EncoderMFT );
 
-			//MF::PrintOutputMediaTypeDescriptions( 0, encoderTransform_ );
+			//Media::PrintOutputMediaTypeDescriptions( 0, encoderTransform_ );
 
 			encoderTransformOutputMediaType_ = MFMediaType::Create( MFMediaType_Video, MFVideoFormat_H264 );
 			encoderTransformOutputMediaType_.SetAverageBitRate( 442368000 );
@@ -113,7 +113,7 @@ namespace Harlinn::Windows::LiveMedia
 
 			encoderTransform_.SetOutputType(0, encoderTransformOutputMediaType_ );
 
-			//MF::PrintInputMediaTypeDescriptions( 0, encoderTransform_ );
+			//Media::PrintInputMediaTypeDescriptions( 0, encoderTransform_ );
 
 			encoderTransformInputMediaType_ = videoSourceReaderMediaType_.Clone( );
 			
@@ -177,7 +177,7 @@ namespace Harlinn::Windows::LiveMedia
 
 						auto mftProcessOutput = encoderTransform_.ProcessOutput( 0, 1, &outputDataBuffer, &processOutputStatus );
 
-						if ( mftProcessOutput != MF::TransformOutputResult::NeedMoreInput )
+						if ( mftProcessOutput != Media::TransformOutputResult::NeedMoreInput )
 						{
 							outSample.SetSampleTime( videoTimeStamp );
 							outSample.SetSampleDuration( sampleDuration );

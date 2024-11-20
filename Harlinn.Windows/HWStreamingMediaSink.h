@@ -22,7 +22,7 @@
 #include <HCCComImpl.h>
 #include "HWMediaFoundation.h"
 
-namespace Harlinn::Windows::MF
+namespace Harlinn::Windows::Media
 {
     class StreamingStreamSink;
     class StreamingMediaSink;

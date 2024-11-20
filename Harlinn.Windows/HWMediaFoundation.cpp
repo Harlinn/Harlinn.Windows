@@ -32,7 +32,7 @@
 #include <Mfvirtualcamera.h>
 
 
-namespace Harlinn::Windows::MF
+namespace Harlinn::Windows::Media
 {
 
 #ifndef IF_EQUAL_RETURN

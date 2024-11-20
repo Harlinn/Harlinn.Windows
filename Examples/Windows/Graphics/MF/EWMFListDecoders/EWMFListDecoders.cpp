@@ -26,9 +26,9 @@ int main()
 {
     Harlinn::Common::Core::ComInitialize initialize;
     
-    MF::MediaFoundation mediaFoundation;
+    Media::MediaFoundation mediaFoundation;
 
-    auto videoDecoders = MF::Transforms::VideoDecoders();
+    auto videoDecoders = Media::Transforms::VideoDecoders();
 
     for (int i = 0; i < videoDecoders.size(); i++)
     {

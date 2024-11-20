@@ -22,7 +22,7 @@
 #include <HCCComImpl.h>
 #include <HCCCom.h>
 
-namespace Harlinn::Windows::MF
+namespace Harlinn::Windows::Media
 {
     class MediaFoundation
     {
@@ -239,7 +239,7 @@ namespace Harlinn::Windows::MF
 
     inline MFMediaSource GetCameraMediaSource(DWORD cameraIndex)
     {
-        auto deviceSources = MF::DeviceSources::CreateVideoDeviceSources();
+        auto deviceSources = Media::DeviceSources::CreateVideoDeviceSources();
         auto deviceSourceActivate = deviceSources[cameraIndex];
         auto result = deviceSourceActivate.ActivateObject<MFMediaSource>();
         return result;
@@ -265,19 +265,19 @@ namespace Harlinn::Windows::MF
         _putws( mediaTypeDescription.c_str( ) );
     }
 
-    inline void PrintMediaTypeDescriptions( DWORD streamIndex, const Harlinn::Windows::MFSourceReader& sourceReader )
+    inline void PrintMediaTypeDescriptions( DWORD streamIndex, const Media::MFSourceReader& sourceReader )
     {
         auto nativeMediaTypes = sourceReader.GetNativeMediaTypes( streamIndex );
         PrintMediaTypeDescriptions( nativeMediaTypes );
     }
 
-    inline void PrintInputMediaTypeDescriptions( DWORD streamIndex, const Harlinn::Windows::MFTransform& transform )
+    inline void PrintInputMediaTypeDescriptions( DWORD streamIndex, const Media::MFTransform& transform )
     {
         auto mediaTypes = transform.GetInputAvailableTypes( streamIndex );
         PrintMediaTypeDescriptions( mediaTypes );
     }
 
-    inline void PrintOutputMediaTypeDescriptions( DWORD streamIndex, const Harlinn::Windows::MFTransform& transform )
+    inline void PrintOutputMediaTypeDescriptions( DWORD streamIndex, const Media::MFTransform& transform )
     {
         auto mediaTypes = transform.GetOutputAvailableTypes( streamIndex );
         PrintMediaTypeDescriptions( mediaTypes );

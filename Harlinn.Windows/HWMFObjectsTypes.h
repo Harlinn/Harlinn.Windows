@@ -19,13 +19,10 @@
 
 #include "HWDef.h"
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
     class MFAttributes;
-}
 
-namespace Harlinn::Windows::MF
-{
     template<typename T>
     class BlobValue
     {

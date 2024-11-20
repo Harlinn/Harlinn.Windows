@@ -189,7 +189,7 @@ int main()
 
         SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
         // Initialization/Shutdown of the Media Foundation platform
-        MF::MediaFoundation mediaFoundation;
+        MediaFoundation mediaFoundation;
 
         auto result = application->Run<MyForm>();
         application->Stop();

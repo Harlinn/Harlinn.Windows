@@ -69,6 +69,7 @@ using namespace Harlinn::Common;
 using namespace Harlinn::Common::Core;
 using namespace Harlinn::Common::Core::IO::Sockets;
 using namespace Harlinn::Windows;
+using namespace Harlinn::Windows::Media;
 
 #define WEBCAM_DEVICE_INDEX 0	    // Adjust according to desired video capture device.
 #define OUTPUT_FRAME_WIDTH (640)		// Adjust if the webcam does not support this frame width.
@@ -116,7 +117,7 @@ public:
 };
 
 
-std::pair<MF::TransformOutputResult, MFSample> GetTransformOutput(const MFTransform& transform, BOOL* transformFlushed);
+std::pair<TransformOutputResult, MFSample> GetTransformOutput(const MFTransform& transform, BOOL* transformFlushed);
 
 // Forward function definitions.
 HRESULT SendH264RtpSample(const Socket& socket, const Address& dst, const MFSample& pH264Sample, uint32_t ssrc, uint32_t timestamp, uint16_t* seqNum);
@@ -126,7 +127,7 @@ int main()
     try
     {
         ComInitialize init;
-        MF::Init mfInit;
+        Media::Init mfInit;
         IO::Sockets::WSAInitTerm wsaInitTerm;
 
         uint16_t rtpSsrc = 3334; // Supposed to be pseudo-random.
@@ -139,7 +140,7 @@ int main()
 
 
         // Get video capture device.
-        auto videoSource = MF::GetCameraMediaSource(WEBCAM_DEVICE_INDEX);
+        auto videoSource = Media::GetCameraMediaSource(WEBCAM_DEVICE_INDEX);
 
         // Create source reader
         auto videoReaderAttributes = MFAttributes::Create(1);
@@ -149,7 +150,7 @@ int main()
         auto videoReaderNativeMediaTypes = videoReader.GetNativeMediaTypes(0);
         for (auto& videoReaderNativeMediaType : videoReaderNativeMediaTypes)
         {
-            auto description = MF::GetMediaTypeDescription(videoReaderNativeMediaType);
+            auto description = Media::GetMediaTypeDescription(videoReaderNativeMediaType);
             _putws(description.c_str());
         }
 
@@ -250,8 +251,8 @@ int main()
 
                 // H264 Encoder transform processing loop. 
 
-                MF::TransformOutputResult transformOutputResult = MF::TransformOutputResult::Success;
-                while (transformOutputResult == MF::TransformOutputResult::Success)
+                TransformOutputResult transformOutputResult = TransformOutputResult::Success;
+                while (transformOutputResult == TransformOutputResult::Success)
                 {
 
                     BOOL h264EncodeTransformFlushed = FALSE;
@@ -317,11 +318,11 @@ done:
     return 0;
 }
 
-std::pair<MF::TransformOutputResult,MFSample> GetTransformOutput(const MFTransform& transform, BOOL* transformFlushed)
+std::pair<TransformOutputResult,MFSample> GetTransformOutput(const MFTransform& transform, BOOL* transformFlushed)
 {
     MFSample resultSample;
     MFT_OUTPUT_STREAM_INFO StreamInfo = { 0 };
-    MF::TransformOutputDataBuffer outputDataBuffer;
+    TransformOutputDataBuffer outputDataBuffer;
     DWORD processOutputStatus = 0;
     //IMFMediaType* pChangedOutMediaType = NULL;
 
@@ -340,12 +341,12 @@ std::pair<MF::TransformOutputResult,MFSample> GetTransformOutput(const MFTransfo
 
     //printf("Process output result %.2X, MFT status %.2X.\n", mftProcessOutput, processOutputStatus);
 
-    if (outputResult == MF::TransformOutputResult::Success)
+    if (outputResult == TransformOutputResult::Success)
     {
         // Sample is ready and allocated on the transform output buffer.
         outputDataBuffer.MoveSampleTo(resultSample);
     }
-    else if (outputResult == MF::TransformOutputResult::StreamChange)
+    else if (outputResult == TransformOutputResult::StreamChange)
     {
         // Format of the input stream has changed. https://docs.microsoft.com/en-us/windows/win32/medfound/handling-stream-changes
         if (outputDataBuffer.Status() == MFT_OUTPUT_DATA_BUFFER_FORMAT_CHANGE)

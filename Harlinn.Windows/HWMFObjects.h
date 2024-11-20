@@ -22,7 +22,7 @@
 #include <HCCPropSys.h>
 #include "HWMFObjectsTypes.h"
 
-namespace Harlinn::Windows
+namespace Harlinn::Windows::Media
 {
 #pragma comment(lib,"mfuuid.lib")
 #pragma comment(lib,"Mfplat.lib")
@@ -57,15 +57,7 @@ namespace Harlinn::Windows
     class MFMuxStreamMediaTypeManager;
     class MFMuxStreamSampleManager;
     class MFSecureBuffer;
-
-
-    namespace MF
-    {
-        
-
-
-    }
-
+    
 
     /// <summary>
     /// <p>
@@ -97,7 +89,7 @@ namespace Harlinn::Windows
             return MFAttributes(itf);
         }
 
-        static MFAttributes Create(const MF::Attributes& attributes)
+        static MFAttributes Create(const Media::Attributes& attributes)
         { 
             auto result = Create(static_cast<UInt32>(attributes.size()));
             attributes.AssignTo(result);
@@ -107,14 +99,14 @@ namespace Harlinn::Windows
         template<typename ReaderT>
         void Read(ReaderT& reader) const
         {
-            MF::Attributes attributes;
+            Attributes attributes;
             attributes.Read(reader);
             attributes.AssignTo(*this);
         }
         template<typename WriterT>
         void Write(WriterT& writer)
         {
-            MF::Attributes attributes(*this);
+            Attributes attributes(*this);
             attributes.Write(writer);
         }
 
@@ -415,18 +407,18 @@ namespace Harlinn::Windows
         }
 
         template<typename T>
-        MF::BlobValue<T> GetBlob(const Guid& key) const
+        Media::BlobValue<T> GetBlob(const Guid& key) const
         {
             UINT32 blobSize = 0;
             if (GetBlobSize(key, &blobSize))
             {
-                MF::BlobValue<T> result(static_cast<size_t>(blobSize));
+                Media::BlobValue<T> result(static_cast<size_t>(blobSize));
                 GetBlob(key, reinterpret_cast<UINT8*>( result.data() ), blobSize);
                 return result;
             }
             else
             {
-                return MF::BlobValue<T>();
+                return Media::BlobValue<T>();
             }
         }
 
@@ -548,7 +540,7 @@ namespace Harlinn::Windows
         }
 
         template<typename T>
-        void SetBlob(const Guid& key, const MF::BlobValue<T>& blob) const
+        void SetBlob(const Guid& key, const Media::BlobValue<T>& blob) const
         {
             SetBlob(key,  reinterpret_cast<const UINT8*>( blob.data() ), static_cast<UINT32>(blob.DataSize()));
         }
@@ -644,6 +636,9 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// Represents a block of memory that contains media data. Use this interface to access the data in the buffer.
+    /// </summary>
     class MFMediaBuffer : public Unknown
     {
     public:
@@ -778,7 +773,20 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Represents a media sample, which is a container object for media data. 
+    /// For video, a sample typically contains one video frame. For audio data, 
+    /// a sample typically contains multiple audio samples, rather than a single 
+    /// sample of audio.
+    /// </para>
+    /// <para>
+    /// A media sample contains zero or more buffers. Each buffer manages a block 
+    /// of memory, and is represented by the MFMediaBuffer object. A sample can 
+    /// have multiple buffers. The buffers are kept in an ordered list and accessed 
+    /// by index value. It is also valid to have an empty sample with no buffers.
+    /// </para>
+    /// </summary>
     class MFSample : public MFAttributes
     {
     public:
@@ -1064,20 +1072,20 @@ namespace Harlinn::Windows
         /// <summary>
         /// Retrieves the camera extrinsics for the sample.
         /// </summary>
-        MF::CameraExtrinsics GetCameraExtrinsics() const
+        Media::CameraExtrinsics GetCameraExtrinsics() const
         {
             UINT32 blobSize = 0;
             if (GetBlobSize(MFSampleExtension_CameraExtrinsics, &blobSize))
             {
                 MFCameraExtrinsics* cameraExtrinsics = reinterpret_cast<MFCameraExtrinsics*>( new Byte[blobSize] );
-                MF::CameraExtrinsics result(cameraExtrinsics);
+                Media::CameraExtrinsics result(cameraExtrinsics);
                 cameraExtrinsics->TransformCount = 0;
                 GetBlob(MFSampleExtension_CameraExtrinsics, reinterpret_cast<UINT8*>(cameraExtrinsics), blobSize);
                 return result;
             }
-            return MF::CameraExtrinsics();
+            return Media::CameraExtrinsics();
         }
-        void SetCameraExtrinsics(const MF::CameraExtrinsics& cameraExtrinsics)
+        void SetCameraExtrinsics(const Media::CameraExtrinsics& cameraExtrinsics)
         {
             SetBlob(MFSampleExtension_CameraExtrinsics, reinterpret_cast<const UINT8*>( cameraExtrinsics.data()), static_cast<UINT32>(cameraExtrinsics.DataSize()));
         }
@@ -1354,14 +1362,14 @@ namespace Harlinn::Windows
         /// <summary>
         /// Specifies the ID of an encrypted sample.
         /// </summary>
-        MF::BlobValue<Byte> GetEncryptionSampleID() const
+        Media::BlobValue<Byte> GetEncryptionSampleID() const
         {
             return GetBlob<Byte>(MFSampleExtension_Encryption_SampleID);
         }
         /// <summary>
         /// Specifies the ID of an encrypted sample.
         /// </summary>
-        void SetEncryptionSampleID(const MF::BlobValue<Byte>& value) const
+        void SetEncryptionSampleID(const Media::BlobValue<Byte>& value) const
         {
             SetBlob(MFSampleExtension_Encryption_SampleID, value);
         }
@@ -1423,18 +1431,18 @@ namespace Harlinn::Windows
         /// appropriate values.
         /// </p>
         /// </remarks>
-        MF::EncryptionSubSampleMappingSplit GetEncryptionSubSampleMappingSplit() const
+        Media::EncryptionSubSampleMappingSplit GetEncryptionSubSampleMappingSplit() const
         {
             UINT32 blobSize = 0;
             if (GetBlobSize(MFSampleExtension_Encryption_SubSampleMappingSplit, &blobSize))
             {
-                MF::EncryptionSubSampleMappingSplit result(static_cast<size_t>(blobSize));
+                Media::EncryptionSubSampleMappingSplit result(static_cast<size_t>(blobSize));
                 GetBlob(MFSampleExtension_Encryption_SubSampleMappingSplit, reinterpret_cast<UINT8*>(result.data()), blobSize);
                 return result;
             }
             else
             {
-                return MF::EncryptionSubSampleMappingSplit();
+                return Media::EncryptionSubSampleMappingSplit();
             }
         }
         /// <summary>
@@ -1453,7 +1461,7 @@ namespace Harlinn::Windows
         /// appropriate values.
         /// </p>
         /// </remarks>
-        void SetEncryptionSubSampleMappingSplit(const MF::EncryptionSubSampleMappingSplit& value)
+        void SetEncryptionSubSampleMappingSplit(const Media::EncryptionSubSampleMappingSplit& value)
         {
             SetBlob(MFSampleExtension_Encryption_SubSampleMappingSplit, reinterpret_cast<const UINT8*>(value.data()), static_cast<UINT32>(value.DataSize()));
         }
@@ -1572,18 +1580,18 @@ namespace Harlinn::Windows
         /// the array is the offset of a payload boundary, relative to the start of the frame. 
         /// An application can use these values when decrypting and reconstructing the frames.
         /// </remarks>
-        MF::PacketCrossOffsets GetPacketCrossOffsets() const
+        Media::PacketCrossOffsets GetPacketCrossOffsets() const
         {
             UINT32 blobSize = 0;
             if (GetBlobSize(MFSampleExtension_PacketCrossOffsets, &blobSize))
             {
-                MF::PacketCrossOffsets result(static_cast<size_t>(blobSize));
+                Media::PacketCrossOffsets result(static_cast<size_t>(blobSize));
                 GetBlob(MFSampleExtension_PacketCrossOffsets, reinterpret_cast<UINT8*>(result.data()), blobSize);
                 return result;
             }
             else
             {
-                return MF::PacketCrossOffsets();
+                return Media::PacketCrossOffsets();
             }
         }
         /// <summary>
@@ -1595,7 +1603,7 @@ namespace Harlinn::Windows
         /// the array is the offset of a payload boundary, relative to the start of the frame. 
         /// An application can use these values when decrypting and reconstructing the frames.
         /// </remarks>
-        void SetPacketCrossOffsets(const MF::PacketCrossOffsets& value)
+        void SetPacketCrossOffsets(const Media::PacketCrossOffsets& value)
         {
             SetBlob(MFSampleExtension_PacketCrossOffsets, reinterpret_cast<const UINT8*>(value.data()), static_cast<UINT32>(value.DataSize()));
         }
@@ -1606,7 +1614,9 @@ namespace Harlinn::Windows
 
     };
 
-
+    /// <summary>
+    /// Represents a buffer that contains a two-dimensional surface, such as a video frame.
+    /// </summary>
     class MF2DBuffer : public Unknown
     {
     public:
@@ -1689,6 +1699,9 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// Represents a buffer that contains a two-dimensional surface, such as a video frame.
+    /// </summary>
     class MF2DBuffer2 : public MF2DBuffer
     {
     public:
@@ -1714,7 +1727,9 @@ namespace Harlinn::Windows
 
     };
 
-
+    /// <summary>
+    /// Represents a buffer that contains a Microsoft DirectX Graphics Infrastructure (DXGI)surface.
+    /// </summary>
     class MFDXGIBuffer : public Unknown
     {
     public:
@@ -1777,7 +1792,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Represents a description of a media format.
+    /// </summary>
     class MFMediaType : public MFAttributes
     {
     public:
@@ -2026,7 +2043,15 @@ namespace Harlinn::Windows
 
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Represents a description of an audio format.
+    /// </para>
+    /// <para>
+    /// MFAudioMediaType is no longer available for use as of Windows 7. Instead, 
+    /// use the media type attributes to get the properties of the audio format.
+    /// </para>
+    /// </summary>
     class MFAudioMediaType : public MFMediaType
     {
     public:
@@ -2038,7 +2063,9 @@ namespace Harlinn::Windows
             return pInterface->GetAudioFormat();
         }
     };
-
+    /// <summary>
+    /// Represents a description of a video format.
+    /// </summary>
     class MFVideoMediaType : public MFMediaType
     {
     public:
@@ -2059,6 +2086,9 @@ namespace Harlinn::Windows
     };
 
     class MFAsyncResult;
+    /// <summary>
+    /// Callback interface to notify the application when an asynchronous method completes.
+    /// </summary>
     class MFAsyncCallback : public Unknown
     {
     public:
@@ -2080,7 +2110,9 @@ namespace Harlinn::Windows
         void Invoke(const MFAsyncResult& asyncResult) const;
     };
     
-
+    /// <summary>
+    /// Provides information about the result of an asynchronous operation.
+    /// </summary>
     class MFAsyncResult : public Unknown
     {
     public:
@@ -2140,7 +2172,9 @@ namespace Harlinn::Windows
         Invoke(asyncResult.GetInterfacePointer<IMFAsyncResult>());
     }
 
-
+    /// <summary>
+    /// Provides logging information about the parent object the async callback is associated with.
+    /// </summary>
     class MFAsyncCallbackLogging : public MFAsyncCallback
     {
     public:
@@ -2159,6 +2193,16 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// <para>
+    /// Represents an event generated by a Media Foundation object. Use this 
+    /// class to get information about the event.
+    /// </para>
+    /// <para>
+    /// To get an instance of this class, call MFMediaEventGenerator::BeginGetEvent or 
+    /// MFMediaEventGenerator::GetEvent on the event generator.
+    /// </para>
+    /// </summary>
     class MFMediaEvent : public MFAttributes
     {
     public:
@@ -2219,6 +2263,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Retrieves events from any Media Foundation object that generates events.
+    /// </summary>
     class MFMediaEventGenerator : public Unknown
     {
     public:
@@ -2273,7 +2320,15 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// <para>
+    /// Used by the Microsoft Media Foundation proxy/stub DLL to marshal 
+    /// certain asynchronous method calls across process boundaries.
+    /// </para>
+    /// <para>
+    /// Applications do not use or implement this interface.
+    /// </para>
+    /// </summary>
     class MFRemoteAsyncCallback : public Unknown
     {
     public:
@@ -2287,7 +2342,11 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Represents a byte stream from some data source, which might be a local 
+    /// file, a network file, or some other source. The MFByteStream class supports 
+    /// the typical stream operations, such as reading, writing, and seeking.
+    /// </summary>
     class MFByteStream : public Unknown
     {
     public:
@@ -2455,7 +2514,9 @@ namespace Harlinn::Windows
         }
     };
 
-
+    /// <summary>
+    /// Creates a proxy to a byte stream.
+    /// </summary>
     class MFByteStreamProxyClassFactory : public Unknown
     {
     public:
@@ -2469,6 +2530,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Writes media samples to a byte stream.
+    /// </summary>
     class MFSampleOutputStream : public Unknown
     {
     public:
@@ -2505,6 +2569,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Represents a generic collection of IUnknown pointers.
+    /// </summary>
     class MFCollection : public Unknown
     {
     public:
@@ -2610,12 +2677,34 @@ namespace Harlinn::Windows
     }
 
 
-
+    /// <summary>
+    /// <para>
+    /// Provides an event queue for applications that need to implement the IMFMediaEventGenerator interface.
+    /// </para>
+    /// <para>
+    /// This interface is exposed by a helper object that implements an event queue. 
+    /// If you are writing a component that implements the IMFMediaEventGenerator 
+    /// interface, you can use this object in your implementation. The event queue 
+    /// object is thread safe and provides methods to queue events and to pull them 
+    /// from the queue either synchronously or asynchronously. 
+    /// </para>
+    /// <para>
+    /// To create the event queue object, call MFMediaEventQueue::Create().
+    /// </para>
+    /// </summary>
     class MFMediaEventQueue : public Unknown
     {
     public:
         HCC_COM_STANDARD_METHODS_IMPL(MFMediaEventQueue, Unknown, IMFMediaEventQueue, IUnknown)
     public:
+        static MFMediaEventQueue Create( )
+        {
+            IMFMediaEventQueue* itf = nullptr;
+            auto hr = MFCreateEventQueue( &itf );
+            HCC_COM_CHECK_HRESULT( hr );
+            MFMediaEventQueue result( itf );
+            return result;
+        }
 
         void GetEvent( DWORD flags, IMFMediaEvent** event) const
         {
@@ -2668,6 +2757,10 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// Enables the application to defer the creation of an object. This 
+    /// functionality is exposed by activation objects.
+    /// </summary>
     class MFActivate : public MFAttributes
     {
     public:
@@ -2752,11 +2845,28 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// <para>
+    /// Controls how media sources and transforms are enumerated in Microsoft Media Foundation.
+    /// </para>
+    /// <para>
+    /// Call MFPluginControl::Create() to retrieve an instance Microsoft Media Foundation plug-in manager.
+    /// </para>
+    /// </summary>
     class MFPluginControl : public Unknown
     {
     public:
         HCC_COM_STANDARD_METHODS_IMPL(MFPluginControl, Unknown, IMFPluginControl, IUnknown)
     public:
+        static MFPluginControl Create( )
+        {
+            IMFPluginControl* itf = nullptr;
+            auto hr = MFGetPluginControl( &itf );
+            HCC_COM_CHECK_HRESULT( hr );
+            MFPluginControl result( itf );
+            return result;
+        }
+
         void GetPreferredClsid( DWORD pluginType, LPCWSTR selector, Guid* clsid) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -2799,7 +2909,9 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
     };
-
+    /// <summary>
+    /// Controls how media sources and transforms are enumerated in Microsoft Media Foundation.
+    /// </summary>
     class MFPluginControl2 : public MFPluginControl
     {
     public:
@@ -2813,6 +2925,9 @@ namespace Harlinn::Windows
         }
     };
 
+    /// <summary>
+    /// Enables two threads to share the same Microsoft Direct3D 11 device.
+    /// </summary>
     class MFDXGIDeviceManager : public Unknown
     {
     public:
@@ -2869,7 +2984,9 @@ namespace Harlinn::Windows
 
     };
 
-
+    /// <summary>
+    /// Provides access to the MFAttributes of the substreams of a multiplexed media source.
+    /// </summary>
     class MFMuxStreamAttributesManager : public Unknown
     {
     public:
@@ -2903,6 +3020,10 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// Enables the management of stream configurations for a multiplexed media source. 
+    /// A stream configuration defines a set of substreams that can be included the multiplexed output.
+    /// </summary>
     class MFMuxStreamMediaTypeManager : public Unknown
     {
     public:
@@ -2976,6 +3097,10 @@ namespace Harlinn::Windows
 
     };
 
+    /// <summary>
+    /// Provides the ability to retrieve MFSample objects for individual 
+    /// substreams within the output of a multiplexed media source.
+    /// </summary>
     class MFMuxStreamSampleManager : public Unknown
     {
     public:
