@@ -149,7 +149,7 @@ namespace Harlinn::Windows::Graphics::DXGI
 
         template <typename T>
             requires std::is_base_of_v<IUnknown,T>
-        [[nodiscard]] UnknownPtr<T> GetParent() const
+        [[nodiscard]] ComPtr<T> GetParent() const
         { 
             T* parent = nullptr;
             if ( GetParent( __uuidof( T ), (void**)&parent ) )
@@ -204,7 +204,7 @@ namespace Harlinn::Windows::Graphics::DXGI
         }
         template <typename T>
             requires std::is_base_of_v<IUnknown, T>
-        [[nodiscard]] UnknownPtr<T> GetDevice( ) const
+        [[nodiscard]] ComPtr<T> GetDevice( ) const
         {
             T* device = nullptr;
             if ( GetDevice( __uuidof( T ), (void**)&device ) )
@@ -567,11 +567,11 @@ namespace Harlinn::Windows::Graphics::DXGI
         }
         template<typename T>
             requires std::is_base_of_v<IUnknown,T>
-        UnknownPtr<T> GetBuffer( UINT Buffer ) const
+        ComPtr<T> GetBuffer( UINT Buffer ) const
         {
             T* surface = nullptr;
             GetBuffer( Buffer, __uuidof( T ), (void**)&surface );
-            UnknownPtr<T> result( surface );
+            ComPtr<T> result( surface );
             return result;
         }
 

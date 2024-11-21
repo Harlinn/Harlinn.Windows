@@ -37,6 +37,12 @@ namespace Harlinn::Common::Core
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS(ThreadModel, DWORD);
 
+    /// <summary>
+    /// Initializes the COM library for use by the calling thread, 
+    /// sets the thread's concurrency model, and creates a new apartment 
+    /// for the thread if one is required. Calls CoUninitialize() in
+    /// the destructor.
+    /// </summary>
     class ComInitialize
     {
         Core::ThreadModel threadModel_;
@@ -72,8 +78,11 @@ namespace Harlinn::Common::Core
 
 
     template<typename T>
-    class UnknownPtr;
+    class ComPtr;
 
+    /// <summary>
+    /// Base class for COM interface wrappers
+    /// </summary>
     class Unknown 
     {
     protected:
@@ -220,7 +229,7 @@ namespace Harlinn::Common::Core
 
 
         template<typename T>
-            requires std::is_base_of_v<Unknown, T >
+            requires std::is_base_of_v<Unknown, T > 
         T As( ) const
         {
             const Unknown& self = *this;
@@ -248,9 +257,9 @@ namespace Harlinn::Common::Core
 
         template<typename T>
             requires std::is_base_of_v<IUnknown, T>
-        UnknownPtr<T> As( ) const
+        ComPtr<T> As( ) const
         {
-            UnknownPtr<T> result;
+            ComPtr<T> result;
 
             if ( unknown_ )
             {
@@ -520,43 +529,48 @@ public: \
 #define HCC_COM_CHECK_HRESULT2( hr, itf ) if ( FAILED( hr ) ) do { CheckHRESULT( hr, itf, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ ); } while(false)
 
 
-
+    /// <summary>
+    /// A generic smart pointer for managing COM interfaces.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of the COM interface
+    /// </typeparam>
     template<typename T>
-    class UnknownPtr : public Unknown
+    class ComPtr : public Unknown
     {
     public:
         using Base = Unknown;
 
-        constexpr UnknownPtr( ) noexcept
+        constexpr ComPtr( ) noexcept
             : Base( nullptr )
         {
         }
 
-        explicit UnknownPtr( T* unknown ) noexcept
+        explicit ComPtr( T* unknown ) noexcept
             : Base( unknown )
         {
         }
 
-        UnknownPtr( const UnknownPtr& other ) noexcept
+        ComPtr( const ComPtr& other ) noexcept
             : Base( other )
         {
         }
 
-        UnknownPtr( UnknownPtr&& other ) noexcept
-            : Base( other )
+        ComPtr( ComPtr&& other ) noexcept
+            : Base( std::move(static_cast< Unknown&& >(other)) )
         {
         }
 
 
-        UnknownPtr& operator = ( const UnknownPtr& other ) noexcept
+        ComPtr& operator = ( const ComPtr& other ) noexcept
         {
             Base::operator=( other );
             return *this;
         }
 
-        UnknownPtr& operator = ( UnknownPtr&& other ) noexcept
+        ComPtr& operator = ( ComPtr&& other ) noexcept
         {
-            Base::operator=( other );
+            Base::operator=( std::move( static_cast< Unknown&& >( other ) ) );
             return *this;
         }
 
@@ -588,6 +602,12 @@ public: \
 
     namespace Com
     {
+        /// <summary>
+        /// Disables calls to AddRef and Release.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any class derived from Unknown.
+        /// </typeparam>
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
         class Attached : public T
@@ -663,116 +683,6 @@ public: \
 
     
 
-    template<typename DerivedT, typename InterfaceT, typename ...InterfaceTypes >
-    class __declspec( novtable ) IUnknownImplementation : public InterfaceT
-    {
-        ULONG referenceCount_;
-    public:
-        using DerivedType = DerivedT;
-        using InterfaceType = InterfaceT;
-        constexpr IUnknownImplementation( ) noexcept
-            : referenceCount_( 1 )
-        {
-        }
-
-        virtual ~IUnknownImplementation( )
-        {
-        }
-
-    private:
-        template<typename InterfaceType, typename ... RemainingInterfaceTypes >
-        void* QueryItf( const Guid& interfaceId )
-        {
-            DerivedType* self = static_cast<DerivedType*>( this );
-            if ( interfaceId == __uuidof( InterfaceType ) )
-            {
-                return static_cast<InterfaceType*>( this );
-            }
-            else if constexpr ( sizeof...( RemainingInterfaceTypes ) > 0 )
-            {
-                return QueryItf<RemainingInterfaceTypes...>( interfaceId );
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
-
-    public:
-
-        virtual HRESULT STDMETHODCALLTYPE QueryInterface( REFIID riid, void** ppvObject )
-        {
-            if ( !ppvObject )
-            {
-                return E_INVALIDARG;
-            }
-            auto* itf = QueryItf<IUnknown, InterfaceType, InterfaceTypes...>( riid );
-            if ( itf )
-            {
-                InterlockedIncrement( &referenceCount_ );
-                *ppvObject = itf;
-                return NOERROR;
-            }
-            else
-            {
-                *ppvObject = nullptr;
-                return E_NOINTERFACE;
-            }
-            
-
-            /*
-            
-            *ppvObject = NULL;
-            if ( riid == IID_IUnknown )
-            {
-                IUnknown* pInterface = this;
-                *ppvObject = (LPVOID)pInterface;
-                AddRef( );
-                return NOERROR;
-            }
-            else if ( riid == __uuidof( InterfaceType ) )
-            {
-                InterfaceType* pInterface = this;
-                *ppvObject = (LPVOID)pInterface;
-                AddRef( );
-                return NOERROR;
-            }
-            return E_NOINTERFACE;
-            */
-        }
-
-        virtual ULONG STDMETHODCALLTYPE AddRef( void )
-        {
-            ULONG result = InterlockedIncrement( &referenceCount_ );
-            return result;
-        }
-
-        virtual ULONG STDMETHODCALLTYPE Release( void )
-        {
-            ULONG result = InterlockedDecrement( &referenceCount_ );
-            if ( result == 0 )
-            {
-                delete this;
-            }
-            return result;
-        }
-    };
-
-
-    template<typename DerivedT, typename InterfaceT, typename ...InterfaceTypes >
-    class IDispatchImplementation : public IUnknownImplementation<DerivedT, InterfaceT, IDispatch, InterfaceTypes...>
-    {
-    public:
-        using Base = IUnknownImplementation<DerivedT, InterfaceT, IDispatch, InterfaceTypes...>;
-
-        IDispatchImplementation( )
-            : Base()
-        { }
-
-        
-    };
-
-
     class AsyncUnknown : public Unknown
     {
     public:
@@ -821,7 +731,9 @@ public: \
     };
 
 
-
+    /// <summary>
+    /// Enables a class of objects to be created.
+    /// </summary>
     class ClassFactory : public Unknown
     {
     public:
@@ -916,6 +828,9 @@ public: \
     }
 #pragma warning( pop ) 
 
+    /// <summary>
+    /// Enumerate strings. LPOLESTR is the type that indicates a pointer to a zero-terminated string of wide, or Unicode, characters.
+    /// </summary>
     class EnumString : public Unknown
     {
     public:
@@ -1042,7 +957,11 @@ public: \
         }
     };
 
-
+    /// <summary>
+    /// A C++ allocator that uses CoTaskMemAlloc and CoTaskMemFree
+    /// </summary>
+    /// <typeparam name="T">
+    /// </typeparam>
     template <class T>
     class ComAllocator
     {
@@ -1087,7 +1006,9 @@ public: \
     };
 
 
-
+    /// <summary>
+    /// A simple string class that uses CoTaskMemAlloc and CoTaskMemFree
+    /// </summary>
     class ComString
     {
         wchar_t* data_ = nullptr;
@@ -1218,34 +1139,154 @@ public: \
 
     namespace Com
     {
+        /// <summary>
+        /// Determines the concurrency model used for incoming calls to objects 
+        /// created by this thread. This concurrency model can be either 
+        /// apartment-threaded or multithreaded.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// When a thread is initialized through a call to Com::Initialize, you choose 
+        /// whether to initialize it as apartment-threaded or multithreaded by 
+        /// designating one of the members of ApartmentModel as its second parameter. 
+        /// This designates how incoming calls to any object created by that thread 
+        /// are handled, that is, the object's concurrency.
+        /// </para>
+        /// <para>
+        /// Apartment-threading, while allowing for multiple threads of execution, 
+        /// serializes all incoming calls by requiring that calls to methods of 
+        /// objects created by this thread always run on the same thread, i.e. the 
+        /// apartment/thread that created them. In addition, calls can arrive only 
+        /// at message-queue boundaries. Because of this serialization, it is not 
+        /// typically necessary to write concurrency control into the code for the 
+        /// object, other than to avoid calls to PeekMessage and SendMessage during 
+        /// processing that must not be interrupted by other method invocations or 
+        /// calls to other objects in the same apartment/thread.
+        /// </para>
+        /// <para>
+        /// Multi-threading (also called free-threading) allows calls to methods of 
+        /// objects created by this thread to be run on any thread. There is no 
+        /// serialization of calls, i.e. many calls may occur to the same method or 
+        /// to the same object or simultaneously. Multi-threaded object concurrency 
+        /// offers the highest performance and takes the best advantage of multiprocessor 
+        /// hardware for cross-thread, cross-process, and cross-machine calling, since 
+        /// calls to objects are not serialized in any way. This means, however, 
+        /// that the code for objects must enforce its own concurrency model, typically 
+        /// through the use of synchronization primitives, such as critical sections, 
+        /// semaphores, or mutexes.
+        /// </para>
+        /// </remarks>
         enum class ApartmentModel : DWORD
         {
+            /// <summary>
+            /// Initializes the thread for apartment-threaded object concurrency
+            /// </summary>
             ApartmentThreaded = COINIT_APARTMENTTHREADED,
+            /// <summary>
+            /// Initializes the thread for multithreaded object concurrency
+            /// </summary>
             MultiThreaded = COINIT_MULTITHREADED,
+            /// <summary>
+            /// Disables DDE for OLE1 support.
+            /// </summary>
             DisableOle1Dde = COINIT_DISABLE_OLE1DDE,
+            /// <summary>
+            /// Increase memory usage in an attempt to increase performance.
+            /// </summary>
             SpeedOverMemory = COINIT_SPEED_OVER_MEMORY,
             Default = MultiThreaded | SpeedOverMemory
         };
         HCC_DEFINE_ENUM_FLAG_OPERATORS( ApartmentModel, DWORD );
 
+        /// <summary>
+        /// The authentication-level constants represent authentication levels passed to 
+        /// various run-time functions. These levels are listed in order of increasing 
+        /// authentication. Each new level adds to the authentication provided by the 
+        /// previous level. If the RPC run-time library does not support the specified 
+        /// level, it automatically upgrades to the next higher supported level.
+        /// </summary>
         enum class AuthenticationLevel : DWORD
         {
+            /// <summary>
+            /// Uses the default authentication level for the specified authentication service.
+            /// </summary>
             Default = RPC_C_AUTHN_LEVEL_DEFAULT,
+            /// <summary>
+            /// Performs no authentication.
+            /// </summary>
             None = RPC_C_AUTHN_LEVEL_NONE,
+            /// <summary>
+            /// Authenticates only when the client establishes a relationship with a server.
+            /// </summary>
             Connect = RPC_C_AUTHN_LEVEL_CONNECT,
+            /// <summary>
+            /// Authenticates only at the beginning of each remote procedure call when the 
+            /// server receives the request. Does not apply to remote procedure calls made 
+            /// using the connection-based protocol sequences (those that start with the 
+            /// prefix "ncacn"). If the protocol sequence in a binding handle is a 
+            /// connection-based protocol sequence and you specify this level, this routine 
+            /// instead uses the AuthenticationLevel::Packet constant.
+            /// </summary>
             Call = RPC_C_AUTHN_LEVEL_CALL,
+            /// <summary>
+            /// Authenticates only that all data received is from the expected client. Does 
+            /// not validate the data itself.
+            /// </summary>
             Packet = RPC_C_AUTHN_LEVEL_PKT,
+            /// <summary>
+            /// Authenticates and verifies that none of the data transferred between 
+            /// client and server has been modified.
+            /// </summary>
             PacketIntegrity = RPC_C_AUTHN_LEVEL_PKT_INTEGRITY,
+            /// <summary>
+            /// Includes all previous levels, and ensures clear text data can only be seen 
+            /// by the sender and the receiver. In the local case, this involves using a 
+            /// secure channel. In the remote case, this involves encrypting the argument 
+            /// value of each remote procedure call.
+            /// </summary>
             PacketPrivacy = RPC_C_AUTHN_LEVEL_PKT_PRIVACY
         };
-        HCC_DEFINE_ENUM_FLAG_OPERATORS( AuthenticationLevel, DWORD );
+        
 
+        /// <summary>
+        /// Specifies an impersonation level, which indicates the amount of 
+        /// authority given to the server when it is impersonating the client.
+        /// </summary>
         enum class ImpersonationLevel : DWORD
         {
+            /// <summary>
+            /// DCOM can choose the impersonation level using its normal 
+            /// security blanket negotiation algorithm.
+            /// </summary>
             Default = RPC_C_IMP_LEVEL_DEFAULT,
+            /// <summary>
+            /// The client is anonymous to the server. The server process can impersonate 
+            /// the client, but the impersonation token will not contain any information 
+            /// and cannot be used.
+            /// </summary>
             Anonymous  = RPC_C_IMP_LEVEL_ANONYMOUS,
+            /// <summary>
+            /// The server can obtain the client's identity. The server can impersonate the 
+            /// client for ACL checking, but it cannot access system objects as the client.
+            /// </summary>
             Identify = RPC_C_IMP_LEVEL_IDENTIFY,
+            /// <summary>
+            /// The server process can impersonate the client's security context while acting 
+            /// on behalf of the client. This level of impersonation can be used to access 
+            /// local resources such as files. When impersonating at this level, the 
+            /// impersonation token can only be passed across one machine boundary. The 
+            /// Schannel authentication service only supports this level of impersonation.
+            /// </summary>
             Impersonate = RPC_C_IMP_LEVEL_IMPERSONATE,
+            /// <summary>
+            /// The server process can impersonate the client's security context while 
+            /// acting on behalf of the client. The server process can also make outgoing 
+            /// calls to other servers while acting on behalf of the client, using cloaking. 
+            /// The server may use the client's security context on other machines to 
+            /// access local and remote resources as the client. When impersonating at 
+            /// this level, the impersonation token can be passed across any number of 
+            /// computer boundaries.
+            /// </summary>
             Delegate = RPC_C_IMP_LEVEL_DELEGATE
         };
 
@@ -1377,6 +1418,10 @@ public: \
         };
         HCC_DEFINE_ENUM_FLAG_OPERATORS( AuthenticationCapabilities, DWORD );
 
+        /// <summary>
+        /// Defines authentication services by identifying the security package that 
+        /// provides the service, such as NTLMSSP, Kerberos, or Schannel.
+        /// </summary>
         enum class AuthenticationService : DWORD
         {
             None = RPC_C_AUTHN_NONE,
@@ -1448,27 +1493,74 @@ public: \
             Default = RPC_C_AUTHN_DEFAULT
         };
 
-
+        /// <summary>
+        /// The authorization service constants represent the authorization services 
+        /// passed to various run-time functions.
+        /// </summary>
         enum class Authorization : DWORD
         {
+            /// <summary>
+            /// Server performs no authorization.
+            /// </summary>
             None = RPC_C_AUTHZ_NONE,
+            /// <summary>
+            /// Server performs authorization based on the client's principal name.
+            /// </summary>
             Name = RPC_C_AUTHZ_NAME,
+            /// <summary>
+            /// Server performs authorization checking using the client's DCE privilege 
+            /// attribute certificate (PAC) information, which is sent to the server 
+            /// with each remote procedure call made using the binding handle. 
+            /// Generally, access is checked against DCE access control lists
+            /// </summary>
             DCE = RPC_C_AUTHZ_DCE,
+            /// <summary>
+            /// Server uses the default authorization service for the current SSP.
+            /// </summary>
             Default = RPC_C_AUTHZ_DEFAULT,
         };
 
-
+        /// <summary>
+        /// Initializes the COM library for use by the calling thread, sets the thread's 
+        /// concurrency model, and creates a new apartment for the thread if one is required.
+        /// </summary>
+        /// <param name="apartmentModel">
+        /// The thread's concurrency model
+        /// </param>
         inline void Initialize( ApartmentModel apartmentModel = ApartmentModel::Default )
         {
             auto hr = CoInitializeEx( 0, static_cast<DWORD>( apartmentModel ) );
             HCC_COM_CHECK_HRESULT( hr );
         }
 
+        /// <summary>
+        /// Closes the COM library on the current thread, unloads all DLLs loaded by the 
+        /// thread, frees any other resources that the thread maintains, and forces all 
+        /// RPC connections on the thread to close.
+        /// </summary>
         inline void Uninitialize( )
         {
             CoUninitialize( );
         }
 
+        /// <summary>
+        /// Registers security and sets the default security values for the process.
+        /// </summary>
+        /// <param name="securityDescriptor">
+        /// 
+        /// </param>
+        /// <param name="authenticationServicesSize">
+        /// </param>
+        /// <param name="authenticationServices">
+        /// </param>
+        /// <param name="authenticationLevel">
+        /// </param>
+        /// <param name="impersonationLevel">
+        /// </param>
+        /// <param name="authenticationList">
+        /// </param>
+        /// <param name="authenticationCapabilities">
+        /// </param>
         inline void InitializeSecurity( _In_opt_ PSECURITY_DESCRIPTOR securityDescriptor,
             _In_ LONG authenticationServicesSize,
             _In_reads_opt_( authenticationServicesSize ) SOLE_AUTHENTICATION_SERVICE* authenticationServices,
@@ -1529,6 +1621,15 @@ public: \
             SetProxyBlanket( proxy.GetInterfacePointer(), authenticationService, authorization, serverPrincipalName, authenticationLevel, impersonationLevel, authInfo, authenticationCapabilities );
         }
 
+        /// <summary>
+        /// Retrieves the names of supported known interfaces.
+        /// </summary>
+        /// <param name="unknown">
+        /// The pointer to the IUnknown interface that will be interrogated.
+        /// </param>
+        /// <returns>
+        /// The names of the interfaces the function was able to identify.
+        /// </returns>
         HCC_EXPORT std::vector<WideString> GetSupportedKnownInterfaces(IUnknown* unknown);
         
         inline void PrintSupportedKnownInterfaces( IUnknown* unknown )
@@ -1539,7 +1640,15 @@ public: \
                 _putws( comInterface.c_str() );
             }
         }
-
+        /// <summary>
+        /// Retrieves the Guids of supported known interfaces.
+        /// </summary>
+        /// <param name="unknown">
+        /// The pointer to the IUnknown interface that will be interrogated.
+        /// </param>
+        /// <returns>
+        /// The Guids of the interfaces the function was able to identify.
+        /// </returns>
         HCC_EXPORT std::vector<Guid> GetSupportedKnownInterfaceIds(IUnknown* unknown);
 
     }

@@ -18,7 +18,7 @@
 */
 
 #include <HWDef.h>
-#include <HCCCOM.h>
+#include <HCCComImpl.h>
 #include <HCCException.h>
 #include <HCCVariant.h>
 #include <HCCObj.h>
@@ -130,11 +130,11 @@ namespace Harlinn::Windows
 
 
     class FileDialog;
-    class FileDialogEventsImplementation : public IUnknownImplementation<FileDialogEventsImplementation,IFileDialogEvents>
+    class FileDialogEventsImplementation : public Com::ObjectBase<FileDialogEventsImplementation,IFileDialogEvents>
     {
         FileDialog* fileDialog;
     public:
-        typedef IUnknownImplementation<FileDialogEventsImplementation, IFileDialogEvents> Base;
+        using Base = Com::ObjectBase<FileDialogEventsImplementation, IFileDialogEvents>;
 
         HW_EXPORT FileDialogEventsImplementation( FileDialog* theFileDialog );
 

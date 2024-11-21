@@ -41,8 +41,8 @@ int main()
         hcc::Com::SetClientProxyBlanket( services );
 
         // Step 6: Set up the event sink 
-        hcc::IWbemObjectSinkDispatcher sink;
-        hcc::IWbemObjectSinkDispatcher<>::ContainerType container;
+        hcc::Com::StackObject<hcc::IWbemObjectSinkDispatcher> sink;
+        hcc::IWbemObjectSinkDispatcher::ContainerType container;
 
         sink.OnIndicate.connect( [&container]( auto& objects )
         {

@@ -18,10 +18,10 @@
 */
 
 #include <HCCDef.h>
-#include <HCCCOM.h>
+#include <HCCCom.h>
+#include <HCCComImpl.h>
 #include <HCCException.h>
 #include <HCCVariant.h>
-#include <HCCObj.h>
 #include <HCCPropSys.h>
 #include <HCCPortableDeviceTypes.h>
 
@@ -738,11 +738,11 @@ namespace Harlinn::Common::Core
         return SensorDataReport( ptr );
     }
 
-    class SensorManagerEventSinkBase : public IUnknownImplementation<SensorManagerEventSinkBase, ISensorManagerEvents>
+    class SensorManagerEventSinkBase : public Com::ObjectBase<SensorManagerEventSinkBase, ISensorManagerEvents>
     {
         Core::SensorManager sensorManager_;
     public:
-        using Base = IUnknownImplementation<SensorManagerEventSinkBase, ISensorManagerEvents>;
+        using Base = Com::ObjectBase<SensorManagerEventSinkBase, ISensorManagerEvents>;
 
         SensorManagerEventSinkBase( const SensorManager& sensorManager )
             : sensorManager_( sensorManager )
@@ -796,11 +796,11 @@ namespace Harlinn::Common::Core
         }
     };
 
-    class SensorEventSinkBase : public IUnknownImplementation<SensorEventSinkBase, ISensorEvents>
+    class SensorEventSinkBase : public Com::ObjectBase<SensorEventSinkBase, ISensorEvents>
     {
         Sensor sensor_;
     public:
-        using Base = IUnknownImplementation<SensorEventSinkBase, ISensorEvents>;
+        using Base = Com::ObjectBase<SensorEventSinkBase, ISensorEvents>;
 
         SensorEventSinkBase( const Core::Sensor& sensor )
             : sensor_( sensor )

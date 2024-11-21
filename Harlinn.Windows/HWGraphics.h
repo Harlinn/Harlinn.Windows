@@ -18,7 +18,7 @@
 */
 
 #include <HWDef.h>
-#include <HCCCOM.h>
+#include <HCCComImpl.h>
 #include <HCCObjBase.h>
 #include <HCCException.h>
 #include <HWCommon.h>
@@ -1619,10 +1619,10 @@ namespace Harlinn::Windows::Graphics
     /// <typeparam name="DerivedT"></typeparam>
     /// <typeparam name="InterfaceT"></typeparam>
     template <typename DerivedT, typename InterfaceT = ID2D1SimplifiedGeometrySink>
-    class ID2D1SimplifiedGeometrySinkImplementationBase : public IUnknownImplementation<ID2D1SimplifiedGeometrySinkImplementationBase<DerivedT, InterfaceT>, ID2D1SimplifiedGeometrySink, InterfaceT>
+    class ID2D1SimplifiedGeometrySinkImplementationBase : public Com::ObjectBase<ID2D1SimplifiedGeometrySinkImplementationBase<DerivedT, InterfaceT>, InterfaceT>
     {
     public:
-        using Base = IUnknownImplementation<ID2D1SimplifiedGeometrySinkImplementationBase<DerivedT, InterfaceT>, ID2D1SimplifiedGeometrySink, InterfaceT>;
+        using Base = Com::ObjectBase<ID2D1SimplifiedGeometrySinkImplementationBase<DerivedT, InterfaceT>, InterfaceT>;
         using DerivedType = DerivedT;
         using InterfaceType = InterfaceT;
     protected:
@@ -1899,18 +1899,18 @@ namespace Harlinn::Windows::Graphics
     };
 
     template<typename DerivedT>
-    class ID2D1TessellationSinkImplementationBase : public IUnknownImplementation<ID2D1TessellationSinkImplementationBase<DerivedT>,ID2D1TessellationSink, ID2D1TessellationSink>
+    class ID2D1TessellationSinkImplementationBase : public Com::ObjectBase<ID2D1TessellationSinkImplementationBase<DerivedT>,ID2D1TessellationSink>
     {
     public:
-        using Base = IUnknownImplementation<ID2D1TessellationSinkImplementationBase<DerivedT>, ID2D1TessellationSink, ID2D1TessellationSink>;
+        using Base = Com::ObjectBase<ID2D1TessellationSinkImplementationBase<DerivedT>, ID2D1TessellationSink>;
         using DerivedType = DerivedT;
         using InterfaceType = ID2D1TessellationSink;
     protected:
-        void HandleAddTriangles( _In_reads_( trianglesCount ) CONST D2D1_TRIANGLE* triangles, UINT32 trianglesCount )
+        virtual void HandleAddTriangles( _In_reads_( trianglesCount ) CONST D2D1_TRIANGLE* triangles, UINT32 trianglesCount )
         {
 
         }
-        void HandleClose( )
+        virtual void HandleClose( )
         {
 
         }
@@ -5198,15 +5198,15 @@ namespace Harlinn::Windows::Graphics
     /// <typeparam name="InterfaceTypes">
     /// Additional COM interfaces implemented by DerivedT.
     /// </typeparam>
-    template<typename DerivedT, typename InterfaceT, typename ...InterfaceTypes>
-    class ID2D1GdiMetafileSinkImplementationBase : public IUnknownImplementation<ID2D1GdiMetafileSinkImplementationBase<DerivedT, InterfaceT, InterfaceTypes...>, InterfaceT, ID2D1GdiMetafileSink, InterfaceTypes...>
+    template<typename DerivedT, typename InterfaceT = ID2D1GdiMetafileSink>
+    class ID2D1GdiMetafileSinkImplementationBase : public Com::ObjectBase<ID2D1GdiMetafileSinkImplementationBase<DerivedT, InterfaceT>, InterfaceT>
     {
     public:
-        using Base = IUnknownImplementation<ID2D1GdiMetafileSinkImplementationBase<DerivedT, InterfaceT, InterfaceTypes...>, InterfaceT, ID2D1GdiMetafileSink, InterfaceTypes...>;
+        using Base = Com::ObjectBase<ID2D1GdiMetafileSinkImplementationBase<DerivedT, InterfaceT>, InterfaceT>;
         using DerivedType = DerivedT;
         using InterfaceType = ID2D1GdiMetafileSink;
     protected:
-        void HandleProcessRecord( DWORD recordType, void* recordData, DWORD recordDataSize )
+        virtual void HandleProcessRecord( DWORD recordType, void* recordData, DWORD recordDataSize )
         {
             
         }
@@ -5461,10 +5461,10 @@ namespace Harlinn::Windows::Graphics
     };
 
     template<typename DerivedT>
-    class ID2D1CommandSinkImplementationBase : public IUnknownImplementation<ID2D1CommandSinkImplementationBase<DerivedT>, ID2D1CommandSink>
+    class ID2D1CommandSinkImplementationBase : public Com::ObjectBase<ID2D1CommandSinkImplementationBase<DerivedT>, ID2D1CommandSink>
     {
     public:
-        using Base = IUnknownImplementation<ID2D1CommandSinkImplementationBase<DerivedT>, ID2D1CommandSink>;
+        using Base = Com::ObjectBase<ID2D1CommandSinkImplementationBase<DerivedT>, ID2D1CommandSink>;
         using DerivedType = DerivedT;
         using InterfaceType = ID2D1CommandSink;
     protected:

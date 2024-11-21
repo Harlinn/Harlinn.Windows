@@ -20,7 +20,7 @@
 #include <HWDef.h>
 #include <HCCException.h>
 #include <HCCString.h>
-#include <HCCCom.h>
+#include <HCCComImpl.h>
 
 namespace Harlinn::Windows
 {
@@ -1167,10 +1167,10 @@ namespace Harlinn::Windows::Graphics
         };
 
 
-        class ProgressCallback : public IUnknownImplementation<ProgressCallback,IWICProgressCallback>
+        class ProgressCallback : public Com::ObjectBase<ProgressCallback,IWICProgressCallback>
         {
         public:
-            typedef IUnknownImplementation<ProgressCallback, IWICProgressCallback> Base;
+            typedef Com::ObjectBase<ProgressCallback, IWICProgressCallback> Base;
             HW_EXPORT virtual HRESULT STDMETHODCALLTYPE Notify( ULONG uFrameNum, WICProgressOperation operation, double dblProgress );
         };
 

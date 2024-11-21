@@ -41,9 +41,11 @@ namespace Harlinn::Common::Core::Com
         /// <summary>
         /// Base class for COM object implementations, it implements
         /// <code>
-        /// virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override;
+        /// void* QueryItf( const Guid& iid );
         /// </code>
-        /// on behalf of derived templates.
+        /// which returns a pointer to the requested interface identified by 
+        /// the iid parameter, or nullptr if the requested interface is not 
+        /// supported by the type.
         /// </summary>
         /// <typeparam name="DerivedT">
         /// The type that gets instantiated.
@@ -54,17 +56,13 @@ namespace Harlinn::Common::Core::Com
         /// unambiguously be cast to. This means that no interface can be derived from any
         /// other interface that is part of this parameter pack.
         /// </p>
-        /// <p>
-        /// Interface inheritance is implemented through specializations of
-        /// 
-        /// </p>
         /// </typeparam>
         template<typename DerivedT, typename ... InterfaceTypes >
         class __declspec( novtable ) Interfaces : public InterfaceTypes...
         {
         public:
             using DerivedType = DerivedT;
-        protected:
+        private:
             template<typename InterfaceType, typename ...RemainingInterfaceTypes>
             void* QueryItf_( const Guid& iid ) const
             {
@@ -80,7 +78,18 @@ namespace Harlinn::Common::Core::Com
                 }
                 return ptr;
             }
-
+        protected:
+            /// <summary>
+            /// <para>
+            /// Retrieves a pointer to the interface if it's among the interfaces 
+            /// specified by the InterfaceTypes... parameter pack, otherwise nullptr.
+            /// </para>
+            /// <para>
+            /// Used by derived classes to implement the <c>virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result )</c> function.
+            /// </para>
+            /// </summary>
+            /// <param name="iid"></param>
+            /// <returns>A void* pointer to the requested interface, or nullptr if it is not supported.</returns>
             void* QueryItf( const Guid& iid ) const
             {
                 return QueryItf_<InterfaceTypes...>( iid );
@@ -90,58 +99,29 @@ namespace Harlinn::Common::Core::Com
             
         };
     }
-    /*
-    template<typename DerivedT, typename ... InterfaceTypes>
-    class ObjectBase : public Interfaces<DerivedT, InterfaceTypes...>
-    {
-        ULONG referenceCount_ = 1;
-    public:
-        using Base = Interfaces<DerivedT, InterfaceTypes...>;
-        using DerivedType = DerivedT;
 
-        virtual ~ObjectBase( ) = default;
-
-        HRESULT __stdcall QueryInterface( const IID& iid, void** result )
-        {
-            auto& self = *static_cast< DerivedType* >( this );
-            return self.QueryInterfaceImpl( iid, result );
-        }
-
-        ULONG __stdcall AddRef( )
-        {
-            auto& self = *static_cast< DerivedType* >( this );
-            return self.AddRefImpl( );
-        }
-
-        ULONG __stdcall Release( )
-        {
-            auto& self = *static_cast< DerivedType* >( this );
-            return self.ReleaseImpl( );
-        }
-
-        ULONG AddRefImpl( )
-        {
-            ULONG result = InterlockedIncrement( &referenceCount_ );
-            return result;
-        }
-
-        ULONG ReleaseImpl( )
-        {
-            ULONG result = InterlockedDecrement( &referenceCount_ );
-            if ( result == 0 )
-            {
-                delete this;
-            }
-            return result;
-        }
-    };
-    */
-    
-
-
-
-
-
+    /// <summary>
+    /// <para>
+    /// Use this template to implement COM objects that will be instantiated using either
+    /// <code>
+    /// template&lt;typename BaseT&gt;
+    /// class HeapObject {...}
+    /// </code>
+    /// or
+    /// <code>
+    /// template&lt;typename BaseT&gt;
+    /// class StackObject {...}
+    /// </code>
+    /// </para>
+    /// <para>
+    /// HeapObject and StackObject provides the implementation of the IUnknown
+    /// interface, while the remaining functions specified by the interfaces
+    /// given in the InterfaceTypes parameter pack must be implemented
+    /// by the class derived from ObjectBase.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="...InterfaceTypes"></typeparam>
+    /// <typeparam name="DerivedT"></typeparam>
     template<typename DerivedT, typename ... InterfaceTypes>
     class __declspec( novtable ) ObjectBase : public Internal::Interfaces<DerivedT, InterfaceTypes...>
     {
@@ -177,14 +157,13 @@ namespace Harlinn::Common::Core::Com
                 return result;
             }
         protected:
-            using Base::QueryItf;
             HRESULT QueryInterfaceImpl( const IID& iid, void** result, bool addRef = true )
             {
                 if ( !result )
                 {
                     return E_POINTER;
                 }
-                void* ptr = QueryItf( iid );
+                void* ptr = Base::QueryItf( iid );
                 if ( ptr )
                 {
                     *result = ptr;
@@ -234,14 +213,13 @@ namespace Harlinn::Common::Core::Com
                 return result;
             }
         protected:
-            using Base::QueryItf;
             HRESULT QueryInterfaceImpl( const IID& iid, void** result, bool addRef = true )
             {
                 if ( !result )
                 {
                     return E_POINTER;
                 }
-                void* ptr = QueryItf( iid );
+                void* ptr = Base::QueryItf( iid );
                 if ( ptr )
                 {
                     *result = ptr;
@@ -267,6 +245,14 @@ namespace Harlinn::Common::Core::Com
         };
     }
 
+    /// <summary>
+    /// Use this template to instantiate an object with a non-destructive
+    /// implementation of <c>IUnknown::Release()</c>. COM objects instantiated using
+    /// this template can be allocated on the stack.
+    /// </summary>
+    /// <typeparam name="BaseT">
+    /// A type that implements one or more COM interfaces, but not IUnknown.
+    /// </typeparam>
     template<typename BaseT>
     class StackObject : public Internal::StackObjectImpl<BaseT>
     {
@@ -278,6 +264,16 @@ namespace Harlinn::Common::Core::Com
         {
         }
     };
+
+    /// <summary>
+    /// Use this template to instantiate an object with an implementation of 
+    /// <c>IUnknown::Release()</c> that calls the <c>delete</c> operator on itself
+    /// when its reference count becomes 0. COM objects instantiated using this
+    /// template must be allocated using the <c>new</c> operator. 
+    /// </summary>
+    /// <typeparam name="BaseT">
+    /// A type that implements one or more COM interfaces, but not IUnknown.
+    /// </typeparam>
     template<typename BaseT>
     class HeapObject : public Internal::HeapObjectImpl<BaseT>
     {
@@ -288,9 +284,44 @@ namespace Harlinn::Common::Core::Com
             : Base( std::forward<Args>( args )... )
         {
         }
+
+        template<typename ...Args>
+        static HRESULT CreateInstance( void** result, Args&&... args )
+        {
+            if ( !result )
+            {
+                return E_POINTER;
+            }
+            ComPtr ptr( new HeapObject<BaseT>( std::forward<Args>( args )... ), false );
+            *result = ptr.Detach( );
+        }
+
+        template<typename ...Args>
+        static HRESULT CreateInstance(const Guid& riid, void** result, Args&&... args )
+        {
+            if ( !result )
+            {
+                return E_POINTER;
+            }
+            ComPtr ptr( new HeapObject<BaseT>( std::forward<Args>( args )... ), false );
+            auto hr = ptr->QueryInterface( riid, result );
+            return hr;
+        }
+
     };
 
-    template<IUnknownImplLike DerivedT, typename ... InterfaceTypes>
+    /// <summary>
+    /// Provides an implementation of IDispatch
+    /// </summary>
+    /// <typeparam name="...InterfaceTypes">
+    /// The list of COM interfaces that is implemented by DerivedT that DerivedT can be 
+    /// unambiguously be cast to. This means that no interface can be derived from any
+    /// other interface that is part of this parameter pack.
+    /// </typeparam>
+    /// <typeparam name="DerivedT">
+    /// The type of the derived class.
+    /// </typeparam>
+    template<typename DerivedT, typename ... InterfaceTypes>
     class __declspec( novtable ) IDispatchImpl : public ObjectBase<DerivedT, InterfaceTypes...>
     {
         TypeInfo typeInfo_;
@@ -383,7 +414,7 @@ namespace Harlinn::Common::Core::Com
     };
 
     
-
+    /*
     template<typename ConnectionPointT, typename ObjectBaseT>
     class EnumConnectionsImpl;
 
@@ -676,7 +707,7 @@ namespace Harlinn::Common::Core::Com
         }
         HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
     }
-
+    */
 
 }
 

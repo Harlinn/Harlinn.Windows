@@ -3315,7 +3315,7 @@ namespace Harlinn::Common::Core
             IProvideClassInfo2* pProvideClassInfo2 = nullptr;
             auto hr = pInterface->QueryInterface( &pProvideClassInfo2 );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
-            UnknownPtr<IProvideClassInfo2> provideClassInfo2( pProvideClassInfo2 );
+            ComPtr<IProvideClassInfo2> provideClassInfo2( pProvideClassInfo2 );
             hr = pProvideClassInfo2->GetGUID( GUIDKIND_DEFAULT_SOURCE_DISP_IID, &result );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
             return result;
@@ -8787,16 +8787,16 @@ namespace Harlinn::Common::Core
 
         template <typename T>
             requires std::is_base_of_v<IUnknown, T>
-        UnknownPtr<T> QueryService( _In_ REFGUID guidService )
+        ComPtr<T> QueryService( _In_ REFGUID guidService )
         {
             T* ptr = nullptr;
             if ( QueryService( guidService, __uuidof( T ), reinterpret_cast<void**>( &ptr ) ) )
             {
-                return UnknownPtr<T>( ptr );
+                return ComPtr<T>( ptr );
             }
             else
             {
-                return UnknownPtr<T>( );
+                return ComPtr<T>( );
             }
         }
 

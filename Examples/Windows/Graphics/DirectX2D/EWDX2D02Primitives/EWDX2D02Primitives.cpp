@@ -30,7 +30,7 @@ class Direct2D
 {
     D3D_FEATURE_LEVEL featureLevel_ = D3D_FEATURE_LEVEL_9_2;
     using DX3DDevice = ID3D11Device;
-    UnknownPtr<DX3DDevice> d3dDevice_;
+    ComPtr<DX3DDevice> d3dDevice_;
     Graphics::Factory7 factory_;
     Graphics::Device6 device_;
 
@@ -162,12 +162,12 @@ private:
 
     void InitializeTargetBitmap( )
     {
-        Graphics::DXGI::Surface backBuffer = dxgiSwapChain_.GetBuffer<IDXGISurface>( 0 );
+        auto backBuffer = dxgiSwapChain_.GetBuffer<IDXGISurface>( 0 );
 
         auto bitmapProperties = D2D1::BitmapProperties1( D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
             D2D1::PixelFormat( DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE ) );
 
-        auto targetBitmap = deviceContext_.CreateBitmapFromDxgiSurface( backBuffer, bitmapProperties );
+        auto targetBitmap = deviceContext_.CreateBitmapFromDxgiSurface( backBuffer.GetInterfacePointer<IDXGISurface>(), bitmapProperties );
         deviceContext_.SetTarget( targetBitmap );
     }
 public:

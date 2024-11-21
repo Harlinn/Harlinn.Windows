@@ -369,10 +369,10 @@ namespace Harlinn::Common::Core
     };
 
 
-    class LocationEventsSink : public IUnknownImplementation<LocationEventsSink, ILocationEvents>
+    class LocationEventsSinkImpl : public Com::ObjectBase<LocationEventsSink, ILocationEvents>
     {
     public:
-        using Base = IUnknownImplementation<LocationEventsSink, ILocationEvents>;
+        using Base = Com::ObjectBase<LocationEventsSink, ILocationEvents>;
     private:
         Location location_;
 

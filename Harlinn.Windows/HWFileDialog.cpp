@@ -165,7 +165,8 @@ namespace Harlinn::Windows
     bool FileDialog::Show( HWND owner )
     {
         bool result = false;
-        FileDialogEvents fileDialogEvents( new FileDialogEventsImplementation( this ) );
+        Com::StackObject<FileDialogEventsImplementation> fileDialogEventsImpl( this );
+        FileDialogEvents fileDialogEvents( &fileDialogEventsImpl );
         DWORD cookie = Advise( fileDialogEvents );
         try
         {

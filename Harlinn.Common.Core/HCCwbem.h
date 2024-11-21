@@ -18,6 +18,7 @@
 */
 
 #include <HCCObj.h>
+#include <HCCComImpl.h>
 
 #pragma comment(lib,"wbemuuid.lib")
 
@@ -2273,11 +2274,11 @@ namespace Harlinn::Common::Core
         }
     };
 
-    template<typename DerivedT, typename InterfaceT = IWbemObjectSink, typename ContainerT = boost::container::small_vector<WbemClassObject, 64>, typename ...InterfaceTypes >
-    class IWbemObjectSinkImplementationBase : public IUnknownImplementation<DerivedT, InterfaceT, IWbemObjectSink, InterfaceTypes...>
+    template<typename DerivedT, typename InterfaceT = IWbemObjectSink, typename ContainerT = boost::container::small_vector<WbemClassObject, 64> >
+    class IWbemObjectSinkImplementationBase : public Com::ObjectBase<DerivedT, InterfaceT>
     {
     public:
-        using Base = IUnknownImplementation<DerivedT, InterfaceT, IWbemObjectSink, InterfaceTypes...>;
+        using Base = Com::ObjectBase<DerivedT, InterfaceT>;
         using DerivedType = DerivedT;
         using InterfaceType = InterfaceT;
         using ContainerType = ContainerT;
@@ -2313,7 +2314,7 @@ namespace Harlinn::Common::Core
             }
             HCC_CATCH_ALL_AND_REPORT_EXCEPTION
             object.Detach( );
-            str.Detach( );
+            (void)str.Detach( );
             return failed == false ? S_OK : E_FAIL;
         }
     protected:
@@ -2328,13 +2329,13 @@ namespace Harlinn::Common::Core
         }
     };
 
-    template<typename DerivedT, typename InterfaceT = IWbemObjectSink, typename ContainerT = boost::container::small_vector<WbemClassObject, 64>, typename ...InterfaceTypes >
-    class IWbemObjectSinkDispatcherBase : public IWbemObjectSinkImplementationBase<DerivedT,InterfaceT, ContainerT, InterfaceTypes...>
+    template<typename DerivedT, typename InterfaceT = IWbemObjectSink, typename ContainerT = boost::container::small_vector<WbemClassObject, 64> >
+    class IWbemObjectSinkDispatcherBase : public IWbemObjectSinkImplementationBase<DerivedT,InterfaceT, ContainerT>
     {
-        template<typename DerivedT, typename InterfaceT, typename ContainerT, typename ...InterfaceTypes>
+        template<typename DerivedT, typename InterfaceT, typename ContainerT>
         friend class IWbemObjectSinkImplementationBase;
     public:
-        using Base = IWbemObjectSinkImplementationBase<DerivedT, InterfaceT, ContainerT, InterfaceTypes...>;
+        using Base = IWbemObjectSinkImplementationBase<DerivedT, InterfaceT, ContainerT>;
 
         using InterfaceType = Base::InterfaceType;
         using ContainerType = Base::ContainerType;
@@ -2353,11 +2354,11 @@ namespace Harlinn::Common::Core
         }
     };
 
-    template<typename ContainerT = boost::container::small_vector<WbemClassObject, 64> >
-    class IWbemObjectSinkDispatcher : public IWbemObjectSinkDispatcherBase< IWbemObjectSinkDispatcher<ContainerT>, IWbemObjectSink, ContainerT >
+    //template<typename ContainerT = boost::container::small_vector<WbemClassObject, 64> >
+    class IWbemObjectSinkDispatcher : public IWbemObjectSinkDispatcherBase< IWbemObjectSinkDispatcher, IWbemObjectSink, boost::container::small_vector<WbemClassObject, 64> >
     {
     public:
-        using Base = IWbemObjectSinkDispatcherBase< IWbemObjectSinkDispatcher<ContainerT>, IWbemObjectSink, ContainerT >;
+        using Base = IWbemObjectSinkDispatcherBase< IWbemObjectSinkDispatcher, IWbemObjectSink, boost::container::small_vector<WbemClassObject, 64> >;
     };
 
 
