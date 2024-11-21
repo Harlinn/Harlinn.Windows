@@ -1481,7 +1481,9 @@ namespace Harlinn::OCI
 
     };
 
-
+    /// <summary>
+    /// Represents a transaction
+    /// </summary>
     class Transaction
     {
         const OCI::ServiceContext* serviceContext_;

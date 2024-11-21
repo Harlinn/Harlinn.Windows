@@ -31,6 +31,16 @@ namespace Harlinn::Common::Core
     constexpr UInt64 MaxEightByteValue = 0xFFFFFFFFFFFFFFULL;
     constexpr UInt64 MaxNineByteValue  = 0xFFFFFFFFFFFFFFFFULL;
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 64-bit unsigned integer.
+    /// </summary>
+    /// <param name="value">
+    /// The 64-bit unsigned integer.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t SizeOf7BitEncodedValue( UInt64 value ) noexcept
     {
         if ( value > MaxOneByteValue )
@@ -92,12 +102,36 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 64-bit signed integer.
+    /// </summary>
+    /// <param name="value">
+    /// The 64-bit signed integer.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t SizeOf7BitEncodedValue( Int64 value ) noexcept
     {
         return SizeOf7BitEncodedValue( ( std::bit_cast<UInt64>( value ) << 1 ) | ( std::bit_cast< UInt64 >( value ) >> 63) );
     }
 
-
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 32-bit unsigned integer.
+    /// </summary>
+    /// <param name="value">
+    /// The 32-bit unsigned integer.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t SizeOf7BitEncodedValue( UInt32 value ) noexcept
     {
         if ( value > MaxOneByteValue )
@@ -132,11 +166,36 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 32-bit signed integer.
+    /// </summary>
+    /// <param name="value">
+    /// The 32-bit signed integer.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t SizeOf7BitEncodedValue( Int32 value ) noexcept
     {
         return SizeOf7BitEncodedValue( ( std::bit_cast< UInt32 >( value ) << 1 ) | ( std::bit_cast< UInt32 >( value ) >> 31 ) );
     }
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 16-bit unsigned integer.
+    /// </summary>
+    /// <param name="value">
+    /// The 16-bit unsigned integer.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t SizeOf7BitEncodedValue( UInt16 value ) noexcept
     {
         if ( value > MaxOneByteValue )
@@ -156,16 +215,56 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 16-bit signed integer.
+    /// </summary>
+    /// <param name="value">
+    /// The 16-bit signed integer.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t SizeOf7BitEncodedValue( Int16 value ) noexcept
     {
         return SizeOf7BitEncodedValue( ( std::bit_cast< UInt16 >( value ) << 1 ) | ( std::bit_cast< UInt16 >( value ) >> 15 ) );
     }
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 16-bit wchar_t.
+    /// </summary>
+    /// <param name="value">
+    /// The 16-bit wchar_t.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t SizeOf7BitEncodedValue( wchar_t value ) noexcept
     {
         return SizeOf7BitEncodedValue( std::bit_cast<UInt16>( value ) );
     }
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 8-bit unsigned integer.
+    /// </summary>
+    /// <param name="value">
+    /// The 8-bit unsigned integer.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t SizeOf7BitEncodedValue( Byte value ) noexcept
     {
         if ( value > MaxOneByteValue )
@@ -178,11 +277,43 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 8-bit signed integer.
+    /// </summary>
+    /// <param name="value">
+    /// The 8-bit signed integer.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to ensure compatibility with the encodings for the
+    /// wider signed integer types.
+    /// </remarks>
     inline constexpr size_t SizeOf7BitEncodedValue( SByte value ) noexcept
     {
         return SizeOf7BitEncodedValue( ( std::bit_cast< Byte >( value ) << 1 ) | ( std::bit_cast< Byte >( value ) >> 7 ) );
     }
 
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 8-bit char.
+    /// </summary>
+    /// <param name="value">
+    /// The 8-bit char.
+    /// </param>
+    /// <returns>
+    /// Number of bytes required to store value as a 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to ensure compatibility with the encodings for the
+    /// wider signed integer types.
+    /// </remarks>
     inline constexpr size_t SizeOf7BitEncodedValue( char value ) noexcept
     {
         return SizeOf7BitEncodedValue( std::bit_cast<Byte>( value ) );
@@ -190,13 +321,37 @@ namespace Harlinn::Common::Core
 
 
 
-
+    /// <summary>
+    /// Calculates the size, in bytes, required to store a 7-bit 
+    /// encoded 64-bit unsigned integer.
+    /// </summary>
+    /// <typeparam name="N">
+    /// The 64-bit unsigned integer.
+    /// </typeparam>
     template<UInt64 N>
     inline constexpr size_t SizeOf7BitEncoded_v = SizeOf7BitEncodedValue( N );
 
-
+    /// <summary>
+    /// Encodes a 64-bit unsigned integer as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 64-bit unsigned integer value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
     inline constexpr size_t Write7BitEncodedValue( UInt64 value, Byte* dest ) noexcept
     {
+        // Loop manually unrolled for performance:
         dest[0] = value & 0x7F;
         if ( value > 127 )
         {
@@ -287,13 +442,55 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Encodes a 64-bit signed integer as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 64-bit signed integer value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t Write7BitEncodedValue( Int64 value, Byte* dest ) noexcept
     {
         return Write7BitEncodedValue( ( std::bit_cast< UInt64 >( value ) << 1 ) | ( std::bit_cast< UInt64 >( value ) >> 63 ), dest );
     }
 
+    /// <summary>
+    /// Encodes a 32-bit unsigned integer as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 32-bit unsigned integer value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
     inline constexpr size_t Write7BitEncodedValue( UInt32 value, Byte* dest ) noexcept
     {
+        // Loop manually unrolled for performance:
         dest[0] = value & 0x7F;
         if ( value > 127 )
         {
@@ -342,12 +539,52 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Encodes a 32-bit signed integer as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 32-bit signed integer value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t Write7BitEncodedValue( Int32 value, Byte* dest ) noexcept
     {
         return Write7BitEncodedValue( ( std::bit_cast< UInt32 >( value ) << 1 ) | ( std::bit_cast< UInt32 >( value ) >> 31 ), dest );
     }
 
-
+    /// <summary>
+    /// Encodes a 16-bit unsigned integer as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 16-bit unsigned integer value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
     inline constexpr size_t Write7BitEncodedValue( UInt16 value, Byte* dest ) noexcept
     {
         dest[0] = value & 0x7F;
@@ -376,15 +613,74 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Encodes a 16-bit signed integer as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 16-bit signed integer value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t Write7BitEncodedValue( Int16 value, Byte* dest ) noexcept
     {
         return Write7BitEncodedValue( ( std::bit_cast< UInt16 >( value ) << 1 ) | ( std::bit_cast< UInt16 >( value ) >> 15 ), dest );
     }
+    /// <summary>
+    /// Encodes a 16-bit wchar_t as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 16-bit wchar_t value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
     inline constexpr size_t Write7BitEncodedValue( wchar_t value, Byte* dest ) noexcept
     {
         return Write7BitEncodedValue( std::bit_cast<UInt16>( value ), dest );
     }
 
+    /// <summary>
+    /// Encodes a 8-bit unsigned integer as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 8-bit unsigned integer value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
     inline constexpr size_t Write7BitEncodedValue( Byte value, Byte* dest ) noexcept
     {
         dest[0] = value & 0x7F;
@@ -402,16 +698,81 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Encodes a 8-bit signed integer as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 8-bit signed integer value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to ensure compatibility with the encodings for the
+    /// wider signed integer types.
+    /// </remarks>
     inline constexpr size_t Write7BitEncodedValue( SByte value, Byte* dest ) noexcept
     {
         return Write7BitEncodedValue( ( std::bit_cast< Byte >( value ) << 1 ) | ( std::bit_cast< Byte >( value ) >> 7 ), dest );
     }
+    /// <summary>
+    /// Encodes a 8-bit char as a 7-bit encoded value.
+    /// </summary>
+    /// <param name="value">
+    /// The 8-bit char value.
+    /// </param>
+    /// <param name="dest">
+    /// <para>
+    /// The a pointer to the buffer receiving the 7-bit encoded number.
+    /// </para>
+    /// <para>
+    /// The size of the buffer must be greater or equal to the value
+    /// returned by SizeOf7BitEncodedValue for the value.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// Number of bytes written to the destination buffer.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to ensure compatibility with the encodings for the
+    /// wider signed integer types.
+    /// </remarks>
     inline constexpr size_t Write7BitEncodedValue( char value, Byte* dest ) noexcept
     {
         return Write7BitEncodedValue( ( std::bit_cast< Byte >( value ) << 1 ) | ( std::bit_cast< Byte >( value ) >> 7 ), dest );
     }
 
-
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 64-bit unsigned integer
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 64-bit unsigned integer that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, UInt64& resultValue ) noexcept
     {
         Byte byteValue = buffer[offset];
@@ -491,6 +852,29 @@ namespace Harlinn::Common::Core
         }
     }
 
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 64-bit signed integer
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 64-bit signed integer that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, Int64& resultValue ) noexcept
     {
         UInt64 resVal = 0;
@@ -499,7 +883,26 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 64-bit unsigned integer.
+    /// </returns>
     template<typename Reader>
+        requires requires( Reader r, Byte& b)
+        { 
+            { r.Read( b ) };
+        }
     inline constexpr UInt64 Read7BitEncodedUInt64( Reader& reader) noexcept
     {
         UInt64 resultValue = 0;
@@ -549,7 +952,31 @@ namespace Harlinn::Common::Core
         return resultValue;
     }
 
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 64-bit signed integer.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr Int64 Read7BitEncodedInt64( Reader& reader ) noexcept
     {
         UInt64 resVal = Read7BitEncodedUInt64( reader );
@@ -558,7 +985,24 @@ namespace Harlinn::Common::Core
     }
 
     
-
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 32-bit unsigned integer
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 32-bit unsigned integer that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, UInt32& resultValue ) noexcept
     {
         Byte byteValue = buffer[offset];
@@ -602,6 +1046,30 @@ namespace Harlinn::Common::Core
             return 1;
         }
     }
+
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 32-bit signed integer
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 32-bit signed integer that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, Int32& resultValue ) noexcept
     {
         UInt32 resVal = 0;
@@ -610,7 +1078,26 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 32-bit unsigned integer.
+    /// </returns>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr UInt32 Read7BitEncodedUInt32( Reader& reader ) noexcept
     {
         UInt32 resultValue = 0;
@@ -640,7 +1127,31 @@ namespace Harlinn::Common::Core
         return resultValue;
     }
 
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 32-bit signed integer.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr Int32 Read7BitEncodedInt32( Reader& reader ) noexcept
     {
         UInt32 resVal = Read7BitEncodedUInt32( reader );
@@ -648,7 +1159,24 @@ namespace Harlinn::Common::Core
         return resultValue;
     }
 
-
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 16-bit unsigned integer
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 16-bit unsigned integer that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, UInt16& resultValue ) noexcept
     {
         Byte byteValue = buffer[offset];
@@ -673,6 +1201,30 @@ namespace Harlinn::Common::Core
             return 1;
         }
     }
+
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 16-bit signed integer
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 16-bit signed integer that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, Int16& resultValue ) noexcept
     {
         UInt16 resVal = 0;
@@ -680,6 +1232,25 @@ namespace Harlinn::Common::Core
         resultValue = std::bit_cast< Int16 >( static_cast<UInt16>(( resVal >> 1 ) | ( resVal << 15 )) );
         return result;
     }
+
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 16-bit wchar_t
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 16-bit wchar_t that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, wchar_t& resultValue ) noexcept
     {
         UInt16 resVal = 0;
@@ -688,7 +1259,26 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 16-bit unsigned integer.
+    /// </returns>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr UInt16 Read7BitEncodedUInt16( Reader& reader ) noexcept
     {
         UInt16 resultValue = 0;
@@ -708,21 +1298,82 @@ namespace Harlinn::Common::Core
         return resultValue;
     }
 
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 16-bit signed integer.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to minimize the size of the 7-bit encoding.
+    /// </remarks>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr Int16 Read7BitEncodedInt16( Reader& reader ) noexcept
     {
         UInt16 resVal = Read7BitEncodedUInt16( reader );
         Int16 resultValue = std::bit_cast< Int16 >( ( resVal >> 1 ) | ( resVal << 15 ) );
         return resultValue;
     }
+
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 16-bit wchar_t.
+    /// </returns>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr wchar_t Read7BitEncodedWChar( Reader& reader ) noexcept
     {
         return std::bit_cast< wchar_t >( Read7BitEncodedUInt16( reader ) );
     }
 
 
-
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 8-bit unsigned integer
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 8-bit unsigned integer that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, Byte& resultValue ) noexcept
     {
         Byte byteValue = buffer[offset];
@@ -738,6 +1389,30 @@ namespace Harlinn::Common::Core
             return 1;
         }
     }
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 8-bit signed integer
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 8-bit signed integer that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to ensure compatibility with the encodings for the
+    /// wider signed integer types.
+    /// </remarks>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, SByte& resultValue ) noexcept
     {
         Byte resVal = 0;
@@ -745,6 +1420,31 @@ namespace Harlinn::Common::Core
         resultValue = std::bit_cast< SByte >( static_cast<Byte>(( resVal >> 1 ) | ( resVal << 7 )) );
         return result;
     }
+
+    /// <summary>
+    /// Reads a 7-bit encoded numer, located at offset in the buffer, 
+    /// decodes in and places the result into the 8-bit char
+    /// referenced by resultValue.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the 7-bit encoded number.
+    /// </param>
+    /// <param name="offset">
+    /// The offset into buffer of the start of the 7-bit encoded number.
+    /// </param>
+    /// <param name="resultValue">
+    /// A reference to the 8-bit char that receives the
+    /// value of the 7-bit encoded number.
+    /// </param>
+    /// <returns>
+    /// Number of bytes read to decode the 7-bit encoded number.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to ensure compatibility with the encodings for the
+    /// wider signed integer types.
+    /// </remarks>
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, char& resultValue ) noexcept
     {
         Byte resVal = 0;
@@ -753,7 +1453,26 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 8-bit unsigned integer.
+    /// </returns>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr Byte Read7BitEncodedByte( Reader& reader ) noexcept
     {
         Byte resultValue = 0;
@@ -768,14 +1487,59 @@ namespace Harlinn::Common::Core
         return resultValue;
     }
 
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 8-bit signed integer.
+    /// </returns>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr SByte Read7BitEncodedSByte( Reader& reader ) noexcept
     {
         Byte resVal = Read7BitEncodedByte( reader );
         SByte resultValue = std::bit_cast< SByte >( ( resVal >> 1 ) | ( resVal << 7 ) );
         return resultValue;
     }
+
+    /// <summary>
+    /// Decodes a 7-bit encoded numer by reading
+    /// one byte at the time from the Reader object referenced by reader.
+    /// </summary>
+    /// <typeparam name="Reader">
+    /// A type that reads one byte at the time from the
+    /// underlying source and places the result in
+    /// the referenced argument.
+    /// </typeparam>
+    /// <param name="reader">
+    /// The reader object.
+    /// </param>
+    /// <returns>
+    /// The decoded 8-bit char.
+    /// </returns>
+    /// <remarks>
+    /// The sign bit is rotated to the least significant bit,
+    /// and the remaining bits are shifted one bit to the right
+    /// to ensure compatibility with the encodings for the
+    /// wider signed integer types.
+    /// </remarks>
     template<typename Reader>
+        requires requires( Reader r, Byte& b )
+        {
+            { r.Read( b ) };
+        }
     inline constexpr char Read7BitEncodedChar( Reader& reader ) noexcept
     {
         Byte resVal = Read7BitEncodedByte( reader );

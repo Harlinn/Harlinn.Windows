@@ -426,6 +426,8 @@ namespace Harlinn::Common::Core::Logging
     public:
         using Base = Concurrency::ActiveObject<std::shared_ptr<LogManagerMessage>>;
         using RuntimeBufferConverter = BufferConverter<LogSiteExtractor>;
+        using Base::Start;
+        using Base::Stop;
     private:
         HCC_EXPORT static std::shared_ptr<LogManager> instance_;
         std::shared_ptr<LoggerOptions> options_;
@@ -492,8 +494,8 @@ namespace Harlinn::Common::Core::Logging
         HCC_EXPORT static LogManager* Instance( );
         HCC_EXPORT static void SetOptions( const std::shared_ptr<LoggerOptions>& options );
 
-        HCC_EXPORT void Start( );
-        HCC_EXPORT void Stop( );
+        HCC_EXPORT bool Start( const TimeSpan& timeout ) override;
+        HCC_EXPORT bool Stop( const TimeSpan& timeout ) override;
 
         std::shared_ptr<const LogManager> Self( ) const
         {

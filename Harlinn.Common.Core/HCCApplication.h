@@ -45,12 +45,48 @@ namespace Harlinn::Common::Core
     using ApplicationThreadAttachedMessage = SimpleApplicationValueMessage<UInt32, ApplicationMessageType::ThreadAttached>;
     using ApplicationThreadDetachedMessage = SimpleApplicationValueMessage<UInt32, ApplicationMessageType::ThreadDetached>;
 
-
+    /// <summary>
+    /// <para>
+    /// A base class for application objects.
+    /// </para>
+    /// <para>
+    /// There must only be a single instance of this class in an application.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// If your executable is named MyApp.exe, the application object will attempt to 
+    /// load configuration data from a file named MyApp.options.
+    /// </para>
+    /// <para>
+    /// Your main function could look like this:
+    /// </para>
+    /// <code>
+    /// int main( int argc, char* argv[], char* envp[] )
+    /// {
+    ///     int result = 0;
+    ///     auto application = std::make_shared&lt;Harlinn::Common::Core::Application&gt;( );
+    ///     application->Start( );
+    ///     try
+    ///     {
+    ///         // Application logic goes here
+    ///     }
+    ///     catch(...)
+    ///     {
+    ///     }
+    ///     application->Stop( );
+    ///     return result;
+    /// }
+    /// </code>
+    /// <para>
+    /// </para>
+    /// </remarks>
     class Application : public Concurrency::ActiveObject<std::shared_ptr<ApplicationMessage>>
     {
     public:
         using Base = Concurrency::ActiveObject<std::shared_ptr<ApplicationMessage>>;
-        
+        using Base::Start;
+        using Base::Stop;
     private:
         HCC_EXPORT static Application* instance_;
         const std::shared_ptr<ApplicationOptions> options_;
@@ -81,21 +117,25 @@ namespace Harlinn::Common::Core
         HCC_EXPORT static UInt64 MainThreadId( ) noexcept;
 
         HCC_EXPORT static void HandleDllMainEvent( HMODULE moduleHandle, DWORD reason, LPVOID freeLibrary ) noexcept;
+    protected:
         HCC_EXPORT virtual void ProcessMessage( const MessageType& message ) override;
-
-        void Start( )
+    public:
+        bool Start( const TimeSpan& timeout ) override
         {
-            Base::Start( );
-            auto logManager = Logging::LogManager::Instance( );
-            logManager->Start( );
-
+            auto result = Base::Start( timeout );
+            if ( result )
+            {
+                auto logManager = Logging::LogManager::Instance( );
+                return logManager->Start( timeout );
+            }
+            return result;
         }
 
-        void Stop( )
+        bool Stop( const TimeSpan& timeout ) override
         {
             auto logManager = Logging::LogManager::Instance( );
-            logManager->Stop( );
-            Base::Stop( );
+            logManager->Stop( timeout );
+            return Base::Stop( timeout );
         }
 
     protected:

@@ -428,12 +428,12 @@ namespace Harlinn::Common::Core::Logging
 
 
 
-    void LogManager::Start( )
+    bool LogManager::Start( const TimeSpan& timeout )
     {
-        Base::Start( );
+        return Base::Start( timeout );
     }
 
-    void LogManager::Stop( )
+    bool LogManager::Stop( const TimeSpan& timeout )
     {
         if ( ThreadLogger::threadInstance_ )
         {
@@ -441,7 +441,7 @@ namespace Harlinn::Common::Core::Logging
         }
         logManagerStopped = true;
         ThreadLogger::threadInstance_ = nullptr;
-        Base::Stop( );
+        auto result = Base::Stop( timeout );
         size_t recordsPosted = RecordsPosted( );
         size_t recordsProcessed = RecordsProcessed( );
         size_t bytesReceived = BytesReceived( );
@@ -452,6 +452,7 @@ namespace Harlinn::Common::Core::Logging
         printf( "LogManager posted %zu records, received %zu records, %f mega bytes (%zu bytes) - Messages posted: %zu, Messages processed: %zu \n", recordsPosted, recordsProcessed, mega, bytesReceived, messagesPosted, messagesProcessed );
         loggers_.clear( );
         instance_ = nullptr;
+        return result;
     }
 
     ThreadLogger* LogManager::GetThreadLogger( )
