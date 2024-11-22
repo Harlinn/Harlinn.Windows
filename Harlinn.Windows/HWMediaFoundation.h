@@ -432,7 +432,7 @@ namespace Harlinn::Windows::Media
         auto keyName = GetGUIDNameConst( attributeKey );
         if ( !keyName )
         {
-            keyName = attributeKey.ToString( );
+            keyName = attributeKey.ToWideString( );
         }
         auto value = GetAttributeValue( attributes, attributeKey );
         if ( value )

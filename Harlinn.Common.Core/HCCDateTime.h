@@ -133,6 +133,9 @@ namespace Harlinn::Common::Core
 
 
     class DateTime;
+    /// <summary>
+    /// Represents a time interval.
+    /// </summary>
     class TimeSpan : public TimeBase
     {
         friend class DateTime;
@@ -156,6 +159,7 @@ namespace Harlinn::Common::Core
 
         HCC_EXPORT static TimeSpan Interval( double theValue, int theScale );
     public:
+
         HCC_EXPORT static long long TimeToTicks( int days, int hours, int minutes, int seconds = 0, int milliseconds = 0 );
 
         constexpr TimeSpan( ) noexcept
@@ -562,7 +566,6 @@ namespace Harlinn::Common::Core
     {
         return std::bit_cast<TimeSpan>( ByteSwap( std::bit_cast<UInt64>( value ) ) );
     }
-
 
     class DateTime : public TimeBase
     {
@@ -1086,6 +1089,7 @@ namespace Harlinn::Common::Core
     {
         return std::bit_cast<DateTime>( ByteSwap( std::bit_cast<UInt64>( value ) ) );
     }
+
 
 
     /// <summary>

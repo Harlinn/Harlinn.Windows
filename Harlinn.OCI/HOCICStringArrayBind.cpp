@@ -255,7 +255,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, const Guid& newValue )
     {
-        auto s = ConvertTo<WideString>( newValue.ToString( ) );
+        auto s = ConvertTo<WideString>( newValue.ToWideString( ) );
         Assign( index, s );
     }
 }

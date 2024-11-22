@@ -66,7 +66,7 @@ namespace Harlinn::Common::Core::Com
             template<typename InterfaceType, typename ...RemainingInterfaceTypes>
             void* QueryItf_( const Guid& iid ) const
             {
-                using Itf = Com::Interface<InterfaceType>;
+                using Itf = Com::Interfaces::Interface<InterfaceType>;
                 const DerivedType* self = static_cast< const DerivedType* >( this );
                 auto* ptr = Itf::QueryInterface( iid, static_cast< const InterfaceType* >( self ) );
                 if ( !ptr )

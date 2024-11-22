@@ -37,7 +37,7 @@ int main()
         if ( activate.HasAttribute( MFT_TRANSFORM_CLSID_Attribute ) )
         {
             auto clsid = activate.GetGUID( MFT_TRANSFORM_CLSID_Attribute );
-            std::wcout << friendlyName << L":" << clsid.ToString( ) << std::endl;
+            std::wcout << friendlyName << L":" << clsid.ToWideString( ) << std::endl;
         }
         else
         {

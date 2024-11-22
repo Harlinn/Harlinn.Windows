@@ -23,6 +23,9 @@
 
 namespace Harlinn::Common::Core
 {
+    /// <summary>
+    /// A reference counted buffer, primarily intended for binary data.
+    /// </summary>
     class Binary
     {
         struct Data

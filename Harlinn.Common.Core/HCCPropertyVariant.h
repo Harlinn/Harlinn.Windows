@@ -1446,7 +1446,7 @@ namespace Harlinn::Common::Core
                     if ( puuid )
                     {
                         Guid guid( *puuid );
-                        result = guid.ToString( );
+                        result = guid.ToWideString( );
                     }
                 }
                 break;

@@ -5562,7 +5562,7 @@ namespace Harlinn::OCI
 
         virtual WideString AsString( ) const override
         {
-            return AsGuid( ).ToString( );
+            return AsGuid( ).ToWideString( );
         }
 
         virtual void Assign( const WideString& newValue ) override
@@ -5644,7 +5644,7 @@ namespace Harlinn::OCI
 
         virtual WideString AsString( size_t index ) const override
         {
-            return AsGuid( index ).ToString( );
+            return AsGuid( index ).ToWideString( );
         }
 
         virtual void Assign( size_t index, const WideString& newValue ) override
@@ -7568,7 +7568,7 @@ namespace Harlinn::OCI
 
         virtual WideString AsString( ) const override
         {
-            return AsGuid( ).ToString( );
+            return AsGuid( ).ToWideString( );
         }
     };
 
@@ -7602,7 +7602,7 @@ namespace Harlinn::OCI
 
         virtual WideString AsString( size_t index ) const final override
         {
-            return AsGuid( index ).ToString( );
+            return AsGuid( index ).ToWideString( );
         }
     };
 

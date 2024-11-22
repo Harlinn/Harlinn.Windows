@@ -757,7 +757,7 @@ namespace Harlinn::Windows::Media
         IF_EQUAL_RETURN( guid, VIDEO_ZOOM_RECT );
         
 
-        return guid.ToString();
+        return guid.ToWideString();
     }
 
     
@@ -911,7 +911,7 @@ namespace Harlinn::Windows::Media
         }
         else
         {
-            description += majorType.ToString();
+            description += majorType.ToWideString();
             description += L": \n";
         }
 
@@ -927,7 +927,7 @@ namespace Harlinn::Windows::Media
             auto attributeKeyStr = GetGUIDNameConst(attributeKey);
             if (attributeKeyStr.empty())
             {
-                attributeKeyStr = attributeKey.ToString();
+                attributeKeyStr = attributeKey.ToWideString();
             }
 
             auto attributeValue = GetAttributeValue( mediaType, attributeKey );

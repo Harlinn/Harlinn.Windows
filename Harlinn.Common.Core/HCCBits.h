@@ -67,7 +67,19 @@ namespace Harlinn::Common::Core
     struct Int64BitTraits : public BitTraitsBase<Int64> {};
     template<> struct BitTraits<Int64> : public Int64BitTraits {};
 
-
+    /// <summary>
+    /// Extracts the value of a bit at a bit index from an integer value.
+    /// </summary>
+    /// <typeparam name="BitsT">
+    /// A signed or unsigned integer type.
+    /// </typeparam>
+    /// <param name="bits">
+    /// The integer value
+    /// </param>
+    /// <param name="startIndex">
+    /// 0 based index of the bit to extract, where 0 is the index of the least significant bit.
+    /// </param>
+    /// <returns>true if the bit was set, otherwise false.</returns>
     template<typename BitsT>
         requires std::is_integral_v<BitsT>
     inline constexpr bool BitsToBool( const BitsT bits, const UInt32 startIndex )
@@ -88,7 +100,6 @@ namespace Harlinn::Common::Core
         requires ( std::is_integral_v<BitsT> && std::is_enum_v<ResultT> )
     inline constexpr ResultT BitsToEnum( const BitsT bits, const UInt32 startIndex, const UInt32 bitCount )
     {
-        //using UnderlyingType = std::underlying_type_t<ResultT>;
         using UnsignedType = std::make_unsigned_t<BitsT>;
         if constexpr ( sizeof( BitsT ) <= 4 )
         {

@@ -155,7 +155,19 @@ namespace Harlinn::Common::Core
         }
 
 
-
+        /// <summary>
+        /// <para>
+        /// Creates a new Guid by treating the current value as a
+        /// 128-bit unsigned integer that gets incremented by 1.
+        /// </para>
+        /// <para>
+        /// This can be useful when writing tests that are easier 
+        /// to implement with predictable values for the Guids.
+        /// </para>
+        /// </summary>
+        /// <returns>
+        /// The 'next' Guid value.
+        /// </returns>
         constexpr Guid Next( ) const noexcept
         {
             if ( data_.Hi() != MAXUINT64 )
@@ -168,7 +180,19 @@ namespace Harlinn::Common::Core
             }
         }
 
-
+        /// <summary>
+        /// Compares this Guid with another Guid.
+        /// </summary>
+        /// <param name="other">
+        /// 
+        /// </param>
+        /// <returns>
+        /// <list>
+        ///   <item><c>result &gt; 0</c> when this Guid is greater than the other Guid</item>
+        ///   <item><c>result == 0</c> when this Guid is equal to the other Guid</item>
+        ///   <item><c>result &lt; 0</c> when this Guid is less than the other Guid</item>
+        /// </list>
+        /// </returns>
         constexpr int CompareTo( const Guid& other ) const noexcept
         {
             if ( std::is_constant_evaluated( ) )
@@ -210,39 +234,161 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Test if this Guid is empty, meaning every byte of the Guid is 0.
+        /// </summary>
+        /// <returns>
+        /// true if the Guid is empty.
+        /// </returns>
         bool empty( ) const noexcept
         {
             __m128i self = _mm_lddqu_si128( reinterpret_cast<const __m128i*>( &data_ ) );
             return _mm_test_all_zeros( self, self ) != 0;
         }
 
+        /// <summary>
+        /// Test if this Guid is empty, meaning every byte of the Guid is 0.
+        /// </summary>
+        /// <returns>
+        /// true if the Guid is empty.
+        /// </returns>
         bool IsEmpty( ) const noexcept
         {
             return empty( );
         }
 
+        /// <summary>
+        /// Test if the Guid is not empty.
+        /// </summary>
         explicit operator bool( ) const noexcept
         {
             __m128i self = _mm_lddqu_si128( reinterpret_cast<const __m128i*>( &data_ ) );
             return _mm_test_all_zeros( self, self ) == 0;
         }
-
+        /// <summary>
+        /// Constructs a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A zero terminated c-style character string.
+        /// </param>
         HCC_EXPORT explicit Guid( const char* uuid );
+        /// <summary>
+        /// Constructs a Guid from its string representation.
+        /// The string representation must match L"{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A zero terminated c-style wide character string.
+        /// </param>
         HCC_EXPORT explicit Guid( const wchar_t* uuid );
+        /// <summary>
+        /// Constructs a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A const reference to an AnsiString.
+        /// </param>
         HCC_EXPORT explicit Guid( const AnsiString& uuid );
+        /// <summary>
+        /// Constructs a Guid from its string representation.
+        /// The string representation must match L"{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A const reference to a WideString.
+        /// </param>
         HCC_EXPORT explicit Guid( const WideString& uuid );
 
+        /// <summary>
+        /// Tries to parse a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A zero terminated c-style character string.
+        /// </param>
+        /// <returns>
+        /// true if the successfully parsed a Guid, otherwise false.
+        /// </returns>
         HCC_EXPORT static bool TryParse( const char* uuid, Guid& result );
-        HCC_EXPORT static bool TryParse( const wchar_t* uuid, Guid& result );
+        /// <summary>
+        /// Tries to parse a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A zero terminated c-style wide character string.
+        /// </param>
+        /// <returns>
+        /// true if the successfully parsed a Guid, otherwise false.
+        /// </returns>
+        HCC_EXPORT static bool TryParse( const wchar_t* uuid, Guid& result ) noexcept;
+        /// <summary>
+        /// Tries to parse a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A const reference to an AnsiString.
+        /// </param>
+        /// <returns>
+        /// true if the successfully parsed a Guid, otherwise false.
+        /// </returns>
         HCC_EXPORT static bool TryParse( const AnsiString& uuid, Guid& result );
-        HCC_EXPORT static bool TryParse( const WideString& uuid, Guid& result );
+        /// <summary>
+        /// Tries to parse a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A const reference to a WideString.
+        /// </param>
+        /// <returns>
+        /// true if the successfully parsed a Guid, otherwise false.
+        /// </returns>
+        HCC_EXPORT static bool TryParse( const WideString& uuid, Guid& result ) noexcept;
 
+        /// <summary>
+        /// Parse a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A zero terminated c-style character string.
+        /// </param>
+        /// <returns>
+        /// The parsed Guid.
+        /// </returns>
         HCC_EXPORT static Guid Parse( const char* uuid );
+        /// <summary>
+        /// Parse a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A zero terminated c-style wide character string.
+        /// </param>
+        /// <returns>
+        /// The parsed Guid.
+        /// </returns>
         HCC_EXPORT static Guid Parse( const wchar_t* uuid );
+        /// <summary>
+        /// Parse a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A const reference to an AnsiString.
+        /// </param>
+        /// <returns>
+        /// The parsed Guid.
+        /// </returns>
         HCC_EXPORT static Guid Parse( const AnsiString& uuid );
+        /// <summary>
+        /// Parse a Guid from its string representation.
+        /// The string representation must match "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        /// </summary>
+        /// <param name="uuid">
+        /// A const reference to a WideString.
+        /// </param>
+        /// <returns>
+        /// The parsed Guid.
+        /// </returns>
         HCC_EXPORT static Guid Parse( const WideString& uuid );
 
-        HCC_EXPORT WideString ToString( ) const;
+        HCC_EXPORT WideString ToWideString( ) const;
         HCC_EXPORT AnsiString ToAnsiString( ) const;
 
         HCC_EXPORT const GUID& AsGuid( ) const
@@ -254,49 +400,110 @@ namespace Harlinn::Common::Core
 
         HCC_EXPORT friend std::ostream& operator << ( std::ostream& stream, const Guid& guid );
 
-
+        /// <summary>
+        /// Creates a new Guid value.
+        /// </summary>
+        /// <returns>
+        /// The Guid containing the new Guid value.
+        /// </returns>
         HCC_EXPORT static Guid NewGuid( );
 
+        /// <summary>
+        /// Creates a new Guid value.
+        /// </summary>
+        /// <returns>
+        /// The Guid containing the new Guid value.
+        /// </returns>
         static Guid New( )
         {
             return NewGuid( );
         }
 
-
+        /// <summary>
+        /// Retrieves the 64 most significant bits of this Guid as an unsigned 64-bit integer.
+        /// </summary>
+        /// <returns>
+        /// the 64 most significant bits of this Guid.
+        /// </returns>
         constexpr uint64_t Hi( ) const noexcept
         {
             return data_.Hi( );
         }
+        /// <summary>
+        /// Retrieves the 64 least significant bits of this Guid as an unsigned 64-bit integer.
+        /// </summary>
+        /// <returns>
+        /// the 64 least significant bits of this Guid.
+        /// </returns>
+
         constexpr uint64_t Lo( ) const noexcept
         {
             return data_.Lo( );
         }
 
+        /// <summary>
+        /// Retrieves a const reference to the data of this Guid as a std::array&lt;Byte, 16&gt;.
+        /// </summary>
+        /// <returns>
+        /// A const reference to the data of this Guid as a std::array&lt;Byte, 16&gt;.
+        /// </returns>
         const std::array<Byte, 16>& ToArray( ) const
         {
             return reinterpret_cast<const std::array<Byte, 16>&>( data_ );
         }
+        
+        /// <summary>
+        /// Retrieves a const reference to the data of this Guid as a std::array&lt;Byte, 16&gt;.
+        /// </summary>
+        /// <returns>
+        /// A const reference to the data of this Guid as a std::array&lt;Byte, 16&gt;.
+        /// </returns>
         const std::array<Byte, 16>& ToBytes( ) const
         {
             return ToArray( );
         }
 
-
+        /// <summary>
+        /// Retrieves a const reference to the data of this Guid as a GUID.
+        /// </summary>
         constexpr operator const GUID& ( ) const noexcept
         {
             return data_;
         }
 
+        /// <summary>
+        /// Retrieves a const reference to the data of this Guid as a GUID.
+        /// </summary>
+        /// <returns>
+        /// A const reference to the data of this Guid as a GUID.
+        /// </returns>
         constexpr const GUID& Value( ) const noexcept
         {
             return data_;
         }
+        /// <summary>
+        /// Retrieves a reference to the data of this Guid as a GUID.
+        /// </summary>
+        /// <returns>
+        /// A reference to the data of this Guid as a GUID.
+        /// </returns>
         constexpr GUID& Value( ) noexcept
         {
             return data_;
         }
 
-
+        /// <summary>
+        /// Tests if this Guid is equal to another Guid, GUID or boost::uuids::uuid.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be Guid, GUID or boost::uuids::uuid.
+        /// </typeparam>
+        /// <param name="other">
+        /// The other guid. 
+        /// </param>
+        /// <returns>
+        /// true if this Guid is equal to other, otherwise false.
+        /// </returns>
         template<GuidType T>
         bool operator == ( const T& other ) const noexcept
         {
@@ -306,7 +513,18 @@ namespace Harlinn::Common::Core
             return _mm_test_all_zeros( mask, mask ) != 0;
         }
 
-
+        /// <summary>
+        /// Tests if this Guid is not equal to another Guid, GUID or boost::uuids::uuid.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be Guid, GUID or boost::uuids::uuid.
+        /// </typeparam>
+        /// <param name="other">
+        /// The other guid. 
+        /// </param>
+        /// <returns>
+        /// true if this Guid is not equal to other, otherwise false.
+        /// </returns>
         template<GuidType T>
         bool operator != ( const T& other ) const noexcept
         {
@@ -316,6 +534,18 @@ namespace Harlinn::Common::Core
             return _mm_test_all_zeros( mask, mask ) == 0;
         }
 
+        /// <summary>
+        /// Tests if this Guid is less or equal to another Guid, GUID or boost::uuids::uuid.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be Guid, GUID or boost::uuids::uuid.
+        /// </typeparam>
+        /// <param name="other">
+        /// The other guid. 
+        /// </param>
+        /// <returns>
+        /// true if this Guid is less or equal to other, otherwise false.
+        /// </returns>
         template<GuidType T>
         constexpr bool operator <= ( const T& other ) const noexcept
         {
@@ -340,7 +570,18 @@ namespace Harlinn::Common::Core
             return cmp <= rcmp;
         }
 
-
+        /// <summary>
+        /// Tests if this Guid is less than another Guid, GUID or boost::uuids::uuid.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be Guid, GUID or boost::uuids::uuid.
+        /// </typeparam>
+        /// <param name="other">
+        /// The other guid. 
+        /// </param>
+        /// <returns>
+        /// true if this Guid is less than other, otherwise false.
+        /// </returns>
         template<GuidType T>
         bool operator < ( const T& other ) const noexcept
         {
@@ -366,6 +607,18 @@ namespace Harlinn::Common::Core
 
         }
 
+        /// <summary>
+        /// Tests if this Guid is greater or equal to another Guid, GUID or boost::uuids::uuid.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be Guid, GUID or boost::uuids::uuid.
+        /// </typeparam>
+        /// <param name="other">
+        /// The other guid. 
+        /// </param>
+        /// <returns>
+        /// true if this Guid is greater or equal to other, otherwise false.
+        /// </returns>
         template<GuidType T>
         constexpr bool operator >= ( const T& other ) const noexcept
         {
@@ -390,6 +643,18 @@ namespace Harlinn::Common::Core
             return cmp >= rcmp;
         }
 
+        /// <summary>
+        /// Tests if this Guid is grater than another Guid, GUID or boost::uuids::uuid.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be Guid, GUID or boost::uuids::uuid.
+        /// </typeparam>
+        /// <param name="other">
+        /// The other guid. 
+        /// </param>
+        /// <returns>
+        /// true if this Guid is grater than other, otherwise false.
+        /// </returns>
         template<GuidType T>
         constexpr bool operator > ( const T& other ) const noexcept
         {
@@ -423,6 +688,18 @@ namespace Harlinn::Common::Core
     template<typename T>
     inline constexpr bool IsGuid = std::is_same_v<std::remove_cv_t<T>, Guid>;
 
+    /// <summary>
+    /// Implements ByteSwap for a Guid.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Must be Guid.
+    /// </typeparam>
+    /// <param name="guid">
+    /// The Guid value.
+    /// </param>
+    /// <returns>
+    /// A Guid with the bytes swapped for the Data1, Data2 and Data3 fields.
+    /// </returns>
     template<typename T>
         requires IsGuid<T>
     inline constexpr T ByteSwap( const T& guid ) noexcept
@@ -436,11 +713,16 @@ namespace Harlinn::Common::Core
 
 namespace std
 {
+    /// <summary>
+    /// This specialization of std::hash for Harlinn::Common::Core::Guid
+    /// assumes that the distribution of values for the 8 last bytes of the
+    /// Guid is random enough to be used as a hash value.
+    /// </summary>
     template<> struct hash<Harlinn::Common::Core::Guid>
     {
         constexpr std::size_t operator()( const Harlinn::Common::Core::Guid& guid ) const noexcept
         {
-            return guid.Lo( );
+            return guid.Hi( );
         }
     };
 }

@@ -24,7 +24,7 @@ namespace Harlinn::Common::Core
     Guid::Guid( const char* uuid )
         : data_( )
     {
-        auto s = ToWideString( uuid );
+        auto s = Core::ToWideString( uuid );
         auto hr = IIDFromString( s.c_str( ), (LPIID)&data_ );
         if ( hr != S_OK )
         {
@@ -45,7 +45,7 @@ namespace Harlinn::Common::Core
     Guid::Guid( const AnsiString& uuid )
         : data_( )
     {
-        auto s = ToWideString( uuid );
+        auto s = Core::ToWideString( uuid );
         auto hr = IIDFromString( s.c_str( ), (LPIID)&data_ );
         if ( hr != S_OK )
         {
@@ -64,7 +64,7 @@ namespace Harlinn::Common::Core
 
     bool Guid::TryParse( const char* uuid, Guid& result )
     {
-        auto s = ToWideString( uuid );
+        auto s = Core::ToWideString( uuid );
         auto hr = IIDFromString( s.c_str(), (LPIID)&result.data_ );
         if ( hr != S_OK )
         {
@@ -73,7 +73,7 @@ namespace Harlinn::Common::Core
         }
         return true;
     }
-    bool Guid::TryParse( const wchar_t* uuid, Guid& result )
+    bool Guid::TryParse( const wchar_t* uuid, Guid& result ) noexcept
     {
         auto hr = IIDFromString( uuid, (LPIID)&result.data_ );
         if ( hr != S_OK )
@@ -85,7 +85,7 @@ namespace Harlinn::Common::Core
     }
     bool Guid::TryParse( const AnsiString& uuid, Guid& result )
     {
-        auto s = ToWideString( uuid );
+        auto s = Core::ToWideString( uuid );
         auto hr = IIDFromString( s.c_str( ), (LPIID)&result.data_ );
         if ( hr != S_OK )
         {
@@ -94,7 +94,7 @@ namespace Harlinn::Common::Core
         }
         return true;
     }
-    bool Guid::TryParse( const WideString& uuid, Guid& result )
+    bool Guid::TryParse( const WideString& uuid, Guid& result ) noexcept
     {
         auto hr = IIDFromString( uuid.c_str(), (LPIID)&result.data_ );
         if ( hr != S_OK )
@@ -155,7 +155,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    WideString Guid::ToString( ) const
+    WideString Guid::ToWideString( ) const
     {
         LPOLESTR ptr = nullptr;
         auto hr = StringFromIID( *this, &ptr );
@@ -174,7 +174,7 @@ namespace Harlinn::Common::Core
 
     AnsiString Guid::ToAnsiString( ) const
     {
-        return Core::ToAnsiString( ToString( ) );
+        return Core::ToAnsiString( ToWideString( ) );
     }
 
     namespace

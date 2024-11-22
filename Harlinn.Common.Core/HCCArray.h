@@ -27,7 +27,28 @@
 #pragma pack(push,1)
 namespace Harlinn::Common::Core
 {
-
+    /// <summary>
+    /// Concatenation of arrays
+    /// </summary>
+    /// <typeparam name="T">
+    /// The element type
+    /// </typeparam>
+    /// <typeparam name="N1">
+    /// The size of the lhs array
+    /// </typeparam>
+    /// <typeparam name="N2">
+    /// The size of the rhs array
+    /// </typeparam>
+    /// <param name="lhs">
+    /// The first array.
+    /// </param>
+    /// <param name="rhs">
+    /// The second array.
+    /// </param>
+    /// <returns>
+    /// An array containing the data from the first array and second array.
+    /// The data from the second array is appended to the data from the first array.
+    /// </returns>
     template<typename T, size_t N1, size_t N2>
     inline constexpr std::array<T, N1 + N2> operator + ( const std::array<T, N1>& lhs, const std::array<T, N2>& rhs ) noexcept
     {
@@ -74,7 +95,12 @@ namespace Harlinn::Common::Core
 
 
 
-
+    /// <summary>
+    /// A Byte array for compile-time serialization of data.
+    /// </summary>
+    /// <typeparam name="N">
+    /// 
+    /// </typeparam>
     template<size_t N>
     class ByteArray : public std::array<Byte, N>
     {

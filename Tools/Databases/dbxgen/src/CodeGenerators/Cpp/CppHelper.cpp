@@ -1165,7 +1165,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
             case MemberInfoType::Guid:
             {
                 Guid guid( static_cast< UInt64 >( hashValue ), ReverseBits( static_cast< UInt64 >( hashValue ) ) );
-                result = Format( L"Guid( L\"{}\" )", guid.ToString() );
+                result = Format( L"Guid( L\"{}\" )", guid.ToWideString() );
             }
             break;
             case MemberInfoType::String:
@@ -1237,13 +1237,13 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
             case MemberInfoType::Reference:
             {
                 Guid guid( static_cast< UInt64 >( hashValue ), ReverseBits( static_cast< UInt64 >( hashValue ) ) );
-                result = Format( L"Guid( L\"{}\" )", guid.ToString( ) );
+                result = Format( L"Guid( L\"{}\" )", guid.ToWideString( ) );
             }
             break;
             case MemberInfoType::TimeSeries:
             {
                 Guid guid( static_cast< UInt64 >( hashValue ), ReverseBits( static_cast< UInt64 >( hashValue ) ) );
-                result = Format( L"Guid( L\"{}\" )", guid.ToString( ) );
+                result = Format( L"Guid( L\"{}\" )", guid.ToWideString( ) );
             }
             break;
         }

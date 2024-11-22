@@ -218,7 +218,7 @@ namespace Harlinn::Common::Core
     }
     WideString ToWideString( const Guid& value )
     {
-        return value.ToString( );
+        return value.ToWideString( );
     }
     WideString ToWideString( const Currency& value )
     {
@@ -370,7 +370,7 @@ namespace Harlinn::Common::Core
     }
     AnsiString ToAnsiString( const Guid& value )
     {
-        return ToAnsiString( value.ToString( ) );
+        return ToAnsiString( value.ToWideString( ) );
     }
     AnsiString ToAnsiString( const Currency& value )
     {

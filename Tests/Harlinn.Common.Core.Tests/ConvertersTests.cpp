@@ -643,7 +643,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest14 )
 {
     using Type = Guid;
     Type value("{39978367-04DD-415F-8633-F079EA432700}");
-    WideString expectedResult = value.ToString( );
+    WideString expectedResult = value.ToWideString( );
     auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }

@@ -30,6 +30,58 @@
 
 namespace Harlinn::Common::Core::IO
 {
+    /// <summary>
+    /// <para>
+    /// This template is used to implement serialization
+    /// of binary data using a Write function implemented by the 
+    /// derived class with the following signature:
+    /// </para>
+    /// <code>
+    /// void Write( const void* data, size_t dataSize );
+    /// </code>
+    /// </summary>
+    /// <typeparam name="Derived">
+    /// The type of the derived class.
+    /// </typeparam>
+    /// <typeparam name="networkByteOrder">
+    /// If true the template will convert data to network byte order 
+    /// from little endian format, otherwise false.
+    /// </typeparam>
+    /// <typeparam name="use7BitEncodedSize">
+    /// If true size information will written as 7-bit encoded unsigned numbers, otherwise false.
+    /// </typeparam>
+    /// <remarks>
+    /// This class supports writing the following types from the underlying stream:
+    /// <list type="bullet">
+    /// <item>bool</item>
+    /// <item>char</item>
+    /// <item>SByte</item>
+    /// <item>Byte</item>
+    /// <item>wchar_t</item>
+    /// <item>Int16</item>
+    /// <item>UInt16</item>
+    /// <item>Int32</item>
+    /// <item>long</item>
+    /// <item>UInt32</item>
+    /// <item>unsigned long</item>
+    /// <item>Int64</item>
+    /// <item>UInt64</item>
+    /// <item>float</item>
+    /// <item>double</item>
+    /// <item>TimeSpan</item>
+    /// <item>DateTime</item>
+    /// <item>Currency</item>
+    /// <item>Guid</item>
+    /// <item>std::string, std::string_view, AnsiString, std::wstring, WideString or anything else that satisfies the SimpleSpanLike concept with a value type of char or wchar_t.</item>
+    /// <item>zero terminated c strings of char or wchar_t.
+    /// <item>Binary</item>
+    /// <item>enum types</item>
+    /// <item>std::optional&lt;T&gt; containing any of the above. </item>
+    /// </list>
+    /// The template can also write length prefixed data to the underlying stream 
+    /// from std::vector, std::array and c-style arrays, where the value type
+    /// is any of the above.
+    /// </remarks>
     template<typename Derived, bool networkByteOrder, bool use7BitEncodedSize>
     class BinaryWriterBase
     {
@@ -39,88 +91,31 @@ namespace Harlinn::Common::Core::IO
         static constexpr bool Use7BitEncodedSize = use7BitEncodedSize;
         using PersistedSizeType = UInt32;
     public:
+        /// <summary>
+        /// Writes the unsigned 64-bit value to the stream as a 7-bit encoded number.
+        /// </summary>
+        /// <param name="value">
+        /// </param>
         constexpr void Write7BitEncoded( UInt64 value )
         {
-            Byte dest = value & 0x7F;
-            if ( value > 127 )
-            {
-                dest |= 0x80;
-                Write( dest );
-                value >>= 7;
-                dest = value & 0x7F;
-                if ( value > 127 )
-                {
-                    dest |= 0x80;
-                    Write( dest );
-                    value >>= 7;
-                    dest = value & 0x7F;
-                    if ( value > 127 )
-                    {
-                        dest |= 0x80;
-                        Write( dest );
-                        value >>= 7;
-                        dest = value & 0x7F;
-
-                        if ( value > 127 )
-                        {
-                            dest |= 0x80;
-                            Write( dest );
-                            value >>= 7;
-                            dest = value & 0x7F;
-
-                            if ( value > 127 )
-                            {
-                                dest |= 0x80;
-                                Write( dest );
-                                value >>= 7;
-                                dest = value & 0x7F;
-
-                                if ( value > 127 )
-                                {
-                                    dest |= 0x80;
-                                    Write( dest );
-                                    value >>= 7;
-                                    dest = value & 0x7F;
-
-                                    if ( value > 127 )
-                                    {
-                                        dest |= 0x80;
-                                        Write( dest );
-                                        value >>= 7;
-                                        dest = value & 0x7F;
-
-                                        if ( value > 127 )
-                                        {
-                                            dest |= 0x80;
-                                            Write( dest );
-                                            value >>= 7;
-                                            dest = value & 0xFF;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            Write( dest );
+            std::array<Byte, 9> buffer;
+            auto size = Write7BitEncodedValue( value, buffer.data( ) );
+            static_cast< Derived& >( *this ).Write( buffer.data( ), size );
         }
 
     protected:
-        // Write out an int 7 bits at a time.  The high bit of the byte,
-        // when on, tells reader to continue reading more bytes. 
-        void Write7BitEncodedInt( int value )
-        {
-            // support negative numbers
-            uint v = (uint)value;
-            while ( v >= 0x80 )
-            {
-                Write( (Byte)( v | 0x80 ) );
-                v >>= 7;
-            }
-            Write( (Byte)v );
-        }
-
+        /// <summary>
+        /// Writes values to the underlying stream in network byte order.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the data to write
+        /// </typeparam>
+        /// <param name="data">
+        /// A pointer to a buffer containing the elements to write to the stream.
+        /// </param>
+        /// <param name="dataSize">
+        /// The number of elements to write to the stream.
+        /// </param>
         template<typename T>
         void WriteInNetworkByteOrder( const T* data, size_t dataSize )
         {
@@ -156,14 +151,29 @@ namespace Harlinn::Common::Core::IO
         }
     public:
 
-        template<typename T>
-            requires ( IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
-        void Write( const T& value )
+        /// <summary>
+        /// <para>
+        /// Writes a span of characters to a stream.
+        /// </para>
+        /// <para>
+        /// First the length of the span, in bytes, is written to the stream as a 7-bit encoded number.
+        /// Followed by the characters of the argument span.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">
+        /// std::string, std::string_view, AnsiString, std::wstring, WideString or anything else that satisfies the SimpleSpanLike concept with a value type of char or wchar_t.
+        /// </typeparam>
+        /// <param name="value">
+        /// The span of characters to write to the stream.
+        /// </param>
+        template<typename SpanT>
+            requires SimpleStringLike<SpanT> || IsStdBasicStringView<SpanT> || IsBasicStringView<SpanT>
+        void Write( const SpanT& value )
         {
-            using ValueType = typename T::value_type;
-            size_t count = value.length( );
-            int len = static_cast<int>( count )*sizeof( ValueType );
-            Write7BitEncodedInt( len );
+            using ValueType = typename SpanT::value_type;
+            size_t count = value.size( );
+            auto len = count *sizeof( ValueType );
+            Write7BitEncoded( len );
             if ( len )
             {
                 if constexpr ( NetworkByteOrder && sizeof( ValueType ) > 1 )
@@ -176,7 +186,15 @@ namespace Harlinn::Common::Core::IO
                 }
             }
         }
-
+        /// <summary>
+        /// Writes a zero teminated string of characters to the stream as a span of characters.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The character type of the string, either char or wchar_t.
+        /// </typeparam>
+        /// <param name="str">
+        /// The zero terminated string.
+        /// </param>
         template<typename T>
             requires ( std::is_same_v<char,T> || std::is_same_v<wchar_t, T> )
         void Write( const T* str )
@@ -185,7 +203,10 @@ namespace Harlinn::Common::Core::IO
             Write( stringView );
         }
 
-
+        /// <summary>
+        /// Writes size information to the stream.
+        /// </summary>
+        /// <param name="size"></param>
         void WriteSize( size_t size )
         {
             if constexpr ( Use7BitEncodedSize )
@@ -204,6 +225,15 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
+        /// <summary>
+        /// Writes a boolean value to the stream.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be bool.
+        /// </typeparam>
+        /// <param name="value">
+        /// The value to write to the stream.
+        /// </param>
         template<typename T>
             requires IsBoolean<T>
         constexpr void Write( const T value )
@@ -212,6 +242,15 @@ namespace Harlinn::Common::Core::IO
             static_cast<Derived&>( *this ).Write( &buffer, 1 );
         }
 
+        /// <summary>
+        /// Writes a byte sized value to the stream.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be char, SByte or Byte..
+        /// </typeparam>
+        /// <param name="value">
+        /// The value to write to the stream.
+        /// </param>
         template<typename T>
             requires (( IsBasicType<T> && sizeof( std::remove_cvref_t<T> ) == 1 ) && IsNotBoolean<T> && (std::is_enum_v<std::remove_cvref_t<T>> == false) )
         constexpr void Write( const T value )
@@ -219,6 +258,17 @@ namespace Harlinn::Common::Core::IO
             static_cast<Derived&>( *this ).Write( &value, 1 );
         }
 
+        /// <summary>
+        /// Writes a value with a size larger than 1 byte to the stream.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be wchar_t, Int16, UInt16, Int32, long, UInt32, unsigned long, 
+        /// Int64, UInt64, float, double, TimeSpan, DateTime, Currency, Guid or 
+        /// an enum with a size greater than 1.
+        /// </typeparam>
+        /// <param name="value">
+        /// The value to write to the stream.
+        /// </param>
         template<typename T>
             requires ( IsBasicType<T> && sizeof( std::remove_cvref_t<T> ) > 1 && (std::is_enum_v<std::remove_cvref_t<T>> == false))
         constexpr void Write( const T value )
@@ -234,6 +284,13 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
+        /// <summary>
+        /// Writes an enum value to a stream.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">
+        /// The enum value.
+        /// </param>
         template<typename T>
             requires std::is_enum_v<std::remove_cvref_t<T>>
         void Write(const T value)
@@ -242,6 +299,15 @@ namespace Harlinn::Common::Core::IO
         }
 
 
+        /// <summary>
+        /// Writes an optional to a stream.
+        /// </summary>
+        /// <typeparam name="T">
+        /// One of the basic data types. 
+        /// </typeparam>
+        /// <param name="value">
+        /// A const reference to a std::optional for one of the basic types.
+        /// </param>
         template<typename T>
             requires IsStdOptional<T>
         void Write( const T& value )
@@ -254,8 +320,22 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
+        /// <summary>
+        /// Writes a std::vector&lt;bool&gt; or another container that matches 
+        /// the SimpleSpanLike concept with a value type of bool to a stream.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Must be std::vector&lt;bool&gt; or another container that matches 
+        /// the SimpleSpanLike concept with a value type of bool
+        /// </typeparam>
+        /// <param name="values"></param>
         template<typename T>
-            requires ( IsStdVector<T> && IsBoolean<typename T::value_type> )
+            requires IsBoolean<typename T::value_type> && requires ( const T& t)
+            { 
+                { t.size( ) }->std::same_as<typename T::size_type>;
+                { t.begin( ) }->std::same_as<typename T::const_iterator>;
+                { t.end( ) }->std::same_as<typename T::const_iterator>;
+            }
         void Write( const T& values )
         {
             WriteSize( values.size( ) );
@@ -266,14 +346,25 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
-        template<typename T>
-            requires (( IsStdVector<T> && IsBasicType<typename T::value_type> && IsNotBoolean<typename T::value_type> ) || 
-                ( IsBasicType<typename T::value_type> && ( IsArrayContainer<T> || IsCoreVector<T> || IsStdSpan<T> || std::is_same_v<T,Binary> ) ) )
+        /// <summary>
+        /// Writes a container that satisfies the SimpleSpanLike concept, but not 
+        /// the SimpleStringLike concept or IsStdBasicStringView<T> and IsBasicStringView<T>; to a stream if the value type is not bool.
+        /// </summary>
+        /// <typeparam name="T">
+        /// A container that satisfies the SimpleSpanLike concept, but not 
+        /// the SimpleStringLike concept or IsStdBasicStringView<T> and IsBasicStringView<T>.
+        /// The value type of the container cannot be bool.
+        /// </typeparam>
+        /// <param name="values"></param>
+        template<SimpleSpanLike T>
+            requires IsBasicType<typename T::value_type> && 
+                        IsNotBoolean<typename T::value_type> && ( SimpleStringLike<T> == false && IsStdBasicStringView<T> == false && IsBasicStringView<T> == false )
         void Write( const T& values )
         {
+            using ValueType = typename T::value_type;
             auto count = static_cast<size_t>( values.size( ) );
             WriteSize( count );
-            if constexpr ( NetworkByteOrder )
+            if constexpr ( NetworkByteOrder && sizeof( ValueType ) > 1 )
             {
                 WriteInNetworkByteOrder( values.data( ), count );
             }
@@ -283,6 +374,18 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
+        /// <summary>
+        /// Writes a c-style array of any of the basic types to a stream.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The array element type.
+        /// </typeparam>
+        /// <typeparam name="N">
+        /// The number of elements in the array.
+        /// </typeparam>
+        /// <param name="values">
+        /// A reference to a c-style array. 
+        /// </param>
         template<typename T, size_t N>
             requires IsBasicType<T> 
         void Write( const T (&values)[N] )
@@ -379,7 +482,21 @@ namespace Harlinn::Common::Core::IO
         }
     };
 
-
+    /// <summary>
+    /// This template is used to implement serialization
+    /// of binary data to stream objects that satisfies the
+    /// IO::StreamWriter concept.
+    /// </summary>
+    /// <typeparam name="StreamT">
+    /// A type that satisfies the IO::StreamWriter concept.
+    /// </typeparam>
+    /// <typeparam name="networkByteOrder">
+    /// If true the template will convert data to network byte order 
+    /// from little endian format, otherwise false.
+    /// </typeparam>
+    /// <typeparam name="use7BitEncodedSize">
+    /// If true size information will written as 7-bit encoded unsigned numbers, otherwise false.
+    /// </typeparam>
     template<IO::StreamWriter StreamT, bool networkByteOrder = false, bool use7BitEncodedSize = true>
     class BinaryWriter : public BinaryWriterBase<BinaryWriter<StreamT, networkByteOrder, use7BitEncodedSize>, networkByteOrder, use7BitEncodedSize>
     {
@@ -389,6 +506,12 @@ namespace Harlinn::Common::Core::IO
     protected:
         StreamType& outStream_;
     public:
+        /// <summary>
+        /// Constructs a BinaryWriter for the output stream.
+        /// </summary>
+        /// <param name="output">
+        /// The output stream.
+        /// </param>
         BinaryWriter( StreamType& output )
             : outStream_( output )
         {
@@ -403,8 +526,20 @@ namespace Harlinn::Common::Core::IO
         {
             return outStream_;
         }
-
+        /// <summary>
+        /// Avoids hiding the Write functions implemented by the base class.
+        /// </summary>
         using Base::Write;
+        /// <summary>
+        /// Writes data to the underlying stream.
+        /// </summary>
+        /// <param name="data">
+        /// A pointer to the data to write. The size of this buffer must be 
+        /// greater of equal to the dataSize parameter.
+        /// </param>
+        /// <param name="dataSize">
+        /// The number of bytes to write to the underlying stream.
+        /// </param>
         void Write( const void* data, size_t dataSize )
         {
             outStream_.Write( data, dataSize );

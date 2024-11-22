@@ -50,10 +50,10 @@ namespace
             }
         }
         template<>
-        static void Run<Com::Interface<IUnknown>>( const DerivedInterfaceT* implPtr )
+        static void Run<Com::Interfaces::Interface<IUnknown>>( const DerivedInterfaceT* implPtr )
         {
-            using InterfaceType = typename Com::Interface<IUnknown>::InterfaceType;
-            InterfaceType* interfacePtr = reinterpret_cast<InterfaceType*>( Com::Interface<IUnknown>::QueryInterface( __uuidof( InterfaceType ), implPtr ) );
+            using InterfaceType = typename Com::Interfaces::Interface<IUnknown>::InterfaceType;
+            InterfaceType* interfacePtr = reinterpret_cast<InterfaceType*>( Com::Interfaces::Interface<IUnknown>::QueryInterface( __uuidof( InterfaceType ), implPtr ) );
             BOOST_CHECK( interfacePtr != nullptr );
             if ( interfacePtr )
             {
@@ -72,7 +72,7 @@ namespace
         static void Execute( )
         {
             using InterfaceType = ItfT;
-            using ComInterfaceType = Com::Interface<InterfaceType>;
+            using ComInterfaceType = Com::Interfaces::Interface<InterfaceType>;
             struct ImplType : public InterfaceType
             {
             };

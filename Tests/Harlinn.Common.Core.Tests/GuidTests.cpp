@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE( ToStringTest1 )
 
     Guid guid( 0x8d544315, 0x5a2f, 0x4807, 0x93, 0xd5, 0xf6, 0x6e, 0x5d, 0x69, 0x1, 0x97 );
     BOOST_CHECK( guid == expectedGuid );
-    auto str = guid.ToString( );
+    auto str = guid.ToWideString( );
     BOOST_CHECK( str == L"{8D544315-5A2F-4807-93D5-F66E5D690197}" );
 
 }
@@ -166,8 +166,39 @@ BOOST_AUTO_TEST_CASE( GtEqTest1 )
     BOOST_CHECK( guid1a >= guid1b );
 }
 
+// --run_test=GuidTests/HashTest1
+BOOST_AUTO_TEST_CASE( HashTest1 )
+{
+    std::hash<Guid> hasher;
+    bool sameOrdering = true;
+    for ( int i = 0; i < 10000; i++ )
+    {
+        auto guid1 = Guid::New( );
+        auto guid2 = Guid::New( );
+        if ( guid1 < guid2 )
+        {
 
-
+            auto hash1 = hasher( guid1 );
+            auto hash2 = hasher( guid2 );
+            if ( hash1 > hash2 )
+            {
+                sameOrdering = false;
+                break;
+            }
+        }
+        else
+        {
+            auto hash1 = hasher( guid1 );
+            auto hash2 = hasher( guid2 );
+            if ( hash1 < hash2 )
+            {
+                sameOrdering = false;
+                break;
+            }
+        }
+        BOOST_CHECK( sameOrdering == false );
+    }
+}
 
 
 BOOST_AUTO_TEST_SUITE_END( )

@@ -19,7 +19,7 @@
 
 #include <HCCDef.h>
 
-namespace Harlinn::Common::Core::Com
+namespace Harlinn::Common::Core::Com::Interfaces
 {
     template<typename ...InterfaceTypes>
     struct Interface : std::false_type

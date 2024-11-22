@@ -55,6 +55,12 @@ namespace Harlinn::Common::Core
     template<typename T>
     concept SimpleWideCharSpanLike = SimpleSpanLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
 
+    /// <summary>
+    /// Matches most common container classes with sequential memory layout. 
+    /// </summary>
+    template<typename T>
+    concept SimpleByteSpanLike = SimpleSpanLike<T> && std::is_same_v<typename T::value_type, Byte>;
+
 
     template<typename T>
     concept SpanLike = SimpleSpanLike<T> && requires ( T t1 )

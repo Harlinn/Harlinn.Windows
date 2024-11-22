@@ -21,11 +21,12 @@
 #include <HCCString.h>
 
 
-// The BitConverter namespace contains methods for 
-// converting a vector of bytes to one of the base data
-// types, as well as for converting a base data type to a 
-// vector of bytes. 
-//
+/// <summary>
+/// The BitConverter namespace contains methods for 
+/// converting a SimpleByteSpanLike container to one of the base data
+/// types, as well as for converting a base data type to a 
+/// vector of bytes. 
+/// </summary>
 namespace Harlinn::Common::Core::BitConverter
 {
     
@@ -135,8 +136,9 @@ namespace Harlinn::Common::Core::BitConverter
         return result;
     }
 
-    // Converts a vector of bytes into a wchar_t.
-    inline wchar_t ToWideChar( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a wchar_t.
+    template<SimpleByteSpanLike SpanT>
+    inline wchar_t ToWideChar( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -166,8 +168,9 @@ namespace Harlinn::Common::Core::BitConverter
 
     }
 
-    // Converts a vector of bytes into a short. 
-    inline short ToInt16( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a short. 
+    template<SimpleByteSpanLike SpanT>
+    inline short ToInt16( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -197,8 +200,9 @@ namespace Harlinn::Common::Core::BitConverter
 
     }
 
-    // Converts a vector of bytes into an unsigned short. 
-    inline unsigned short ToUInt16( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into an unsigned short. 
+    template<SimpleByteSpanLike SpanT>
+    inline unsigned short ToUInt16( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -228,8 +232,9 @@ namespace Harlinn::Common::Core::BitConverter
 
     }
 
-    // Converts a vector of bytes into a 32-bit integer. 
-    inline int ToInt32( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a 32-bit integer. 
+    template<SimpleByteSpanLike SpanT>
+    inline int ToInt32( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -259,8 +264,9 @@ namespace Harlinn::Common::Core::BitConverter
 
     }
 
-    // Converts a vector of bytes into a 32-bit unsigned integer. 
-    inline unsigned int ToUInt32( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a 32-bit unsigned integer. 
+    template<SimpleByteSpanLike SpanT>
+    inline unsigned int ToUInt32( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -291,8 +297,9 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
 
-    // Converts a vector of bytes into a 64-bit integer. 
-    inline long long ToInt64( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a 64-bit integer. 
+    template<SimpleByteSpanLike SpanT>
+    inline long long ToInt64( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -327,8 +334,9 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
 
-    // Converts a vector of bytes into a 64-bit unsigned integer. 
-    inline unsigned long long ToUInt64( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a 64-bit unsigned integer. 
+    template<SimpleByteSpanLike SpanT>
+    inline unsigned long long ToUInt64( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -363,8 +371,9 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
 
-    // Converts a vector of bytes into a float.
-    inline float ToSingle( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a float.
+    template<SimpleByteSpanLike SpanT>
+    inline float ToSingle( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -395,8 +404,9 @@ namespace Harlinn::Common::Core::BitConverter
 
     }
 
-    // Converts a vector of bytes into a double.
-    inline double ToDouble( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a double.
+    template<SimpleByteSpanLike SpanT>
+    inline double ToDouble( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
@@ -442,8 +452,9 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
 
-    // Converts a vector of bytes into a String.
-    inline WideString ToString( const std::vector<byte>& value, size_t startIndex, size_t length )
+    // Converts a SimpleByteSpanLike container into a String.
+    template<SimpleByteSpanLike SpanT>
+    inline WideString ToString( const SpanT& value, size_t startIndex, size_t length )
     {
         if ( startIndex >= value.size( ) && startIndex > 0 )
         {
@@ -458,7 +469,7 @@ namespace Harlinn::Common::Core::BitConverter
 
         if ( length == 0 )
         {
-            return {};
+            return WideString();
         }
 
         if ( length > ( MaxInt32 / 3 ) )
@@ -484,20 +495,23 @@ namespace Harlinn::Common::Core::BitConverter
         return result;
     }
 
-    // Converts a vector of bytes into a String. 
-    inline WideString ToString( const std::vector<byte>& value )
+    // Converts a SimpleByteSpanLike container into a String. 
+    template<SimpleByteSpanLike SpanT>
+    inline WideString ToString( const SpanT& value )
     {
         return ToString( value, 0, value.size( ) );
     }
 
-    // Converts a vector of bytes into a String. 
-    inline WideString ToString( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a String. 
+    template<SimpleByteSpanLike SpanT>
+    inline WideString ToString( const SpanT& value, size_t startIndex )
     {
         return ToString( value, startIndex, value.size( ) - startIndex );
     }
 
-    // Converts a vector of bytes into a boolean. 
-    inline bool ToBoolean( const std::vector<byte>& value, size_t startIndex )
+    // Converts a SimpleByteSpanLike container into a boolean. 
+    template<SimpleByteSpanLike SpanT>
+    inline bool ToBoolean( const SpanT& value, size_t startIndex )
     {
         if ( startIndex >= value.size( ) )
         {
