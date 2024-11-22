@@ -388,6 +388,13 @@ namespace Harlinn::Common::Core
         /// </returns>
         HCC_EXPORT static Guid Parse( const WideString& uuid );
 
+        template<SimpleStringLike StringT>
+            requires ( std::is_same_v<StringT,AnsiString> == false && std::is_same_v<StringT, WideString> == false )
+        static Guid Parse( const StringT& uuid )
+        {
+            return Parse( uuid.c_str( ) );
+        }
+
         HCC_EXPORT WideString ToWideString( ) const;
         HCC_EXPORT AnsiString ToAnsiString( ) const;
 
@@ -722,7 +729,7 @@ namespace std
     {
         constexpr std::size_t operator()( const Harlinn::Common::Core::Guid& guid ) const noexcept
         {
-            return guid.Hi( );
+            return guid.Lo( );
         }
     };
 }

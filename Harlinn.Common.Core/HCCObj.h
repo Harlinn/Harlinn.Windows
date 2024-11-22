@@ -165,20 +165,20 @@ namespace Harlinn::Common::Core
     };
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables you to use a moniker object, which contains information 
     /// that uniquely identifies a COM object. An object that has a pointer 
     /// to the moniker object's IMoniker interface can locate, activate, 
     /// and get access to the identified object without having any other 
     /// specific information on where the object is actually located in a 
     /// distributed system.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Monikers are used as the basis for linking in COM. A linked object 
     /// contains a moniker that identifies its source. When the user 
     /// activates the linked object to edit it, the moniker is bound; this 
     /// loads the link source into memory.
-    /// </p>
+    /// </para>
     /// </summary>
     class Moniker : public PersistStream
     {
@@ -723,7 +723,7 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// The IStorage interface supports the creation and management of structured 
     /// storage objects. Structured storage allows hierarchical storage of information 
     /// within a single file, and is often referred to as "a file system within a file". 
@@ -733,19 +733,19 @@ namespace Harlinn::Common::Core
     /// sub-storages, possibly nested, and streams. Storages provide the structure of 
     /// the object, and streams contain the data, which is manipulated through the 
     /// IStream interface.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The IStorage interface provides methods for creating and managing the root 
     /// storage object, child storage objects, and stream objects. These methods can 
     /// create, open, enumerate, move, copy, rename, or delete the elements in the 
     /// storage object.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// An application must release its IStorage pointers when it is done with the 
     /// storage object to deallocate memory used. There are also methods for changing 
     /// the date and time of an element.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// There are a number of different modes in which a storage object and its 
     /// elements can be opened, determined by setting values from STGM Constants. 
     /// One aspect of this is how changes are committed. You can set direct mode, 
@@ -754,11 +754,11 @@ namespace Harlinn::Common::Core
     /// The IStorage interface provides methods for committing changes and reverting 
     /// to the last-committed version. For example, a stream can be opened in 
     /// read-only mode or read/write mode. For more information, see STGM Constants.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Other methods provide access to information about a storage object and its 
     /// elements through the STATSTG structure.
-    /// </p>
+    /// </para>
     /// </summary>
     class Storage : public Unknown
     {
@@ -1280,15 +1280,15 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables containers and other objects to receive notifications of data changes, 
     /// view changes, and compound-document changes occurring in objects of interest. 
     /// Container applications, for example, require such notifications to keep cached 
     /// presentations of their linked and embedded objects up-to-date. Calls to IAdviseSink 
     /// methods are asynchronous, so the call is sent and then the next instruction is 
     /// executed without waiting for the call's return.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// For an advisory connection to exist, the object that is to receive notifications 
     /// must implement IAdviseSink, and the objects in which it is interested must 
     /// implement IOleObject::Advise and IDataObject::DAdvise. In-process objects and 
@@ -1298,12 +1298,12 @@ namespace Harlinn::Common::Core
     /// IOleAdviseHolder, which keep track of advisory connections and send notifications 
     /// to the proper sinks through pointers to their IAdviseSink interfaces. 
     /// IViewObject (and its advisory methods) is implemented in the default handler.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// As shown in the following table, an object that has implemented an advise 
     /// sink registers its interest in receiving certain types of notifications 
     /// by calling the appropriate method.
-    /// </p>
+    /// </para>
     /// <table>
     ///     <tr>
     ///         <th>Call This Method</th><th>To Register for These Notifications</th>
@@ -1318,13 +1318,13 @@ namespace Harlinn::Common::Core
     ///         <td>IViewObject::SetAdvise</td><td>When a document's presentation changes.</td>
     ///     </tr>
     /// </table>
-    /// <p>
+    /// <para>
     /// When an event occurs that applies to a registered notification type, the object 
     /// application calls the appropriate IAdviseSink method. For example, when an 
     /// embedded object closes, it calls the IAdviseSink::OnClose method to notify its 
     /// container. These notifications are asynchronous, occurring after the events 
     /// that trigger them.
-    /// </p>
+    /// </para>
     /// </summary>
     class AdviseSink : public Unknown
     {
@@ -1562,7 +1562,7 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables data transfer and notification of changes in data. Data transfer 
     /// methods specify the format of the transferred data along with the medium 
     /// through which the data is to be transferred. Optionally, the data can be 
@@ -1570,8 +1570,8 @@ namespace Harlinn::Common::Core
     /// and storing data, the IDataObject interface specifies methods for enumerating 
     /// available formats and managing connections to advisory sinks for handling 
     /// change notifications.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The term data object is used to mean any object that supports an implementation 
     /// of the IDataObject interface. Implementations vary, depending on what the data 
     /// object is required to do; in some data objects, the implementation of certain 
@@ -1584,7 +1584,7 @@ namespace Harlinn::Common::Core
     /// object can have multiple connections, each with its own set of attributes. 
     /// The OLE data advise holder simplifies the task of managing these connections 
     /// and sending the appropriate notifications.
-    /// </p>
+    /// </para>
     /// </summary>
     class DataObject : public Unknown
     {
@@ -1689,7 +1689,7 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Creates and manages advisory connections between a data object and 
     /// one or more advise sinks. Its methods are intended to be used to 
     /// implement the advisory methods of IDataObject. IDataAdviseHolder is 
@@ -1697,13 +1697,13 @@ namespace Harlinn::Common::Core
     /// delete data advisory connections and send notification of change in 
     /// data from a data object to an object that requires this notification, 
     /// such as an OLE container, which must contain an advise sink.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Advise sinks are objects that require notification of change in the 
     /// data the object contains and implement the IAdviseSink interface. 
     /// Advise sinks are also usually associated with OLE compound document 
     /// containers.
-    /// </p>
+    /// </para>
     /// </summary>
     class DataAdviseHolder : public Unknown
     {
@@ -1889,16 +1889,16 @@ namespace Harlinn::Common::Core
     };
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// The ILayoutStorage interface enables an application to optimize the 
     /// layout of its compound files for efficient downloading across a slow 
     /// link. The goal is to enable a browser or other application to download 
     /// data in the order in which it will actually be required.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// To optimize a compound file, an application calls CopyTo to layout a 
     /// doc-file, thus improving performance in most scenarios.
-    /// </p>
+    /// </para>
     /// </summary>
     class LayoutStorage : public Unknown
     {
@@ -3951,18 +3951,18 @@ namespace Harlinn::Common::Core
     };
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables a linked object to provide its container with functions pertaining to 
     /// linking. The most important of these functions is binding to the link source, 
     /// that is, activating the connection to the document that stores the linked 
     /// object's native data. IOleLink also defines functions for managing information 
     /// about the linked object, such as the location of the link source and the 
     /// cached presentation data for the linked object.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// A container application can distinguish between embedded objects and linked 
     /// objects by querying for IOleLink; only linked objects implement IOleLink.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleLink : public Unknown
     {
@@ -4050,16 +4050,16 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Used by item monikers when they are bound to the objects they identify.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// When any container of objects uses item monikers to identify its objects, 
     /// it must define a naming scheme for those objects. The container's 
     /// IOleItemContainer implementation uses knowledge of that naming scheme to 
     /// retrieve an object given a particular name. Item monikers use the container's 
     /// IOleItemContainer implementation during binding.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleItemContainer : public OleContainer
     {
@@ -4280,39 +4280,39 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// The IDropSource interface is one of the interfaces you implement to 
     /// provide drag-and-drop operations in your application. It contains methods 
     /// used in any application used as a data source in a drag-and-drop operation. 
     /// The data source application in a drag-and-drop operation is responsible for:
-    /// </p>
-    /// <ul>
-    /// <li>
+    /// </para>
+    /// <list type="bullet">
+    /// <item>
     /// Determining the data being dragged based on the user's selection.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// Initiating the drag-and-drop operation based on the user's mouse actions.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// Generating some of the visual feedback during the drag-and-drop operation, 
     /// such as setting the cursor and highlighting the data selected for the 
     /// drag-and-drop operation.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// Canceling or completing the drag-and-drop operation based on the user's 
     /// mouse actions.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// Performing any action on the original data caused by the drop operation, such 
     /// as deleting the data on a drag move.
-    /// </li>
-    /// </ul>
-    /// <p>
+    /// </item>
+    /// </list>
+    /// <para>
     /// IDropSource contains the methods for generating visual feedback to the end 
     /// user and for canceling or completing the drag-and-drop operation. You also 
     /// need to call the DoDragDrop, RegisterDragDrop, and RevokeDragDrop functions 
     /// in drag-and-drop operations.
-    /// </p>
+    /// </para>
     /// </summary>
     class DropSource : public Unknown
     {
@@ -4335,36 +4335,36 @@ namespace Harlinn::Common::Core
     };
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// The IDropTarget interface is one of the interfaces you implement to 
     /// provide drag-and-drop operations in your application. It contains 
     /// methods used in any application that can be a target for data during 
     /// a drag-and-drop operation. A drop-target application is responsible for:
-    /// </p>
+    /// </para>
     /// <ul>
-    /// <li>
+    /// <item>
     /// Determining the effect of the drop on the target application.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// Incorporating any valid dropped data when the drop occurs.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// Communicating target feedback to the source so the source application 
     /// can provide appropriate visual feedback such as setting the cursor.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// Implementing drag scrolling.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// Registering and revoking its application windows as drop targets.
-    /// </li>
+    /// </item>
     /// </ul>
-    /// <p>
+    /// <para>
     /// The IDropTarget interface contains methods that handle all these 
     /// responsibilities except registering and revoking the application 
     /// window as a drop target, for which you must call the RegisterDragDrop 
     /// and the RevokeDragDrop functions.
-    /// </p>
+    /// </para>
     /// </summary>
     class DropTarget : public Unknown
     {
@@ -4628,18 +4628,18 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Provides the tools for creating and administering the type information 
     /// defined through the type description. Derives from ICreateTypeInfo, and 
     /// adds methods for deleting items that have been added through ICreateTypeInfo.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The ICreateTypeInfo::LayOut method provides a way for the creator of the 
     /// type information to check for any errors. A call to QueryInterface can be 
     /// made to the ICreateTypeInfo instance at any time for its ITypeInfo interface. 
     /// Calling any of the methods in the ITypeInfointerface that require layout 
     /// information lays out the type information automatically.
-    /// </p>
+    /// </para>
     /// </summary>
     class CreateTypeInfo2 : public CreateTypeInfo
     {
@@ -5784,11 +5784,11 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables a class factory object, in any sort of object 
     /// server, to control object creation through licensing.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// This interface is an extension to IClassFactory. This extension enables a 
     /// class factory executing on a licensed machine to provide a license key that 
     /// can be used later to create an object instance on an unlicensed machine. Such 
@@ -5797,7 +5797,7 @@ namespace Harlinn::Common::Core
     /// be able to run on an unlicensed machine. The license key gives only that one 
     /// client application the right to instantiate objects through IClassFactory2 
     /// when a full machine license does not exist.
-    /// </p>
+    /// </para>
     /// </summary>
     class ClassFactory2 : public ClassFactory
     {
@@ -5835,27 +5835,27 @@ namespace Harlinn::Common::Core
         /// method. This parameter is set to NULL on any failure.
         /// </param>
         /// <remarks>
-        /// <p>
+        /// <para>
         /// The caller can save the license key for subsequent calls to 
         /// CreateInstanceLic to create objects on an otherwise unlicensed 
         /// machine.
-        /// </p>
+        /// </para>
         /// <h4>Notes to Callers</h4>
-        /// <p>
+        /// <para>
         /// The caller must free the BSTR with the SysFreeString function 
         /// when the key is no longer needed. The value of fRuntimeKeyAvail 
         /// is returned through a previous call to GetLicInfo.
-        /// </p>
+        /// </para>
         /// <h4>Notes to Implementers</h4>
-        /// <p>
+        /// <para>
         /// This method allocates the BSTR key with SysAllocString or 
         /// SysAllocStringLen, and the caller becomes responsible for 
         /// this BSTR after this method returns successfully.
-        /// </p>
-        /// <p>
+        /// </para>
+        /// <para>
         /// This method need not be implemented when a class factory 
         /// does not support run-time license keys.
-        /// </p>
+        /// </para>
         /// </remarks>
         void RequestLicKey( DWORD reserved, BSTR* bstrKey ) const
         {
@@ -6188,7 +6188,7 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Provides the main features of a property page object that manages a 
     /// particular page within a property sheet. A property page implements 
     /// at least IPropertyPage and can optionally implement IPropertyPage2 
@@ -6199,15 +6199,15 @@ namespace Harlinn::Common::Core
     /// perform specific actions, mostly based on user input such as 
     /// switching between pages or pressing various buttons that the 
     /// frame itself manages in the dialog box.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// A property page manages a dialog box that contains only those controls 
     /// that should be displayed for that one page within the property sheet 
     /// itself. This means that the dialog box template used to define the 
     /// page should only carry the WS_CHILD style and no others. It should 
     /// not include any style related to a frame, caption, or system menus 
     /// or controls.
-    /// </p>
+    /// </para>
     /// </summary>
     class PropertyPage : public Unknown
     {
@@ -6316,18 +6316,18 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// An extension to IPropertyPage to support initial selection 
     /// of a property on a page.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// This method works in conjunction with the implementation of 
     /// IPerPropertyBrowsing::MapPropertyToPage on an object that 
     /// supplies properties and specifies property pages through 
     /// ISpecifyPropertyPages. This interface has only one extra 
     /// method in addition to those in IPropertyPage. That method, 
     /// IPropertyPage2::EditProperty tells the page which property to highlight.
-    /// </p>
+    /// </para>
     /// </summary>
     class PropertyPage2 : public PropertyPage
     {
@@ -6437,17 +6437,17 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Implemented by a sink object to receive notifications about 
     /// property changes from an object that supports IPropertyNotifySink as 
     /// an outgoing interface. The client that needs to receive the 
     /// notifications in this interface (from a supporting connectable object) 
     /// creates a sink with this interface and connects it to the connectable 
     /// object through the connection point mechanism. 
-    /// </p>
+    /// </para>
     /// </summary>
     /// <remarks>
-    /// <p>
+    /// <para>
     /// The object is itself required to call the methods of IPropertyNotifySink 
     /// only for those properties marked with the [bindable] and [requestedit] 
     /// attributes in the object's type information. When the object changes a 
@@ -6455,14 +6455,14 @@ namespace Harlinn::Common::Core
     /// When the object is about to change a [requestedit] property, it must call 
     /// IPropertyNotifySink::OnRequestEdit before changing the property and must 
     /// also honor the action specified by the sink on return from this call.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The one exception to this rule is that no notifications are sent as a 
     /// result of an object's initialization or loading procedures. At initialization 
     /// time, it is assumed that all properties change and that all must be allowed 
     /// to change. Notifications to this interface are therefore meaningful only 
     /// in the context of a fully initialized/loaded object.
-    /// </p>
+    /// </para>
     /// </remarks>
     class PropertyNotifySink : public Unknown
     {
@@ -6505,19 +6505,19 @@ namespace Harlinn::Common::Core
     /// a means for notifying a client of changes in an object's properties.
     /// </summary>
     /// <remarks>
-    /// <p>
+    /// <para>
     /// A property page object manages a particular page within a property 
     /// sheet. A property page implements at least IPropertyPage and can 
     /// optionally implement IPropertyPage2 if selection of a specific 
     /// property is supported.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// An object specifies its support for property pages by implementing 
     /// ISpecifyPropertyPages. Through this interface the caller can obtain 
     /// a list of CLSIDs identifying the specific property pages that the 
     /// object supports. If the object specifies a property page CLSID, 
     /// the object must be able to receive property changes from the property page.
-    /// </p>
+    /// </para>
     /// </remarks>
     class SpecifyPropertyPages : public Unknown
     {
@@ -6573,11 +6573,11 @@ namespace Harlinn::Common::Core
     /// Saves and loads objects from a stream.
     /// </summary>
     /// <remarks>
-    /// <p>
+    /// <para>
     /// The IPersistMemory interface operates like IPersistStreamInit; except 
     /// that IPersistMemory allows the caller to provide a fixed-size memory 
     /// block, while IPersistStreamInit uses an arbitrarily expandable IStream.
-    /// </p>
+    /// </para>
     /// </remarks>
     class PersistMemory : public Persist
     {
@@ -6718,7 +6718,7 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Provides simple frame controls that act as simple containers for other 
     /// nested controls. Some controls merely contain other controls. In such 
     /// cases, the simple control container, called a simple frame, need not 
@@ -6726,15 +6726,15 @@ namespace Harlinn::Common::Core
     /// calls from its contained controls to the outer container that manages the 
     /// simple frame. To support what are called simple frame controls, a container 
     /// implements this interface as well as other site interfaces such as IOleControlSite.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// An example of a simple frame control is a group box that only needs to capture 
     /// a few keystrokes for its contained controls to implement the correct tab or arrow 
     /// key behavior, but does not want to handle every other message. Through the two 
     /// methods of this interface, the simple frame control passes messages to its control 
     /// site both before and after its own processing. If that site is itself a simple 
     /// frame, it can continue to pass messages up the chain.
-    /// </p>
+    /// </para>
     /// </summary>
     class SimpleFrameSite : public Unknown
     {
@@ -6828,7 +6828,7 @@ namespace Harlinn::Common::Core
     };
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Provides a wrapper around a Windows font object. The COM font object 
     /// supports a number of read/write properties as well as a set of methods 
     /// through its IFont interface. It supports the same set of properties 
@@ -6836,14 +6836,14 @@ namespace Harlinn::Common::Core
     /// derived from IDispatch to provide access to the font's properties through 
     /// Automation. The system provides a standard implementation of the font 
     /// object with both interfaces.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The font object also supports the outgoing interface IPropertyNotifySink 
     /// so a client can determine when font properties change. Because the font 
     /// object supports at least one outgoing interface, it also implements 
     /// IConnectionPointContainer and related interfaces for this purpose.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The font object provides an hFont property, which is a Windows font handle 
     /// that conforms to the other attributes specified for the font. The font object 
     /// delays realizing this hFont object when possible, so consecutively setting 
@@ -6853,17 +6853,17 @@ namespace Harlinn::Common::Core
     /// properties will return the same font handle. The font object can remove font 
     /// handles from this cache at will, which introduces special considerations for 
     /// clients using the hFont property.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The font object also supports IPersistStream so that it can save and load 
     /// itself from an instance of IStream. An object that uses a font object 
     /// internally would normally save and load the font as part of the object's 
     /// own persistence handling.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// In addition, the font object supports IDataObject, which can render a property 
     /// set containing the font's attributes, allowing a client to save these properties as text.
-    /// </p>
+    /// </para>
     /// </summary>
     class Font : public Unknown
     {
@@ -7042,7 +7042,7 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Manages a picture object and its properties. Picture objects provide 
     /// a language-neutral abstraction for bitmaps, icons, and metafiles. As 
     /// with the standard font object, the system provides a standard implementation 
@@ -7050,20 +7050,20 @@ namespace Harlinn::Common::Core
     /// the latter being derived from IDispatch to provide access to the picture's 
     /// properties through Automation. A picture object is created with 
     /// OleCreatePictureIndirect.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The picture object also supports the outgoing interface IPropertyNotifySink, 
     /// so a client can determine when picture properties change. Because the picture 
     /// object supports at least one outgoing interface, it also implements 
     /// IConnectionPointContainer and its associated interfaces for this purpose.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The picture object also supports IPersistStream so that it can save 
     /// and load itself from an instance of IStream. An object that uses a 
     /// picture object internally would normally save and load the picture 
     /// as part of the object's own persistence handling. The function 
     /// OleLoadPicture simplifies the creation of a picture object based on stream contents.
-    /// </p>
+    /// </para>
     /// </summary>
     class Picture : public Unknown
     {
@@ -7404,15 +7404,15 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Manages the activation and deactivation of in-place objects, and 
     /// determines how much of the in-place object should be visible.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// You can obtain a pointer to IOleInPlaceObject by calling 
     /// IUnknown::QueryInterface on IOleObject or an OleInPlaceObject
     /// by calling As&ltOleInPlaceObject&gt() on an OleObject.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleInPlaceObject : public OleWindow
     {
@@ -7478,19 +7478,19 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables a windowless object to process window messages and participate 
     /// in drag and drop operations. It is derived from and extends the 
     /// IOleInPlaceObject interface.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// A small object, such as a control, does not need a window of its own. 
     /// Instead, it can rely on its container to dispatch window messages and 
     /// help the object to participate in drag and drop operations. The 
     /// container must implement the IOleInPlaceSiteWindowless interface. 
     /// Otherwise, the object must act as a normal compound document object 
     /// and create a window when it is activated.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleInPlaceObjectWindowless : public OleInPlaceObject
     {
@@ -7515,13 +7515,13 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Manages the interaction between the container and the object's 
     /// in-place client site. Recall that the client site is the display 
     /// site for embedded objects, and provides position and conceptual 
     /// information about the object.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// This interface provides methods that manage in-place objects. 
     /// With IOleInPlaceSite, you can determine if an object can be 
     /// activated and manage its activation and deactivation. You can 
@@ -7534,7 +7534,7 @@ namespace Harlinn::Common::Core
     /// determines how the container scrolls the object, manages the 
     /// object undo state, and notifies the object when its borders have 
     /// changed.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleInPlaceSite : public OleWindow
     {
@@ -7614,18 +7614,18 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Provides an additional set of activation and deactivation notification 
     /// methods that enable an object to avoid unnecessary flashing on the 
     /// screen when the object is activated and deactivated.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// When an object is activated, it does not know if its visual display 
     /// is already correct. When the object is deactivated, the container 
     /// does not know if the visual display is correct. To avoid a redraw 
     /// and the associated screen flicker in both cases, the container 
     /// can provide this extension to IOleInPlaceSite.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleInPlaceSiteEx : public OleInPlaceSite
     {
@@ -7656,27 +7656,27 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Extends the IOleInPlaceSiteEx interface. IOleInPlaceSiteWindowless works with 
     /// IOleInPlaceObjectWindowless which is implemented on the windowless object. 
     /// Together, these two interfaces provide services to a windowless object from 
     /// its container allowing the windowless object to:
-    /// </p>
+    /// </para>
     /// <ul>
-    /// <li>Process window messages</li>
-    /// <li>Participate in drag and drop operations</li>
-    /// <li>Perform drawing operations</li>
+    /// <item>Process window messages</item>
+    /// <item>Participate in drag and drop operations</item>
+    /// <item>Perform drawing operations</item>
     /// </ul>
-    /// <p>
+    /// <para>
     /// Having a window can place unnecessary burdens on small objects, such as controls. 
     /// It prevents an object from being non-rectangular. It prevents windows from being 
     /// transparent. It prevents the small instance size needed by many small controls.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// A windowless object can enter the in-place active state without requiring a window 
     /// or the resources associated with a window. Instead, the object's container provides 
     /// the object with many of the services associated with having a window.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleInPlaceSiteWindowless : public OleInPlaceSiteEx
     {
@@ -7769,13 +7769,13 @@ namespace Harlinn::Common::Core
     };
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables an object to display itself directly without passing a 
     /// data object to the caller. In addition, this interface can create 
     /// and manage a connection with an advise sink so the caller can be 
     /// notified of changes in the view object.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The caller can request specific representations and specific target 
     /// devices. For example, a caller can ask for either an object's content 
     /// or an iconic representation. Also, the caller can ask the object to 
@@ -7785,17 +7785,17 @@ namespace Harlinn::Common::Core
     /// to provide a print preview operation, you can compose the drawing for 
     /// a printer target device but actually draw the representation on 
     /// the display.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The IViewObject interface is similar to IDataObject; except that 
     /// IViewObject places a representation of the data onto a device 
     /// context while IDataObject places the representation onto a transfer medium.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Unlike most other interfaces, IViewObject cannot be marshaled to another 
     /// process. This is because device contexts are only effective in the context 
     /// of one process.
-    /// </p>
+    /// </para>
     /// </summary>
     class ViewObject : public Unknown
     {
@@ -7848,21 +7848,21 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// An extension to the IViewObject interface which returns the size 
     /// of the drawing for a given view of an object. You can prevent the 
     /// object from being run if it isn't already running by calling this 
     /// method instead of IOleObject::GetExtent.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Like the IViewObject interface, IViewObject2 cannot be marshaled 
     /// to another process. This is because device contexts are only 
     /// effective in the context of one process.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The OLE-provided default implementation provides the size of the 
     /// object in the cache.
-    /// </p>
+    /// </para>
     /// </summary>
     class ViewObject2 : public ViewObject
     {
@@ -7879,13 +7879,13 @@ namespace Harlinn::Common::Core
     };
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// An extension derived from IViewObject2 to provide support for:
-    /// </p>
+    /// </para>
     /// <ul>
-    /// <li>Enhanced, flicker-free drawing for non-rectangular objects and transparent objects</li>
-    /// <li>Hit testing for non-rectangular objects</li>
-    /// <li>Control sizing</li>
+    /// <item>Enhanced, flicker-free drawing for non-rectangular objects and transparent objects</item>
+    /// <item>Hit testing for non-rectangular objects</item>
+    /// <item>Control sizing</item>
     /// </ul>
     /// </summary>
     class ViewObjectEx : public ViewObject2
@@ -7931,12 +7931,12 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Serves as the main interface on an undo unit. An undo unit 
     /// encapsulates the information necessary to undo or redo a 
     /// single action.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// When an object's state changes and it needs to create an 
     /// undo unit, it first needs to know what parent units are open. 
     /// It calls the IOleUndoManager::GetOpenParentState method to 
@@ -7945,18 +7945,18 @@ namespace Harlinn::Common::Core
     /// flag is set, then the open parent is a disabling parent. In 
     /// either of these cases, the object calls IOleUndoManager::DiscardFrom(nullptr) 
     /// on the undo manager and skips creating the undo unit.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// If the method returns S_OK, but the UAS_BLOCKED flag is set, 
     /// then the open parent is a blocking parent. The object does not 
     /// need to create an undo unit, since it would be immediately 
     /// discarded. If the return value is S_OK and neither of the bit 
     /// flags are set, then the object creates the undo unit and calls 
     /// IOleUndoManager::Add on the undo manager.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The object should retain a pointer to the undo manager.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleUndoUnit : public Unknown
     {
@@ -7995,28 +7995,28 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables undo units to contain child undo units. For example, a 
     /// complex action can be presented to the end user as a single undo 
     /// action even though a number of separate actions are involved. 
     /// All the subordinate undo actions are contained within the top-level, 
     /// parent undo unit.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// A parent undo unit is initially created using the IOleUndoManager::Open 
     /// method. The addition of undo units should always be done through the 
     /// undo manager. The IOleParentUndoUnit::Open and IOleParentUndoUnit::Close 
     /// methods on parent units will end up being called by the undo manager. 
     /// Having parent units call back into the undo manager will cause infinite 
     /// recursion.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// While a parent unit is open, the undo manager adds undo units to it by 
     /// calling IOleParentUndoUnit::Add. When the undo manager closes a top-level 
     /// parent, the entire undo unit with its nested subordinates is placed on 
     /// top of the undo stack.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// An enabling parent is required to be open on the stack before any other 
     /// undo units can be added. If one isn't open, the stack should be cleared 
     /// instead. This is to ensure that undo units only get added as a result of 
@@ -8029,25 +8029,25 @@ namespace Harlinn::Common::Core
     /// button click should open an enabling parent on the stack, call the 
     /// appropriate code, and then close the parent unit. The object model 
     /// code would not open a parent unit, causing the undo stack to be cleared.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// A blocking parent is used when you do not want your code to call 
     /// other code that you know may try to add undo units to the stack. For 
     /// example, you should use a blocking parent if you call code that 
     /// creates undo units, that your outer code has already created that 
     /// will fully undo all the desired behavior.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// A non-enabling parent is used when you fire an event in response 
     /// to a user action. The stack would be cleared only if the event handler 
     /// did something that tried to create an undo unit, but if no handler exists 
     /// then the undo stack would be preserved.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// If an object needs to create a parent unit, there are several cases to consider:
-    /// </p>
+    /// </para>
     /// <ul>
-    /// <li>
+    /// <item>
     /// To create an enabling parent unit, the object calls IOleUndoManager::GetOpenParentState 
     /// on the undo manager and checks the return value. If the value is S_FALSE, then 
     /// the object creates the enabling parent and opens it. If the return value is S_OK,
@@ -8059,31 +8059,31 @@ namespace Harlinn::Common::Core
     /// a value of zero, which means it is the absence of all other bits and is not 
     /// a bit flag that can be set. If comparing *state against UAS_NORMAL, mask out 
     /// unused bits from state with UAS_MASK to allow for future expansion.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// To create a blocked parent, the object calls IOleUndoManager::GetOpenParentState 
     /// and checks for an open parent that is already blocked. If one exists, then there 
     /// is no need to create the new blocking parent. Otherwise, the object creates it 
     /// and opens it on the stack.
-    /// </li>
-    /// <li>
+    /// </item>
+    /// <item>
     /// To create a disabling parent, the object calls IOleUndoManager::GetOpenParentState 
     /// and checks for an open parent that is blocked or disabling. If either one exists 
     /// it is unnecessary to create the new parent. Otherwise, the object creates the 
     /// parent and opens it on the stack.
-    /// </li>
+    /// </item>
     /// </ul>
-    /// <p>
+    /// <para>
     /// In the event that both the UAS_NOPARENTENABLE and UAS_BLOCKED flags are set, 
     /// the flag that is most relevant to the caller should be used with UAS_NOPARENTENABLE 
     /// taking precedence. For example, if an object is creating a simple undo unit, it 
     /// should pay attention to the UAS_NOPARENTENABLE flag and clear the undo stack. 
     /// If it is creating an enabling parent unit, then it should pay attention to the 
     /// UAS_BLOCKED flag and skip the creation.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// When the parent undo unit is marked blocked, it discards any undo units it receives.
-    /// </p>
+    /// </para>
     /// </summary>
     class OleParentUndoUnit : public OleUndoUnit
     {
@@ -8173,38 +8173,38 @@ namespace Harlinn::Common::Core
     /// within contained controls.
     /// </summary>
     /// <remarks>
-    /// <p>
+    /// <para>
     /// The control must create an undo unit with the IOleUndoUnit interface 
     /// or a parent undo unit with the IOleParentUndoUnit interface derived 
     /// from IOleUndoUnit. Both of these interfaces perform the undo action 
     /// and the parent undo unit additionally can contain nested undo units.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The undo manager provides a centralized undo and redo service. It 
     /// manages parent undo units and simple undo units on the undo and 
     /// redo stacks. Whether an object is UI-active or not, it can deposit 
     /// undo units on these stacks by calling methods in the undo manager.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The centralized undo manager then has the data necessary to support 
     /// the undo and redo user interface for the host application and can 
     /// discard undo information gradually as the stack becomes full.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The undo manager is implemented as a service and objects obtain a 
     /// pointer to IOleUndoManger from the IServiceProvider interface. It is 
     /// usually implemented by the container. The service manages two stacks, 
     /// the undo stack and the redo stack, each of which contains undo units 
     /// generated by embedded objects or by the container application itself.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Undo units are typically generated in response to actions taken by 
     /// the end user. An object does not generate undo actions for programmatic 
     /// events. In fact, programmatic events should clear the undo stack since 
     /// the programmatic event can possibly invalidate assumptions made by the 
     /// undo units on the stack.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// When the object's state changes, it creates an undo unit encapsulating 
     /// all the information needed to undo that change. The object calls methods 
     /// in the undo manager to place its undo units on the stack. Then, when the 
@@ -8213,41 +8213,41 @@ namespace Harlinn::Common::Core
     /// method, and then releases it. When an end user selects a Redo operation, 
     /// the undo manager takes the top redo unit off the stack, invokes its 
     /// action by calling its IOleUndoUnit::Do method, and then releases it.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The undo manager has three states: the base state, the undo state, and 
     /// the redo state. It begins in the base state. To perform an action from 
     /// the undo stack, it puts itself into the undo state, calls IOleUndoUnit::Do 
     /// on the undo unit, and goes back to the base state. To perform an action 
     /// from the redo stack, it puts itself into the redo state, calls 
     /// IOleUndoUnit::Do on the undo unit, and goes back to the base state.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// If the undo manager receives a new undo unit while in the base state, it 
     /// places the unit on the undo stack and discards the entire redo stack. 
     /// While it is in the undo state, it puts incoming units on the redo stack. 
     /// While it is in the redo state, it places them on the undo stack without 
     /// flushing the redo stack.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The undo manager also allows objects to discard the undo or redo stack 
     /// starting from any object in either stack.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The host application determines the scope of an undo manager. For example, 
     /// in one application, the scope might be at the document level; a separate 
     /// undo manager is maintained for each document; and undo is managed independently 
     /// for each document. However, another application maintain one undo manager, and 
     /// therefore one undo scope, for the entire application.
-    /// </p>
+    /// </para>
     /// <h4>Error Handling</h4>
-    /// <p>
+    /// <para>
     /// Having an undo operation fail and leaving the document in an unstable state is 
     /// something the undo manager, undo units, and the application itself all have to 
     /// work together to avoid. As a result, there are certain requirements that undo 
     /// units, the undo manager, and the application or component using undo must conform to.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// To perform an undo, the undo manager calls IOleUndoUnit::Do on one or more undo 
     /// units which can, in turn, contain more units. If a unit somewhere in the hierarchy 
     /// fails, the error will eventually reach the undo manager, which is responsible 
@@ -8258,26 +8258,26 @@ namespace Harlinn::Common::Core
     /// to abandon everything and return to the application. The undo manager indicates 
     /// whether the rollback succeeded, and the application can take different actions 
     /// based on this, such as reinitializing components so they're in a known state.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// All the steps in adding an undo unit to the stack should be performed atomically. 
     /// That is, all steps must succeed or none of them should succeed.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The host application that provides the undo manager decides what action to take 
     /// when undo fails. At the very least, it should inform the user of the failure. 
     /// The host application will be told by the undo manager whether the undo succeeded 
     /// and whether the attempted rollback succeeded. In case both the undo and rollback 
     /// failed, the host application can present the user with several options, including 
     /// immediately shutting down the application.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Simple undo units must not change the state of any object if they return failure. 
     /// This includes the state of the redo stack or undo stack if performing a redo. 
     /// They are also required to put a corresponding unit on the redo or undo stack if 
     /// they succeed. The application should be stable before and after the unit is called.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Parent undo units have the same requirements as simple units, with one exception. 
     /// If one or more children succeeded prior to another child's failure, the parent 
     /// unit must commit its corresponding unit on the redo stack and return the failure 
@@ -8286,45 +8286,45 @@ namespace Harlinn::Common::Core
     /// suppose a parent unit contains three simple units. The first two succeed and added 
     /// units to the redo stack, but the third one failed. At this point, the parent unit 
     /// commits its redo unit and returns the failure.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// As a side effect, the parent unit should never make state changes that depend on 
     /// the success of their children. Doing this will cause the rollback behavior to 
     /// break. If a parent unit makes state changes, it should do them before calling 
     /// any children. Then, if the state change fails, it should not commit its redo 
     /// unit, it should not call any children, and it should return the failure to 
     /// its parent.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The undo manager has one primary requirement for error handling: to attempt 
     /// rollback when an undo or redo fails.
-    /// </p>
+    /// </para>
     /// <h4>Non-compliant Objects</h4>
-    /// <p>
+    /// <para>
     /// Objects that do not support multi-level undo can cause serious problems for a 
     /// global undo service. Since the object cannot be relied on to properly update 
     /// the undo manager, any units submitted by other objects are also suspect, 
     /// because their units may rely on the state of the non-compliant object. 
     /// Attempting to undo a compliant object's units may not be successful, because 
     /// the state in the non-compliant object will not match.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// To detect objects that do not support multi-level undo, check for the 
     /// OLEMISC_SUPPORTSMULTILEVELUNDO value. An object that can participate in the 
     /// global undo service sets this value.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// When an object without this value is added to a user-visible undo context, 
     /// the best practice is to disable the undo user interface for this context. 
     /// Alternatively, a dialog could be presented to the user, asking them whether 
     /// to attempt to provide partial undo support, working around the non-compliance 
     /// of the new object.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// In addition, non-compliant objects may be added to nested containers. In 
     /// this case, the nested container needs to notify the undo manager that undo 
     /// can no longer be safely supported by calling IOleUndoManager::Enable with FALSE.
-    /// </p>
+    /// </para>
     /// </remarks>
     class OleUndoManager : public Unknown
     {
@@ -8419,11 +8419,11 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Enables an object to remain inactive most of the time, yet still 
     /// participate in interaction with the mouse, including drag and drop.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Objects can be active( in - place or UI active ) or they can be 
     /// inactive( loaded or running ).An active object creates a window 
     /// and can receive Windows mouse and keyboard messages. An inactive 
@@ -8432,12 +8432,12 @@ namespace Harlinn::Common::Core
     /// objects also consume more resources than inactive objects. Typically, 
     /// they are larger and slower than inactive objects. Thus, keeping 
     /// an object inactive can provide performance improvements.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// However, an object, such as a control, needs to be able to control 
     /// the mouse pointer, fire mouse events, and act as a drop target so 
     /// it can participate in the user interface of its container application.
-    /// </p>
+    /// </para>
     /// </summary>
     class PointerInactive : public Unknown
     {
@@ -8469,25 +8469,25 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// <p>
+    /// <para>
     /// Provides a simple way to support communication between an 
     /// object and its site in the container.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Often an object needs to communicate directly with a container site 
     /// object and, in effect, manage the site object itself. Outside of 
     /// IOleObject::SetClientSite, there is no generic means through which an 
     /// object becomes aware of its site. IObjectWithSite provides simple objects 
     /// with a simple siting mechanism (lighter than IOleObject) This interface 
     /// should only be used when IOleObject is not already in use.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// Through IObjectWithSite, a container can pass the IUnknown pointer of 
     /// its site to the object through IObjectWithSite::SetSite. Callers can 
     /// also retrieve the latest site passed to SetSite through IObjectWithSite::GetSite. 
     /// This latter method is included as a hooking mechanism, allowing a third party 
     /// to intercept calls from the object to the site.
-    /// </p>
+    /// </para>
     /// </summary>
     class ObjectWithSite : public Unknown
     {
@@ -8708,7 +8708,7 @@ namespace Harlinn::Common::Core
     /// Provides a generic access mechanism to locate a GUID-identified service.
     /// </summary>
     /// <remarks>
-    /// <p>
+    /// <para>
     /// The IServiceProvider interface is a generic access mechanism to locate a 
     /// GUID-identified service that is provided through a control or any other 
     /// object that the service can communicate with. For example, an embedded 
@@ -8717,8 +8717,8 @@ namespace Harlinn::Common::Core
     /// interface that is supplied by using IOleObject::SetClientSite. The embedded 
     /// object must ask the client site for some other service that the container 
     /// supports when that service might not be implemented in the client site.
-    /// </p>
-    /// <p>
+    /// </para>
+    /// <para>
     /// The client site must provide a means by which the control that is managed 
     /// by the site can access the service when necessary. For example, the 
     /// IOleInPlaceSite::GetWindowContext function can be used by an in-place 
@@ -8727,7 +8727,7 @@ namespace Harlinn::Common::Core
     /// Because these interface pointers exist on separate objects, the control 
     /// cannot call the site's QueryInterface to obtain those pointers. Instead, 
     /// use the IServiceProvider interface.
-    /// </p>
+    /// </para>
     /// </remarks>
     class ServiceProvider : public Unknown
     {
