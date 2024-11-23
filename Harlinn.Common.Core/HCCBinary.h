@@ -329,6 +329,19 @@ namespace Harlinn::Common::Core
             }
         }
 
+        static Data* Initialize( size_type size )
+        {
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
         static Data* Initialize( const Byte* string1, size_type size1, const Byte* string2, size_type size2 )
         {
             auto size = size1 + size2;
@@ -493,13 +506,19 @@ namespace Harlinn::Common::Core
     public:
         constexpr Binary( ) noexcept = default;
 
-        Binary( const Byte* buffer, size_type size )
+        explicit Binary( const Byte* buffer, size_type size )
             : data_( Initialize( buffer, size ) )
         {
         }
+
+        explicit Binary( size_type size )
+            : data_( Initialize( size ) )
+        {
+        }
+
         template<typename T, size_t N>
             requires (sizeof(T) == 1)
-        Binary( const T( &array )[ N ] )
+        explicit Binary( const T( &array )[ N ] )
             : data_( Initialize( reinterpret_cast<const Byte*>(array), N ) )
         {
         }
@@ -2163,6 +2182,8 @@ namespace Harlinn::Common::Core
 
     };
 
+    static_assert( BinaryLike<Binary> );
+    static_assert( BinaryLike<std::vector<Byte>> );
 
 }
 

@@ -1212,7 +1212,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
                     auto bytes = sb.ToString( );
                     bytes.SetLength( bytes.Length( ) - 1 );
 
-                    result = Format( L"{{ {{{}}} }}", bytes );
+                    result = Format( L"Binary{{ {{{}}} }}", bytes );
                 }
                 else
                 {
@@ -1225,7 +1225,7 @@ namespace Harlinn::Tools::DbXGen::CodeGenerators::Cpp
                     auto bytes = sb.ToString( );
                     bytes.SetLength( bytes.Length( ) - 1 );
 
-                    result = Format( L"{{ {{{}}} }}", bytes );
+                    result = Format( L"Binary{{ {{{}}} }}", bytes );
                 }
             }
             break;

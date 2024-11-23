@@ -198,6 +198,25 @@ namespace Harlinn::Common::Core
         { v.Release( ) } ->std::convertible_to<UInt32>;
     };
 
+    template<typename BinaryT>
+    concept BinaryLike = std::is_same_v<Byte, typename BinaryT::value_type > && 
+        std::is_constructible_v<BinaryT> &&
+        std::is_constructible_v<BinaryT, typename BinaryT::size_type> &&
+        requires( BinaryT t1, const BinaryT& t2, typename BinaryT::size_type sz )
+    {
+        { t1[ sz ] }->std::same_as<typename BinaryT::reference>;
+        { t2[ sz ] }->std::same_as<typename BinaryT::const_reference>;
+        { t1.begin( ) }->std::same_as<typename BinaryT::iterator>;
+        { t2.begin( ) }->std::same_as<typename BinaryT::const_iterator>;
+        { t1.end( ) }->std::same_as<typename BinaryT::iterator>;
+        { t2.end( ) }->std::same_as<typename BinaryT::const_iterator>;
+        { t2.size( ) }->std::same_as<typename BinaryT::size_type>;
+        { t1.data( ) }->std::same_as<typename BinaryT::pointer>;
+        { t2.data( ) }->std::same_as<typename BinaryT::const_pointer>;
+        { t1.resize( sz ) };
+    };
+
+
 }
 
 

@@ -135,9 +135,6 @@
     <ClInclude Include="HCCThreadpools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCTimeseriesMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCRdtscConverter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -154,9 +151,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCCrypto.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HCCBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCVector.h">

@@ -210,7 +210,6 @@
     <ClInclude Include="HCCBitConverter.h" />
     <ClInclude Include="HCCBits.h" />
     <ClInclude Include="HCCBlocks.h" />
-    <ClInclude Include="HCCBuffer.h" />
     <ClInclude Include="HCCComImpl.h" />
     <ClInclude Include="HCCComInterfaces.h" />
     <ClInclude Include="HCCComModule.h" />
@@ -310,7 +309,6 @@
     <ClInclude Include="HCCTcpServer.h" />
     <ClInclude Include="HCCThread.h" />
     <ClInclude Include="HCCThreadpools.h" />
-    <ClInclude Include="HCCTimeseriesMath.h" />
     <ClInclude Include="HCCTraits.h" />
     <ClInclude Include="HCCTuple.h" />
     <ClInclude Include="HCCTypeDescriptorCursor.h" />
