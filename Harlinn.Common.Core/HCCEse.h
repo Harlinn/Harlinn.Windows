@@ -1790,7 +1790,7 @@ namespace Harlinn::Common::Core::Ese
             double keyData = dateTime.ToOADate( );
             MakeKey( &keyData, sizeof( double ), flags );
         }
-        void MakeKey( const const std::chrono::system_clock::time_point& time_point, KeyFlags flags = KeyFlags::None ) const
+        void MakeKey( const std::chrono::system_clock::time_point& time_point, KeyFlags flags = KeyFlags::None ) const
         {
             DateTime dateTime( time_point );
             double keyData = dateTime.ToOADate( );
@@ -1971,19 +1971,6 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-
-
-
-        /// <summary>
-        /// Retrieves the key for the index entry at the current position of a cursor. 
-        ///
-        /// Such keys are constructed by calls to MakeKey. 
-        ///
-        /// The retrieved key can then be used to efficiently return that cursor to 
-        /// the same index entry by a call to Seek
-        /// </summary>
-        
-        
         /// <summary>
         /// <para>
         /// Retrieves the key for the index entry at the current position of a cursor. 
@@ -2473,13 +2460,6 @@ namespace Harlinn::Common::Core::Ese
             }
             return rc;
         }
-        /*
-        Ese::Result SeekNX( SeekFlags flags ) const
-        {
-            auto rc = static_cast<Result>( JetSeek( sessionId_, tableId_, static_cast<JET_GRBIT>( flags ) ) );
-            return rc;
-        }
-        */
 
         /// <summary>
         /// Retrieves the bookmark for the record that is associated with the 

@@ -668,13 +668,12 @@ namespace Harlinn::Common::Core::Examples
 
         bool Filter( const Guid& sensorId ) const
         {
-            MakeKey( sensorId, Ese::KeyFlags::NewKey );
+            MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnStartLimit );
             auto rc = Seek( Ese::SeekFlags::GreaterOrEqual );
             if ( rc >= Ese::Result::Success && Sensor() == sensorId )
             {
-                MakeKey( sensorId, Ese::KeyFlags::NewKey );
-                MakeKey( DateTime::MaxValue( ).Ticks() );
-                SetIndexRange( Ese::IndexRangeFlags::UpperLimit );
+                MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnEndLimit );
+                SetIndexRange( Ese::IndexRangeFlags::Inclusive | Ese::IndexRangeFlags::UpperLimit );
                 return true;
             }
             else
@@ -684,11 +683,11 @@ namespace Harlinn::Common::Core::Examples
         }
 
 
-        bool Filter( const Guid& sensorId, const DateTime& startTimestamp, const DateTime& endTimestamp ) const
+        bool Filter( const Guid& sensorId, const DateTime& startTimestamp, const DateTime& endTimestamp, bool includePrevious = true ) const
         {
             MakeKey( sensorId, Ese::KeyFlags::NewKey );
             MakeKey( startTimestamp.Ticks() );
-            auto rc = Seek( Ese::SeekFlags::LessOrEqual );
+            auto rc = Seek( includePrevious? Ese::SeekFlags::LessOrEqual : Ese::SeekFlags::GreaterOrEqual );
             if ( rc >= Ese::Result::Success && Sensor() == sensorId )
             {
                 MakeKey( sensorId, Ese::KeyFlags::NewKey );
@@ -738,6 +737,11 @@ namespace Harlinn::Common::Core::Examples
             }
         }
 
+        void GetSensorValues( const Guid& sensorId, const DateTime& startTimestamp, std::vector<SensorValue>& sensorValues ) const
+        {
+            GetSensorValues( sensorId, startTimestamp, DateTime::MaxValue( ), sensorValues );
+        }
+
         void GetSensorPoints( const Guid& sensorId, std::vector<SensorPoint>& sensorPoints ) const
         {
             sensorPoints.clear( );
@@ -752,17 +756,7 @@ namespace Harlinn::Common::Core::Examples
 
         void GetSensorPoints( const Guid& sensorId, const DateTime& startTimestamp, const DateTime& endTimestamp, std::vector<SensorPoint>& sensorPoints ) const
         {
-            /*
             sensorPoints.clear( );
-            if ( MoveTo( sensorId, startTimestamp, false ) )
-            {
-                do
-                {
-                    Read( sensorPoints.emplace_back( ) );
-                } while ( MoveNext( ) && Sensor() == sensorId && Timestamp() < endTimestamp );
-            }
-            */
-
             if ( Filter( sensorId, startTimestamp, endTimestamp ) )
             {
                 do
@@ -799,7 +793,7 @@ namespace Harlinn::Common::Core::Examples
         }
         void Delete( const Guid& sensorId, const DateTime& startTimestamp, const DateTime& endTimestamp = DateTime::MaxValue() ) const
         {
-            if ( Filter( sensorId, startTimestamp, endTimestamp ) )
+            if ( Filter( sensorId, startTimestamp, endTimestamp, false ) )
             {
                 do
                 {

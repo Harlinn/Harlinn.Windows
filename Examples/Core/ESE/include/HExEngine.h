@@ -74,7 +74,7 @@ namespace Harlinn::Common::Core::Examples
         
 
 
-    private:
+    public:
         const CatalogItemTable& CatalogItems( ) const
         {
             return eseDatabase_.CatalogItems( );
@@ -237,6 +237,38 @@ namespace Harlinn::Common::Core::Examples
             auto& values = Values( );
             values.GetSensorValues( sensorValues );
         }
+
+        bool GetSensorValues( const Guid& sensorId, std::vector<SensorValue>& sensorValues ) const
+        {
+            if ( SensorExists( sensorId ) )
+            {
+                auto& values = Values( );
+                values.GetSensorValues( sensorId, sensorValues );
+                return true;
+            }
+            return false;
+        }
+        bool GetSensorValues( const Guid& sensorId, const DateTime& startTimestamp, const DateTime& endTimestamp, std::vector<SensorValue>& sensorValues ) const
+        {
+            if ( SensorExists( sensorId ) )
+            {
+                auto& values = Values( );
+                values.GetSensorValues( sensorId, startTimestamp, endTimestamp, sensorValues );
+                return true;
+            }
+            return false;
+        }
+        bool GetSensorValues( const Guid& sensorId, const DateTime& startTimestamp, std::vector<SensorValue>& sensorValues ) const
+        {
+            if ( SensorExists( sensorId ) )
+            {
+                auto& values = Values( );
+                values.GetSensorValues( sensorId, startTimestamp, sensorValues );
+                return true;
+            }
+            return false;
+        }
+
 
         bool Write( const Guid& sensorId, const std::vector<SensorPoint>& sensorPoints ) const
         {

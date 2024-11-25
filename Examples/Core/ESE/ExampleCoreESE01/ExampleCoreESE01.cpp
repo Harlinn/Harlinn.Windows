@@ -309,6 +309,26 @@ size_t ReadAllSensorData( Session& session, std::vector<Examples::Sensor>& senso
     return result;
 }
 
+size_t ReadAllSensorData2( Session& session )
+{
+    SensorPoint sensorPoint;
+    const auto& values = session.Values( );
+    values.SetSequential( );
+    size_t result = 0;
+
+    if ( values.MoveFirst( ) )
+    {
+        do
+        {
+            values.Read( sensorPoint );
+            result++;
+        } while ( values.MoveNext( ) );
+    }
+    return result;
+}
+
+
+
 size_t ReadSensorDataForInterval( Session& session, std::vector<Examples::Sensor>& sensors )
 {
     DateTime start( 2020, 1, 10 );
@@ -329,11 +349,11 @@ size_t ReadSensorDataForIntervalWithCheck( Session& session, std::vector<Example
     DateTime start( 2020, 1, 10 );
     DateTime end( 2020, 1, 25 );
     size_t result = 0;
-    std::vector<SensorPoint> points;
+    std::vector<SensorValue> points;
     points.reserve( IntervalStepCount );
     for ( auto& sensor : sensors )
     {
-        session.GetSensorPoints( sensor.Id, start, end, points );
+        session.GetSensorValues( sensor.Id, start, end, points );
         result += points.size( );
         if ( points.size( ) )
         {
@@ -345,9 +365,13 @@ size_t ReadSensorDataForIntervalWithCheck( Session& session, std::vector<Example
             {
                 printf( "Last point later than requested interval\n" );
             }
-            auto previousTimestamp = points.front( ).Timestamp - TimeSpan( 1 );
+            auto previousTimestamp = points.front( ).Timestamp - TimeSpan::FromMinutes( 1 );
             for ( const auto& point : points )
             {
+                if ( point.Sensor != sensor.Id )
+                {
+                    printf( "Point from another timeseries\n" );
+                }
                 if ( previousTimestamp >= point.Timestamp )
                 {
                     printf("Points not in expected order\n" );
@@ -430,6 +454,7 @@ void RunTests( Session& session )
     PerformanceOf( L"GetSensorValueCount", OperationType::Retrieve, GetSensorValueCount, session );
 
     PerformanceOf( L"ReadAllSensorData", OperationType::Retrieve, ReadAllSensorData, session, sensors );
+    PerformanceOf( L"ReadAllSensorData2", OperationType::Retrieve, ReadAllSensorData2, session );
     PerformanceOf( L"ReadSensorDataForInterval", OperationType::Retrieve, ReadSensorDataForInterval, session, sensors );
     PerformanceOf( L"ReadSensorDataForIntervalWithCheck", OperationType::Retrieve, ReadSensorDataForIntervalWithCheck, session, sensors );
 
