@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithBooleanColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, true );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert() );
@@ -173,6 +173,59 @@ BOOST_AUTO_TEST_CASE( CreateTableWithBooleanColumnTest1 )
     BOOST_TEST( value2 );
 }
 
+// --run_test=EseTests/CreateTableWithBooleanColumnTest2
+BOOST_AUTO_TEST_CASE( CreateTableWithBooleanColumnTest2 )
+{
+    // Initialize the Extensible Storage Engine
+    Ese::Instance instance( L"TestInstance" );
+    // Set the path to the directory that will contain the checkpoint file for the instance 
+    instance.SetSystemPath( DatabaseSystemPath );
+    // Set the path to the directory that will contain the transaction log files for the instance 
+    instance.SetLogFilePath( DatabaseLogfilePath );
+
+    // Create the session
+    auto session = instance.BeginSession( );
+    // Create or open the database overwriting any existing data
+    auto database = session.CreateDatabase( DatabasePath, Ese::CreateDatabaseFlags::OverwriteExisting );
+    // Create a table
+    auto table1 = database.CreateTable( "table1" );
+    // Add a column
+    auto columnId = table1.AddBoolean( "fieldName" );
+    auto DoInsert = [ &table1, columnId ]( )
+        {
+            // Insert a new row
+            table1.Insert( );
+            // Assign a value to the column
+            table1.SetColumn( columnId, true );
+            // Write the data to the table
+            table1.Store( );
+        };
+    // Inser two rows of data
+    DoInsert( );
+    DoInsert( );
+    
+    // Move the table cursor to the first row
+    if ( table1.MoveFirst( ) )
+    {
+        // Retrieve the column value as a std::optional<bool>
+        auto value1 = table1.As<bool>( columnId );
+        // Move the table cursor to the next row
+        if ( table1.MoveNext( ) )
+        {
+            auto value2 = false;
+            // Retrieve the column value by passing a reference
+            // to the variable that will be assigned the column
+            // value 
+            auto columnNotNull = table1.Read( columnId, value2 );
+            // Verify that the data is as expected
+            assert( columnNotNull == value1.has_value( ) == true );
+            assert( value2 == value1.value( ) == true );
+            // Verify that there are no more rows
+            assert( table1.MoveNext( ) == false );
+        }
+    }
+}
+
 // --run_test=EseTests/CreateTableWithNullableBooleanColumnTest1
 BOOST_AUTO_TEST_CASE( CreateTableWithNullableBooleanColumnTest1 )
 {
@@ -185,21 +238,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableBooleanColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, true );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, false );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -246,7 +299,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithSByteColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -277,21 +330,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableSByteColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -337,7 +390,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithByteColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -368,21 +421,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableByteColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -429,7 +482,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithInt16ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -460,21 +513,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt16ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -521,7 +574,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithUInt16ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -552,21 +605,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt16ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -612,7 +665,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithInt32ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -643,21 +696,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt32ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -704,7 +757,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithUInt32ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -735,21 +788,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt32ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -795,7 +848,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithInt64ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -826,21 +879,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableInt64ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -887,7 +940,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithUInt64ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -918,21 +971,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableUInt64ColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -978,7 +1031,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithSingleColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -1009,21 +1062,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableSingleColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -1069,7 +1122,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithDoubleColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -1100,21 +1153,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableDoubleColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -1160,7 +1213,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithCurrencyColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -1191,21 +1244,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableCurrencyColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId, SecondValueToInsert]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -1253,7 +1306,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithTimeSpanColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -1284,21 +1337,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableTimeSpanColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId, SecondValueToInsert]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -1345,7 +1398,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithDateTimeColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -1376,21 +1429,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableDateTimeColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId, SecondValueToInsert]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -1436,7 +1489,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithGuidColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -1467,21 +1520,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableGuidColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId, SecondValueToInsert]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -1527,7 +1580,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithTextColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -1558,21 +1611,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableTextColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId, SecondValueToInsert]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -1619,7 +1672,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithBinaryColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, ValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
@@ -1650,21 +1703,21 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableBinaryColumnTest1 )
     {
         table1.Insert( );
         table1.SetColumn( columnId, FirstValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoInsertNull = [&table1, columnId]( )
     {
         table1.Insert( );
         table1.SetNull( columnId );
-        table1.Update( );
+        table1.Store( );
     };
 
     auto DoReplace = [&table1, columnId, SecondValueToInsert]( )
     {
         table1.Replace( );
         table1.SetColumn( columnId, SecondValueToInsert );
-        table1.Update( );
+        table1.Store( );
     };
 
 
@@ -1697,10 +1750,10 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableBinaryColumnTest1 )
 
 struct SensorValue
 {
-    Guid Sensor;
-    DateTime Timestamp;
-    Int64 Flags = 0;
-    Double Value = 0.0;
+    boost::uuids::uuid Sensor;
+    std::chrono::system_clock::time_point Timestamp;
+    int64_t Flags = 0;
+    double Value = 0.0;
 };
 
 
@@ -1708,16 +1761,17 @@ class SensorEngine : public Engine
 {
 public:
     using Base = Engine;
-    static WideString SensorValueTableName;
-    static WideString SensorValueIndexName;
-    static WideString SensorColumnName;
-    static WideString TimestampColumnName;
-    static WideString FlagsColumnName;
-    static WideString ValueColumnName;
-    JET_COLUMNID SensorColumnId;
-    JET_COLUMNID TimestampColumnId;
-    JET_COLUMNID FlagsColumnId;
-    JET_COLUMNID ValueColumnId;
+    static constexpr char SensorValueTableName[] = "SV";
+    static constexpr char SensorValueIndexName[] = "ISV";
+    static constexpr char SensorColumnName[] = "S";
+    static constexpr char TimestampColumnName[] = "T";
+    static constexpr char FlagsColumnName[] = "F";
+    static constexpr char ValueColumnName[] = "V";
+
+    JET_COLUMNID SensorColumnId = 0;
+    JET_COLUMNID TimestampColumnId = 0;
+    JET_COLUMNID FlagsColumnId = 0;
+    JET_COLUMNID ValueColumnId = 0;
     Ese::Table SensorValues;
 
     SensorEngine( bool createDatabase = true )
@@ -1727,16 +1781,16 @@ public:
 
     void CreateSensorValueTable( )
     {
-        session.BeginTransaction( );
+        auto transaction = session.StartTransaction( );
         SensorValues = database.CreateTable( SensorValueTableName );
 
         SensorColumnId = SensorValues.AddGuid( SensorColumnName );
         TimestampColumnId = SensorValues.AddDateTime( TimestampColumnName );
         FlagsColumnId = SensorValues.AddUInt64( FlagsColumnName );
         ValueColumnId = SensorValues.AddDouble( ValueColumnName );
-        SensorValues.CreateIndex( SensorValueIndexName, Ese::IndexFlags::Primary, L"+S\0+T\0", 6 );
+        SensorValues.CreateIndex( SensorValueIndexName, Ese::IndexFlags::Primary, "+S\0+T\0", 7 );
 
-        session.CommitTransaction( );
+        transaction.Commit( );
     }
 
     void OpenSensorValueTable( )
@@ -1747,8 +1801,6 @@ public:
         TimestampColumnId = SensorValues.GetColumnId( TimestampColumnName );
         FlagsColumnId = SensorValues.GetColumnId( FlagsColumnName );
         ValueColumnId = SensorValues.GetColumnId( ValueColumnName );
-
-        SensorValues.SetCurrentIndex( SensorValueIndexName );
     }
 
     void Insert( const SensorValue& value )
@@ -1758,16 +1810,16 @@ public:
         SensorValues.SetColumn( TimestampColumnId, value.Timestamp );
         SensorValues.SetColumn( FlagsColumnId, value.Flags );
         SensorValues.SetColumn( ValueColumnId, value.Value );
-        SensorValues.Update( );
+        SensorValues.Store( );
     }
 
-    size_t Insert( size_t sensorCount, const DateTime& start, const DateTime& end, const TimeSpan& step, double valueOffset = 0.0 )
+    size_t Insert( size_t sensorCount, const std::chrono::system_clock::time_point& start, const std::chrono::system_clock::time_point& end, const std::chrono::system_clock::duration& step, double valueOffset = 0.0 )
     {
         if ( sensorCount > 10000 )
         {
             sensorCount = 10000;
         }
-        DateTime current = start;
+        std::chrono::system_clock::time_point current = start;
         SensorValue sensorValue;
         size_t count = 0;
         while ( current < end )
@@ -1776,7 +1828,7 @@ public:
             sensorValue.Value = static_cast<double>( count + 1 ) + valueOffset;
             for ( size_t i = 0; i < sensorCount; i++ )
             {
-                sensorValue.Sensor = Test::Ids[i];
+                sensorValue.Sensor = reinterpret_cast<const boost::uuids::uuid&>(Test::Ids[i]);
                 Insert( sensorValue );
             }
             current += step;
@@ -1785,25 +1837,25 @@ public:
         return count;
     }
 
-    void Update( const SensorValue& value )
+    void Store( const SensorValue& value )
     {
         if ( MoveTo( value.Sensor, value.Timestamp ) )
         {
             SensorValues.Replace( );
             SensorValues.SetColumn( FlagsColumnId, value.Flags );
             SensorValues.SetColumn( ValueColumnId, value.Value );
-            SensorValues.Update( );
+            SensorValues.Store( );
         }
     }
 
 
-    size_t Update( size_t sensorCount, const DateTime& start, const DateTime& end, const TimeSpan& step, double valueOffset = 0.0 )
+    size_t Store( size_t sensorCount, const std::chrono::system_clock::time_point& start, const std::chrono::system_clock::time_point& end, const std::chrono::system_clock::duration& step, double valueOffset = 0.0 )
     {
         if ( sensorCount > 10000 )
         {
             sensorCount = 10000;
         }
-        DateTime current = start;
+        std::chrono::system_clock::time_point current = start;
         SensorValue sensorValue;
         size_t count = 0;
         while ( current < end )
@@ -1812,8 +1864,8 @@ public:
             sensorValue.Value = static_cast<double>( count + 1 ) + valueOffset;
             for ( size_t i = 0; i < sensorCount; i++ )
             {
-                sensorValue.Sensor = Test::Ids[i];
-                Update( sensorValue );
+                sensorValue.Sensor = reinterpret_cast< const boost::uuids::uuid& >( Test::Ids[ i ] );
+                Store( sensorValue );
             }
             current += step;
             count++;
@@ -1821,20 +1873,35 @@ public:
         return count;
     }
 
-
-
-    Guid Sensor( ) const
+    void Delete( const SensorValue& value )
     {
-        Guid result;
+        if ( MoveTo( value.Sensor, value.Timestamp ) )
+        {
+            SensorValues.Delete( );
+        }
+    }
+
+
+
+    boost::uuids::uuid Sensor( ) const
+    {
+        boost::uuids::uuid result;
         SensorValues.Read( SensorColumnId, result );
         return result;
     }
-    DateTime Timestamp( ) const
+    std::chrono::system_clock::time_point Timestamp( ) const
     {
-        DateTime result;
+        std::chrono::system_clock::time_point result;
         SensorValues.Read( TimestampColumnId, result );
         return result;
     }
+    int64_t Flags( ) const
+    {
+        int64_t result;
+        SensorValues.Read( FlagsColumnId, result );
+        return result;
+    }
+
     double Value( ) const
     {
         double result;
@@ -1842,22 +1909,46 @@ public:
         return result;
     }
 
-    bool MoveTo( const Guid& sensorId ) const
+    SensorValue Retrieve( )
+    {
+        SensorValue result{ Sensor( ), Timestamp( ), Flags( ), Value( ) };
+        return result;
+    }
+
+
+
+    bool MoveTo( const boost::uuids::uuid& sensorId ) const
     {
         SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
         auto rc = SensorValues.Seek( Ese::SeekFlags::GreaterOrEqual );
         return rc >= Ese::Result::Success;
     }
 
-    bool Filter( const Guid& sensorId ) const
+    bool MoveTo( const boost::uuids::uuid& sensorId, const std::chrono::system_clock::time_point& timestamp ) const
     {
         SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
+        SensorValues.MakeKey( timestamp );
+        auto rc = SensorValues.Seek( Ese::SeekFlags::LessOrEqual );
+        return rc >= Ese::Result::Success;
+    }
+
+    bool MoveToLast( const boost::uuids::uuid& sensorId ) const
+    {
+        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
+        SensorValues.MakeKey( DateTime::MaxValue( ) );
+
+        auto rc = SensorValues.Seek( Ese::SeekFlags::LessOrEqual );
+        return rc >= Ese::Result::Success;
+    }
+
+    bool Filter( const boost::uuids::uuid& sensorId ) const
+    {
+        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnStartLimit );
         auto rc = SensorValues.Seek( Ese::SeekFlags::GreaterOrEqual );
         if ( rc >= Ese::Result::Success )
         {
-            SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
-            SensorValues.MakeKey( DateTime::MaxValue() );
-            SensorValues.SetIndexRange( Ese::IndexRangeFlags::UpperLimit );
+            SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnEndLimit );
+            SensorValues.SetIndexRange( Ese::IndexRangeFlags::Inclusive | Ese::IndexRangeFlags::UpperLimit );
             return true;
         }
         else
@@ -1867,35 +1958,17 @@ public:
     }
 
 
-    bool MoveTo( const Guid& sensorId, const DateTime& timestamp ) const
+
+    bool ReverseFilter( const boost::uuids::uuid& sensorId ) const
     {
-        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
-        SensorValues.MakeKey( timestamp );
-        auto rc = SensorValues.Seek( Ese::SeekFlags::LessOrEqual );
-        return rc >= Ese::Result::Success;
-    }
-
-    bool MoveToLast( const Guid& sensorId ) const
-    {
-        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
-        SensorValues.MakeKey( DateTime::MaxValue() );
-
-        auto rc = SensorValues.Seek( Ese::SeekFlags::LessOrEqual );
-        return rc >= Ese::Result::Success;
-    }
-
-
-    bool ReverseFilter( const Guid& sensorId ) const
-    {
-        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
-        SensorValues.MakeKey( DateTime::MaxValue( ) );
+        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnEndLimit );
 
         auto rc = SensorValues.Seek( Ese::SeekFlags::LessOrEqual );
 
         if ( rc >= Ese::Result::Success )
         {
-            SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
-            SensorValues.SetIndexRange( );
+            SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnStartLimit );
+            SensorValues.SetIndexRange( Ese::IndexRangeFlags::Inclusive);
             return true;
         }
         else
@@ -1907,12 +1980,6 @@ public:
 
 };
 
-WideString SensorEngine::SensorValueTableName{ L"SV" };
-WideString SensorEngine::SensorValueIndexName{ L"ISV" };
-WideString SensorEngine::SensorColumnName{ L"S" };
-WideString SensorEngine::TimestampColumnName{ L"T" };
-WideString SensorEngine::FlagsColumnName{ L"F" };
-WideString SensorEngine::ValueColumnName{ L"V" };
 
 
 // --run_test=EseTests/CreateSensorValueTableTest1
@@ -1936,21 +2003,22 @@ BOOST_AUTO_TEST_CASE( InsertSearchAndUpdateSensorValueTableTest1 )
     DateTime start( 2020, 1, 1 );
     DateTime end( 2020, 1, 2 );
     TimeSpan step = TimeSpan::FromHours( 1 );
-    auto count = engine.Insert( 3, start, end, step );
+    auto count = engine.Insert( 3, start.ToTimePoint(), end.ToTimePoint( ), step.ToDuration() );
     BOOST_TEST( count > 0 );
 
     auto moveResult = sensorValues.MoveFirst( );
     BOOST_TEST( moveResult );
     auto firstSensor = engine.Sensor();
 
-    moveResult = sensorValues.MoveFirst( );
+    moveResult = sensorValues.MoveNext( );
     BOOST_TEST( moveResult );
     auto secondSensor = engine.Sensor( );
     
-    moveResult = sensorValues.MoveFirst( );
+    moveResult = sensorValues.MoveNext( );
     BOOST_TEST( moveResult );
     auto thirdSensor = engine.Sensor( );
-    auto fourthSensor = Test::Ids[3];
+
+    auto fourthSensor = reinterpret_cast< const boost::uuids::uuid& >( Test::Ids[ 3 ] );
 
     auto success = sensorValues.MoveFirst( );
     BOOST_CHECK( success );
@@ -2004,7 +2072,7 @@ BOOST_AUTO_TEST_CASE( InsertSearchAndUpdateSensorValueTableTest1 )
     }
 
 
-    success = engine.MoveTo( thirdSensor, start + TimeSpan::FromHours( 12.5 ) );
+    success = engine.MoveTo( thirdSensor, start.ToTimePoint( ) + TimeSpan::FromHours( 12.5 ).ToDuration() );
     BOOST_CHECK( success );
     if ( success )
     {
@@ -2024,7 +2092,7 @@ BOOST_AUTO_TEST_CASE( InsertSearchAndUpdateSensorValueTableTest1 )
         BOOST_CHECK( sum == 222 );
     }
 
-    count = engine.Update( 2, start, end, step, 1.0 );
+    count = engine.Store( 2, start.ToTimePoint(), end.ToTimePoint(), step.ToDuration(), 1.0 );
 
     success = engine.MoveToLast( secondSensor );
     BOOST_CHECK( success );

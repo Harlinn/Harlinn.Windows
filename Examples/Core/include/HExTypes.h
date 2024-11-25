@@ -81,7 +81,7 @@ namespace Harlinn::Common::Core::Examples
     struct Named
     {
         Guid Id;
-        WideString Name;
+        std::string Name;
         Named( )
         {
         }
@@ -146,7 +146,7 @@ namespace Harlinn::Common::Core::Examples
         }
 
         template<typename T>
-        static CatalogItemType Read( T& reader )
+        static CatalogItemType ReadType( T& reader )
         {
             auto kind = reader.ReadInt16( );
             return static_cast<CatalogItemType>( kind );

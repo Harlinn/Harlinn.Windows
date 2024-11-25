@@ -30,14 +30,14 @@ namespace Harlinn::Common::Core::Examples
         using namespace boost::program_options;
     }
 
-    inline WideString GetDirectory( const WideString& filename )
+    inline std::string GetDirectory( const std::string& filename )
     {
-        wchar_t drive[_MAX_DRIVE + 1];
-        wchar_t directory[_MAX_DIR + 1];
-        _wsplitpath( filename.c_str( ), drive, directory, nullptr, nullptr );
-        wchar_t buffer[_MAX_PATH + 1];
-        _wmakepath( buffer, drive, directory, nullptr, nullptr );
-        return WideString(buffer);
+        char drive[_MAX_DRIVE + 1];
+        char directory[_MAX_DIR + 1];
+        _splitpath( filename.c_str( ), drive, directory, nullptr, nullptr );
+        char buffer[_MAX_PATH + 1];
+        _makepath( buffer, drive, directory, nullptr, nullptr );
+        return std::string(buffer);
     }
 
     inline bool ParseOptions( int argc, char* argv[], EngineOptions& options )
@@ -68,9 +68,9 @@ namespace Harlinn::Common::Core::Examples
         notify( vm );
 
 
-        options.Database = WideString::From( databasePath );
-        options.SystemPath = WideString::From( systemPath );
-        options.LogFilePath = WideString::From( logFilePath );
+        options.Database = databasePath;
+        options.SystemPath = systemPath;
+        options.LogFilePath = logFilePath;
 
 
         if ( vm.count( "help" ) || options.Database.empty() )
@@ -83,12 +83,12 @@ namespace Harlinn::Common::Core::Examples
             if ( options.SystemPath.empty( ) )
             {
                 auto directory = GetDirectory( options.Database );
-                options.SystemPath = WideString(directory.c_str(), directory.length()) + L"System\\";
+                options.SystemPath = std::string(directory.c_str(), directory.length()) + "System\\";
             }
             if ( options.LogFilePath.empty( ) )
             {
                 auto directory = GetDirectory( options.Database );
-                options.LogFilePath = WideString( directory.c_str( ), directory.length( ) ) + L"Log\\";
+                options.LogFilePath = std::string( directory.c_str( ), directory.length( ) ) + "Log\\";
             }
             return true;
         }

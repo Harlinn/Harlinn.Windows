@@ -335,49 +335,49 @@ namespace Harlinn::Common::Core
 
     namespace
     {
-        using ColumnInfoFlags = Ese::ColumnInfoFlags;
-        class ColumnInfoFlagsConverter : public Flags<ColumnInfoFlags>
+        using ColumnInfoLevel = Ese::ColumnInfoLevel;
+        class ColumnInfoLevelConverter : public Flags<ColumnInfoLevel>
         {
         public:
-            using Base = Flags<ColumnInfoFlags>;
-            ColumnInfoFlagsConverter( )
+            using Base = Flags<ColumnInfoLevel>;
+            ColumnInfoLevelConverter( )
             {
-                Add( L"Default", ColumnInfoFlags::Default );
-                Add( L"Base", ColumnInfoFlags::Base );
-                Add( L"ByColid", ColumnInfoFlags::ByColid );
-                Add( L"List", ColumnInfoFlags::List );
-                Add( L"ListCompact", ColumnInfoFlags::ListCompact );
-                Add( L"ListSortColumnId", ColumnInfoFlags::ListSortColumnId );
-                Add( L"BaseByColId", ColumnInfoFlags::BaseByColId );
-                Add( L"NonDerivedColumnsOnly", ColumnInfoFlags::NonDerivedColumnsOnly );
-                Add( L"MinimalInfo", ColumnInfoFlags::MinimalInfo );
-                Add( L"SortByColumnId", ColumnInfoFlags::SortByColumnId );
+                Add( L"Default", ColumnInfoLevel::Default );
+                Add( L"Base", ColumnInfoLevel::Base );
+                Add( L"ByColid", ColumnInfoLevel::ByColid );
+                Add( L"List", ColumnInfoLevel::List );
+                Add( L"ListCompact", ColumnInfoLevel::ListCompact );
+                Add( L"ListSortColumnId", ColumnInfoLevel::ListSortColumnId );
+                Add( L"BaseByColId", ColumnInfoLevel::BaseByColId );
+                Add( L"NonDerivedColumnsOnly", ColumnInfoLevel::NonDerivedColumnsOnly );
+                Add( L"MinimalInfo", ColumnInfoLevel::MinimalInfo );
+                Add( L"SortByColumnId", ColumnInfoLevel::SortByColumnId );
             }
         };
-        ColumnInfoFlagsConverter columnInfoFlagsConverter;
+        ColumnInfoLevelConverter columnInfoLevelConverter;
     }
 
-    WideString ToWideString( Ese::ColumnInfoFlags value )
+    WideString ToWideString( Ese::ColumnInfoLevel value )
     {
-        return columnInfoFlagsConverter.ToString( value );
+        return columnInfoLevelConverter.ToString( value );
     }
-    WideString ToWideString( Ese::ColumnInfoFlags value, const WideString& defaultResult )
+    WideString ToWideString( Ese::ColumnInfoLevel value, const WideString& defaultResult )
     {
-        return columnInfoFlagsConverter.ToString( value, defaultResult );
+        return columnInfoLevelConverter.ToString( value, defaultResult );
     }
     namespace Ese
     {
-        Ese::ColumnInfoFlags ParseColumnInfoFlags( const WideString& str )
+        Ese::ColumnInfoLevel ParseColumnInfoLevel( const WideString& str )
         {
-            return columnInfoFlagsConverter.Parse( str );
+            return columnInfoLevelConverter.Parse( str );
         }
-        Ese::ColumnInfoFlags ParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoFlags defaultResult )
+        Ese::ColumnInfoLevel ParseColumnInfoLevel( const WideString& str, Ese::ColumnInfoLevel defaultResult )
         {
-            return columnInfoFlagsConverter.Parse( str, defaultResult );
+            return columnInfoLevelConverter.Parse( str, defaultResult );
         }
-        bool TryParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoFlags& value )
+        bool TryParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoLevel& value )
         {
-            return columnInfoFlagsConverter.TryParse( str, value );
+            return columnInfoLevelConverter.TryParse( str, value );
         }
     }
 

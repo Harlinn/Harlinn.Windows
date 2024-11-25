@@ -24,6 +24,22 @@
 using namespace Harlinn::Common::Core;
 using namespace Harlinn::Common::Core::Examples;
 
+#ifdef _DEBUG
+DateTime IntervalStart( 2020, 1, 1 );
+DateTime IntervalEnd( 2020, 2, 1 );
+#else
+DateTime IntervalStart( 2020, 1, 1 );
+DateTime IntervalEnd( 2020, 2, 1 );
+#endif
+
+#ifdef _DEBUG
+TimeSpan IntervalStep = TimeSpan::FromDays( 1 );
+#else
+TimeSpan IntervalStep = TimeSpan::FromMinutes( 1 );
+#endif
+
+size_t IntervalStepCount = static_cast< size_t >( ( IntervalEnd - IntervalStart ).Ticks( ) / IntervalStep.Ticks( ) );
+
 class Engine;
 class Session : public SessionT<Engine>
 {
@@ -49,19 +65,19 @@ public:
 
 
 
-WideString GetSensorName( size_t value )
+std::string GetSensorName( size_t value )
 {
-    return Format( L"S{:08x}", value );
+    return std::format( "S{:08x}", value );
 }
 
-WideString GetCatalogName( size_t value )
+std::string GetCatalogName( size_t value )
 {
-    return Format( L"C{:08x}", value );
+    return std::format( "C{:08x}", value );
 }
 
-WideString GetAssetName( size_t value )
+std::string GetAssetName( size_t value )
 {
-    return Format( L"A{:08x}", value );
+    return std::format( "A{:08x}", value );
 }
 
 
@@ -266,8 +282,8 @@ size_t GenerateDataForSensor( Session& session,
 size_t GenerateSensorData( Session& session, std::vector<Examples::Sensor>& sensors )
 {
     size_t result = 0;
-    DateTime start( 2020, 1, 1 );
-    DateTime end( 2020, 2, 1 );
+    DateTime start = IntervalStart;
+    DateTime end = IntervalEnd;
 #ifdef _DEBUG
     TimeSpan step = TimeSpan::FromDays( 1 );
 #else
@@ -284,7 +300,7 @@ size_t ReadAllSensorData( Session& session, std::vector<Examples::Sensor>& senso
 {
     size_t result = 0;
     std::vector<SensorPoint> points;
-    points.reserve( 50000 );
+    points.reserve( IntervalStepCount );
     for ( auto& sensor : sensors )
     {
         session.GetSensorPoints( sensor.Id, points );
@@ -299,7 +315,7 @@ size_t ReadSensorDataForInterval( Session& session, std::vector<Examples::Sensor
     DateTime end( 2020, 1, 25 );
     size_t result = 0;
     std::vector<SensorPoint> points;
-    points.reserve( 25000 );
+    points.reserve( IntervalStepCount );
     for ( auto& sensor : sensors )
     {
         session.GetSensorPoints( sensor.Id, start, end, points );
@@ -314,7 +330,7 @@ size_t ReadSensorDataForIntervalWithCheck( Session& session, std::vector<Example
     DateTime end( 2020, 1, 25 );
     size_t result = 0;
     std::vector<SensorPoint> points;
-    points.reserve( 25000 );
+    points.reserve( IntervalStepCount );
     for ( auto& sensor : sensors )
     {
         session.GetSensorPoints( sensor.Id, start, end, points );
@@ -399,8 +415,11 @@ void RunTests( Session& session )
     size_t result = 0;
     std::vector<Examples::Sensor> sensors;
     std::vector<CatalogData> catalogs;
-
+#ifdef _DEBUG
     PerformanceOf( L"BuildStructure", OperationType::Create, BuildStructure, session, 10, 10, 10 );
+#else
+    PerformanceOf( L"BuildStructure", OperationType::Create, BuildStructure, session, 10, 10, 10 );
+#endif
     PerformanceOf( L"ReadStructure", OperationType::Retrieve, ReadStructure, session, catalogs );
     
     PerformanceOf( L"ReadSensors", OperationType::Retrieve, ReadSensors, session, sensors );
@@ -423,9 +442,9 @@ void RunTests( Session& session )
 #endif
     
     //PerformanceOf( L"DeleteSensorDataForInterval", OperationType::Delete, DeleteSensorDataForInterval, session, sensors );
-    //PerformanceOf( L"ReadAllSensorData", OperationType::Retrieve, ReadAllSensorData, session, sensors );
+    PerformanceOf( L"ReadAllSensorData", OperationType::Retrieve, ReadAllSensorData, session, sensors );
     //PerformanceOf( L"DeleteSensors", OperationType::Delete, DeleteSensors, session, sensors );
-    //PerformanceOf( L"ReadSensors", OperationType::Retrieve, ReadSensors, session, sensors );
+    PerformanceOf( L"ReadSensors", OperationType::Retrieve, ReadSensors, session, sensors );
     
 }
 

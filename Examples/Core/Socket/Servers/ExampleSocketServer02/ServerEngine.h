@@ -468,7 +468,7 @@ catch ( ... ) \
             constexpr RequestReplyType ReplyType = RequestReplyType::CreateOrRetrieveCatalog;
             auto [sessionId, requestId] = ReadSessionRequestHeader( requestReader );
             auto ownerId = requestReader.Read<Guid>( );
-            auto catalogName = requestReader.Read<WideString>( );
+            auto catalogName = requestReader.Read<std::string>( );
 
             auto* session = engine_.FindSession( sessionId );
             if ( session )
@@ -494,7 +494,7 @@ catch ( ... ) \
             constexpr RequestReplyType ReplyType = RequestReplyType::CreateOrRetrieveAsset;
             auto [sessionId, requestId] = ReadSessionRequestHeader( requestReader );
             auto ownerId = requestReader.Read<Guid>( );
-            auto assetName = requestReader.Read<WideString>( );
+            auto assetName = requestReader.Read<std::string>( );
 
             auto* session = engine_.FindSession( sessionId );
             if ( session )
@@ -635,7 +635,7 @@ catch ( ... ) \
             constexpr RequestReplyType ReplyType = RequestReplyType::CreateOrRetrieveSensor;
             auto [sessionId, requestId] = ReadSessionRequestHeader( requestReader );
             auto assetId = requestReader.Read<Guid>( );
-            auto sensorName = requestReader.Read<WideString>( );
+            auto sensorName = requestReader.Read<std::string>( );
 
             auto* session = engine_.FindSession( sessionId );
             if ( session )

@@ -90,7 +90,7 @@ namespace Harlinn::Common::Core::Examples
         }
     public:
 
-        bool CreateOrRetrieveSensor( const Guid& assetId, const WideString& sensorName, Examples::Sensor& result ) const
+        bool CreateOrRetrieveSensor( const Guid& assetId, const std::string& sensorName, Examples::Sensor& result ) const
         {
             if ( AssetExists( assetId ) )
             {
@@ -117,14 +117,14 @@ namespace Harlinn::Common::Core::Examples
             }
         }
 
-        Sensor CreateOrRetrieveSensor( const Guid& assetId, const WideString& sensorName ) const
+        Sensor CreateOrRetrieveSensor( const Guid& assetId, const std::string& sensorName ) const
         {
             Sensor result;
             CreateOrRetrieveSensor( assetId, sensorName, result );
             return result;
         }
 
-        bool GetSensor( const Guid& ownerId, const WideString& sensorName, Sensor& result ) const
+        bool GetSensor( const Guid& ownerId, const std::string& sensorName, Sensor& result ) const
         {
             auto& sensors = Sensors( );
             if ( sensors.MoveTo( ownerId, sensorName ) )
@@ -147,7 +147,7 @@ namespace Harlinn::Common::Core::Examples
             return false;
         }
 
-        bool DeleteSensor( const Guid& ownerId, const WideString& sensorName ) const
+        bool DeleteSensor( const Guid& ownerId, const std::string& sensorName ) const
         {
             auto& sensors = Sensors( );
             if ( sensors.MoveTo( ownerId, sensorName ) )
@@ -193,7 +193,7 @@ namespace Harlinn::Common::Core::Examples
             auto& sensors = Sensors( );
             return sensors.MoveTo( sensorId );
         }
-        bool SensorExists( const Guid& ownerId, const WideString& sensorName ) const
+        bool SensorExists( const Guid& ownerId, const std::string& sensorName ) const
         {
             auto& sensors = Sensors( );
             auto result = sensors.MoveTo( ownerId, sensorName );
@@ -301,7 +301,7 @@ namespace Harlinn::Common::Core::Examples
         }
 
 
-        Catalog CreateOrRetrieveCatalog( const Guid& owningCatalogId, const WideString& name )
+        Catalog CreateOrRetrieveCatalog( const Guid& owningCatalogId, const std::string& name )
         {
             if ( owningCatalogId.empty( ) == false && CatalogExists( owningCatalogId ) == false )
             {
@@ -310,7 +310,7 @@ namespace Harlinn::Common::Core::Examples
             auto& catalogItems = CatalogItems( );
             return catalogItems.CreateOrRetrieveCatalog( owningCatalogId, name );
         }
-        Asset CreateOrRetrieveAsset( const Guid& owningCatalogId, const WideString& name )
+        Asset CreateOrRetrieveAsset( const Guid& owningCatalogId, const std::string& name )
         {
             if ( CatalogExists( owningCatalogId ) == false )
             {
@@ -423,9 +423,9 @@ namespace Harlinn::Common::Core::Examples
 
     struct EngineOptions
     {
-        WideString Database;
-        WideString SystemPath;
-        WideString LogFilePath;
+        std::string Database;
+        std::string SystemPath;
+        std::string LogFilePath;
         bool Create = false;
         bool Replace = false;
         bool Unsafe = false;
@@ -451,7 +451,7 @@ namespace Harlinn::Common::Core::Examples
         std::unordered_map<Int64, std::unique_ptr<SessionType> > sessions_;
     public:
         EngineT( const EngineOptions& options, const char* instanceName )
-            : options_( options ), instance_( WideString::From(instanceName) )
+            : options_( options ), instance_( instanceName )
         {
             ProcessOptions( );
         }

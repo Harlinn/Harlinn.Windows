@@ -77,24 +77,20 @@ namespace Harlinn::Common::Core::Ese
         }
     }
 
-    template<typename T>
-    concept StringType = ( std::is_same_v<AnsiString, T> || std::is_same_v<WideString, T> );
 
     template<typename T>
     concept CharType = ( std::is_same_v<char, T> || std::is_same_v<wchar_t, T> );
 
-    template<typename T>
-    concept BinaryVectorType = ( std::is_same_v< std::vector<char>, T> ||
-        std::is_same_v< std::vector<unsigned char>, T> ||
-        std::is_same_v< std::vector<signed char>, T> );
-
+    
 
     template<typename T>
     concept DirectType = ( ( std::is_integral_v<T> && !std::is_same_v<bool, T> ) ||
         std::is_floating_point_v<T> ||
         std::is_same_v<TimeSpan, T> ||
         std::is_same_v<Currency, T> ||
-        std::is_same_v<Guid, T> );
+        std::is_same_v<Guid, T> ||
+        std::is_same_v<GUID, T> ||
+        std::is_same_v<boost::uuids::uuid, T> );
 
     template<typename T>
     concept TableType = (std::is_base_of_v<Table, T> && 
@@ -117,97 +113,358 @@ namespace Harlinn::Common::Core::Ese
 
 
 
-    // Describes the column types that can be found in a table
+    /// <summary>
+    /// Describes the table the column types.
+    /// </summary>
     enum class ColumnType
     {
         None = JET_coltypNil,
-        // True, False, or NULL 
+        /// <summary>
+        /// A column type that allows three values: True, 
+        /// False, or NULL. This type of column is one 
+        /// byte in length and is a fixed size. False sorts 
+        /// before True.
+        /// </summary>
         Boolean = JET_coltypBit,
-        // 1-byte integer, unsigned 
+        /// <summary>
+        /// A 1-byte unsigned integer that can take on values 
+        /// between 0 (zero) and 255.
+        /// </summary>
         Byte = JET_coltypUnsignedByte,
-        // 2-byte integer, signed 
+        /// <summary>
+        /// A 2-byte signed integer that can take on values 
+        /// between -32768 and 32767. Negative values sort 
+        /// before positive values.
+        /// </summary>
         Short = JET_coltypShort,
-        // 4-byte integer, signed 
+        /// <summary>
+        /// A 4-byte signed integer that can take on values 
+        /// between - 2147483648 and 2147483647. Negative 
+        /// values sort before positive values.
+        /// </summary>
         Long = JET_coltypLong,
-        // 8 byte integer, signed 
+        /// <summary>
+        /// An 8-byte signed integer that can take on values 
+        /// between - 9223372036854775808 and 9223372036854775807. 
+        /// Negative values sort before positive values. 
+        /// This column type is identical to the variant currency type. 
+        /// </summary>
         Currency = JET_coltypCurrency,
-        // 4-byte IEEE single precision 
+        /// <summary>
+        /// A single-precision (4-byte) floating point number.
+        /// </summary>
         Single = JET_coltypIEEESingle,
-        // 8-byte IEEE double precision
+        /// <summary>
+        /// A double-precision (8-byte) floating point number.
+        /// </summary>
         Double = JET_coltypIEEEDouble,
-        // Integral date, fractional time
+        /// <summary>
+        /// A double-precision (8-byte) floating point number 
+        /// that represents a date in fractional days since 
+        /// the year 1900. This column type is identical to 
+        /// the variant date type.
+        /// </summary>
         DateTime = JET_coltypDateTime,
-        // Binary data, < 255 bytes 
+        /// <summary>
+        /// <para>
+        /// A fixed or variable length, raw binary column 
+        /// that can be up to 255 bytes in length.
+        /// </para>
+        /// <para>
+        /// This column type can be used to implement a 
+        /// GUID if configured as a fixed length, 16-byte 
+        /// binary column. The only caveat is that the 
+        /// relative ordering of values in an index over 
+        /// such a column will not match the relative 
+        /// ordering of the standard registry-string 
+        /// rendering of a GUID
+        /// </para>
+        /// </summary>
         Binary = JET_coltypBinary,
-        // ANSI text, case insensitive, < 255 bytes 
+        /// <summary>
+        /// <para>
+        /// A fixed or variable length text column that 
+        /// can be up to 255 ASCII characters in length 
+        /// or 127 Unicode characters in length.
+        /// </para>
+        /// <para>
+        /// All strings are stored as a counted number of 
+        /// characters. The strings need not be null terminated. 
+        /// Further, it is not necessary for the count to 
+        /// include a null terminator. Finally, embedded 
+        /// null characters can be stored.
+        /// </para>
+        /// <para>
+        /// ASCII strings are always treated as case insensitive 
+        /// for sorting and searching purposes. Further, only 
+        /// the characters preceding the first null character 
+        /// (if any) are considered for sorting and searching.
+        /// </para>
+        /// <para>
+        /// Unicode strings use the Win32 API LCMapString to 
+        /// create sort keys that are subsequently used for 
+        /// sorting and searching that data. By default, 
+        /// Unicode strings are considered to be in the U.S. 
+        /// English locale and are sorted and searched using 
+        /// the following normalization flags: 
+        /// </para>
+        /// <list type="bullet">
+        /// <item>NORM_IGNORECASE</item>
+        /// <item>NORM_IGNOREKANATYPE</item>
+        /// <item>NORM_IGNOREWIDTH.</item>
+        /// </list>
+        /// <para>
+        /// In Windows 2000, it is possible to customize these flags 
+        /// per index to also include NORM_IGNORENONSPACE. In Windows XP 
+        /// and later releases, it is possible to request any combination 
+        /// of the following normalization flags per index: 
+        /// </para>
+        /// <list type="bullet">
+        /// <item>LCMAP_SORTKEY</item>
+        /// <item>LCMAP_BYTEREV</item>
+        /// <item>NORM_IGNORECASE</item>
+        /// <item>NORM_IGNORENONSPACE</item>
+        /// <item>NORM_IGNORESYMBOLS</item>
+        /// <item>NORM_IGNOREKANATYPE</item>
+        /// <item>NORM_IGNOREWIDTH</item>
+        /// <item>SORT_STRINGSORT</item>
+        /// </list>
+        /// <para>
+        /// In all releases, it is possible to customize the locale per index. 
+        /// Any locale may be used as long as the appropriate language pack has 
+        /// been installed on the machine. Finally, any null characters 
+        /// encountered in a Unicode string are completely ignored.
+        /// </para>
+        /// </summary>
         Text = JET_coltypText,
-        // Binary data, long value 
+        /// <summary>
+        /// A fixed or variable length, raw binary column that can be up to 
+        /// 2147483647 bytes in length. This type is considered to be a Long 
+        /// Value. A Long Value is special because it can be large and because 
+        /// it can be accessed as a stream. This type is otherwise identical 
+        /// to ColumnType::Binary.
+        /// </summary>
         LongBinary = JET_coltypLongBinary,
-        // ANSI text, long value 
+        /// <summary>
+        /// A fixed or variable length, text column that can be up to 2147483647 
+        /// ASCII characters in length or 1073741823 Unicode characters in length. 
+        /// This type is considered to be a Long Value. A Long Value is special 
+        /// because it can be large and because it can be accessed as a stream. 
+        /// This type is otherwise identical to ColumnType::Binary.
+        /// </summary>
         LongText = JET_coltypLongText,
-        // SLV's
+        /// <summary>
+        /// This column type is obsolete.
+        /// </summary>
         SLV = JET_coltypSLV,
-        // 4-byte unsigned integer
+        /// <summary>
+        /// <para>
+        /// A 4-byte unsigned integer that can take on values between 0 (zero) and 4294967295.
+        /// </para>
+        /// <para>
+        /// Windows Vista and Windows Server 2008:  This column type is supported on 
+        /// Windows Vista, Windows Server 2008 and later releases.
+        /// </para>
+        /// </summary>
         UnsignedLong = JET_coltypUnsignedLong,
-        // 8-byte signed integer 
+        /// <summary>
+        /// <para>
+        /// An 8-byte signed integer that can take on values between 
+        /// -9223372036854775808 and 9223372036854775807. Negative 
+        /// values sort before positive values.
+        /// </para>
+        /// <para>
+        /// Windows Vista and Windows Server 2008:  This column type is 
+        /// supported on Windows Vista, Windows Server 2008 and later releases.
+        /// </para>
+        /// </summary>
         LongLong = JET_coltypLongLong,
-        // 16-byte globally unique identifier 
+        /// <summary>
+        /// <para>
+        /// A fixed length 16 byte binary column that natively represents the 
+        /// GUID data type. GUID column values sort in the same way that those 
+        /// values would sort as strings when in standard form 
+        /// (i.e. {4999b5c0-7657-42d9-bdc1-4b779784e013}).
+        /// </para>
+        /// <para>
+        /// Windows Vista and Windows Server 2008:  This column type is supported 
+        /// on Windows Vista, Windows Server 2008 and later releases.
+        /// </para>
+        /// </summary>
         Guid = JET_coltypGUID,
-        // 2-byte unsigned integer 
+        /// <summary>
+        /// <para>
+        /// A 2-byte unsigned integer that can take on values between 0 and 65535.
+        /// </para>
+        /// <para>
+        /// Windows Vista and Windows Server 2008:  This column type is supported 
+        /// on Windows Vista, Windows Server 2008 and later releases.
+        /// </para>
+        /// </summary>
         UnsignedShort = JET_coltypUnsignedShort,
-        // 8-byte unsigned integer
+        /// <summary>
+        /// <para>
+        /// An 8-byte unsigned integer
+        /// </para>
+        /// <para>
+        /// This column type is supported on Windows 10 and later.
+        /// </para>
+        /// </summary>
         UnsignedLongLong = JET_coltypUnsignedLongLong
     };
 
-
+    /// <summary>
+    /// The flags that describe the column. (grbit) 
+    /// </summary>
     enum class ColumnFlags : int
     {
         None = 0,
-        // The column will be fixed.It will always use the same amount of space in 
-        // a row, regardless of how much data is being stored in the column. 
-        //
-        // Fixed cannot be combined with Tagged or used with long values ( that is 
-        // ColumnType::LongText and ColumnType::LongBinary ).
+        /// <summary>
+        /// <para>
+        /// The column will be fixed. It will always use the same amount of space in 
+        /// a row, regardless of how much data is being stored in the column. 
+        /// </para>
+        /// <para>
+        /// Fixed cannot be combined with Tagged or used with long values ( that is 
+        /// ColumnType::LongText and ColumnType::LongBinary ).
+        /// </para>
+        /// </summary>
         Fixed = JET_bitColumnFixed,
-        // The column will be tagged. Tagged columns do not take up any space in the 
-        // database if they do not contain data. This bit cannot be combined with Fixed
+        /// <summary>
+        /// The column will be tagged. Tagged columns do not take up any space in the 
+        /// database if they do not contain data. This bit cannot be combined with Fixed
+        /// </summary>
         Tagged = JET_bitColumnTagged,
-        // The column must never be set to a NULL value
+        /// <summary>
+        /// The column must never be set to a NULL value
+        /// </summary>
         NotNULL = JET_bitColumnNotNULL,
-        // The column is a version column that specifies the version of the row.
-        // The value of this column starts at zero and will be automatically 
-        // incremented for each update on the row.
+        /// <summary>
+        /// <para>
+        /// The column is a version column that specifies the version of the row.
+        /// The value of this column starts at zero and will be automatically 
+        /// incremented for each update on the row.
+        /// </para>
+        /// <para>
+        /// This bit can only be applied to ColumnType::Long columns. This bit 
+        /// cannot be used with ColumnFlags::Autoincrement, ColumnFlags::EscrowUpdate, 
+        /// or ColumnFlags::Tagged.
+        /// </para>
+        /// </summary>
         Version = JET_bitColumnVersion,
-        // The column will automatically be incremented. 
-        // The number is an increasing number, and is guaranteed to be unique within a table. 
-        //
-        // The numbers, however, might not be continuous. 
-        // For example, if five rows are inserted into a table, the "autoincrement" column 
-        // could contain the values { 1, 2, 6, 7, 8 }. This bit can only be used on columns 
-        // of type ColumnType::Long or ColumnType::Currency.
+        /// </summary>
+        /// <para>
+        /// The column will automatically be incremented. 
+        /// The number is an increasing number, and is guaranteed to be unique within a table. 
+        /// </para>
+        /// <para>
+        /// The numbers, however, might not be continuous. 
+        /// For example, if five rows are inserted into a table, the "autoincrement" column 
+        /// could contain the values { 1, 2, 6, 7, 8 }. This bit can only be used on columns 
+        /// of type ColumnType::Long or ColumnType::Currency.
+        /// </para>
+        /// </summary>
         Autoincrement = JET_bitColumnAutoincrement,
+        /// <summary>
+        /// This bit is valid only on calls to JetGetColumnInfo.
+        /// </summary>
         Updatable = JET_bitColumnUpdatable,
+        /// <summary>
+        /// This bit is valid only on calls to JetOpenTable.
+        /// </summary>
         TemporaryTableKey = JET_bitColumnTTKey,
+        /// <summary>
+        /// This bit is valid only on calls to JetOpenTempTable.
+        /// </summary>
         TemporaryTableDescending = JET_bitColumnTTDescending,
+        /// <summary>
+        /// <para>
+        /// The column can be multi-valued. A multi-valued column can 
+        /// have zero, one, or more values associated with it. The various 
+        /// values in a multi-valued column are identified by a number 
+        /// called the itagSequence member.
+        /// </para>
+        /// <para>
+        /// Multi-valued columns must be tagged columns; that is, they 
+        /// cannot be fixed-length or variable-length columns.
+        /// </para>
+        /// </summary>
         MultiValued = JET_bitColumnMultiValued,
+        /// <summary>
+        /// <para>
+        /// Specifies that a column is an escrow update column. An escrow 
+        /// update column can be updated concurrently by different sessions 
+        /// with Table::EscrowUpdate and will maintain transactional consistency. 
+        /// An escrow update column must also meet the following conditions:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// Can only be created when the table is empty.
+        /// </item>
+        /// <item>
+        /// Must be of type ColumnType::Long
+        /// </item>
+        /// <item>
+        /// Must have a default value.
+        /// </item>
+        /// <item>
+        /// cannot be used in conjunction with ColumnFlags::Tagged, 
+        /// ColumnFlags::Version or ColumnFlags::Autoincrement.
+        /// </item>
+        /// </list>
+        /// </summary>
         EscrowUpdate = JET_bitColumnEscrowUpdate,
+        /// <summary>
+        /// The column will be created in an without version information. This means 
+        /// that other transactions that attempt to add a column with the same name 
+        /// will fail.
+        /// </summary>
         Unversioned = JET_bitColumnUnversioned,
+        /// <summary>
+        /// For retrieve column info of outer join where no match from the inner table.
+        /// </summary>
+        MaybeNull = JET_bitColumnMaybeNull,
+        /// <summary>
+        /// Use ColumnFlags::DeleteOnZero instead of ColumnFlags::Finalize. 
+        /// ColumnFlags::Finalize indicates that a column can be finalized. 
+        /// When a column that can be finalized is an escrow update column 
+        /// that reaches zero, the row will be deleted. A column that can 
+        /// be finalized must be an escrow update column. ColumnFlags::Finalize 
+        /// cannot be used with ColumnFlags::UserDefinedDefault.
+        /// </summary>
         Finalize = JET_bitColumnFinalize,
+        /// <summary>
+        /// The default value for a column will be provided by a callback 
+        /// function. A column that has a user-defined default must be a 
+        /// tagged column. Specifying ColumnFlags::UserDefinedDefault means that 
+        /// defaultValueBuffer must point to a JET_USERDEFINEDDEFAULT structure, and 
+        /// defaultValueBufferSize must be set to sizeof( JET_USERDEFINEDDEFAULT ).
+        /// 
+        /// ColumnFlags::UserDefinedDefault cannot be used in conjunction with ColumnFlags::Fixed, 
+        /// ColumnFlags::NotNULL, ColumnFlags::Version, ColumnFlags::Autoincrement, ColumnFlags::Updatable, 
+        /// ColumnFlags::EscrowUpdate, ColumnFlags::Finalize, ColumnFlags::DeleteOnZero, or ColumnFlags::MaybeNull.
+        /// </summary>
         UserDefinedDefault = JET_bitColumnUserDefinedDefault,
-        // When the escrow-update column reaches a value of zero (after all versions are resolve),
-        // the record will be deleted. A common use for a column that can be finalized is to use
-        // it as a reference count field, and when the field reaches zero the record gets deleted.
-        // A Delete-on-zero column must be an escrow update / JET_bitColumnEscrowUpdate column.
-        // JET_bitColumnDeleteOnZero cannot be used with JET_bitColumnFinalize. JET_bitColumnDeleteOnZero
-        // cannot be used with user defined default columns.
+        /// <summary>
+        /// When the escrow-update column reaches a value of zero (after all versions are resolve),
+        /// the record will be deleted. A common use for a column that can be finalized is to use
+        /// it as a reference count field, and when the field reaches zero the record gets deleted.
+        /// A Delete-on-zero column must be an escrow update / ColumnFlags::EscrowUpdate column.
+        /// ColumnFlags::DeleteOnZero cannot be used with ColumnFlags::Finalize. ColumnFlags::DeleteOnZero
+        /// cannot be used with user defined default columns.
+        /// </summary>
         DeleteOnZero = JET_bitColumnDeleteOnZero,
-
-        // data in the column can be compressed
+        /// <summary>
+        // The data in the column can be compressed
+        /// </summary>
         Compressed = JET_bitColumnCompressed
     };
     
     HCC_DEFINE_ENUM_FLAG_OPERATORS( ColumnFlags, int );
 
+    /// <summary>
+    /// Describes a column to create in a database.
+    /// </summary>
     class ColumnCreate : public JET_COLUMNCREATE_W
     {
         using Base = JET_COLUMNCREATE_W;
@@ -219,187 +476,329 @@ namespace Harlinn::Common::Core::Ese
     };
 
 
-
+    /// <summary>
+    /// Index flag values
+    /// </summary>
     enum class IndexFlags : int
     {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
         None = 0,
+        /// <summary>
+        /// Duplicate index entries (keys) are not allowed. This is 
+        /// enforced when Table::Update is called.
+        /// </summary>
         Unique = JET_bitIndexUnique,
+        /// <summary>
+        /// The index is a primary (clustered) index. Every table must 
+        /// have exactly one primary index. If no primary index is 
+        /// explicitly defined over a table, the database engine will 
+        /// create its own primary index.
+        /// </summary>
         Primary = JET_bitIndexPrimary,
+        /// <summary>
+        /// None of the columns over which the index is created can 
+        /// contain a NULL value.
+        /// </summary>
         DisallowNull = JET_bitIndexDisallowNull,
+        /// <summary>
+        /// Do not add an index entry for a row if all of the columns 
+        /// being indexed are NULL.
+        /// </summary>
         IgnoreNull = JET_bitIndexIgnoreNull,
+        /// <summary>
+        /// Do not add an index entry for a row if any of the columns 
+        /// being indexed are NULL.
+        /// </summary>
         IgnoreAnyNull = JET_bitIndexIgnoreAnyNull,
+        /// <summary>
+        /// Do not add an index entry for a row if the first column being indexed is NULL.
+        /// </summary>
         IgnoreFirstNull = JET_bitIndexIgnoreFirstNull,
+        /// <summary>
+        /// <para>
+        /// Index operations will be logged lazily.
+        /// </para>
+        /// <para>
+        /// IndexFlags::LazyFlush does not affect the laziness of data 
+        /// updates. If the indexing operation is interrupted by process 
+        /// termination, Soft Recovery will still be able to able to get 
+        /// the database to a consistent state, but the index might not 
+        /// be present.
+        /// </para>
+        /// </summary>
         LazyFlush = JET_bitIndexLazyFlush,
-        // don't attempt to build index, because all entries 
-        // would evaluate to NULL (MUST also specify JET_bitIgnoreAnyNull)
+        /// <summary>
+        /// <para>
+        /// Do not attempt to build the index, because all entries would 
+        /// evaluate to NULL. grbit must also specify IndexFlags::IgnoreAnyNull 
+        /// when IndexFlags::IndexEmpty is passed. This is a performance enhancement. 
+        /// </para>
+        /// <para>
+        /// For example, if a new column is added to a table, an index is created 
+        /// over this newly added column, and all the records in the table are 
+        /// scanned even though they are not added to the index. Specifying 
+        /// IndexFlags::IndexEmpty skips the scanning of the table, which could 
+        /// potentially take a long time.
+        /// </para>
+        /// </summary>
         Empty = JET_bitIndexEmpty,
+        /// <summary>
+        /// Causes index creation to be visible to other transactions. Typically 
+        /// a session in a transaction will not be able to see an index creation 
+        /// operation in another session. This flag can be useful if another 
+        /// transaction is likely to create the same index. The second index-create 
+        /// will fail instead of potentially causing many unnecessary database 
+        /// operations. The second transaction might not be able to use the index 
+        /// immediately. The index creation operation has to complete before it 
+        /// is usable. The session must not currently be in a transaction to create 
+        /// an index without version information.
+        /// </summary>
         Unversioned = JET_bitIndexUnversioned,
-        // NULL sorts after data for all columns in the index
+        /// <summary>
+        /// Specifying this flag causes NULL values to be sorted after data for 
+        /// all columns in the index.
+        /// </summary>
         SortNullsHigh = JET_bitIndexSortNullsHigh,
-        // LCID field of JET_INDEXCREATE actually points 
-        // to a JET_UNICODEINDEX struct to allow user-defined 
-        // LCMapString() flags
+        /// <summary>
+        /// Specifying this flag affects the interpretation of the lcid/pidxunicde 
+        /// union field in the JET_UNICODEINDEX structure. Setting the bit means 
+        /// that the pidxunicode field actually points to a JET_UNICODEINDEX 
+        /// structure. IndexFlags::Unicode is not required in order to index 
+        /// Unicode data. It is only used to customize the normalization of 
+        /// Unicode data.
+        /// </summary>
         Unicode = JET_bitIndexUnicode,
-        // index on substring tuples (text columns only)
+        /// <summary>
+        /// <para>
+        /// Specifies that the index is a tuple index.
+        /// </para>
+        /// </summary>
         Tuples = JET_bitIndexTuples,
-        // cbVarSegMac field of JET_INDEXCREATE actually 
-        // points to a JET_TUPLELIMITS struct to allow 
-        // custom tuple index limits (implies JET_bitIndexTuples)
+        /// <summary>
+        /// Specifying this flag affects the interpretation of the cbVarSegMac/ptuplelimits 
+        /// union field in the JET_INDEXCREATE structure. Setting this bit means that the 
+        /// ptuplelimits field actually points to a JET_TUPLELIMITS structure to allow 
+        /// custom tuple index limits (implies IndexFlags::Tuples).
+        /// </summary>
         TupleLimits = JET_bitIndexTupleLimits,
-        // index over multiple multi-valued columns 
-        // has full cross product
+        /// <summary>
+        /// Specifying this flag for an index that has more than one key column that 
+        /// is a multivalued column will result in an index entry being created for 
+        /// each result of a cross product of all the values in those key columns. 
+        /// Otherwise, the index would only have one entry for each multi-value in 
+        /// the most significant key column that is a multivalued column and each 
+        /// of those index entries would use the first multi-value from any other 
+        /// key columns that are multivalued columns.
+        /// </summary>
         CrossProduct = JET_bitIndexCrossProduct,
-        // custom index key size set instead of 
-        // default of 255 bytes
+        /// <summary>
+        /// Specifying this flag will cause the index to use the maximum key size 
+        /// specified in the cbKeyMost field in the JET_INDEXCREATE structure. Otherwise, 
+        /// the index will use JET_cbKeyMost (255) as its maximum key size.
+        /// </summary>
         KeyMost = JET_bitIndexKeyMost,
-        // fail update rather than truncate index keys
+        /// <summary>
+        /// Specifying this flag will cause any update to the index that would 
+        /// result in a truncated key to fail with JET_errKeyTruncated. 
+        /// Otherwise, keys will be silently truncated. 
+        /// </summary>
         DisallowTruncation = JET_bitIndexDisallowTruncation,
-        // index over multiple multi-valued columns but 
-        // only with values of same itagSequence
+        /// <summary>
+        /// Specifying this flag will cause an update the index over multiple 
+        /// multivalued columns but only with values of same itagSequence.
+        /// </summary>
         NestedTable = JET_bitIndexNestedTable,
-        // index over GUID column according to .Net GUID sort order
+        /// <summary>
+        /// Index over GUID column according to .Net GUID sort order
+        /// </summary>
         DotNetGuid = 0x00040000
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( IndexFlags, int );
 
-
+    /// <summary>
+    /// Flag values used for the grbit field of the JET_RETRIEVECOLUMN
+    /// and the retrieveFlags parameter of the Table::RetrieveColumn
+    /// member function.
+    /// </summary>
     enum class RetrieveFlags : int
     {
         None = 0,
-        // This flag causes retrieve column to retrieve the 
-        // modified value instead of the original value. If 
-        // the value has not been modified, then the original 
-        // value is retrieved. In this way, a value that has 
-        // not yet been inserted or updated may be retrieved 
-        // during the operation of inserting or updating a record.
+        /// <summary>
+        /// This flag causes retrieve column to retrieve the 
+        /// modified value instead of the original value. If 
+        /// the value has not been modified, then the original 
+        /// value is retrieved. In this way, a value that has 
+        /// not yet been inserted or updated may be retrieved 
+        /// during the operation of inserting or updating a record.
+        /// </summary>
         Copy = JET_bitRetrieveCopy,
-        // This option is used to retrieve column values from 
-        // the index, if possible, without accessing the record. 
-        // In this way, unnecessary loading of records can be 
-        // avoided when needed data is available from index 
-        // entries themselves. In cases where the original column 
-        // value cannot be retrieved from the index, because of 
-        // irreversible transformations or data truncation, the 
-        // record will be accessed and the data retrieved as 
-        // normal. This is a performance option and should only 
-        // be specified when it is likely that the column value 
-        // can be retrieved from the index. This option should 
-        // not be specified if the current index is the clustered 
-        // index, since the index entries for the clustered, 
-        // or primary, index are the records themselves. This 
-        // bit cannot be set if FromPrimaryBookmark is also set.
+        /// <summary>
+        /// This option is used to retrieve column values from 
+        /// the index, if possible, without accessing the record. 
+        /// In this way, unnecessary loading of records can be 
+        /// avoided when needed data is available from index 
+        /// entries themselves. In cases where the original column 
+        /// value cannot be retrieved from the index, because of 
+        /// irreversible transformations or data truncation, the 
+        /// record will be accessed and the data retrieved as 
+        /// normal. This is a performance option and should only 
+        /// be specified when it is likely that the column value 
+        /// can be retrieved from the index. This option should 
+        /// not be specified if the current index is the clustered 
+        /// index, since the index entries for the clustered, 
+        /// or primary, index are the records themselves. This 
+        /// bit cannot be set if FromPrimaryBookmark is also set.
+        /// </summary>
         FromIndex = JET_bitRetrieveFromIndex,
-        // This option is used to retrieve column values from 
-        // the index bookmark, and may differ from the index 
-        // value when a column appears both in the primary index 
-        // and the current index. This option should not be 
-        // specified if the current index is the clustered, 
-        // or primary, index. This bit cannot be set if 
-        // FromIndex is also set.
+        /// <summary>
+        /// This option is used to retrieve column values from 
+        /// the index bookmark, and may differ from the index 
+        /// value when a column appears both in the primary index 
+        /// and the current index. This option should not be 
+        /// specified if the current index is the clustered, 
+        /// or primary, index. This bit cannot be set if 
+        /// FromIndex is also set.
+        /// </summary>
         FromPrimaryBookmark = JET_bitRetrieveFromPrimaryBookmark,
-        // This option is used to retrieve the sequence number 
-        // of a multi-valued column value in pretinfo->itagSequence. 
-        // The itagSequence field is commonly an input for 
-        // retrieving multi-valued column values from a record. 
-        // However, when retrieving values from an index, it is 
-        // also possible to associate the index entry with a 
-        // particular sequence number and retrieve this sequence 
-        // number as well. Retrieving the sequence number can 
-        // be a costly operation and should only be done if necessary.
+        /// <summary>
+        /// This option is used to retrieve the sequence number 
+        /// of a multi-valued column value in pretinfo->itagSequence. 
+        /// The itagSequence field is commonly an input for 
+        /// retrieving multi-valued column values from a record. 
+        /// However, when retrieving values from an index, it is 
+        /// also possible to associate the index entry with a 
+        /// particular sequence number and retrieve this sequence 
+        /// number as well. Retrieving the sequence number can 
+        /// be a costly operation and should only be done if necessary.
+        /// </summary>
         Tag = JET_bitRetrieveTag,
-        // This option is used to retrieve multi-valued column 
-        // NULL values. If this option is not specified, 
-        // multi-valued column NULL values will automatically 
-        // be skipped.
+        /// <summary>
+        /// This option is used to retrieve multi-valued column 
+        /// NULL values. If this option is not specified, 
+        /// multi-valued column NULL values will automatically 
+        /// be skipped.
+        /// </summary>
         Null = JET_bitRetrieveNull,
-        // This option affects only multi-valued columns and 
-        // causes a NULL value to be returned when the requested 
-        // sequence number is 1 and there are no set values for 
-        // the column in the record.
+        /// <summary>
+        /// This option affects only multi-valued columns and 
+        /// causes a NULL value to be returned when the requested 
+        /// sequence number is 1 and there are no set values for 
+        /// the column in the record.
+        /// </summary>
         IgnoreDefault = JET_bitRetrieveIgnoreDefault,
-        // This flag will allow the retrieval of a tuple segment 
-        // of the index. This bit must be specified with 
-        // FromIndex.
+        /// <summary>
+        /// This flag will allow the retrieval of a tuple segment 
+        /// of the index. This bit must be specified with 
+        /// FromIndex.
+        /// </summary>
         Tuple = JET_bitRetrieveTuple
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( RetrieveFlags, int );
 
+    /// <summary>
+    /// Flags used for the flags parameter Table::SetColumn function
+    /// and for the grbit field of the JET_SETCOLUMN structure.
+    /// </summary>
     enum class SetFlags : int
     {
         None = 0,
-        // This option is used to append data to a column of type 
-        // ColumnType::LongText or ColumnType::LongBinary. 
-        // The same behavior can be achieved by determining the size 
-        // of the existing long value and specifying ibLongValue in 
-        // psetinfo. However, it's simpler to use this AppendLV since 
-        // knowing the size of the existing column value is not necessary.
+        /// <summary>
+        /// This option is used to append data to a column of type 
+        /// ColumnType::LongText or ColumnType::LongBinary. 
+        /// The same behavior can be achieved by determining the size 
+        /// of the existing long value and specifying ibLongValue in 
+        /// psetinfo. However, it's simpler to use this AppendLV since 
+        /// knowing the size of the existing column value is not necessary.
+        /// </summary>
         AppendLV = JET_bitSetAppendLV,
-        // This option is used replace the existing long value with 
-        // the newly provided data. When this option is used, it is 
-        // as though the existing long value has been set to 0 (zero) 
-        // length prior to setting the new data.
+        /// <summary>
+        /// This option is used replace the existing long value with 
+        /// the newly provided data. When this option is used, it is 
+        /// as though the existing long value has been set to 0 (zero) 
+        /// length prior to setting the new data.
+        /// </summary>
         OverwriteLV = JET_bitSetOverwriteLV,
-        // This option is only applicable for tagged, sparse or 
-        // multi-valued columns. It causes the column to return 
-        // the default column value on subsequent retrieve column 
-        // operations. All existing column values are removed.
+        /// <summary>
+        /// This option is only applicable for tagged, sparse or 
+        /// multi-valued columns. It causes the column to return 
+        /// the default column value on subsequent retrieve column 
+        /// operations. All existing column values are removed.
+        /// </summary>
         RevertToDefaultValue = JET_bitSetRevertToDefaultValue,
-        // This option is used to force a long value, columns of type 
-        // ColumnType::LongText or ColumnType::LongBinary, to 
-        // be stored separately from the remainder of record data. 
-        // This occurs normally when the size of the long value 
-        // prevents it from being stored with remaining record data. 
-        // However, this option can be used to force the long value 
-        // to be stored separately. Note that long values four bytes 
-        // in size of smaller cannot be forced to be separate. 
-        // In such cases, the option is ignored.
+        /// <summary>
+        /// This option is used to force a long value, columns of type 
+        /// ColumnType::LongText or ColumnType::LongBinary, to 
+        /// be stored separately from the remainder of record data. 
+        /// This occurs normally when the size of the long value 
+        /// prevents it from being stored with remaining record data. 
+        /// However, this option can be used to force the long value 
+        /// to be stored separately. Note that long values four bytes 
+        /// in size of smaller cannot be forced to be separate. 
+        /// In such cases, the option is ignored.
+        /// </summary>
         SeparateLV = JET_bitSetSeparateLV,
-        // This option is used to interpret the input buffer as 
-        // a integer number of bytes to set as the length of 
-        // the long value described by the given columnid and 
-        // if provided, the sequence number in psetinfo->itagSequence. 
-        // If the size given is larger than the existing column value, 
-        // the column will be extended with 0s. If the size is smaller 
-        // than the existing column value then the value will be 
-        // truncated.
+        /// <summary>
+        /// This option is used to interpret the input buffer as 
+        /// a integer number of bytes to set as the length of 
+        /// the long value described by the given columnid and 
+        /// if provided, the sequence number in psetinfo->itagSequence. 
+        /// If the size given is larger than the existing column value, 
+        /// the column will be extended with 0s. If the size is smaller 
+        /// than the existing column value then the value will be 
+        /// truncated.
+        /// </summary>
         SizeLV = JET_bitSetSizeLV,
-        // This option is used to enforce that all values in a 
-        // multi-valued column are distinct. This option compares 
-        // the source column data, without any transformations, 
-        // to other existing column values and an error is 
-        // returned if a duplicate is found. If this option is given, 
-        // then AppendLV, OverwriteLV and SizeLV cannot also be given.
+        /// <summary>
+        /// This option is used to enforce that all values in a 
+        /// multi-valued column are distinct. This option compares 
+        /// the source column data, without any transformations, 
+        /// to other existing column values and an error is 
+        /// returned if a duplicate is found. If this option is given, 
+        /// then AppendLV, OverwriteLV and SizeLV cannot also be given.
+        /// </summary>
         UniqueMultiValues = JET_bitSetUniqueMultiValues,
-        // This option is used to enforce that all values in a 
-        // multi-valued column are distinct. This option compares 
-        // the key normalized transformation of column data, to 
-        // other similarly transformed existing column values 
-        // and an error is returned if a duplicate is found. If 
-        // this option is given, then AppendLV, OverwriteLV and 
-        // SizeLV cannot also be given.
+        /// <summary>
+        /// This option is used to enforce that all values in a 
+        /// multi-valued column are distinct. This option compares 
+        /// the key normalized transformation of column data, to 
+        /// other similarly transformed existing column values 
+        /// and an error is returned if a duplicate is found. If 
+        /// this option is given, then AppendLV, OverwriteLV and 
+        /// SizeLV cannot also be given.
+        /// </summary>
         UniqueNormalizedMultiValues = JET_bitSetUniqueNormalizedMultiValues,
-        // This option is used to set a value to zero length. Normally, 
-        // a column value is set to NULL by passing a cbMax of 0 (zero). 
-        // However, for some types, like ColumnType::Text, a column 
-        // value can be 0 (zero) length instead of NULL, and this 
-        // option is used to differentiate between NULL and 
-        // 0 (zero) length.
-        // 
-        // Note: In general, if the column is a fixed - length column, 
-        // this bit is ignored and the column is set to NULL.However, 
-        // if the column is a fixed - length tagged column, the column 
-        // length is set to 0. When the fixed - length tagged column 
-        // is set to 0 length, attempts to retrieve the column with 
-        // will succeed, but the actual length that is returned 
-        // in the cbActual parameter is 0.
+        /// <summary>
+        /// This option is used to set a value to zero length. Normally, 
+        /// a column value is set to NULL by passing a cbMax of 0 (zero). 
+        /// However, for some types, like ColumnType::Text, a column 
+        /// value can be 0 (zero) length instead of NULL, and this 
+        /// option is used to differentiate between NULL and 
+        /// 0 (zero) length.
+        /// 
+        /// Note: In general, if the column is a fixed - length column, 
+        /// this bit is ignored and the column is set to NULL.However, 
+        /// if the column is a fixed - length tagged column, the column 
+        /// length is set to 0. When the fixed - length tagged column 
+        /// is set to 0 length, attempts to retrieve the column with 
+        /// will succeed, but the actual length that is returned 
+        /// in the cbActual parameter is 0.
+        /// </summary>
         ZeroLength = JET_bitSetZeroLength,
-        // This option is used to store the entire long value in the record.
+        /// <summary>
+        /// This option is used to store the entire long value in the record.
+        /// </summary>
         IntrinsicLV = JET_bitSetIntrinsicLV,
-        // This option is used to attempt data compression when storing 
-        // the data.
+        /// <summary>
+        /// This option is used to attempt data compression when storing 
+        /// the data.
+        /// </summary>
         Compressed = JET_bitSetCompressed,
-        // This option is used to not attempt compression when storing 
-        // the data.
+        /// <summary>
+        /// This option is used to not attempt compression when storing 
+        /// the data.
+        /// </summary>
         Uncompressed = JET_bitSetUncompressed
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( SetFlags, int );
@@ -407,363 +806,557 @@ namespace Harlinn::Common::Core::Ese
     /// <summary>
     /// Info levels for retrieving column info.
     /// </summary>
-    enum class ColumnInfoFlags : unsigned long
+    enum class ColumnInfoLevel : unsigned long
     {
-        // pvResult is interpreted as a JET_COLUMNDEF, and the 
-        // fields of the JET_COLUMNDEF structure are filled in 
-        // appropriately. JET_ColInfo and JET_ColInfoByColid 
-        // both retrieve the same information.
+        /// <summary>
+        /// pvResult is interpreted as a JET_COLUMNDEF, and the 
+        /// fields of the JET_COLUMNDEF structure are filled in 
+        /// appropriately. JET_ColInfo and JET_ColInfoByColid 
+        /// both retrieve the same information.
+        /// </summary>
         Default = JET_ColInfo,
-        // pvResult is interpreted as a JET_COLUMNBASE structure. 
-        // This is similar to a JET_COLUMNDEF structure. If this 
-        // function succeeds, the structure is populated with 
-        // appropriate values. If this function fails, the 
-        // structure contains undefined data
+        /// <summary>
+        /// pvResult is interpreted as a JET_COLUMNBASE structure. 
+        /// This is similar to a JET_COLUMNDEF structure. If this 
+        /// function succeeds, the structure is populated with 
+        /// appropriate values. If this function fails, the 
+        /// structure contains undefined data
+        /// </summary>
         Base = JET_ColInfoBase,
-        // pvResult is interpreted as a JET_COLUMNDEF, except this 
-        // InfoLevel indicates that the requested column 
-        // ( szColumName) is not the string column name, but a 
-        // pointer to a JET_COLUMNID. Info and InfoByColid both 
-        // retrieve the same information.
+        /// <summary>
+        /// pvResult is interpreted as a JET_COLUMNDEF, except this 
+        /// InfoLevel indicates that the requested column 
+        /// ( szColumName) is not the string column name, but a 
+        /// pointer to a JET_COLUMNID. Info and InfoByColid both 
+        /// retrieve the same information.
+        /// </summary>
         ByColid = JET_ColInfoByColid,
-        // pvResult is interpreted as a JET_COLUMNLIST structure. 
-        // If this function succeeds, the structure is populated 
-        // with appropriate values. A temporary table is opened 
-        // and is identified by the tableid member of 
-        // JET_COLUMNLIST. The table must be closed with 
-        // JetCloseTable. If this function fails, the structure 
-        // contains undefined data.
+        /// <summary>
+        /// pvResult is interpreted as a JET_COLUMNLIST structure. 
+        /// If this function succeeds, the structure is populated 
+        /// with appropriate values. A temporary table is opened 
+        /// and is identified by the tableid member of 
+        /// JET_COLUMNLIST. The table must be closed with 
+        /// JetCloseTable. If this function fails, the structure 
+        /// contains undefined data.
+        /// </summary>
         List = JET_ColInfoList,
-        // pvResult is interpreted as a JET_COLUMNLIST structure. 
-        // If this function succeeds, the structure is populated 
-        // with appropriate values. A temporary table is opened 
-        // and is identified by the tableid member of JET_COLUMNLIST. 
-        // The table must be closed with JetCloseTable. If this 
-        // function fails, the structure contains undefined data.
+        /// <summary>
+        /// pvResult is interpreted as a JET_COLUMNLIST structure. 
+        /// If this function succeeds, the structure is populated 
+        /// with appropriate values. A temporary table is opened 
+        /// and is identified by the tableid member of JET_COLUMNLIST. 
+        /// The table must be closed with JetCloseTable. If this 
+        /// function fails, the structure contains undefined data.
+        /// </summary>
         ListCompact = JET_ColInfoListCompact,
-        // Same as List, however the resulting table is sorted 
-        // by columnid, instead of column name.
+        /// <summary>
+        /// Same as List, however the resulting table is sorted 
+        /// by columnid, instead of column name.
+        /// </summary>
         ListSortColumnId = JET_ColInfoListSortColumnid,
-        // Same as InfoBase, pvResult is interpreted as a 
-        // JET_COLUMNBASE, except this InfoLevel indicates that 
-        // requested column ( theColumName ) is not the string 
-        // column name, but a pointer to a JET_COLUMNID.
+        /// <summary>
+        /// Same as InfoBase, pvResult is interpreted as a 
+        /// JET_COLUMNBASE, except this InfoLevel indicates that 
+        /// requested column ( theColumName ) is not the string 
+        /// column name, but a pointer to a JET_COLUMNID.
+        /// </summary>
         BaseByColId = JET_ColInfoBaseByColid,
-        // Only return non-derived columns (if the table is 
-        // derived from a template). This value can be logically 
-        // or'd into the InfoLevel, when the base InfoLevel is 
-        // InfoList.
+        /// <summary>
+        /// Only return non-derived columns (if the table is 
+        /// derived from a template). This value can be logically 
+        /// or'd into the InfoLevel, when the base InfoLevel is 
+        /// InfoList.
+        /// </summary>
         NonDerivedColumnsOnly = JET_ColInfoGrbitNonDerivedColumnsOnly,
-        // Only return the column name and columnid of each 
-        // column. This value can be logically or'd into 
-        // the InfoLevel, when the base InfoLevel is InfoList.
+        /// <summary>
+        /// Only return the column name and columnid of each 
+        /// column. This value can be logically or'd into 
+        /// the InfoLevel, when the base InfoLevel is InfoList.
+        /// </summary>
         MinimalInfo = JET_ColInfoGrbitMinimalInfo,
-        // Sort returned column list by columnid (default is 
-        // to sort list by column name). This value can be logically 
-        // or'd into the InfoLevel, when the base InfoLevel is 
-        // InfoList.
+        /// <summary>
+        /// Sort returned column list by columnid (default is 
+        /// to sort list by column name). This value can be logically 
+        /// or'd into the InfoLevel, when the base InfoLevel is 
+        /// InfoList.
+        /// </summary>
         SortByColumnId = JET_ColInfoGrbitSortByColumnid
     };
-    HCC_DEFINE_ENUM_FLAG_OPERATORS( ColumnInfoFlags, unsigned long );
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ColumnInfoLevel, unsigned long );
 
-
+    /// <summary>
+    /// Values for the option parameter of the Table::PrepareUpdate
+    /// function.
+    /// </summary>
     enum class PrepareUpdateOptions : unsigned long
     {
-        //This flag causes PrepareUpdate to cancel the update for this cursor.
+        /// <summary>
+        /// This flag causes PrepareUpdate to cancel the update for this cursor.
+        /// </summary>
         Cancel = JET_prepCancel,
-        // This flag causes the cursor to prepare for an insert of a new record. 
-        // All the data is initialized to the default state for the record. If 
-        // the table has an auto-increment column, then a new value is assigned 
-        // to this record regardless of whether the update ultimately succeeds, 
-        // fails or is cancelled.
+        /// <summary>
+        /// This flag causes the cursor to prepare for an insert of a new record. 
+        /// All the data is initialized to the default state for the record. If 
+        /// the table has an auto-increment column, then a new value is assigned 
+        /// to this record regardless of whether the update ultimately succeeds, 
+        /// fails or is cancelled.
+        /// </summary>
         Insert = JET_prepInsert,
-        // This flag causes the cursor to prepare for an insert of a copy of 
-        // the existing record. There must be a current record if this option 
-        // is used. The initial state of the new record is copied from the 
-        // current record. Long values that are stored off-record are 
-        // virtually copied.
+        /// <summary>
+        /// This flag causes the cursor to prepare for an insert of a copy of 
+        /// the existing record. There must be a current record if this option 
+        /// is used. The initial state of the new record is copied from the 
+        /// current record. Long values that are stored off-record are 
+        /// virtually copied.
+        /// </summary>
         Copy = JET_prepInsertCopy,
-        // This flag causes the cursor to prepare for an insert of the same 
-        // record, and a delete or the original record. It is used in cases 
-        // in which the primary key has changed.
+        /// <summary>
+        /// This flag causes the cursor to prepare for an insert of the same 
+        /// record, and a delete or the original record. It is used in cases 
+        /// in which the primary key has changed.
+        /// </summary>
         InsertCopyDeleteOriginal = JET_prepInsertCopyDeleteOriginal,
-        // This flag causes the cursor to prepare for a replace of the current 
-        // record. If the table has a version column, then the version column 
-        // is set to the next value in its sequence. If this update does not 
-        // complete, then the version value in the record will be unaffected. 
-        // An update lock is taken on the record to prevent other sessions 
-        // from updating this record before this session completes.
+        /// <summary>
+        /// This flag causes the cursor to prepare for a replace of the current 
+        /// record. If the table has a version column, then the version column 
+        /// is set to the next value in its sequence. If this update does not 
+        /// complete, then the version value in the record will be unaffected. 
+        /// An update lock is taken on the record to prevent other sessions 
+        /// from updating this record before this session completes.
+        /// </summary>
         Replace = JET_prepReplace,
-        // This flag is similar to Replace, but no lock is taken to prevent 
-        // other sessions from updating this record. Instead, this session 
-        // may receive JET_errWriteConflict when it calls Update to 
-        // complete the update.
+        /// <summary>
+        /// This flag is similar to Replace, but no lock is taken to prevent 
+        /// other sessions from updating this record. Instead, this session 
+        /// may receive JET_errWriteConflict when it calls Update to 
+        /// complete the update.
+        /// </summary>
         ReplaceNoLock = JET_prepReplaceNoLock
     };
 
-
+    /// <summary>
+    /// Values for the flags parameter of the Table::MakeKey member funtion.
+    /// </summary>
     enum class KeyFlags : unsigned long
     {
         None = 0,
-        // The search key should be constructed in such a way that any key columns that come 
-        // after the current key column are considered to be wildcards. This means that the 
-        // constructed search key can be used to match index entries that have the following:
-        //
-        //    * The exact column values provided for this key column and all previous key columns.
-        //    * Any column values needed for subsequent key columns.
-        //
-        // This option should be used when building wildcard search keys to use for finding index 
-        // entries closest to the end of an index.The end of the index is the index entry that is 
-        // found when moving to the last record in that index.The end of the index is not the 
-        // same as the high end of the index, which can change depending on the sort order of 
-        // the key columns in the index.
-        //
-        // This option is only available on Windows XP and later releases.
+        /// <summary>
+        /// <para>
+        /// The search key should be constructed in such a way that any key columns that come 
+        /// after the current key column are considered to be wildcards. This means that the 
+        /// constructed search key can be used to match index entries that have the following:
+        /// </para>
+        /// <list type="bullet">
+        ///    <item>The exact column values provided for this key column and all previous key columns.</item>
+        ///    <item>Any column values needed for subsequent key columns.</item>
+        /// </list>
+        /// <para>
+        /// This option should be used when building wildcard search keys to use for finding index 
+        /// entries closest to the end of an index.The end of the index is the index entry that is 
+        /// found when moving to the last record in that index.The end of the index is not the 
+        /// same as the high end of the index, which can change depending on the sort order of 
+        /// the key columns in the index.
+        /// </para>
+        /// <para>
+        /// This option is only available on Windows XP and later releases.
+        /// </para>
+        /// </summary>
         FullColumnEndLimit = JET_bitFullColumnEndLimit,
-
-        // The search key should be constructed such that any key columns that come after the 
-        // current key column should be considered to be wildcards. This means that the constructed 
-        // search key can be used to match index entries that have the following:
-        //
-        //    * The exact column values provided for this key column and all previous key columns.
-        //    * Any column values needed for subsequent key columns.
-        //
-        // This option should be used when building wildcard search keys to use for finding index 
-        // entries closest to the start of an index.The start of the index is the index entry that 
-        // is found when moving to the first record in that index.The start of the index is not the 
-        // same as the low end of the index, which can change depending on the sort order of the 
-        // key columns in the index.
-        //
-        // This option is only available on Windows XP and later releases.
+        /// <summary>
+        /// <para>
+        /// The search key should be constructed such that any key columns that come after the 
+        /// current key column should be considered to be wildcards. This means that the constructed 
+        /// search key can be used to match index entries that have the following:
+        /// </para>
+        /// <list type="bullet">
+        ///    <item>The exact column values provided for this key column and all previous key columns.</item>
+        ///    <item>Any column values needed for subsequent key columns.</item>
+        /// </list>
+        /// <para>
+        /// This option should be used when building wildcard search keys to use for finding index 
+        /// entries closest to the start of an index.The start of the index is the index entry that 
+        /// is found when moving to the first record in that index.The start of the index is not the 
+        /// same as the low end of the index, which can change depending on the sort order of the 
+        /// key columns in the index.
+        /// </para>
+        /// <para>
+        /// This option is only available on Windows XP and later releases.
+        /// </para>
+        /// </summary>
         FullColumnStartLimit = JET_bitFullColumnStartLimit,
 
-        // If the size of the input buffer is zero and the current key column is a variable 
-        // length column, this option indicates that the input buffer contains a zero length 
-        // value. Otherwise, an input buffer size of zero would indicate a NULL value.
+        /// <summary>
+        /// If the size of the input buffer is zero and the current key column is a variable 
+        /// length column, this option indicates that the input buffer contains a zero length 
+        /// value. Otherwise, an input buffer size of zero would indicate a NULL value.
+        /// </summary>
         KeyDataZeroLength = JET_bitKeyDataZeroLength,
-
-        // A new search key should be constructed. Any previously existing search key is discarded.
+        /// <summary>
+        /// A new search key should be constructed. Any previously existing search key is discarded.
+        /// </summary>
         NewKey = JET_bitNewKey,
-
-        // When this option is specified, all other options are ignored, any previously existing 
-        // search key is discarded, and the contents of the input buffer are loaded as the new search key.
+        /// <summary>
+        /// When this option is specified, all other options are ignored, any previously existing 
+        /// search key is discarded, and the contents of the input buffer are loaded as the new search key.
+        /// </summary>
         NormalizedKey = JET_bitNormalizedKey,
-
-        // The search key should be constructed such that the current key column is considered to be 
-        // a prefix wildcard and that any key columns that come after the current key column should 
-        // be considered to be wildcards. This means that the constructed search key can be used to 
-        // match index entries that have the following:
-        //
-        //    * The exact column values provided for this key column and all previous key columns.
-        //    * Any column values needed for subsequent key columns.
-        //
-        // This option should be used when building wildcard search keys to use for finding index 
-        // entries closest to the end of an index.The end of the index is the index entry that 
-        // is found when moving to the last record in that index.The end of the index is not the 
-        // same as the high end of the index, which can change depending on the sort order of 
-        // the key columns in the index.
-        //
-        // This option cannot be used when the current key column is not a text column or a 
-        // variable binary column.The operation will fail with JET_errInvalidgrbit if this 
-        // is attempted.
-        //
-        // This option is only available on Windows XP and later releases.
+        /// <summary>
+        /// <para>
+        /// The search key should be constructed such that the current key column is considered to be 
+        /// a prefix wildcard and that any key columns that come after the current key column should 
+        /// be considered to be wildcards. This means that the constructed search key can be used to 
+        /// match index entries that have the following:
+        /// </para>
+        /// <list type="bullet">
+        ///    <item>The exact column values provided for this key column and all previous key columns.</item>
+        ///    <item>Any column values needed for subsequent key columns.</item>
+        /// </list>
+        /// <para>
+        /// This option should be used when building wildcard search keys to use for finding index 
+        /// entries closest to the end of an index.The end of the index is the index entry that 
+        /// is found when moving to the last record in that index.The end of the index is not the 
+        /// same as the high end of the index, which can change depending on the sort order of 
+        /// the key columns in the index.
+        /// </para>
+        /// <para>
+        /// This option cannot be used when the current key column is not a text column or a 
+        /// variable binary column.The operation will fail with JET_errInvalidgrbit if this 
+        /// is attempted.
+        /// </para>
+        /// <para>
+        /// This option is only available on Windows XP and later releases.
+        /// </para>
+        /// </summary>
         PartialColumnEndLimit = JET_bitPartialColumnEndLimit,
-
-        // This option indicates that the search key should be constructed such that the current 
-        // key column is considered to be a prefix wildcard and that any key columns that come 
-        // after the current key column should be considered to be wildcards.This means that 
-        // the constructed search key can be used to match index entries that have the following:
-        //
-        //    * The exact column values provided for this key column and all previous key columns.
-        //    * Any column values needed for subsequent key columns.
-        //
-        // This option should be used when building wildcard search keys to use for finding 
-        // index entries closest to the start of an index.The start of the index is the index 
-        // entry that is found when moving to the first record in that index.The start of 
-        // the index is not the same as the low end of the index, which can change depending 
-        // on the sort order of the key columns in the index.
-        //
-        // This option cannot be used when the current key column is not a text column or a 
-        // variable binary column.The operation will fail with JET_errInvalidgrbit if this is attempted.
-        //
-        // This option is only available on Windows XP and later releases.
+        /// <summary>
+        /// <para>
+        /// This option indicates that the search key should be constructed such that the current 
+        /// key column is considered to be a prefix wildcard and that any key columns that come 
+        /// after the current key column should be considered to be wildcards.This means that 
+        /// the constructed search key can be used to match index entries that have the following:
+        /// </para>
+        /// <list type="bullet">
+        ///    <item>The exact column values provided for this key column and all previous key columns.</item>
+        ///    <item>Any column values needed for subsequent key columns.</item>
+        /// </list>
+        /// <para>
+        /// This option should be used when building wildcard search keys to use for finding 
+        /// index entries closest to the start of an index.The start of the index is the index 
+        /// entry that is found when moving to the first record in that index.The start of 
+        /// the index is not the same as the low end of the index, which can change depending 
+        /// on the sort order of the key columns in the index.
+        /// </para>
+        /// <para>
+        /// This option cannot be used when the current key column is not a text column or a 
+        /// variable binary column.The operation will fail with JET_errInvalidgrbit if this is attempted.
+        /// </para>
+        /// <para>
+        /// This option is only available on Windows XP and later releases.
+        /// </para>
+        /// </summary>
         PartialColumnStartLimit = JET_bitPartialColumnStartLimit,
-
-        // This option indicates that the search key should be constructed such that any key 
-        // columns that come after the current key column should be considered to be wildcards.
-        // This means that the constructed search key can be used to match index entries that 
-        // have the following:
-        //
-        //    * The exact column values provided for this key column and all previous key columns.
-        //    * Any column values needed for subsequent key columns.
-        //
-        // This option should be used when building wildcard search keys to use for finding 
-        // index entries closest to the end of an index.The end of the index is the index 
-        // entry that is found when moving to the last record in that index.The end of the 
-        // index is not the same as the high end of the index, which can change depending on 
-        // the sort order of the key columns in the index.
-        //
-        // When this option is specified in combination with JET_bitSubStrLimit and the 
-        // current key column is a text column, this option will be ignored.This behavior 
-        // is intended to allow the type of the current key column to be inferred when building 
-        // the search key.
-        //
-        // If you want to build a similar search key for the start of an index, a similar call 
-        // to JetMakeKey should be made for the last key column that is not a wildcard, but 
-        // with no wildcard options specified.The search key is then in an appropriate state 
-        // to use for such a search.This is analogous to using JET_bitFullColumnStartLimit, 
-        // except that the search key is not cleanly finished as it is after the use of a wildcard option.
-        //
-        // This option has been deprecated for Windows XP and later releases in order to address 
-        // this awkward semantic.JET_bitFullColumnStartLimit and JET_bitFullColumnEndLimit 
-        // should be used instead wherever possible.
+        /// <summary>
+        /// <para>
+        /// This option indicates that the search key should be constructed such that any key 
+        /// columns that come after the current key column should be considered to be wildcards.
+        /// This means that the constructed search key can be used to match index entries that 
+        /// have the following:
+        /// </para>
+        /// <list type="bullet">
+        ///    <item>The exact column values provided for this key column and all previous key columns.</item>
+        ///    <item>Any column values needed for subsequent key columns.</item>
+        /// </list>
+        /// <para>
+        /// This option should be used when building wildcard search keys to use for finding 
+        /// index entries closest to the end of an index.The end of the index is the index 
+        /// entry that is found when moving to the last record in that index.The end of the 
+        /// index is not the same as the high end of the index, which can change depending on 
+        /// the sort order of the key columns in the index.
+        /// </para>
+        /// <para>
+        /// When this option is specified in combination with JET_bitSubStrLimit and the 
+        /// current key column is a text column, this option will be ignored.This behavior 
+        /// is intended to allow the type of the current key column to be inferred when building 
+        /// the search key.
+        /// </para>
+        /// <para>
+        /// If you want to build a similar search key for the start of an index, a similar call 
+        /// to JetMakeKey should be made for the last key column that is not a wildcard, but 
+        /// with no wildcard options specified.The search key is then in an appropriate state 
+        /// to use for such a search.This is analogous to using JET_bitFullColumnStartLimit, 
+        /// except that the search key is not cleanly finished as it is after the use of a wildcard option.
+        /// </para>
+        /// <para>
+        /// This option has been deprecated for Windows XP and later releases in order to address 
+        /// this awkward semantic.JET_bitFullColumnStartLimit and JET_bitFullColumnEndLimit 
+        /// should be used instead wherever possible.
+        /// </para>
+        /// </summary>
         StrLimit = JET_bitStrLimit,
-
-        // This option indicates that the search key should be constructed such that the current 
-        // key column is considered to be a prefix wildcard and that any key columns that come 
-        // after the current key column should be considered to be wildcards.This means that 
-        // the constructed search key can be used to match index entries that have the following :
-        // 
-        //    * The exact column values provided for all previous key columns.
-        //    * The specified column data as a prefix of their column value for the current key column.
-        //    * Any column values for subsequent key columns.
-        // 
-        // This option should be used when building wildcard search keys to use for finding index 
-        // entries closest to the end of an index.The end of the index is the index entry that 
-        // is found when moving to the last record in that index.The end of the index is not the 
-        // same as the high end of the index, which can change depending on the sort order of 
-        // the key columns in the index.
-        //
-        // When this option is specified in combination with StrLimit and the current key column is 
-        // a text column, this option will take precedence. This option is ignored when the current key 
-        // column is not a text column. This behavior is intended to allow the type of the current 
-        // key column to be inferred when building the search key.
-        //
-        // If you want to build a similar search key for the start of an index, a similar call to 
-        // Table::MakeKey should be made for the key column that is to be the prefix wildcard, 
-        // but with that no wildcard options specified.The search key is then in an appropriate 
-        // state to use for such a search.This is analogous to using PartialColumnStartLimit, except 
-        // that the search key is not cleanly finished as it is after the use of a wildcard option.
-        //
-        // This option has been deprecated for Windows XP and later releases in order to address 
-        // this awkward semantic. PartialColumnStartLimit and PartialColumnEndLimit should be used 
-        // instead, when possible.
+        /// <summary>
+        /// <para>
+        /// This option indicates that the search key should be constructed such that the current 
+        /// key column is considered to be a prefix wildcard and that any key columns that come 
+        /// after the current key column should be considered to be wildcards.This means that 
+        /// the constructed search key can be used to match index entries that have the following :
+        /// </para>
+        /// <list type="bullet">
+        ///    <item>The exact column values provided for all previous key columns.</item>
+        ///    <item>The specified column data as a prefix of their column value for the current key column.</item>
+        ///    <item>Any column values for subsequent key columns.</item>
+        /// </list>
+        /// <para>
+        /// This option should be used when building wildcard search keys to use for finding index 
+        /// entries closest to the end of an index.The end of the index is the index entry that 
+        /// is found when moving to the last record in that index.The end of the index is not the 
+        /// same as the high end of the index, which can change depending on the sort order of 
+        /// the key columns in the index.
+        /// </para>
+        /// <para>
+        /// When this option is specified in combination with StrLimit and the current key column is 
+        /// a text column, this option will take precedence. This option is ignored when the current key 
+        /// column is not a text column. This behavior is intended to allow the type of the current 
+        /// key column to be inferred when building the search key.
+        /// </para>
+        /// <para>
+        /// If you want to build a similar search key for the start of an index, a similar call to 
+        /// Table::MakeKey should be made for the key column that is to be the prefix wildcard, 
+        /// but with that no wildcard options specified.The search key is then in an appropriate 
+        /// state to use for such a search.This is analogous to using PartialColumnStartLimit, except 
+        /// that the search key is not cleanly finished as it is after the use of a wildcard option.
+        /// </para>
+        /// <para>
+        /// This option has been deprecated for Windows XP and later releases in order to address 
+        /// this awkward semantic. PartialColumnStartLimit and PartialColumnEndLimit should be used 
+        /// instead, when possible.
+        /// </para>
+        /// </summary>
         SubStrLimit = JET_bitSubStrLimit
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( KeyFlags, unsigned long );
 
+    /// <summary>
+    /// Values for the flags parameter of the Table::Seek and Table::SeekNX member functions.
+    /// </summary>
     enum class SeekFlags : unsigned long
     {
         None = 0,
-        // A special error code, JET_wrnUniqueKey, will be returned if it can 
-        // be cheaply determined that there is exactly one index entry that 
-        // matches the search key.
-        //
-        // This option is ignored unless Equal is also specified.
-        //
-        // This option is only available on Windows Server 2003 and later releases.
+        /// <summary>
+        /// <para>
+        /// A special error code, JET_wrnUniqueKey, will be returned if it can 
+        /// be cheaply determined that there is exactly one index entry that 
+        /// matches the search key.
+        /// </para>
+        /// <para>
+        /// This option is ignored unless Equal is also specified.
+        /// </para>
+        /// <para>
+        /// This option is only available on Windows Server 2003 and later releases.
+        /// </para>
+        /// </summary>
         CheckUniqueness = JET_bitCheckUniqueness,
-
-        // The cursor will be positioned at the index entry closest to the start of 
-        // the index that exactly matches the search key. The start of the index is 
-        // the index entry that is found when moving to the first record in that 
-        // index. The start of the index is not the same as the low end of the 
-        // index, which can change depending on the sort order of the key columns 
-        // in the index.
-        // 
-        // It is not meaningful to use this option with a search key that was constructed 
-        // using Table::MakeKey using a wildcard option.
+        /// <summary>
+        /// <para>
+        /// The cursor will be positioned at the index entry closest to the start of 
+        /// the index that exactly matches the search key. The start of the index is 
+        /// the index entry that is found when moving to the first record in that 
+        /// index. The start of the index is not the same as the low end of the 
+        /// index, which can change depending on the sort order of the key columns 
+        /// in the index.
+        /// </para>
+        /// <para>
+        /// It is not meaningful to use this option with a search key that was constructed 
+        /// using Table::MakeKey using a wildcard option.
+        /// </para>
+        /// </summary>
         Equal = JET_bitSeekEQ,
-
-        // The cursor will be positioned at the index entry closest to the start of the index 
-        // that is greater than or equal to an index entry that would exactly match the search 
-        // criteria. The start of the index is the index entry that is found when moving to the 
-        // first record in that index. The start of the index is not the same as the low end 
-        // of the index, which can change depending on the sort order of the key columns in 
-        // the index.
-        //
-        // It is not meaningful to use this option with a search key that was constructed using 
-        // Table::MakeKey using a wildcard option intended to find index entries closest 
-        // to the end of the index.
+        /// <summary>
+        /// <para>
+        /// The cursor will be positioned at the index entry closest to the start of the index 
+        /// that is greater than or equal to an index entry that would exactly match the search 
+        /// criteria. The start of the index is the index entry that is found when moving to the 
+        /// first record in that index. The start of the index is not the same as the low end 
+        /// of the index, which can change depending on the sort order of the key columns in 
+        /// the index.
+        /// </para>
+        /// <para>
+        /// It is not meaningful to use this option with a search key that was constructed using 
+        /// Table::MakeKey using a wildcard option intended to find index entries closest 
+        /// to the end of the index.
+        /// </para>
+        /// </summary>
         GreaterOrEqual = JET_bitSeekGE,
-
-        // The cursor will be positioned at the index entry closest to the start of the index 
-        // that is greater than an index entry that would exactly match the search criteria. 
-        // The start of the index is the index entry that is found when moving to the first 
-        // record in that index. The start of the index is not the same as the low end of 
-        // the index, which can change depending on the sort order of the key columns in 
-        // the index.
-        //
-        // It is not meaningful to use this option with a search key that was constructed 
-        // using Table::MakeKey using a wildcard option intended to find index entries 
-        // closest to the start of the index.
+        /// <summary>
+        /// <para>
+        /// The cursor will be positioned at the index entry closest to the start of the index 
+        /// that is greater than an index entry that would exactly match the search criteria. 
+        /// The start of the index is the index entry that is found when moving to the first 
+        /// record in that index. The start of the index is not the same as the low end of 
+        /// the index, which can change depending on the sort order of the key columns in 
+        /// the index.
+        /// </para>
+        /// <para>
+        /// It is not meaningful to use this option with a search key that was constructed 
+        /// using Table::MakeKey using a wildcard option intended to find index entries 
+        /// closest to the start of the index.
+        /// </para>
+        /// </summary>
         Greater = JET_bitSeekGT,
-
-        // The cursor will be positioned at the index entry closest to the end of the index 
-        // that is less than or equal to an index entry that would exactly match the search 
-        // criteria. The end of the index is the index entry that is found when moving to 
-        // the last record in that index. The end of the index is not the same as the high 
-        // end of the index, which can change depending on the sort order of the key columns 
-        // in the index.
-        //
-        // It is not meaningful to use this option with a search key that was constructed 
-        // using Table::MakeKey using a wildcard option intended to find index entries 
-        // closest to the start of the index.
+        /// <summary>
+        /// <para>
+        /// The cursor will be positioned at the index entry closest to the end of the index 
+        /// that is less than or equal to an index entry that would exactly match the search 
+        /// criteria. The end of the index is the index entry that is found when moving to 
+        /// the last record in that index. The end of the index is not the same as the high 
+        /// end of the index, which can change depending on the sort order of the key columns 
+        /// in the index.
+        /// </para>
+        /// <para>
+        /// It is not meaningful to use this option with a search key that was constructed 
+        /// using Table::MakeKey using a wildcard option intended to find index entries 
+        /// closest to the start of the index.
+        /// </para>
+        /// </summary>
         LessOrEqual = JET_bitSeekLE,
-
-        // The cursor will be positioned at the index entry closest to the end of the index 
-        // that is less than an index entry that would exactly match the search criteria. 
-        // The end of the index is the index entry that is found when moving to the last 
-        // record in that index. The end of the index is not the same as the high end of 
-        // the index, which can change depending on the sort order of the key columns in 
-        // the index.
-        //
-        // It is not meaningful to use this option with a search key that was constructed 
-        // using Table::MakeKey using a wildcard option intended to find index entries 
-        // closest to the end of the index.
+        /// <summary>
+        /// <para>
+        /// The cursor will be positioned at the index entry closest to the end of the index 
+        /// that is less than an index entry that would exactly match the search criteria. 
+        /// The end of the index is the index entry that is found when moving to the last 
+        /// record in that index. The end of the index is not the same as the high end of 
+        /// the index, which can change depending on the sort order of the key columns in 
+        /// the index.
+        /// </para>
+        /// <para>
+        /// It is not meaningful to use this option with a search key that was constructed 
+        /// using Table::MakeKey using a wildcard option intended to find index entries 
+        /// closest to the end of the index.
+        /// </para>
+        /// </summary>
         Less = JET_bitSeekLT,
-
-        // An index range will automatically be setup for all keys that exactly match the 
-        // search key. The resulting index range is identical to one that would have 
-        // otherwise been created by a call to Table::SetIndexRange with the 
-        // JET_bitRangeInclusive and JET_bitRangeUpperLimit options. 
-        // See JetSetIndexRange for more information.
-        //
-        // This is a convenient method for discovering all the index entries that match 
-        // the same search criteria.
-        //
-        // This option is ignored unless Equal is also specified.
+        /// <summary>
+        /// <para>
+        /// An index range will automatically be setup for all keys that exactly match the 
+        /// search key. The resulting index range is identical to one that would have 
+        /// otherwise been created by a call to Table::SetIndexRange with the 
+        /// IndexRangeFlags::Inclusive and IndexRangeFlags::UpperLimit options. 
+        /// </para>
+        /// <para>
+        /// This is a convenient method for discovering all the index entries that match 
+        /// the same search criteria.
+        /// </para>
+        /// <para>
+        /// This option is ignored unless Equal is also specified.
+        /// </para>
+        /// </summary>
         SetIndexRange = JET_bitSetIndexRange
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( SeekFlags, unsigned long );
 
+    /// <summary>
+    /// Values for the flags parameter of the Table::SetIndexRange member function.
+    /// </summary>
     enum class IndexRangeFlags : unsigned long
     {
         None = 0,
+        /// <summary>
+        /// This presence or absence of this option indicates the boundary criteria 
+        /// of the index range. When present, this option indicates that the limit 
+        /// of the index range is inclusive. When absent, this option indicates that 
+        /// the limit of the index range is exclusive. When the limit of the index 
+        /// range is inclusive then any index entries exactly matching the search 
+        /// criteria are included in the range.
+        /// </summary>
         Inclusive = JET_bitRangeInclusive,
+        /// <summary>
+        /// <para>
+        /// If this option is used, then the search key in the cursor represents 
+        /// the search criteria for the index entry closest to the end of the index 
+        /// that will match the index range. The index range will be established 
+        /// between the current position of the cursor and this index entry so that 
+        /// all matches can be found by walking forward on the index using Table::MoveNext 
+        /// or Table::Move with JET_MoveNext or a positive offset.
+        /// </para>
+        /// <para>
+        /// It is not meaningful to use this option with a search key that was constructed 
+        /// using Table::MakeKey using a wildcard option intended to find index entries 
+        /// closest to the start of the index.
+        /// </para>
+        /// <para>
+        /// If this option is omitted, then the search key in the cursor represents the 
+        /// search criteria for the index entry closest to the start of the index that 
+        /// will match the index range. The index range will be established between the 
+        /// current position of the cursor and this index entry so that all matches can 
+        /// be found by walking backward on the index using Table::MovePrevious or 
+        /// Table::Move with JET_MovePrevious or a negative offset.
+        /// </para>
+        /// <para>
+        /// It is not meaningful to omit this option with a search key that was constructed 
+        /// using Table::MakeKey using a wildcard option intended to find index entries 
+        /// closest to the end of the index.
+        /// </para>
+        /// </summary>
         UpperLimit = JET_bitRangeUpperLimit,
+        /// <summary>
+        /// This option requests that the index range be removed as soon as it has been 
+        /// established. All other aspects of the operation remain unchanged. This is 
+        /// useful for testing for the existence of index entries that match the search 
+        /// criteria.
+        /// </summary>
         InstantDuration = JET_bitRangeInstantDuration,
+        /// <summary>
+        /// <para>
+        /// This option requests that an existing index range on the cursor be canceled. 
+        /// Once the index range is canceled, it will be possible to move beyond the end 
+        /// of the index range using Table::Move. If an index range is not already in effect, 
+        /// then Table::SetIndexRange will fail with an exception caused by 
+        /// JET_errInvalidOperation.
+        /// </para>
+        /// <para>
+        /// When this option is specified, all other options are ignored.
+        /// </para>
+        /// </summary>
         Remove = JET_bitRangeRemove
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( IndexRangeFlags, unsigned long );
 
+    /// <summary>
+    /// Values for the flags parameter to the Table::SetCurrentIndex member function.
+    /// </summary>
     enum class SetCurrentIndexFlags : unsigned long
     {
-        // This option indicates that the cursor should be positioned on the first 
-        // entry of the specified index. If the clustered index is being selected 
-        // (primary index or sequential index) and the current index is a secondary 
-        // index then JET_bitMoveFirst is assumed. If the current index is being 
-        // selected then this option is ignored and no change to the cursor position 
-        // is made.
+        /// <summary>
+        /// This option indicates that the cursor should be positioned on the first 
+        /// entry of the specified index. If the clustered index is being selected 
+        /// (primary index or sequential index) and the current index is a secondary 
+        /// index then JET_bitMoveFirst is assumed. If the current index is being 
+        /// selected then this option is ignored and no change to the cursor position 
+        /// is made.
+        /// </summary>
         MoveFirst = JET_bitMoveFirst,
-        // This option indicates that the cursor should be positioned on the index 
-        // entry of the new index that corresponds to the record associated with the 
-        // index entry at the current position of the cursor on the old index.
+        /// <summary>
+        /// <para>
+        /// This option indicates that the cursor should be positioned on the index 
+        /// entry of the new index that corresponds to the record associated with the 
+        /// index entry at the current position of the cursor on the old index.
+        /// </para>
+        /// <para>
+        /// If the definition for the new index contains at least one multi-valued 
+        /// key column then the destination index entry is ambiguous. In this case, 
+        /// the specified itagSequence is used to select which multi-value of the 
+        /// most significant multi-valued key column is used to position the cursor. 
+        /// It is only necessary to pass a single itagSequence even in the case of 
+        /// multiple multi-valued key columns because the engine only expands all 
+        /// values for the most significant multi-valued key column.
+        /// </para>
+        /// </summary>
         NoMove = JET_bitNoMove
     };                                   
 
-
+    /// <summary>
+    ///  Contains the information needed to create an index
+    /// </summary>
     class IndexCreate : public JET_INDEXCREATE_W
     {
         using Base = JET_INDEXCREATE_W;
@@ -774,6 +1367,10 @@ namespace Harlinn::Common::Core::Ese
         }
     };
 
+    /// <summary>
+    /// Contains the information that is necessary to create a table 
+    /// populated with columns and indexes.
+    /// </summary>
     class TableCreate : public JET_TABLECREATE_W
     {
         using Base = JET_TABLECREATE_W;
@@ -784,34 +1381,9 @@ namespace Harlinn::Common::Core::Ese
         }
     };
 
-
-
-    class ColumnId
-    {
-        JET_COLUMNID column_;
-    public:
-        ColumnId( )
-            : column_(0)
-        { }
-
-        ColumnId( JET_COLUMNID value )
-            : column_( value )
-        {
-        }
-
-        ColumnId& operator = ( JET_COLUMNID value )
-        {
-            column_ = value;
-            return *this;
-        }
-
-        JET_COLUMNID Value( ) const
-        {
-            return column_;
-        }
-    };
-
-
+    /// <summary>
+    /// Defines the data that can be stored in a column.
+    /// </summary>
     class ColumnDefinition : public JET_COLUMNDEF
     {
         using Base = JET_COLUMNDEF;
@@ -838,78 +1410,127 @@ namespace Harlinn::Common::Core::Ese
 
     };
 
-
+    /// <summary>
+    /// Values for the grbit member of the JET_OBJECTINFO Structure
+    /// </summary>
     enum class TableOptions : int
     {
         None = 0,
+        /// <summary>
+        /// The table can be updated.
+        /// </summary>
         Updatable = JET_bitTableInfoUpdatable,
+        /// <summary>
+        /// The table can have bookmarks.
+        /// </summary>
         Bookmark = JET_bitTableInfoBookmark,
+        /// <summary>
+        /// The table can be rolled back.
+        /// </summary>
         Rollback = JET_bitTableInfoRollback
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( TableOptions, int );
 
+    /// <summary>
+    /// Values for the flags member of the JET_OBJECTINFO Structure
+    /// </summary>
     enum class ObjectFlags : unsigned
     {
         None = 0,
-        // The table is a System Table and is for internal use only.
+        /// <summary>
+        /// The table is a System Table and is for internal use only.
+        /// </summary>
         System = JET_bitObjectSystem,
-        // The table inherited DDL from a template table
+        /// <summary>
+        /// The table inherited DDL from a template table.
+        /// </summary>
         Derived = JET_bitObjectTableDerived,
-        // The DDL for the table cannot be modified
+        /// <summary>
+        /// The DDL for the table cannot be modified.
+        /// </summary>
         FixedDDL = JET_bitObjectTableFixedDDL,
-        // Used in conjunction with JET_bitObjectTableTemplate to 
-        // disallow fixed or variable columns in derived tables 
-        // (so that fixed or variable columns can be added to 
-        // the template in the future).
+        /// <summary>
+        /// Used in conjunction with ObjectFlags::Template to disallow 
+        /// fixed or variable columns in derived tables (so that fixed 
+        /// or variable columns can be added to the template in the future).
+        /// </summary>
         NoFixedVarColumnsInDerivedTables = JET_bitObjectTableNoFixedVarColumnsInDerivedTables,
-        // The table is a template table.
+        /// <summary>
+        /// The table is a template table.
+        /// </summary>
         Template = JET_bitObjectTableTemplate
     };
 
     HCC_DEFINE_ENUM_FLAG_OPERATORS( ObjectFlags, unsigned );
 
-
+    /// <summary>
+    /// Values for flags parameter of the Table::SetSequential member function.
+    /// </summary>
     enum class SequentialFlags : unsigned
     {
         None = 0,
+        /// <summary>
+        /// This option is used to index in the forward direction.
+        /// </summary>
         PrereadForward = JET_bitPrereadForward,
+        /// <summary>
+        /// This option is used to index in the backward direction.
+        /// </summary>
         PrereadBackward = JET_bitPrereadBackward
     };
 
     HCC_DEFINE_ENUM_FLAG_OPERATORS( SequentialFlags, unsigned );
 
+    /// <summary>
+    /// Values for the value parameter of the Instance::SetExceptionAction static member function,
+    /// or the return value from the Instance::QueryExceptionAction() static member function.
+    /// </summary>
     enum class ExceptionAction : long
     {
-        // Displays message box on exception
+        /// <summary>
+        /// Displays message box on exception
+        /// </summary>
         DisplayMessageBox = JET_ExceptionMsgBox,
-        // Do nothing on exceptions
+        /// <summary>
+        /// Do nothing on exceptions
+        /// </summary>
         None = JET_ExceptionNone,
-        // Use the Windows RaiseFailFastException API to force a crash
+        /// <summary>
+        /// Use the Windows RaiseFailFastException API to force a crash
+        /// </summary>
         FailFast = JET_ExceptionFailFast
     };
 
 
+    template<StringLike StringT = WideString>
     class Columns;
 
     /// <summary>
+    /// <para>
     /// The Table class manages a handle to a database cursor that is used to 
     /// call to the JET API. A cursor can only be used with the session that was 
     /// used to open that cursor.
-    ///
+    /// </para>
+    /// <para>
     /// A cursor manages the use of a table for the database engine. A cursor can do the following tasks:
-    ///      Scan records
-    ///      Search for records
-    ///      Choose the effective sort order and visibility of those records
-    ///      Create, update, or delete records
-    ///      Modify the schema of the table
-    ///
+    /// </para>
+    /// <list type="bullet">
+    ///      <item>Scan records</item>
+    ///      <item>Search for records</item>
+    ///      <item>Choose the effective sort order and visibility of those records</item>
+    ///      <item>Create, update, or delete records</item>
+    ///      <item>Modify the schema of the table</item>
+    /// </list>
+    /// <para>
     /// The supported functionality of the cursor might change as the status or type of 
     /// the underlying table changes. For example, a temporary table might disallow 
     /// searching for data when it is opened with certain options. 
-    ///
+    /// </para>
+    /// <para>
     /// The cursor is always fully connected to the underlying table and interacts with 
     /// that data directly without any caching. Almost all of the core ISAM functionality 
     /// that is exposed by this database engine is works through the cursor.
+    /// </para>
     /// </summary>
     class Table
     {
@@ -919,12 +1540,22 @@ namespace Harlinn::Common::Core::Ese
     public:
         using ColumnId = JET_COLUMNID;
 
+        /// <summary>
+        /// This constructor is used to create a Table object
+        /// that is not initially referencing an existing ESE table cursor.
+        /// </summary>
         constexpr Table( ) noexcept
             : sessionId_( JET_sesidNil ),
               tableId_( JET_tableidNil ) 
         {
         }
 
+        /// <summary>
+        /// Used to initialize a Table object that references
+        /// an ESE table cursor.
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="tableId"></param>
         Table( JET_SESID sessionId, JET_TABLEID tableId )
             : sessionId_( sessionId ), tableId_( tableId )
         {
@@ -937,6 +1568,9 @@ namespace Harlinn::Common::Core::Ese
                 throw ArgumentException( "Invalid table handle" );
             }
         }
+        /// <summary>
+        /// The destructor closes the ESE table cursor.
+        /// </summary>
         ~Table( )
         {
             Close( );
@@ -944,6 +1578,12 @@ namespace Harlinn::Common::Core::Ese
 
         Table( const Table& other ) = delete;
 
+        /// <summary>
+        /// Move constructor
+        /// </summary>
+        /// <param name="other">
+        /// The Table object that is moved to the new object.
+        /// </param>
         Table( Table&& other ) noexcept
             : sessionId_( other.sessionId_ ), tableId_( other.tableId_ )
         {
@@ -952,20 +1592,17 @@ namespace Harlinn::Common::Core::Ese
         }
         Table& operator = ( const Table& other ) = delete;
 
+        /// <summary>
+        /// Move assignment
+        /// </summary>
+        /// <param name="other">
+        /// The Table object that is moved to this object.
+        /// </param>
+        /// <returns></returns>
         Table& operator = ( Table&& other ) noexcept
         {
-            if ( &other != this )
-            {
-                if ( tableId_ != JET_tableidNil )
-                {
-                    JetCloseTable( this->sessionId_, tableId_ );
-                }
-                sessionId_ = other.sessionId_;
-                tableId_ = other.tableId_;
-
-                other.sessionId_ = JET_sesidNil;
-                other.tableId_ = JET_tableidNil;
-            }
+            std::swap(sessionId_, other.sessionId_);
+            std::swap(tableId_, other.tableId_);
             return *this;
         }
         /// <summary>
@@ -976,11 +1613,20 @@ namespace Harlinn::Common::Core::Ese
             return tableId_;
         }
 
+        /// <summary>
+        /// Checks that both sessionId_ and tableId_ are not assigned their nil values.
+        /// </summary>
+        /// <returns>
+        /// true if neither sessionId_ and tableId_ are assigned their nil values, otherwise false.
+        /// </returns>
         bool IsValid( ) const noexcept
         {
             return (sessionId_ != JET_sesidNil) && (tableId_ != JET_tableidNil);
         }
 
+        /// <summary>
+        /// Checks that both sessionId_ and tableId_ are not assigned their nil values.
+        /// </summary>
         explicit operator bool( ) const noexcept
         {
             return IsValid( );
@@ -1014,63 +1660,311 @@ namespace Harlinn::Common::Core::Ese
     public:
 
         /// <summary>
-        /// MakeKey constructs search keys that is used to find a set of entries 
+        /// <para>
+        /// MakeKey constructs search keys that are used to find a set of entries 
         /// in an index by some simple search criteria on their key column values. 
-        ///
+        /// </para>
+        /// <para>
         /// A search key is also one of the intrinsic properties of a cursor 
         /// and is used by the Seek and SetIndexRange methods to locate index 
         /// entries matching these search criteria on the current index of that cursor. 
-        ///
+        /// </para>
+        /// <para>
         /// A complete search key is built up in a series of MakeKey calls where each 
         /// call is used to load the column value for the next key column of the current 
         /// index of a cursor. It is also possible to load a previously constructed 
         /// search key that has been retrieved from the cursor using RetrieveKey.
+        /// </para>
         /// </summary>
+        /// <param name="keyData">
+        /// <para>
+        /// The input buffer containing the column data for the current key column of 
+        /// the current index of the cursor for which the search key is being constructed.
+        /// </para>
+        /// <para>
+        /// The data type of the column data in the input buffer must exactly 
+        /// match the data type and other properties of the column definition 
+        /// of the current key column. No type coercion is performed on the 
+        /// column data whatsoever.
+        /// </para>
+        /// <para>
+        /// If KeyFlags::NormalizedKey is specified in the flags parameter, the 
+        /// input buffer must contain a previously constructed search key. Such 
+        /// keys are obtained using a call to Table::RetrieveKey.
+        /// </para>
+        /// </param>
+        /// <param name="keyDataLength">
+        /// <para>
+        /// The size in bytes of the column data provided in the input buffer.
+        /// </para>
+        /// <para>
+        /// If KeyFlags::NormalizedKey is specified in the flags parameter, this 
+        /// is the size of the search key provided in the input buffer
+        /// </para>
+        /// <para>
+        /// If the size of the column data is zero then the contents of the input 
+        /// buffer are ignored. If KeyFlags::DataZeroLength is specified in the flags 
+        /// parameter and the current key column of the current index of the cursor 
+        /// is a variable length column, the input column data is presumed to be a 
+        /// zero length value. Otherwise, the input column data is presumed to be 
+        /// a NULL value.
+        /// </para>
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the KeyFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         void MakeKey( const void* keyData, unsigned long keyDataLength, KeyFlags flags = KeyFlags::None ) const
         {
             auto rc = static_cast<Result>( JetMakeKey( sessionId_, tableId_, keyData, keyDataLength, static_cast<JET_GRBIT>( flags ) ) );
             RequireSuccess( rc );
         }
 
+        /// <summary>
+        /// <para>
+        /// MakeKey constructs search keys that are used to find a set of entries 
+        /// in an index by some simple search criteria on their key column values. 
+        /// </para>
+        /// <para>
+        /// A search key is also one of the intrinsic properties of a cursor 
+        /// and is used by the Seek and SetIndexRange methods to locate index 
+        /// entries matching these search criteria on the current index of that cursor. 
+        /// </para>
+        /// <para>
+        /// A complete search key is built up in a series of MakeKey calls where each 
+        /// call is used to load the column value for the next key column of the current 
+        /// index of a cursor. 
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">
+        /// <list type="bullet">
+        /// <item>An integer type, except bool.</item>
+        /// <item>A floating point type.</item>
+        /// <item>TimeSpan</item>
+        /// <item>Currency</item>
+        /// <item>Guid</item>
+        /// <item>GUID</item>
+        /// <item>boost::uuids::uuid</item>
+        /// </list>
+        /// </typeparam>
+        /// <param name="keyData">
+        /// A const reference to a variable containing the column data for the current key column of 
+        /// the current index of the cursor for which the search key is being constructed.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the KeyFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         template<DirectType T>
         void MakeKey( const T& keyData, KeyFlags flags = KeyFlags::None ) const
         {
             MakeKey( &keyData, sizeof( std::decay_t<T> ), flags );
         }
 
+        /// <summary>
+        /// <para>
+        /// MakeKey constructs search keys that are used to find a set of entries 
+        /// in an index by some simple search criteria on their key column values. 
+        /// </para>
+        /// <para>
+        /// A search key is also one of the intrinsic properties of a cursor 
+        /// and is used by the Seek and SetIndexRange methods to locate index 
+        /// entries matching these search criteria on the current index of that cursor. 
+        /// </para>
+        /// <para>
+        /// A complete search key is built up in a series of MakeKey calls where each 
+        /// call is used to load the column value for the next key column of the current 
+        /// index of a cursor. 
+        /// </para>
+        /// </summary>
+        /// <param name="dateTime">
+        /// A const reference to a DateTime containing the column data for the current key column of 
+        /// the current index of the cursor for which the search key is being constructed.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the KeyFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         void MakeKey( const DateTime& dateTime, KeyFlags flags = KeyFlags::None ) const
         {
             double keyData = dateTime.ToOADate( );
             MakeKey( &keyData, sizeof( double ), flags );
         }
-        template<typename T>
-            requires std::is_same_v<bool,T>
-        void MakeKey( T value, KeyFlags flags = KeyFlags::None ) const
+        void MakeKey( const const std::chrono::system_clock::time_point& time_point, KeyFlags flags = KeyFlags::None ) const
+        {
+            DateTime dateTime( time_point );
+            double keyData = dateTime.ToOADate( );
+            MakeKey( &keyData, sizeof( double ), flags );
+        }
+
+        /// <summary>
+        /// <para>
+        /// MakeKey constructs search keys that are used to find a set of entries 
+        /// in an index by some simple search criteria on their key column values. 
+        /// </para>
+        /// <para>
+        /// A search key is also one of the intrinsic properties of a cursor 
+        /// and is used by the Seek and SetIndexRange methods to locate index 
+        /// entries matching these search criteria on the current index of that cursor. 
+        /// </para>
+        /// <para>
+        /// A complete search key is built up in a series of MakeKey calls where each 
+        /// call is used to load the column value for the next key column of the current 
+        /// index of a cursor. 
+        /// </para>
+        /// </summary>
+        /// <param name="dateTime">
+        /// A boolean value the column data for the current key column of 
+        /// the current index of the cursor for which the search key is being constructed.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the KeyFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        void MakeKey( bool value, KeyFlags flags = KeyFlags::None ) const
         {
             Byte keyData = value ? 1 : 0;
             MakeKey( &keyData, sizeof( Byte ), flags );
         }
 
-        template<StringType T>
+        /// <summary>
+        /// <para>
+        /// MakeKey constructs search keys that are used to find a set of entries 
+        /// in an index by some simple search criteria on their key column values. 
+        /// </para>
+        /// <para>
+        /// A search key is also one of the intrinsic properties of a cursor 
+        /// and is used by the Seek and SetIndexRange methods to locate index 
+        /// entries matching these search criteria on the current index of that cursor. 
+        /// </para>
+        /// <para>
+        /// A complete search key is built up in a series of MakeKey calls where each 
+        /// call is used to load the column value for the next key column of the current 
+        /// index of a cursor. 
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleCharSpanLike concept.
+        /// </typeparam>
+        /// <param name="value">
+        /// A const reference to a variable containing the column data for the current key column of 
+        /// the current index of the cursor for which the search key is being constructed.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the KeyFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        template<SimpleCharSpanLike T>
         void MakeKey( const T& value, KeyFlags flags = KeyFlags::None ) const
         {
             using CharT = typename T::value_type;
-            unsigned long keySize = static_cast<unsigned long>(value.length( ) * sizeof( CharT ));
+            unsigned long keySize = static_cast<unsigned long>(value.size( ) * sizeof( CharT ));
             MakeKey( value.c_str(), keySize, flags );
         }
 
+        /// <summary>
+        /// <para>
+        /// MakeKey constructs search keys that are used to find a set of entries 
+        /// in an index by some simple search criteria on their key column values. 
+        /// </para>
+        /// <para>
+        /// A search key is also one of the intrinsic properties of a cursor 
+        /// and is used by the Seek and SetIndexRange methods to locate index 
+        /// entries matching these search criteria on the current index of that cursor. 
+        /// </para>
+        /// <para>
+        /// A complete search key is built up in a series of MakeKey calls where each 
+        /// call is used to load the column value for the next key column of the current 
+        /// index of a cursor. 
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleByteSpanLike concept.
+        /// </typeparam>
+        /// <param name="value">
+        /// A const reference to a variable containing the column data for the current key column of 
+        /// the current index of the cursor for which the search key is being constructed.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the KeyFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        template<SimpleByteSpanLike T>
+        void MakeKey( const T& value, KeyFlags flags = KeyFlags::None ) const
+        {
+            unsigned long keySize = static_cast< unsigned long >( value.size( ) );
+            MakeKey( value.c_str( ), keySize, flags );
+        }
+
+        /// <summary>
+        /// <para>
+        /// MakeKey constructs search keys that are used to find a set of entries 
+        /// in an index by some simple search criteria on their key column values. 
+        /// </para>
+        /// <para>
+        /// A search key is also one of the intrinsic properties of a cursor 
+        /// and is used by the Seek and SetIndexRange methods to locate index 
+        /// entries matching these search criteria on the current index of that cursor. 
+        /// </para>
+        /// <para>
+        /// A complete search key is built up in a series of MakeKey calls where each 
+        /// call is used to load the column value for the next key column of the current 
+        /// index of a cursor. 
+        /// </para>
+        /// </summary>
+        /// <param name="value">
+        /// A pointer to a zero terminated c style char string.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the KeyFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         void MakeKey( const char* value, KeyFlags flags = KeyFlags::None ) const
         {
             unsigned long keySize = static_cast<unsigned long>( strlen(value) );
             MakeKey( value, keySize, flags );
         }
+        /// <summary>
+        /// <para>
+        /// MakeKey constructs search keys that are used to find a set of entries 
+        /// in an index by some simple search criteria on their key column values. 
+        /// </para>
+        /// <para>
+        /// A search key is also one of the intrinsic properties of a cursor 
+        /// and is used by the Seek and SetIndexRange methods to locate index 
+        /// entries matching these search criteria on the current index of that cursor. 
+        /// </para>
+        /// <para>
+        /// A complete search key is built up in a series of MakeKey calls where each 
+        /// call is used to load the column value for the next key column of the current 
+        /// index of a cursor. 
+        /// </para>
+        /// </summary>
+        /// <param name="value">
+        /// A pointer to a zero terminated c style wchar_t string.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the KeyFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         void MakeKey( const wchar_t* value, KeyFlags flags = KeyFlags::None ) const
         {
             unsigned long keySize = static_cast<unsigned long>( wcslen( value )*sizeof(wchar_t) );
             MakeKey( value, keySize, flags );
         }
 
-
+        /// <summary>
+        /// Temporarily limits the set of index entries that the cursor 
+        /// can walk using Table::Move to those starting from the current 
+        /// index entry and ending at the index entry that matches the search 
+        /// criteria specified by the search key in that cursor and the 
+        /// specified bound criteria. A search key must have been previously 
+        /// constructed using Table::MakeKey.
+        /// </summary>
+        /// <param name="flags">
+        /// Zero or more values from the IndexRangeFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         void SetIndexRange( IndexRangeFlags flags = Ese::IndexRangeFlags::None ) const
         {
             auto rc = static_cast<Result>( JetSetIndexRange( sessionId_, tableId_, static_cast<JET_GRBIT>( flags ) ) );
@@ -1088,6 +1982,46 @@ namespace Harlinn::Common::Core::Ese
         /// The retrieved key can then be used to efficiently return that cursor to 
         /// the same index entry by a call to Seek
         /// </summary>
+        
+        
+        /// <summary>
+        /// <para>
+        /// Retrieves the key for the index entry at the current position of a cursor. 
+        /// </para>
+        /// <para>
+        /// Such keys are constructed by calls to MakeKey. 
+        /// </para>
+        /// <para>
+        /// The retrieved key can then be used to efficiently return that cursor to 
+        /// the same index entry by a call to Seek
+        /// </para>
+        /// </summary>
+        /// <param name="keyData">
+        /// The output buffer that will receive the key.
+        /// </param>
+        /// <param name="maxKeyDataLength">
+        /// The maximum size in bytes of the output buffer.
+        /// </param>
+        /// <param name="actualKeyDataLength">
+        /// <para>
+        /// Receives the actual size in bytes of the key.
+        /// </para>
+        /// <para>
+        /// If this parameter is NULL then the actual size of the key 
+        /// will not be returned.
+        /// </para>
+        /// <para>
+        /// If the output buffer is too small, then the actual size of 
+        /// the key will still be returned. That means that this number 
+        /// will be larger than the size of the output buffer.
+        /// </para>
+        /// </param>
+        /// <param name="retrieveCopyOfSearchKey">
+        /// If true, the engine will return the search key for the cursor. 
+        /// The search key is built up using one or more prior calls to 
+        /// Table::MakeKey for the purposes of seeking to that key using 
+        /// Table::Seek or setting an index range using Table::SetIndexRange.
+        /// </param>
         void RetrieveKey( void* keyData, unsigned long maxKeyDataLength, unsigned long* actualKeyDataLength, bool retrieveCopyOfSearchKey = true ) const
         {
             auto rc = static_cast<Result>( JetRetrieveKey( sessionId_, tableId_, keyData, maxKeyDataLength, actualKeyDataLength, retrieveCopyOfSearchKey ? JET_bitRetrieveCopy : 0 ) );
@@ -1097,42 +2031,436 @@ namespace Harlinn::Common::Core::Ese
             }
         }
 
+        /// <summary>
+        /// <para>
+        /// Retrieves the key for the index entry at the current position of a cursor. 
+        /// </para>
+        /// <para>
+        /// Such keys are constructed by calls to MakeKey. 
+        /// </para>
+        /// <para>
+        /// The retrieved key can then be used to efficiently return that cursor to 
+        /// the same index entry by a call to Seek
+        /// </para>
+        /// </summary>
+        /// <typeparam name="BinaryT">
+        /// Any type that matches the BinaryLike concept.
+        /// </typeparam>
+        /// <param name="retrieveCopyOfSearchKey">
+        /// If true, the engine will return the search key for the cursor. 
+        /// The search key is built up using one or more prior calls to 
+        /// Table::MakeKey for the purposes of seeking to that key using 
+        /// Table::Seek or setting an index range using Table::SetIndexRange.
+        /// </param>
+        /// <returns>
+        /// The retrieved key data.
+        /// </returns>
+        template<BinaryLike BinaryT>
+        BinaryT RetrieveKey( bool retrieveCopyOfSearchKey = true ) const
+        {
+            unsigned long actualKeyDataLength = 0;
+            RetrieveKey( nullptr, 0, &actualKeyDataLength, retrieveCopyOfSearchKey );
+            BinaryT result;
+            if ( actualKeyDataLength )
+            {
+                result.resize( actualKeyDataLength );
+                RetrieveKey( result.data( ), result.size(), &actualKeyDataLength, retrieveCopyOfSearchKey );
+            }
+            return result;
+        }
 
+        /// <summary>
+        /// Sets the current index of a cursor. The current 
+        /// index of a cursor defines which records in a 
+        /// table are visible to that cursor and the order 
+        /// in which they appear by selecting the set of index 
+        /// entries to use to expose those records.
+        /// </summary>
+        /// <param name="indexName">
+        /// <para>
+        /// Pointer to a zero terminated string that contains 
+        /// the name of the index to be selected for the cursor.
+        /// </para>
+        /// <para>
+        /// If this parameter is nullptr or an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </para>
+        /// </param>
         void SetCurrentIndex( const wchar_t* indexName ) const
         {
             auto rc = static_cast<Result>( JetSetCurrentIndexW( sessionId_, tableId_, indexName ) );
             RequireSuccess( rc );
         }
+        /// <summary>
+        /// Sets the current index of a cursor. The current 
+        /// index of a cursor defines which records in a 
+        /// table are visible to that cursor and the order 
+        /// in which they appear by selecting the set of index 
+        /// entries to use to expose those records.
+        /// </summary>
+        /// <param name="indexName">
+        /// <para>
+        /// Pointer to a zero terminated string that contains 
+        /// the name of the index to be selected for the cursor.
+        /// </para>
+        /// <para>
+        /// If this parameter is nullptr or an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </para>
+        /// </param>
         void SetCurrentIndex( const char* indexName ) const
         {
             auto rc = static_cast<Result>( JetSetCurrentIndexA( sessionId_, tableId_, indexName ) );
             RequireSuccess( rc );
         }
 
-        template<StringType T>
+        /// <summary>
+        /// Sets the current index of a cursor. The current 
+        /// index of a cursor defines which records in a 
+        /// table are visible to that cursor and the order 
+        /// in which they appear by selecting the set of index 
+        /// entries to use to expose those records.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="indexName">
+        /// <para>
+        /// Pointer to a zero terminated string that contains 
+        /// the name of the index to be selected for the cursor.
+        /// </para>
+        /// <para>
+        /// If this parameter is an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </para>
+        /// </param>
+        template<SimpleStringLike T>
         void SetCurrentIndex( const T& indexName ) const
         {
-            SetCurrentIndex( indexName.c_str( ) );
+            using CharType = typename T::value_type;
+            auto namePtr = indexName.size( ) != 0 ? indexName.c_str( ) : static_cast< const CharType* >( 0 );
+            SetCurrentIndex( namePtr );
         }
 
-        void SetCurrentIndex( const wchar_t* indexName, SetCurrentIndexFlags flags ) const
+        /// <summary>
+        /// Sets the current index of a cursor that defines which 
+        /// records in a table are visible to that cursor and the 
+        /// order in which they appear by selecting the set of 
+        /// index entries to use to expose those records.
+        /// </summary>
+        /// <param name="indexName">
+        /// If this parameter is nullptr or an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </param>
+        /// <param name="flags">
+        /// A value from the SetCurrentIndexFlags enumeration.
+        /// </param>
+        /// <returns>
+        /// Returns false when a secondary index is being selected with 
+        /// flags set to SetCurrentIndexFlags::NoMove and there is no 
+        /// index entry in the new index that corresponds to the record 
+        /// associated with the index entry at the current position of 
+        /// the cursor on the old index.
+        /// </returns>
+        bool SetCurrentIndex( const wchar_t* indexName, SetCurrentIndexFlags flags ) const
         {
+            
             auto rc = static_cast<Result>( JetSetCurrentIndex2W( sessionId_, tableId_, indexName, static_cast<JET_GRBIT>( flags ) ) );
             if ( rc != Result::Success && rc != Result::ErrorNoCurrentRecord )
             {
                 HCC_THROW( Exception, rc );
             }
+            return rc != Result::ErrorNoCurrentRecord;
         }
-        void SetCurrentIndex( const char* indexName, SetCurrentIndexFlags flags ) const
+        /// <summary>
+        /// Sets the current index of a cursor that defines which 
+        /// records in a table are visible to that cursor and the 
+        /// order in which they appear by selecting the set of 
+        /// index entries to use to expose those records.
+        /// </summary>
+        /// <param name="indexName">
+        /// If this parameter is nullptr or an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </param>
+        /// <param name="flags">
+        /// A value from the SetCurrentIndexFlags enumeration.
+        /// </param>
+        /// <returns>
+        /// Returns false when a secondary index is being selected with 
+        /// flags set to SetCurrentIndexFlags::NoMove and there is no 
+        /// index entry in the new index that corresponds to the record 
+        /// associated with the index entry at the current position of 
+        /// the cursor on the old index.
+        /// </returns>
+        bool SetCurrentIndex( const char* indexName, SetCurrentIndexFlags flags ) const
         {
             auto rc = static_cast<Result>( JetSetCurrentIndex2A( sessionId_, tableId_, indexName, static_cast<JET_GRBIT>( flags ) ) );
             if ( rc != Result::Success && rc != Result::ErrorNoCurrentRecord )
             {
                 HCC_THROW( Exception, rc );
             }
+            return rc != Result::ErrorNoCurrentRecord;
+        }
+        /// <summary>
+        /// Sets the current index of a cursor. The current 
+        /// index of a cursor defines which records in a 
+        /// table are visible to that cursor and the order 
+        /// in which they appear by selecting the set of index 
+        /// entries to use to expose those records.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="indexName">
+        /// <para>
+        /// Pointer to a zero terminated string that contains 
+        /// the name of the index to be selected for the cursor.
+        /// </para>
+        /// <para>
+        /// If this parameter is an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </para>
+        /// </param>
+        /// <param name="flags">
+        /// A value from the SetCurrentIndexFlags enumeration.
+        /// </param>
+        /// <returns>
+        /// Returns false when a secondary index is being selected with 
+        /// flags set to SetCurrentIndexFlags::NoMove and there is no 
+        /// index entry in the new index that corresponds to the record 
+        /// associated with the index entry at the current position of 
+        /// the cursor on the old index.
+        /// </returns>
+        template<SimpleStringLike T>
+        bool SetCurrentIndex( const T& indexName, SetCurrentIndexFlags flags ) const
+        {
+            using CharType = typename T::value_type;
+            auto namePtr = indexName.size( ) != 0 ? indexName.c_str( ) : static_cast< const CharType* >( 0 );
+            return SetCurrentIndex( namePtr, flags );
+        }
+
+        /// <summary>
+        /// Sets the current index of a cursor. The current index of a 
+        /// cursor defines which records in a table are visible to that 
+        /// cursor and the order in which they appear by selecting the 
+        /// set of index entries to use to expose those records.
+        /// </summary>
+        /// <param name="indexName">
+        /// If this parameter is nullptr or an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </param>
+        /// <param name="flags">
+        /// A value from the SetCurrentIndexFlags enumeration.
+        /// </param>
+        /// <param name="itagSequence">
+        /// <para>
+        /// Sequence number of the multi-valued column value which 
+        /// will be used to position the cursor on the new index.
+        /// </para>
+        /// <para>
+        /// This parameter is only used in conjunction with 
+        /// SetCurrentIndexFlags::NoMove.
+        /// </para>
+        /// </param>
+        /// <returns>
+        /// Returns false when a secondary index is being selected with 
+        /// flags set to SetCurrentIndexFlags::NoMove and there is no 
+        /// index entry in the new index that corresponds to the record 
+        /// associated with the index entry at the current position of 
+        /// the cursor on the old index.
+        /// </returns>
+        bool SetCurrentIndex( const wchar_t* indexName, SetCurrentIndexFlags flags, unsigned long itagSequence ) const
+        {
+            auto rc = static_cast< Result >( JetSetCurrentIndex3W( sessionId_, tableId_, indexName, static_cast< JET_GRBIT >( flags ), itagSequence ) );
+            if ( rc != Result::Success && rc != Result::ErrorNoCurrentRecord )
+            {
+                HCC_THROW( Exception, rc );
+            }
+            return rc != Result::ErrorNoCurrentRecord;
+        }
+
+        /// <summary>
+        /// Sets the current index of a cursor. The current index of a 
+        /// cursor defines which records in a table are visible to that 
+        /// cursor and the order in which they appear by selecting the 
+        /// set of index entries to use to expose those records.
+        /// </summary>
+        /// <param name="indexName">
+        /// If this parameter is nullptr or an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </param>
+        /// <param name="flags">
+        /// A value from the SetCurrentIndexFlags enumeration.
+        /// </param>
+        /// <param name="itagSequence">
+        /// <para>
+        /// Sequence number of the multi-valued column value which 
+        /// will be used to position the cursor on the new index.
+        /// </para>
+        /// <para>
+        /// This parameter is only used in conjunction with 
+        /// SetCurrentIndexFlags::NoMove.
+        /// </para>
+        /// </param>
+        /// <returns>
+        /// Returns false when a secondary index is being selected with 
+        /// flags set to SetCurrentIndexFlags::NoMove and there is no 
+        /// index entry in the new index that corresponds to the record 
+        /// associated with the index entry at the current position of 
+        /// the cursor on the old index.
+        /// </returns>
+        bool SetCurrentIndex( const char* indexName, SetCurrentIndexFlags flags, unsigned long itagSequence ) const
+        {
+            auto rc = static_cast< Result >( JetSetCurrentIndex3A( sessionId_, tableId_, indexName, static_cast< JET_GRBIT >( flags ), itagSequence ) );
+            if ( rc != Result::Success && rc != Result::ErrorNoCurrentRecord )
+            {
+                HCC_THROW( Exception, rc );
+            }
+            return rc != Result::ErrorNoCurrentRecord;
+        }
+
+        /// <summary>
+        /// Sets the current index of a cursor. The current index of a 
+        /// cursor defines which records in a table are visible to that 
+        /// cursor and the order in which they appear by selecting the 
+        /// set of index entries to use to expose those records.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="indexName">
+        /// If this parameter is nullptr or an empty string then 
+        /// the clustered index will be selected. If a primary 
+        /// index is defined for the table then that index will be 
+        /// selected because it is the same as the clustered index. 
+        /// If no primary index is defined for the table then the 
+        /// sequential index will be selected. The sequential 
+        /// index has no index definition.
+        /// </param>
+        /// <param name="flags">
+        /// A value from the SetCurrentIndexFlags enumeration.
+        /// </param>
+        /// <param name="itagSequence">
+        /// <para>
+        /// Sequence number of the multi-valued column value which 
+        /// will be used to position the cursor on the new index.
+        /// </para>
+        /// <para>
+        /// This parameter is only used in conjunction with 
+        /// SetCurrentIndexFlags::NoMove.
+        /// </para>
+        /// </param>
+        /// <returns>
+        /// Returns false when a secondary index is being selected with 
+        /// flags set to SetCurrentIndexFlags::NoMove and there is no 
+        /// index entry in the new index that corresponds to the record 
+        /// associated with the index entry at the current position of 
+        /// the cursor on the old index.
+        /// </returns>
+        template<SimpleStringLike T>
+        bool SetCurrentIndex( const T& indexName, SetCurrentIndexFlags flags, unsigned long itagSequence ) const
+        {
+            return SetCurrentIndex( indexName.c_str(), flags, itagSequence );
         }
 
 
+        /// <summary>
+        /// Efficiently positions a cursor to an index entry that matches the 
+        /// search criteria specified by the search key in that cursor and the 
+        /// specified inequality. A search key must have been previously 
+        /// constructed using Table::MakeKey.
+        /// </summary>
+        /// <param name="flags">
+        /// Zero or more values from the SeekFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// Returns one of the following values from the Ese::Result enumeration:
+        /// <list type="bullet">
+        /// <item>
+        /// Result::Success: The operation completed successfully, which means 
+        /// that an index entry was found that exactly matched the search criteria.
+        /// </item>
+        /// <item>
+        /// Result::WarningUniqueKey: Exactly one index entry was found that exactly 
+        /// matched the search criteria. This value will only be returned if 
+        /// SeekFlags::CheckUniqueness was specified and it was cheap to determine 
+        /// that the matching index entry was the only index entry that exactly 
+        /// matches the search criteria.
+        /// </item>
+        /// <item>
+        /// Result::WarningSeekNotEqual: An index entry was found that matched the 
+        /// search criteria. However, that index entry was not an exact match.
+        /// </item>
+        /// <item>
+        /// Result::ErrorRecordNotFound: No index entry was found that matched 
+        /// the search criteria.
+        /// </item>
+        /// <list>
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// On success, the cursor will be positioned at an index entry that 
+        /// matches the search criteria. If a record has been prepared for update, 
+        /// then that update will be canceled. If an index range is in effect, 
+        /// that index range will be canceled. If a search key has been constructed 
+        /// for the cursor, then that search key will be deleted. No change to the 
+        /// database state will occur. When multiple index entries have the same 
+        /// value, the entry closest to the start of the index is always selected.
+        /// </para>
+        /// <para>
+        /// On failure, the position of the cursor will remain unchanged unless 
+        /// Result::ErrorRecordNotFound was returned. In that case, the cursor 
+        /// will be positioned where the index entry that matched the search criteria 
+        /// specified by the search key in that cursor and the specified inequality 
+        /// would have been. The cursor can be moved relative to that position 
+        /// but is still not on a valid index entry. If a record has been prepared for 
+        /// update, then that update will be canceled. If an index range is in effect, 
+        /// that index range will be canceled. If a search key has been constructed 
+        /// for the cursor, then that search key will be deleted. No change to the 
+        /// database state will occur.
+        /// </para>
+        /// </remarks>
         Ese::Result Seek( SeekFlags flags ) const
         {
             auto rc = static_cast<Result>( JetSeek( sessionId_, tableId_, static_cast<JET_GRBIT>( flags ) ) );
@@ -1145,14 +2473,28 @@ namespace Harlinn::Common::Core::Ese
             }
             return rc;
         }
-
+        /*
         Ese::Result SeekNX( SeekFlags flags ) const
         {
             auto rc = static_cast<Result>( JetSeek( sessionId_, tableId_, static_cast<JET_GRBIT>( flags ) ) );
             return rc;
         }
+        */
 
-        bool GetBookmark( std::vector<unsigned char>& result ) const
+        /// <summary>
+        /// Retrieves the bookmark for the record that is associated with the 
+        /// index entry at the current position of a cursor. This bookmark can 
+        /// then be used to reposition that cursor back to the same record using 
+        /// Table::GoToBookmark.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the BinaryLike concept.
+        /// </typeparam>
+        /// <param name="result">
+        /// A reference to a variable that receives the bookmark.
+        /// </param>
+        template<BinaryLike T>
+        void GetBookmark( T& result ) const
         {
             unsigned char buffer[2048];
             unsigned long actualSize = 0;
@@ -1162,7 +2504,7 @@ namespace Harlinn::Common::Core::Ese
             {
                 result.resize( actualSize );
                 rc = static_cast<Result>( JetGetBookmark( sessionId_, tableId_, result.data( ), actualSize, &actualSize ) );
-                return RequireSuccess( rc );
+                RequireSuccess( rc );
             }
             else
             {
@@ -1173,11 +2515,27 @@ namespace Harlinn::Common::Core::Ese
                 RequireSuccess( rc );
                 result.resize( actualSize );
                 memcpy( result.data( ), buffer, actualSize );
-                return true;
             }
         }
 
-        bool GotoBookmark( const std::vector<unsigned char>& bookmark ) const
+        /// <summary>
+        /// Positions the cursor to an index entry for the record that is 
+        /// associated with the specified bookmark. The bookmark can be 
+        /// used with any index defined over a table. The bookmark for a 
+        /// record can be retrieved using Table::GetBookmark.
+        /// </summary>
+        /// <typeparam name="T">
+        /// A type that matches the SimpleByteSpanLike concept.
+        /// </typeparam>
+        /// <param name="bookmark">
+        /// A const reference to the variable containing the bookmark to go to.
+        /// </param>
+        /// <returns>
+        /// true if the cursor was positioned on the bookmark, otherwise 
+        /// false.
+        /// </returns>
+        template<SimpleByteSpanLike T>
+        bool GotoBookmark( const T& bookmark ) const
         {
             if ( bookmark.size( ) )
             {
@@ -1194,34 +2552,310 @@ namespace Harlinn::Common::Core::Ese
             }
         }
 
-        bool Move( long offset ) const
+        /// <summary>
+        /// Positions a cursor at the start or end of an index 
+        /// and traverses the entries in that index either forward 
+        /// or backward. It is also possible to move the cursor forward 
+        /// or backward on the current index by a specified number of 
+        /// index entries. Another approach is to artificially limit 
+        /// the index entries that can be enumerated using Move by 
+        /// setting up an index range on the cursor using Table::SetIndexRange.
+        /// </summary>
+        /// <param name="offset">
+        /// <para>
+        /// An arbitrary offset that indicates the desired movement of 
+        /// the cursor on the current index.
+        /// </para>
+        /// <para>
+        /// In addition to standard offsets, this parameter can also be set 
+        /// with one of the following options:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// <para>
+        /// JET_MoveFirst: Moves the cursor to the first index entry in the 
+        /// index (if one exists). This resets any index range set with 
+        /// Table::SetIndexRange.
+        /// </para>
+        /// <para>
+        /// Note: The literal value of -2147483648 is used to denote this 
+        /// option. Do not use this value as an ordinary offset or unintended 
+        /// behavior may result.
+        /// </para>
+        /// </item>
+        /// <item>
+        /// <para>
+        /// JET_MoveLast: Moves the cursor to the last index entry in the index (if one exists). 
+        /// This resets any index range set with Table::SetIndexRange.
+        /// </para>
+        /// <para>
+        /// Note: The literal value of 2147483647 is used to denote this option. 
+        /// Do not use this value as an ordinary offset or unintended behavior 
+        /// may result.
+        /// </para>
+        /// </item>
+        /// <item>
+        /// JET_MoveNext: Moves the cursor to the next index entry in the index (if one exists). 
+        /// This value is exactly equal to an ordinary offset of +1. It respects 
+        /// index ranges set with Table::SetIndexRange.
+        /// </item>
+        /// <item>
+        /// JET_MovePrevious: Moves the cursor to the previous index entry in the index (if one exists). 
+        /// This value is exactly equal to an ordinary offset of -1. 
+        /// It respects index ranges set with Table::SetIndexRange.
+        /// </item>
+        /// <item>
+        /// 0: The cursor remains at the current logical position and the existence 
+        /// of the index entry that corresponds to that logical position will be tested.
+        /// </item>
+        /// <list>
+        /// </param>
+        /// <param name="moveKeyNE">
+        /// Moves the cursor forward or backward by the number of index 
+        /// entries required to skip the requested number of index key 
+        /// values encountered in the index. This has the effect of 
+        /// collapsing index entries with duplicate key values into 
+        /// a single index entry. Ordinarily, an offset will move the 
+        /// cursor by the specified number of index entries regardless 
+        /// of their key values.
+        /// </param>
+        /// <returns>
+        /// true if the cursor is positioned on a record after the call.
+        /// </returns>
+        bool Move( long offset, bool moveKeyNE = false) const
         {
-            auto rc = static_cast<Result>( JetMove( sessionId_, tableId_, offset, 0 ) );
+            auto rc = static_cast<Result>( JetMove( sessionId_, tableId_, offset, moveKeyNE? JET_bitMoveKeyNE : 0 ) );
             if ( rc != Result::Success && rc != Result::ErrorNoCurrentRecord )
             {
                 HCC_THROW( Exception, rc );
             }
             return rc == Result::Success;
         }
-
+        /// <summary>
+        /// Moves the cursor to the first index entry in the 
+        /// index (if one exists). This resets any index range set with 
+        /// Table::SetIndexRange.
+        /// </summary>
+        /// <returns>
+        /// true if the cursor is positioned on a record after the call.
+        /// </returns>
         bool MoveFirst( ) const
         {
             return Move( JET_MoveFirst );
         }
-
+        
+        /// <summary>
+        /// Moves the cursor to the next index entry in the index (if one exists). 
+        /// This value is exactly equal to an ordinary offset of +1. It respects 
+        /// index ranges set with Table::SetIndexRange.
+        /// </summary>
+        /// <returns>
+        /// true if the cursor is positioned on a record after the call.
+        /// </returns>
         bool MoveNext( ) const
         {
             return Move( JET_MoveNext );
         }
 
+        /// <summary>
+        /// Moves the cursor to the previous index entry in the index (if one exists). 
+        /// This value is exactly equal to an ordinary offset of -1. 
+        /// It respects index ranges set with Table::SetIndexRange.
+        /// </summary>
+        /// <returns>
+        /// true if the cursor is positioned on a record after the call.
+        /// </returns>
         bool MovePrevious( ) const
         {
             return Move( JET_MovePrevious );
         }
 
+        /// <summary>
+        /// Moves the cursor to the last index entry in the index (if one exists). 
+        /// This resets any index range set with Table::SetIndexRange.
+        /// </summary>
+        /// <returns>
+        /// true if the cursor is positioned on a record after the call.
+        /// </returns>
         bool MoveLast( ) const
         {
             return Move( JET_MoveLast );
+        }
+
+        /// <summary>
+        /// The cursor remains at the current logical position and the existence 
+        /// of the index entry that corresponds to that logical position will be tested.
+        /// </summary>
+        /// <returns>
+        /// true if the cursor is positioned on a record.
+        /// </returns>
+        bool IsPositioned( ) const
+        {
+            return Move( 0 );
+        }
+
+        /// <summary>
+        /// Retrieves a single column value from the current record. The record is 
+        /// that record associated with the index entry at the current position of 
+        /// the cursor. Alternatively, this function can retrieve a column from 
+        /// a record being created in the cursor copy buffer. This function can 
+        /// also retrieve column data from an index entry that references the current 
+        /// record. In addition to retrieving the actual column value, 
+        /// Table::RetrieveColumn can also be used to retrieve the size of a column, 
+        /// before retrieving the column data itself so that application buffers can 
+        /// be sized appropriately.
+        /// </summary>
+        /// <param name="columnId">
+        /// <para>
+        /// The column id of the column to retrieve.
+        /// </para>
+        /// <para>
+        /// A columnId value of 0 (zero) can be given which does not itself refer to 
+        /// any individual column. When columnId 0 (zero) is given, all tagged columns, 
+        /// sparse, and multi-valued columns are treated as a single column. This 
+        /// facilitates retrieving all sparse columns that are present in a record.
+        /// </para>
+        /// </param>
+        /// <param name="dataBuffer">
+        /// The output buffer that receives the column value.
+        /// </param>
+        /// <param name="dataBufferSize">
+        /// The maximum size, in bytes, of the output buffer.
+        /// </param>
+        /// <param name="actualDataSize">
+        /// <para>
+        /// Receives the actual size, in bytes, of the column value.
+        /// </para>
+        /// <para>
+        /// If this parameter is nullptr, then the actual size of the column value 
+        /// will not be returned.
+        /// </para>
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="pretinfo">
+        /// <para>
+        /// If pretinfo is give as nullptr then the function behaves as though an 
+        /// itagSequence of 1 and an ibLongValue of 0 (zero) were given. This causes 
+        /// column retrieval to retrieve the first value of a multi-valued column, 
+        /// and to retrieve long data at offset 0 (zero).
+        /// </para>
+        /// <para>
+        /// This parameter is used to provide one or more of the following:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// ibLongValue: Gives a binary offset into a long column value when 
+        /// retrieving a portion of a column value.
+        /// </item>
+        /// <item>
+        /// itagSequence: Gives the sequence number of the desired multi-valued 
+        /// column value. Note that this field is only set if the RetrieveFlags::Tag 
+        /// is specified. Otherwise, it is unmodified.
+        /// </item>
+        /// <item>
+        /// columnidNextTagged: Returns the column ID of the returned column value 
+        /// when retrieving all tagged, sparse and multi-valued, columns using 
+        /// passing columnId of 0 (zero).
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// <para>
+        /// The function returns one of the following values from the Ese::Result enumeration:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// Result::Success: The operation completed successfully.
+        /// </item>
+        /// <item>
+        /// Result::WarningBufferTruncated: The entire column value could not be 
+        /// retrieved because the given buffer is smaller than the size of the column.
+        /// </item>
+        /// <item>
+        /// Result::WarningColumnNull: The column value retrieved is NULL.
+        /// </item>
+        /// </list>
+        /// <para>
+        /// On success, the column value for the given column, is copied into the given 
+        /// buffer. If Less than all of the column value is copied then the warning 
+        /// Result::WarningBufferTruncated is returned  If the actualDataSize was given, 
+        /// the actual size of the column value is returned. Note that NULL values have 
+        /// 0 (zero) length and will thus set the returned size to 0 (zero). If the 
+        /// column retrieved was a multi-valued column, and pretinfo was given, and 
+        /// RetrieveFlags::Tag must be set as an option in retrieveFlags, then the 
+        /// sequence number of the column value is returned in pretinfo->itagSequence.
+        /// </para>
+        /// <para>
+        /// On failure, the cursor location is left unchanged and no data is copied 
+        /// into the provided buffer.
+        /// </para>
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This call is used just once to retrieve data of fixed or known size for 
+        /// non-multi-valued columns. However, when column data is of unknown size, 
+        /// this call is typically used twice. It is called first to determine the 
+        /// size of the data so it can allocate the necessary storage space. Then, the 
+        /// same call is made again to retrieve the column data. When the actual 
+        /// number of values is unknown, because a column is multi-valued, the call 
+        /// is typically used three times. First to get the number of values and then 
+        /// twice more to allocate storage and retrieve the actual data.
+        /// </para>
+        /// <para>
+        /// Retrieving all the values for a multi-valued column can be done by repeatedly 
+        /// calling this function with a pretinfo->itagSequence value beginning at 1 and 
+        /// increasing on each subsequent call. The last column value is known to be 
+        /// retrieved when a Result::WarningColumnNull is returned from the function. Note that 
+        /// this method cannot be done if the multi-value column has explicit NULL values set 
+        /// in its value sequence, since these values would be skipped. If an application 
+        /// desires to retrieve all multi-valued column values, including those explicitly set 
+        /// to NULL, then Table::RetrieveColumns must be used instead of Table::RetrieveColumn. 
+        /// Note that this function does not return the number of values for a multi-valued 
+        /// function when an itagSequence value of 0 (zero) is given. Only Table::RetrieveColumns 
+        /// will return the number of values of a column value when an itagSequence value of 0 
+        /// (zero) is passed.
+        /// </para>
+        /// <para>
+        /// If this function is called at transaction level 0 (zero), for example, the calling 
+        /// session is not itself in a transaction, then a transaction is opened and closed 
+        /// within the function. The purpose of this is to return consistent results in the 
+        /// case that a long value spans database pages. Note that the transaction is 
+        /// released between function calls and a series of calls to this function when the 
+        /// session is not in a transaction may return data updated after the first call to 
+        /// this function.
+        /// </para>
+        /// <para>
+        /// The default column value will be retrieved when the column has not been set 
+        /// explicitly to another value, unless the RetrieveFlags::IgnoreDefault option is 
+        /// set in retrieveFlags.
+        /// </para>
+        /// <para>
+        /// Retrieving the autoincrement column value from the copy buffer prior to insert is 
+        /// a common means of identifying a record uniquely for linkage when inserting normalized 
+        /// data into multiple tables. The autoincrement value is allocated when the insert 
+        /// operation begins and can be retrieved from the copy buffer at any time until the 
+        /// update is complete.
+        /// </para>
+        /// <para>
+        /// When retrieving all tagged, multi-valued, and sparse columns, by setting columnId to 
+        /// 0 (zero), columns are retrieved in column id order from lowest column id to highest 
+        /// column id. The same order of column values is returned each time column values are 
+        /// retrieved. The order is deterministic.
+        /// </para>
+        /// </remarks>
+        Ese::Result RetrieveColumn( JET_COLUMNID columnId, void* dataBuffer, unsigned long dataBufferSize, unsigned long* actualDataSize, RetrieveFlags retrieveFlags, JET_RETINFO* pretinfo = nullptr ) const
+        {
+            auto rc = static_cast< Result >( JetRetrieveColumn( sessionId_, tableId_, columnId, dataBuffer, dataBufferSize, actualDataSize, static_cast< int >( retrieveFlags ), pretinfo ) );
+            if ( rc != Result::Success &&
+                rc != Result::WarningBufferTruncated &&
+                rc != Result::WarningColumnNull )
+            {
+                HCC_THROW( Exception, rc );
+            }
+            return rc;
         }
 
         unsigned long RetrieveColumnSize( JET_COLUMNID columnId, int itagSequence, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
@@ -1275,11 +2909,7 @@ namespace Harlinn::Common::Core::Ese
         }
 
 
-        Ese::Result RetrieveColumn( JET_COLUMNID columnId, void* dataBuffer, unsigned long dataBufferSize, unsigned long* actualDataSize, RetrieveFlags retrieveFlags, JET_RETINFO* pretinfo ) const
-        { 
-            auto rc = static_cast<Result>( JetRetrieveColumn( sessionId_, tableId_, columnId, dataBuffer, dataBufferSize, actualDataSize, static_cast<int>(retrieveFlags), pretinfo ) );
-            return rc;
-        }
+        
 
         Ese::Result SetColumn( JET_COLUMNID columnId, const void* dataBuffer, unsigned long dataBufferSize, SetFlags flags, JET_SETINFO* psetinfo ) const
         {
@@ -1299,13 +2929,13 @@ namespace Harlinn::Common::Core::Ese
             return rc;
         }
 
-        Ese::Result GetTableColumnInfo( const wchar_t* columnName, void* pvResult, unsigned long cbMax = sizeof( JET_COLUMNDEF ), ColumnInfoFlags columnInfoFlags = ColumnInfoFlags::Default ) const
+        Ese::Result GetTableColumnInfo( const wchar_t* columnName, void* pvResult, unsigned long cbMax = sizeof( JET_COLUMNDEF ), ColumnInfoLevel columnInfoFlags = ColumnInfoLevel::Default ) const
         {
             auto rc = static_cast<Result>( JetGetTableColumnInfoW( sessionId_, tableId_, columnName, pvResult, cbMax, static_cast<unsigned long>(columnInfoFlags) ) );
             return rc;
         }
 
-        Ese::Result GetTableColumnInfo( const char* columnName, void* pvResult, unsigned long cbMax = sizeof( JET_COLUMNDEF ), ColumnInfoFlags columnInfoFlags = ColumnInfoFlags::Default ) const
+        Ese::Result GetTableColumnInfo( const char* columnName, void* pvResult, unsigned long cbMax = sizeof( JET_COLUMNDEF ), ColumnInfoLevel columnInfoFlags = ColumnInfoLevel::Default ) const
         {
             auto rc = static_cast<Result>( JetGetTableColumnInfoA( sessionId_, tableId_, columnName, pvResult, cbMax, static_cast<unsigned long>( columnInfoFlags ) ) );
             return rc;
@@ -1381,10 +3011,41 @@ namespace Harlinn::Common::Core::Ese
         /// Performs an update operation including inserting a new 
         /// row into a table or updating an existing row
         /// </summary>
-        void Update( ) const
+        void Store( ) const
         {
             auto rc = static_cast<Result>( JetUpdate( sessionId_, tableId_, nullptr, 0, nullptr ) );
             RequireSuccess( rc );
+        }
+
+        /// <summary>
+        /// Performs an atomic addition operation on one column. This function allows 
+        /// multiple sessions to update the same record concurrently without conflicts.
+        /// </summary>
+        /// <param name="columnId">
+        /// <para>
+        /// The column id of the column to be updated.
+        /// </para>
+        /// <para>
+        /// This column must have a column type of ColumnType::Long with 
+        /// the ColumnFlags::EscrowUpdate bit set.
+        /// </para>
+        /// </param>
+        /// <param name="addendum">
+        /// The addend for the column.
+        /// </param>
+        /// <param name="escrowNoRollback">
+        /// If true, then even if the session performing the escrow update has its transaction 
+        /// rollback this update will not be undone, otherwise false. Note that as the log records may not be 
+        /// flushed to disk, recent escrow updates done with this flag may be lost if there is a crash. 
+        /// </param>
+        /// <returns></returns>
+        Int32 EscrowUpdate(__in JET_COLUMNID columnId, Int32 addendum, __in bool escrowNoRollback = false )
+        {
+            Int32 oldValue = 0;
+            unsigned long bytesRetrieved = 0;
+            auto rc = static_cast< Result >( JetEscrowUpdate( sessionId_, tableId_, columnId, &addendum, sizeof( addendum ),&oldValue, sizeof( oldValue ),&bytesRetrieved, escrowNoRollback? JET_bitEscrowNoRollback : 0) );
+            RequireSuccess( rc );
+            return oldValue;
         }
 
         /// <summary>
@@ -1413,7 +3074,7 @@ namespace Harlinn::Common::Core::Ese
             GetTableColumnInfo( columnName, &columnDef );
             return columnDef.columnid;
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID GetColumnId( const T& columnName )
         {
             return GetColumnId( columnName.c_str() );
@@ -1434,13 +3095,13 @@ namespace Harlinn::Common::Core::Ese
             return result;
         }
 
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddColumn( const T& columnName, const JET_COLUMNDEF& columnDef, const void* defaultValueBuffer = nullptr, unsigned long defaultValueBufferSize = 0 ) const
         {
             return AddColumn( columnName.c_str(), columnDef, defaultValueBuffer, defaultValueBufferSize );
         }
 
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddBoolean( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Boolean, flags );
@@ -1453,7 +3114,7 @@ namespace Harlinn::Common::Core::Ese
             return AddColumn( columnName, columnDef );
         }
 
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddSByte( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Byte, flags );
@@ -1465,7 +3126,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::Byte, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddByte( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Byte, flags );
@@ -1477,7 +3138,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::Byte, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddInt16( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Short, flags );
@@ -1489,7 +3150,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::Short, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddUInt16( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedShort, flags );
@@ -1501,7 +3162,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::UnsignedShort, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddInt32( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Long, flags );
@@ -1513,7 +3174,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::Long, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddUInt32( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedLong, flags );
@@ -1525,7 +3186,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::UnsignedLong, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddInt64( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::LongLong, flags );
@@ -1537,7 +3198,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::LongLong, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddUInt64( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedLongLong, flags );
@@ -1549,7 +3210,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::UnsignedLongLong, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddSingle( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Single, flags );
@@ -1561,7 +3222,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::Single, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddDouble( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Double, flags );
@@ -1574,7 +3235,7 @@ namespace Harlinn::Common::Core::Ese
             return AddColumn( columnName, columnDef );
         }
 
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddCurrency( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Currency, flags );
@@ -1587,7 +3248,7 @@ namespace Harlinn::Common::Core::Ese
             return AddColumn( columnName, columnDef );
         }
 
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddTimeSpan( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::LongLong, flags );
@@ -1599,7 +3260,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::LongLong, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddDateTime( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::DateTime, flags );
@@ -1611,7 +3272,7 @@ namespace Harlinn::Common::Core::Ese
             ColumnDefinition columnDef( ColumnType::DateTime, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddGuid( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Guid, sizeof(GUID) ,flags );
@@ -1633,7 +3294,7 @@ namespace Harlinn::Common::Core::Ese
             }
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddText( const T& columnName, unsigned long maxSize = 127, short codePage = 1200, ColumnFlags flags = ColumnFlags::NotNULL ) const
         {
             return AddText( columnName.c_str( ), maxSize, codePage, flags );
@@ -1648,13 +3309,14 @@ namespace Harlinn::Common::Core::Ese
             }
             return AddColumn( columnName, columnDef );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         JET_COLUMNID AddBinary( const AnsiString& columnName, unsigned long maxSize = 255, ColumnFlags flags = ColumnFlags::NotNULL ) const
         {
             return AddBinary( columnName.c_str( ), maxSize, flags );
         }
 
-        Columns GetColumns( ) const;
+        template<StringLike StringT = WideString>
+        Columns<StringT> GetColumns( ) const;
 
         void SetNull( JET_COLUMNID columnid ) const
         {
@@ -1718,8 +3380,20 @@ namespace Harlinn::Common::Core::Ese
             return CheckReadResult( rc );
         }
 
+        bool Read( JET_COLUMNID columnId, std::chrono::system_clock::time_point& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
+        {
+            DateTime dateTime;
+            auto result = Read( columnId, dateTime, retrieveFlags );
+            if ( result )
+            {
+                value = dateTime.ToTimePoint( );
+            }
+            return result;
+        }
 
-        template<StringType T>
+
+
+        template<StringLike T>
         bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
             using CharType = typename T::value_type;
@@ -1752,26 +3426,8 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
             return false;
         }
-        /*
-        template<BinaryVectorType T>
-        bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
-        {
-            unsigned long dataSize = RetrieveColumnSize( columnId, retrieveFlags );
-            if ( dataSize )
-            {
-                value.resize( dataSize );
-                unsigned long actualDataSize;
-                auto rc = RetrieveColumn( columnId, value.data( ), dataSize, &actualDataSize, retrieveFlags, nullptr );
-                return RequireSuccess( rc );
-            }
-            else
-            {
-                return false;
-            }
-        }
-        */
 
-        template<BinaryVectorType T>
+        template<BinaryLike T>
         bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
             using ByteType = typename T::value_type;
@@ -1810,7 +3466,7 @@ namespace Harlinn::Common::Core::Ese
             unsigned long dataSize = RetrieveColumnSize( columnId, retrieveFlags );
             if ( dataSize )
             {
-                value.SetCapacity( dataSize );
+                value.SetSize( dataSize );
                 value.SetPosition( 0 );
                 unsigned long actualDataSize;
                 auto rc = RetrieveColumn( columnId, value.Buffer( ), dataSize, &actualDataSize, retrieveFlags, nullptr );
@@ -1851,6 +3507,15 @@ namespace Harlinn::Common::Core::Ese
             auto rc = SetColumn( columnid, &data, sizeof( double ), flags, nullptr );
             RequireSuccess( rc );
         }
+        template<typename T>
+            requires std::is_same_v<std::chrono::system_clock::time_point, T>
+        void SetColumn( JET_COLUMNID columnid, const T& value, SetFlags flags = SetFlags::None ) const
+        {
+            DateTime dateTime( value );
+            auto data = dateTime.ToOADate( );
+            auto rc = SetColumn( columnid, &data, sizeof( double ), flags, nullptr );
+            RequireSuccess( rc );
+        }
 
         template<typename T>
             requires std::is_same_v<bool, T>
@@ -1862,11 +3527,11 @@ namespace Harlinn::Common::Core::Ese
         }
 
         
-        template<StringType T>
+        template<SimpleCharSpanLike T>
         void SetColumn( JET_COLUMNID columnId, const T& text, SetFlags flags = SetFlags::None ) const
         {
             using CharT = typename T::value_type;
-            DWORD length = static_cast<unsigned long>( text.length( ) * sizeof( CharT ) );
+            DWORD length = static_cast<unsigned long>( text.size( ) * sizeof( CharT ) );
             if ( !length )
             {
                 flags |= SetFlags::ZeroLength;
@@ -1874,7 +3539,7 @@ namespace Harlinn::Common::Core::Ese
             auto rc = SetColumn( columnId, text.c_str( ), length, flags, nullptr );
             RequireSuccess( rc );
         }
-        template<BinaryVectorType T>
+        template<SimpleByteSpanLike T>
         void SetColumn( JET_COLUMNID columnId, const T& value, SetFlags flags = SetFlags::None ) const
         {
             DWORD length = static_cast<unsigned long>( value.size( ) );
@@ -1899,7 +3564,7 @@ namespace Harlinn::Common::Core::Ese
 
         void CreateIndex( const wchar_t* indexName, IndexFlags indexFlags, const wchar_t* keyString, unsigned long	keyStringLength, unsigned long density = 95 ) const
         {
-            auto rc = static_cast<Result>( JetCreateIndexW( sessionId_, tableId_, indexName, static_cast<JET_GRBIT>( indexFlags ), keyString, keyStringLength, density ) );
+            auto rc = static_cast<Result>( JetCreateIndexW( sessionId_, tableId_, indexName, static_cast<JET_GRBIT>( indexFlags ), keyString, keyStringLength*sizeof( wchar_t ), density ) );
             RequireSuccess( rc );
         }
         void CreateIndex( const char* indexName, IndexFlags indexFlags, const char* keyString, unsigned long keyStringLength, unsigned long density = 95 ) const
@@ -1907,12 +3572,21 @@ namespace Harlinn::Common::Core::Ese
             auto rc = static_cast<Result>( JetCreateIndexA( sessionId_, tableId_, indexName, static_cast<JET_GRBIT>( indexFlags ), keyString, keyStringLength, density ) );
             RequireSuccess( rc );
         }
-        template<StringType T>
+        template<SimpleStringLike T>
         void CreateIndex( const T& indexName, IndexFlags indexFlags, const typename T::value_type* keyString, unsigned long keyStringLength, unsigned long density = 95 ) const
         {
             using CharType = typename T::value_type;
             CreateIndex( indexName.c_str( ), indexFlags, keyString, (keyStringLength+1)*sizeof( CharType ), density );
         }
+
+        template<SimpleStringLike T, SimpleCharSpanLike SpanT>
+            requires std::is_same_v<typename T::value_type, typename SpanT::value_type >
+        void CreateIndex( const T& indexName, IndexFlags indexFlags, const SpanT& keyString, unsigned long density = 95 ) const
+        {
+            using CharType = typename T::value_type;
+            CreateIndex( indexName.c_str( ), indexFlags, keyString.data(), ( keyString.size() + 1 ), density );
+        }
+
 
 
 
@@ -1938,20 +3612,22 @@ namespace Harlinn::Common::Core::Ese
         }
     };
 
+    template<StringLike StringT = WideString>
     class Tables : public SystemTable
     {
         typedef SystemTable Base;
         JET_OBJECTLIST objectList_;
     public:
+        using StringType = StringT;
 
         Tables( JET_SESID sessionId, const JET_OBJECTLIST& objectList )
             : Base( sessionId, objectList.tableid ), objectList_( objectList )
         {
         }
 
-        WideString ContainerName() const
+        StringType ContainerName() const
         {
-            WideString result;
+            StringType result;
             if ( Read( objectList_.columnidcontainername, result ) )
             {
                 return std::move( result );
@@ -1959,9 +3635,9 @@ namespace Harlinn::Common::Core::Ese
             return {};
         }
 
-        WideString ObjectName() const
+        StringType ObjectName() const
         {
-            WideString result;
+            StringType result;
             if ( Read( objectList_.columnidobjectname, result ) )
             {
                 return std::move( result );
@@ -2010,11 +3686,13 @@ namespace Harlinn::Common::Core::Ese
         }
     };
 
+    template<StringLike StringT>
     class Columns : public SystemTable
     {
         typedef SystemTable Base;
         JET_COLUMNLIST columnList_;
     public:
+        using StringType = StringT;
         Columns( JET_SESID sessionId, const JET_COLUMNLIST& columnList )
             : Base( sessionId, columnList.tableid ), columnList_( columnList )
         {
@@ -2033,9 +3711,9 @@ namespace Harlinn::Common::Core::Ese
             }
             return -1;
         }
-        WideString ColumnName() const
+        StringType ColumnName() const
         {
-            WideString result;
+            StringType result;
             if ( Read( columnList_.columnidcolumnname, result ) )
             {
                 return std::move( result );
@@ -2124,27 +3802,27 @@ namespace Harlinn::Common::Core::Ese
             }
             return result;
         }
-        WideString BaseTableName() const
+        StringType BaseTableName() const
         {
-            WideString result;
+            StringType result;
             if ( Read( columnList_.columnidBaseTableName, result ) )
             {
                 return std::move( result );
             }
             return {};
         }
-        WideString BaseColumnName() const
+        StringType BaseColumnName() const
         {
-            WideString result;
+            StringType result;
             if ( Read( columnList_.columnidBaseColumnName, result ) )
             {
                 return std::move( result );
             }
             return {};
         }
-        WideString DefinitionName() const
+        StringType DefinitionName() const
         {
-            WideString result;
+            StringType result;
             if ( Read( columnList_.columnidDefinitionName, result ) )
             {
                 return std::move( result );
@@ -2153,10 +3831,11 @@ namespace Harlinn::Common::Core::Ese
         }
     };
 
-    inline Columns Table::GetColumns( ) const
+    template<StringLike StringT>
+    inline Columns<StringT> Table::GetColumns( ) const
     {
         JET_COLUMNLIST columnList = { sizeof( JET_COLUMNLIST ), 0, };
-        auto rc = GetTableColumnInfo( ( char* )nullptr, &columnList, sizeof( JET_COLUMNLIST ), ColumnInfoFlags::List );
+        auto rc = GetTableColumnInfo( ( char* )nullptr, &columnList, sizeof( JET_COLUMNLIST ), ColumnInfoLevel::List );
         RequireSuccess( rc );
         Columns result( sessionId_, columnList );
         return result;
@@ -2244,17 +3923,8 @@ namespace Harlinn::Common::Core::Ese
         Database& operator = ( const Database& other ) = delete;
         Database& operator = ( Database&& other ) noexcept
         {
-            if ( &other != this )
-            {
-                if ( databaseId_ != JET_dbidNil )
-                {
-                    JetCloseDatabase( sessionId_, databaseId_, 0 );
-                }
-                sessionId_ = other.sessionId_;
-                databaseId_ = other.databaseId_;
-                other.sessionId_ = JET_sesidNil;
-                other.databaseId_ = JET_dbidNil;
-            }
+            std::swap( sessionId_,other.sessionId_);
+            std::swap( databaseId_, other.databaseId_ );
             return *this;
         }
 
@@ -2330,7 +4000,7 @@ namespace Harlinn::Common::Core::Ese
             return result;
         }
 
-        template<TableType T = Table, StringType S>
+        template<TableType T = Table, SimpleStringLike S>
         [[nodiscard]] T OpenTable( const S& tablename, OpenTableFlags flags = OpenTableFlags::Updatable, bool noexception = false ) const
         {
             return OpenTable( tablename.c_str(), flags, noexception );
@@ -2377,19 +4047,19 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="initialNumberOfPages">The initial number of database pages to allocate for the table. Specifying a number larger than one can reduce fragmentation if many rows are inserted into this table</param>
         /// <param name="density">The table density, in percentage points. The number must be either 0 or in the range of 20 through 100. Passing 0 means that the default value should be used. The default is 80</param>
         /// <returns>A Table instance, or an instance of a type derived from Table, for the newly created database table.</returns>
-        template<TableType T = Table, StringType S>
+        template<TableType T = Table, SimpleStringLike S>
         [[nodiscard]] T CreateTable( const S& tablename, unsigned long initialNumberOfPages = 1, unsigned long density = 0 ) const
         {
-            return CreateTable( tablename.c_str( ), initialNumberOfPages, density );
+            return CreateTable<T>( tablename.c_str( ), initialNumberOfPages, density );
         }
 
-
-        [[nodiscard]] Tables GetTables() const
+        template<StringLike StringT = WideString>
+        [[nodiscard]] Tables<StringT> GetTables() const
         {
             JET_OBJECTLIST objectList = { sizeof(JET_OBJECTLIST), 0, };
             auto rc = static_cast<Ese::Result>( JetGetObjectInfoW( sessionId_, databaseId_, JET_objtypTable, nullptr, nullptr, &objectList, sizeof( JET_OBJECTLIST ), JET_ObjInfoListNoStats ));
             RequireSuccess( rc );
-            Tables result( sessionId_, objectList);
+            Tables<StringT> result( sessionId_, objectList);
             return result;
         }
 
@@ -2404,7 +4074,7 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        template<StringType T>
+        template<SimpleStringLike T>
         void DeleteTable( const T& tableName )
         {
             DeleteTable( tableName.c_str( ) );
@@ -2440,7 +4110,7 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
             return result;
         }
-        template<StringType S>
+        template<SimpleStringLike S>
         [[nodiscard]] ObjectInfo GetTableInfo( const S& objectName ) const
         {
             return GetTableInfo( objectName.c_str( ) );
@@ -2466,7 +4136,7 @@ namespace Harlinn::Common::Core::Ese
             }
             return rc != Result::ErrorInvalidName;
         }
-        template<StringType S>
+        template<SimpleStringLike S>
         [[nodiscard]] bool TableExists( const S& objectName ) const
         {
             return TableExists( objectName.c_str() );
@@ -2655,13 +4325,23 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        WideString GetSystemStringParameter( unsigned long paramId ) const
+        template<WideStringLike StringT>
+        StringT GetSystemStringParameter( unsigned long paramId ) const
         {
             wchar_t buffer[1024] = { 0, };
 
             auto rc = static_cast<Result>( JetGetSystemParameterW( instance_, sessionId_, paramId, nullptr, buffer, sizeof( buffer ) ) );
             RequireSuccess( rc );
-            return WideString( buffer );
+            return StringT( buffer );
+        }
+        template<AnsiStringLike StringT>
+        StringT GetSystemStringParameter( unsigned long paramId ) const
+        {
+            char buffer[ 1024 ] = { 0, };
+
+            auto rc = static_cast< Result >( JetGetSystemParameterA( instance_, sessionId_, paramId, nullptr, buffer, sizeof( buffer ) ) );
+            RequireSuccess( rc );
+            return StringT( buffer );
         }
 
         void SetSystemParameter( unsigned long paramId, unsigned long long value )
@@ -2670,9 +4350,16 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        void SetSystemParameter( unsigned long paramId, const WideString& value )
+        template<SimpleWideStringLike StringT>
+        void SetSystemParameter( unsigned long paramId, const StringT& value )
         {
             auto rc = static_cast<Result>( JetSetSystemParameterW( &instance_, sessionId_, paramId, 0, value.c_str( ) ) );
+            RequireSuccess( rc );
+        }
+        template<SimpleAnsiStringLike StringT>
+        void SetSystemParameter( unsigned long paramId, const StringT& value )
+        {
+            auto rc = static_cast< Result >( JetSetSystemParameterA( &instance_, sessionId_, paramId, 0, value.c_str( ) ) );
             RequireSuccess( rc );
         }
 
@@ -2760,8 +4447,8 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="flags">Flags control how the database is created and attached to the engine.</param>
         /// <param name="maxDatabaseSizeInNumberOfPages">The maximum size, in database pages, for the database.</param>
         /// <returns>The Database object for the database.</returns>
-        template<DatabaseType T=Database>
-        [[nodiscard]] T CreateDatabase(const WideString& filename, CreateDatabaseFlags flags, unsigned long maxDatabaseSizeInNumberOfPages = 0) const
+        template<DatabaseType T=Database, SimpleWideStringLike StringT>
+        [[nodiscard]] T CreateDatabase(const StringT& filename, CreateDatabaseFlags flags, unsigned long maxDatabaseSizeInNumberOfPages = 0) const
         {
             JET_DBID databaseId = 0;
             auto rc = static_cast<Result>( JetCreateDatabase2W( sessionId_, filename.c_str( ), maxDatabaseSizeInNumberOfPages, &databaseId, ( int )flags ) );
@@ -2780,8 +4467,8 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="flags">Flags control how the database is created and attached to the engine.</param>
         /// <param name="maxDatabaseSizeInNumberOfPages">The maximum size, in database pages, for the database.</param>
         /// <returns>The Database object for the database.</returns>
-        template<DatabaseType T = Database>
-        [[nodiscard]] T CreateDatabase( const AnsiString& filename, CreateDatabaseFlags flags, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
+        template<DatabaseType T = Database, SimpleAnsiStringLike StringT>
+        [[nodiscard]] T CreateDatabase( const StringT& filename, CreateDatabaseFlags flags, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
         {
             JET_DBID databaseId = 0;
             auto rc = static_cast<Result>( JetCreateDatabase2A( sessionId_, filename.c_str( ), maxDatabaseSizeInNumberOfPages, &databaseId, (int)flags ) );
@@ -2799,7 +4486,8 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="filename">The name of the database to attach</param>
         /// <param name="flags">Options to be used for this call</param>
         /// <param name="maxDatabaseSizeInNumberOfPages">The maximum size, in database pages, for database. The default, 0, means that there is no maximum enforced by the database engine</param>
-        void AttachDatabase( const WideString& filename, AttachDatabaseFlags flags = AttachDatabaseFlags::None, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
+        template<SimpleWideStringLike StringT>
+        void AttachDatabase( const StringT& filename, AttachDatabaseFlags flags = AttachDatabaseFlags::None, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
         {
             auto rc = static_cast<Result>( JetAttachDatabase2W( sessionId_, filename.c_str( ), maxDatabaseSizeInNumberOfPages, ( int )flags ) );
             RequireNotError( rc );
@@ -2812,23 +4500,41 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="filename">The name of the database to attach</param>
         /// <param name="flags">Options to be used for this call</param>
         /// <param name="maxDatabaseSizeInNumberOfPages">The maximum size, in database pages, for database. The default, 0, means that there is no maximum enforced by the database engine</param>
-        void AttachDatabase( const AnsiString& filename, AttachDatabaseFlags flags = AttachDatabaseFlags::None, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
+        template<SimpleAnsiStringLike StringT>
+        void AttachDatabase( const StringT& filename, AttachDatabaseFlags flags = AttachDatabaseFlags::None, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
         {
             auto rc = static_cast<Result>( JetAttachDatabase2A( sessionId_, filename.c_str( ), maxDatabaseSizeInNumberOfPages, (int)flags ) );
             RequireNotError( rc );
         }
 
-        void DetachDatabase(const WideString& filename, DetachDatabaseFlags flags) const
+        template<SimpleWideStringLike StringT>
+        void DetachDatabase(const StringT& filename, DetachDatabaseFlags flags) const
         {
             auto rc = static_cast<Result>( JetDetachDatabase2W( sessionId_, filename.c_str( ), ( int )flags ));
             RequireSuccess( rc );
         }
 
-        bool DetachDatabaseNX( const WideString& filename, DetachDatabaseFlags flags ) const
+        template<SimpleWideStringLike StringT>
+        bool DetachDatabaseNX( const StringT& filename, DetachDatabaseFlags flags ) const
         {
             auto rc = static_cast< Result >( JetDetachDatabase2W( sessionId_, filename.c_str( ), ( int )flags ) );
             return rc == Result::Success;
         }
+
+        template<SimpleAnsiStringLike StringT>
+        void DetachDatabase( const StringT& filename, DetachDatabaseFlags flags ) const
+        {
+            auto rc = static_cast< Result >( JetDetachDatabase2A( sessionId_, filename.c_str( ), ( int )flags ) );
+            RequireSuccess( rc );
+        }
+
+        template<SimpleAnsiStringLike StringT>
+        bool DetachDatabaseNX( const StringT& filename, DetachDatabaseFlags flags ) const
+        {
+            auto rc = static_cast< Result >( JetDetachDatabase2A( sessionId_, filename.c_str( ), ( int )flags ) );
+            return rc == Result::Success;
+        }
+
 
         void DetachAll(DetachDatabaseFlags flags = DetachDatabaseFlags::None ) const
         {
@@ -2843,8 +4549,8 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="filename">The name of the database to open</param>
         /// <param name="flags">Options controlling how the database is opened.</param>
         /// <returns></returns>
-        template<DatabaseType T = Database>
-        [[nodiscard]] T OpenDatabase( const WideString& filename, OpenDatabaseFlags flags = OpenDatabaseFlags::None ) const
+        template<DatabaseType T = Database, SimpleWideStringLike StringT>
+        [[nodiscard]] T OpenDatabase( const StringT& filename, OpenDatabaseFlags flags = OpenDatabaseFlags::None ) const
         {
             wchar_t connect[1024] = { 0, };
             JET_DBID databaseId = 0;
@@ -2855,8 +4561,8 @@ namespace Harlinn::Common::Core::Ese
             return result;
         }
 
-        template<DatabaseType T = Database>
-        [[nodiscard]] T OpenDatabase( const AnsiString& filename, OpenDatabaseFlags flags = OpenDatabaseFlags::None ) const
+        template<DatabaseType T = Database, SimpleAnsiStringLike StringT>
+        [[nodiscard]] T OpenDatabase( const StringT& filename, OpenDatabaseFlags flags = OpenDatabaseFlags::None ) const
         {
             char connect[1024] = { 0, };
             JET_DBID databaseId = 0;
@@ -2992,7 +4698,8 @@ namespace Harlinn::Common::Core::Ese
         {
         }
 
-        Instance(const WideString& instanceName, const WideString& displayName = WideString(), InitFlags initFlags = InitFlags::None)
+        template<SimpleWideStringLike StringT1, SimpleWideStringLike StringT2 = WideString>
+        Instance(const StringT1& instanceName, const StringT2& displayName = StringT2(), InitFlags initFlags = InitFlags::None)
             : instance_(JET_instanceNil), initialized_(false), initFlags_(initFlags)
         {
             JET_INSTANCE instance = 0;
@@ -3001,24 +4708,38 @@ namespace Harlinn::Common::Core::Ese
             instance_ = instance;
         }
 
-        Instance( const wchar_t* instanceName, const wchar_t* displayName = nullptr, InitFlags initFlags = InitFlags::None )
-            : Instance(WideString( instanceName ), displayName != nullptr? WideString( displayName ) : WideString( ), initFlags )
-        { }
-
-
-        inline Instance( const InstanceOptions& instanceOptions );
-
-        Instance( const AnsiString& instanceName, const AnsiString& displayName = AnsiString( ), InitFlags initFlags = InitFlags::None )
+        template<SimpleAnsiStringLike StringT1, SimpleAnsiStringLike StringT2 = AnsiString>
+        Instance( const StringT1& instanceName, const StringT2& displayName = StringT2( ), InitFlags initFlags = InitFlags::None )
             : instance_( JET_instanceNil ), initialized_( false ), initFlags_( initFlags )
         {
             JET_INSTANCE instance = 0;
-            auto rc = static_cast<Result>( JetCreateInstance2A( &instance, instanceName.c_str( ), displayName.empty( ) ? instanceName.c_str( ) : displayName.c_str( ), 0 ) );
+            auto rc = static_cast< Result >( JetCreateInstance2A( &instance, instanceName.c_str( ), displayName.empty( ) ? instanceName.c_str( ) : displayName.c_str( ), 0 ) );
             RequireSuccess( rc );
             instance_ = instance;
         }
 
+        Instance( const wchar_t* instanceName, const wchar_t* displayName = nullptr, InitFlags initFlags = InitFlags::None )
+            : instance_( JET_instanceNil ), initialized_( false ), initFlags_( initFlags )
+        {
+            JET_INSTANCE instance = 0;
+            auto rc = static_cast< Result >( JetCreateInstance2W( &instance, instanceName, displayName != nullptr && displayName[0] ? instanceName : displayName, 0 ) );
+            RequireSuccess( rc );
+            instance_ = instance;
+        }
+        Instance( const char* instanceName, const char* displayName = nullptr, InitFlags initFlags = InitFlags::None )
+            : instance_( JET_instanceNil ), initialized_( false ), initFlags_( initFlags )
+        {
+            JET_INSTANCE instance = 0;
+            auto rc = static_cast< Result >( JetCreateInstance2A( &instance, instanceName, displayName != nullptr && displayName[ 0 ] ? instanceName : displayName, 0 ) );
+            RequireSuccess( rc );
+            instance_ = instance;
+        }
+
+
+        inline Instance( const InstanceOptions& instanceOptions );
+
         Instance( const Instance& other ) = delete;
-        Instance( Instance&& other )
+        Instance( Instance&& other ) noexcept
             : instance_( other.instance_ ), initialized_( other.initialized_ ), initFlags_(other.initFlags_)
         {
             other.instance_ = JET_instanceNil;
@@ -3026,21 +4747,11 @@ namespace Harlinn::Common::Core::Ese
             other.initFlags_ = InitFlags::None;
         }
         Instance& operator = ( const Instance& other ) = delete;
-        Instance& operator = ( Instance&& other )
+        Instance& operator = ( Instance&& other ) noexcept
         {
-            if ( &other != this )
-            {
-                if ( instance_ != JET_instanceNil )
-                {
-                    JetTerm2( instance_, JET_bitTermComplete );
-                }
-                instance_ = other.instance_; 
-                initialized_ = other.initialized_; 
-                initFlags_ = other.initFlags_;
-                other.instance_ = JET_instanceNil;
-                other.initialized_ = false;
-                other.initFlags_ = InitFlags::None;
-            }
+            std::swap(instance_, other.instance_);
+            std::swap(initialized_, other.initialized_);
+            std::swap(initFlags_, other.initFlags_);
             return *this;
         }
 
@@ -3110,26 +4821,64 @@ namespace Harlinn::Common::Core::Ese
             return result;
         }
 
-        Result Backup( const WideString& backupPath, BackupFlags backupFlags, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        Result Backup( const wchar_t* backupPath, BackupFlags backupFlags, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
         {
-            auto rc = static_cast<Result>( JetBackupInstanceW( instance_, backupPath.c_str( ), static_cast< unsigned long >( backupFlags ), statusCallbackFunction ) );
+            auto rc = static_cast< Result >( JetBackupInstanceW( instance_, backupPath, static_cast< unsigned long >( backupFlags ), statusCallbackFunction ) );
+            RequireNotError( rc );
+            return rc;
+        }
+        Result Backup( const char* backupPath, BackupFlags backupFlags, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        {
+            auto rc = static_cast< Result >( JetBackupInstanceA( instance_, backupPath, static_cast< unsigned long >( backupFlags ), statusCallbackFunction ) );
+            RequireNotError( rc );
+            return rc;
+        }
+
+        template<SimpleStringLike StringT>
+        Result Backup( const StringT& backupPath, BackupFlags backupFlags, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        {
+            return Backup( backupPath.c_str(), backupFlags, statusCallbackFunction );
+        }
+
+        Result Restore( const wchar_t* backupPath, const wchar_t* destinationPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        {
+            auto rc = static_cast< Result >( JetRestoreInstanceW( instance_, backupPath, destinationPath, statusCallbackFunction ) );
+            RequireNotError( rc );
+            return rc;
+        }
+        Result Restore( const char* backupPath, const char* destinationPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        {
+            auto rc = static_cast< Result >( JetRestoreInstanceA( instance_, backupPath, destinationPath, statusCallbackFunction ) );
             RequireNotError( rc );
             return rc;
         }
 
 
-        Result Restore( const WideString& backupPath, const WideString& destinationPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        template<SimpleStringLike StringT1, SimpleStringLike StringT2>
+            requires std::is_same_v<typename StringT1::value_type, typename StringT2::value_type>
+        Result Restore( const StringT1& backupPath, const StringT2& destinationPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
         {
-            auto rc = static_cast<Result>( JetRestoreInstanceW( instance_, backupPath.c_str( ), destinationPath.c_str(), statusCallbackFunction ) );
+            return Restore( backupPath.c_str(), destinationPath.c_str( ), statusCallbackFunction );
+        }
+
+        Result Restore( const wchar_t* backupPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        {
+            auto rc = static_cast< Result >( JetRestoreInstanceW( instance_, backupPath, nullptr, statusCallbackFunction ) );
+            RequireNotError( rc );
+            return rc;
+        }
+        Result Restore( const char* backupPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        {
+            auto rc = static_cast< Result >( JetRestoreInstanceA( instance_, backupPath, nullptr, statusCallbackFunction ) );
             RequireNotError( rc );
             return rc;
         }
 
-        Result Restore( const WideString& backupPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+
+        template<SimpleStringLike StringT>
+        Result Restore( const StringT& backupPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
         {
-            auto rc = static_cast<Result>( JetRestoreInstanceW( instance_, backupPath.c_str( ), nullptr, statusCallbackFunction ) );
-            RequireNotError( rc );
-            return rc;
+            return Restore( backupPath.c_str(), statusCallbackFunction );
         }
 
 
@@ -3157,12 +4906,21 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        WideString GetSystemStringParameter(unsigned long paramId) const
+        template<WideStringLike StringT>
+        StringT GetSystemStringParameter(unsigned long paramId) const
         {
             wchar_t buffer[1024] = { 0, };
             auto rc = static_cast<Result>( JetGetSystemParameterW( instance_, JET_sesidNil, paramId, nullptr, buffer, sizeof( buffer ) ));
             RequireSuccess( rc );
-            return WideString(buffer);
+            return StringT(buffer);
+        }
+        template<AnsiStringLike StringT>
+        StringT GetSystemStringParameter( unsigned long paramId ) const
+        {
+            char buffer[ 1024 ] = { 0, };
+            auto rc = static_cast< Result >( JetGetSystemParameterA( instance_, JET_sesidNil, paramId, nullptr, buffer, sizeof( buffer ) ) );
+            RequireSuccess( rc );
+            return StringT( buffer );
         }
 
         void SetSystemParameter(unsigned long paramId, unsigned long long value) const
@@ -3177,15 +4935,21 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        void SetSystemParameter(unsigned long paramId, const WideString& value) const
+        void SetSystemParameter( unsigned long paramId, const wchar_t* value ) const
         {
-            auto rc = static_cast<Result>( JetSetSystemParameterW(const_cast<JET_INSTANCE*>(&instance_), JET_sesidNil, paramId, 0, value.c_str( ) ));
+            auto rc = static_cast< Result >( JetSetSystemParameterW( const_cast< JET_INSTANCE* >( &instance_ ), JET_sesidNil, paramId, 0, value ) );
             RequireSuccess( rc );
         }
-        void SetSystemParameter( unsigned long paramId, const AnsiString& value ) const
+        void SetSystemParameter( unsigned long paramId, const char* value ) const
         {
-            auto rc = static_cast<Result>( JetSetSystemParameterA(const_cast<JET_INSTANCE*>(&instance_), JET_sesidNil, paramId, 0, value.c_str( ) ) );
+            auto rc = static_cast< Result >( JetSetSystemParameterA( const_cast< JET_INSTANCE* >( &instance_ ), JET_sesidNil, paramId, 0, value ) );
             RequireSuccess( rc );
+        }
+
+        template<SimpleStringLike StringT>
+        void SetSystemParameter(unsigned long paramId, const StringT& value) const
+        {
+            SetSystemParameter( paramId, value.c_str( ) );
         }
 
     public:
@@ -3195,9 +4959,10 @@ namespace Harlinn::Common::Core::Ese
         // replay to function correctly. This can be used to force crash recovery or a restore 
         // operation to look for the databases referenced in the transaction log in the 
         // specified folder
-        WideString QueryAlternateDatabaseRecoveryPath() const
+        template<StringLike StringT>
+        StringT QueryAlternateDatabaseRecoveryPath() const
         {
-            auto result = GetSystemStringParameter(JET_paramAlternateDatabaseRecoveryPath);
+            auto result = GetSystemStringParameter<StringT>(JET_paramAlternateDatabaseRecoveryPath);
             return result;
         }
 
@@ -3774,13 +5539,15 @@ namespace Harlinn::Common::Core::Ese
         /// distinguish between sets of files that belong to different instances or 
         /// to different applications.
         /// </summary>
-        WideString QueryBaseName() const
+        template<StringLike StringT>
+        StringT QueryBaseName() const
         {
-            auto result = GetSystemStringParameter(JET_paramBaseName);
+            auto result = GetSystemStringParameter<StringT>(JET_paramBaseName);
             return result;
         }
 
-        void SetBaseName(const WideString& value) const
+        template<StringLike StringT>
+        void SetBaseName(const StringT& value) const
         {
             SetSystemParameter(JET_paramBaseName, value);
         }
@@ -3936,9 +5703,10 @@ namespace Harlinn::Common::Core::Ese
         /// that is using the database engine.
         /// </remarks>
         /// <returns>The current value of the LogFilePath parameter</returns>
-        WideString QueryLogFilePath() const
+        template<StringLike StringT>
+        StringT QueryLogFilePath() const
         {
-            auto result = GetSystemStringParameter(JET_paramLogFilePath);
+            auto result = GetSystemStringParameter<StringT>(JET_paramLogFilePath);
             return result;
         }
 
@@ -3971,13 +5739,10 @@ namespace Harlinn::Common::Core::Ese
         /// that is using the database engine.
         /// </remarks>
         /// <param name="value">The value to assign to the LogFilePath parameter</param>
-        void SetLogFilePath(const WideString& value) const
+        template<SimpleStringLike StringT>
+        void SetLogFilePath(const StringT& value) const
         {
             SetSystemParameter(JET_paramLogFilePath, value);
-        }
-        void SetLogFilePath( const AnsiString& value ) const
-        {
-            SetSystemParameter( JET_paramLogFilePath, value );
         }
 
         unsigned long long QueryLogFileSize() const
@@ -4002,14 +5767,15 @@ namespace Harlinn::Common::Core::Ese
             SetSystemParameter(JET_paramLogWaitingUserMax, value);
         }
 
-
-        WideString QueryRecovery() const
+        template<StringLike StringT>
+        StringT QueryRecovery() const
         {
-            auto result = GetSystemStringParameter(JET_paramRecovery);
+            auto result = GetSystemStringParameter<StringT>(JET_paramRecovery);
             return result;
         }
 
-        void SetRecovery(const WideString& value) const
+        template<SimpleStringLike StringT>
+        void SetRecovery(const StringT& value) const
         {
             SetSystemParameter(JET_paramRecovery, value);
         }
@@ -4029,9 +5795,10 @@ namespace Harlinn::Common::Core::Ese
         /// the database engine.
         /// </summary>
         /// <returns>The current value of the SystemPath parameter</returns>
-        WideString QuerySystemPath() const
+        template<StringLike StringT>
+        StringT QuerySystemPath() const
         {
-            auto result = GetSystemStringParameter(JET_paramSystemPath);
+            auto result = GetSystemStringParameter<StringT>(JET_paramSystemPath);
             return result;
         }
 
@@ -4050,13 +5817,10 @@ namespace Harlinn::Common::Core::Ese
         /// the database engine.
         /// </summary>
         /// <param name="value">The new value to assign to the SystemPath parameter</param>
-        void SetSystemPath(const WideString& value) const
+        template<SimpleStringLike StringT>
+        void SetSystemPath(const StringT& value) const
         {
             SetSystemParameter(JET_paramSystemPath, value);
-        }
-        void SetSystemPath( const AnsiString& value ) const
-        {
-            SetSystemParameter( JET_paramSystemPath, value );
         }
 
         /// <summary>
@@ -4529,32 +6293,32 @@ namespace Harlinn::Common::Core
         return Ese::ParseSetFlags( str );
     }
 
-    HCC_EXPORT WideString ToWideString( Ese::ColumnInfoFlags value );
-    HCC_EXPORT WideString ToWideString( Ese::ColumnInfoFlags value, const WideString& defaultResult );
+    HCC_EXPORT WideString ToWideString( Ese::ColumnInfoLevel value );
+    HCC_EXPORT WideString ToWideString( Ese::ColumnInfoLevel value, const WideString& defaultResult );
 
-    inline AnsiString ToAnsiString( Ese::ColumnInfoFlags value )
+    inline AnsiString ToAnsiString( Ese::ColumnInfoLevel value )
     {
         return ToAnsiString( ToWideString( value ) );
     }
-    inline AnsiString ToAnsiString( Ese::ColumnInfoFlags value, const AnsiString& defaultResult )
+    inline AnsiString ToAnsiString( Ese::ColumnInfoLevel value, const AnsiString& defaultResult )
     {
         return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
     }
     namespace Ese
     {
-        HCC_EXPORT Ese::ColumnInfoFlags ParseColumnInfoFlags( const WideString& str );
-        HCC_EXPORT Ese::ColumnInfoFlags ParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoFlags defaultResult );
-        HCC_EXPORT bool TryParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoFlags& value );
+        HCC_EXPORT Ese::ColumnInfoLevel ParseColumnInfoFlags( const WideString& str );
+        HCC_EXPORT Ese::ColumnInfoLevel ParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoLevel defaultResult );
+        HCC_EXPORT bool TryParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoLevel& value );
 
-        inline Ese::ColumnInfoFlags ParseColumnInfoFlags( const AnsiString& str )
+        inline Ese::ColumnInfoLevel ParseColumnInfoFlags( const AnsiString& str )
         {
             return ParseColumnInfoFlags( ToWideString( str ) );
         }
-        inline Ese::ColumnInfoFlags ParseColumnInfoFlags( const AnsiString& str, Ese::ColumnInfoFlags defaultResult )
+        inline Ese::ColumnInfoLevel ParseColumnInfoFlags( const AnsiString& str, Ese::ColumnInfoLevel defaultResult )
         {
             return ParseColumnInfoFlags( ToWideString( str ), defaultResult );
         }
-        inline bool TryParseColumnInfoFlags( const AnsiString& str, Ese::ColumnInfoFlags& value )
+        inline bool TryParseColumnInfoFlags( const AnsiString& str, Ese::ColumnInfoLevel& value )
         {
             return TryParseColumnInfoFlags( ToWideString( str ), value );
         }
@@ -4562,20 +6326,20 @@ namespace Harlinn::Common::Core
     }
     template<typename StringT>
         requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
-    inline bool TryParse( const StringT& str, Ese::ColumnInfoFlags& value )
+    inline bool TryParse( const StringT& str, Ese::ColumnInfoLevel& value )
     {
         return Ese::TryParseColumnInfoFlags( str, value );
     }
 
     template<typename T, typename StringT>
-        requires std::is_same_v<Ese::ColumnInfoFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+        requires std::is_same_v<Ese::ColumnInfoLevel, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
     inline T Parse( const WideString& str )
     {
         return Ese::ParseColumnInfoFlags( str );
     }
 
     template<typename T, typename CharT>
-        requires std::is_same_v<Ese::ColumnInfoFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+        requires std::is_same_v<Ese::ColumnInfoLevel, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
     inline T Parse( const CharT* str )
     {
         return Ese::ParseColumnInfoFlags( str );
@@ -5652,7 +7416,7 @@ namespace std
     };
 
     template<typename CharT>
-    struct formatter<Harlinn::Common::Core::Ese::ColumnInfoFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::ColumnInfoFlags, CharT>
+    struct formatter<Harlinn::Common::Core::Ese::ColumnInfoLevel, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::ColumnInfoLevel, CharT>
     {
     };
 

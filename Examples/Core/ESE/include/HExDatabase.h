@@ -28,9 +28,9 @@ namespace Harlinn::Common::Core::Examples
     public:
         using Base = Ese::Table;
 
-        static constexpr wchar_t IdColumnName[] = L"Id";
-        static constexpr wchar_t OwnerColumnName[] = L"Owner";
-        static constexpr wchar_t NameColumnName[] = L"Name";
+        static constexpr char IdColumnName[] = "Id";
+        static constexpr char OwnerColumnName[] = "Owner";
+        static constexpr char NameColumnName[] = "Name";
     protected:
         JET_COLUMNID idColumnId_ = 0;
         JET_COLUMNID ownerColumnId_ = 0;
@@ -53,8 +53,8 @@ namespace Harlinn::Common::Core::Examples
             ownerColumnId_ = AddGuid( OwnerColumnName );
             nameColumnId_ = AddText( NameColumnName );
 
-            CreateIndex( DerivedT::PrimaryIndexName, Ese::IndexFlags::Primary, L"+Id\0", 10 );
-            CreateIndex( DerivedT::OwnerAndNameIndexName, Ese::IndexFlags::Unique, L"+Owner\0+Name\0", 28 );
+            CreateIndex( DerivedT::PrimaryIndexName, Ese::IndexFlags::Primary, "+Id\0", 5 );
+            CreateIndex( DerivedT::OwnerAndNameIndexName, Ese::IndexFlags::Unique, "+Owner\0+Name\0", 14 );
 #ifdef _DEBUG
             SetCurrentIndex( DerivedT::OwnerAndNameIndexName );
 #endif
@@ -94,19 +94,19 @@ namespace Harlinn::Common::Core::Examples
             SetColumn( ownerColumnId_, id );
         }
 
-        WideString Name( ) const
+        std::string Name( ) const
         {
-            WideString result;
+            std::string result;
             Read( nameColumnId_, result );
             return result;
         }
-        void SetName( const WideString& name ) const
+        void SetName( const std::string& name ) const
         {
             SetColumn( nameColumnId_, name );
         }
 
 
-        bool MoveTo( const Guid& ownerId, const wchar_t* name ) const
+        bool MoveTo( const Guid& ownerId, const char* name ) const
         {
             SetCurrentIndex( DerivedT::OwnerAndNameIndexName );
             MakeKey( ownerId, Ese::KeyFlags::NewKey );
@@ -124,7 +124,7 @@ namespace Harlinn::Common::Core::Examples
         }
 
 
-        bool MoveTo( const Guid& ownerId, const WideString& name ) const
+        bool MoveTo( const Guid& ownerId, const std::string& name ) const
         {
             return MoveTo( ownerId, name.c_str( ) );
         }
@@ -139,8 +139,7 @@ namespace Harlinn::Common::Core::Examples
         bool FilterByOwner( const Guid& ownerId ) const
         {
             SetCurrentIndex( DerivedT::OwnerAndNameIndexName );
-            MakeKey( ownerId, Ese::KeyFlags::NewKey );
-            MakeKey( "" );
+            MakeKey( ownerId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnStartLimit );
             auto rc = Seek( Ese::SeekFlags::GreaterOrEqual );
             if ( rc >= Ese::Result::Success && Owner() == ownerId )
             {
@@ -172,9 +171,9 @@ namespace Harlinn::Common::Core::Examples
     public:
         using Base = OwnedTable<SensorTable>;
 
-        static constexpr wchar_t TableName[] = L"Sensor";
-        static constexpr wchar_t PrimaryIndexName[] = L"SensorIdx";
-        static constexpr wchar_t OwnerAndNameIndexName[] = L"SONIdx";
+        static constexpr char TableName[] = "Sensor";
+        static constexpr char PrimaryIndexName[] = "SensorIdx";
+        static constexpr char OwnerAndNameIndexName[] = "SONIdx";
     public:
         constexpr SensorTable( ) noexcept
         {
@@ -197,7 +196,7 @@ namespace Harlinn::Common::Core::Examples
             Replace( );
             SetColumn( ownerColumnId_, sensor.Owner );
             SetColumn( nameColumnId_, sensor.Name );
-            Update( );
+            Store( );
         }
 
         void InsertSensor( const Sensor& sensor ) const
@@ -206,7 +205,7 @@ namespace Harlinn::Common::Core::Examples
             SetColumn( idColumnId_, sensor.Id );
             SetColumn( ownerColumnId_, sensor.Owner );
             SetColumn( nameColumnId_, sensor.Name );
-            Update( );
+            Store( );
         }
 
         bool Write( const Sensor& sensor ) const
@@ -256,10 +255,10 @@ namespace Harlinn::Common::Core::Examples
     public:
         using Base = OwnedTable<CatalogItemTable>;
 
-        static constexpr wchar_t TypeColumnName[] = L"Type";
-        static constexpr wchar_t TableName[] = L"CatalogItem";
-        static constexpr wchar_t PrimaryIndexName[] = L"CatalogItemIdx";
-        static constexpr wchar_t OwnerAndNameIndexName[] = L"CONIdx";
+        static constexpr char TypeColumnName[] = "Type";
+        static constexpr char TableName[] = "CatalogItem";
+        static constexpr char PrimaryIndexName[] = "CatalogItemIdx";
+        static constexpr char OwnerAndNameIndexName[] = "CONIdx";
     protected:
         JET_COLUMNID typeColumnId_ = 0;
     public:
@@ -333,7 +332,7 @@ namespace Harlinn::Common::Core::Examples
             Replace( );
             SetOwner( catalogItem.Owner );
             SetName( catalogItem.Name );
-            Update( );
+            Store( );
         }
 
         void ReplaceItem( const CatalogItem& catalogItem ) const
@@ -357,7 +356,7 @@ namespace Harlinn::Common::Core::Examples
             SetItemType( catalogItem.Type );
             SetOwner( catalogItem.Owner );
             SetName( catalogItem.Name );
-            Update( );
+            Store( );
         }
         void InsertItem( const CatalogItem& catalogItem ) const
         {
@@ -403,7 +402,7 @@ namespace Harlinn::Common::Core::Examples
         }
     private:
         template<typename T>
-        T CreateOrRetriveItem( const Guid& owningCatalogId, const WideString& name ) const
+        T CreateOrRetriveItem( const Guid& owningCatalogId, const std::string& name ) const
         {
             if ( MoveTo( owningCatalogId, name ) )
             {
@@ -424,11 +423,11 @@ namespace Harlinn::Common::Core::Examples
             }
         }
     public:
-        Catalog CreateOrRetrieveCatalog( const Guid& owningCatalogId, const WideString& name ) const
+        Catalog CreateOrRetrieveCatalog( const Guid& owningCatalogId, const std::string& name ) const
         { 
             return CreateOrRetriveItem<Catalog>( owningCatalogId, name );
         }
-        Asset CreateOrRetrieveAsset( const Guid& owningCatalogId, const WideString& name ) const
+        Asset CreateOrRetrieveAsset( const Guid& owningCatalogId, const std::string& name ) const
         {
             return CreateOrRetriveItem<Asset>( owningCatalogId, name );
         }
@@ -486,12 +485,12 @@ namespace Harlinn::Common::Core::Examples
     public:
         using Base = Ese::Table;
 
-        static constexpr wchar_t TableName[] = L"SV";
-        static constexpr wchar_t PrimaryIndexName[] = L"ISV";
-        static constexpr wchar_t SensorColumnName[] = L"S";
-        static constexpr wchar_t TimestampColumnName[] = L"T";
-        static constexpr wchar_t FlagsColumnName[] = L"F";
-        static constexpr wchar_t ValueColumnName[] = L"V";
+        static constexpr char TableName[] = "SV";
+        static constexpr char PrimaryIndexName[] = "ISV";
+        static constexpr char SensorColumnName[] = "S";
+        static constexpr char TimestampColumnName[] = "T";
+        static constexpr char FlagsColumnName[] = "F";
+        static constexpr char ValueColumnName[] = "V";
     private:
         JET_COLUMNID sensorColumnId_ = 0;
         JET_COLUMNID timestampColumnId_ = 0;
@@ -515,7 +514,7 @@ namespace Harlinn::Common::Core::Examples
             timestampColumnId_ = AddInt64( TimestampColumnName );
             flagsColumnId_ = AddUInt64( FlagsColumnName );
             valueColumnId_ = AddDouble( ValueColumnName );
-            CreateIndex( PrimaryIndexName, Ese::IndexFlags::Primary, L"+S\0+T\0", 14 );
+            CreateIndex( PrimaryIndexName, Ese::IndexFlags::Primary, "+S\0+T\0", 7 );
         }
 
         void OnTableOpened( )
@@ -598,7 +597,7 @@ namespace Harlinn::Common::Core::Examples
             Replace( );
             SetColumn( flagsColumnId_, value.Flags );
             SetColumn( valueColumnId_, value.Value );
-            Update( );
+            Store( );
         }
         void InsertValue( const SensorValue& value ) const
         {
@@ -608,7 +607,7 @@ namespace Harlinn::Common::Core::Examples
             SetColumn( timestampColumnId_, timestamp );
             SetColumn( flagsColumnId_, value.Flags );
             SetColumn( valueColumnId_, value.Value );
-            Update( );
+            Store( );
         }
 
         bool Write( const SensorValue& value ) const
@@ -630,7 +629,7 @@ namespace Harlinn::Common::Core::Examples
             Replace( );
             SetColumn( flagsColumnId_, point.Flags );
             SetColumn( valueColumnId_, point.Value );
-            Update( );
+            Store( );
         }
         void InsertValue( const Guid& sensorId, const SensorPoint& point ) const
         {
@@ -640,7 +639,7 @@ namespace Harlinn::Common::Core::Examples
             SetColumn( timestampColumnId_, timestamp );
             SetColumn( flagsColumnId_, point.Flags );
             SetColumn( valueColumnId_, point.Value );
-            Update( );
+            Store( );
         }
 
         bool Write(const Guid& sensorId, const SensorPoint& point ) const
@@ -707,6 +706,30 @@ namespace Harlinn::Common::Core::Examples
         {
             sensorValues.clear( );
             if ( MoveFirst( ) )
+            {
+                do
+                {
+                    Read( sensorValues.emplace_back( ) );
+                } while ( MoveNext( ) );
+            }
+        }
+
+        void GetSensorValues( const Guid& sensorId, std::vector<SensorValue>& sensorValues ) const
+        {
+            sensorValues.clear( );
+            if ( Filter( sensorId ) )
+            {
+                do
+                {
+                    Read( sensorValues.emplace_back( ) );
+                } while ( MoveNext( ) );
+            }
+        }
+
+        void GetSensorValues( const Guid& sensorId, const DateTime& startTimestamp, const DateTime& endTimestamp, std::vector<SensorValue>& sensorValues ) const
+        {
+            sensorValues.clear( );
+            if ( Filter( sensorId, startTimestamp, endTimestamp ) )
             {
                 do
                 {
