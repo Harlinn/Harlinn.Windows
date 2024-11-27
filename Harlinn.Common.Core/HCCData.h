@@ -810,7 +810,7 @@ namespace Harlinn::Common::Core::Data
         template<IO::StreamReader StreamT>
         static std::shared_ptr<DeleteTimeseriesRangeData<TKind>> ReadFrom( IO::BinaryReader<StreamT>& source )
         {
-            auto rangeType = DeleteTimeseriesRangeData<TKind>.ReadRangeType( source );
+            auto rangeType = DeleteTimeseriesRangeData<TKind>::ReadRangeType( source );
             switch ( rangeType )
             {
                 case DeleteTimeseriesRangeType::Clear:

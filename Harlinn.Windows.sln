@@ -3307,12 +3307,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.msh3", "3rdParty\Ha
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Barrelman", "Examples\ODBC\Barrelman\Barrelman.vcxproj", "{B4FA2AD9-BE76-4819-86CD-AB975BC52D39}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7B1B08DE-246F-469E-A372-1462E164ED09} = {7B1B08DE-246F-469E-A372-1462E164ED09}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Barrelman.Data", "DotNet\Examples\Barrelman\Barrelman.Data\Barrelman.Data.csproj", "{1673BBF2-2EDB-437A-8195-94B11D76ECFB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ODBC", "ODBC", "{7A350D58-E751-4656-AFE9-DCD55258AC3F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Barrelman.Tests", "Tests\ODBC\Barrelman.Tests\Barrelman.Tests.vcxproj", "{57FC25B3-C771-4EBF-BEFD-6EE2841E53EB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7B1B08DE-246F-469E-A372-1462E164ED09} = {7B1B08DE-246F-469E-A372-1462E164ED09}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harlinn.Common.Core.Net", "DotNet\Libraries\Harlinn.Common.Core.Net\Harlinn.Common.Core.Net.csproj", "{408B5FA3-E3EB-4728-8FF0-F54881BF35A3}"
 EndProject

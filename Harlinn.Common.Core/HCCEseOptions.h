@@ -23,6 +23,9 @@
 
 namespace Harlinn::Common::Core::Ese
 {
+    /// <summary>
+    /// 
+    /// </summary>
     class InitializedInstanceOptions : public std::enable_shared_from_this<InitializedInstanceOptions>
     {
     public:
@@ -672,7 +675,9 @@ namespace Harlinn::Common::Core::Ese
 
     };
 
-
+    /// <summary>
+    /// 
+    /// </summary>
     class InstanceOptions : public std::enable_shared_from_this<InstanceOptions>
     {
         std::shared_ptr<Ese::InitializedInstanceOptions> initializedInstanceOptions_;

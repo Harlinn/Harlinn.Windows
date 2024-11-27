@@ -135,7 +135,10 @@ namespace Harlinn::Common::Core
     namespace Internal
     {
         template<typename T>
-        concept StringLikeImpl = SimpleStringLikeImpl<T> && 
+        concept StringLikeImpl = SimpleStringLikeImpl<T> &&
+            std::is_constructible_v<T> &&
+            std::is_constructible_v<T, const typename T::value_type*> &&
+            std::is_constructible_v<T, const typename T::value_type*, typename T::size_type> &&
             requires ( T t1, const T t2, typename T::size_type sz, typename T::size_type pos, typename T::size_type count, const typename T::value_type* ptr, typename T::value_type value )
         {
             { t1.rbegin( ) } ->std::same_as<typename T::reverse_iterator>;

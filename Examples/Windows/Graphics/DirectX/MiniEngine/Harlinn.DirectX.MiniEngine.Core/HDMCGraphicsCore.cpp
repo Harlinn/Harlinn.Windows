@@ -190,7 +190,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             }
 
 #if _DEBUG
-            UnknownPtr<IDXGIInfoQueue> dxgiInfoQueue;
+            ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
             if ( SUCCEEDED( DXGIGetDebugInterface1( 0, IID_PPV_ARGS( &dxgiInfoQueue ) ) ) )
             {
                 dxgiFactoryFlags = DXGI_CREATE_FACTORY_DEBUG;

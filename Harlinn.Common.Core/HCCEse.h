@@ -5676,6 +5676,28 @@ namespace Harlinn::Common::Core::Ese
         }
         
     public:
+        /// <summary>
+        /// Reads the column value from the column identified by columnId,
+        /// returning true if the column contained a value, or false.
+        /// if the column is NULL.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type matching the DirectType concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A reference to a variable that will be assigned
+        /// the value of the column.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// true if a value was retried from the column, or false if the column is NULL.
+        /// </returns>
         template<DirectType T>
         bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
@@ -5685,7 +5707,25 @@ namespace Harlinn::Common::Core::Ese
             return CheckReadResult( rc );
         }
 
-
+        /// <summary>
+        /// Reads a bool value from the column identified by columnId,
+        /// returning true if the column contained a value, or false.
+        /// if the column is NULL.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A reference to a bool variable that will be assigned
+        /// the value of the column.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// true if a value was retried from the column, or false if the column is NULL.
+        /// </returns>
         bool Read( JET_COLUMNID columnId, bool& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
             constexpr unsigned long DataSize = 1;
@@ -5699,7 +5739,25 @@ namespace Harlinn::Common::Core::Ese
             }
             return CheckReadResult( rc );
         }
-
+        /// <summary>
+        /// Reads a DateTime value from the column identified by columnId,
+        /// returning true if the column contained a value, or false.
+        /// if the column is NULL.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A reference to a DateTime variable that will be assigned
+        /// the value of the column.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// true if a value was retried from the column, or false if the column is NULL.
+        /// </returns>
         bool Read( JET_COLUMNID columnId, DateTime& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
             constexpr unsigned long DataSize = sizeof(double);
@@ -5714,6 +5772,25 @@ namespace Harlinn::Common::Core::Ese
             return CheckReadResult( rc );
         }
 
+        /// <summary>
+        /// Reads a std::chrono::system_clock::time_point value from the column identified by columnId,
+        /// returning true if the column contained a value, or false.
+        /// if the column is NULL.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A reference to a std::chrono::system_clock::time_point variable that will be assigned
+        /// the value of the column.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// true if a value was retried from the column, or false if the column is NULL.
+        /// </returns>
         bool Read( JET_COLUMNID columnId, std::chrono::system_clock::time_point& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
             DateTime dateTime;
@@ -5726,7 +5803,28 @@ namespace Harlinn::Common::Core::Ese
         }
 
 
-
+        /// <summary>
+        /// Reads a text value from the column identified by columnId,
+        /// returning true if the column contained a value, or false.
+        /// if the column is NULL.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the StringLike concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A reference to a string type variable that will be assigned
+        /// the value of the column.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// true if a value was retried from the column, or false if the column is NULL.
+        /// </returns>
         template<StringLike T>
         bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
@@ -5761,6 +5859,28 @@ namespace Harlinn::Common::Core::Ese
             return false;
         }
 
+        /// <summary>
+        /// Reads a binary value from the column identified by columnId,
+        /// returning true if the column contained a value, or false.
+        /// if the column is NULL.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the StringLike concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A reference to a container type variable that will be assigned
+        /// the value of the column.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// true if a value was retried from the column, or false if the column is NULL.
+        /// </returns>
         template<BinaryLike T>
         bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
@@ -5795,6 +5915,25 @@ namespace Harlinn::Common::Core::Ese
             return false;
         }
 
+        /// <summary>
+        /// Reads a binary value, into a IO::MemoryStream, from the column identified by columnId,
+        /// returning true if the column contained a value, or false.
+        /// if the column is NULL.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A reference to a IO::MemoryStream that will be assigned
+        /// the value of the column.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// true if a value was retried from the column, or false if the column is NULL.
+        /// </returns>
         bool Read( JET_COLUMNID columnId, IO::MemoryStream& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
             unsigned long dataSize = RetrieveColumnSize( columnId, retrieveFlags );
@@ -5812,7 +5951,23 @@ namespace Harlinn::Common::Core::Ese
             }
         }
 
-
+        /// <summary>
+        /// Reads the column value from the column identified by columnId,
+        /// returning std::optional<T>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type for which there exists a Read overload.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column value.
+        /// </returns>
         template<typename T>
         std::optional<T> As( JET_COLUMNID columnId, RetrieveFlags flags = RetrieveFlags::None ) const
         {
@@ -5826,12 +5981,46 @@ namespace Harlinn::Common::Core::Ese
                 return std::optional<T>( );
             }
         }
-
+        /// <summary>
+        /// Sets the value of a column identified by column id.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the DirectType concept.
+        /// </typeparam>
+        /// <param name="columnid">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A const reference to the variable holding the value
+        /// to assign to the column.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the SetFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         template<DirectType T>
         void SetColumn( JET_COLUMNID columnid, const T& value, SetFlags flags = SetFlags::None ) const
         {
             SetColumn( columnid, &value, sizeof( std::decay_t<T> ), flags, nullptr );
         }
+
+        /// <summary>
+        /// Sets the DateTime value of a column identified by column id.
+        /// </summary>
+        /// <typeparam name="T">
+        /// DateTime
+        /// </typeparam>
+        /// <param name="columnid">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A const reference to the variable holding the value
+        /// to assign to the column.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the SetFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         template<typename T>
             requires std::is_same_v<DateTime, T>
         void SetColumn( JET_COLUMNID columnid, const T& value, SetFlags flags = SetFlags::None ) const
@@ -5839,6 +6028,24 @@ namespace Harlinn::Common::Core::Ese
             auto data = value.ToOADate( );
             SetColumn( columnid, &data, sizeof( double ), flags, nullptr );
         }
+
+        /// <summary>
+        /// Sets the std::chrono::system_clock::time_point value of a column identified by column id.
+        /// </summary>
+        /// <typeparam name="T">
+        /// std::chrono::system_clock::time_point
+        /// </typeparam>
+        /// <param name="columnid">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A const reference to the variable holding the value
+        /// to assign to the column.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the SetFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         template<typename T>
             requires std::is_same_v<std::chrono::system_clock::time_point, T>
         void SetColumn( JET_COLUMNID columnid, const T& value, SetFlags flags = SetFlags::None ) const
@@ -5847,7 +6054,22 @@ namespace Harlinn::Common::Core::Ese
             auto data = dateTime.ToOADate( );
             SetColumn( columnid, &data, sizeof( double ), flags, nullptr );
         }
-
+        /// <summary>
+        /// Sets the bool value of a column identified by column id.
+        /// </summary>
+        /// <typeparam name="T">
+        /// bool
+        /// </typeparam>
+        /// <param name="columnid">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// The bool value to assign to the column.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the SetFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         template<typename T>
             requires std::is_same_v<bool, T>
         void SetColumn( JET_COLUMNID columnid, T value, SetFlags flags = SetFlags::None ) const
@@ -5856,7 +6078,23 @@ namespace Harlinn::Common::Core::Ese
             SetColumn( columnid, (const void*)&data, 1UL, flags, static_cast<JET_SETINFO*>(nullptr) );
         }
 
-        
+        /// <summary>
+        /// Sets the text value of a column identified by column id.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any string container that matches the SimpleCharSpanLike concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="text">
+        /// A const reference to the string container holding the value
+        /// to assign to the column.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the SetFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         template<SimpleCharSpanLike T>
         void SetColumn( JET_COLUMNID columnId, const T& text, SetFlags flags = SetFlags::None ) const
         {
@@ -5868,6 +6106,23 @@ namespace Harlinn::Common::Core::Ese
             }
             SetColumn( columnId, text.c_str( ), length, flags, nullptr );
         }
+        /// <summary>
+        /// Sets the binary value of a column identified by column id.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleByteSpanLike concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="value">
+        /// A const reference to the binary container holding the value
+        /// to assign to the column.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the SetFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         template<SimpleByteSpanLike T>
         void SetColumn( JET_COLUMNID columnId, const T& value, SetFlags flags = SetFlags::None ) const
         {
@@ -5879,26 +6134,211 @@ namespace Harlinn::Common::Core::Ese
             SetColumn( columnId, value.data( ), length, flags, nullptr );
         }
 
-        Ese::Result ReadBinary( JET_COLUMNID columnId, void* data, unsigned long dataSize, unsigned long& actualDataSize, RetrieveFlags retrieveFlags = RetrieveFlags::None, JET_RETINFO* retinfo = nullptr ) const
+        /// <summary>
+        /// Reads binary data from a column of type ColumnType::LongBinary.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="data">
+        /// A pointer to a buffer that will receive the data retrieved
+        /// from the column.
+        /// </param>
+        /// <param name="dataSize">
+        /// The size of the buffer provided for the data parameter.
+        /// </param>
+        /// <param name="columnOffset">
+        /// The offset, in bytes, into the column value where the function will start reading from.
+        /// </param>
+        /// <param name="actualDataSize">
+        /// A reference to a variable that receives the actual number of bytes retrieved by the function.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// <list type="bullet">
+        /// <item>
+        /// Result::Success: The operation completed successfully.
+        /// </item>
+        /// <item>
+        /// Result::WarningBufferTruncated: The entire column value could not be 
+        /// retrieved because the given buffer is smaller than the size of the column.
+        /// </item>
+        /// <item>
+        /// Result::WarningColumnNull: The column value retrieved is NULL.
+        /// </item>
+        /// </list>
+        /// </returns>
+        Ese::Result ReadBinary( JET_COLUMNID columnId, void* data, unsigned long dataSize, unsigned long columnOffset, unsigned long& actualDataSize, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
-            auto rc = RetrieveColumn( columnId, data, dataSize, &actualDataSize, retrieveFlags, nullptr );
+            
+            JET_RETINFO retinfo = { sizeof( JET_RETINFO ), static_cast< ULONG >( columnOffset ), 0, 0 };
+            auto rc = RetrieveColumn( columnId, data, dataSize, &actualDataSize, retrieveFlags, &retinfo );
             return rc;
         }
-        void WriteBinary( JET_COLUMNID columnid, void* data, unsigned long dataSize, SetFlags flags = SetFlags::None ) const
+
+        /// <summary>
+        /// Writes binary data to a column of type ColumnType::LongBinary.
+        /// </summary>
+        /// <param name="columnid">
+        /// The column id identifying the column.
+        /// </param>
+        /// <param name="data">
+        /// A pointer to a buffer that contains the data that will be written
+        /// to the column.
+        /// </param>
+        /// <param name="dataSize">
+        /// The size of the buffer provided for the data parameter.
+        /// </param>
+        /// <param name="columnOffset">
+        /// The offset, in bytes, into the column value where the function will start writing to.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the SetFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        void WriteBinary( JET_COLUMNID columnid, const void* data, unsigned long dataSize, unsigned long columnOffset, SetFlags flags = SetFlags::None ) const
         {
-            SetColumn( columnid, data, dataSize, flags, nullptr );
+            JET_SETINFO setinfo = { sizeof( JET_SETINFO ), static_cast< ULONG >( columnOffset ), 0 };
+            SetColumn( columnid, data, dataSize, flags, &setinfo );
         }
 
+        /// <summary>
+        /// Creates an index for the table.
+        /// </summary>
+        /// <param name="indexName">
+        /// <para>
+        /// A pointer to a null-terminated string that specifies the name of the index to be created.
+        /// </para>
+        /// <para>
+        /// The index name must conform to the following guidelines:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must contain fewer characters than JET_cbNameMost, not including the terminating null character.
+        /// </item>
+        /// <item>
+        /// It must contain only characters from the following categories: 0 through 9, A through Z, a through z, 
+        /// and all punctuation characters except for "!" (exclamation point), "," (comma), 
+        /// "[" (opening bracket), and "]" (closing bracket) — that is, the ASCII characters 
+        /// 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It must not begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="indexFlags">
+        /// Zero or more values from the IndexFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="keyString">
+        /// A pointer to a double null-terminated string of null-delimited tokens.
+        /// </param>
+        /// <param name="keyStringLength">
+        /// The length, in charactes, of the keyString parameter, including the two terminating null characters.
+        /// </param>
+        /// <param name="density">
+        /// The percentage density of the initial index B+ tree.
+        /// </param>
         void CreateIndex( const wchar_t* indexName, IndexFlags indexFlags, const wchar_t* keyString, unsigned long	keyStringLength, unsigned long density = 95 ) const
         {
             auto rc = static_cast<Result>( JetCreateIndexW( sessionId_, tableId_, indexName, static_cast<JET_GRBIT>( indexFlags ), keyString, keyStringLength*sizeof( wchar_t ), density ) );
             RequireSuccess( rc );
         }
+        /// <summary>
+        /// Creates an index for the table.
+        /// </summary>
+        /// <param name="indexName">
+        /// <para>
+        /// A pointer to a null-terminated string that specifies the name of the index to be created.
+        /// </para>
+        /// <para>
+        /// The index name must conform to the following guidelines:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must contain fewer characters than JET_cbNameMost, not including the terminating null character.
+        /// </item>
+        /// <item>
+        /// It must contain only characters from the following categories: 0 through 9, A through Z, a through z, 
+        /// and all punctuation characters except for "!" (exclamation point), "," (comma), 
+        /// "[" (opening bracket), and "]" (closing bracket) — that is, the ASCII characters 
+        /// 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It must not begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="indexFlags">
+        /// Zero or more values from the IndexFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="keyString">
+        /// A pointer to a double null-terminated string of null-delimited tokens.
+        /// </param>
+        /// <param name="keyStringLength">
+        /// The length, in charactes, of the keyString parameter, including the two terminating null characters.
+        /// </param>
+        /// <param name="density">
+        /// The percentage density of the initial index B+ tree.
+        /// </param>
         void CreateIndex( const char* indexName, IndexFlags indexFlags, const char* keyString, unsigned long keyStringLength, unsigned long density = 95 ) const
         {
             auto rc = static_cast<Result>( JetCreateIndexA( sessionId_, tableId_, indexName, static_cast<JET_GRBIT>( indexFlags ), keyString, keyStringLength, density ) );
             RequireSuccess( rc );
         }
+        
+        /// <summary>
+        /// Creates an index for the table.
+        /// </summary>
+        /// <param name="indexName">
+        /// <para>
+        /// A string that specifies the name of the index to be created.
+        /// </para>
+        /// <para>
+        /// The index name must conform to the following guidelines:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must contain fewer characters than JET_cbNameMost, not including the terminating null character.
+        /// </item>
+        /// <item>
+        /// It must contain only characters from the following categories: 0 through 9, A through Z, a through z, 
+        /// and all punctuation characters except for "!" (exclamation point), "," (comma), 
+        /// "[" (opening bracket), and "]" (closing bracket) — that is, the ASCII characters 
+        /// 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It must not begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="indexFlags">
+        /// Zero or more values from the IndexFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="keyString">
+        /// A pointer to a double null-terminated string of null-delimited tokens.
+        /// </param>
+        /// <param name="keyStringLength">
+        /// The length, in charactes, of the keyString parameter, including the two terminating null characters.
+        /// </param>
+        /// <param name="density">
+        /// The percentage density of the initial index B+ tree.
+        /// </param>
         template<SimpleStringLike T>
         void CreateIndex( const T& indexName, IndexFlags indexFlags, const typename T::value_type* keyString, unsigned long keyStringLength, unsigned long density = 95 ) const
         {
@@ -5906,6 +6346,44 @@ namespace Harlinn::Common::Core::Ese
             CreateIndex( indexName.c_str( ), indexFlags, keyString, (keyStringLength+1)*sizeof( CharT ), density );
         }
 
+        /// <summary>
+        /// Creates an index for the table.
+        /// </summary>
+        /// <param name="indexName">
+        /// <para>
+        /// A string that specifies the name of the index to be created.
+        /// </para>
+        /// <para>
+        /// The index name must conform to the following guidelines:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must contain fewer characters than JET_cbNameMost, not including the terminating null character.
+        /// </item>
+        /// <item>
+        /// It must contain only characters from the following categories: 0 through 9, A through Z, a through z, 
+        /// and all punctuation characters except for "!" (exclamation point), "," (comma), 
+        /// "[" (opening bracket), and "]" (closing bracket) — that is, the ASCII characters 
+        /// 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It must not begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="indexFlags">
+        /// Zero or more values from the IndexFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="keyString">
+        /// A double null-terminated string of null-delimited tokens.
+        /// </param>
+        /// <param name="density">
+        /// The percentage density of the initial index B+ tree.
+        /// </param>
         template<SimpleStringLike T, SimpleCharSpanLike SpanT>
             requires std::is_same_v<typename T::value_type, typename SpanT::value_type >
         void CreateIndex( const T& indexName, IndexFlags indexFlags, const SpanT& keyString, unsigned long density = 95 ) const
@@ -5916,7 +6394,9 @@ namespace Harlinn::Common::Core::Ese
 
 
 
-
+        /// <summary>
+        /// Closes an open table in a database. The table may be a temporary table or a normal table.
+        /// </summary>
         void Close( )
         {
             if ( tableId_ != JET_tableidNil )
@@ -6013,6 +6493,10 @@ namespace Harlinn::Common::Core::Ese
         }
     };
 
+    /// <summary>
+    /// A system table that provides information about the columns of a table.
+    /// </summary>
+    /// <typeparam name="StringT"></typeparam>
     template<StringLike StringT>
     class ColumnList : public SystemTable
     {
@@ -6169,28 +6653,111 @@ namespace Harlinn::Common::Core::Ese
     
 
 
-
+    /// <summary>
+    /// Flags for the Database::OpenTable function.
+    /// </summary>
     enum class OpenTableFlags : int
     {
         None = 0,
+        /// <summary>
+        /// The table cannot be opened for read-access by another database session.
+        /// </summary>
         DenyRead = JET_bitTableDenyRead,
+        /// <summary>
+        /// The table cannot be opened for write-access by another database session.
+        /// </summary>
         DenyWrite = JET_bitTableDenyWrite,
+        /// <summary>
+        /// Do not cache the pages for this table.
+        /// </summary>
         NoCache = JET_bitTableNoCache,
+        /// <summary>
+        /// Allows DDL modification on tables flagged as FixedDDL. This option must 
+        /// be used with the DenyRead option.
+        /// </summary>
         PermitDDL = JET_bitTablePermitDDL,
+        /// <summary>
+        /// Provides a hint that the table is probably not in the buffer cache, 
+        /// and that pre-reading may be beneficial to performance.
+        /// </summary>
         Preread = JET_bitTablePreread,
+        /// <summary>
+        /// Requests read-only access to the table.
+        /// </summary>
         ReadOnly = JET_bitTableReadOnly,
+        /// <summary>
+        /// Attempt to opportunely read physically adjacent leaf pages using larger physical IOs
+        /// </summary>
         OpportuneRead = JET_bitTableOpportuneRead,
+        /// <summary>
+        /// The table should be very aggressively prefetched from disk because the 
+        /// application will be scanning it sequentially.
+        /// </summary>
         Sequential = JET_bitTableSequential,
-        
+        /// <summary>
+        /// Requests write-access to the table.
+        /// </summary>
         Updatable = JET_bitTableUpdatable
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( OpenTableFlags, int );
 
+    /// <summary>
+    /// Flags for the Session::CommitTransaction function
+    /// </summary>
     enum class TransactionFlags : int
     {
         None = 0,
+        /// <summary>
+        /// <para>
+        /// The transaction is committed normally but this API does not wait for the 
+        /// transaction to be flushed to the transaction log file before returning to 
+        /// the caller. This drastically reduces the duration of a commit operation at 
+        /// the cost of durability. Any transaction that is not flushed to the log before 
+        /// a crash will be automatically aborted during crash recovery during the next 
+        /// call to Instance::InitializeInstance( ).
+        /// </para>
+        /// <para>
+        /// If WaitLast or WaitAll are specified, this option is ignored.
+        /// </para>
+        /// <para>
+        /// If the call to Session::CommitTransaction does not match the first call to 
+        /// Session::BeginTransaction for this session, this option is ignored. This is 
+        /// because the final action that occurs on the outermost save point is the 
+        /// determining factor in whether the entire transaction is actually committed to disk.
+        /// </para>
+        /// </summary>
         CommitLazyFlush = JET_bitCommitLazyFlush,
+        /// <summary>
+        /// <para>
+        /// All transactions previously committed by any session that have not yet been 
+        /// flushed to the transaction log file will be flushed immediately. 
+        /// Session::CommitTransaction will wait until the transactions have been flushed 
+        /// before returning to the caller.
+        /// </para>
+        /// <para>
+        /// This option may be used even if the session is not currently in a transaction.
+        /// </para>
+        /// <para>
+        /// This option cannot be used in combination with any other option.
+        /// </para>
+        /// </summary>
         WaitAll = JET_bitWaitAllLevel0Commit,
+        /// <summary>
+        /// <para>
+        /// If the session has previously committed any transactions and they have not yet 
+        /// been flushed to the transaction log file, they should be flushed immediately. 
+        /// Session::CommitTransaction will wait until the transactions have been flushed 
+        /// before returning to the caller. This is useful if the application has previously 
+        /// committed several transactions using CommitLazyFlush and now wants to flush 
+        /// all of them to disk.
+        /// </para>
+        /// <para>
+        /// This option may be used even if the session is not currently in a transaction.
+        /// </para>
+        /// <para>
+        /// This option may be used even if the session is not currently in a transaction.
+        /// </para>
+        /// </summary>
         WaitLast = JET_bitWaitLastLevel0Commit
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( TransactionFlags, int );
@@ -6206,17 +6773,29 @@ namespace Harlinn::Common::Core::Ese
 
     };
 
-
+    /// <summary>
+    /// Manages the handle to an Extensible Storage Engine database,
+    /// providing an API that exposes the operations that can be 
+    /// performed on the database.
+    /// </summary>
     class Database
     {
         JET_SESID sessionId_;
         JET_DBID databaseId_;
     public:
+        /// <summary>
+        /// Constructs a Database object that is not connected
+        /// to an Extensible Storage Engine database.
+        /// </summary>
         constexpr Database( ) noexcept
             : sessionId_( JET_sesidNil ), databaseId_( JET_dbidNil )
         {
         }
 
+        /// <summary>
+        /// Constructs a Database object that is connected
+        /// to an Extensible Storage Engine database.
+        /// </summary>
         Database( JET_SESID sessionId, JET_DBID databaseId )
             : sessionId_( sessionId ), databaseId_( databaseId )
         {
@@ -6230,7 +6809,14 @@ namespace Harlinn::Common::Core::Ese
             }
         }
 
+        /// <summary>
+        /// Copy construction is not allowed.
+        /// </summary>
         Database( const Database& other ) = delete;
+        /// <summary>
+        /// Move constructor, taking ownership of the
+        /// handles from the other database object.
+        /// </summary>
         Database( Database&& other ) noexcept
             : sessionId_( other.sessionId_ ), databaseId_( other.databaseId_ )
         {
@@ -6246,7 +6832,14 @@ namespace Harlinn::Common::Core::Ese
             }
         }
 
+        /// <summary>
+        /// Copy assignment is not allowed.
+        /// </summary>
         Database& operator = ( const Database& other ) = delete;
+        /// <summary>
+        /// Move assignment implemented by swapping
+        /// handles wit the argument database object.
+        /// </summary>
         Database& operator = ( Database&& other ) noexcept
         {
             std::swap( sessionId_,other.sessionId_);
@@ -6254,13 +6847,22 @@ namespace Harlinn::Common::Core::Ese
             return *this;
         }
 
-
+        /// <summary>
+        /// Returns the handle of the session that was used to
+        /// open or create the database.
+        /// </summary>
+        /// <returns></returns>
         JET_SESID SessionHandle() const
         {
             return sessionId_;
         }
 
-
+        /// <summary>
+        /// The raw database handle.
+        /// </summary>
+        /// <returns>
+        /// The raw database handle.
+        /// </returns>
         JET_DBID Handle() const
         {
             return databaseId_;
@@ -6273,17 +6875,31 @@ namespace Harlinn::Common::Core::Ese
         {
         }
 
+        /// <summary>
+        /// A Database object where the session handle is not equal to JET_sesidNil 
+        /// and the database handle is not equal to JET_dbidNil is considered to
+        /// be a valid Database object.
+        /// </summary>
+        /// <returns>
+        /// true if this Database object is valid, otherwise false.
+        /// </returns>
         constexpr bool IsValid( ) const noexcept
         {
             return sessionId_ != JET_sesidNil && databaseId_ != JET_dbidNil;
         }
-
+        /// <summary>
+        /// A Database object where the session handle is not equal to JET_sesidNil 
+        /// and the database handle is not equal to JET_dbidNil is considered to
+        /// be a valid Database object.
+        /// </summary>
         constexpr explicit operator bool( ) const noexcept
         {
             return IsValid( );
         }
 
-
+        /// <summary>
+        /// Closes a database.
+        /// </summary>
         void Close( )
         {
             if ( databaseId_ != JET_dbidNil )
@@ -6295,24 +6911,98 @@ namespace Harlinn::Common::Core::Ese
             }
         }
 
+        /// <summary>
+        /// Opens a cursor on a previously created table.
+        /// </summary>
+        /// <param name="tablename">
+        /// The name of the table to open.
+        /// </param>
+        /// <param name="parameters">
+        /// Deprecated. Set to nullptr.
+        /// </param>
+        /// <param name="parametersSize">
+        /// Deprecated. Set to 0.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the OpenTableFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="tableId">
+        /// On success, points to the identifier of the table. On failure, the contents for tableId are undefined.
+        /// </param>
+        /// <returns>
+        /// A value from the Ese::Result enumeration.
+        /// </returns>
         Result OpenTable( const wchar_t* tablename, const void* parameters, unsigned long parametersSize, OpenTableFlags flags, JET_TABLEID* tableId ) const
         {
             auto rc = static_cast<Result>( JetOpenTableW( sessionId_, databaseId_, tablename, parameters, parametersSize, static_cast<JET_GRBIT>(flags), tableId ) );
             return rc;
         }
+        /// <summary>
+        /// Opens a cursor on a previously created table.
+        /// </summary>
+        /// <param name="tablename">
+        /// The name of the table to open.
+        /// </param>
+        /// <param name="parameters">
+        /// Deprecated. Set to nullptr.
+        /// </param>
+        /// <param name="parametersSize">
+        /// Deprecated. Set to 0.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the OpenTableFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="tableId">
+        /// On success, points to the identifier of the table. On failure, the contents for tableId are undefined.
+        /// </param>
+        /// <returns>
+        /// A value from the Ese::Result enumeration.
+        /// </returns>
         Result OpenTable( const char* tablename, const void* parameters, unsigned long parametersSize, OpenTableFlags flags, JET_TABLEID* tableId ) const
         {
             auto rc = static_cast<Result>( JetOpenTableA( sessionId_, databaseId_, tablename, parameters, parametersSize, static_cast<JET_GRBIT>( flags ), tableId ) );
             return rc;
         }
 
+        /// <summary>
+        /// Opens a cursor on a previously created table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Ese::Table or a type derived from Ese::Table.
+        /// </typeparam>
+        /// <typeparam name="C">
+        /// char or wchar_t.
+        /// </typeparam>
+        /// <param name="tableName">
+        /// The name of the table to open.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the OpenTableFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="noexception">
+        /// If true this function will not throw an exception if table
+        /// identified by tableName is not found in the database and 
+        /// return an invalid Table object.
+        /// </param>
+        /// <returns>
+        /// A Table object representing the table in the database.
+        /// </returns>
+        /// <remarks>
+        /// Derived classes should implement OnTableOpened( ) which
+        /// is called just after constructing the Table, or Table derived
+        /// object. This is an opportunity for Table derived objects to
+        /// retrieve the column ids for the table.
+        /// </remarks>
         template<TableType T = Table, ApiCharType C>
-        [[nodiscard]] T OpenTable( const C* tablename, 
+        [[nodiscard]] T OpenTable( const C* tableName, 
                                     OpenTableFlags flags = OpenTableFlags::Updatable, 
                                     bool noexception = false ) const
         {
             JET_TABLEID tableId = 0;
-            auto rc = OpenTable( tablename, nullptr, 0, flags, &tableId );
+            auto rc = OpenTable( tableName, nullptr, 0, flags, &tableId );
             if ( rc != Result::Success )
             {
                 if ( rc == Result::ErrorObjectNotFound && noexception )
@@ -6326,6 +7016,36 @@ namespace Harlinn::Common::Core::Ese
             return result;
         }
 
+        /// <summary>
+        /// Opens a cursor on a previously created table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Ese::Table or a type derived from Ese::Table.
+        /// </typeparam>
+        /// <typeparam name="C">
+        /// char or wchar_t.
+        /// </typeparam>
+        /// <param name="tableName">
+        /// The name of the table to open.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the OpenTableFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
+        /// <param name="noexception">
+        /// If true this function will not throw an exception if table
+        /// identified by tableName is not found in the database and 
+        /// return an invalid Table object.
+        /// </param>
+        /// <returns>
+        /// A Table object representing the table in the database.
+        /// </returns>
+        /// <remarks>
+        /// Derived classes should implement OnTableOpened( ) which
+        /// is called just after constructing the Table, or Table derived
+        /// object. This is an opportunity for Table derived objects to
+        /// retrieve the column ids for the table.
+        /// </ramarks>
         template<TableType T = Table, SimpleStringLike S>
         [[nodiscard]] T OpenTable( const S& tablename, OpenTableFlags flags = OpenTableFlags::Updatable, bool noexception = false ) const
         {
@@ -6379,27 +7099,59 @@ namespace Harlinn::Common::Core::Ese
             return CreateTable<T>( tablename.c_str( ), initialNumberOfPages, density );
         }
 
+        /// <summary>
+        /// Retrieves an Tables&lt;StringT&gt; that can be used to
+        /// enumerate the tables in the database.
+        /// </summary>
+        /// <typeparam name="StringT"></typeparam>
+        /// <returns></returns>
         template<StringLike StringT = WideString>
         [[nodiscard]] Tables<StringT> GetTables() const
         {
             JET_OBJECTLIST objectList = { sizeof(JET_OBJECTLIST), 0, };
-            auto rc = static_cast<Ese::Result>( JetGetObjectInfoW( sessionId_, databaseId_, JET_objtypTable, nullptr, nullptr, &objectList, sizeof( JET_OBJECTLIST ), JET_ObjInfoListNoStats ));
-            RequireSuccess( rc );
+            if constexpr ( std::is_same_v<wchar_t, typename StringT::value_type> )
+            {
+                auto rc = static_cast< Ese::Result >( JetGetObjectInfoW( sessionId_, databaseId_, JET_objtypTable, nullptr, nullptr, &objectList, sizeof( JET_OBJECTLIST ), JET_ObjInfoListNoStats ) );
+                RequireSuccess( rc );
+            }
+            else
+            {
+                auto rc = static_cast< Ese::Result >( JetGetObjectInfoA( sessionId_, databaseId_, JET_objtypTable, nullptr, nullptr, &objectList, sizeof( JET_OBJECTLIST ), JET_ObjInfoListNoStats ) );
+                RequireSuccess( rc );
+            }
             Tables<StringT> result( sessionId_, objectList);
             return result;
         }
 
+        /// <summary>
+        /// Deletes a table in a database.
+        /// </summary>
+        /// <param name="tableName">
+        /// The name of the table to delete.
+        /// </param>
         void DeleteTable( const wchar_t* tableName )
         {
             auto rc = static_cast<Ese::Result>( JetDeleteTableW( sessionId_, databaseId_, tableName ));
             RequireSuccess( rc );
         }
+        /// <summary>
+        /// Deletes a table in a database.
+        /// </summary>
+        /// <param name="tableName">
+        /// The name of the table to delete.
+        /// </param>
         void DeleteTable( const char* tableName )
         {
             auto rc = static_cast<Ese::Result>( JetDeleteTableA( sessionId_, databaseId_, tableName ) );
             RequireSuccess( rc );
         }
 
+        /// <summary>
+        /// Deletes a table in a database.
+        /// </summary>
+        /// <param name="tableName">
+        /// The name of the table to delete.
+        /// </param>
         template<SimpleStringLike T>
         void DeleteTable( const T& tableName )
         {
@@ -6422,6 +7174,15 @@ namespace Harlinn::Common::Core::Ese
         }
 
     public:
+        /// <summary>
+        /// Retrieves information about a table in the database.
+        /// </summary>
+        /// <param name="objectName">
+        /// The name of the table.
+        /// </param>
+        /// <returns>
+        /// The ObjectInfo object for the requeste table.
+        /// </returns>
         [[nodiscard]] ObjectInfo GetTableInfo( const wchar_t* objectName ) const
         {
             ObjectInfo result;
@@ -6429,6 +7190,15 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
             return result;
         }
+        /// <summary>
+        /// Retrieves information about a table in the database.
+        /// </summary>
+        /// <param name="objectName">
+        /// The name of the table.
+        /// </param>
+        /// <returns>
+        /// The ObjectInfo object for the requeste table.
+        /// </returns>
         [[nodiscard]] ObjectInfo GetTableInfo( const char* objectName ) const
         {
             ObjectInfo result;
@@ -6436,12 +7206,30 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
             return result;
         }
+        /// <summary>
+        /// Retrieves information about a table in the database.
+        /// </summary>
+        /// <param name="objectName">
+        /// The name of the table.
+        /// </param>
+        /// <returns>
+        /// The ObjectInfo object for the requeste table.
+        /// </returns>
         template<SimpleStringLike S>
         [[nodiscard]] ObjectInfo GetTableInfo( const S& objectName ) const
         {
             return GetTableInfo( objectName.c_str( ) );
         }
 
+        /// <summary>
+        /// Test if a table exists in the database.
+        /// </summary>
+        /// <param name="objectName">
+        /// The name of the table.
+        /// </param>
+        /// <returns>
+        /// true if the table exists.
+        /// </returns>
         [[nodiscard]] bool TableExists( const wchar_t* objectName ) const
         {
             ObjectInfo result;
@@ -6452,6 +7240,15 @@ namespace Harlinn::Common::Core::Ese
             }
             return rc != Result::ErrorInvalidName;
         }
+        /// <summary>
+        /// Test if a table exists in the database.
+        /// </summary>
+        /// <param name="objectName">
+        /// The name of the table.
+        /// </param>
+        /// <returns>
+        /// true if the table exists.
+        /// </returns>
         [[nodiscard]] bool TableExists( const char* objectName ) const
         {
             ObjectInfo result;
@@ -6462,6 +7259,15 @@ namespace Harlinn::Common::Core::Ese
             }
             return rc != Result::ErrorInvalidName;
         }
+        /// <summary>
+        /// Test if a table exists in the database.
+        /// </summary>
+        /// <param name="objectName">
+        /// The name of the table.
+        /// </param>
+        /// <returns>
+        /// true if the table exists.
+        /// </returns>
         template<SimpleStringLike S>
         [[nodiscard]] bool TableExists( const S& objectName ) const
         {
@@ -6472,9 +7278,11 @@ namespace Harlinn::Common::Core::Ese
     };
 
 
-    // ------------------------------------------------------------------------
-    // Transaction
-    // ------------------------------------------------------------------------
+    /// <summary>
+    /// A Transaction object for a Session. Will automatically roll back
+    /// the current transaction if it is not explicitly commited through
+    /// this object.
+    /// </summary>
     class Transaction 
     {
         const Session* session_;
@@ -6484,6 +7292,12 @@ namespace Harlinn::Common::Core::Ese
         {
         }
 
+        /// <summary>
+        /// Called from Session::StartTransaction
+        /// </summary>
+        /// <param name="session">
+        /// The Session creating this object.
+        /// </param>
         explicit Transaction( const Session* session )
             : session_( session )
         {
@@ -6515,7 +7329,21 @@ namespace Harlinn::Common::Core::Ese
         {
             return *session_;
         }
+        /// <summary>
+        /// Commits the transaction.
+        /// </summary>
+        /// <param name="flags">
+        /// Zero or more values from the TransactionFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator.
+        /// </param>
         HCC_EXPORT void Commit( TransactionFlags flags = TransactionFlags::None );
+        /// <summary>
+        /// Rolls back the transaction.
+        /// </summary>
+        /// <param name="rollbackAll">
+        /// This option requests that all changes made to the state of the database during 
+        /// all save points be undone. As a result, the session will exit the transaction.
+        /// </param>
         HCC_EXPORT void Rollback( bool rollbackAll = false );
     };
 
@@ -7010,7 +7838,9 @@ namespace Harlinn::Common::Core::Ese
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( BackupFlags, unsigned );
 
-
+    /// <summary>
+    /// An instance of the database engine for use in a single process.
+    /// </summary>
     class Instance
     {
         JET_INSTANCE instance_;
@@ -7297,7 +8127,8 @@ namespace Harlinn::Common::Core::Ese
         // replay to function correctly. This can be used to force crash recovery or a restore 
         // operation to look for the databases referenced in the transaction log in the 
         // specified folder
-        void SetAlternateDatabaseRecoveryPath( const WideString& value ) const
+        template<StringLike StringT>
+        void SetAlternateDatabaseRecoveryPath( const StringT& value ) const
         {
             SetSystemParameter(JET_paramAlternateDatabaseRecoveryPath, value);
         }
@@ -7872,7 +8703,7 @@ namespace Harlinn::Common::Core::Ese
             return result;
         }
 
-        template<StringLike StringT>
+        template<SimpleStringLike StringT>
         void SetBaseName(const StringT& value) const
         {
             SetSystemParameter(JET_paramBaseName, value);

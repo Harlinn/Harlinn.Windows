@@ -514,8 +514,8 @@
     <None Include="Shaders\ToneMappingUtility.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="packages.config" />
     <None Include="Readme.md" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\AdaptExposureCS.hlsl">
