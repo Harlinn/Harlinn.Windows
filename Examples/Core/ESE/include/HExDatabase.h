@@ -592,6 +592,31 @@ namespace Harlinn::Common::Core::Examples
             Read( valueColumnId_, sensorPoint.Value );
         }
 
+        void Read2( SensorValue& value ) const
+        {
+            Int64 timestamp = 0;
+            std::array<Ese::RetrieveColumn, 4> retrieveColumns;
+            retrieveColumns[ 0 ].Bind( sensorColumnId_, value.Sensor );
+            retrieveColumns[ 1 ].Bind( timestampColumnId_, timestamp );
+            retrieveColumns[ 2 ].Bind( flagsColumnId_, value.Flags );
+            retrieveColumns[ 3 ].Bind( valueColumnId_, value.Value );
+            Base::RetrieveColumns( retrieveColumns );
+            value.Timestamp = DateTime( timestamp );
+        }
+
+        void Read2( SensorPoint& sensorPoint ) const
+        {
+            Int64 timestamp = 0;
+            std::array<Ese::RetrieveColumn, 3> retrieveColumns;
+            retrieveColumns[ 0 ].Bind( timestampColumnId_, timestamp );
+            retrieveColumns[ 1 ].Bind( flagsColumnId_, sensorPoint.Flags );
+            retrieveColumns[ 2 ].Bind( valueColumnId_, sensorPoint.Value );
+            Base::RetrieveColumns( retrieveColumns );
+            sensorPoint.Timestamp = DateTime( timestamp );
+        }
+
+
+
         void ReplaceValue( const SensorValue& value ) const
         {
             Replace( );
@@ -610,6 +635,23 @@ namespace Harlinn::Common::Core::Examples
             Store( );
         }
 
+        void InsertValue2( const SensorValue& value ) const
+        {
+            Int64 timestamp = value.Timestamp.Ticks( );
+            
+            std::array<Ese::SetColumn, 4> setColumns;
+
+            setColumns[ 0 ].Bind( sensorColumnId_, value.Sensor );
+            setColumns[ 1 ].Bind( timestampColumnId_, timestamp );
+            setColumns[ 2 ].Bind( flagsColumnId_, value.Flags );
+            setColumns[ 3 ].Bind( valueColumnId_, value.Value );
+
+            Insert( );
+            Base::SetColumns( setColumns );
+            Store( );
+        }
+
+
         bool Write( const SensorValue& value ) const
         {
             if ( MoveTo( value.Sensor, value.Timestamp ) )
@@ -619,7 +661,7 @@ namespace Harlinn::Common::Core::Examples
             }
             else
             {
-                InsertValue( value );
+                InsertValue2( value );
                 return true;
             }
         }
@@ -742,6 +784,48 @@ namespace Harlinn::Common::Core::Examples
             GetSensorValues( sensorId, startTimestamp, DateTime::MaxValue( ), sensorValues );
         }
 
+        void GetSensorValues2( std::vector<SensorValue>& sensorValues ) const
+        {
+            sensorValues.clear( );
+            if ( MoveFirst( ) )
+            {
+                do
+                {
+                    Read2( sensorValues.emplace_back( ) );
+                } while ( MoveNext( ) );
+            }
+        }
+
+        void GetSensorValues2( const Guid& sensorId, std::vector<SensorValue>& sensorValues ) const
+        {
+            sensorValues.clear( );
+            if ( Filter( sensorId ) )
+            {
+                do
+                {
+                    Read2( sensorValues.emplace_back( ) );
+                } while ( MoveNext( ) );
+            }
+        }
+
+        void GetSensorValues2( const Guid& sensorId, const DateTime& startTimestamp, const DateTime& endTimestamp, std::vector<SensorValue>& sensorValues ) const
+        {
+            sensorValues.clear( );
+            if ( Filter( sensorId, startTimestamp, endTimestamp ) )
+            {
+                do
+                {
+                    Read2( sensorValues.emplace_back( ) );
+                } while ( MoveNext( ) );
+            }
+        }
+
+        void GetSensorValues2( const Guid& sensorId, const DateTime& startTimestamp, std::vector<SensorValue>& sensorValues ) const
+        {
+            GetSensorValues2( sensorId, startTimestamp, DateTime::MaxValue( ), sensorValues );
+        }
+
+
         void GetSensorPoints( const Guid& sensorId, std::vector<SensorPoint>& sensorPoints ) const
         {
             sensorPoints.clear( );
@@ -769,6 +853,35 @@ namespace Harlinn::Common::Core::Examples
         void GetSensorPoints( const Guid& sensorId, const DateTime& startTimestamp, std::vector<SensorPoint>& sensorPoints ) const
         {
             GetSensorPoints( sensorId, startTimestamp, DateTime::MaxValue( ), sensorPoints );
+        }
+
+        void GetSensorPoints2( const Guid& sensorId, std::vector<SensorPoint>& sensorPoints ) const
+        {
+            sensorPoints.clear( );
+            if ( Filter( sensorId ) )
+            {
+                do
+                {
+                    Read2( sensorPoints.emplace_back( ) );
+                } while ( MoveNext( ) );
+            }
+        }
+
+        void GetSensorPoints2( const Guid& sensorId, const DateTime& startTimestamp, const DateTime& endTimestamp, std::vector<SensorPoint>& sensorPoints ) const
+        {
+            sensorPoints.clear( );
+            if ( Filter( sensorId, startTimestamp, endTimestamp ) )
+            {
+                do
+                {
+                    Read2( sensorPoints.emplace_back( ) );
+                } while ( MoveNext( ) );
+            }
+
+        }
+        void GetSensorPoints2( const Guid& sensorId, const DateTime& startTimestamp, std::vector<SensorPoint>& sensorPoints ) const
+        {
+            GetSensorPoints2( sensorId, startTimestamp, DateTime::MaxValue( ), sensorPoints );
         }
 
 

@@ -79,11 +79,6 @@ namespace Harlinn::Common::Core::Ese
 
 
     template<typename T>
-    concept CharType = ( std::is_same_v<char, T> || std::is_same_v<wchar_t, T> );
-
-    
-
-    template<typename T>
     concept DirectType = ( ( std::is_integral_v<T> && !std::is_same_v<bool, T> ) ||
         std::is_floating_point_v<T> ||
         std::is_same_v<TimeSpan, T> ||
@@ -858,7 +853,7 @@ namespace Harlinn::Common::Core::Ese
         /// <summary>
         /// Same as InfoBase, pvResult is interpreted as a 
         /// JET_COLUMNBASE, except this InfoLevel indicates that 
-        /// requested column ( theColumName ) is not the string 
+        /// requested column ( columName ) is not the string 
         /// column name, but a pointer to a JET_COLUMNID.
         /// </summary>
         BaseByColId = JET_ColInfoBaseByColid,
@@ -1406,9 +1401,514 @@ namespace Harlinn::Common::Core::Ese
             : Base{ sizeof(Base),0, static_cast<JET_COLTYP>(columnType), 0,0,codePage,0,maxColumnSize, static_cast<JET_GRBIT>(columnFlags) }
         {
         }
+    };
 
+    /// <summary>
+    /// Holds input and output parameters for use with the 
+    /// Table::RetrieveColumns function. It describe which column 
+    /// value to retrieve, how to retrieve it, and where to store 
+    /// the results.
+    /// </summary>
+    class RetrieveColumn 
+    {
+        JET_RETRIEVECOLUMN data_;
+    public:
+        constexpr RetrieveColumn()
+            : data_{0,nullptr,0,0,0,0,1,0,0}
+        { }
+
+        /// <summary>
+        /// Retrieves the identifier for the column to retrieve.
+        /// </summary>
+        /// <returns>
+        /// The identifier for the column to retrieve.
+        /// </returns>
+        constexpr JET_COLUMNID ColumnId( ) const
+        {
+            return data_.columnid;
+        }
+        /// <summary>
+        /// Sets the identifier for the column to retrieve.
+        /// </summary>
+        /// <param name="columnId">
+        /// The identifier for the column to retrieve.
+        /// </param>
+        constexpr void SetColumnId( JET_COLUMNID columnId )
+        {
+            data_.columnid = columnId;
+        }
+
+        /// <summary>
+        /// Retrieves address of the buffer that will receive the data 
+        /// that is retrieved from the column value.
+        /// </summary>
+        /// <returns></returns>
+        constexpr void* data( ) const
+        {
+            return data_.pvData;
+        }
+        /// <summary>
+        /// Sets the address of the buffer that will receive the data 
+        /// that is retrieved from the column value and the maximum
+        /// number of bytes that can be written to this buffer.
+        /// </summary>
+        /// <param name="data">
+        /// The address of the buffer that will receive the data 
+        /// that is retrieved from the column value.
+        /// </param>
+        /// <param name="dataSize">
+        /// The maximum number of bytes that can be written to the address
+        /// provided in the data parameter.
+        /// </param>
+        constexpr void SetData( void* data, size_t dataSize )
+        {
+            data_.pvData = data;
+            data_.cbData = static_cast< unsigned long >( dataSize );
+        }
+
+        /// <summary>
+        /// Retrieves the maximum number of bytes that can be written to the
+        /// variable bound to this RetrieveColumn object.
+        /// </summary>
+        /// <returns>
+        /// The maximum number of bytes that can be written to the
+        /// variable bound to this RetrieveColumn object.
+        /// </returns>
+        constexpr size_t MaxSize( ) const
+        {
+            return data_.cbData;
+        }
+
+        /// <summary>
+        /// Retrieves the size, in bytes, of data that is retrieved by a retrieve column operation.
+        /// </summary>
+        /// <returns>
+        /// The size, in bytes, of data that is retrieved by a retrieve column operation.
+        /// </returns>
+        constexpr size_t size( ) const
+        {
+            return data_.cbActual;
+        }
+        /// <summary>
+        /// Retrieves the size, in bytes, of data that is retrieved by a retrieve column operation.
+        /// </summary>
+        /// <returns>
+        /// The size, in bytes, of data that is retrieved by a retrieve column operation.
+        /// </returns>
+        constexpr size_t ActualSize( ) const
+        {
+            return data_.cbActual;
+        }
+        /// <summary>
+        /// Retrieves the RetrieveFlags options for column retrieval. 
+        /// </summary>
+        /// <returns>
+        /// The RetrieveFlags options for column retrieval. Zero or more values 
+        /// from the RetrieveFlags enumeration. The values can be tested using the <c>&</c> operator.
+        /// </returns>
+        constexpr RetrieveFlags Flags( ) const
+        {
+            return static_cast< RetrieveFlags >( data_.grbit );
+        }
+        /// <summary>
+        /// Sets the RetrieveFlags options for column retrieval.
+        /// </summary>
+        /// <param name="flags">
+        /// The RetrieveFlags options for column retrieval. Zero or more values 
+        /// from the RetrieveFlags enumeration. The values can be combined using the <c>|</c> operator.
+        /// </param>
+        constexpr void SetFlags( RetrieveFlags flags )
+        {
+            data_.grbit = static_cast< JET_GRBIT >( flags );
+        }
+        /// <summary>
+        /// Retrieves the offset to the first byte to be retrieved from 
+        /// a column of type of ColumnType::LongBinary or ColumnType::LongText.
+        /// </summary>
+        /// <returns>
+        /// The offset to the first byte to be retrieved from 
+        /// a column of type of ColumnType::LongBinary or ColumnType::LongText.
+        /// </returns>
+        constexpr UInt32 ByteOffset( ) const
+        {
+            return data_.ibLongValue;
+        }
+        /// <summary>
+        /// Sets the offset to the first byte to be retrieved from 
+        /// a column of type of ColumnType::LongBinary or ColumnType::LongText.
+        /// </summary>
+        /// <param name="byteOffset">
+        /// The offset to the first byte to be retrieved from 
+        /// a column of type of ColumnType::LongBinary or ColumnType::LongText.
+        /// </param>
+        void SetByteOffset( UInt32 byteOffset )
+        {
+            data_.ibLongValue = byteOffset;
+        }
+
+        /// <summary>
+        /// Retrieves the sequence number of the values that are contained in a multi-valued column.
+        /// </summary>
+        /// <returns>
+        /// The sequence number of the values that are contained in a multi-valued column. 
+        /// TagSequence be 0, and then the number of instances of a multi-valued column are 
+        /// returned instead of any column data. 
+        /// </returns>
+        constexpr UInt32 TagSequence( ) const
+        {
+            return data_.itagSequence;
+        }
+        /// <summary>
+        /// Sets the sequence number of the values that are contained in a multi-valued column.
+        /// </summary>
+        /// <param name="tagSequence">
+        /// The sequence number of the values that are contained in a multi-valued column. 
+        /// TagSequence be 0, and then the number of instances of a multi-valued column are 
+        /// returned instead of any column data. 
+        /// </param>
+        constexpr void SetTagSequence( UInt32 tagSequence )
+        {
+            data_.itagSequence = tagSequence;
+        }
+
+        constexpr JET_COLUMNID ColumnIdNextTagged( ) const
+        {
+            return data_.columnidNextTagged;
+        }
+        constexpr void SetColumnIdNextTagged( JET_COLUMNID columnIdNextTagged )
+        {
+            data_.columnidNextTagged = columnIdNextTagged;
+        }
+
+        /// <summary>
+        /// Retrieves error code or warning returned from the retrieval of the column.
+        /// </summary>
+        /// <returns>
+        /// The error code or warning returned from the retrieval of the column.
+        /// </returns>
+        constexpr Ese::Result Result( ) const
+        {
+            return static_cast< Ese::Result >( data_.err );
+        }
+        /// <summary>
+        /// Sets the error code or warning returned from the retrieval of the column.
+        /// </summary>
+        /// <param name="result">
+        /// The error code or warning returned from the retrieval of the column.
+        /// </param>
+        constexpr void SetResult( Ese::Result result )
+        {
+            data_.err = static_cast< JET_ERR >( result );
+        }
+        /// <summary>
+        /// Binds this RetrieveColumn object to a column and a data buffer.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id that this RetrieveColumn object will be bound to.
+        /// </param>
+        /// <param name="data">
+        /// The data buffer that this RetrieveColumn object will be bound to.
+        /// </param>
+        /// <param name="dataSize">
+        /// The size of the data buffer that this RetrieveColumn object will be bound to.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// The RetrieveFlags options for column retrieval. Zero or more values 
+        /// from the RetrieveFlags enumeration. The values can be combined using the <c>|</c> operator.
+        /// </param>
+        void Bind( JET_COLUMNID columnId, void* data, size_t dataSize ,RetrieveFlags retrieveFlags = RetrieveFlags::None )
+        {
+            data_.columnid = columnId;
+            data_.pvData = data;
+            data_.cbData = static_cast<unsigned long>(dataSize);
+            data_.cbActual = 0;
+            data_.grbit = static_cast< JET_GRBIT >( retrieveFlags );
+        }
+
+        /// <summary>
+        /// Binds this RetrieveColumn object to a column and a variable.
+        /// </summary>
+        /// <typeparam name="DataType">
+        /// Any type that matches the Ese::DirectType concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id that this RetrieveColumn object will be bound to.
+        /// </param>
+        /// <param name="value">
+        /// A reference to the variable that this RetrieveColumn object will be bound to.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// The RetrieveFlags options for column retrieval. Zero or more values 
+        /// from the RetrieveFlags enumeration. The values can be combined using the <c>|</c> operator.
+        /// </param>
+        template<DirectType DataType>
+        void Bind( JET_COLUMNID columnId, DataType& value, RetrieveFlags retrieveFlags = RetrieveFlags::None )
+        {
+            Bind( columnId, &value, sizeof( DataType ), retrieveFlags );
+        }
+        /// <summary>
+        /// Binds this RetrieveColumn object to a column and a Byte container.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// Any type that matches the SimpleByteSpanLike concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id that this RetrieveColumn object will be bound to.
+        /// </param>
+        /// <param name="value">
+        /// A reference to the container that this RetrieveColumn object will be bound to.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// The RetrieveFlags options for column retrieval. Zero or more values 
+        /// from the RetrieveFlags enumeration. The values can be combined using the <c>|</c> operator.
+        /// </param>
+        template<SimpleByteSpanLike SpanT>
+        void Bind( JET_COLUMNID columnId, SpanT& value, RetrieveFlags retrieveFlags = RetrieveFlags::None )
+        {
+            Bind( columnId, value.data(), value.size(), retrieveFlags );
+        }
+    };
+    static_assert( sizeof( RetrieveColumn ) == sizeof( JET_RETRIEVECOLUMN ) );
+
+    /// <summary>
+    /// Contains input and output parameters for Table::SetColumns describing 
+    /// which column value to set, how to set it, and where to get the column 
+    /// set data.
+    /// </summary>
+    class SetColumn
+    {
+        JET_SETCOLUMN data_;
+    public:
+        SetColumn()
+            : data_{0, 0, 0, 0, 0, 1, 0 }
+        { }
+
+        /// <summary>
+        /// Retrieves the identifier for the column to set.
+        /// </summary>
+        /// <returns>
+        /// The identifier for the column to set.
+        /// </returns>
+        constexpr JET_COLUMNID ColumnId( ) const
+        {
+            return data_.columnid;
+        }
+        /// <summary>
+        /// Sets the identifier for the column to set.
+        /// </summary>
+        /// <param name="columnId">
+        /// The identifier for the column to set.
+        /// </param>
+        constexpr void SetColumnId( JET_COLUMNID columnId )
+        {
+            data_.columnid = columnId;
+        }
+
+        /// <summary>
+        /// Retrieves address of the buffer that holds the data 
+        /// that is assigned to the column value.
+        /// </summary>
+        /// <returns></returns>
+        constexpr const void* data( ) const
+        {
+            return data_.pvData;
+        }
+        /// <summary>
+        /// Sets the address of the buffer that holds the data 
+        /// that is assigned to the column value and the 
+        /// number of bytes that can be retrieved from this buffer.
+        /// </summary>
+        /// <param name="data">
+        /// The address of the buffer that holds the data 
+        /// that is assigned to the column value.
+        /// </param>
+        /// <param name="dataSize">
+        /// The number of bytes that can be retrieved from the address
+        /// provided in the data parameter.
+        /// </param>
+        constexpr void SetData( const void* data, size_t dataSize )
+        {
+            data_.pvData = data;
+            data_.cbData = static_cast< unsigned long >( dataSize );
+        }
+
+        /// <summary>
+        /// Retrieves the number of bytes that will be retrieved from the
+        /// variable bound to this RetrieveColumn object.
+        /// </summary>
+        /// <returns>
+        /// The number of bytes that will be retrieved from the
+        /// variable bound to this RetrieveColumn object.
+        /// </returns>
+        constexpr size_t size( ) const
+        {
+            return data_.cbData;
+        }
+
+        /// <summary>
+        /// Retrieves the Ese::SetFlags options for setting the column value. 
+        /// </summary>
+        /// <returns>
+        /// The Ese::SetFlags options for setting the column value. Zero or more values 
+        /// from the Ese::SetFlags enumeration. The values can be tested using the <c>&</c> operator.
+        /// </returns>
+        constexpr Ese::SetFlags Flags( ) const
+        {
+            return static_cast< Ese::SetFlags >( data_.grbit );
+        }
+        /// <summary>
+        /// Sets the Ese::SetFlags options for setting the column value. 
+        /// </summary>
+        /// <param name="flags">
+        /// The Ese::SetFlags options for setting the column value. Zero or more values 
+        /// from the Ese::SetFlags enumeration. The values can be combined using the <c>|</c> operator.
+        /// </param>
+        constexpr void SetFlags( Ese::SetFlags flags )
+        {
+            data_.grbit = static_cast< JET_GRBIT >( flags );
+        }
+        /// <summary>
+        /// Retrieves the offset off the first byte in the column value to be written to 
+        /// for a column of type of ColumnType::LongBinary or ColumnType::LongText.
+        /// </summary>
+        /// <returns>
+        /// The offset off the first byte in the column value to be written to 
+        /// for a column of type of ColumnType::LongBinary or ColumnType::LongText.
+        /// </returns>
+        constexpr UInt32 ByteOffset( ) const
+        {
+            return data_.ibLongValue;
+        }
+        /// <summary>
+        /// Sets the offset off the first byte in the column value to be written to 
+        /// for a column of type of ColumnType::LongBinary or ColumnType::LongText.
+        /// </summary>
+        /// <param name="byteOffset">
+        /// The offset off the first byte in the column value to be written to 
+        /// for a column of type of ColumnType::LongBinary or ColumnType::LongText.
+        /// </param>
+        void SetByteOffset( UInt32 byteOffset )
+        {
+            data_.ibLongValue = byteOffset;
+        }
+
+        /// <summary>
+        /// Retrieves the sequence number of value in a multi-valued column. 
+        /// </summary>
+        /// <returns>
+        /// The sequence number of value in a multi-valued column. A 
+        /// TagSequence of 0 indicates that the column value set should 
+        /// be added as a new instance of a multi-valued column. 
+        /// </returns>
+        constexpr UInt32 TagSequence( ) const
+        {
+            return data_.itagSequence;
+        }
+        /// <summary>
+        /// Sets the sequence number of value in a multi-valued column. 
+        /// </summary>
+        /// <param name="tagSequence">
+        /// The sequence number of value in a multi-valued column. A 
+        /// TagSequence of 0 indicates that the column value set should 
+        /// be added as a new instance of a multi-valued column. 
+        /// </param>
+        constexpr void SetTagSequence( UInt32 tagSequence )
+        {
+            data_.itagSequence = tagSequence;
+        }
+
+
+        /// <summary>
+        /// Retrieves error code or warning returned from the setting of the column.
+        /// </summary>
+        /// <returns>
+        /// The error code or warning returned from the setting of the column.
+        /// </returns>
+        constexpr Ese::Result Result( ) const
+        {
+            return static_cast< Ese::Result >( data_.err );
+        }
+        /// <summary>
+        /// Sets the error code or warning returned from the setting of the column.
+        /// </summary>
+        /// <param name="result">
+        /// The error code or warning returned from the setting of the column.
+        /// </param>
+        constexpr void SetResult( Ese::Result result )
+        {
+            data_.err = static_cast< JET_ERR >( result );
+        }
+
+        /// <summary>
+        /// Binds this SetColumn object to a column and a data buffer.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id that this SetColumn object will be bound to.
+        /// </param>
+        /// <param name="data">
+        /// The data buffer that this SetColumn object will be bound to.
+        /// </param>
+        /// <param name="dataSize">
+        /// The size of the data buffer that this SetColumn object will be bound to.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// The Ese::SetFlags options for setting the column value. Zero or more values 
+        /// from the Ese::SetFlags enumeration. The values can be combined using the <c>|</c> operator.
+        /// </param>
+        void Bind( JET_COLUMNID columnId, const void* data, size_t dataSize, Ese::SetFlags setFlags = Ese::SetFlags::None )
+        {
+            data_.columnid = columnId;
+            data_.pvData = data;
+            data_.cbData = static_cast< unsigned long >( dataSize );
+            data_.grbit = static_cast< JET_GRBIT >( setFlags );
+        }
+
+        /// <summary>
+        /// Binds this SetColumn object to a column and a variable.
+        /// </summary>
+        /// <typeparam name="DataType">
+        /// Any type that matches the Ese::DirectType concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id that this SetColumn object will be bound to.
+        /// </param>
+        /// <param name="value">
+        /// A const reference to the variable that this SetColumn object will be bound to.
+        /// </param>
+        /// <param name="setFlags">
+        /// The Ese::SetFlags options for setting the column value. Zero or more values 
+        /// from the Ese::SetFlags enumeration. The values can be combined using the <c>|</c> operator.
+        /// </param>
+        template<DirectType DataType>
+        void Bind( JET_COLUMNID columnId, const DataType& value, Ese::SetFlags setFlags = Ese::SetFlags::None )
+        {
+            Bind( columnId, &value, sizeof( DataType ), setFlags );
+        }
+
+        /// <summary>
+        /// Binds this SetColumn object to a column and a Byte container.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// Any type matching SimpleByteSpanLike concept.
+        /// </typeparam>
+        /// <param name="columnId">
+        /// The column id that this SetColumn object will be bound to.
+        /// </param>
+        /// <param name="value">
+        /// A const reference to the Byte container that this SetColumn object will be bound to.
+        /// </param>
+        /// <param name="setFlags">
+        /// The Ese::SetFlags options for setting the column value. Zero or more values 
+        /// from the Ese::SetFlags enumeration. The values can be combined using the <c>|</c> operator.
+        /// </param>
+        template<SimpleByteSpanLike SpanT>
+        void Bind( JET_COLUMNID columnId, const SpanT& value, Ese::SetFlags setFlags = Ese::SetFlags::None )
+        {
+            Bind( columnId, value.data( ), value.size( ), setFlags );
+        }
 
     };
+    static_assert( sizeof( SetColumn ) == sizeof( JET_SETCOLUMN ) );
 
     /// <summary>
     /// Values for the grbit member of the JET_OBJECTINFO Structure
@@ -1502,8 +2002,8 @@ namespace Harlinn::Common::Core::Ese
     };
 
 
-    template<StringLike StringT = WideString>
-    class Columns;
+    template<StringLike StringT>
+    class ColumnList;
 
     /// <summary>
     /// <para>
@@ -2139,8 +2639,8 @@ namespace Harlinn::Common::Core::Ese
         template<SimpleStringLike T>
         void SetCurrentIndex( const T& indexName ) const
         {
-            using CharType = typename T::value_type;
-            auto namePtr = indexName.size( ) != 0 ? indexName.c_str( ) : static_cast< const CharType* >( 0 );
+            using CharT = typename T::value_type;
+            auto namePtr = indexName.size( ) != 0 ? indexName.c_str( ) : static_cast< const CharT* >( 0 );
             SetCurrentIndex( namePtr );
         }
 
@@ -2251,8 +2751,8 @@ namespace Harlinn::Common::Core::Ese
         template<SimpleStringLike T>
         bool SetCurrentIndex( const T& indexName, SetCurrentIndexFlags flags ) const
         {
-            using CharType = typename T::value_type;
-            auto namePtr = indexName.size( ) != 0 ? indexName.c_str( ) : static_cast< const CharType* >( 0 );
+            using CharT = typename T::value_type;
+            auto namePtr = indexName.size( ) != 0 ? indexName.c_str( ) : static_cast< const CharT* >( 0 );
             return SetCurrentIndex( namePtr, flags );
         }
 
@@ -2838,93 +3338,557 @@ namespace Harlinn::Common::Core::Ese
             return rc;
         }
 
-        unsigned long RetrieveColumnSize( JET_COLUMNID columnId, int itagSequence, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
+        /// <summary>
+        /// Retrieves the size of the data stored in
+        /// a multi-valued column.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id of the column to retrieve.
+        /// </param>
+        /// <param name="itagSequence">
+        /// The itagSequence number of the value to 
+        /// retrieve the size of.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator. Must include RetrieveFlags::Tag.
+        /// </param>
+        /// <returns>
+        /// The size of the value identified by columnId and itagSequence.
+        /// </returns>
+        unsigned long RetrieveColumnSize( JET_COLUMNID columnId, int itagSequence, RetrieveFlags retrieveFlags = RetrieveFlags::Tag ) const
         {
             JET_RETINFO retinfo = { sizeof( JET_RETINFO ), 0, static_cast<ULONG>( itagSequence ), 0 };
             unsigned long dataSize = 0;
             Byte buffer[ 1 ] = {};
-            auto rc = static_cast<Result>( JetRetrieveColumn( sessionId_, tableId_, columnId, buffer, 1, &dataSize, static_cast<int>(retrieveFlags), &retinfo ) );
+            auto rc = RetrieveColumn( columnId, buffer, 1, &dataSize, retrieveFlags, &retinfo );
             if ( rc == Result::WarningColumnNull )
             {
                 return 0;
             }
-            else if ( rc != Result::Success && rc != Result::WarningBufferTruncated )
-            {
-                HCC_THROW( Exception, rc );
-            }
             return dataSize;
         }
 
+        /// <summary>
+        /// Retrieves the size of the data stored in
+        /// a column.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id of the column to retrieve.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator. Must not include RetrieveFlags::Tag.
+        /// </param>
+        /// <returns>
+        /// The size of the data stored in the column identified by columnId.
+        /// </returns>
         unsigned long RetrieveColumnSize( JET_COLUMNID columnId, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
             unsigned long dataSize = 0;
-            auto rc = static_cast< Result >( JetRetrieveColumn( sessionId_, tableId_, columnId, nullptr, 0, &dataSize, static_cast< int >( retrieveFlags ), nullptr ) );
+            auto rc = RetrieveColumn( columnId, nullptr, 0, &dataSize, retrieveFlags , nullptr );
             if ( rc == Result::WarningColumnNull )
             {
                 return 0;
             }
-            else if ( rc != Result::Success && rc != Result::WarningBufferTruncated )
-            {
-                HCC_THROW( Exception, rc );
-            }
             return dataSize;
         }
 
-
-        bool IsDBNull(JET_COLUMNID columnId, int itagSequence = 0, RetrieveFlags retrieveFlags = RetrieveFlags::None) const
+        /// <summary>
+        /// Tests if the data stored in
+        /// a column in NULL.
+        /// </summary>
+        /// <param name="columnId">
+        /// The column id of the column to retrieve.
+        /// </param>
+        /// <param name="retrieveFlags">
+        /// Zero or more values from the RetrieveFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator. Must not include RetrieveFlags::Tag.
+        /// </param>
+        /// <returns>
+        /// The size of the value identified by columnId and itagSequence.
+        /// </returns>
+        bool IsDBNull(JET_COLUMNID columnId, RetrieveFlags retrieveFlags = RetrieveFlags::None) const
         {
-            JET_RETINFO retinfo = { sizeof(JET_RETINFO), 0, static_cast<ULONG>(itagSequence), 0 };
             unsigned long dataSize = 0;
             Byte buffer[ 1 ] = {};
-            auto rc = static_cast<Result>(JetRetrieveColumn(sessionId_, tableId_, columnId, buffer, 1, &dataSize, static_cast<int>(retrieveFlags), &retinfo));
-            if (rc == Result::WarningColumnNull)
-            {
-                return true;
-            }
-            else if (rc != Result::Success && rc != Result::WarningBufferTruncated)
-            {
-                HCC_THROW(Exception, rc);
-            }
-            return false;
+            auto rc = RetrieveColumn(columnId, buffer, 1, &dataSize, retrieveFlags );
+            return rc == Result::WarningColumnNull;
         }
 
 
         
 
-        Ese::Result SetColumn( JET_COLUMNID columnId, const void* dataBuffer, unsigned long dataBufferSize, SetFlags flags, JET_SETINFO* psetinfo ) const
+        /// <summary>
+        /// <para>
+        /// Retrieves multiple column values from the current record in a single operation. 
+        /// An array of JET_RETRIEVECOLUMN structures or Ese::RetrieveColumn objects is used 
+        /// to describe the set of column values to be retrieved, and to describe output 
+        /// buffers for each column value to be retrieved.
+        /// </para>
+        /// <para>
+        /// Retrieving multiple column values using RetrieveColumns is usually significantly
+        /// faster than retrieving the data for individual columns using Table::RetrieveColumn.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="RetrieveColumnT">
+        /// JET_RETRIEVECOLUMN, Ese::RetrieveColumn, or a type
+        /// derived from either them with the same size as JET_RETRIEVECOLUMN.
+        /// </typeparam>
+        /// <param name="retrieveColumns">
+        /// A pointer to an array of one or more JET_RETRIEVECOLUMN structures or 
+        /// Ese::RetrieveColumn objects. Each object provides descriptions of which 
+        /// column value to retrieve and where to store returned data.
+        /// </param>
+        /// <param name="columnCount">
+        /// The number of elements in the array given by retrieveColumns.
+        /// </param>
+        /// <returns>
+        /// <para>
+        /// One of the following values from the Ese::Result enumeration.
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// Ese::Result::Success: The operation completed successfully.
+        /// </item>
+        /// <item>
+        /// Ese::Result::WarningBufferTruncated: The entire column value could 
+        /// not be retrieved because the given buffer is smaller than the size of the column.
+        /// </item>
+        /// </list>
+        /// </returns>
+        template<typename RetrieveColumnT>
+            requires ( std::is_base_of_v< JET_RETRIEVECOLUMN, RetrieveColumnT> || std::is_base_of_v< Ese::RetrieveColumn, RetrieveColumnT> ) &&
+                ( sizeof( RetrieveColumnT ) == sizeof( JET_RETRIEVECOLUMN ) )
+        Ese::Result RetrieveColumns( RetrieveColumnT* retrieveColumns, unsigned long columnCount ) const
         {
-            auto rc = static_cast<Result>( JetSetColumn( sessionId_, tableId_, columnId, dataBuffer, dataBufferSize, static_cast<int>(flags), psetinfo ) );
+            auto rc = static_cast<Result>( JetRetrieveColumns( sessionId_, tableId_, reinterpret_cast< JET_RETRIEVECOLUMN* >( retrieveColumns ), columnCount ) );
+            if ( rc != Result::Success &&
+                rc != Result::WarningBufferTruncated )
+            {
+                HCC_THROW( Exception, rc );
+            }
             return rc;
         }
-
-        Ese::Result RetrieveColumns( JET_RETRIEVECOLUMN* retrieveColumns, unsigned long columnCount ) const
+        /// <summary>
+        /// Retrieves multiple column values from the current record in a single operation. 
+        /// An array of JET_RETRIEVECOLUMN structures or Ese::RetrieveColumn objects is used 
+        /// to describe the set of column values to be retrieved, and to describe output 
+        /// buffers for each column value to be retrieved.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// Any type that matches the SimpleSpanLike concept
+        /// with a value_type of JET_RETRIEVECOLUMN, Ese::RetrieveColumn, or a type
+        /// derived from either them with the same size as JET_RETRIEVECOLUMN.
+        /// </typeparam>
+        /// <param name="retrieveColumns">
+        /// A reference to a container of one or more JET_RETRIEVECOLUMN structures or 
+        /// Ese::RetrieveColumn objects. Each object provides descriptions of which 
+        /// column value to retrieve and where to store returned data.
+        /// </param>
+        /// <returns>
+        /// <para>
+        /// One of the following values from the Ese::Result enumeration.
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// Ese::Result::Success: The operation completed successfully.
+        /// </item>
+        /// <item>
+        /// Ese::Result::WarningBufferTruncated: The entire column value could 
+        /// not be retrieved because the given buffer is smaller than the size of the column.
+        /// </item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// <code>
+        /// void ReadSensorPoint( const Ese::Table& table, SensorPoint& sensorPoint ) const
+        /// {
+        ///     Int64 timestamp = 0;
+        ///     std::array<Ese::RetrieveColumn, 3> retrieveColumns;
+        ///     retrieveColumns[ 0 ].Bind( timestampColumnId_, timestamp );
+        ///     retrieveColumns[ 1 ].Bind( flagsColumnId_, sensorPoint.Flags );
+        ///     retrieveColumns[ 2 ].Bind( valueColumnId_, sensorPoint.Value );
+        ///     table.RetrieveColumns( retrieveColumns );
+        ///     sensorPoint.Timestamp = DateTime( timestamp );
+        /// }
+        /// </code>
+        /// </remarks>
+        template<SimpleSpanLike SpanT>
+            requires (std::is_base_of_v< JET_RETRIEVECOLUMN, typename SpanT::value_type> || std::is_base_of_v< Ese::RetrieveColumn, typename SpanT::value_type>) &&
+            (sizeof( typename SpanT::value_type ) == sizeof( JET_RETRIEVECOLUMN ))
+        Ese::Result RetrieveColumns( SpanT& retrieveColumns ) const
         {
-            auto rc = static_cast<Result>( JetRetrieveColumns( sessionId_, tableId_, retrieveColumns, columnCount ) );
-            return rc;
+            return RetrieveColumns( reinterpret_cast< JET_RETRIEVECOLUMN* >(retrieveColumns.data()), static_cast<unsigned long>(retrieveColumns.size()) );
         }
 
-        Ese::Result SetColumns( JET_SETCOLUMN* setColumns, unsigned long count ) const
+
+        /// <summary>
+        /// Modifies a single column value in a modified record to be 
+        /// inserted or to update the current record. It can overwrite an 
+        /// existing value, add a new value to a sequence of values in a 
+        /// multi-valued column, remove a value from a sequence of values 
+        /// in a multi-valued column, or update all or part of a long 
+        /// value, a column of type ColumnType::LongBinary or ColumnType::LongText.
+        /// </summary>
+        /// <param name="columnId">
+        /// The JET_COLUMNID of the column to be modified.
+        /// </param>
+        /// <param name="dataBuffer">
+        /// Input buffer containing data to store in the column.
+        /// </param>
+        /// <param name="dataBufferSize">
+        /// Size in bytes of the input buffer.
+        /// </param>
+        /// <param name="flags">
+        /// Zero or more values from the SetFlags enumeration. The values can be
+        /// combined using the <c>|</c> operator. Use SetFlags::None to specify
+        /// that no flags from the SetFlags enumeration will be set.
+        /// </param>
+        /// <param name="psetinfo">
+        /// <para>
+        /// Pointer to optional input parameters that can be set for this function using the JET_SETINFO structure.
+        /// </para>
+        /// <para>
+        /// If psetinfo is given as nullotr then the function behaves as though 
+        /// an itagSequence of 1 and an ibLongValue of 0 (zero) were given. This 
+        /// causes column set to set the first value of a multi-valued column, 
+        /// and to set long data beginning at offset 0 (zero).
+        /// </para>
+        /// <para>
+        /// The following options can be set for this parameter:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// ibLongValue: Binary offset into a long column value where set data should begin.
+        /// </item>
+        /// <item>
+        /// itagSequence: Sequence number of the desired multi-valued column value to set. 
+        /// If itagSequence is set to 0 (zero), then the value provided should be appended 
+        /// to then end of the sequence of multi-valued values. If the sequence number 
+        /// provided is greater than the last existing multi-valued value, then again the given 
+        /// value is appended to the end of the sequence of values. If the sequence number 
+        /// corresponds to an existing value then that value is replaced with the given value.
+        /// </item>
+        /// </list>
+        /// </param>
+        void SetColumn( JET_COLUMNID columnId, const void* dataBuffer, unsigned long dataBufferSize, SetFlags flags, JET_SETINFO* psetinfo ) const
         {
-            auto rc = static_cast<Result>( JetSetColumns( sessionId_, tableId_, setColumns, count ) );
-            return rc;
+            auto rc = static_cast< Result >( JetSetColumn( sessionId_, tableId_, columnId, dataBuffer, dataBufferSize, static_cast< int >( flags ), psetinfo ) );
+            RequireSuccess( rc );
         }
 
-        Ese::Result GetTableColumnInfo( const wchar_t* columnName, void* pvResult, unsigned long cbMax = sizeof( JET_COLUMNDEF ), ColumnInfoLevel columnInfoFlags = ColumnInfoLevel::Default ) const
+        /// <summary>
+        /// Set multiple column values in a single operation. An array of 
+        /// JET_SETCOLUMN structures, or Ese::SetColumn objects, is used to 
+        /// describe the set of column values to be set, and to describe 
+        /// input buffers for each column value to be set.
+        /// </summary>
+        /// <typeparam name="SetColumnT">
+        /// Either JET_SETCOLUMN or Ese::SetColumn, or a type derived
+        /// from either of them with the same size as JET_SETCOLUMN.
+        /// </typeparam>
+        /// <param name="setColumns">
+        /// A pointer to an array of one or more JET_SETCOLUMN structures or 
+        /// Ese::SetColumn objects. Each object provides descriptions of 
+        /// which column value to set and from where to get the column data 
+        /// to set.
+        /// </param>
+        /// <param name="count">
+        /// The number of elements in the array given by setColumns.
+        /// </param>
+        template<typename SetColumnT>
+            requires ( std::is_base_of_v< JET_SETCOLUMN, SetColumnT> || std::is_base_of_v< Ese::SetColumn, SetColumnT> ) &&
+                ( sizeof( SetColumnT ) == sizeof( JET_SETCOLUMN ) )
+        void SetColumns( SetColumnT* setColumns, unsigned long count ) const
         {
-            auto rc = static_cast<Result>( JetGetTableColumnInfoW( sessionId_, tableId_, columnName, pvResult, cbMax, static_cast<unsigned long>(columnInfoFlags) ) );
-            return rc;
+            auto rc = static_cast<Result>( JetSetColumns( sessionId_, tableId_, reinterpret_cast< JET_SETCOLUMN* >( setColumns ), count ) );
+            RequireSuccess( rc );
         }
 
-        Ese::Result GetTableColumnInfo( const char* columnName, void* pvResult, unsigned long cbMax = sizeof( JET_COLUMNDEF ), ColumnInfoLevel columnInfoFlags = ColumnInfoLevel::Default ) const
+        /// <summary>
+        /// Set multiple column values in a single operation. An array of 
+        /// JET_SETCOLUMN structures, or Ese::SetColumn objects, is used to 
+        /// describe the set of column values to be set, and to describe 
+        /// input buffers for each column value to be set.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// Any type that matches the SimpleSpanLike concept
+        /// with a value_type of JET_SETCOLUMN, Ese::SetColumn, or a type
+        /// derived from either them with the same size as JET_SETCOLUMN.
+        /// </typeparam>
+        /// <param name="setColumns">
+        /// A const reference to a container of one or more JET_SETCOLUMN structures or 
+        /// Ese::SetColumn objects. Each object provides descriptions of 
+        /// which column value to set and from where to get the column data 
+        /// to set.
+        /// </param>
+        template<SimpleSpanLike SpanT>
+            requires (std::is_base_of_v< JET_SETCOLUMN, typename SpanT::value_type> || std::is_base_of_v< Ese::SetColumn, typename SpanT::value_type>) &&
+                (sizeof( typename SpanT::value_type ) == sizeof( JET_SETCOLUMN ))
+        void SetColumns( SpanT& setColumns ) const
         {
-            auto rc = static_cast<Result>( JetGetTableColumnInfoA( sessionId_, tableId_, columnName, pvResult, cbMax, static_cast<unsigned long>( columnInfoFlags ) ) );
-            return rc;
+            return SetColumns( setColumns.data(), static_cast<unsigned long>( setColumns.size()) );
         }
 
-        Ese::Result PrepareUpdate( PrepareUpdateOptions option ) const
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="resultData">
+        /// Pointer to a buffer that will receive the information. The type 
+        /// of the buffer is dependent on columnInfoFlags. The caller must 
+        /// be configured to align the buffer appropriately.
+        /// </param>
+        /// <param name="resultDataSize">
+        /// The size, in bytes, of the buffer that was passed in resultData.
+        /// </param>
+        /// <param name="columnInfoFlags">
+        /// A value from the ColumnInfoLevel enumeration.
+        /// </param>
+        void GetTableColumnInfo( const wchar_t* columnName, void* resultData, unsigned long resultDataSize, ColumnInfoLevel columnInfoFlags ) const
+        {
+            auto rc = static_cast<Result>( JetGetTableColumnInfoW( sessionId_, tableId_, columnName, resultData, resultDataSize, static_cast<unsigned long>(columnInfoFlags) ) );
+            RequireSuccess( rc );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="resultData">
+        /// Pointer to a buffer that will receive the information. The type 
+        /// of the buffer is dependent on columnInfoFlags. The caller must 
+        /// be configured to align the buffer appropriately.
+        /// </param>
+        /// <param name="resultDataSize">
+        /// The size, in bytes, of the buffer that was passed in resultData.
+        /// </param>
+        /// <param name="columnInfoFlags">
+        /// A value from the ColumnInfoLevel enumeration.
+        /// </param>
+        void GetTableColumnInfo( const char* columnName, void* resultData, unsigned long resultDataSize, ColumnInfoLevel columnInfoFlags ) const
+        {
+            auto rc = static_cast<Result>( JetGetTableColumnInfoA( sessionId_, tableId_, columnName, resultData, resultDataSize, static_cast<unsigned long>( columnInfoFlags ) ) );
+            RequireSuccess( rc );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <typeparam name="StringT">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="resultData">
+        /// Pointer to a buffer that will receive the information. The type 
+        /// of the buffer is dependent on columnInfoFlags. The caller must 
+        /// be configured to align the buffer appropriately.
+        /// </param>
+        /// <param name="resultDataSize">
+        /// The size, in bytes, of the buffer that was passed in resultData.
+        /// </param>
+        /// <param name="columnInfoFlags">
+        /// A value from the ColumnInfoLevel enumeration.
+        /// </param>
+        template<SimpleStringLike StringT>
+        void GetTableColumnInfo( const StringT& columnName, void* resultData, unsigned long resultDataSize, ColumnInfoLevel columnInfoFlags ) const
+        {
+            auto rc = GetTableColumnInfo( columnName.c_str(), resultData, resultDataSize, columnInfoFlags );
+            RequireSuccess( rc );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNDEF object.
+        /// </param>
+        void GetTableColumnInfo( const wchar_t* columnName, JET_COLUMNDEF& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNDEF ), ColumnInfoLevel::Default );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNBASE_W object.
+        /// </param>
+        void GetTableColumnInfo( const wchar_t* columnName, JET_COLUMNBASE_W& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNBASE_W ), ColumnInfoLevel::Base );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNLIST object. A temporary table 
+        /// is opened and is identified by the tableid member of 
+        /// JET_COLUMNLIST. The table must be closed with JetCloseTable. 
+        /// If this function fails, the structure contains undefined data.
+        /// </param>
+        void GetTableColumnInfo( const wchar_t* columnName, JET_COLUMNLIST& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNLIST ), ColumnInfoLevel::List );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNDEF object.
+        /// </param>
+        void GetTableColumnInfo( const char* columnName, JET_COLUMNDEF& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNDEF ), ColumnInfoLevel::Default );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNBASE_A object.
+        /// </param>
+        void GetTableColumnInfo( const char* columnName, JET_COLUMNBASE_A& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNBASE_A ), ColumnInfoLevel::Base );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNLIST object. A temporary table 
+        /// is opened and is identified by the tableid member of 
+        /// JET_COLUMNLIST. The table must be closed with JetCloseTable. 
+        /// If this function fails, the structure contains undefined data.
+        /// </param>
+        void GetTableColumnInfo( const char* columnName, JET_COLUMNLIST& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNLIST ), ColumnInfoLevel::List );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNDEF object.
+        /// </param>
+        template<SimpleStringLike StringT>
+        void GetTableColumnInfo( const StringT& columnName, JET_COLUMNDEF& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNDEF ), ColumnInfoLevel::Default );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <typeparam name="ColumnBaseT">
+        /// Either JET_COLUMNBASE_W or JET_COLUMNBASE_A.
+        /// </typeparam>
+        /// <typeparam name="StringT">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNBASE_W or JET_COLUMNBASE_A object.
+        /// </param>
+        template<SimpleStringLike StringT, typename ColumnBaseT>
+            requires (SimpleWideStringLike<StringT> && std::is_same_v<ColumnBaseT, JET_COLUMNBASE_W> ) ||
+                    ( SimpleAnsiStringLike<StringT> && std::is_same_v<ColumnBaseT, JET_COLUMNBASE_A> )
+        void GetTableColumnInfo( const StringT& columnName, ColumnBaseT& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNBASE_A ), ColumnInfoLevel::Base );
+        }
+
+        /// <summary>
+        /// Retrieves information about a table column.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// The name of the column to fetch information for.
+        /// </param>
+        /// <param name="data">
+        /// A reference to a JET_COLUMNLIST object. A temporary table 
+        /// is opened and is identified by the tableid member of 
+        /// JET_COLUMNLIST. The table must be closed with JetCloseTable. 
+        /// If this function fails, the structure contains undefined data.
+        /// </param>
+        template<SimpleStringLike StringT>
+        void GetTableColumnInfo( const StringT& columnName, JET_COLUMNLIST& data ) const
+        {
+            GetTableColumnInfo( columnName, &data, sizeof( JET_COLUMNLIST ), ColumnInfoLevel::List );
+        }
+
+        /// <summary>
+        /// Retrieves information about the columns of a table.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <returns>
+        /// A ColumnList<StringT> providing access to information
+        /// about the columns of the table.
+        /// </returns>
+        template<StringLike StringT>
+        ColumnList<StringT> GetColumns( ) const;
+
+        /// <summary>
+        /// The PrepareUpdate function is the first operation in performing 
+        /// an update, for the purposes of inserting a new record or replacing 
+        /// an existing record with new values. Updates are done by calling 
+        /// Table::PrepareUpdate, then calling Table::SetColumn or 
+        /// Table::SetColumns zero or more times and finally by calling 
+        /// Table::Store to complete the operation. Table::PrepareUpdate and 
+        /// Table::Store set the boundaries for an update operation and are 
+        /// important in having only the final update state of a record entered 
+        /// into indexes. This is both more efficient, but also required in cases 
+        /// where data must match a valid state through more than on set column 
+        /// operation.
+        /// </summary>
+        /// <param name="option">
+        /// A value from the PrepareUpdateOptions enumeration.
+        /// </param>
+        void PrepareUpdate( PrepareUpdateOptions option ) const
         {
             auto rc = static_cast<Result>( JetPrepareUpdate( sessionId_, tableId_, static_cast<unsigned long>( option ) ) );
-            return rc;
+            RequireSuccess( rc );
         }
 
         /// <summary>
@@ -2932,8 +3896,7 @@ namespace Harlinn::Common::Core::Ese
         /// </summary>
         void Cancel( ) const
         {
-            auto rc = PrepareUpdate( PrepareUpdateOptions::Cancel );
-            RequireSuccess( rc );
+            PrepareUpdate( PrepareUpdateOptions::Cancel );
         }
 
         /// <summary>
@@ -2945,8 +3908,7 @@ namespace Harlinn::Common::Core::Ese
         /// </summary>
         void Copy( ) const
         {
-            auto rc = PrepareUpdate( PrepareUpdateOptions::Copy );
-            RequireSuccess( rc );
+            PrepareUpdate( PrepareUpdateOptions::Copy );
         }
 
         /// <summary>
@@ -2958,8 +3920,7 @@ namespace Harlinn::Common::Core::Ese
         /// </summary>
         void Insert( ) const
         {
-            auto rc = PrepareUpdate( PrepareUpdateOptions::Insert );
-            RequireSuccess( rc );
+            PrepareUpdate( PrepareUpdateOptions::Insert );
         }
 
         /// <summary>
@@ -2972,8 +3933,7 @@ namespace Harlinn::Common::Core::Ese
         /// </summary>
         void Replace( ) const
         {
-            auto rc = PrepareUpdate( PrepareUpdateOptions::Replace );
-            RequireSuccess( rc );
+            PrepareUpdate( PrepareUpdateOptions::Replace );
         }
 
         /// <summary>
@@ -2983,8 +3943,7 @@ namespace Harlinn::Common::Core::Ese
         /// </summary>
         void InsertCopyDeleteOriginal( ) const
         {
-            auto rc = PrepareUpdate( PrepareUpdateOptions::InsertCopyDeleteOriginal );
-            RequireSuccess( rc );
+            PrepareUpdate( PrepareUpdateOptions::InsertCopyDeleteOriginal );
         }
 
         /// <summary>
@@ -3037,6 +3996,15 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
+        /// <summary>
+        /// The SetSequential function notifies the database engine that the 
+        /// application is scanning the entire current index that contains a 
+        /// given cursor. Consequently, the methods that are used to access 
+        /// the index data will be tuned to make this scenario as fast as possible.
+        /// </summary>
+        /// <param name="flags">
+        /// A value from the SequentialFlags enumeration.
+        /// </param>
         void SetSequential( SequentialFlags flags = SequentialFlags::PrereadForward ) const
         {
             auto rc = static_cast<Result>( JetSetTableSequential( sessionId_, tableId_, static_cast<JET_GRBIT>( flags ) ) );
@@ -3046,27 +4014,153 @@ namespace Harlinn::Common::Core::Ese
 
 
 
-
-        template<CharType T>
+        /// <summary>
+        /// Retrieves the column id for the column identified by the columnName
+        /// argument.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t
+        /// </typeparam>
+        /// <param name="columnName">
+        /// The name of the column to retrieve the column id for.
+        /// </param>
+        /// <returns>
+        /// The requested column id.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID GetColumnId( const T* columnName )
         {
             JET_COLUMNDEF columnDef = { sizeof( JET_COLUMNDEF ), 0, };
-            GetTableColumnInfo( columnName, &columnDef );
+            GetTableColumnInfo( columnName, columnDef );
             return columnDef.columnid;
         }
+
+        /// <summary>
+        /// Retrieves the column id for the column identified by the columnName
+        /// argument.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// The name of the column to retrieve the column id for.
+        /// </param>
+        /// <returns>
+        /// The requested column id.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID GetColumnId( const T& columnName )
         {
             return GetColumnId( columnName.c_str() );
         }
 
+        /// <summary>
+        /// Adds a new column to an existing table in an ESE database.
+        /// </summary>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="columnDef">
+        /// A const reference to a JET_COLUMNDEF structure.
+        /// </param>
+        /// <param name="defaultValueBuffer">
+        /// <para>
+        /// A pointer to a buffer that contains the default value for the column. The 
+        /// length of the buffer is defaultValueBufferSize. If there is no default, 
+        /// set defaultValueBuffer to nullptr and defaultValueBufferSize to zero. Default 
+        /// values cannot be larger than JET_cbColumnMost bytes for fixed columns or 
+        /// JET_cbLVDefaultValueMost bytes for long values. If a default value is larger 
+        /// than that, it will be silently truncated.
+        /// </para>
+        /// <para>
+        /// If the grbit field of the JET_COLUMNDEF structure has ColumnFlags::UserDefinedDefault 
+        /// set, defaultValueBuffer will be interpreted as a pointer to a JET_USERDEFINEDDEFAULT 
+        /// structure.
+        /// </para>
+        /// </param>
+        /// <param name="defaultValueBufferSize">
+        /// The size, in bytes, of the buffer that is specified in defaultValueBuffer.
+        /// </param>
+        /// <returns>
+        /// The identifier of the newly created column.
+        /// </returns>
         JET_COLUMNID AddColumn( const wchar_t* columnName, const JET_COLUMNDEF& columnDef, const void* defaultValueBuffer = nullptr, unsigned long defaultValueBufferSize = 0 ) const
         {
+            
             JET_COLUMNID result = 0;
             auto rc = static_cast<Result>( JetAddColumnW( sessionId_, tableId_, columnName, &columnDef, defaultValueBuffer, defaultValueBufferSize, &result ) );
             RequireSuccess( rc );
             return result;
         }
+
+        /// <summary>
+        /// Adds a new column to an existing table in an ESE database.
+        /// </summary>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="columnDef">
+        /// A const reference to a JET_COLUMNDEF structure.
+        /// </param>
+        /// <param name="defaultValueBuffer">
+        /// <para>
+        /// A pointer to a buffer that contains the default value for the column. The 
+        /// length of the buffer is defaultValueBufferSize. If there is no default, 
+        /// set defaultValueBuffer to nullptr and defaultValueBufferSize to zero. Default 
+        /// values cannot be larger than JET_cbColumnMost bytes for fixed columns or 
+        /// JET_cbLVDefaultValueMost bytes for long values. If a default value is larger 
+        /// than that, it will be silently truncated.
+        /// </para>
+        /// <para>
+        /// If the grbit field of the JET_COLUMNDEF structure has ColumnFlags::UserDefinedDefault 
+        /// set, defaultValueBuffer will be interpreted as a pointer to a JET_USERDEFINEDDEFAULT 
+        /// structure.
+        /// </para>
+        /// </param>
+        /// <param name="defaultValueBufferSize">
+        /// The size, in bytes, of the buffer that is specified in defaultValueBuffer.
+        /// </param>
+        /// <returns>
+        /// The identifier of the newly created column.
+        /// </returns>
         JET_COLUMNID AddColumn( const char* columnName, const JET_COLUMNDEF& columnDef, const void* defaultValueBuffer = nullptr, unsigned long defaultValueBufferSize = 0 ) const
         {
             JET_COLUMNID result = 0;
@@ -3075,196 +4169,1344 @@ namespace Harlinn::Common::Core::Ese
             return result;
         }
 
+        /// <summary>
+        /// Adds a new column to an existing table in an ESE database.
+        /// </summary>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="columnDef">
+        /// A const reference to a JET_COLUMNDEF structure.
+        /// </param>
+        /// <param name="defaultValueBuffer">
+        /// <para>
+        /// A pointer to a buffer that contains the default value for the column. The 
+        /// length of the buffer is defaultValueBufferSize. If there is no default, 
+        /// set defaultValueBuffer to nullptr and defaultValueBufferSize to zero. Default 
+        /// values cannot be larger than JET_cbColumnMost bytes for fixed columns or 
+        /// JET_cbLVDefaultValueMost bytes for long values. If a default value is larger 
+        /// than that, it will be silently truncated.
+        /// </para>
+        /// <para>
+        /// If the grbit field of the JET_COLUMNDEF structure has ColumnFlags::UserDefinedDefault 
+        /// set, defaultValueBuffer will be interpreted as a pointer to a JET_USERDEFINEDDEFAULT 
+        /// structure.
+        /// </para>
+        /// </param>
+        /// <param name="defaultValueBufferSize">
+        /// The size, in bytes, of the buffer that is specified in defaultValueBuffer.
+        /// </param>
+        /// <returns>
+        /// The identifier of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddColumn( const T& columnName, const JET_COLUMNDEF& columnDef, const void* defaultValueBuffer = nullptr, unsigned long defaultValueBufferSize = 0 ) const
         {
             return AddColumn( columnName.c_str(), columnDef, defaultValueBuffer, defaultValueBufferSize );
         }
 
+        /// <summary>
+        /// Adds a boolean column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The identifier of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddBoolean( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Boolean, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds a boolean column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The identifier of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddBoolean( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Boolean, flags );
             return AddColumn( columnName, columnDef );
         }
 
+        /// <summary>
+        /// Adds a SByte column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The identifier of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddSByte( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Byte, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+
+        /// <summary>
+        /// Adds a SByte column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The identifier of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddSByte( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Byte, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds a Byte column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddByte( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Byte, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds a Byte column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddByte( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Byte, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an Int16 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddInt16( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Short, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an Int16 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddInt16( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Short, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an UInt16 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddUInt16( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedShort, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an UInt16 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddUInt16( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedShort, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an Int32 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddInt32( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Long, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an Int32 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddInt32( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Long, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an UInt32 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddUInt32( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedLong, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an UInt32 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddUInt32( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedLong, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an Int64 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddInt64( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::LongLong, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an Int64 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddInt64( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::LongLong, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an UInt64 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddUInt64( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedLongLong, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an UInt64 column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddUInt64( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::UnsignedLongLong, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an single precision floating point column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddSingle( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Single, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an single precision floating point column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddSingle( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Single, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an double precision floating point column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddDouble( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Double, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an double precision floating point column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddDouble( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Double, flags );
             return AddColumn( columnName, columnDef );
         }
-
+        /// <summary>
+        /// Adds an Currency column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddCurrency( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Currency, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an Currency column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddCurrency( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Currency, flags );
             return AddColumn( columnName, columnDef );
         }
 
+        /// <summary>
+        /// <para>
+        /// Adds an TimeSpan column to the table.
+        /// </para>
+        /// <para>
+        /// ESE doesn't have a TimeSpan/duration type, this is an alias for 
+        /// an Int64 column.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddTimeSpan( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::LongLong, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// <para>
+        /// Adds an TimeSpan column to the table.
+        /// </para>
+        /// <para>
+        /// ESE doesn't have a TimeSpan/duration type, this is an alias for 
+        /// an Int64 column.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddTimeSpan( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::LongLong, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an DateTime column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddDateTime( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::DateTime, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an DateTime column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddDateTime( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::DateTime, flags );
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an Guid/uuid column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddGuid( const T& columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Guid, sizeof(GUID) ,flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an Guid/uuid column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddGuid( const T* columnName, ColumnFlags flags = ColumnFlags::Fixed | ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Guid, flags );
             return AddColumn( columnName, columnDef );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an text column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="maxSize"></param>
+        /// <param name="codePage"></param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddText( const T* columnName, unsigned long maxSize = 127, short codePage = 1200, ColumnFlags flags = ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Text, maxSize, flags );
@@ -3274,12 +5516,85 @@ namespace Harlinn::Common::Core::Ese
             }
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an text column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="maxSize"></param>
+        /// <param name="codePage"></param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddText( const T& columnName, unsigned long maxSize = 127, short codePage = 1200, ColumnFlags flags = ColumnFlags::NotNULL ) const
         {
             return AddText( columnName.c_str( ), maxSize, codePage, flags );
         }
-        template<CharType T>
+        /// <summary>
+        /// Adds an binary column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Either char or wchar_t.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="maxSize"></param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
+        template<ApiCharType T>
         JET_COLUMNID AddBinary( const T* columnName, unsigned long maxSize = 255, ColumnFlags flags = ColumnFlags::NotNULL ) const
         {
             ColumnDefinition columnDef( ColumnType::Binary, maxSize, flags );
@@ -3289,19 +5604,58 @@ namespace Harlinn::Common::Core::Ese
             }
             return AddColumn( columnName, columnDef );
         }
+        /// <summary>
+        /// Adds an binary column to the table.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Any type that matches the SimpleStringLike concept.
+        /// </typeparam>
+        /// <param name="columnName">
+        /// <para>
+        /// The name of the column to add. The name must meet the following criteria:
+        /// </para>
+        /// <list>
+        /// <item>
+        /// It must be fewer than JET_cbNameMost characters in length, not including the terminating NULL.
+        /// </item>
+        /// <item>
+        /// It must contain characters only from the following sets: 0 through 9, 
+        /// A through Z, a through z, and all other punctuation except for exclamation 
+        /// point (!), comma (,), opening bracket ([), and closing bracket (]) — that is, 
+        /// ASCII characters 0x20, 0x22 through 0x2d, 0x2f through 0x5a, 0x5c, and 0x5d through 0x7f.
+        /// </item>
+        /// <item>
+        /// It cannot begin with a space.
+        /// </item>
+        /// <item>
+        /// It must contain at least one non-space character.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="maxSize"></param>
+        /// <param name="flags">
+        /// One or more values from the ColumnFlags enumeration. 
+        /// The values can be combined using the <c>|</c> operator.
+        /// </param>
+        /// <returns>
+        /// The column id of the newly created column.
+        /// </returns>
         template<SimpleStringLike T>
         JET_COLUMNID AddBinary( const AnsiString& columnName, unsigned long maxSize = 255, ColumnFlags flags = ColumnFlags::NotNULL ) const
         {
             return AddBinary( columnName.c_str( ), maxSize, flags );
         }
 
-        template<StringLike StringT = WideString>
-        Columns<StringT> GetColumns( ) const;
-
+        
+        /// <summary>
+        /// Sets the column identified by columnId to NULL.
+        /// </summary>
+        /// <param name="columnid">
+        /// The column id.
+        /// </param>
         void SetNull( JET_COLUMNID columnid ) const
         {
-            auto rc = SetColumn( columnid, 0, 0, SetFlags::None, nullptr );
-            RequireSuccess( rc );
+            SetColumn( columnid, 0, 0, SetFlags::None, nullptr );
         }
 
     private:
@@ -3376,11 +5730,11 @@ namespace Harlinn::Common::Core::Ese
         template<StringLike T>
         bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
-            using CharType = typename T::value_type;
+            using CharT = typename T::value_type;
             constexpr unsigned long BufferSize = 256;
-            CharType buffer[BufferSize];
+            CharT buffer[BufferSize];
             unsigned long actualDataSize;
-            auto rc = RetrieveColumn( columnId, buffer, BufferSize * sizeof( CharType ), &actualDataSize, retrieveFlags, nullptr );
+            auto rc = RetrieveColumn( columnId, buffer, BufferSize * sizeof( CharT ), &actualDataSize, retrieveFlags, nullptr );
             if ( rc == Result::WarningColumnNull )
             {
                 return false;
@@ -3388,14 +5742,14 @@ namespace Harlinn::Common::Core::Ese
 
             if ( rc == Result::Success )
             {
-                value.resize( actualDataSize / sizeof( CharType ) );
+                value.resize( actualDataSize / sizeof( CharT ) );
                 memcpy( value.data( ), buffer, actualDataSize );
                 return true;
             }
             else if ( rc == Result::WarningBufferTruncated )
             {
                 unsigned long newDataSize;
-                value.resize( actualDataSize / sizeof( CharType ) );
+                value.resize( actualDataSize / sizeof( CharT ) );
                 rc = RetrieveColumn( columnId, value.data(), actualDataSize, &newDataSize, retrieveFlags, nullptr );
                 if ( rc == Result::WarningBufferTruncated )
                 {
@@ -3476,16 +5830,14 @@ namespace Harlinn::Common::Core::Ese
         template<DirectType T>
         void SetColumn( JET_COLUMNID columnid, const T& value, SetFlags flags = SetFlags::None ) const
         {
-            auto rc = SetColumn( columnid, &value, sizeof( std::decay_t<T> ), flags, nullptr );
-            RequireSuccess( rc );
+            SetColumn( columnid, &value, sizeof( std::decay_t<T> ), flags, nullptr );
         }
         template<typename T>
             requires std::is_same_v<DateTime, T>
         void SetColumn( JET_COLUMNID columnid, const T& value, SetFlags flags = SetFlags::None ) const
         {
             auto data = value.ToOADate( );
-            auto rc = SetColumn( columnid, &data, sizeof( double ), flags, nullptr );
-            RequireSuccess( rc );
+            SetColumn( columnid, &data, sizeof( double ), flags, nullptr );
         }
         template<typename T>
             requires std::is_same_v<std::chrono::system_clock::time_point, T>
@@ -3493,8 +5845,7 @@ namespace Harlinn::Common::Core::Ese
         {
             DateTime dateTime( value );
             auto data = dateTime.ToOADate( );
-            auto rc = SetColumn( columnid, &data, sizeof( double ), flags, nullptr );
-            RequireSuccess( rc );
+            SetColumn( columnid, &data, sizeof( double ), flags, nullptr );
         }
 
         template<typename T>
@@ -3502,8 +5853,7 @@ namespace Harlinn::Common::Core::Ese
         void SetColumn( JET_COLUMNID columnid, T value, SetFlags flags = SetFlags::None ) const
         {
             Byte data = value ? 1 : 0;
-            auto rc = SetColumn( columnid, (const void*)&data, 1UL, flags, static_cast<JET_SETINFO*>(nullptr) );
-            RequireSuccess( rc );
+            SetColumn( columnid, (const void*)&data, 1UL, flags, static_cast<JET_SETINFO*>(nullptr) );
         }
 
         
@@ -3516,8 +5866,7 @@ namespace Harlinn::Common::Core::Ese
             {
                 flags |= SetFlags::ZeroLength;
             }
-            auto rc = SetColumn( columnId, text.c_str( ), length, flags, nullptr );
-            RequireSuccess( rc );
+            SetColumn( columnId, text.c_str( ), length, flags, nullptr );
         }
         template<SimpleByteSpanLike T>
         void SetColumn( JET_COLUMNID columnId, const T& value, SetFlags flags = SetFlags::None ) const
@@ -3527,8 +5876,7 @@ namespace Harlinn::Common::Core::Ese
             {
                 flags |= SetFlags::ZeroLength;
             }
-            auto rc = SetColumn( columnId, value.data( ), length, flags, nullptr );
-            RequireSuccess( rc );
+            SetColumn( columnId, value.data( ), length, flags, nullptr );
         }
 
         Ese::Result ReadBinary( JET_COLUMNID columnId, void* data, unsigned long dataSize, unsigned long& actualDataSize, RetrieveFlags retrieveFlags = RetrieveFlags::None, JET_RETINFO* retinfo = nullptr ) const
@@ -3538,8 +5886,7 @@ namespace Harlinn::Common::Core::Ese
         }
         void WriteBinary( JET_COLUMNID columnid, void* data, unsigned long dataSize, SetFlags flags = SetFlags::None ) const
         {
-            auto rc = SetColumn( columnid, data, dataSize, flags, nullptr );
-            RequireSuccess( rc );
+            SetColumn( columnid, data, dataSize, flags, nullptr );
         }
 
         void CreateIndex( const wchar_t* indexName, IndexFlags indexFlags, const wchar_t* keyString, unsigned long	keyStringLength, unsigned long density = 95 ) const
@@ -3555,15 +5902,15 @@ namespace Harlinn::Common::Core::Ese
         template<SimpleStringLike T>
         void CreateIndex( const T& indexName, IndexFlags indexFlags, const typename T::value_type* keyString, unsigned long keyStringLength, unsigned long density = 95 ) const
         {
-            using CharType = typename T::value_type;
-            CreateIndex( indexName.c_str( ), indexFlags, keyString, (keyStringLength+1)*sizeof( CharType ), density );
+            using CharT = typename T::value_type;
+            CreateIndex( indexName.c_str( ), indexFlags, keyString, (keyStringLength+1)*sizeof( CharT ), density );
         }
 
         template<SimpleStringLike T, SimpleCharSpanLike SpanT>
             requires std::is_same_v<typename T::value_type, typename SpanT::value_type >
         void CreateIndex( const T& indexName, IndexFlags indexFlags, const SpanT& keyString, unsigned long density = 95 ) const
         {
-            using CharType = typename T::value_type;
+            using CharTy = typename T::value_type;
             CreateIndex( indexName.c_str( ), indexFlags, keyString.data(), ( keyString.size() + 1 ), density );
         }
 
@@ -3667,13 +6014,13 @@ namespace Harlinn::Common::Core::Ese
     };
 
     template<StringLike StringT>
-    class Columns : public SystemTable
+    class ColumnList : public SystemTable
     {
         typedef SystemTable Base;
         JET_COLUMNLIST columnList_;
     public:
         using StringType = StringT;
-        Columns( JET_SESID sessionId, const JET_COLUMNLIST& columnList )
+        ColumnList( JET_SESID sessionId, const JET_COLUMNLIST& columnList )
             : Base( sessionId, columnList.tableid ), columnList_( columnList )
         {
         }
@@ -3812,12 +6159,11 @@ namespace Harlinn::Common::Core::Ese
     };
 
     template<StringLike StringT>
-    inline Columns<StringT> Table::GetColumns( ) const
+    inline ColumnList<StringT> Table::GetColumns( ) const
     {
         JET_COLUMNLIST columnList = { sizeof( JET_COLUMNLIST ), 0, };
-        auto rc = GetTableColumnInfo( ( char* )nullptr, &columnList, sizeof( JET_COLUMNLIST ), ColumnInfoLevel::List );
-        RequireSuccess( rc );
-        Columns result( sessionId_, columnList );
+        GetTableColumnInfo( ( const typename StringT::value_type* )nullptr, &columnList, sizeof( JET_COLUMNLIST ), ColumnInfoLevel::List );
+        ColumnList<StringT> result( sessionId_, columnList );
         return result;
     }
     
@@ -3960,7 +6306,7 @@ namespace Harlinn::Common::Core::Ese
             return rc;
         }
 
-        template<TableType T = Table, CharType C>
+        template<TableType T = Table, ApiCharType C>
         [[nodiscard]] T OpenTable( const C* tablename, 
                                     OpenTableFlags flags = OpenTableFlags::Updatable, 
                                     bool noexception = false ) const
@@ -4006,7 +6352,7 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="initialNumberOfPages">The initial number of database pages to allocate for the table. Specifying a number larger than one can reduce fragmentation if many rows are inserted into this table</param>
         /// <param name="density">The table density, in percentage points. The number must be either 0 or in the range of 20 through 100. Passing 0 means that the default value should be used. The default is 80</param>
         /// <returns>A Table instance, or an instance of a type derived from Table, for the newly created database table.</returns>
-        template<TableType T = Table, CharType C>
+        template<TableType T = Table, ApiCharType C>
         [[nodiscard]] T CreateTable(const C* tablename, 
                                     unsigned long initialNumberOfPages = 1, 
                                     unsigned long density = 0) const

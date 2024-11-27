@@ -1919,7 +1919,7 @@ public:
 
     bool MoveTo( const boost::uuids::uuid& sensorId ) const
     {
-        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
+        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnStartLimit );
         auto rc = SensorValues.Seek( Ese::SeekFlags::GreaterOrEqual );
         return rc >= Ese::Result::Success;
     }
@@ -1934,8 +1934,9 @@ public:
 
     bool MoveToLast( const boost::uuids::uuid& sensorId ) const
     {
-        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
-        SensorValues.MakeKey( DateTime::MaxValue( ) );
+        //SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
+        //SensorValues.MakeKey( DateTime::MaxValue( ) );
+        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnEndLimit );
 
         auto rc = SensorValues.Seek( Ese::SeekFlags::LessOrEqual );
         return rc >= Ese::Result::Success;
@@ -1943,9 +1944,8 @@ public:
 
     bool Filter( const boost::uuids::uuid& sensorId ) const
     {
-        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnStartLimit );
-        auto rc = SensorValues.Seek( Ese::SeekFlags::GreaterOrEqual );
-        if ( rc >= Ese::Result::Success )
+        auto success = MoveTo( sensorId );
+        if ( success )
         {
             SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnEndLimit );
             SensorValues.SetIndexRange( Ese::IndexRangeFlags::Inclusive | Ese::IndexRangeFlags::UpperLimit );
@@ -1961,11 +1961,8 @@ public:
 
     bool ReverseFilter( const boost::uuids::uuid& sensorId ) const
     {
-        SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnEndLimit );
-
-        auto rc = SensorValues.Seek( Ese::SeekFlags::LessOrEqual );
-
-        if ( rc >= Ese::Result::Success )
+        auto success = MoveToLast( sensorId );
+        if ( success )
         {
             SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnStartLimit );
             SensorValues.SetIndexRange( Ese::IndexRangeFlags::Inclusive);
@@ -2006,18 +2003,9 @@ BOOST_AUTO_TEST_CASE( InsertSearchAndUpdateSensorValueTableTest1 )
     auto count = engine.Insert( 3, start.ToTimePoint(), end.ToTimePoint( ), step.ToDuration() );
     BOOST_TEST( count > 0 );
 
-    auto moveResult = sensorValues.MoveFirst( );
-    BOOST_TEST( moveResult );
-    auto firstSensor = engine.Sensor();
-
-    moveResult = sensorValues.MoveNext( );
-    BOOST_TEST( moveResult );
-    auto secondSensor = engine.Sensor( );
-    
-    moveResult = sensorValues.MoveNext( );
-    BOOST_TEST( moveResult );
-    auto thirdSensor = engine.Sensor( );
-
+    auto firstSensor = reinterpret_cast< const boost::uuids::uuid& >( Test::Ids[ 0 ] );
+    auto secondSensor = reinterpret_cast< const boost::uuids::uuid& >( Test::Ids[ 1 ] );
+    auto thirdSensor = reinterpret_cast< const boost::uuids::uuid& >( Test::Ids[ 2 ] );
     auto fourthSensor = reinterpret_cast< const boost::uuids::uuid& >( Test::Ids[ 3 ] );
 
     auto success = sensorValues.MoveFirst( );

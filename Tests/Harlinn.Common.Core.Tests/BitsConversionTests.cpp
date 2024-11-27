@@ -74,9 +74,9 @@ BOOST_AUTO_TEST_CASE( ExtractBits32Tests2 )
 BOOST_AUTO_TEST_CASE( BitsToByteTests1 )
 {
     constexpr Byte byteSource1 = 0b10011001;
-    constexpr SByte sbyteSource1 = 0b10011001;
+    constexpr SByte sbyteSource1 = std::bit_cast< SByte >(static_cast<Byte>(0b10011001));
     constexpr UInt16 uint16Source1 = 0b1001100110011001;
-    constexpr Int16 int16Source1 = 0b1001100110011001;
+    constexpr Int16 int16Source1 = std::bit_cast<Int16>( static_cast< UInt16 >( 0b1001100110011001 ));
     constexpr UInt32 uint32Source1 = 0b10011001100110011001100110011001;
     constexpr Int32 int32Source1 = 0b10011001100110011001100110011001;
     constexpr UInt64 uint64Source1 = 0b10011001100110011001100110011001;

@@ -328,6 +328,25 @@ size_t ReadAllSensorData2( Session& session )
 }
 
 
+size_t ReadAllSensorData3( Session& session )
+{
+    SensorPoint sensorPoint;
+    const auto& values = session.Values( );
+    values.SetSequential( );
+    size_t result = 0;
+
+    if ( values.MoveFirst( ) )
+    {
+        do
+        {
+            values.Read2( sensorPoint );
+            result++;
+        } while ( values.MoveNext( ) );
+    }
+    return result;
+}
+
+
 
 size_t ReadSensorDataForInterval( Session& session, std::vector<Examples::Sensor>& sensors )
 {
@@ -455,6 +474,7 @@ void RunTests( Session& session )
 
     PerformanceOf( L"ReadAllSensorData", OperationType::Retrieve, ReadAllSensorData, session, sensors );
     PerformanceOf( L"ReadAllSensorData2", OperationType::Retrieve, ReadAllSensorData2, session );
+    PerformanceOf( L"ReadAllSensorData3", OperationType::Retrieve, ReadAllSensorData3, session );
     PerformanceOf( L"ReadSensorDataForInterval", OperationType::Retrieve, ReadSensorDataForInterval, session, sensors );
     PerformanceOf( L"ReadSensorDataForIntervalWithCheck", OperationType::Retrieve, ReadSensorDataForIntervalWithCheck, session, sensors );
 
