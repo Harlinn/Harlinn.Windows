@@ -2498,7 +2498,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Python", "Python", "{F5CD21
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rust", "Rust", "{6897FFB9-C1E3-4D26-B03B-6A76606CCDCB}"
 	ProjectSection(SolutionItems) = preProject
-		Examples\Performance\Runtimes\Rust\RustMathPerf01\.gitignore = Examples\Performance\Runtimes\Rust\RustMathPerf01\.gitignore
 		Examples\Performance\Runtimes\Rust\RustMathPerf01\Cargo.lock = Examples\Performance\Runtimes\Rust\RustMathPerf01\Cargo.lock
 		Examples\Performance\Runtimes\Rust\RustMathPerf01\Cargo.toml = Examples\Performance\Runtimes\Rust\RustMathPerf01\Cargo.toml
 	EndProjectSection
