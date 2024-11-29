@@ -21,42 +21,146 @@
 
 namespace Harlinn::Common::Core::Math
 {
-    constexpr bool IsSameValue( double x, double y ) noexcept
+    /// <summary>
+    /// Tests whether two double precision floating
+    /// point values holds the same value. This function
+    /// returns true if both hold the same NaN value.
+    /// </summary>
+    /// <param name="first">
+    /// A double precision floating point value.
+    /// </param>
+    /// <param name="second">
+    /// A double precision floating point value.
+    /// </param>
+    /// <returns>
+    /// true if both arguments are binary equivalent, otherwise false.
+    /// </returns>
+    constexpr bool IsSameValue( double first, double second ) noexcept
     {
-        return std::bit_cast<Int64>( x ) == std::bit_cast<Int64>( y );
+        return std::bit_cast<Int64>( first ) == std::bit_cast<Int64>( second );
     }
+    /// <summary>
+    /// Tests whether two single precision floating
+    /// point values holds the same value. This function
+    /// returns true if both hold the same NaN value.
+    /// </summary>
+    /// <param name="first">
+    /// A single precision floating point value.
+    /// </param>
+    /// <param name="second">
+    /// A single precision floating point value.
+    /// </param>
+    /// <returns>
+    /// true if both arguments are binary equivalent, otherwise false.
+    /// </returns>
     constexpr bool IsSameValue( float x, float y ) noexcept
     {
         return std::bit_cast<Int32>( x ) == std::bit_cast<Int32>( y );
     }
 
+    
+    /// <summary>
+    /// Tests if a double precision floating value is zero.
+    /// </summary>
+    /// <param name="x">
+    /// A double precision floating point value.
+    /// </param>
+    /// <returns>
+    /// true if the argument is zero, otherwise false.
+    /// </returns>
     constexpr bool IsZero( double x ) noexcept
     {
         return ( std::bit_cast<Int64>( x ) & 0x7FFFFFFFFFFFFFFF ) == 0;
     }
+    /// <summary>
+    /// Tests if a double precision floating value is zero.
+    /// </summary>
+    /// <param name="x">
+    /// A double precision floating point value.
+    /// </param>
+    /// <returns>
+    /// true if the argument is zero, otherwise false.
+    /// </returns>
     constexpr bool IsZero( float x ) noexcept
     {
         return ( std::bit_cast<Int32>( x ) & 0x7FFFFFFF ) == 0;
     }
 
 
-
+    /// <summary>
+    /// <para>
+    /// Returns the sign of a value for a bool or an unsigned integer type.
+    /// </para>
+    /// <para>
+    /// This function treats bool as an unsigned integer.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// bool or an unsigned integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// The value to test.
+    /// </param>
+    /// <returns>
+    /// <para>
+    /// If invoked with a bool this function returns true if the value is not false, otherwise false.
+    /// </para>
+    /// <para>
+    /// If invoked with an unsigned integer type this function returns 1 if the value is greater than 0, otherwise 0.
+    /// </para>
+    /// </returns>
     template< typename T>
         requires IsUnsignedInteger<std::remove_cvref_t<T>> || IsBoolean<std::remove_cvref_t<T>>
     inline constexpr T signum( T val ) noexcept
     {
         constexpr T zero = static_cast<T>( 0 );
-        return static_cast<T>( val > zero );
+        return static_cast<T>( val > zero ? 1 : 0 );
     }
 
+    /// <summary>
+    /// Returns the sign of a value for a signed integer type.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Any signed integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// The value to test.
+    /// </param>
+    /// <returns>
+    /// Returns:
+    /// <list type="bullet">
+    /// <item>-1 if val is less than zero.</item>
+    /// <item>0 if val is equal to zero.</item>
+    /// <item>1 if val is greater than zero.</item>
+    /// </list>
+    /// </returns>
     template< typename T>
         requires IsSignedInteger<std::remove_cvref_t<T>>
     inline constexpr T signum( T val ) noexcept
     {
-        constexpr T zero = static_cast<T>( 0 );
-        return static_cast<T>( ( zero < val ) - ( val < zero ) );
+        constexpr T zero = static_cast< T >( 0 );
+        constexpr T one = static_cast< T >( 1 );
+        constexpr T minusOne = static_cast< T >( -1 );
+        return val > zero ? one : ( val < zero ? minusOne : zero );
     }
 
+    /// <summary>
+    /// Returns the sign of a value for a floating point type.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// The value to test.
+    /// </param>
+    /// <returns>
+    /// Returns:
+    /// <list type="bullet">
+    /// <item>-1.0 if val is less than zero.</item>
+    /// <item>0.0 if val is equal to zero.</item>
+    /// <item>1.0 if val is greater than zero.</item>
+    /// </list>
+    /// </returns>
     template< typename T>
         requires IsFloatingPoint<std::remove_cvref_t<T>>
     inline constexpr T signum( T val ) noexcept
@@ -105,7 +209,10 @@ namespace Harlinn::Common::Core::Math
     constexpr inline bool IsInf( T val ) noexcept;
 
     template<typename T>
-        requires IsInteger<T>
+        requires IsSignedInteger<T>
+    constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept;
+    template<typename T>
+        requires IsUnsignedInteger<T>
     constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept;
     template<typename T>
         requires IsFloatingPoint<T>
@@ -123,33 +230,24 @@ namespace Harlinn::Common::Core::Math
 
 
     template<typename T>
-        requires IsInteger<T>
-    constexpr inline std::pair<double, int> FRExp( T val ) noexcept;
-    template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::pair<double, int> FRExp( T val ) noexcept;
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline double FRExp( T val, int* exp ) noexcept;
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> FRExp( T val, int* exp ) noexcept;
     template<typename T>
-        requires IsInteger<T>
-    constexpr inline double FRExp( T val, int& exp ) noexcept;
-    template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> FRExp( T val, int& exp ) noexcept;
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::pair<std::remove_cvref_t<T>, std::remove_cvref_t<T>> ModF( T val ) noexcept;
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ModF( T val, T* integerPart ) noexcept;
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ModF( T val, T& integerPart ) noexcept;
+    template<typename ValueT>
+        requires IsFloatingPoint<std::remove_cvref_t<ValueT>> 
+    constexpr inline std::pair<std::remove_cvref_t<ValueT>, std::remove_cvref_t<ValueT>> ModF( ValueT val ) noexcept;
+    template<typename ValueT>
+        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+    constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT* integerPart ) noexcept;
+    template<typename ValueT>
+        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+    constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT& integerPart ) noexcept;
 
     template<typename T>
         requires IsInteger<T>
@@ -208,7 +306,19 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     inline constexpr std::remove_cvref_t<T> NextUp( T x ) noexcept;
 
-
+    /// <summary>
+    /// Converts an angle in degrees into the corresponding
+    /// angle in radians.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="angleInDegrees">
+    /// The angle in degrees.
+    /// </param>
+    /// <returns>
+    /// The angle in radians.
+    /// </returns>
     template< typename T>
         requires IsFloatingPoint<std::remove_cvref_t<T>>
     inline constexpr std::remove_cvref_t<T> Deg2Rad( T angleInDegrees ) noexcept
@@ -217,6 +327,19 @@ namespace Harlinn::Common::Core::Math
         constexpr FloatT factor = static_cast<FloatT>( M_PI_4/45.0 );
         return angleInDegrees * factor;
     }
+    /// <summary>
+    /// Converts an angle in radians into the corresponding
+    /// angle in degrees.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="angleInRadians">
+    /// The angle in radians.
+    /// </param>
+    /// <returns>
+    /// The angle in degrees.
+    /// </returns>
     template< typename T>
         requires IsFloatingPoint<std::remove_cvref_t<T>>
     inline constexpr std::remove_cvref_t<T> Rad2Deg( T angleInRadians ) noexcept
@@ -226,7 +349,18 @@ namespace Harlinn::Common::Core::Math
         return angleInRadians * factor;
     }
 
-
+    /// <summary>
+    /// Returns the next representable value of x in the direction of y. If x equals to y, y is returned.
+    /// </summary>
+    /// <param name="x">
+    /// A double precision floating point value.
+    /// </param>
+    /// <param name="y">
+    /// A double precision floating point value.
+    /// </param>
+    /// <returns>
+    /// The next representable value of x in the direction of y. is returned. If x equals y, then y is returned
+    /// </returns>
     inline constexpr double NextAfter( double x, double y ) noexcept
     {
         double t;
@@ -333,6 +467,18 @@ namespace Harlinn::Common::Core::Math
         return x;
     }
 
+    /// <summary>
+    /// Returns the next representable value of x in the direction of y. If x equals to y, y is returned.
+    /// </summary>
+    /// <param name="x">
+    /// A single precision floating point value.
+    /// </param>
+    /// <param name="y">
+    /// A single precision floating point value.
+    /// </param>
+    /// <returns>
+    /// The next representable value of x in the direction of y. is returned. If x equals y, then y is returned
+    /// </returns>
     inline constexpr float NextAfter( float x, float y ) noexcept
     {
         volatile float t;
@@ -691,6 +837,28 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes the square root of x.  
+    /// </para>
+    /// <para>
+    /// The runtime performance of this implementation
+    /// is equivalent to the runtime performance of std::sqrt.
+    /// </para>
+    /// <para>
+    /// Unlike std::sqrt this implementation can be constexpr 
+    /// evaluated.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point value.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// Returns the square root of x.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Sqrt( T x ) noexcept
@@ -714,8 +882,7 @@ namespace Harlinn::Common::Core::Math
             return result;
         }
     }
-
-
+    static_assert( Sqrt(2.0) > 0.0 );
 
 
     namespace Internal
@@ -829,6 +996,7 @@ namespace Harlinn::Common::Core::Math
         {
             using ValueType = std::remove_cvref_t<T>;
             using UIntType = MakeUnsigned<ValueType>;
+            using IntType = std::make_signed_t<UIntType>;
 
             static constexpr Int32 FractionWidth = static_cast<Int32>( Internal::FractionWidth<ValueType>::value );
             static constexpr Int32 ExponentWidth = static_cast<Int32>( Internal::ExponentWidth<ValueType>::value );
@@ -989,34 +1157,6 @@ namespace Harlinn::Common::Core::Math
                 return result;
             }
 
-            /*
-            constexpr ValueType Trunc( ) const noexcept
-            {
-                if ( IsInfOrNaN( ) )
-                {
-                    return std::bit_cast<ValueType>( value_ );
-                }
-                Int32 exponent = Exponent( );
-
-                // is this already an integer?
-                if ( exponent >= static_cast<Int32>( FractionWidth ) )
-                {
-                    return std::bit_cast<ValueType>( value_ );
-                }
-
-                // If abs(x) is less than 1, then return 0.
-                if ( exponent <= -1 )
-                {
-                    return Sign( ) ? static_cast<ValueType>( -0.0 ) : static_cast<ValueType>( 0.0 );
-                }
-
-
-                Int32 trimSize = FractionWidth - exponent;
-
-                UIntType result = ( value_ & ( SignMask | ExponentMask ) ) | ( ( ( value_ & FractionMask ) >> trimSize ) << trimSize );
-                return std::bit_cast<ValueType>( result );
-            }
-            */
             constexpr ValueType Trunc( ) const noexcept
             {
                 if ( !IsInfOrNaN( ) )
@@ -1080,11 +1220,9 @@ namespace Harlinn::Common::Core::Math
                 }
             }
         public:
-
-
             constexpr ValueType ModF( ValueType& intPart ) noexcept
             {
-                if ( !IsInfOrNaN( ) )
+                if ( IsInfOrNaN( ) == false )
                 {
                     Int32 exponent = Exponent( );
 
@@ -1094,15 +1232,15 @@ namespace Harlinn::Common::Core::Math
                         {
                             // abs(x) is greater or equal to 1
                             Int32 trimSize = FractionWidth - exponent;
-
                             UIntType result = ( value_ & ( SignMask | ExponentMask ) ) | ( ( ( value_ & FractionMask ) >> trimSize ) << trimSize );
-                            intPart = std::bit_cast<ValueType>( result );
-                            return std::bit_cast<ValueType>( value_ ) - intPart;
+                            intPart = std::bit_cast< ValueType >( result );
+                            return std::bit_cast< ValueType >( value_ ) - intPart;
                         }
                         else
                         {
                             // abs(x) is less than 1, then return 0.
-                            intPart = Sign( ) ? static_cast<ValueType>( -0.0 ) : static_cast<ValueType>( 0.0 );
+                            intPart = Sign( ) ? std::bit_cast< ValueType >( NegativeZeroValue ) : std::bit_cast< ValueType >( ZeroValue );
+                            
                             return std::bit_cast<ValueType>( value_ );
                         }
                     }
@@ -1518,33 +1656,6 @@ namespace Harlinn::Common::Core::Math
         /// <param name="val">Value to be decomposed.</param>
         /// <param name="exp">Reference to an int where the value of the exponent is stored.</param>
         /// <returns>The binary significand of val.</returns>
-        /*
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
-        inline constexpr std::remove_cvref_t<T> FRExpImpl( T val, int& exp ) noexcept
-        {
-            using ValueType = std::remove_cvref_t<T>;
-            using FPType = FloatingPoint<ValueType>;
-            using NormalizedType = NormalizedFloat<ValueType>;
-
-            FPType fp( val );
-            if ( fp.IsInfOrNaN( ) ) [[unlikely]]
-            {
-                exp = 0xFFFFFFFF;
-                return val;
-            }
-            if ( fp.IsZero( ) ) [[unlikely]]
-            {
-                exp = 0;
-                return val;
-            }
-
-            NormalizedType normalized( fp );
-            exp = normalized.Exponent( ) + 1;
-            normalized.SetExponent( 0 );
-            return normalized.AsFloatingPoint( );
-        }
-        */
         template<typename T>
             requires IsFloatingPoint<std::remove_cvref_t<T>>
         inline constexpr std::remove_cvref_t<T> FRExpImpl( T val, int& exp ) noexcept
@@ -1585,158 +1696,11 @@ namespace Harlinn::Common::Core::Math
         /// <param name="intpart">
         /// Reference to an object, of the same type as val, where the 
         /// integral part is stored with the same sign as val</param>
-        /*
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
-        inline constexpr std::remove_cvref_t<T> ModFImpl( T val, T& intPart ) noexcept
+        template<typename ValueT>
+            requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+        inline constexpr std::remove_cvref_t<ValueT> ModFImpl( ValueT val, ValueT& intPart ) noexcept
         {
-            using ValueType = std::remove_cvref_t<T>;
-            using FPType = FloatingPoint<ValueType>;
-            using NormalizedType = NormalizedFloat<ValueType>;
-
-            FPType fp( val );
-            if ( fp.IsZero( ) || fp.IsNaN( ) ) [[unlikely]]
-            {
-                intPart = val;
-                return val;
-            }
-            else if ( fp.IsInf( ) ) [[unlikely]]
-            {
-                intPart = val;
-                return fp.Sign( ) ? std::bit_cast<ValueType>( FPType::NegativeZeroValue ) : std::bit_cast<ValueType>( FPType::ZeroValue );
-            }
-            else
-            {
-                intPart = fp.Trunc( );
-                // Is val already an integer value?
-                if ( val == intPart ) [[unlikely]]
-                {
-                    // Then return zero.
-                    return fp.Sign( ) ? std::bit_cast<ValueType>( FPType::NegativeZeroValue ) : std::bit_cast<ValueType>( FPType::ZeroValue );
-                }
-                else
-                {
-                    return val - intPart;
-                }
-            }
-        }
-        */
-
-        /*
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
-        inline constexpr std::remove_cvref_t<T> ModFImpl( T val, T& intPart ) noexcept
-        {
-            using FloatType = std::remove_cvref_t<T>;
-            using FloatingPointType = FloatingPoint<FloatType>;
-            using NormalizedType = NormalizedFloat<FloatType>;
-
-            FloatingPointType value( val );
-            if ( !value.IsZero( ) && !value.IsNaN( ) )
-            {
-                if ( !value.IsInf( ) )
-                {
-                    intPart = value.Trunc( );
-                    if ( val != intPart )
-                    {
-                        return val - intPart;
-                    }
-                }
-                else
-                {
-                    // +/- Inf
-                    intPart = val;
-                }
-                // We get here when val is an integer or +/- Inf
-                return value.Sign( ) ? std::bit_cast<ValueType>( FloatingPointType::NegativeZeroValue ) : std::bit_cast<ValueType>( FloatingPointType::ZeroValue );
-            }
-            else
-            {
-                intPart = val;
-                return val;
-            }
-        }
-        */
-        
-        /*
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
-        inline constexpr std::remove_cvref_t<T> ModFImpl( T val, T& intPart ) noexcept
-        {
-            using FloatType = std::remove_cvref_t<T>;
-            using FloatingPointType = FloatingPoint<FloatType>;
-            using NormalizedType = NormalizedFloat<FloatType>;
-
-            FloatingPointType value( val );
-            if ( !value.IsZero( ) && !value.IsNaN( ) )
-            {
-                if ( !value.IsInf( ) )
-                {
-                    intPart = value.Trunc( );
-                    if ( val != intPart )
-                    {
-                        return val - intPart;
-                    }
-                }
-                else
-                {
-                    // +/- Inf
-                    intPart = val;
-                }
-                // We get here when val is an integer or +/- Inf
-                return value.Sign( ) ? std::bit_cast<FloatType>( FloatingPointType::NegativeZeroValue ) : std::bit_cast<FloatType>( FloatingPointType::ZeroValue );
-            }
-            else
-            {
-                intPart = val;
-                return val;
-            }
-        }
-        */
-
-        /*
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
-        inline constexpr std::remove_cvref_t<T> ModFImpl( T val, T& intPart ) noexcept
-        {
-            using FloatType = std::remove_cvref_t<T>;
-            using FloatingPointType = FloatingPoint<FloatType>;
-            using NormalizedType = NormalizedFloat<FloatType>;
-
-            FloatingPointType value( val );
-            if ( !value.IsZero( ) && !value.IsInfOrNaN( ) )
-            {
-                intPart = value.Trunc( );
-                if ( val != intPart )
-                {
-                    return val - intPart;
-                }
-                else
-                {
-                    return value.Sign( ) ? std::bit_cast<FloatType>( FloatingPointType::NegativeZeroValue ) : std::bit_cast<FloatType>( FloatingPointType::ZeroValue );
-                }
-            }
-            else
-            {
-                intPart = val;
-                if ( !value.IsInf( ) )
-                {
-                    // +/- 0 or +/- NaN 
-                    return val;
-                }
-                else
-                {
-                    return value.Sign( ) ? std::bit_cast<FloatType>( FloatingPointType::NegativeZeroValue ) : std::bit_cast<FloatType>( FloatingPointType::ZeroValue );
-                }
-            }
-        }
-        */
-
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
-        inline constexpr std::remove_cvref_t<T> ModFImpl( T val, T& intPart ) noexcept
-        {
-            using FloatType = std::remove_cvref_t<T>;
+            using FloatType = std::remove_cvref_t<ValueT>;
             using FloatingPointType = FloatingPoint<FloatType>;
             FloatingPointType value( val );
             return value.ModF( intPart );
@@ -2798,58 +2762,6 @@ namespace Harlinn::Common::Core::Math
                 }
             }
         }
-        
-        /*
-        inline constexpr double SinImpl( double x ) noexcept
-        {
-            // pi/4 
-            constexpr double PIo4 = M_PI_4;
-            double ax = std::bit_cast<double>( std::bit_cast<UInt64>( x ) & 0x7FFFFFFFFFFFFFFFULL );
-            double result;
-            if ( ax <= PIo4 )
-            {
-                if ( ax >= 0x1.0p-26 )
-                {
-                    // generate simplified inexact 
-                    result = SinCore( x );
-                }
-                else
-                {
-                    // |x| < 2**-26 
-                    result = x;
-                }
-            }
-            else if ( std::bit_cast<UInt64>( ax ) >= 0x7ff0000000000000ULL )
-            {
-                // sin(Inf or NaN) is NaN 
-                result = x - x;
-            }
-            else
-            {
-                // argument reduction needed 
-                double y[2];
-                Int32 n = RemPIo2( x, y );
-                switch ( n & 3 )
-                {
-                    case 0:
-                        result = SinCore( y[0], y[1], 1 );
-                        break;
-                    case 1:
-                        result = CosCore( y[0], y[1] );
-                        break;
-                    case 2:
-                        result = -SinCore( y[0], y[1], 1 );
-                        break;
-                    default:
-                        result = -CosCore( y[0], y[1] );
-                        break;
-                }
-            }
-            return result;
-        }
-        */
-
-
 
         /* s_sinf.c -- float version of s_sin.c.
          * Conversion to float by Ian Lance Taylor, Cygnus Support, ian@cygnus.com.
@@ -3471,38 +3383,6 @@ namespace Harlinn::Common::Core::Math
                 return TanCore( y[0], y[1], 1 - ( ( n & 1 ) << 1 ) ); //  1 -- n even -1 -- n odd 
             }
         }
-        
-        /*
-        inline constexpr double TanImpl( double x ) noexcept
-        {
-            // pi/4 
-            constexpr double PIo4 = M_PI_4;
-            double ax = std::bit_cast<double>( std::bit_cast<UInt64>( x ) & 0x7FFFFFFFFFFFFFFFULL );
-
-            if ( ax <= PIo4 )
-            {
-                // x < 2**-27 
-                if ( ax < 0x1.0p-27 )
-                {
-                    return x;
-                }
-                return TanCore( x );
-            }
-            else if ( std::bit_cast<UInt64>( ax ) >= 0x7ff0000000000000ULL )
-            {
-                // tan(Inf or NaN) is NaN 
-                return x - x; // NaN 
-            }
-            else
-            {
-                // argument reduction needed 
-                double y[2];
-                auto n = RemPIo2( x, y );
-                return TanCore( y[0], y[1], 1 - ( ( n & 1 ) << 1 ) ); //  1 -- n even -1 -- n odd 
-            }
-        }
-        */
-
 
         inline constexpr float TanImpl( float x ) noexcept
         {
@@ -4143,9 +4023,8 @@ namespace Harlinn::Common::Core::Math
             }
 
         }
-
-
     }
+
 
     template<typename T>
         requires IsFloatingPoint<T>
@@ -4249,8 +4128,17 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
-    /// IsNaN
+    /// IsNaN for integer types, always returns false.
     /// </summary>
+    /// <typeparam name="T">
+    /// Any integer type
+    /// </typeparam>
+    /// <param name="val">
+    /// Integer value.
+    /// </param>
+    /// <returns>
+    /// false
+    /// </returns>
     template<typename T>
         requires IsInteger<T>
     constexpr inline bool IsNaN( T val ) noexcept 
@@ -4258,6 +4146,25 @@ namespace Harlinn::Common::Core::Math
         return false;
     }
 
+    /// <summary>
+    /// <para>
+    /// Determines if the given floating point number, val, 
+    /// is a not-a-number (NaN) value.
+    /// </para>
+    /// <para>
+    /// Runtime performance is equivalent to std::isnan,
+    /// but this implementation can be constexpr evaluated.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// true if val is a not-a-number (NaN) value.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline bool IsNaN( T val ) noexcept
@@ -4266,14 +4173,43 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
-    /// IsInf
+    /// Integers cannot represent infinite, so this function
+    /// always returns false.
     /// </summary>
+    /// <typeparam name="T">
+    /// Any integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// An integer value.
+    /// </param>
+    /// <returns>
+    /// false
+    /// </returns>
     template<typename T>
         requires IsInteger<T>
     constexpr inline bool IsInf( T val ) noexcept 
     { 
         return false;
     }
+    /// <summary>
+    /// <para>
+    /// Determines if the given floating point number val 
+    /// is positive or negative infinity. 
+    /// </para>
+    /// <para>
+    /// Runtime performance is equivalent to std::isinf,
+    /// but this implementation can be constexpr evaluated.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// true if val has an infinite value, otherwise false.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline bool IsInf( T val ) noexcept
@@ -4282,8 +4218,25 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
-    /// Abs
+    /// <para>
+    /// Computes the absolute value of a signed integer number. The behavior 
+    /// is undefined if the result cannot be represented by the return type.
+    /// </para>
+    /// <para>
+    /// In 2's complement systems, the absolute value of the most-negative value 
+    /// is out of range, e.g. for 32-bit 2's complement type int, INT_MIN is -2147483648, 
+    /// but the would-be result 2147483648 is greater than INT_MAX, which is 2147483647.
+    /// </para>
     /// </summary>
+    /// <typeparam name="T">
+    /// Any signed integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A signed integer value.
+    /// </param>
+    /// <returns>
+    /// The absolute value of val.
+    /// </returns>
     template<typename T>
         requires IsSignedInteger<T>
     constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept 
@@ -4297,7 +4250,21 @@ namespace Harlinn::Common::Core::Math
             return std::abs( val );
         }
     }
+    static_assert( Abs( -1 ) == 1 );
 
+    /// <summary>
+    /// The absolute value of any unsigned integer
+    /// is the same as its value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Any unsigned integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// An unsigned integer value.
+    /// </param>
+    /// <returns>
+    /// val without any modification.
+    /// </returns>
     template<typename T>
         requires IsUnsignedInteger<T>
     constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept
@@ -4305,35 +4272,111 @@ namespace Harlinn::Common::Core::Math
         return val;
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes the absolute value of a floating point value.
+    /// </para>
+    /// <para>
+    /// Runtime performance is equivalent to std::fabs and std::fabsf
+    /// since those functions are used unless the function is 
+    /// constexpr evaluated.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The absolute value of val.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T> 
     constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept
     {
-        return Internal::AbsImpl( val );
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Internal::AbsImpl( val );
+        }
+        else
+        {
+            using FloatT = std::remove_cvref_t<T>;
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return std::fabsf( val );
+            }
+            else
+            {
+                return std::fabs( val );
+            }
+        }
     }
+    static_assert( Abs( -1.0 ) == 1.0 );
 
     /// <summary>
-    /// SignBit
+    /// Determines if the given signed integer value is negative.
     /// </summary>
+    /// <typeparam name="T">
+    /// Any signed integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A signed integer value.
+    /// </param>
+    /// <returns>
+    /// returns true if the value is signed, otherwise false.
+    /// </returns>
     template<typename T>
         requires IsSignedInteger<T>
     constexpr inline bool SignBit( T val ) noexcept 
     { 
-        if ( std::is_constant_evaluated( ) )
-        {
-            return val >= 0 ? false : true;
-        }
-        else
-        {
-            return std::signbit( val );
-        }
+        using IntT = std::remove_cvref_t<T>;
+        using UIntT = std::make_unsigned_t<IntT>;
+        static constexpr size_t ByteCount = sizeof( IntT );
+        static constexpr size_t ShiftCount = ( ( ByteCount - 1 ) * 8 ) + 7;
+        static constexpr UIntT UnsignedSignMask = static_cast< UIntT >( 1 ) << ShiftCount;
+        static constexpr IntT SignMask = std::bit_cast< IntT >( UnsignedSignMask );
+        return (val & SignMask) != 0;
     }
+
+    /// <summary>
+    /// An Implementation of SignBit for unsigned integers
+    /// that always returns false.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Any unsigned integer type.
+    /// </typeparam>
+    /// <param name="val">
+    /// An unsigned integer value.
+    /// </param>
+    /// <returns>
+    /// false
+    /// </returns>
     template<typename T>
         requires IsUnsignedInteger<T>
     constexpr inline bool SignBit( T val ) noexcept
     {
         return false;
     }
+
+    /// <summary>
+    /// <para>
+    /// Determines if the given floating point number is negative.
+    /// </para>
+    /// <para>
+    /// Currently this implementation is 70 % faster than std::signbit,
+    /// and it can also be constexpr evaluated.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// true if val is less than 0.0.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline bool SignBit( T val ) noexcept
@@ -4342,65 +4385,117 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
-    /// FRExp
+    /// <para>
+    /// Decomposes the given floating point value val into a normalized 
+    /// fraction and an integral power of two.
+    /// </para>
+    /// <para>
+    /// Currently this implementation is more than 6 times faster 
+    /// than std::frexp.
+    /// </para>
     /// </summary>
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline std::pair<double,int> FRExp( T val ) noexcept
-    { 
-        if ( std::is_constant_evaluated( ) )
-        {
-            std::pair<double, int> result;
-            result.first = Internal::FRExpImpl<double>( static_cast<double>( val ), result.second );
-            return result;
-        }
-        else
-        {
-            std::pair<double, int> result;
-            result.first = std::frexp( val, &result.second );
-            return result;
-        }
-    }
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// <para>
+    /// A std::pair&lt;&gt;> with the normalized fraction
+    /// stored in first and the exponent stored in second.
+    /// </para>
+    /// <para>
+    /// If val is zero, both first and second are set to zero.
+    /// </para>
+    /// <para>
+    /// If val is not zero, and no errors occur, the function returns a value,
+    /// x, in the range( -1; -0.5], [ 0.5; 1 ) in first and stores an integer value in 
+    /// second such that result.first*2^( result.second ) = val.
+    /// </para>
+    /// <para>
+    /// If the value to be stored in result.second is outside the range of int, the behavior is unspecified.
+    /// </para>
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
-    constexpr inline std::pair<double,int> FRExp( T val ) noexcept
+    constexpr inline std::pair<std::remove_cvref_t<T>,int> FRExp( T val ) noexcept
     { 
-        std::pair<double, int> result;
+        std::pair<std::remove_cvref_t<T>, int> result;
         result.first = Internal::FRExpImpl<std::remove_cvref_t<T>>( val, result.second );
         return result;
     }
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline double FRExp( T val, int* exp ) noexcept
-    { 
-        if ( std::is_constant_evaluated( ) )
-        {
-            return Internal::FRExpImpl<double>( static_cast<double>( val ), *exp );
-        }
-        else
-        {
-            return std::frexp( val, exp );
-        }
-    }
+
+    /// <summary>
+    /// <para>
+    /// Decomposes the given floating point value val into a normalized 
+    /// fraction and an integral power of two.
+    /// </para>
+    /// <para>
+    /// Currently this implementation is more than 6 times faster 
+    /// than std::frexp.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <param name="exp">
+    /// A pointer to an integer value to store the exponent to.
+    /// </param>
+    /// <returns>
+    /// <para>
+    /// If val is zero, returns zero and stores zero in *exp.
+    /// </para>
+    /// <para>
+    /// If val is not zero, and no errors occur, the function returns a value,
+    /// x, in the range( -1; -0.5], [ 0.5; 1 ) and stores an integer value in 
+    /// *exp such that x*2^( *exp ) = val.
+    /// </para>
+    /// <para>
+    /// If the value to be stored in *exp is outside the range of int, the behavior is unspecified.
+    /// </para>
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> FRExp( T val, int* exp ) noexcept
     { 
         return Internal::FRExpImpl<std::remove_cvref_t<T>>( val, *exp );
     }
-    template<typename T>
-        requires IsInteger<T>
-    constexpr inline double FRExp( T val, int& exp ) noexcept
-    { 
-        if ( std::is_constant_evaluated( ) )
-        {
-            return Internal::FRExpImpl<double>( static_cast<double>( val ), &exp );
-        }
-        else
-        {
-            return std::frexp( val, &exp );
-        }
-    }
+    /// <summary>
+    /// <para>
+    /// Decomposes the given floating point value val into a normalized 
+    /// fraction and an integral power of two.
+    /// </para>
+    /// <para>
+    /// Currently this implementation is more than 6 times faster 
+    /// than std::frexp.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <param name="exp">
+    /// A reference to an integer value to store the exponent to.
+    /// </param>
+    /// <returns>
+    /// <para>
+    /// If val is zero, returns zero and stores zero in exp.
+    /// </para>
+    /// <para>
+    /// If val is not zero, and no errors occur, the function returns a value,
+    /// x, in the range( -1; -0.5], [ 0.5; 1 ) and stores an integer value in 
+    /// exp such that x*2^( exp ) = val.
+    /// </para>
+    /// <para>
+    /// If the value to be stored in exp is outside the range of int, the behavior is unspecified.
+    /// </para>
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> FRExp( T val, int& exp ) noexcept
@@ -4409,35 +4504,123 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
-    /// ModF
+    /// <para>
+    /// Decomposes floating-point value val into its integral and 
+    /// fractional parts, each with the same type and sign as val.
+    /// </para>
+    /// <para>
+    /// Currently 37 % faster than std::modf for double precision
+    /// floating point values, and 27 % faster for single precision
+    /// floating point values.
+    /// </para>
+    /// <para>
+    /// This implementation can also be constexpr evaluated.
+    /// </para>
     /// </summary>
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::pair<std::remove_cvref_t<T>, std::remove_cvref_t<T>> ModF( T val ) noexcept
+    /// <typeparam name="ValueT">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// A std::pair&lt;ValueT,ValueT&gt; where first holds the integral part 
+    /// of the result and second holds the fractional part.
+    /// </returns>
+    template<typename ValueT>
+        requires IsFloatingPoint<std::remove_cvref_t<ValueT>> 
+    constexpr inline std::pair<std::remove_cvref_t<ValueT>, std::remove_cvref_t<ValueT>> ModF( ValueT val ) noexcept
     {
-        std::pair<std::remove_cvref_t<T>, std::remove_cvref_t<T>> result;
-        result.first = Internal::ModFImpl( val, result.second );
+        std::pair<std::remove_cvref_t<ValueT>, std::remove_cvref_t<ValueT>> result;
+        result.second = Internal::ModFImpl( val, result.first );
         return result;
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ModF( T val, T* integerPart ) noexcept
+    /// <summary>
+    /// <para>
+    /// Decomposes floating-point value val into its integral and 
+    /// fractional parts, each with the same type and sign as val.
+    /// </para>
+    /// <para>
+    /// Currently 37 % faster than std::modf for double precision
+    /// floating point values, and 27 % faster for single precision
+    /// floating point values.
+    /// </para>
+    /// <para>
+    /// This implementation can also be constexpr evaluated.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="ValueT">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <param name="integerPart">
+    /// A pointer to a variable of the ValueT floating point type
+    /// that receives the integral part of val.
+    /// </param>
+    /// <returns>
+    /// The fractional part of val.
+    /// </returns>
+    template<typename ValueT>
+        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+    constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT* integerPart ) noexcept
     {
         return Internal::ModFImpl( val, *integerPart );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ModF( T val, T& integerPart ) noexcept
+    
+    /// <summary>
+    /// <para>
+    /// Decomposes floating-point value val into its integral and 
+    /// fractional parts, each with the same type and sign as val.
+    /// </para>
+    /// <para>
+    /// Currently 37 % faster than std::modf for double precision
+    /// floating point values, and 27 % faster for single precision
+    /// floating point values.
+    /// </para>
+    /// <para>
+    /// This implementation can also be constexpr evaluated.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="ValueT">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <param name="integerPart">
+    /// A reference to a variable of the ValueT floating point type
+    /// that receives the integral part of val.
+    /// </param>
+    /// <returns>
+    /// The fractional part of val.
+    /// </returns>
+    template<typename ValueT>
+        requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
+    constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT& integerPart ) noexcept
     {
         return Internal::ModFImpl( val, integerPart );
     }
 
 
 
-    /// <summary>
-    /// Min
-    /// </summary>
 #ifdef HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP
+    /// <summary>
+    /// Returns the smaller of the given values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="first">
+    /// The first floating point value.
+    /// </param>
+    /// <param name="second">
+    /// The second floating point value.
+    /// </param>
+    /// <returns>
+    /// Returns the smaller of <c>first</c> and <c>second</c>.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Min( T first, T second ) noexcept
@@ -4463,6 +4646,21 @@ namespace Harlinn::Common::Core::Math
             }
         }
     }
+    /// <summary>
+    /// Returns the smaller of the given values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An integer type.
+    /// </typeparam>
+    /// <param name="first">
+    /// The first integer value.
+    /// </param>
+    /// <param name="second">
+    /// The second integer value.
+    /// </param>
+    /// <returns>
+    /// Returns the smaller of <c>first</c> and <c>second</c>.
+    /// </returns>
     template<typename T>
         requires IsInteger<T>
     constexpr inline std::remove_cvref_t<T> Min( T first, T second ) noexcept
@@ -4477,10 +4675,22 @@ namespace Harlinn::Common::Core::Math
     }
 #endif
 
-    /// <summary>
-    /// Max
-    /// </summary>
 #ifdef HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP
+    /// <summary>
+    /// Returns the larger of the given values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="first">
+    /// The first floating point value.
+    /// </param>
+    /// <param name="second">
+    /// The second floating point value.
+    /// </param>
+    /// <returns>
+    /// Returns the larger of <c>first</c> and <c>second</c>.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Max( T first, T second ) noexcept
@@ -4506,6 +4716,21 @@ namespace Harlinn::Common::Core::Math
             }
         }
     }
+    /// <summary>
+    /// Returns the larger of the given values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An integer type.
+    /// </typeparam>
+    /// <param name="first">
+    /// The first integer value.
+    /// </param>
+    /// <param name="second">
+    /// The second integer value.
+    /// </param>
+    /// <returns>
+    /// Returns the larger of <c>first</c> and <c>second</c>.
+    /// </returns>
     template<typename T>
         requires IsInteger<T>
     constexpr inline std::remove_cvref_t<T> Max( T first, T second ) noexcept
@@ -4521,8 +4746,26 @@ namespace Harlinn::Common::Core::Math
 #endif
 
     /// <summary>
-    /// Trunc
+    /// <para>
+    /// Computes the nearest integer not greater in magnitude than value.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, for double precision 
+    /// floating point values this function is close to 8 times faster than
+    /// std::trunc, For single precision floating point values this function
+    /// is 6 % faster than std::trunc.
+    /// </para>
     /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="value">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// A floating point value with the nearest integer not 
+    /// greater in magnitude than value.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Trunc( T value ) noexcept
@@ -4562,6 +4805,18 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Just returns value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An integer type.
+    /// </typeparam>
+    /// <param name="value">
+    /// An integer value.
+    /// </param>
+    /// <returns>
+    /// value
+    /// </returns>
     template<typename T>
         requires IsInteger<T>
     constexpr inline std::remove_cvref_t<T> Trunc( T value ) noexcept
@@ -4571,8 +4826,23 @@ namespace Harlinn::Common::Core::Math
 
 
     /// <summary>
-    /// Floor
+    /// <para>
+    /// Computes the largest integer value not greater than value.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, this function is 15 % faster than
+    /// std::floor for both single and double precision floating point values.
+    /// </para>
     /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="value">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The largest integer value not greater than value.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Floor( T value ) noexcept
@@ -4589,6 +4859,19 @@ namespace Harlinn::Common::Core::Math
             if constexpr ( std::is_same_v<double, T> )
             {
                 double result;
+                _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC ) );
+                return result;
+            }
+            else
+            {
+                float result;
+                _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC ) );
+                return result;
+            }
+            /*
+            if constexpr ( std::is_same_v<double, T> )
+            {
+                double result;
                 _mm_store_sd( &result, _mm_floor_pd( _mm_set_sd( value ) ) );
                 return result;
             }
@@ -4598,6 +4881,7 @@ namespace Harlinn::Common::Core::Math
                 _mm_store_ss( &result, _mm_floor_ps( _mm_set_ss( value ) ) );
                 return result;
             }
+            */
 #else
             if constexpr ( std::is_same_v<FloatT, float> )
             {
@@ -4612,6 +4896,18 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Just returns value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An integer type.
+    /// </typeparam>
+    /// <param name="value">
+    /// An integer value.
+    /// </param>
+    /// <returns>
+    /// value
+    /// </returns>
     template<typename T>
         requires IsInteger<T>
     constexpr inline std::remove_cvref_t<T> Floor( T value ) noexcept
@@ -4621,8 +4917,23 @@ namespace Harlinn::Common::Core::Math
 
 
     /// <summary>
-    /// Ceil
+    /// <para>
+    /// Computes the smallest integer value not less than value.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, this function is 15 % faster than
+    /// std::ceil for both single and double precision floating point values.
+    /// </para>
     /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="value">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The smallest integer value not less than value.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Ceil( T value ) noexcept
@@ -4639,6 +4950,19 @@ namespace Harlinn::Common::Core::Math
             if constexpr ( std::is_same_v<double, T> )
             {
                 double result;
+                _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC ) );
+                return result;
+            }
+            else
+            {
+                float result;
+                _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC ) );
+                return result;
+            }
+            /*
+            if constexpr ( std::is_same_v<double, T> )
+            {
+                double result;
                 _mm_store_sd( &result, _mm_ceil_pd( _mm_set_sd( value ) ) );
                 return result;
             }
@@ -4648,7 +4972,7 @@ namespace Harlinn::Common::Core::Math
                 _mm_store_ss( &result, _mm_ceil_ps( _mm_set_ss( value ) ) );
                 return result;
             }
-
+            */
 #else
             if constexpr ( std::is_same_v<FloatT, float> )
             {
@@ -4662,6 +4986,18 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Just returns value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An integer type.
+    /// </typeparam>
+    /// <param name="value">
+    /// An integer value.
+    /// </param>
+    /// <returns>
+    /// value
+    /// </returns>
     template<typename T>
         requires IsInteger<T>
     constexpr inline std::remove_cvref_t<T> Ceil( T value ) noexcept
@@ -4670,10 +5006,29 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-    /// <summary>
-    /// Round
-    /// </summary>
+    
 #ifdef HCCLIB_IMPLEMENTS_ROUND 
+    /// <summary>
+    /// <para>
+    /// Computes the nearest integer to value, in floating-point format, 
+    /// rounding halfway cases away from zero.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, for double precision 
+    /// floating point values this function is more then 11 times faster than
+    /// std::round, For single precision floating point values this function
+    /// is 40 % faster than std::round.
+    /// <para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="value">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The nearest integer to value.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Round( T value ) noexcept
@@ -4712,6 +5067,18 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Just returns value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An integer type.
+    /// </typeparam>
+    /// <param name="value">
+    /// An integer value.
+    /// </param>
+    /// <returns>
+    /// value
+    /// </returns>
     template<typename T>
         requires IsInteger<T>
     constexpr inline std::remove_cvref_t<T> Round( T value ) noexcept
@@ -4729,6 +5096,31 @@ namespace Harlinn::Common::Core::Math
     /// Clamp
     /// </summary>
 #ifdef HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP
+    /// <summary>
+    /// <para>
+    /// If the value is within [minimumValue, maximumValue], the function 
+    /// returns value, otherwise returns the nearest boundary.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, this function is 7 % faster than
+    /// std::clamp for both single and double precision floating point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="value">
+    /// The value to clamp.
+    /// </param>
+    /// <param name="minimumValue">
+    /// The lower boundary.
+    /// </param>
+    /// <param name="maximumValue">
+    /// The upper boundary.
+    /// </param>
+    /// <returns>
+    /// The value within [minimumValue, maximumValue], or the nearest boundary.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Clamp( T value, T minimumValue, T maximumValue ) noexcept
@@ -4756,6 +5148,25 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// If the value is within [minimumValue, maximumValue], the function 
+    /// returns value, otherwise returns the nearest boundary.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An integer type.
+    /// </typeparam>
+    /// <param name="value">
+    /// The value to clamp.
+    /// </param>
+    /// <param name="minimumValue">
+    /// The lower boundary.
+    /// </param>
+    /// <param name="maximumValue">
+    /// The upper boundary.
+    /// </param>
+    /// <returns>
+    /// The value within [minimumValue, maximumValue], or the nearest boundary.
+    /// </returns>
     template<typename T>
         requires ( IsInteger<T> )
     constexpr inline std::remove_cvref_t<T> Clamp( T value, T minimumValue, T maximumValue ) noexcept
@@ -4775,6 +5186,16 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Lerp
     /// </summary>
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="U"></typeparam>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <param name="t"></param>
+    /// <returns></returns>
     template<typename T, typename U>
         requires ( ( IsInteger<T> || IsFloatingPoint<T> ) && ( IsInteger<U> || IsFloatingPoint<U> ) )
     constexpr inline std::conditional_t<IsFloatingPoint<T>, T, std::conditional_t<IsFloatingPoint<U>, U, T>> Lerp( T a, T b, U t ) noexcept

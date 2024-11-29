@@ -639,7 +639,7 @@ BOOST_AUTO_TEST_CASE( ModFDoubleTest1 )
     BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
 
     value = std::numeric_limits<double>::quiet_NaN( );
-
+     
     integerPart = 0;
     result = ModF( value, integerPart );
     stdIntegerPart = 0;
@@ -797,6 +797,7 @@ BOOST_AUTO_TEST_CASE( ModFDoubleTest1 )
 
 
 }
+
 
 
 // --run_test=MathTests/MinDoubleTest1
@@ -1358,6 +1359,55 @@ BOOST_AUTO_TEST_CASE( MaxFloatTest2 )
     BOOST_CHECK( equal );
 
 }
+
+// --run_test=MathTests/NextAfterDoubleTest1
+BOOST_AUTO_TEST_CASE( NextAfterDoubleTest1 )
+{
+    constexpr double val1 = 2.0;
+    constexpr double val2 = 1.0;
+
+    constexpr double result1 = NextAfter( val1, val2 );
+    static_assert( result1 < val1 );
+
+    double result2 = std::nextafter( val1, val2 );
+
+    bool equal = IsSameValue( result2, result1 );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=MathTests/NextUpDoubleTest1
+BOOST_AUTO_TEST_CASE( NextUpDoubleTest1 )
+{
+    constexpr double val1 = 2.0;
+    constexpr double val2 = 1.0;
+
+    constexpr double result1 = NextUp( val2 );
+    static_assert( result1 > val2 );
+
+    double result2 = std::nextafter( val2, val1 );
+
+    bool equal = IsSameValue( result2, result1 );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=MathTests/NextDownDoubleTest1
+BOOST_AUTO_TEST_CASE( NextDownDoubleTest1 )
+{
+    constexpr double val1 = 2.0;
+    constexpr double val2 = 1.0;
+
+    constexpr double result1 = NextDown( val1 );
+    static_assert( result1 > val2 );
+
+    double result2 = std::nextafter( val1, val2 );
+
+    bool equal = IsSameValue( result2, result1 );
+    BOOST_CHECK( equal );
+
+}
+
 
 
 
