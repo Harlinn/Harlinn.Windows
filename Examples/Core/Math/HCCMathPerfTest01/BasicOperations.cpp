@@ -108,6 +108,23 @@ namespace
     }
 
 
+    void PrintPerformance( double mathDuration, double stdDuration )
+    {
+        auto performanceImprovement = (( stdDuration - mathDuration ) / mathDuration ) * 100.0;
+        if ( performanceImprovement > 1.0 )
+        {
+            PrintLn( "\tMath improved performance by {:.2f} %\n", performanceImprovement );
+        }
+        else if ( performanceImprovement < -1.0 )
+        {
+            PrintLn( "\tMath degraded performance by {:.2f} %\n", performanceImprovement );
+        }
+        else
+        {
+            PrintLn( "\tMath performs like the standard implementation.\n" );
+        }
+    }
+
     template<typename FloatT, typename Func1, typename Func2 >
     void RunTest1( Int64 outerIterationCount, const char* testName, Func1&& func1, Func2&& func2, FloatT base = static_cast<FloatT>( M_PI ), FloatT increment = static_cast<FloatT>( 0.000001 ) )
     {
@@ -129,8 +146,8 @@ namespace
             }
 
             stopwatch.Stop( );
-            auto duration = stopwatch.TotalSeconds( );
-            PrintLn( "\tMath: Duration={}, Accumulated 1={}", duration, accumulated1 );
+            auto duration1 = stopwatch.TotalSeconds( );
+            PrintLn( "\tMath: Duration={}, Accumulated 1={}", duration1, accumulated1 );
 
             argumentValue = base;
             FloatT accumulated2 = 0.0;
@@ -143,8 +160,9 @@ namespace
             }
 
             stopwatch.Stop( );
-            duration = stopwatch.TotalSeconds( );
-            PrintLn( "\tstd:  Duration={}, Accumulated 2={}", duration, accumulated2 );
+            auto duration2 = stopwatch.TotalSeconds( );
+            PrintLn( "\tstd:  Duration={}, Accumulated 2={}", duration2, accumulated2 );
+            PrintPerformance( duration1, duration2 );
             PrintAccumulated( accumulated1, accumulated2 );
         }
     }
@@ -227,8 +245,8 @@ namespace
             }
 
             stopwatch.Stop( );
-            auto duration = stopwatch.TotalSeconds( );
-            PrintLn( "\tMath: Duration={}, Accumulated 1={}, Accumulated 2={}", duration, accumulated1a, accumulated1b );
+            auto duration1 = stopwatch.TotalSeconds( );
+            PrintLn( "\tMath: Duration={}, Accumulated 1={}, Accumulated 2={}", duration1, accumulated1a, accumulated1b );
 
             argumentValue = base;
             FloatT accumulated2a = 0.0;
@@ -243,8 +261,9 @@ namespace
             }
 
             stopwatch.Stop( );
-            duration = stopwatch.TotalSeconds( );
-            PrintLn( "\tstd:  Duration={}, Accumulated 1={}, Accumulated 2={}", duration, accumulated2a, accumulated2b );
+            auto duration2 = stopwatch.TotalSeconds( );
+            PrintLn( "\tstd:  Duration={}, Accumulated 1={}, Accumulated 2={}", duration2, accumulated2a, accumulated2b );
+            PrintPerformance( duration1, duration2 );
             PrintAccumulated( accumulated1a, accumulated1b, accumulated2a, accumulated2b );
         }
     }
@@ -408,8 +427,8 @@ void ClampTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        auto duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
+        auto duration1 = stopwatch.TotalSeconds( );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration1, accumulated1 );
 
         FloatT accumulated2 = 0.0;
         valueMin = baseMin;
@@ -427,8 +446,9 @@ void ClampTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration, accumulated2 );
+        auto duration2 = stopwatch.TotalSeconds( );
+        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration2, accumulated2 );
+        PrintPerformance( duration1, duration2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -469,8 +489,8 @@ void LerpTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        auto duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
+        auto duration1 = stopwatch.TotalSeconds( );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration1, accumulated1 );
 
         FloatT accumulated2 = 0.0;
         valueMin = baseMin;
@@ -485,8 +505,9 @@ void LerpTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration, accumulated2 );
+        auto duration2 = stopwatch.TotalSeconds( );
+        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration2, accumulated2 );
+        PrintPerformance( duration1, duration2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -537,8 +558,8 @@ void ScaleByNTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        auto duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
+        auto duration1 = stopwatch.TotalSeconds( );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration1, accumulated1 );
 
         FloatT accumulated2 = static_cast<FloatT>( 0.0 );
         value = base;
@@ -554,8 +575,9 @@ void ScaleByNTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration, accumulated2 );
+        auto duration2 = stopwatch.TotalSeconds( );
+        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration2, accumulated2 );
+        PrintPerformance( duration1, duration2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -705,8 +727,8 @@ void NextAfterTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        auto duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
+        auto duration1 = stopwatch.TotalSeconds( );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration1, accumulated1 );
 
         argumentValue = static_cast<FloatT>( 0.0 );
         FloatT accumulated2 = static_cast<FloatT>( 0.0 );
@@ -719,8 +741,9 @@ void NextAfterTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration, accumulated2 );
+        auto duration2 = stopwatch.TotalSeconds( );
+        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration2, accumulated2 );
+        PrintPerformance( duration1, duration2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -755,8 +778,8 @@ void NextUpTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        auto duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
+        auto duration1 = stopwatch.TotalSeconds( );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration1, accumulated1 );
 
         argumentValue = static_cast<FloatT>( 0.0 );
         FloatT accumulated2 = static_cast<FloatT>( 0.0 );
@@ -769,9 +792,9 @@ void NextUpTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tstd: Duration={}, Accumulated={}", duration, accumulated2 );
-
+        auto duration2 = stopwatch.TotalSeconds( );
+        PrintLn( "\tstd: Duration={}, Accumulated={}", duration2, accumulated2 );
+        PrintPerformance( duration1, duration2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 
@@ -807,8 +830,8 @@ void NextDownTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        auto duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
+        auto duration1 = stopwatch.TotalSeconds( );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration1, accumulated1 );
 
 
         argumentValue = static_cast<FloatT>( 0.0 );
@@ -823,8 +846,9 @@ void NextDownTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tstd: Duration={}, Accumulated={}", duration, accumulated2 );
+        auto duration2 = stopwatch.TotalSeconds( );
+        PrintLn( "\tstd: Duration={}, Accumulated={}", duration2, accumulated2 );
+        PrintPerformance( duration1, duration2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -862,8 +886,8 @@ void FModTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        auto duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
+        auto duration1 = stopwatch.TotalSeconds( );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration1, accumulated1 );
 
 
         argument1Value = static_cast<FloatT>( M_PI );
@@ -880,8 +904,9 @@ void FModTest( Int64 outerIterationCount, const char* testName )
         }
 
         stopwatch.Stop( );
-        duration = stopwatch.TotalSeconds( );
-        PrintLn( "\tstd: Duration={}, Accumulated={}", duration, accumulated2 );
+        auto duration2 = stopwatch.TotalSeconds( );
+        PrintLn( "\tstd: Duration={}, Accumulated={}", duration2, accumulated2 );
+        PrintPerformance( duration1, duration2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }

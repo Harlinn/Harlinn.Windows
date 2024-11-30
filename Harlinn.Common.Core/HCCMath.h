@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __HCCMATH_H__
 #define __HCCMATH_H__
 /*
@@ -350,7 +350,14 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
+    /// <para>
     /// Returns the next representable value of x in the direction of y. If x equals to y, y is returned.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and at runtime
+    /// if performs 740.07 % better than std::nextafter for double
+    /// precision values,
+    /// </para>
     /// </summary>
     /// <param name="x">
     /// A double precision floating point value.
@@ -468,7 +475,14 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
+    /// <para>
     /// Returns the next representable value of x in the direction of y. If x equals to y, y is returned.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and at runtime
+    /// if performs 232.39 % better than std::nextafter for double
+    /// precision values,
+    /// </para>
     /// </summary>
     /// <param name="x">
     /// A single precision floating point value.
@@ -893,8 +907,8 @@ namespace Harlinn::Common::Core::Math
         {
             using FloatType = std::remove_cvref_t<T>;
             using UnsignedType = MakeUnsigned<FloatType>;
-            constexpr UnsignedType fractionMask = FractionMask<FloatType>;
-            constexpr UnsignedType exponentMask = ExponentMask<FloatType>;
+            static constexpr UnsignedType fractionMask = FractionMask<FloatType>;
+            static constexpr UnsignedType exponentMask = ExponentMask<FloatType>;
 
             UnsignedType value = std::bit_cast<UnsignedType>( val );
 
@@ -4021,11 +4035,55 @@ namespace Harlinn::Common::Core::Math
                     // case 3: atan(-,-) 
                     return  ( z - pi_lo ) - pi;
             }
-
         }
+
+        template<typename T>
+            requires IsFloatingPoint<T>
+        constexpr T LerpImpl( T a, T b, T t ) noexcept
+        {
+            if ( ( a <= 0 && b >= 0 ) || ( a >= 0 && b <= 0 ) )
+            {
+                return t * b + ( 1 - t ) * a;
+            }
+            if ( t == 1 )
+            {
+                return b;
+            }
+            T x = a + t * ( b - a );
+            if ( ( t > 1 ) == ( b > a ) )
+            {
+                return b < x ? x : b;
+            }
+            else
+            {
+                return x < b ? x : b;
+            }
+        }
+
     }
 
-
+    /// <summary>
+    /// <para>
+    /// Return the largest floating point number y of the same type 
+    /// as x such that y < x. If no such y exists, e.g. if x is -Inf or NaN, then return x.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and performs 1839.04 % better
+    /// than <c>std::nextafter( x, -std::numeric_limits&lt;double&gt;::infinity( ) )</c>
+    /// for double precision floating point values, and similarly 370.61 % better for
+    /// single precision floating point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The largest floating point number y of the same type 
+    /// as x such that y < x.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     inline constexpr std::remove_cvref_t<T> NextDown( T x ) noexcept
@@ -4077,7 +4135,29 @@ namespace Harlinn::Common::Core::Math
         return std::bit_cast<FloatType>( bits );
     }
 
-
+    /// <summary>
+    /// <para>
+    /// Return the smallest floating point number y of the same 
+    /// type as x such that x < y. If no such y exists, e.g. if x is 
+    /// Inf or NaN, then return x.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and performs 2783.78 % better
+    /// than <c>std::nextafter( x, std::numeric_limits&lt;double&gt;::infinity( ) )</c>
+    /// for double precision floating point values, and similarly 586.95 % better for
+    /// single precision floating point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="val">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The smallest floating point number y of the same 
+    /// type as x such that x < y.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     inline constexpr std::remove_cvref_t<T> NextUp( T x ) noexcept
@@ -5184,25 +5264,57 @@ namespace Harlinn::Common::Core::Math
 #endif
 
     /// <summary>
-    /// Lerp
-    /// </summary>
-    
-    /// <summary>
-    /// 
+    /// <para>
+    /// Computes the linear interpolation between a and b, if the 
+    /// parameter t is inside [​0​, 1), the linear extrapolation otherwise, 
+    /// i.e. the result of a + t * ( b - a ) with accounting 
+    /// for floating point calculation imprecision.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and
+    /// improves runtime performance by 33 %.
+    /// </para>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
-    /// <param name="t"></param>
-    /// <returns></returns>
+    /// <param name="a">An arithmetic type.</param>
+    /// <param name="b">An arithmetic type.</param>
+    /// <param name="t">An arithmetic type.</param>
+    /// <returns>
+    /// The interpolated or extrapolated result. 
+    /// </returns>
     template<typename T, typename U>
         requires ( ( IsInteger<T> || IsFloatingPoint<T> ) && ( IsInteger<U> || IsFloatingPoint<U> ) )
     constexpr inline std::conditional_t<IsFloatingPoint<T>, T, std::conditional_t<IsFloatingPoint<U>, U, T>> Lerp( T a, T b, U t ) noexcept
     {
-        return a + ( t * ( b - a ) );
+        return Internal::LerpImpl( a, b, t );
     }
 
+    /// <summary>
+    /// <para>
+    /// Composes a floating point value with the magnitude 
+    /// of <c>magnitude</c> and the sign of <c>signValue</c>.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and
+    /// improves runtime performance for double precision 
+    /// floating point values by 490 %, and by 1.82 % for single 
+    /// precision floating point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="magnitude">
+    /// A floating point value.
+    /// </param>
+    /// <param name="signValue">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// A floating point value with the magnitude 
+    /// of <c>magnitude</c> and the sign of <c>signValue</c>.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> CopySign( T magnitude, T signValue ) noexcept
@@ -5210,7 +5322,29 @@ namespace Harlinn::Common::Core::Math
         using FloatT = std::remove_cvref_t<T>;
         return Math::Internal::CopySignImpl<FloatT>( magnitude, signValue );
     }
-
+    /// <summary>
+    /// <para>
+    /// Multiplies a double precision floating point value 
+    /// <c>x</c> multplied by <c>FLT_RADIX</c> raised to power <c>n</c>.
+    /// </para>
+    /// <para>
+    /// FLT_RADIX is the radix used by the representation 
+    /// of the floating point types.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and
+    /// improves runtime performance by 421 %.
+    /// </para>
+    /// </summary>
+    /// <param name="x">
+    /// A double precision floating point value. 
+    /// </param>
+    /// <param name="n">
+    /// An integer.
+    /// </param>
+    /// <returns>
+    /// <c>x</c> multiplied by <c>FLT_RADIX</c> raised to power <c>n</c>
+    /// </returns>
     inline constexpr double ScaleByN( double x, int n ) noexcept
     {
         constexpr double two54 = 1.80143985094819840000e+16;
@@ -5276,7 +5410,29 @@ namespace Harlinn::Common::Core::Math
         x = SetHigh32Bits<Int32>( x, ( hx & 0x800fffff ) | ( k << 20 ) );
         return x * twom54;
     }
-
+    /// <summary>
+    /// <para>
+    /// Multiplies a double precision floating point value 
+    /// <c>x</c> multplied by <c>FLT_RADIX</c> raised to power <c>n</c>.
+    /// </para>
+    /// <para>
+    /// FLT_RADIX is the radix used by the representation 
+    /// of the floating point types.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and
+    /// improves runtime performance by 467 %.
+    /// </para>
+    /// </summary>
+    /// <param name="x">
+    /// A double precision floating point value. 
+    /// </param>
+    /// <param name="n">
+    /// An integer.
+    /// </param>
+    /// <returns>
+    /// <c>x</c> multplied by <c>FLT_RADIX</c> raised to power <c>n</c>
+    /// </returns>
     inline constexpr float ScaleByN( float x, int n ) noexcept
     {
         constexpr float two25 = 3.355443200e+07f;
@@ -5341,320 +5497,24 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-    /*
-     * ====================================================
-     * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
-     *
-     * Developed at SunSoft, a Sun Microsystems, Inc. business.
-     * Permission to use, copy, modify, and distribute this
-     * software is freely granted, provided that this notice
-     * is preserved.
-     * ====================================================
-     */
-    /*
-    inline constexpr double FMod( double x, double y ) noexcept
-    {
-        constexpr double one = 1.0;
-        constexpr double Zero[] = { 0.0, -0.0 };
-
-        Int32 n, hz, ix, iy, i;
-        UInt32 lz;
-
-        Int64 xVal = std::bit_cast<Int64>( x );
-        Int32 hx = static_cast<Int32>(xVal >> 32);
-        UInt32 lx = static_cast<UInt32>( xVal );
-
-        Int64 yVal = std::bit_cast<Int64>( y );
-        Int32 hy = static_cast<Int32>( yVal >> 32 );
-        UInt32 ly = static_cast<UInt32>( yVal );
-
-        // sign of x 
-        Int32 sx = hx & 0x80000000;
-        // |x| 
-        hx ^= sx;
-        // |y| 
-        hy &= 0x7fffffff;
-
-        // purge off exception values 
-        if ( ( hy | ly ) == 0 || ( hx >= 0x7ff00000 ) || // y=0,or x not finite 
-            ( ( hy | ( ( ly | -ly ) >> 31 ) ) > 0x7ff00000 ) ) // or y is NaN 
-        {
-            return ( x * y ) / ( x * y );
-        }
-        if ( hx <= hy )
-        {
-            if ( ( hx < hy ) || ( lx < ly ) )
-            {
-                // |x|<|y| return x 
-                return x;
-            }
-            if ( lx == ly )
-            {
-                // |x|=|y| return x*0
-                return Zero[static_cast<UInt32>(sx) >> 31]; 
-            }
-        }
-
-        // determine ix = ilogb(x) 
-        if ( hx < 0x00100000 )
-        {	
-            // subnormal x 
-            if ( hx == 0 )
-            {
-                for ( ix = -1043, i = lx; i > 0; i <<= 1 )
-                {
-                    ix -= 1;
-                }
-            }
-            else
-            {
-                for ( ix = -1022, i = ( hx << 11 ); i > 0; i <<= 1 )
-                {
-                    ix -= 1;
-                }
-            }
-        }
-        else
-        {
-            ix = ( hx >> 20 ) - 1023;
-        }
-
-        // determine iy = ilogb(y) 
-        if ( hy < 0x00100000 )
-        {	
-            // subnormal y 
-            if ( hy == 0 )
-            {
-                for ( iy = -1043, i = ly; i > 0; i <<= 1 )
-                {
-                    iy -= 1;
-                }
-            }
-            else
-            {
-                for ( iy = -1022, i = ( hy << 11 ); i > 0; i <<= 1 )
-                {
-                    iy -= 1;
-                }
-            }
-        }
-        else
-        {
-            iy = ( hy >> 20 ) - 1023;
-        }
-
-        // set up {hx,lx}, {hy,ly} and align y to x 
-        if ( ix >= -1022 )
-        {
-            hx = 0x00100000 | ( 0x000fffff & hx );
-        }
-        else
-        {		
-            // subnormal x, shift x to normal 
-            n = -1022 - ix;
-            if ( n <= 31 )
-            {
-                hx = ( hx << n ) | ( lx >> ( 32 - n ) );
-                lx <<= n;
-            }
-            else
-            {
-                hx = lx << ( n - 32 );
-                lx = 0;
-            }
-        }
-        if ( iy >= -1022 )
-        {
-            hy = 0x00100000 | ( 0x000fffff & hy );
-        }
-        else
-        {
-            // subnormal y, shift y to normal 
-            n = -1022 - iy;
-            if ( n <= 31 )
-            {
-                hy = ( hy << n ) | ( ly >> ( 32 - n ) );
-                ly <<= n;
-            }
-            else
-            {
-                hy = ly << ( n - 32 );
-                ly = 0;
-            }
-        }
-
-        // fix point fmod 
-        n = ix - iy;
-        while ( n-- )
-        {
-            hz = hx - hy; 
-            lz = lx - ly; 
-            if ( lx < ly )
-            {
-                hz -= 1;
-            }
-            if ( hz < 0 ) 
-            { 
-                hx = hx + hx + ( lx >> 31 ); 
-                lx = lx + lx; 
-            }
-            else
-            {
-                if ( ( hz | lz ) == 0 )
-                {
-                    // return sign(x)*0 
-                    return Zero[static_cast<UInt32>(sx) >> 31];
-                }
-                hx = hz + hz + ( lz >> 31 ); 
-                lx = lz + lz;
-            }
-        }
-        hz = hx - hy; 
-        lz = lx - ly; 
-        if ( lx < ly )
-        {
-            hz -= 1;
-        }
-        if ( hz >= 0 ) 
-        { 
-            hx = hz; 
-            lx = lz; 
-        }
-
-        // convert back to floating value and restore the sign 
-        if ( ( hx | lx ) == 0 )
-        {
-            // return sign(x)*0 
-            return Zero[static_cast<UInt32>( sx ) >> 31];
-        }
-        while ( hx < 0x00100000 )
-        {
-            // normalize x 
-            hx = hx + hx + ( lx >> 31 ); 
-            lx = lx + lx;
-            iy -= 1;
-        }
-        if ( iy >= -1022 )
-        {	
-            // normalize output 
-            hx = ( ( hx - 0x00100000 ) | ( ( iy + 1023 ) << 20 ) );
-            x = From32BitsTo64Bits<double>( hx | sx, lx );
-        }
-        else
-        {
-            // subnormal output 
-            n = -1022 - iy;
-            if ( n <= 20 )
-            {
-                lx = ( lx >> n ) | ( static_cast<UInt32>(hx) << ( 32 - n ) );
-                hx >>= n;
-            }
-            else if ( n <= 31 )
-            {
-                lx = ( hx << ( 32 - n ) ) | ( lx >> n ); hx = sx;
-            }
-            else
-            {
-                lx = hx >> ( n - 32 ); hx = sx;
-            }
-            x = From32BitsTo64Bits<double>( hx | sx, lx );
-            // create necessary signal 
-            x *= one; 
-        }
-        // exact output 
-        return x;
-    }
-    */
-    /*
-    inline constexpr double FMod( double x, double y ) noexcept
-    {
-        UInt64 uxi = std::bit_cast<UInt64>( x );
-        int ex = uxi >> 52 & 0x7ff;
-        int sx = uxi >> 63;
-
-        UInt64 uyi = std::bit_cast<UInt64>( y );
-        int ey = uyi >> 52 & 0x7ff;
-        
-        uint64_t i;
-
-        if ( uyi << 1 == 0 || IsNaN( y ) || ex == 0x7ff )
-        {
-            return ( x * y ) / ( x * y );
-        }
-        if ( uxi << 1 <= uyi << 1 )
-        {
-            if ( uxi << 1 == uyi << 1 )
-            {
-                return 0 * x;
-            }
-            return x;
-        }
-
-        // normalize x and y 
-        if ( !ex )
-        {
-            for ( i = uxi << 12; i >> 63 == 0; ex--, i <<= 1 );
-            uxi <<= -ex + 1;
-        }
-        else
-        {
-            uxi &= -1ULL >> 12;
-            uxi |= 1ULL << 52;
-        }
-        if ( !ey )
-        {
-            for ( i = uyi << 12; i >> 63 == 0; ey--, i <<= 1 )
-            {
-                ;
-            }
-            uyi <<= -ey + 1;
-        }
-        else
-        {
-            uyi &= -1ULL >> 12;
-            uyi |= 1ULL << 52;
-        }
-
-        // x mod y 
-        for ( ; ex > ey; ex-- )
-        {
-            i = uxi - uyi;
-            if ( i >> 63 == 0 )
-            {
-                if ( i == 0 )
-                    return 0 * x;
-                uxi = i;
-            }
-            uxi <<= 1;
-        }
-        i = uxi - uyi;
-        if ( i >> 63 == 0 )
-        {
-            if ( i == 0 )
-                return 0 * x;
-            uxi = i;
-        }
-        for ( ; uxi >> 52 == 0; uxi <<= 1, ex-- )
-        {
-            ;
-        }
-
-        // scale result 
-        if ( ex > 0 )
-        {
-            uxi -= 1ULL << 52;
-            uxi |= (uint64_t)ex << 52;
-        }
-        else
-        {
-            uxi >>= -ex + 1;
-        }
-        uxi |= (uint64_t)sx << 63;
-        
-        return std::bit_cast<double>(uxi);
-    }
-    */
-
+    /// <summary>
+    /// <para>
+    /// Computes the double precision floating point remainder of the division operation <c>x / y</c>.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and
+    /// improves runtime performance by 13.38 %.
+    /// </para>
+    /// </summary>
+    /// <param name="x">
+    /// A double precision floating point value. 
+    /// </param>
+    /// <param name="y">
+    /// A double precision floating point value. 
+    /// </param>
+    /// <returns>
+    /// The double precision floating point remainder of the division operation <c>x / y</c>.
+    /// </returns>
     inline constexpr double FMod( double x, double y ) noexcept
     {
         UInt64 uxi = std::bit_cast<UInt64>( x );
@@ -5759,6 +5619,24 @@ namespace Harlinn::Common::Core::Math
      * ====================================================
      */
 
+     /// <summary>
+     /// <para>
+     /// Computes the single precision floating point remainder of the division operation <c>x / y</c>.
+     /// </para>
+     /// <para>
+     /// This implementation can be constexpr evaluated, and
+     /// improves runtime performance by 89.59 %.
+     /// </para>
+     /// </summary>
+     /// <param name="x">
+     /// A single precision floating point value. 
+     /// </param>
+     /// <param name="y">
+     /// A single precision floating point value. 
+     /// </param>
+     /// <returns>
+     /// The single precision floating point remainder of the division operation <c>x / y</c>.
+     /// </returns>
     inline constexpr float FMod( float x, float y ) noexcept
     {
         constexpr float one = 1.0; 
@@ -6191,6 +6069,24 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes <c>e</c>, <c>2.7182818</c>, raised to the given power <c>x</c>.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and calls the
+    /// standard implementation at runtime.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// <c>e</c> raised to the given power <c>x</c>.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Exp( T x ) noexcept
@@ -6467,6 +6363,29 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes the square root of the sum of the squares of x and y, 
+    /// without undue overflow or underflow at intermediate stages of 
+    /// the computation.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and calls the
+    /// standard implementation at runtime.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <param name="y">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The square root of the sum of the squares of x and y.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Hypot( T x, T y ) noexcept
@@ -6720,7 +6639,24 @@ namespace Harlinn::Common::Core::Math
             }
         }
     }
-
+    /// <summary>
+    /// <para>
+    /// Computes the natural, base e, logarithm of <c>x</c>.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and calls the
+    /// standard implementation at runtime.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The natural, base e, logarithm of <c>x</c>.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Log( T x ) noexcept
@@ -6941,11 +6877,46 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    /// <summary>
+    /// <para>
+    /// Computes the binary, base-2, logarithm of x.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and
+    /// at runtime performs 251% better than std::log2 for single precision floating
+    /// point values, and uses std::log2 for double precision floating point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The binary, base-2, logarithm of x.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Log2( T x ) noexcept
     {
-        return Math::Internal::Log2Impl( x );
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Math::Internal::Log2Impl( x );
+        }
+        else
+        {
+            using FloatT = std::remove_cvref_t<T>;
+            if constexpr ( std::is_same_v<FloatT, double> )
+            {
+                return std::log2( x );
+            }
+            else
+            {
+                return Math::Internal::Log2Impl( x );
+            }
+        }
+        
     }
 
     namespace Internal
@@ -7098,21 +7069,73 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes the common, base 10, logarithm of x.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated,
+    /// but at runtime calls std::log10f for single precision
+    /// floating point values and std::log10 for double precision
+    /// floating point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The common, base 10, logarithm of x.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Log10( T x ) noexcept
     {
-        return Math::Internal::Log10Impl( x );
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Math::Internal::Log10Impl( x );
+        }
+        else
+        {
+            using FloatT = std::remove_cvref_t<T>;
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return std::log10f( x );
+            }
+            else
+            {
+                return std::log10( x );
+            }
+        }
     }
 
 
-
+    /// <summary>
+    /// <para>
+    /// Computes the sine of x given in radians.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and 
+    /// performs 14.38 % better than std::sin for single precision
+    /// floating point values. Calls std::sin double precision
+    /// floating point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The sine of x given in radians.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Sin( T x ) noexcept
     {
-        //return Math::Internal::SinImpl( x );
-        
         if ( std::is_constant_evaluated( ) )
         {
             return Math::Internal::SinImpl( x );
@@ -7125,12 +7148,34 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
+                //return Math::Internal::SinImpl( x );
                 return std::sin( x );
             }
         }
         
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes the principal value of the arc sine of x.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and
+    /// at runtime performs 59.78 % better than std::asin
+    /// for double precision floating point values, and
+    /// 109.87 % better than std::asin for single floating 
+    /// point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The principal value of the arc sine of x.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ASin( T x ) noexcept
@@ -7138,7 +7183,26 @@ namespace Harlinn::Common::Core::Math
         return Math::Internal::ASinImpl( x );
     }
 
-
+    /// <summary>
+    /// <para>
+    /// Computes the cosine of x given in radians.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and 
+    /// performs 14.93 % better than std::cos for single precision
+    /// floating point values. Calls std::cos double precision
+    /// floating point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The cosine of x given in radians.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Cos( T x ) noexcept
@@ -7160,6 +7224,27 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes the principal value of the arc cosine of x.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and
+    /// at runtime performs 90.89 % better than std::acos
+    /// for double precision floating point values, and
+    /// 107.69 % better than std::acos for single floating 
+    /// point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The principal value of the arc cosine of x.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ACos( T x ) noexcept
@@ -7168,6 +7253,24 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    /// <summary>
+    /// <para>
+    /// Computes the tangent of x given in radians.
+    /// </para>
+    /// This implementation can be constexpr evaluated,
+    /// and at runtime calls std::tan.
+    /// <para>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The tangent of x given in radians.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Tan( T x ) noexcept
@@ -7182,6 +7285,27 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes the principal value of the arc tangent of x.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and
+    /// at runtime performs 6.56 % better than std::atan
+    /// for double precision floating point values, and
+    /// 78.08 % better than std::atan for single floating 
+    /// point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The principal value of the arc tangent of x.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ATan( T x ) noexcept
@@ -7189,12 +7313,64 @@ namespace Harlinn::Common::Core::Math
         return Math::Internal::ATanImpl( x );
     }
 
+    /// <summary>
+    /// <para>
+    /// Computes the arc tangent of x / y using the signs of arguments 
+    /// to determine the correct quadrant.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and
+    /// at runtime performs 44.03 % better than std::atan2
+    /// for double precision floating point values, and
+    /// 36.17 % better than std::atan2 for single floating 
+    /// point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <param name="y">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The arc tangent of x / y using the signs of arguments to 
+    /// determine the correct quadrant.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ATan( T x, T y ) noexcept
     {
         return Math::Internal::ATan2Impl( x, y );
     }
+    /// <summary>
+    /// <para>
+    /// Computes the arc tangent of x / y using the signs of arguments 
+    /// to determine the correct quadrant.
+    /// </para>
+    /// <para>
+    /// This function can be constexpr evaluated, and
+    /// at runtime performs 44.03 % better than std::atan2
+    /// for double precision floating point values, and
+    /// 36.17 % better than std::atan2 for single floating 
+    /// point values.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <param name="y">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// The arc tangent of x / y using the signs of arguments to 
+    /// determine the correct quadrant.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> ATan2( T x, T y ) noexcept
@@ -7202,6 +7378,19 @@ namespace Harlinn::Common::Core::Math
         return Math::Internal::ATan2Impl( x, y );
     }
 
+    /// <summary>
+    /// Simultaneously compute the sine and cosine of x, where x is in radians, 
+    /// returning the sine in the variable referenced by sinResult, and the 
+    /// cosine in the variable referenced by cosResult.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <param name="sinResult"></param>
+    /// <param name="cosResult"></param>
     template<typename T>
         requires IsFloatingPoint<T>
     inline constexpr void SinCos( T x, T& sinResult, T& cosResult ) noexcept
