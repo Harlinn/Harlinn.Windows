@@ -20,8 +20,8 @@
 int main()
 {
     RunBasicOperations( );
-    //RunVectorOperations( );
-    //RunMatrixOperations( );
-    //RunBitsOperations( );
-    //RunBitVectorOperations( );
+    RunVectorOperations( );
+    RunMatrixOperations( );
+    RunBitsOperations( );
+    RunBitVectorOperations( );
 }
