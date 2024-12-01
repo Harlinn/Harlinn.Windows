@@ -19,9 +19,9 @@
 
 int main()
 {
-    RunBasicOperations( );
+    //RunBasicOperations( );
     RunVectorOperations( );
-    RunMatrixOperations( );
-    RunBitsOperations( );
-    RunBitVectorOperations( );
+    //RunMatrixOperations( );
+    //RunBitsOperations( );
+    //RunBitVectorOperations( );
 }

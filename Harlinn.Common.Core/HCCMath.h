@@ -17,7 +17,7 @@
    limitations under the License.
 */
 
-#include <HCCLib.h>
+#include <HCCSIMD.h>
 
 namespace Harlinn::Common::Core::Math
 {
@@ -182,8 +182,9 @@ namespace Harlinn::Common::Core::Math
 
     inline constexpr double ScaleByN( double x, int n ) noexcept;
     inline constexpr float ScaleByN( float x, int n ) noexcept;
-    inline constexpr double FMod( double x, double y ) noexcept;
-    inline constexpr float FMod( float x, float y ) noexcept;
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline constexpr std::remove_cvref_t<FloatT> FMod( FloatT x, FloatT y ) noexcept;
 
     template<typename T>
         requires IsFloatingPoint<T>
@@ -5496,77 +5497,87 @@ namespace Harlinn::Common::Core::Math
         return x * twom25;
     }
 
-
-    /// <summary>
-    /// <para>
-    /// Computes the double precision floating point remainder of the division operation <c>x / y</c>.
-    /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and
-    /// improves runtime performance by 13.38 %.
-    /// </para>
-    /// </summary>
-    /// <param name="x">
-    /// A double precision floating point value. 
-    /// </param>
-    /// <param name="y">
-    /// A double precision floating point value. 
-    /// </param>
-    /// <returns>
-    /// The double precision floating point remainder of the division operation <c>x / y</c>.
-    /// </returns>
-    inline constexpr double FMod( double x, double y ) noexcept
+    namespace Internal
     {
-        UInt64 uxi = std::bit_cast<UInt64>( x );
-        int ex = uxi >> 52 & 0x7ff;
-        int sx = uxi >> 63;
-
-        UInt64 uyi = std::bit_cast<UInt64>( y );
-        int ey = uyi >> 52 & 0x7ff;
-
-        uint64_t i;
-
-        if ( uyi << 1 == 0 || IsNaN( y ) || ex == 0x7ff )
+        /// <summary>
+        /// <para>
+        /// Computes the double precision floating point remainder of the division operation <c>x / y</c>.
+        /// </para>
+        /// <para>
+        /// This implementation can be constexpr evaluated, and
+        /// improves runtime performance by 13.38 %.
+        /// </para>
+        /// </summary>
+        /// <param name="x">
+        /// A double precision floating point value. 
+        /// </param>
+        /// <param name="y">
+        /// A double precision floating point value. 
+        /// </param>
+        /// <returns>
+        /// The double precision floating point remainder of the division operation <c>x / y</c>.
+        /// </returns>
+        inline constexpr double FModImpl( double x, double y ) noexcept
         {
-            return ( x * y ) / ( x * y );
-        }
-        if ( uxi << 1 <= uyi << 1 )
-        {
-            if ( uxi << 1 == uyi << 1 )
+            UInt64 uxi = std::bit_cast< UInt64 >( x );
+            int ex = uxi >> 52 & 0x7ff;
+            int sx = uxi >> 63;
+
+            UInt64 uyi = std::bit_cast< UInt64 >( y );
+            int ey = uyi >> 52 & 0x7ff;
+
+            uint64_t i;
+
+            if ( uyi << 1 == 0 || IsNaN( y ) || ex == 0x7ff )
             {
-                return 0 * x;
+                return ( x * y ) / ( x * y );
             }
-            return x;
-        }
-
-        // normalize x and y 
-        if ( !ex )
-        {
-            for ( i = uxi << 12; i >> 63 == 0; ex--, i <<= 1 );
-            uxi <<= -ex + 1;
-        }
-        else
-        {
-            uxi &= static_cast<UInt64>(-1) >> 12;
-            uxi |= 1ULL << 52;
-        }
-        if ( !ey )
-        {
-            for ( i = uyi << 12; i >> 63 == 0; ey--, i <<= 1 )
+            if ( uxi << 1 <= uyi << 1 )
             {
-                ;
+                if ( uxi << 1 == uyi << 1 )
+                {
+                    return 0 * x;
+                }
+                return x;
             }
-            uyi <<= -ey + 1;
-        }
-        else
-        {
-            uyi &= static_cast<UInt64>( -1 ) >> 12;
-            uyi |= 1ULL << 52;
-        }
 
-        // x mod y 
-        for ( ; ex > ey; ex-- )
-        {
+            // normalize x and y 
+            if ( !ex )
+            {
+                for ( i = uxi << 12; i >> 63 == 0; ex--, i <<= 1 );
+                uxi <<= -ex + 1;
+            }
+            else
+            {
+                uxi &= static_cast< UInt64 >( -1 ) >> 12;
+                uxi |= 1ULL << 52;
+            }
+            if ( !ey )
+            {
+                for ( i = uyi << 12; i >> 63 == 0; ey--, i <<= 1 )
+                {
+                    ;
+                }
+                uyi <<= -ey + 1;
+            }
+            else
+            {
+                uyi &= static_cast< UInt64 >( -1 ) >> 12;
+                uyi |= 1ULL << 52;
+            }
+
+            // x mod y 
+            for ( ; ex > ey; ex-- )
+            {
+                i = uxi - uyi;
+                if ( i >> 63 == 0 )
+                {
+                    if ( i == 0 )
+                        return 0 * x;
+                    uxi = i;
+                }
+                uxi <<= 1;
+            }
             i = uxi - uyi;
             if ( i >> 63 == 0 )
             {
@@ -5574,206 +5585,233 @@ namespace Harlinn::Common::Core::Math
                     return 0 * x;
                 uxi = i;
             }
-            uxi <<= 1;
-        }
-        i = uxi - uyi;
-        if ( i >> 63 == 0 )
-        {
-            if ( i == 0 )
-                return 0 * x;
-            uxi = i;
-        }
-        for ( ; uxi >> 52 == 0; uxi <<= 1, ex-- )
-        {
-            ;
-        }
-
-        // scale result 
-        if ( ex > 0 )
-        {
-            uxi -= 1ULL << 52;
-            uxi |= (uint64_t)ex << 52;
-        }
-        else
-        {
-            uxi >>= -ex + 1;
-        }
-        uxi |= (uint64_t)sx << 63;
-
-        return std::bit_cast<double>( uxi );
-    }
-
-
-    /* e_fmodf.c -- float version of e_fmod.c.
-     * Conversion to float by Ian Lance Taylor, Cygnus Support, ian@cygnus.com.
-     */
-
-    /*
-     * ====================================================
-     * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
-     *
-     * Developed at SunPro, a Sun Microsystems, Inc. business.
-     * Permission to use, copy, modify, and distribute this
-     * software is freely granted, provided that this notice
-     * is preserved.
-     * ====================================================
-     */
-
-     /// <summary>
-     /// <para>
-     /// Computes the single precision floating point remainder of the division operation <c>x / y</c>.
-     /// </para>
-     /// <para>
-     /// This implementation can be constexpr evaluated, and
-     /// improves runtime performance by 89.59 %.
-     /// </para>
-     /// </summary>
-     /// <param name="x">
-     /// A single precision floating point value. 
-     /// </param>
-     /// <param name="y">
-     /// A single precision floating point value. 
-     /// </param>
-     /// <returns>
-     /// The single precision floating point remainder of the division operation <c>x / y</c>.
-     /// </returns>
-    inline constexpr float FMod( float x, float y ) noexcept
-    {
-        constexpr float one = 1.0; 
-        constexpr float Zero[] = { 0.0, -0.0 };
-
-        Int32 n, hx, hy, hz, ix, iy, sx, i;
-
-        hx = std::bit_cast<Int32>( x );
-        hy = std::bit_cast<Int32>( y );
-        // sign of x 
-        sx = hx & 0x80000000;
-        // |x| 
-        hx ^= sx;
-        // |y| 
-        hy &= 0x7fffffff;
-
-        // purge off exception values 
-        if ( hy == 0 || ( hx >= 0x7f800000 ) || // y=0,or x not finite 
-            ( hy > 0x7f800000 ) ) // or y is NaN 
-        {
-            return ( x * y ) / ( x * y );
-        }
-        if ( hx < hy )
-        {
-            // |x|<|y| return x 
-            return x;
-        }
-        if ( hx == hy )
-        {
-            // |x|=|y| return x*0
-            return Zero[static_cast<UInt32>(sx) >> 31];
-        }
-
-        // determine ix = ilogb(x) 
-        if ( hx < 0x00800000 )
-        {	
-            // subnormal x 
-            for ( ix = -126, i = ( hx << 8 ); i > 0; i <<= 1 )
+            for ( ; uxi >> 52 == 0; uxi <<= 1, ex-- )
             {
-                ix -= 1;
+                ;
             }
-        }
-        else
-        {
-            ix = ( hx >> 23 ) - 127;
-        }
 
-        // determine iy = ilogb(y) 
-        if ( hy < 0x00800000 )
-        {	
-            // subnormal y 
-            for ( iy = -126, i = ( hy << 8 ); i >= 0; i <<= 1 )
+            // scale result 
+            if ( ex > 0 )
             {
-                iy -= 1;
-            }
-        }
-        else
-        {
-            iy = ( hy >> 23 ) - 127;
-        }
-
-        // set up {hx,lx}, {hy,ly} and align y to x 
-        if ( ix >= -126 )
-        {
-            hx = 0x00800000 | ( 0x007fffff & hx );
-        }
-        else
-        {
-            // subnormal x, shift x to normal 
-            n = -126 - ix;
-            hx = hx << n;
-        }
-        if ( iy >= -126 )
-        {
-            hy = 0x00800000 | ( 0x007fffff & hy );
-        }
-        else
-        {
-            // subnormal y, shift y to normal 
-            n = -126 - iy;
-            hy = hy << n;
-        }
-
-        // fix point fmod 
-        n = ix - iy;
-        while ( n-- )
-        {
-            hz = hx - hy;
-            if ( hz < 0 ) 
-            { 
-                hx = hx + hx; 
+                uxi -= 1ULL << 52;
+                uxi |= ( uint64_t )ex << 52;
             }
             else
             {
-                if ( hz == 0 )
-                {
-                    // return sign(x)*0 
-                    return Zero[static_cast<UInt32>( sx ) >> 31];
-                }
-                hx = hz + hz;
+                uxi >>= -ex + 1;
             }
-        }
-        hz = hx - hy;
-        if ( hz >= 0 ) 
-        { 
-            hx = hz; 
+            uxi |= ( uint64_t )sx << 63;
+
+            return std::bit_cast< double >( uxi );
         }
 
-        // convert back to floating value and restore the sign 
-        if ( hx == 0 )
+
+        /* e_fmodf.c -- float version of e_fmod.c.
+         * Conversion to float by Ian Lance Taylor, Cygnus Support, ian@cygnus.com.
+         */
+
+         /*
+          * ====================================================
+          * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+          *
+          * Developed at SunPro, a Sun Microsystems, Inc. business.
+          * Permission to use, copy, modify, and distribute this
+          * software is freely granted, provided that this notice
+          * is preserved.
+          * ====================================================
+          */
+
+          /// <summary>
+          /// <para>
+          /// Computes the single precision floating point remainder of the division operation <c>x / y</c>.
+          /// </para>
+          /// <para>
+          /// This implementation can be constexpr evaluated, and
+          /// improves runtime performance by 89.59 %.
+          /// </para>
+          /// </summary>
+          /// <param name="x">
+          /// A single precision floating point value. 
+          /// </param>
+          /// <param name="y">
+          /// A single precision floating point value. 
+          /// </param>
+          /// <returns>
+          /// The single precision floating point remainder of the division operation <c>x / y</c>.
+          /// </returns>
+        inline constexpr float FModImpl( float x, float y ) noexcept
         {
-            // return sign(x)*0 
-            return Zero[static_cast<UInt32>( sx ) >> 31];
+            constexpr float one = 1.0;
+            constexpr float Zero[ ] = { 0.0, -0.0 };
+
+            Int32 n, hx, hy, hz, ix, iy, sx, i;
+
+            hx = std::bit_cast< Int32 >( x );
+            hy = std::bit_cast< Int32 >( y );
+            // sign of x 
+            sx = hx & 0x80000000;
+            // |x| 
+            hx ^= sx;
+            // |y| 
+            hy &= 0x7fffffff;
+
+            // purge off exception values 
+            if ( hy == 0 || ( hx >= 0x7f800000 ) || // y=0,or x not finite 
+                ( hy > 0x7f800000 ) ) // or y is NaN 
+            {
+                return ( x * y ) / ( x * y );
+            }
+            if ( hx < hy )
+            {
+                // |x|<|y| return x 
+                return x;
+            }
+            if ( hx == hy )
+            {
+                // |x|=|y| return x*0
+                return Zero[ static_cast< UInt32 >( sx ) >> 31 ];
+            }
+
+            // determine ix = ilogb(x) 
+            if ( hx < 0x00800000 )
+            {
+                // subnormal x 
+                for ( ix = -126, i = ( hx << 8 ); i > 0; i <<= 1 )
+                {
+                    ix -= 1;
+                }
+            }
+            else
+            {
+                ix = ( hx >> 23 ) - 127;
+            }
+
+            // determine iy = ilogb(y) 
+            if ( hy < 0x00800000 )
+            {
+                // subnormal y 
+                for ( iy = -126, i = ( hy << 8 ); i >= 0; i <<= 1 )
+                {
+                    iy -= 1;
+                }
+            }
+            else
+            {
+                iy = ( hy >> 23 ) - 127;
+            }
+
+            // set up {hx,lx}, {hy,ly} and align y to x 
+            if ( ix >= -126 )
+            {
+                hx = 0x00800000 | ( 0x007fffff & hx );
+            }
+            else
+            {
+                // subnormal x, shift x to normal 
+                n = -126 - ix;
+                hx = hx << n;
+            }
+            if ( iy >= -126 )
+            {
+                hy = 0x00800000 | ( 0x007fffff & hy );
+            }
+            else
+            {
+                // subnormal y, shift y to normal 
+                n = -126 - iy;
+                hy = hy << n;
+            }
+
+            // fix point fmod 
+            n = ix - iy;
+            while ( n-- )
+            {
+                hz = hx - hy;
+                if ( hz < 0 )
+                {
+                    hx = hx + hx;
+                }
+                else
+                {
+                    if ( hz == 0 )
+                    {
+                        // return sign(x)*0 
+                        return Zero[ static_cast< UInt32 >( sx ) >> 31 ];
+                    }
+                    hx = hz + hz;
+                }
+            }
+            hz = hx - hy;
+            if ( hz >= 0 )
+            {
+                hx = hz;
+            }
+
+            // convert back to floating value and restore the sign 
+            if ( hx == 0 )
+            {
+                // return sign(x)*0 
+                return Zero[ static_cast< UInt32 >( sx ) >> 31 ];
+            }
+            while ( hx < 0x00800000 )
+            {
+                // normalize x 
+                hx = hx + hx;
+                iy -= 1;
+            }
+            if ( iy >= -126 )
+            {
+                // normalize output 
+                hx = ( ( hx - 0x00800000 ) | ( ( iy + 127 ) << 23 ) );
+                x = std::bit_cast< float >( hx | sx );
+            }
+            else
+            {
+                // subnormal output 
+                n = -126 - iy;
+                hx >>= n;
+                x = std::bit_cast< float >( hx | sx );
+                // create necessary signal 
+                x *= one;
+            }
+            // exact output 
+            return x;
         }
-        while ( hx < 0x00800000 )
+    }
+
+    /// <summary>
+    /// <para>
+    /// Computes the point remainder of the division operation <c>x / y</c>.
+    /// </para>
+    /// <para>
+    /// This implementation can be constexpr evaluated, and
+    /// improves runtime performance by 89.59 %.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="FloatT">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value. 
+    /// </param>
+    /// <param name="y">
+    /// A floating point value. 
+    /// </param>
+    /// <returns>
+    /// The floating point remainder of the division operation <c>x / y</c>.
+    /// </returns>
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline constexpr std::remove_cvref_t<FloatT> FMod( FloatT x, FloatT y ) noexcept
+    {
+        if ( std::is_constant_evaluated( ) )
         {
-            // normalize x 
-            hx = hx + hx;
-            iy -= 1;
-        }
-        if ( iy >= -126 )
-        {
-            // normalize output 
-            hx = ( ( hx - 0x00800000 ) | ( ( iy + 127 ) << 23 ) );
-            x = std::bit_cast<float>( hx | sx );
+            return Math::Internal::FModImpl( x, y );
         }
         else
         {
-            // subnormal output 
-            n = -126 - iy;
-            hx >>= n;
-            x = std::bit_cast<float>( hx | sx );
-            // create necessary signal 
-            x *= one;
+            return std::fmod( x, y );
         }
-        // exact output 
-        return x;
     }
 
 
@@ -6097,7 +6135,8 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            return std::exp( x );
+            return Math::Internal::ExpImpl( x );
+            //return std::exp( x );
         }
     }
 
@@ -6395,8 +6434,16 @@ namespace Harlinn::Common::Core::Math
             return Math::Internal::HypotImpl( x, y );
         }
         else
-        {
-            return std::hypot( x, y );
+        {   
+            using FloatT = std::remove_cvref_t<T>;
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return Math::Internal::HypotImpl( x, y );
+            }
+            else
+            {
+                return std::hypot( x, y );
+            }
         }
     }
 
@@ -6667,7 +6714,8 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            return std::log( x );
+            return Math::Internal::LogImpl( x );
+            //return std::log( x );
         }
     }
 
@@ -6906,6 +6954,8 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
+            return Math::Internal::Log2Impl( x );
+            /*
             using FloatT = std::remove_cvref_t<T>;
             if constexpr ( std::is_same_v<FloatT, double> )
             {
@@ -6915,6 +6965,7 @@ namespace Harlinn::Common::Core::Math
             {
                 return Math::Internal::Log2Impl( x );
             }
+            */
         }
         
     }
@@ -7099,6 +7150,8 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
+            return Math::Internal::Log10Impl( x );
+            /*
             using FloatT = std::remove_cvref_t<T>;
             if constexpr ( std::is_same_v<FloatT, float> )
             {
@@ -7108,6 +7161,7 @@ namespace Harlinn::Common::Core::Math
             {
                 return std::log10( x );
             }
+            */
         }
     }
 

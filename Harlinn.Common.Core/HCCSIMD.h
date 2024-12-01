@@ -17,7 +17,8 @@
    limitations under the License.
 */
 
-#include <HCCMath.h>
+//#include <HCCMath.h>
+#include <HCCLib.h>
 #include <zmmintrin.h>
 
 namespace Harlinn::Common::Core::SIMD
@@ -1811,6 +1812,25 @@ namespace Harlinn::Common::Core::SIMD
         }
 
         /// <summary>
+        /// Square Root of Single-Precision Floating-Point Values
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        static SIMDType Sqrt( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sqrt_ps( v );
+            }
+            else
+            {
+                return _mm256_sqrt_ps( v );
+            }
+        }
+        
+
+
+        /// <summary>
         /// Multiply-adds packed single-precision floating-point values using three float32 vectors
         /// </summary>
         /// <param name="a">float32 vector used for the operation</param>
@@ -2320,6 +2340,23 @@ namespace Harlinn::Common::Core::SIMD
             else
             {
                 return _mm256_div_pd( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Square Root of float64 vector
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        static SIMDType Sqrt( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sqrt_pd( v );
+            }
+            else
+            {
+                return _mm256_sqrt_pd( v );
             }
         }
 

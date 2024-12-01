@@ -18,7 +18,6 @@
 */
 
 #include <HCCMath.h>
-#include <HCCSIMD.h>
 #include <HCCString.h>
 
 namespace Harlinn::Common::Core::Math
