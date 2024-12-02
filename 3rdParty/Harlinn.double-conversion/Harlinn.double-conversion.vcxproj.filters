@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{c197ec60-a125-493c-8c8a-8a673079c064}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\double-conversion">
+      <UniqueIdentifier>{d1925e13-66a7-48e7-9502-853852d4c509}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{693c6863-703c-43cd-8a15-f4205d0d033c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{95dccd48-af76-4c72-bb60-b4e4701294f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bignum.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bignum-dtoa.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cached-powers.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\double-to-string.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fast-dtoa.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fixed-dtoa.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\string-to-double.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strtod.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\double-conversion\bignum.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\bignum-dtoa.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\cached-powers.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\diy-fp.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\double-conversion.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\double-to-string.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\fast-dtoa.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\fixed-dtoa.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\ieee.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\string-to-double.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\strtod.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="include\double-conversion\utils.h">
+      <Filter>include\double-conversion</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Harlinn.double-conversion.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Readme\AUTHORS">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\COPYING">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+</Project>

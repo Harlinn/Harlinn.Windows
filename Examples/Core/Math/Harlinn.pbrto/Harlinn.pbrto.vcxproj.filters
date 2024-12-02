@@ -1,0 +1,601 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{6fd20aff-d65e-4161-9644-15565ccdd7cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pbrto">
+      <UniqueIdentifier>{4b85d849-ccb5-45e7-9c09-0a97ad17ad68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{08db51f8-1f77-4dd6-8ce7-e57db43a27d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pbrto\cpu">
+      <UniqueIdentifier>{4f19aede-f078-46ed-aeb0-ef96ae13bc71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pbrto\gpu">
+      <UniqueIdentifier>{21497311-d70d-4182-910f-8563c7e73e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pbrto\util">
+      <UniqueIdentifier>{baa2b76b-d23a-4b59-95b0-c82526280296}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pbrto\wavefront">
+      <UniqueIdentifier>{df157916-5476-4078-a0bd-89111ee717b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cpu">
+      <UniqueIdentifier>{8a2d72d7-504f-4dc9-ae50-a40f6cda46d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gpu">
+      <UniqueIdentifier>{a023ac43-6096-4450-91c7-d3e82f6cf68d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{b339d784-0297-4d5f-ac3e-c51b9075ca45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\wavefront">
+      <UniqueIdentifier>{ba5ad619-f3c4-4fc4-9a8a-a86d42cb46b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pbrto\base">
+      <UniqueIdentifier>{ed968434-c42d-4729-817f-8b8adc3e0675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pbrto\gpu\optix">
+      <UniqueIdentifier>{8cb4c80f-e536-4a0d-8fc8-734de407508a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gpu\optix">
+      <UniqueIdentifier>{e203df71-d1ec-4f61-a2b9-64df2d7b44cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ext">
+      <UniqueIdentifier>{db2dc638-62b3-461b-bcca-48829beb1993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ext\utf8proc">
+      <UniqueIdentifier>{138e6436-25f0-4dca-a8db-376c7f22b230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ext\rply">
+      <UniqueIdentifier>{a18ed894-6e14-4301-9517-8190c23bb2ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{a733f4be-865a-410d-bf20-18abe007ecad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cpu\aggregates.h">
+      <Filter>include\pbrto\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cpu\integrators.h">
+      <Filter>include\pbrto\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cpu\primitive.h">
+      <Filter>include\pbrto\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cpu\render.h">
+      <Filter>include\pbrto\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\optix\aggregate.h">
+      <Filter>include\pbrto\gpu\optix</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\optix\denoiser.h">
+      <Filter>include\pbrto\gpu\optix</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\optix\optix.h">
+      <Filter>include\pbrto\gpu\optix</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\cudagl.h">
+      <Filter>include\pbrto\gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\memory.h">
+      <Filter>include\pbrto\gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\gpu\util.h">
+      <Filter>include\pbrto\gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\bssrdf.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\bxdf.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\camera.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\film.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\filter.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\light.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\lightsampler.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\material.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\medium.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\sampler.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\shape.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\texture.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\aggregate.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\integrator.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\intersect.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\wavefront.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\workitems.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\workqueue.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\args.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\bluenoise.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\buffercache.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\check.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\color.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\colorspace.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\containers.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\display.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\error.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\file.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\float.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\gui.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\hash.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\image.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\log.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\loopsubdiv.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\lowdiscrepancy.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\math.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\memory.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\mesh.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\mipmap.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\noise.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\parallel.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\pmj02tables.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\primes.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\print.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\progressreporter.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\pstd.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\rng.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\sampling.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\scattering.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\soa.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\sobolmatrices.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\spectrum.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\splines.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\stats.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\string.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\taggedptr.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\transform.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\vecmath.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\bsdf.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\bssrdf.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\bxdfs.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cameras.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\film.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\filters.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\interaction.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\lights.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\lightsamplers.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\materials.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\media.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\options.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\paramdict.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\parser.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\pbrt.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\ray.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\samplers.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\scene.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\shapes.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\textures.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\pbrtodef.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ext\utf8proc\utf8proc.h">
+      <Filter>src\ext\utf8proc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ext\rply\rply.h">
+      <Filter>src\ext\rply</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\aggregates.cpp">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\integrators.cpp">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\primitive.cpp">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\render.cpp">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\aggregate.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\camera.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\wavefront_film.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\integrator.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\wavefront_media.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\samples.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\subsurface.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\surfscatter.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefront\wavefront.cpp">
+      <Filter>src\wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\args.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\bluenoise.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\buffercache.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\check.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\color.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\colorspace.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\display.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\error.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\file.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\float.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\gui.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\image.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\log.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\loopsubdiv.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\lowdiscrepancy.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\math.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\memory.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\mesh.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\mipmap.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\noise.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\parallel.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\pmj02tables.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\primes.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\print.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\progressreporter.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\pstd.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\rng.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\sampling.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\scattering.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\sobolmatrices.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\spectrum.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\stats.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\stbimage.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\string.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\transform.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\vecmath.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bsdf.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bssrdf.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bxdfs.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cameras.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\film.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\filters.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\interaction.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lights.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lightsamplers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\materials.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\media.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\paramdict.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parser.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pbrt.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ray.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\samplers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shapes.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\textures.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ext\utf8proc\utf8proc.c">
+      <Filter>src\ext\utf8proc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ext\utf8proc\utf8proc_data.c">
+      <Filter>src\ext\utf8proc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ext\rply\rply.cpp">
+      <Filter>src\ext\rply</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\rgbspectrum_aces.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\rgbspectrum_dci_p3.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\rgbspectrum_rec2020.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\rgbspectrum_srgb.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme\LICENSE.txt">
+      <Filter>Readme</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\THIRD_PARTY.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+</Project>

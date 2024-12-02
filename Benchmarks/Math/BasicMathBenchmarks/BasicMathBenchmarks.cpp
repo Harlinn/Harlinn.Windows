@@ -32,18 +32,20 @@ struct RandomGenerator
     }
 };
 
-RandomGenerator<double, 16> DoubleGenerator;
-RandomGenerator<float, 16> FloatGenerator;
-RandomGenerator<double, 16> DoubleAngleInDegreesGenerator(0.0,360.0);
-RandomGenerator<float, 16> FloatAngleInDegreesGenerator( 0.0f, 360.0f );
-RandomGenerator<double, 16> DoubleAngleInRadiansGenerator( 0.0, M_PI * 2 );
-RandomGenerator<float, 16> FloatAngleInRadiansGenerator( 0.0f, (float) M_PI * 2 );
+constexpr size_t SampleCount = 64;
 
-RandomGenerator<double, 16> DoubleZeroToOneGenerator( 0.0, 1.0 );
-RandomGenerator<float, 16> FloatZeroToOneGenerator( 0.0f, 1.0f );
+RandomGenerator<double, SampleCount> DoubleGenerator;
+RandomGenerator<float, SampleCount> FloatGenerator;
+RandomGenerator<double, SampleCount> DoubleAngleInDegreesGenerator(0.0,360.0);
+RandomGenerator<float, SampleCount> FloatAngleInDegreesGenerator( 0.0f, 360.0f );
+RandomGenerator<double, SampleCount> DoubleAngleInRadiansGenerator( 0.0, M_PI * 2 );
+RandomGenerator<float, SampleCount> FloatAngleInRadiansGenerator( 0.0f, (float) M_PI * 2 );
 
-RandomGenerator<double, 16> DoubleMinusOneToOneGenerator( -1.0, 1.0 );
-RandomGenerator<float, 16> FloatMinusOneToOneGenerator( -1.0f, 1.0f );
+RandomGenerator<double, SampleCount> DoubleZeroToOneGenerator( 0.0, 1.0 );
+RandomGenerator<float, SampleCount> FloatZeroToOneGenerator( 0.0f, 1.0f );
+
+RandomGenerator<double, SampleCount> DoubleMinusOneToOneGenerator( -1.0, 1.0 );
+RandomGenerator<float, SampleCount> FloatMinusOneToOneGenerator( -1.0f, 1.0f );
 
 
 static void BenchmarkDoubleGenerator( benchmark::State& state )

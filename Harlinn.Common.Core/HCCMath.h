@@ -35,7 +35,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// true if both arguments are binary equivalent, otherwise false.
     /// </returns>
-    constexpr bool IsSameValue( double first, double second ) noexcept
+    constexpr inline bool IsSameValue( double first, double second ) noexcept
     {
         return std::bit_cast<Int64>( first ) == std::bit_cast<Int64>( second );
     }
@@ -53,7 +53,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// true if both arguments are binary equivalent, otherwise false.
     /// </returns>
-    constexpr bool IsSameValue( float x, float y ) noexcept
+    constexpr inline bool IsSameValue( float x, float y ) noexcept
     {
         return std::bit_cast<Int32>( x ) == std::bit_cast<Int32>( y );
     }
@@ -68,7 +68,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// true if the argument is zero, otherwise false.
     /// </returns>
-    constexpr bool IsZero( double x ) noexcept
+    constexpr inline bool IsZero( double x ) noexcept
     {
         return ( std::bit_cast<Int64>( x ) & 0x7FFFFFFFFFFFFFFF ) == 0;
     }
@@ -81,7 +81,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// true if the argument is zero, otherwise false.
     /// </returns>
-    constexpr bool IsZero( float x ) noexcept
+    constexpr inline bool IsZero( float x ) noexcept
     {
         return ( std::bit_cast<Int32>( x ) & 0x7FFFFFFF ) == 0;
     }
@@ -111,7 +111,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template< typename T>
         requires IsUnsignedInteger<std::remove_cvref_t<T>> || IsBoolean<std::remove_cvref_t<T>>
-    inline constexpr T signum( T val ) noexcept
+    constexpr inline T signum( T val ) noexcept
     {
         constexpr T zero = static_cast<T>( 0 );
         return static_cast<T>( val > zero ? 1 : 0 );
@@ -136,7 +136,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template< typename T>
         requires IsSignedInteger<std::remove_cvref_t<T>>
-    inline constexpr T signum( T val ) noexcept
+    constexpr inline T signum( T val ) noexcept
     {
         constexpr T zero = static_cast< T >( 0 );
         constexpr T one = static_cast< T >( 1 );
@@ -163,7 +163,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template< typename T>
         requires IsFloatingPoint<std::remove_cvref_t<T>>
-    inline constexpr T signum( T val ) noexcept
+    constexpr inline T signum( T val ) noexcept
     {
         constexpr T zero = static_cast<T>( 0 );
         constexpr T one = static_cast<T>( 1 );
@@ -322,7 +322,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template< typename T>
         requires IsFloatingPoint<std::remove_cvref_t<T>>
-    inline constexpr std::remove_cvref_t<T> Deg2Rad( T angleInDegrees ) noexcept
+    constexpr inline std::remove_cvref_t<T> Deg2Rad( T angleInDegrees ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
         constexpr FloatT factor = static_cast<FloatT>( M_PI_4/45.0 );
@@ -343,7 +343,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template< typename T>
         requires IsFloatingPoint<std::remove_cvref_t<T>>
-    inline constexpr std::remove_cvref_t<T> Rad2Deg( T angleInRadians ) noexcept
+    constexpr inline std::remove_cvref_t<T> Rad2Deg( T angleInRadians ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
         constexpr FloatT factor = static_cast<FloatT>( 45.0/M_PI_4 );
@@ -353,11 +353,6 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// <para>
     /// Returns the next representable value of x in the direction of y. If x equals to y, y is returned.
-    /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and at runtime
-    /// if performs 740.07 % better than std::nextafter for double
-    /// precision values,
     /// </para>
     /// </summary>
     /// <param name="x">
@@ -478,11 +473,6 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// <para>
     /// Returns the next representable value of x in the direction of y. If x equals to y, y is returned.
-    /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and at runtime
-    /// if performs 232.39 % better than std::nextafter for double
-    /// precision values,
     /// </para>
     /// </summary>
     /// <param name="x">
@@ -908,8 +898,8 @@ namespace Harlinn::Common::Core::Math
         {
             using FloatType = std::remove_cvref_t<T>;
             using UnsignedType = MakeUnsigned<FloatType>;
-            static constexpr UnsignedType fractionMask = FractionMask<FloatType>;
-            static constexpr UnsignedType exponentMask = ExponentMask<FloatType>;
+            constexpr UnsignedType fractionMask = FractionMask<FloatType>;
+            constexpr UnsignedType exponentMask = ExponentMask<FloatType>;
 
             UnsignedType value = std::bit_cast<UnsignedType>( val );
 
@@ -4068,12 +4058,6 @@ namespace Harlinn::Common::Core::Math
     /// Return the largest floating point number y of the same type 
     /// as x such that y < x. If no such y exists, e.g. if x is -Inf or NaN, then return x.
     /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and performs 1839.04 % better
-    /// than <c>std::nextafter( x, -std::numeric_limits&lt;double&gt;::infinity( ) )</c>
-    /// for double precision floating point values, and similarly 370.61 % better for
-    /// single precision floating point values.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -4141,12 +4125,6 @@ namespace Harlinn::Common::Core::Math
     /// Return the smallest floating point number y of the same 
     /// type as x such that x < y. If no such y exists, e.g. if x is 
     /// Inf or NaN, then return x.
-    /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and performs 2783.78 % better
-    /// than <c>std::nextafter( x, std::numeric_limits&lt;double&gt;::infinity( ) )</c>
-    /// for double precision floating point values, and similarly 586.95 % better for
-    /// single precision floating point values.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -4222,7 +4200,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template<typename T>
         requires IsInteger<T>
-    constexpr inline bool IsNaN( T val ) noexcept 
+    constexpr inline bool IsNaN( T val ) noexcept
     { 
         return false;
     }
@@ -4231,10 +4209,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Determines if the given floating point number, val, 
     /// is a not-a-number (NaN) value.
-    /// </para>
-    /// <para>
-    /// Runtime performance is equivalent to std::isnan,
-    /// but this implementation can be constexpr evaluated.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -4250,7 +4224,14 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline bool IsNaN( T val ) noexcept
     {
-        return Internal::IsNaNImpl<T>( val );
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Internal::IsNaNImpl<T>( val );
+        }
+        else
+        {
+            return std::isnan( val );
+        }
     }
 
     /// <summary>
@@ -4268,7 +4249,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template<typename T>
         requires IsInteger<T>
-    constexpr inline bool IsInf( T val ) noexcept 
+    constexpr inline bool IsInf( T val ) noexcept
     { 
         return false;
     }
@@ -4276,10 +4257,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Determines if the given floating point number val 
     /// is positive or negative infinity. 
-    /// </para>
-    /// <para>
-    /// Runtime performance is equivalent to std::isinf,
-    /// but this implementation can be constexpr evaluated.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -4295,7 +4272,22 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline bool IsInf( T val ) noexcept
     {
-        return Internal::IsInfImpl<std::remove_cvref_t<T>>( val );
+        using FloatT = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Internal::IsInfImpl<FloatT>( val );
+        }
+        else
+        {
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return Internal::IsInfImpl<FloatT>( val );
+            }
+            else
+            {
+                return std::isinf( val );
+            }
+        }
     }
 
     /// <summary>
@@ -4320,7 +4312,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template<typename T>
         requires IsSignedInteger<T>
-    constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept 
+    constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept
     { 
         if ( std::is_constant_evaluated( ) )
         {
@@ -4356,11 +4348,6 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// <para>
     /// Computes the absolute value of a floating point value.
-    /// </para>
-    /// <para>
-    /// Runtime performance is equivalent to std::fabs and std::fabsf
-    /// since those functions are used unless the function is 
-    /// constexpr evaluated.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -4409,14 +4396,14 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template<typename T>
         requires IsSignedInteger<T>
-    constexpr inline bool SignBit( T val ) noexcept 
+    constexpr inline bool SignBit( T val ) noexcept
     { 
         using IntT = std::remove_cvref_t<T>;
         using UIntT = std::make_unsigned_t<IntT>;
-        static constexpr size_t ByteCount = sizeof( IntT );
-        static constexpr size_t ShiftCount = ( ( ByteCount - 1 ) * 8 ) + 7;
-        static constexpr UIntT UnsignedSignMask = static_cast< UIntT >( 1 ) << ShiftCount;
-        static constexpr IntT SignMask = std::bit_cast< IntT >( UnsignedSignMask );
+        constexpr size_t ByteCount = sizeof( IntT );
+        constexpr size_t ShiftCount = ( ( ByteCount - 1 ) * 8 ) + 7;
+        constexpr UIntT UnsignedSignMask = static_cast< UIntT >( 1 ) << ShiftCount;
+        constexpr IntT SignMask = std::bit_cast< IntT >( UnsignedSignMask );
         return (val & SignMask) != 0;
     }
 
@@ -4470,10 +4457,6 @@ namespace Harlinn::Common::Core::Math
     /// Decomposes the given floating point value val into a normalized 
     /// fraction and an integral power of two.
     /// </para>
-    /// <para>
-    /// Currently this implementation is more than 6 times faster 
-    /// than std::frexp.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -4512,10 +4495,6 @@ namespace Harlinn::Common::Core::Math
     /// Decomposes the given floating point value val into a normalized 
     /// fraction and an integral power of two.
     /// </para>
-    /// <para>
-    /// Currently this implementation is more than 6 times faster 
-    /// than std::frexp.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -4549,10 +4528,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Decomposes the given floating point value val into a normalized 
     /// fraction and an integral power of two.
-    /// </para>
-    /// <para>
-    /// Currently this implementation is more than 6 times faster 
-    /// than std::frexp.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -4590,11 +4565,6 @@ namespace Harlinn::Common::Core::Math
     /// fractional parts, each with the same type and sign as val.
     /// </para>
     /// <para>
-    /// Currently 37 % faster than std::modf for double precision
-    /// floating point values, and 27 % faster for single precision
-    /// floating point values.
-    /// </para>
-    /// <para>
     /// This implementation can also be constexpr evaluated.
     /// </para>
     /// </summary>
@@ -4620,11 +4590,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Decomposes floating-point value val into its integral and 
     /// fractional parts, each with the same type and sign as val.
-    /// </para>
-    /// <para>
-    /// Currently 37 % faster than std::modf for double precision
-    /// floating point values, and 27 % faster for single precision
-    /// floating point values.
     /// </para>
     /// <para>
     /// This implementation can also be constexpr evaluated.
@@ -4654,11 +4619,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Decomposes floating-point value val into its integral and 
     /// fractional parts, each with the same type and sign as val.
-    /// </para>
-    /// <para>
-    /// Currently 37 % faster than std::modf for double precision
-    /// floating point values, and 27 % faster for single precision
-    /// floating point values.
     /// </para>
     /// <para>
     /// This implementation can also be constexpr evaluated.
@@ -4721,9 +4681,12 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
+                return std::min( first, second );
+                /*
                 FloatT result;
                 _mm_store_sd( &result, _mm_min_sd( _mm_set_sd( first ), _mm_set_sd( second ) ) );
                 return result;
+                */
             }
         }
     }
@@ -4791,9 +4754,12 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
+                return std::max( first, second );
+                /*
                 FloatT result;
                 _mm_store_sd( &result, _mm_max_sd( _mm_set_sd( first ), _mm_set_sd( second ) ) );
                 return result;
+                */
             }
         }
     }
@@ -4830,12 +4796,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the nearest integer not greater in magnitude than value.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, for double precision 
-    /// floating point values this function is close to 8 times faster than
-    /// std::trunc, For single precision floating point values this function
-    /// is 6 % faster than std::trunc.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -4869,9 +4829,12 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
+                return __truncf( value );
+                /*
                 float result;
                 _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC ) );
                 return result;
+                */
             }
 #else
             if constexpr ( std::is_same_v<FloatT, float> )
@@ -4910,10 +4873,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the largest integer value not greater than value.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, this function is 15 % faster than
-    /// std::floor for both single and double precision floating point values.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -4937,6 +4896,15 @@ namespace Harlinn::Common::Core::Math
         else
         {
 #ifdef HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return __floorf( value );
+            }
+            else
+            {
+                return __floor( value );
+            }
+            /*
             if constexpr ( std::is_same_v<double, T> )
             {
                 double result;
@@ -4949,6 +4917,7 @@ namespace Harlinn::Common::Core::Math
                 _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC ) );
                 return result;
             }
+            */
             /*
             if constexpr ( std::is_same_v<double, T> )
             {
@@ -5001,10 +4970,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the smallest integer value not less than value.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, this function is 15 % faster than
-    /// std::ceil for both single and double precision floating point values.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -5028,6 +4993,15 @@ namespace Harlinn::Common::Core::Math
         else
         {
 #ifdef HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return __ceilf( value );
+            }
+            else
+            {
+                return __ceil( value );
+            }
+            /*
             if constexpr ( std::is_same_v<double, T> )
             {
                 double result;
@@ -5040,6 +5014,7 @@ namespace Harlinn::Common::Core::Math
                 _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC ) );
                 return result;
             }
+            */
             /*
             if constexpr ( std::is_same_v<double, T> )
             {
@@ -5094,12 +5069,6 @@ namespace Harlinn::Common::Core::Math
     /// Computes the nearest integer to value, in floating-point format, 
     /// rounding halfway cases away from zero.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, for double precision 
-    /// floating point values this function is more then 11 times faster than
-    /// std::round, For single precision floating point values this function
-    /// is 40 % faster than std::round.
-    /// <para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -5123,6 +5092,17 @@ namespace Harlinn::Common::Core::Math
         else
         {
 #ifdef HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return __roundf( value );
+            }
+            else
+            {
+                double result;
+                _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
+                return result;
+            }
+            /*
             if constexpr ( std::is_same_v<double, T> )
             {
                 double result;
@@ -5135,6 +5115,7 @@ namespace Harlinn::Common::Core::Math
                 _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
                 return result;
             }
+            */
 #else
             if constexpr ( std::is_same_v<FloatT, float> )
             {
@@ -5182,10 +5163,6 @@ namespace Harlinn::Common::Core::Math
     /// If the value is within [minimumValue, maximumValue], the function 
     /// returns value, otherwise returns the nearest boundary.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, this function is 7 % faster than
-    /// std::clamp for both single and double precision floating point values.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -5214,6 +5191,8 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
+            return std::clamp( value, minimumValue, maximumValue );
+            /*
             if constexpr ( std::is_same_v<FloatT, float> )
             {
                 FloatT result;
@@ -5226,6 +5205,7 @@ namespace Harlinn::Common::Core::Math
                 _mm_store_sd( &result, _mm_min_sd( _mm_max_sd( _mm_set_sd( value ), _mm_set_sd( minimumValue ) ), _mm_set_sd( maximumValue ) ) );
                 return result;
             }
+            */
         }
     }
 
@@ -5271,10 +5251,6 @@ namespace Harlinn::Common::Core::Math
     /// i.e. the result of a + t * ( b - a ) with accounting 
     /// for floating point calculation imprecision.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and
-    /// improves runtime performance by 33 %.
-    /// </para>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>
@@ -5288,19 +5264,20 @@ namespace Harlinn::Common::Core::Math
         requires ( ( IsInteger<T> || IsFloatingPoint<T> ) && ( IsInteger<U> || IsFloatingPoint<U> ) )
     constexpr inline std::conditional_t<IsFloatingPoint<T>, T, std::conditional_t<IsFloatingPoint<U>, U, T>> Lerp( T a, T b, U t ) noexcept
     {
-        return Internal::LerpImpl( a, b, t );
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Internal::LerpImpl( a, b, t );
+        }
+        else
+        {
+            std::lerp( a, b, t );
+        }
     }
 
     /// <summary>
     /// <para>
     /// Composes a floating point value with the magnitude 
     /// of <c>magnitude</c> and the sign of <c>signValue</c>.
-    /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and
-    /// improves runtime performance for double precision 
-    /// floating point values by 490 %, and by 1.82 % for single 
-    /// precision floating point values.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -5331,10 +5308,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// FLT_RADIX is the radix used by the representation 
     /// of the floating point types.
-    /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and
-    /// improves runtime performance by 421 %.
     /// </para>
     /// </summary>
     /// <param name="x">
@@ -5419,10 +5392,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// FLT_RADIX is the radix used by the representation 
     /// of the floating point types.
-    /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and
-    /// improves runtime performance by 467 %.
     /// </para>
     /// </summary>
     /// <param name="x">
@@ -5783,10 +5752,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the point remainder of the division operation <c>x / y</c>.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and
-    /// improves runtime performance by 89.59 %.
-    /// </para>
     /// </summary>
     /// <typeparam name="FloatT">
     /// A floating point type.
@@ -5802,7 +5767,7 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    inline constexpr std::remove_cvref_t<FloatT> FMod( FloatT x, FloatT y ) noexcept
+    constexpr inline std::remove_cvref_t<FloatT> FMod( FloatT x, FloatT y ) noexcept
     {
         if ( std::is_constant_evaluated( ) )
         {
@@ -6111,10 +6076,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes <c>e</c>, <c>2.7182818</c>, raised to the given power <c>x</c>.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and calls the
-    /// standard implementation at runtime.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -6408,10 +6369,6 @@ namespace Harlinn::Common::Core::Math
     /// without undue overflow or underflow at intermediate stages of 
     /// the computation.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and calls the
-    /// standard implementation at runtime.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -6690,10 +6647,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the natural, base e, logarithm of <c>x</c>.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and calls the
-    /// standard implementation at runtime.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -6929,11 +6882,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the binary, base-2, logarithm of x.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and
-    /// at runtime performs 251% better than std::log2 for single precision floating
-    /// point values, and uses std::log2 for double precision floating point values.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -7124,12 +7072,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the common, base 10, logarithm of x.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated,
-    /// but at runtime calls std::log10f for single precision
-    /// floating point values and std::log10 for double precision
-    /// floating point values.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -7170,12 +7112,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the sine of x given in radians.
     /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and 
-    /// performs 14.38 % better than std::sin for single precision
-    /// floating point values. Calls std::sin double precision
-    /// floating point values.
-    /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
@@ -7202,23 +7138,20 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
+
+                //using FloatType = std::remove_cvref_t<T>;
+                //FloatType result;
+                //_mm_store_sd( &result, _mm_sin_pd( _mm_set_sd( x ) ) );
+                //return result;
                 //return Math::Internal::SinImpl( x );
-                return std::sin( x );
+                return sin( x );
             }
         }
-        
     }
 
     /// <summary>
     /// <para>
     /// Computes the principal value of the arc sine of x.
-    /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and
-    /// at runtime performs 59.78 % better than std::asin
-    /// for double precision floating point values, and
-    /// 109.87 % better than std::asin for single floating 
-    /// point values.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -7240,12 +7173,6 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// <para>
     /// Computes the cosine of x given in radians.
-    /// </para>
-    /// <para>
-    /// This implementation can be constexpr evaluated, and 
-    /// performs 14.93 % better than std::cos for single precision
-    /// floating point values. Calls std::cos double precision
-    /// floating point values.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -7273,7 +7200,11 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
-                return std::cos( x );
+                //using FloatType = std::remove_cvref_t<T>;
+                //FloatType result;
+                //_mm_store_sd( &result, _mm_cos_pd( _mm_set_sd( x ) ) );
+                //return result;
+                return cos( x );
             }
         }
     }
@@ -7281,13 +7212,6 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// <para>
     /// Computes the principal value of the arc cosine of x.
-    /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and
-    /// at runtime performs 90.89 % better than std::acos
-    /// for double precision floating point values, and
-    /// 107.69 % better than std::acos for single floating 
-    /// point values.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -7335,20 +7259,35 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            return std::tan( x );
+            using FloatType = std::remove_cvref_t<T>;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::TanImpl( x );
+            }
+            else
+            {
+                return std::tan( x );
+            }
+            
+            /*
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_tan_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_tan_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+            */
+            //return std::tan( x );
         }
     }
 
     /// <summary>
     /// <para>
     /// Computes the principal value of the arc tangent of x.
-    /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and
-    /// at runtime performs 6.56 % better than std::atan
-    /// for double precision floating point values, and
-    /// 78.08 % better than std::atan for single floating 
-    /// point values.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -7371,13 +7310,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the arc tangent of x / y using the signs of arguments 
     /// to determine the correct quadrant.
-    /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and
-    /// at runtime performs 44.03 % better than std::atan2
-    /// for double precision floating point values, and
-    /// 36.17 % better than std::atan2 for single floating 
-    /// point values.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
@@ -7403,13 +7335,6 @@ namespace Harlinn::Common::Core::Math
     /// <para>
     /// Computes the arc tangent of x / y using the signs of arguments 
     /// to determine the correct quadrant.
-    /// </para>
-    /// <para>
-    /// This function can be constexpr evaluated, and
-    /// at runtime performs 44.03 % better than std::atan2
-    /// for double precision floating point values, and
-    /// 36.17 % better than std::atan2 for single floating 
-    /// point values.
     /// </para>
     /// </summary>
     /// <typeparam name="T">

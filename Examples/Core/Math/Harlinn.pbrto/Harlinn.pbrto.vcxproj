@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{3f2eca82-063f-4681-a655-48b62dcbe30b}</ProjectGuid>
+    <RootNamespace>Harlinnpbrto</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PBRTO=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;UTF8PROC_STATIC=1;_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;WIN32;_DEBUG;HARLINNPBRTO_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.glfw.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PBRTO=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;UTF8PROC_STATIC=1;_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;WIN32;NDEBUG;HARLINNPBRTO_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.glfw.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PBRTO=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;UTF8PROC_STATIC=1;_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_DEBUG;HARLINNPBRTO_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.glfw.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PBRTO=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;UTF8PROC_STATIC=1;_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;NDEBUG;HARLINNPBRTO_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty/Harlinn.glad/include;$(SolutionDir)3rdParty/Harlinn.glfw/include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.Ptex\include;$(SolutionDir)3rdParty\Harlinn.double-conversion\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)src\ext;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.glfw.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="include\pbrto\base\bssrdf.h" />
+    <ClInclude Include="include\pbrto\base\bxdf.h" />
+    <ClInclude Include="include\pbrto\base\camera.h" />
+    <ClInclude Include="include\pbrto\base\film.h" />
+    <ClInclude Include="include\pbrto\base\filter.h" />
+    <ClInclude Include="include\pbrto\base\light.h" />
+    <ClInclude Include="include\pbrto\base\lightsampler.h" />
+    <ClInclude Include="include\pbrto\base\material.h" />
+    <ClInclude Include="include\pbrto\base\medium.h" />
+    <ClInclude Include="include\pbrto\base\sampler.h" />
+    <ClInclude Include="include\pbrto\base\shape.h" />
+    <ClInclude Include="include\pbrto\base\texture.h" />
+    <ClInclude Include="include\pbrto\bsdf.h" />
+    <ClInclude Include="include\pbrto\bssrdf.h" />
+    <ClInclude Include="include\pbrto\bxdfs.h" />
+    <ClInclude Include="include\pbrto\cameras.h" />
+    <ClInclude Include="include\pbrto\cpu\aggregates.h" />
+    <ClInclude Include="include\pbrto\cpu\integrators.h" />
+    <ClInclude Include="include\pbrto\cpu\primitive.h" />
+    <ClInclude Include="include\pbrto\cpu\render.h" />
+    <ClInclude Include="include\pbrto\film.h" />
+    <ClInclude Include="include\pbrto\filters.h" />
+    <ClInclude Include="include\pbrto\gpu\cudagl.h" />
+    <ClInclude Include="include\pbrto\gpu\memory.h" />
+    <ClInclude Include="include\pbrto\gpu\optix\aggregate.h" />
+    <ClInclude Include="include\pbrto\gpu\optix\denoiser.h" />
+    <ClInclude Include="include\pbrto\gpu\optix\optix.h" />
+    <ClInclude Include="include\pbrto\gpu\util.h" />
+    <ClInclude Include="include\pbrto\interaction.h" />
+    <ClInclude Include="include\pbrto\lights.h" />
+    <ClInclude Include="include\pbrto\lightsamplers.h" />
+    <ClInclude Include="include\pbrto\materials.h" />
+    <ClInclude Include="include\pbrto\media.h" />
+    <ClInclude Include="include\pbrto\options.h" />
+    <ClInclude Include="include\pbrto\paramdict.h" />
+    <ClInclude Include="include\pbrto\parser.h" />
+    <ClInclude Include="include\pbrto\pbrt.h" />
+    <ClInclude Include="include\pbrto\pbrtodef.h" />
+    <ClInclude Include="include\pbrto\ray.h" />
+    <ClInclude Include="include\pbrto\samplers.h" />
+    <ClInclude Include="include\pbrto\scene.h" />
+    <ClInclude Include="include\pbrto\shapes.h" />
+    <ClInclude Include="include\pbrto\textures.h" />
+    <ClInclude Include="include\pbrto\util\args.h" />
+    <ClInclude Include="include\pbrto\util\bluenoise.h" />
+    <ClInclude Include="include\pbrto\util\buffercache.h" />
+    <ClInclude Include="include\pbrto\util\check.h" />
+    <ClInclude Include="include\pbrto\util\color.h" />
+    <ClInclude Include="include\pbrto\util\colorspace.h" />
+    <ClInclude Include="include\pbrto\util\containers.h" />
+    <ClInclude Include="include\pbrto\util\display.h" />
+    <ClInclude Include="include\pbrto\util\error.h" />
+    <ClInclude Include="include\pbrto\util\file.h" />
+    <ClInclude Include="include\pbrto\util\float.h" />
+    <ClInclude Include="include\pbrto\util\gui.h" />
+    <ClInclude Include="include\pbrto\util\hash.h" />
+    <ClInclude Include="include\pbrto\util\image.h" />
+    <ClInclude Include="include\pbrto\util\log.h" />
+    <ClInclude Include="include\pbrto\util\loopsubdiv.h" />
+    <ClInclude Include="include\pbrto\util\lowdiscrepancy.h" />
+    <ClInclude Include="include\pbrto\util\math.h" />
+    <ClInclude Include="include\pbrto\util\memory.h" />
+    <ClInclude Include="include\pbrto\util\mesh.h" />
+    <ClInclude Include="include\pbrto\util\mipmap.h" />
+    <ClInclude Include="include\pbrto\util\noise.h" />
+    <ClInclude Include="include\pbrto\util\parallel.h" />
+    <ClInclude Include="include\pbrto\util\pmj02tables.h" />
+    <ClInclude Include="include\pbrto\util\primes.h" />
+    <ClInclude Include="include\pbrto\util\print.h" />
+    <ClInclude Include="include\pbrto\util\progressreporter.h" />
+    <ClInclude Include="include\pbrto\util\pstd.h" />
+    <ClInclude Include="include\pbrto\util\rng.h" />
+    <ClInclude Include="include\pbrto\util\sampling.h" />
+    <ClInclude Include="include\pbrto\util\scattering.h" />
+    <ClInclude Include="include\pbrto\util\soa.h" />
+    <ClInclude Include="include\pbrto\util\sobolmatrices.h" />
+    <ClInclude Include="include\pbrto\util\spectrum.h" />
+    <ClInclude Include="include\pbrto\util\splines.h" />
+    <ClInclude Include="include\pbrto\util\stats.h" />
+    <ClInclude Include="include\pbrto\util\string.h" />
+    <ClInclude Include="include\pbrto\util\taggedptr.h" />
+    <ClInclude Include="include\pbrto\util\transform.h" />
+    <ClInclude Include="include\pbrto\util\vecmath.h" />
+    <ClInclude Include="include\pbrto\wavefront\aggregate.h" />
+    <ClInclude Include="include\pbrto\wavefront\integrator.h" />
+    <ClInclude Include="include\pbrto\wavefront\intersect.h" />
+    <ClInclude Include="include\pbrto\wavefront\wavefront.h" />
+    <ClInclude Include="include\pbrto\wavefront\workitems.h" />
+    <ClInclude Include="include\pbrto\wavefront\workqueue.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="src\ext\rply\rply.h" />
+    <ClInclude Include="src\ext\utf8proc\utf8proc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\bsdf.cpp" />
+    <ClCompile Include="src\bssrdf.cpp" />
+    <ClCompile Include="src\bxdfs.cpp" />
+    <ClCompile Include="src\cameras.cpp" />
+    <ClCompile Include="src\cpu\aggregates.cpp" />
+    <ClCompile Include="src\cpu\integrators.cpp" />
+    <ClCompile Include="src\cpu\primitive.cpp" />
+    <ClCompile Include="src\cpu\render.cpp" />
+    <ClCompile Include="src\ext\rply\rply.cpp" />
+    <ClCompile Include="src\ext\utf8proc\utf8proc.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ext\utf8proc\utf8proc_data.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\film.cpp" />
+    <ClCompile Include="src\filters.cpp" />
+    <ClCompile Include="src\interaction.cpp" />
+    <ClCompile Include="src\lights.cpp" />
+    <ClCompile Include="src\lightsamplers.cpp" />
+    <ClCompile Include="src\materials.cpp" />
+    <ClCompile Include="src\media.cpp" />
+    <ClCompile Include="src\options.cpp" />
+    <ClCompile Include="src\paramdict.cpp" />
+    <ClCompile Include="src\parser.cpp" />
+    <ClCompile Include="src\pbrt.cpp" />
+    <ClCompile Include="src\ray.cpp" />
+    <ClCompile Include="src\samplers.cpp" />
+    <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="src\shapes.cpp" />
+    <ClCompile Include="src\textures.cpp" />
+    <ClCompile Include="src\util\args.cpp" />
+    <ClCompile Include="src\util\bluenoise.cpp" />
+    <ClCompile Include="src\util\buffercache.cpp" />
+    <ClCompile Include="src\util\check.cpp" />
+    <ClCompile Include="src\util\color.cpp" />
+    <ClCompile Include="src\util\colorspace.cpp" />
+    <ClCompile Include="src\util\display.cpp" />
+    <ClCompile Include="src\util\error.cpp" />
+    <ClCompile Include="src\util\file.cpp" />
+    <ClCompile Include="src\util\float.cpp" />
+    <ClCompile Include="src\util\gui.cpp" />
+    <ClCompile Include="src\util\image.cpp" />
+    <ClCompile Include="src\util\log.cpp" />
+    <ClCompile Include="src\util\loopsubdiv.cpp" />
+    <ClCompile Include="src\util\lowdiscrepancy.cpp" />
+    <ClCompile Include="src\util\math.cpp" />
+    <ClCompile Include="src\util\memory.cpp" />
+    <ClCompile Include="src\util\mesh.cpp" />
+    <ClCompile Include="src\util\mipmap.cpp" />
+    <ClCompile Include="src\util\noise.cpp" />
+    <ClCompile Include="src\util\parallel.cpp" />
+    <ClCompile Include="src\util\pmj02tables.cpp" />
+    <ClCompile Include="src\util\primes.cpp" />
+    <ClCompile Include="src\util\print.cpp" />
+    <ClCompile Include="src\util\progressreporter.cpp" />
+    <ClCompile Include="src\util\pstd.cpp" />
+    <ClCompile Include="src\util\rgbspectrum_aces.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="src\util\rgbspectrum_dci_p3.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="src\util\rgbspectrum_rec2020.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="src\util\rgbspectrum_srgb.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="src\util\rng.cpp" />
+    <ClCompile Include="src\util\sampling.cpp" />
+    <ClCompile Include="src\util\scattering.cpp" />
+    <ClCompile Include="src\util\sobolmatrices.cpp" />
+    <ClCompile Include="src\util\spectrum.cpp" />
+    <ClCompile Include="src\util\stats.cpp" />
+    <ClCompile Include="src\util\stbimage.cpp" />
+    <ClCompile Include="src\util\string.cpp" />
+    <ClCompile Include="src\util\transform.cpp" />
+    <ClCompile Include="src\util\vecmath.cpp" />
+    <ClCompile Include="src\wavefront\aggregate.cpp" />
+    <ClCompile Include="src\wavefront\camera.cpp" />
+    <ClCompile Include="src\wavefront\wavefront_film.cpp" />
+    <ClCompile Include="src\wavefront\integrator.cpp" />
+    <ClCompile Include="src\wavefront\wavefront_media.cpp" />
+    <ClCompile Include="src\wavefront\samples.cpp" />
+    <ClCompile Include="src\wavefront\subsurface.cpp" />
+    <ClCompile Include="src\wavefront\surfscatter.cpp" />
+    <ClCompile Include="src\wavefront\wavefront.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\README.md" />
+    <None Include="Readme\THIRD_PARTY.md" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{e219365a-3772-4247-85d8-8134e54b8cfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{e675f032-15f0-4d8c-9d0c-2113b90dd84a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ptex">
+      <UniqueIdentifier>{fae22960-4e72-4ab6-b80c-3bf85b67bb1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{2a6d6e35-5cfe-4d72-99b5-9d8e7d8251c3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexCache.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexFilters.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexHalf.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexHalfTableGen.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexReader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexSeparableFilter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexSeparableKernel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexTriangleFilter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexTriangleKernel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexUtils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PtexWriter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ptex\PtexCache.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexExports.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexHalf.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexHalfTables.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexHashMap.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexInt.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexIO.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexMutex.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexPlatform.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexReader.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexSeparableFilter.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexSeparableKernel.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexTriangleFilter.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexTriangleKernel.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\Ptexture.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexUtils.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexVersion.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ptex\PtexWriter.h">
+      <Filter>include\ptex</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+</Project>

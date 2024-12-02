@@ -283,6 +283,15 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 **Project:** Harlinn.dngsdk
 
+### [Double Conversion](https://github.com/google/double-conversion)
+**Version:** 3.3.0
+
+**Description:**
+> This project (double-conversion) provides binary-decimal and decimal-binary routines for IEEE doubles.
+
+**Project:** Harlinn.double-conversion
+
+
 ### [Effcee](https://github.com/google/effcee)
 **Version:** main as of 2021.09.27
 
@@ -1101,6 +1110,19 @@ odbc-cpp-wrapper is an object-oriented C++-wrapper of the ODBC API.
 - Harlinn.protobuf
 - Tools\\3rdParty\\protobuf\\protoc
 
+### [Ptex](https://github.com/wdas/ptex)
+**Version:** 2.4.3
+
+**Description:**
+> Ptex is a texture mapping system developed by Walt Disney Animation Studios for production-quality rendering:
+> - No UV assignment is required! Ptex applies a separate texture to each face of a subdivision or polygon mesh.
+> - The Ptex file format can efficiently store hundreds of thousands of texture images in a single file.
+> - The Ptex API provides cached file I/O and high-quality filtering - everything that is needed to 
+    easily add Ptex support to a production-quality renderer or texture authoring application.
+
+**Project:** Harlinn.Ptex
+
+ 
 ### [pthreads4w](https://sourceforge.net/projects/pthreads4w/)
 **Version:** 3.0.0
 
