@@ -3373,7 +3373,11 @@ static double checkerboard(Point2f p) {
 static double rotatedCheckerboard(Point2f p) {
     double angle = Radians(45);
     double nrm = 1.00006866455078125;
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    static double sa = Math::Sin( angle ), ca = Math::Cos( angle );
+#else
     static double sa = std::sin(angle), ca = std::cos(angle);
+#endif
     return (double)checkerboard(
                {Float(10 + p.x * ca - p.y * sa), Float(10 + p.x * sa + p.y * ca)}) /
            nrm;

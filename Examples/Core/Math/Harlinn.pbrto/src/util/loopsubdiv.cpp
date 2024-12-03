@@ -338,8 +338,13 @@ TriangleMesh *LoopSubdivide(const Transform *renderFromObject, bool reverseOrien
         if (!vertex->boundary) {
             // Compute tangents of interior face
             for (int j = 0; j < valence; ++j) {
+#ifdef PBRT_USES_HCCMATH_SINCOS
+                S += Math::Cos( 2 * Pi * j / valence ) * Vector3f( pRing[ j ] );
+                T += Math::Sin( 2 * Pi * j / valence ) * Vector3f( pRing[ j ] );
+#else
                 S += std::cos(2 * Pi * j / valence) * Vector3f(pRing[j]);
                 T += std::sin(2 * Pi * j / valence) * Vector3f(pRing[j]);
+#endif
             }
         } else {
             // Compute tangents of boundary face
@@ -353,9 +358,17 @@ TriangleMesh *LoopSubdivide(const Transform *renderFromObject, bool reverseOrien
                              -2 * vertex->p);
             else {
                 Float theta = Pi / float(valence - 1);
+#ifdef PBRT_USES_HCCMATH_SINCOS
+                T = Vector3f( Math::Sin( theta ) * ( pRing[ 0 ] + pRing[ valence - 1 ] ) );
+#else
                 T = Vector3f(std::sin(theta) * (pRing[0] + pRing[valence - 1]));
+#endif
                 for (int k = 1; k < valence - 1; ++k) {
+#ifdef PBRT_USES_HCCMATH_SINCOS
+                    Float wt = ( 2 * Math::Cos( theta ) - 2 ) * Math::Sin( ( k )*theta );
+#else
                     Float wt = (2 * std::cos(theta) - 2) * std::sin((k)*theta);
+#endif
                     T += Vector3f(wt * pRing[k]);
                 }
                 T = -T;

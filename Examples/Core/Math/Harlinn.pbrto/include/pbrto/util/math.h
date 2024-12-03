@@ -340,33 +340,57 @@ PBRT_CPU_GPU inline constexpr Float EvaluatePolynomial(Float t, C c, Args... cRe
 PBRT_CPU_GPU inline Float SinXOverX(Float x) {
     if (1 - x * x == 1)
         return 1;
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    return Math::Sin( x ) / x;
+#else
     return std::sin(x) / x;
+#endif
 }
 
 PBRT_CPU_GPU inline float SafeASin(float x) {
     DCHECK(x >= -1.0001 && x <= 1.0001);
+#ifdef PBRT_USES_HCCMATH
+    return Math::ASin( Math::Clamp( x, -1.0f, 1.0f ) );
+#else
     return std::asin(Clamp(x, -1, 1));
+#endif
 }
 PBRT_CPU_GPU inline float SafeACos(float x) {
     DCHECK(x >= -1.0001 && x <= 1.0001);
+#ifdef PBRT_USES_HCCMATH
+    return Math::ACos( Math::Clamp( x, -1.0f, 1.0f ) );
+#else
     return std::acos(Clamp(x, -1, 1));
+#endif
 }
 
 PBRT_CPU_GPU
 inline double SafeASin(double x) {
     DCHECK(x >= -1.0001 && x <= 1.0001);
+#ifdef PBRT_USES_HCCMATH
+    return Math::ASin( Math::Clamp( x, -1.0, 1.0 ) );
+#else
     return std::asin(Clamp(x, -1, 1));
+#endif
 }
 
 PBRT_CPU_GPU
 inline double SafeACos(double x) {
     DCHECK(x >= -1.0001 && x <= 1.0001);
+#ifdef PBRT_USES_HCCMATH
+    return Math::ACos( Math::Clamp( x, -1.0, 1.0 ) );
+#else
     return std::acos(Clamp(x, -1, 1));
+#endif
 }
 
 PBRT_CPU_GPU inline Float Log2(Float x) {
     const Float invLog2 = 1.442695040888963387004650940071;
+#ifdef PBRT_USES_HCCMATH
+    return Math::Log( x ) * invLog2;
+#else
     return std::log(x) * invLog2;
+#endif
 }
 
 PBRT_CPU_GPU inline int Log2Int(float v) {
@@ -1161,8 +1185,13 @@ PBRT_CPU_GPU inline Interval ACos(Interval i) {
 PBRT_CPU_GPU inline Interval Sin(Interval i) {
     CHECK_GE(i.LowerBound(), -1e-16);
     CHECK_LE(i.UpperBound(), 2.0001 * Pi);
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float low = Math::Sin( std::max<Float>( 0, i.LowerBound( ) ) );
+    Float high = Math::Sin( i.UpperBound( ) );
+#else
     Float low = std::sin(std::max<Float>(0, i.LowerBound()));
     Float high = std::sin(i.UpperBound());
+#endif
     if (low > high)
         pstd::swap(low, high);
     low = std::max<Float>(-1, NextFloatDown(low));

@@ -292,8 +292,11 @@ PBRT_CPU_GPU HairBxDF::HairBxDF(Float h, Float eta, const SampledSpectrum &sigma
     static const Float SqrtPiOver8 = 0.626657069f;
     s = SqrtPiOver8 * (0.265f * beta_n + 1.194f * Sqr(beta_n) + 5.372f * Pow<22>(beta_n));
     DCHECK(!IsNaN(s));
-
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    sin2kAlpha[ 0 ] = Math::Sin( Radians( alpha ) );
+#else
     sin2kAlpha[0] = std::sin(Radians(alpha));
+#endif
     cos2kAlpha[0] = SafeSqrt(1 - Sqr(sin2kAlpha[0]));
     for (int i = 1; i < pMax; ++i) {
         sin2kAlpha[i] = 2 * cos2kAlpha[i - 1] * sin2kAlpha[i - 1];
@@ -452,7 +455,11 @@ PBRT_CPU_GPU pstd::optional<BSDFSample> HairBxDF::Sample_f(Vector3f wo, Float uc
 
     // Compute _wi_ from sampled hair scattering angles
     Float phi_i = phi_o + dphi;
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Vector3f wi( sinTheta_i, cosTheta_i * Math::Cos( phi_i ), cosTheta_i * Math::Sin( phi_i ) );
+#else
     Vector3f wi(sinTheta_i, cosTheta_i * std::cos(phi_i), cosTheta_i * std::sin(phi_i));
+#endif
 
     // Compute PDF for sampled hair scattering direction _wi_
     Float pdf = 0;
@@ -1063,7 +1070,11 @@ PBRT_CPU_GPU pstd::optional<BSDFSample> MeasuredBxDF::Sample_f(Vector3f wo, Floa
     Float phi_m = u2phi(u_wm.y), theta_m = u2theta(u_wm.x);
     if (brdf->isotropic)
         phi_m += phi_o;
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float sinTheta_m = Math::Sin( theta_m ), cosTheta_m = Math::Cos( theta_m );
+#else
     Float sinTheta_m = std::sin(theta_m), cosTheta_m = std::cos(theta_m);
+#endif
     Vector3f wm = SphericalDirection(sinTheta_m, cosTheta_m, phi_m);
     Vector3f wi = Reflect(wo, wm);
     if (wi.z <= 0)

@@ -61,9 +61,15 @@ PBRT_CPU_GPU pstd::array<Float, 3> SampleSphericalTriangle(const pstd::array<Poi
     }
 
     // Find $\cos\beta'$ for point along _b_ for sampled area
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float cosAlpha = Math::Cos( alpha ), sinAlpha = Math::Sin( alpha );
+    Float sinPhi = Math::Sin( Ap_pi ) * cosAlpha - Math::Cos( Ap_pi ) * sinAlpha;
+    Float cosPhi = Math::Cos( Ap_pi ) * cosAlpha + Math::Sin( Ap_pi ) * sinAlpha;
+#else
     Float cosAlpha = std::cos(alpha), sinAlpha = std::sin(alpha);
     Float sinPhi = std::sin(Ap_pi) * cosAlpha - std::cos(Ap_pi) * sinAlpha;
     Float cosPhi = std::cos(Ap_pi) * cosAlpha + std::sin(Ap_pi) * sinAlpha;
+#endif
     Float k1 = cosPhi + cosAlpha;
     Float k2 = sinPhi - sinAlpha * Dot(a, b) /* cos c */;
     Float cosBp = (k2 + (DifferenceOfProducts(k2, cosPhi, k1, sinPhi)) * cosAlpha) /
@@ -201,7 +207,11 @@ PBRT_CPU_GPU Point3f SampleSphericalRectangle(Point3f pRef, Point3f s, Vector3f 
     // Sample _cu_ for spherical rectangle sample
     Float b0 = n0.z, b1 = n2.z;
     Float au = u[0] * (g0 + g1 - 2 * Pi) + (u[0] - 1) * (g2 + g3);
-    Float fu = (std::cos(au) * b0 - b1) / std::sin(au);
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float fu = ( Math::Cos(au) * b0 - b1) / Math::Sin(au);
+#else
+    Float fu = ( std::cos( au ) * b0 - b1 ) / std::sin( au );
+#endif
     Float cu = pstd::copysign(1 / std::sqrt(Sqr(fu) + Sqr(b0)), fu);
     cu = Clamp(cu, -OneMinusEpsilon, OneMinusEpsilon);  // avoid NaNs
 

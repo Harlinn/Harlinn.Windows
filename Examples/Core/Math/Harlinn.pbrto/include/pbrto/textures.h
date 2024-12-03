@@ -120,7 +120,11 @@ class SphericalMapping {
         // Compute $\partial\,s/\partial\,\pt{}$ and $\partial\,t/\partial\,\pt{}$ for
         // spherical mapping
         Float x2y2 = Sqr(pt.x) + Sqr(pt.y);
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float sqrtx2y2 = Math::Sqrt( x2y2 );
+#else
         Float sqrtx2y2 = std::sqrt(x2y2);
+#endif
         Vector3f dsdp = Vector3f(-pt.y, pt.x, 0) / (2 * Pi * x2y2);
         Vector3f dtdp =
             1 / (Pi * (x2y2 + Sqr(pt.z))) *

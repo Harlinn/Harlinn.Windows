@@ -244,7 +244,11 @@ class Sphere {
         Float theta = SafeACos(cosTheta);
         Float v = (theta - thetaZMin) / (thetaZMax - thetaZMin);
         // Compute sphere $\dpdu$ and $\dpdv$
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float zRadius = Math::Sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+#else
         Float zRadius = std::sqrt(Sqr(pHit.x) + Sqr(pHit.y));
+#endif
         Float cosPhi = pHit.x / zRadius, sinPhi = pHit.y / zRadius;
         Vector3f dpdu(-phiMax * pHit.y, phiMax * pHit.x, 0);
         Float sinTheta = SafeSqrt(1 - Sqr(cosTheta));
@@ -325,7 +329,11 @@ class Sphere {
         if (sin2ThetaMax < 0.00068523f /* sin^2(1.5 deg) */) {
             // Compute cone sample via Taylor series expansion for small angles
             sin2Theta = sin2ThetaMax * u[0];
+#ifdef PBRT_USES_HCCMATH_SQRT
+            cosTheta = Math::Sqrt( 1 - sin2Theta );
+#else
             cosTheta = std::sqrt(1 - sin2Theta);
+#endif
             oneMinusCosThetaMax = sin2ThetaMax / 2;
         }
 
@@ -480,7 +488,11 @@ class Disk {
         Float phi = isect.phi;
         // Find parametric representation of disk hit
         Float u = phi / phiMax;
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float rHit = Math::Sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+#else
         Float rHit = std::sqrt(Sqr(pHit.x) + Sqr(pHit.y));
+#endif
         Float v = (radius - rHit) / (radius - innerRadius);
         Vector3f dpdu(-phiMax * pHit.y, phiMax * pHit.x, 0);
         Vector3f dpdv = Vector3f(pHit.x, pHit.y, 0) * (innerRadius - radius) / rHit;
@@ -518,7 +530,11 @@ class Disk {
         Float phi = std::atan2(pd.y, pd.x);
         if (phi < 0)
             phi += 2 * Pi;
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float radiusSample = Math::Sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
+#else
         Float radiusSample = std::sqrt(Sqr(pObj.x) + Sqr(pObj.y));
+#endif
         Point2f uv(phi / phiMax, (radius - radiusSample) / (radius - innerRadius));
 
         return ShapeSample{Interaction(pi, n, uv), 1 / Area()};
@@ -653,7 +669,11 @@ class Cylinder {
         // Compute cylinder hit point and $\phi$
         pHit = Point3f(oi) + (Float)tShapeHit * Vector3f(di);
         // Refine cylinder intersection point
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float hitRad = Math::Sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+#else
         Float hitRad = std::sqrt(Sqr(pHit.x) + Sqr(pHit.y));
+#endif
         pHit.x *= radius / hitRad;
         pHit.y *= radius / hitRad;
 
@@ -671,7 +691,11 @@ class Cylinder {
             // Compute cylinder hit point and $\phi$
             pHit = Point3f(oi) + (Float)tShapeHit * Vector3f(di);
             // Refine cylinder intersection point
+#ifdef PBRT_USES_HCCMATH_SQRT
+            Float hitRad = Math::Sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+#else
             Float hitRad = std::sqrt(Sqr(pHit.x) + Sqr(pHit.y));
+#endif
             pHit.x *= radius / hitRad;
             pHit.y *= radius / hitRad;
 
@@ -736,9 +760,17 @@ class Cylinder {
         Float z = Lerp(u[0], zMin, zMax);
         Float phi = u[1] * phiMax;
         // Compute cylinder sample position _pi_ and normal _n_ from $z$ and $\phi$
+#ifdef PBRT_USES_HCCMATH_SINCOS
+        Point3f pObj = Point3f( radius * Math::Cos( phi ), radius * Math::Sin( phi ), z );
+#else
         Point3f pObj = Point3f(radius * std::cos(phi), radius * std::sin(phi), z);
+#endif
         // Reproject _pObj_ to cylinder surface and compute _pObjError_
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float hitRad = Math::Sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
+#else
         Float hitRad = std::sqrt(Sqr(pObj.x) + Sqr(pObj.y));
+#endif
         pObj.x *= radius / hitRad;
         pObj.y *= radius / hitRad;
         Vector3f pObjError = gamma(3) * Abs(Vector3f(pObj.x, pObj.y, 0));

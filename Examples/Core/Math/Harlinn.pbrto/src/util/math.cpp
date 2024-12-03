@@ -308,8 +308,13 @@ PBRT_CPU_GPU Vector3f EqualAreaSquareToSphere(Point2f p) {
     Float z = pstd::copysign(1 - Sqr(r), signedDistance);
 
     // Compute $\cos\phi$ and $\sin\phi$ for original quadrant and return vector
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float cosPhi = pstd::copysign( Math::Cos( phi ), u );
+    Float sinPhi = pstd::copysign( Math::Sin( phi ), v );
+#else
     Float cosPhi = pstd::copysign(std::cos(phi), u);
     Float sinPhi = pstd::copysign(std::sin(phi), v);
+#endif
     return Vector3f(cosPhi * r * SafeSqrt(2 - Sqr(r)), sinPhi * r * SafeSqrt(2 - Sqr(r)),
                     z);
 }

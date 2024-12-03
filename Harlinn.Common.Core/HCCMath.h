@@ -7134,7 +7134,8 @@ namespace Harlinn::Common::Core::Math
         {
             if constexpr ( std::is_same_v<std::remove_cvref_t<T>, float> )
             {
-                return Math::Internal::SinImpl( x );
+                //return Math::Internal::SinImpl( x );
+                return sinf( x );
             }
             else
             {
@@ -7196,7 +7197,8 @@ namespace Harlinn::Common::Core::Math
         {
             if constexpr ( std::is_same_v<std::remove_cvref_t<T>, float> )
             {
-                return Math::Internal::CosImpl( x );
+                //return Math::Internal::CosImpl( x );
+                return cosf( x );
             }
             else
             {

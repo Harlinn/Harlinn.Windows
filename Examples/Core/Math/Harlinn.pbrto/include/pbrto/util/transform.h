@@ -241,8 +241,13 @@ PBRT_CPU_GPU inline Transform Rotate(Float sinTheta, Float cosTheta, Vector3f ax
 }
 
 PBRT_CPU_GPU inline Transform Rotate(Float theta, Vector3f axis) {
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float sinTheta = Math::Sin( Radians( theta ) );
+    Float cosTheta = Math::Cos( Radians( theta ) );
+#else
     Float sinTheta = std::sin(Radians(theta));
     Float cosTheta = std::cos(Radians(theta));
+#endif
     return Rotate(sinTheta, cosTheta, axis);
 }
 

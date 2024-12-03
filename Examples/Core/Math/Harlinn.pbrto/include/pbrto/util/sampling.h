@@ -244,8 +244,13 @@ inline Float InvertNormalSample(Float x, Float mu = 0, Float sigma = 1) {
 
 PBRT_CPU_GPU inline Point2f SampleTwoNormal(Point2f u, Float mu = 0, Float sigma = 1) {
     Float r2 = -2 * std::log(1 - u[0]);
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    return { mu + sigma * Math::Sqrt( r2 * Math::Cos( 2 * Pi * u[ 1 ] ) ),
+            mu + sigma * Math::Sqrt( r2 * Math::Sin( 2 * Pi * u[ 1 ] ) ) };
+#else
     return {mu + sigma * std::sqrt(r2 * std::cos(2 * Pi * u[1])),
             mu + sigma * std::sqrt(r2 * std::sin(2 * Pi * u[1]))};
+#endif
 }
 
 PBRT_CPU_GPU inline Float LogisticPDF(Float x, Float s) {
@@ -311,7 +316,11 @@ PBRT_CPU_GPU inline Float InvertSmoothStepSample(Float x, Float a, Float b) {
 PBRT_CPU_GPU inline Point2f SampleUniformDiskPolar(Point2f u) {
     Float r = std::sqrt(u[0]);
     Float theta = 2 * Pi * u[1];
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    return { r * Math::Cos( theta ), r * Math::Sin( theta ) };
+#else
     return {r * std::cos(theta), r * std::sin(theta)};
+#endif
 }
 
 PBRT_CPU_GPU
@@ -337,14 +346,22 @@ PBRT_CPU_GPU inline Point2f SampleUniformDiskConcentric(Point2f u) {
         r = uOffset.y;
         theta = PiOver2 - PiOver4 * (uOffset.x / uOffset.y);
     }
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    return r * Point2f( Math::Cos( theta ), Math::Sin( theta ) );
+#else
     return r * Point2f(std::cos(theta), std::sin(theta));
+#endif
 }
 
 PBRT_CPU_GPU
 inline Point2f InvertUniformDiskConcentricSample(Point2f p) {
+#ifdef PBRT_USES_HCCMATH
+    Float theta = Math::ATan2( p.y, p.x );  // -pi -> pi
+    Float r = Math::Sqrt( Sqr( p.x ) + Sqr( p.y ) );
+#else
     Float theta = std::atan2(p.y, p.x);  // -pi -> pi
     Float r = std::sqrt(Sqr(p.x) + Sqr(p.y));
-
+#endif
     Point2f uo;
     // TODO: can we make this less branchy?
     if (std::abs(theta) < PiOver4 || std::abs(theta) > 3 * PiOver4) {
@@ -374,7 +391,11 @@ PBRT_CPU_GPU inline Vector3f SampleUniformHemisphere(Point2f u) {
     Float z = u[0];
     Float r = SafeSqrt(1 - Sqr(z));
     Float phi = 2 * Pi * u[1];
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    return { r * Math::Cos( phi ), r * Math::Sin( phi ), z };
+#else
     return {r * std::cos(phi), r * std::sin(phi), z};
+#endif
 }
 
 PBRT_CPU_GPU inline Float UniformHemispherePDF() {
@@ -392,7 +413,11 @@ PBRT_CPU_GPU inline Vector3f SampleUniformSphere(Point2f u) {
     Float z = 1 - 2 * u[0];
     Float r = SafeSqrt(1 - Sqr(z));
     Float phi = 2 * Pi * u[1];
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    return { r * Math::Cos( phi ), r * Math::Sin( phi ), z };
+#else
     return {r * std::cos(phi), r * std::sin(phi), z};
+#endif
 }
 
 PBRT_CPU_GPU inline Float UniformSpherePDF() {
@@ -474,9 +499,13 @@ inline Vector3f SampleUniformHemisphereConcentric(Point2f u) {
         r = uOffset.y;
         theta = PiOver2 - PiOver4 * (uOffset.x / uOffset.y);
     }
-
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    return Vector3f( Math::Cos( theta ) * r * Math::Sqrt( 2 - r * r ),
+        Math::Sin( theta ) * r * Math::Sqrt( 2 - r * r ), 1 - r * r );
+#else
     return Vector3f(std::cos(theta) * r * std::sqrt(2 - r * r),
                     std::sin(theta) * r * std::sqrt(2 - r * r), 1 - r * r);
+#endif
 }
 
 // VarianceEstimator Definition

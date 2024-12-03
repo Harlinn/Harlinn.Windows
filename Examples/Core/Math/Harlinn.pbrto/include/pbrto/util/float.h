@@ -110,53 +110,76 @@ inline long double FMA(long double a, long double b, long double c) {
 }
 
 PBRT_CPU_GPU
+PBRT_CONSTEXPR
 inline uint32_t FloatToBits(float f) {
 #ifdef PBRT_IS_GPU_CODE
     return __float_as_uint(f);
 #else
+ #ifdef PBRT_USES_HCCMATH
+    return std::bit_cast< uint32_t >( f );
+ #else
     return pstd::bit_cast<uint32_t>(f);
+ #endif
 #endif
 }
 
 PBRT_CPU_GPU
+PBRT_CONSTEXPR
 inline float BitsToFloat(uint32_t ui) {
 #ifdef PBRT_IS_GPU_CODE
     return __uint_as_float(ui);
 #else
+ #ifdef PBRT_USES_HCCMATH
+    return std::bit_cast< float >( ui );
+ #else
     return pstd::bit_cast<float>(ui);
+ #endif
 #endif
 }
 
 PBRT_CPU_GPU
+PBRT_CONSTEXPR
 inline int Exponent(float v) {
     return (FloatToBits(v) >> 23) - 127;
 }
 
 PBRT_CPU_GPU
+PBRT_CONSTEXPR
 inline int Significand(float v) {
     return FloatToBits(v) & ((1 << 23) - 1);
 }
 
 PBRT_CPU_GPU
+PBRT_CONSTEXPR
 inline uint32_t SignBit(float v) {
     return FloatToBits(v) & 0x80000000;
 }
 
 PBRT_CPU_GPU
+PBRT_CONSTEXPR
 inline uint64_t FloatToBits(double f) {
 #ifdef PBRT_IS_GPU_CODE
     return __double_as_longlong(f);
 #else
+ #ifdef PBRT_USES_HCCMATH
+    return std::bit_cast< uint64_t >( f );
+ #else
     return pstd::bit_cast<uint64_t>(f);
+ #endif
 #endif
 }
 
 PBRT_CPU_GPU
+PBRT_CONSTEXPR
 inline double BitsToFloat(uint64_t ui) {
 #ifdef PBRT_IS_GPU_CODE
     return __longlong_as_double(ui);
 #else
+ #ifdef PBRT_USES_HCCMATH
+    return std::bit_cast< double >( ui );
+ #else
     return pstd::bit_cast<double>(ui);
+ #endif
 #endif
 }
 
@@ -282,7 +305,11 @@ inline PBRT_CPU_GPU Float SqrtRoundUp(Float a) {
     return __fsqrt_ru(a);
 #endif
 #else  // GPU
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return NextFloatUp( Math::Sqrt( a ) );
+#else
     return NextFloatUp(std::sqrt(a));
+#endif
 #endif
 }
 
@@ -294,7 +321,11 @@ inline PBRT_CPU_GPU Float SqrtRoundDown(Float a) {
     return __fsqrt_rd(a);
 #endif
 #else  // GPU
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return std::max<Float>( 0, NextFloatDown( Math::Sqrt( a ) ) );
+#else
     return std::max<Float>(0, NextFloatDown(std::sqrt(a)));
+#endif
 #endif
 }
 

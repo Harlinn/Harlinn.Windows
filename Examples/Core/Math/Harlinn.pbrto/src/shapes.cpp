@@ -476,7 +476,11 @@ CurveCommon::CurveCommon(pstd::span<const Point3f> c, Float width0, Float width1
         n[0] = Normalize(norm[0]);
         n[1] = Normalize(norm[1]);
         normalAngle = AngleBetween(n[0], n[1]);
+#ifdef PBRT_USES_HCCMATH_SINCOS
+        invSinNormalAngle = 1 / Math::Sin( normalAngle );
+#else
         invSinNormalAngle = 1 / std::sin(normalAngle);
+#endif
     }
     ++nCurves;
 }
@@ -660,10 +664,18 @@ bool Curve::RecursiveIntersect(const Ray &ray, Float tMax, pstd::span<const Poin
             if (common->normalAngle == 0)
                 nHit = common->n[0];
             else {
+                
+#ifdef PBRT_USES_HCCMATH_SINCOS
+                Float sin0 =
+                    Math::Sin( ( 1 - u ) * common->normalAngle ) * common->invSinNormalAngle;
+                Float sin1 =
+                    Math::Sin( u * common->normalAngle ) * common->invSinNormalAngle;
+#else
                 Float sin0 =
                     std::sin((1 - u) * common->normalAngle) * common->invSinNormalAngle;
                 Float sin1 =
                     std::sin(u * common->normalAngle) * common->invSinNormalAngle;
+#endif
                 nHit = sin0 * common->n[0] + sin1 * common->n[1];
             }
             hitWidth *= AbsDot(nHit, ray.d) / rayLength;

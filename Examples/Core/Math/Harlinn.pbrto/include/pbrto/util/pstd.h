@@ -7,6 +7,11 @@
 
 #include <pbrto/util/check.h>
 
+#ifdef PBRT_USES_HCCMATH
+#include <HCCMath.h>
+using namespace Harlinn::Common::Core;
+#endif
+
 #include <float.h>
 #include <limits.h>
 #include <cassert>
@@ -21,6 +26,8 @@
 #include <type_traits>
 #include <typeinfo>
 #include <utility>
+
+
 
 namespace pstd {
 

@@ -72,5 +72,11 @@
 #define PBRT_HAVE__ALIGNED_MALLOC 1
 #endif
 
+#define PBRT_USES_HCCMATH 1
+#define PBRT_USES_HCCMATH_SINCOS 1
+#define PBRT_USES_HCCMATH_SQRT 1
+
+#define PBRT_CONSTEXPR constexpr
+
 
 #endif

@@ -2,6 +2,7 @@
 //
 
 #include <HCCMath.h>
+#include <pbrto/util/math.h>
 #include <benchmark/benchmark.h>
 #include <random>
 
@@ -129,6 +130,17 @@ static void BenchmarkDoubleStdIsNaN( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleStdIsNaN );
 
+static void BenchmarkDoublePbrtoIsNaN( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::IsNaN( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoublePbrtoIsNaN );
+
+
 static void BenchmarkFloatIsNaN( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -148,6 +160,17 @@ static void BenchmarkFloatStdIsNaN( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatStdIsNaN );
+
+static void BenchmarkFloatPbrtoIsNaN( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::IsNaN( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtoIsNaN );
+
 
 static void BenchmarkDoubleSignum( benchmark::State& state )
 {
@@ -204,6 +227,17 @@ static void BenchmarkDoubleDeg2Rad( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleDeg2Rad );
 
+static void BenchmarkDoublePbrtRadians( benchmark::State& state )
+{
+    DoubleAngleInDegreesGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Radians( DoubleAngleInDegreesGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoublePbrtRadians );
+
+
 static void BenchmarkFloatDeg2Rad( benchmark::State& state )
 {
     FloatAngleInDegreesGenerator.Reset( );
@@ -213,6 +247,17 @@ static void BenchmarkFloatDeg2Rad( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatDeg2Rad );
+
+static void BenchmarkFloatPbrtRadians( benchmark::State& state )
+{
+    FloatAngleInDegreesGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Radians( FloatAngleInDegreesGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtRadians );
+
 
 static void BenchmarkDoubleRad2Deg( benchmark::State& state )
 {
@@ -224,6 +269,17 @@ static void BenchmarkDoubleRad2Deg( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleRad2Deg );
 
+static void BenchmarkDoublePbrtDegrees( benchmark::State& state )
+{
+    DoubleAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Degrees( DoubleAngleInRadiansGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoublePbrtDegrees );
+
+
 static void BenchmarkFloatRad2Deg( benchmark::State& state )
 {
     FloatAngleInRadiansGenerator.Reset( );
@@ -233,6 +289,17 @@ static void BenchmarkFloatRad2Deg( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatRad2Deg );
+
+static void BenchmarkFloatPbrtDegrees( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Degrees( FloatAngleInRadiansGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtDegrees );
+
 
 static void BenchmarkDoubleNextAfter( benchmark::State& state )
 {
@@ -304,6 +371,17 @@ static void BenchmarkDoubleStdSqrt( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleStdSqrt );
 
+static void BenchmarkDoublePbrtSqrt( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pstd::sqrt( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoublePbrtSqrt );
+
+
 static void BenchmarkFloatInternalSqrt( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -333,6 +411,17 @@ static void BenchmarkFloatStdSqrt( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatStdSqrt );
+
+static void BenchmarkFloatPbrtSqrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pstd::sqrt( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtSqrt );
+
 
 static void BenchmarkDoubleNextDown( benchmark::State& state )
 {
@@ -373,6 +462,17 @@ static void BenchmarkFloatStdNextDown( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatStdNextDown );
+
+static void BenchmarkFloatPbrtNextFloatDown( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::NextFloatDown( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtNextFloatDown );
+
 
 static void BenchmarkDoubleNextUp( benchmark::State& state )
 {
@@ -415,6 +515,17 @@ static void BenchmarkFloatStdNextUp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatStdNextUp );
 
+static void BenchmarkFloatPbrtNextFloatUp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::NextFloatUp( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtNextFloatUp );
+
+
 static void BenchmarkDoubleIsInf( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -455,6 +566,17 @@ static void BenchmarkFloatStdIsInf( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatStdIsInf );
 
+static void BenchmarkFloatPbrtIsInf( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::IsInf( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtIsInf );
+
+
 static void BenchmarkDoubleInternalAbs( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -484,6 +606,17 @@ static void BenchmarkDoubleStdAbs( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkDoubleStdAbs );
+
+static void BenchmarkDoublePbrtAbs( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pstd::abs( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoublePbrtAbs );
+
 
 static void BenchmarkFloatInternalAbs( benchmark::State& state )
 {
@@ -515,6 +648,17 @@ static void BenchmarkFloatStdAbs( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatStdAbs );
+
+static void BenchmarkFloatPbrtAbs( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pstd::abs( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtAbs );
+
 
 static void BenchmarkDoubleSignBit( benchmark::State& state )
 {
@@ -926,6 +1070,16 @@ static void BenchmarkFloatStdClamp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatStdClamp );
 
+static void BenchmarkFloatPbrtClamp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Clamp( FloatGenerator( ), -1000.0f, 1000.0f ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtClamp );
+
 static void BenchmarkDoubleLerp( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -966,6 +1120,18 @@ static void BenchmarkFloatStdLerp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatStdLerp );
 
+static void BenchmarkFloatPbrtLerp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Lerp( 5.0f, 10.0f, FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtLerp );
+
+
+
 static void BenchmarkDoubleCopySign( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -986,6 +1152,17 @@ static void BenchmarkDoubleStdCopySign( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleStdCopySign );
 
+static void BenchmarkDoublePbrtCopySign( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pstd::copysign( DoubleGenerator( ), -1.0 ) );
+    }
+}
+BENCHMARK( BenchmarkDoublePbrtCopySign );
+
+
 static void BenchmarkFloatCopySign( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -1005,6 +1182,17 @@ static void BenchmarkFloatStdCopySign( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatStdCopySign );
+
+static void BenchmarkFloatPbrtCopySign( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pstd::copysign( FloatGenerator( ), -1.0f ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtCopySign );
+
 
 static void BenchmarkDoubleScaleByN( benchmark::State& state )
 {
@@ -1086,6 +1274,17 @@ static void BenchmarkFloatStdFMod( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatStdFMod );
 
+static void BenchmarkFloatPbrtFMod( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pstd::fmod( FloatGenerator( ), static_cast< float >( M_PI ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtFMod );
+
+
 static void BenchmarkDoubleInternalExpImpl( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -1145,6 +1344,17 @@ static void BenchmarkFloatStdExp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatStdExp );
+
+static void BenchmarkFloatPbrtFastExp( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::FastExp( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatPbrtFastExp );
+
 
 static void BenchmarkDoubleInternalHypot( benchmark::State& state )
 {

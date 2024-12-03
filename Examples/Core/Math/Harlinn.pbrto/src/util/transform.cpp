@@ -48,8 +48,13 @@ PBRT_CPU_GPU Transform Scale(Float x, Float y, Float z) {
 
 // clang-format off
 PBRT_CPU_GPU Transform RotateX(Float theta) {
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float sinTheta = Math::Sin( Radians( theta ) );
+    Float cosTheta = Math::Cos( Radians( theta ) );
+#else
     Float sinTheta = std::sin(Radians(theta));
     Float cosTheta = std::cos(Radians(theta));
+#endif
     SquareMatrix<4> m(1,        0,         0, 0,
                       0, cosTheta, -sinTheta, 0,
                       0, sinTheta,  cosTheta, 0,
@@ -60,8 +65,13 @@ PBRT_CPU_GPU Transform RotateX(Float theta) {
 
 // clang-format off
 PBRT_CPU_GPU Transform RotateY(Float theta) {
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float sinTheta = Math::Sin( Radians( theta ) );
+    Float cosTheta = Math::Cos( Radians( theta ) );
+#else
     Float sinTheta = std::sin(Radians(theta));
     Float cosTheta = std::cos(Radians(theta));
+#endif
     SquareMatrix<4> m( cosTheta, 0, sinTheta, 0,
                               0, 1,        0, 0,
                       -sinTheta, 0, cosTheta, 0,
@@ -69,8 +79,13 @@ PBRT_CPU_GPU Transform RotateY(Float theta) {
     return Transform(m, Transpose(m));
 }
 PBRT_CPU_GPU Transform RotateZ(Float theta) {
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    Float sinTheta = Math::Sin( Radians( theta ) );
+    Float cosTheta = Math::Cos( Radians( theta ) );
+#else
     Float sinTheta = std::sin(Radians(theta));
     Float cosTheta = std::cos(Radians(theta));
+#endif
     SquareMatrix<4> m(cosTheta, -sinTheta, 0, 0,
                       sinTheta,  cosTheta, 0, 0,
                              0,         0, 1, 0,
@@ -1144,12 +1159,19 @@ PBRT_CPU_GPU void AnimatedTransform::FindZeros(Float c1, Float c2, Float c3, Flo
         Float tNewton = tInterval.Midpoint();
         for (int i = 0; i < 4; ++i) {
             // Evaluate motion function derivative and its derivative at _tNewton_
+#ifdef PBRT_USES_HCCMATH_SINCOS
+            Float fNewton = c1 + ( c2 + c3 * tNewton ) * Math::Cos( 2 * theta * tNewton ) +
+                ( c4 + c5 * tNewton ) * Math::Sin( 2 * theta * tNewton );
+            Float fPrimeNewton =
+                ( c3 + 2 * ( c4 + c5 * tNewton ) * theta ) * Math::Cos( 2 * tNewton * theta ) +
+                ( c5 - 2 * ( c2 + c3 * tNewton ) * theta ) * Math::Sin( 2 * tNewton * theta );
+#else
             Float fNewton = c1 + (c2 + c3 * tNewton) * std::cos(2 * theta * tNewton) +
                             (c4 + c5 * tNewton) * std::sin(2 * theta * tNewton);
             Float fPrimeNewton =
                 (c3 + 2 * (c4 + c5 * tNewton) * theta) * std::cos(2 * tNewton * theta) +
                 (c5 - 2 * (c2 + c3 * tNewton) * theta) * std::sin(2 * tNewton * theta);
-
+#endif
             if (fNewton == 0 || fPrimeNewton == 0)
                 break;
             tNewton = tNewton - fNewton / fPrimeNewton;

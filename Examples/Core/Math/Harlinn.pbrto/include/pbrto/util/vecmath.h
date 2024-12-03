@@ -1671,8 +1671,13 @@ PBRT_CPU_GPU inline Vector3f SphericalDirection(Float sinTheta, Float cosTheta,
                                                 Float phi) {
     DCHECK(sinTheta >= -1.0001 && sinTheta <= 1.0001);
     DCHECK(cosTheta >= -1.0001 && cosTheta <= 1.0001);
+#ifdef PBRT_USES_HCCMATH_SINCOS
+    return Vector3f( Math::Clamp( sinTheta, -1.0f, 1.0f ) * Math::Cos( phi ),
+        Math::Clamp( sinTheta, -1.0f, 1.0f ) * Math::Sin( phi ), Math::Clamp( cosTheta, -1.0f, 1.0f ) );
+#else
     return Vector3f(Clamp(sinTheta, -1, 1) * std::cos(phi),
                     Clamp(sinTheta, -1, 1) * std::sin(phi), Clamp(cosTheta, -1, 1));
+#endif
 }
 
 PBRT_CPU_GPU inline Float SphericalTheta(Vector3f v) {

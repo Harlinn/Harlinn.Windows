@@ -172,10 +172,17 @@ class CameraBase {
         Point3f px = xRay(tx), py = yRay(ty);
 
         // Estimate $\dpdx$ and $\dpdy$ in tangent plane at intersection point
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float sppScale =
+            GetOptions( ).disablePixelJitter
+            ? 1
+            : std::max<Float>( .125, 1 / Math::Sqrt( ( Float )samplesPerPixel ) );
+#else
         Float sppScale =
             GetOptions().disablePixelJitter
                 ? 1
                 : std::max<Float>(.125, 1 / std::sqrt((Float)samplesPerPixel));
+#endif
         *dpdx =
             sppScale * RenderFromCamera(DownZFromCamera.ApplyInverse(px - pDownZ), time);
         *dpdy =
