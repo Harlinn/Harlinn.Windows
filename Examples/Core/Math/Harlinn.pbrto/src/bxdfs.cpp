@@ -433,8 +433,13 @@ PBRT_CPU_GPU pstd::optional<BSDFSample> HairBxDF::Sample_f(Vector3f wo, Float uc
     cosThetap_o = std::abs(cosThetap_o);
 
     // Sample $M_p$ to compute $\thetai$
+#ifdef PBRT_USES_HCCMATH_LOG
+    Float cosTheta = 1 + v[ p ] * Math::Log( std::max<Float>( u[ 0 ], 1e-5 ) +
+        ( 1 - u[ 0 ] ) * FastExp( -2 / v[ p ] ) );
+#else
     Float cosTheta = 1 + v[p] * std::log(std::max<Float>(u[0], 1e-5) +
                                          (1 - u[0]) * FastExp(-2 / v[p]));
+#endif
     Float sinTheta = SafeSqrt(1 - Sqr(cosTheta));
     Float cosPhi = std::cos(2 * Pi * u[1]);
     Float sinTheta_i = -cosTheta * sinThetap_o + sinTheta * cosPhi * cosThetap_o;
@@ -567,11 +572,20 @@ PBRT_CPU_GPU RGBUnboundedSpectrum HairBxDF::SigmaAFromConcentration(Float ce, Fl
 PBRT_CPU_GPU SampledSpectrum HairBxDF::SigmaAFromReflectance(const SampledSpectrum &c, Float beta_n,
                                                 const SampledWavelengths &lambda) {
     SampledSpectrum sigma_a;
-    for (int i = 0; i < NSpectrumSamples; ++i)
-        sigma_a[i] =
-            Sqr(std::log(c[i]) / (5.969f - 0.215f * beta_n + 2.532f * Sqr(beta_n) -
-                                  10.73f * Pow<3>(beta_n) + 5.574f * Pow<4>(beta_n) +
-                                  0.245f * Pow<5>(beta_n)));
+    for ( int i = 0; i < NSpectrumSamples; ++i )
+    {
+#ifdef PBRT_USES_HCCMATH_LOG
+        sigma_a[ i ] =
+            Sqr( Math::Log( c[ i ] ) / ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
+                10.73f * Pow<3>( beta_n ) + 5.574f * Pow<4>( beta_n ) +
+                0.245f * Pow<5>( beta_n ) ) );
+#else
+        sigma_a[ i ] =
+            Sqr( std::log( c[ i ] ) / ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
+                10.73f * Pow<3>( beta_n ) + 5.574f * Pow<4>( beta_n ) +
+                0.245f * Pow<5>( beta_n ) ) );
+#endif
+    }
     return sigma_a;
 }
 
@@ -1125,7 +1139,11 @@ PBRT_CPU_GPU Float MeasuredBxDF::PDF(Vector3f wo, Vector3f wi, TransportMode mod
     Float vndfPDF = ui.pdf;
 
     Float pdf = brdf->luminance.Evaluate(sample, phi_o, theta_o);
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float sinTheta_m = Math::Sqrt( Sqr( wm.x ) + Sqr( wm.y ) );
+#else
     Float sinTheta_m = std::sqrt(Sqr(wm.x) + Sqr(wm.y));
+#endif
     Float jacobian =
         4.f * Dot(wo, wm) * std::max<Float>(2 * Sqr(Pi) * u_wm.x * sinTheta_m, 1e-6f);
     return vndfPDF * pdf / jacobian;

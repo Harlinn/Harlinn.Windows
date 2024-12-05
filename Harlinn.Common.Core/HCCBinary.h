@@ -236,12 +236,12 @@ namespace Harlinn::Common::Core
         {
             if ( data_ )
             {
-                if ( position < data_->buffer_ )
+                if ( position.ptr_ < data_->buffer_ )
                 {
                     throw std::out_of_range( "position < begin()" );
                 }
                 auto currentSize = data_->size_;
-                if ( position >= &data_->buffer_[ currentSize ] )
+                if ( position.ptr_ >= &data_->buffer_[ currentSize ] )
                 {
                     throw std::out_of_range( "position >= end()" );
                 }
@@ -832,22 +832,22 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] constexpr iterator begin( ) noexcept
         {
-            return data_ ? data_->buffer_ : nullptr;
+            return iterator( data_ ? data_->buffer_ : nullptr );
         }
 
         [[nodiscard]] constexpr iterator end( ) noexcept
         {
-            return data_ ? &data_->buffer_[ data_->size_ ] : nullptr;
+            return iterator( data_ ? &data_->buffer_[ data_->size_ ] : nullptr );
         }
 
         [[nodiscard]] constexpr const_iterator begin( ) const noexcept
         {
-            return data_ ? data_->buffer_ : nullptr;
+            return const_iterator(data_ ? data_->buffer_ : nullptr);
         }
 
         [[nodiscard]] constexpr const_iterator end( ) const noexcept
         {
-            return data_ ? &data_->buffer_[ data_->size_ ] : nullptr;
+            return const_iterator(data_ ? &data_->buffer_[ data_->size_ ] : nullptr);
         }
 
         [[nodiscard]] constexpr const_iterator cbegin( ) const noexcept
@@ -1119,80 +1119,218 @@ namespace Harlinn::Common::Core
             requires std::is_same_v<std::remove_cvref_t<typename T::value_type>, Byte>
         Binary& operator += ( const T& other ) { Append( other.data( ), other.size( ) ); return *this; }
 
-        iterator Insert( const_iterator pos, Byte b )
+        iterator Insert( size_type index, const Byte* buffer, size_type bufferLength, Byte padByte = 0 )
         {
-            auto position = pos.ptr_;
-            iterator end_ = Extend( 1 );
-            if ( position < end_ )
+            auto size = Length( );
+            if ( size )
             {
-                memmove( position + 1, position, static_cast< size_t >( end_ - position ) );
+                if ( index < size )
+                {
+                    if ( bufferLength )
+                    {
+                        auto endPtr = Extend( bufferLength );
+                        auto startPtr = data_->buffer_;
+                        auto positionPtr = startPtr + index;
+                        memmove( positionPtr + bufferLength, positionPtr, static_cast< size_t >( endPtr - positionPtr ) );
+                        memcpy( positionPtr, buffer, bufferLength );
+                        return iterator( positionPtr );
+                    }
+                    else
+                    {
+                        return iterator( data_->buffer_ + index );
+                    }
+                }
+                else if ( index == size )
+                {
+                    if ( bufferLength )
+                    {
+                        auto endPtr = Extend( bufferLength );
+                        memcpy( endPtr, buffer, bufferLength );
+                        return iterator( endPtr );
+                    }
+                    else
+                    {
+                        return iterator( data_->buffer_ + index );
+                    }
+                }
+                else
+                {
+                    auto padding = index - size;
+                    auto endPtr = Extend( padding + bufferLength );
+                    memset( endPtr, padByte, padding );
+                    auto positionPtr = endPtr + padding;
+                    memcpy( positionPtr, buffer, bufferLength );
+                    return iterator( positionPtr );
+                }
             }
-            *position = b;
-            return position;
-        }
-
-        iterator insert( const_iterator pos, Byte b )
-        {
-            return Insert( pos, b );
-        }
-
-        iterator Insert( const_iterator pos, size_type count, Byte b )
-        {
-            auto position = pos.ptr_;
-            iterator end_ = Extend( count );
-            if ( position < end_ )
+            else
             {
-                memmove( position + count, position, static_cast< size_t >( end_ - position ) );
+                auto endPtr = Extend( index + bufferLength );
+                if ( index )
+                {
+                    memset( endPtr, padByte, index );
+                    auto positionPtr = endPtr + index;
+                    memcpy( positionPtr, buffer, bufferLength );
+                    return iterator( positionPtr );
+                }
+                else
+                {
+                    memcpy( endPtr, buffer, bufferLength );
+                    return iterator( endPtr );
+                }
             }
-            memset( position, b, count );
-            return position;
         }
 
-        iterator insert( const_iterator pos, size_type count, Byte b )
+        iterator insert( size_type index, const Byte* buffer, size_type bufferLength, Byte padByte = 0 )
         {
-            return Insert( pos, count, b );
+            return Insert( index, buffer, bufferLength, padByte );
         }
 
-
-        iterator Insert( size_type index, size_type count, Byte b )
+        template<SimpleSpanLike BufferT>
+            requires std::is_same_v<Byte, typename BufferT::value_type>
+        iterator Insert( size_type index, const BufferT& buffer, Byte padByte = 0 )
         {
-            const_iterator pos = cbegin( ) + index;
-            return insert( pos, count, b );
+            return Insert( index, buffer.data( ), buffer.size( ), padByte );
         }
 
-        iterator insert( size_type index, size_type count, Byte b )
+        template<SimpleSpanLike BufferT>
+            requires std::is_same_v<Byte, typename BufferT::value_type>
+        iterator insert( size_type index, const BufferT& buffer, Byte padByte = 0 )
         {
-            return Insert( index, count, b );
+            return Insert( index, buffer.data( ), buffer.size( ), padByte );
         }
 
-        iterator Insert( const_iterator pos, const Byte* buffer, size_type bufferLength )
+        iterator Insert( size_type index, size_type count, Byte value, Byte padByte = 0 )
         {
-            auto position = pos.ptr_;
-            iterator end_ = Extend( bufferLength );
-            if ( position < end_ )
+            auto size = Length( );
+            if ( size )
             {
-                memmove( position + bufferLength, position, static_cast< size_t >( end_ - position ) );
+                if ( index < size )
+                {
+                    if ( count )
+                    {
+                        auto endPtr = Extend( count );
+                        auto startPtr = data_->buffer_;
+                        auto positionPtr = startPtr + index;
+                        memmove( positionPtr + count, positionPtr, static_cast< size_t >( endPtr - positionPtr ) );
+                        memset( positionPtr, value, count );
+                        return iterator( positionPtr );
+                    }
+                    else
+                    {
+                        return iterator( data_->buffer_ + index );
+                    }
+                }
+                else if ( index == size )
+                {
+                    if ( count )
+                    {
+                        auto endPtr = Extend( count );
+                        memset( endPtr, value, count );
+                        return iterator( endPtr );
+                    }
+                    else
+                    {
+                        return iterator( data_->buffer_ + index );
+                    }
+                }
+                else
+                {
+                    auto padding = index - size;
+                    auto endPtr = Extend( padding + count );
+                    memset( endPtr, padByte, padding );
+                    auto positionPtr = endPtr + padding;
+                    memset( positionPtr, value, count );
+                    return iterator( positionPtr );
+                }
             }
-            memcpy( position, buffer, bufferLength );
-            return position;
+            else
+            {
+                auto endPtr = Extend( index + count );
+                if ( index )
+                {
+                    memset( endPtr, padByte, index );
+                    auto positionPtr = endPtr + index;
+                    memset( positionPtr, value, count );
+                    return iterator( positionPtr );
+                }
+                else
+                {
+                    memset( endPtr, value, count );
+                    return iterator( endPtr );
+                }
+            }
         }
 
-        iterator insert( const_iterator pos, const Byte* buffer, size_type bufferLength )
+        iterator insert( size_type index, size_type count, Byte value, Byte padByte = 0 )
         {
-            return Insert( pos, buffer, bufferLength );
+            return Insert( index, count, value, padByte );
         }
 
-        template<SimpleSpanLike T>
-            requires std::is_same_v<std::remove_cvref_t<typename T::value_type>, Byte>
-        iterator Insert( const_iterator pos, const T& buffer )
+        iterator Insert( size_type index, Byte value, Byte padByte = 0 )
         {
-            return Insert( pos, buffer.data( ), buffer.size( ) );
+            return Insert( index, 1, value, padByte );
         }
-        template<SimpleSpanLike T>
-            requires std::is_same_v<std::remove_cvref_t<typename T::value_type>, Byte>
-        iterator insert( const_iterator pos, const T& buffer )
+
+        iterator insert( size_type index, Byte value, Byte padByte = 0 )
         {
-            return Insert( pos, buffer.data( ), buffer.size( ) );
+            return Insert( index, 1, value, padByte );
+        }
+
+
+    private:
+        size_type ToIndex( const_iterator position ) const
+        {
+            return static_cast< size_type >( position.ptr_ - data( ) );
+        }
+    public:
+        iterator Insert( const_iterator position, const Byte* buffer, size_type bufferLength, Byte padByte = 0 )
+        {
+            auto index = ToIndex( position );
+            return Insert( index, buffer, bufferLength, padByte );
+        }
+        iterator insert( const_iterator position, const Byte* buffer, size_type bufferLength, Byte padByte = 0 )
+        {
+            auto index = ToIndex( position );
+            return Insert( index, buffer, bufferLength, padByte );
+        }
+        template<SimpleSpanLike BufferT>
+            requires std::is_same_v<Byte, typename BufferT::value_type>
+        iterator Insert( const_iterator position, const BufferT& buffer, Byte padByte = 0 )
+        {
+            auto index = ToIndex( position );
+            return Insert( index, buffer.data( ), buffer.size( ), padByte );
+        }
+
+        template<SimpleSpanLike BufferT>
+            requires std::is_same_v<Byte, typename BufferT::value_type>
+        iterator insert( const_iterator position, const BufferT& buffer, Byte padByte = 0 )
+        {
+            auto index = ToIndex( position );
+            return Insert( index, buffer.data( ), buffer.size( ), padByte );
+        }
+
+        iterator Insert( const_iterator position, size_type count, Byte ch, Byte padByte = 0 )
+        {
+            auto index = ToIndex( position );
+            return Insert( index, count, ch, padByte );
+        }
+        iterator insert( const_iterator position, size_type count, Byte ch, Byte padByte = 0 )
+        {
+            auto index = ToIndex( position );
+            return Insert( index, count, ch, padByte );
+        }
+
+        iterator Insert( const_iterator position, Byte ch, Byte padByte = 0 )
+        {
+            auto index = ToIndex( position );
+            return Insert( index, 1, ch, padByte );
+        }
+
+        iterator insert( const_iterator position, Byte ch, Byte padByte = 0 )
+        {
+            auto index = ToIndex( position );
+            return Insert( index, 1, ch, padByte );
         }
 
     private:
@@ -1782,7 +1920,7 @@ namespace Harlinn::Common::Core
         {
             // RangeCheck throws if data_ is nullptr
             RangeCheck( position );
-            return Erase( static_cast< size_type >( position - begin( ) ), 1 );
+            return iterator(Erase( static_cast< size_type >( position - begin( ) ), 1 ));
         }
 
 

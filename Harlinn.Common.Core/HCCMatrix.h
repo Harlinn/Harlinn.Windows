@@ -751,6 +751,268 @@ namespace Harlinn::Common::Core::Math
     */
 
 
+    namespace Internal
+    {
+        template<typename T>
+        class Vector2SimdImpl;
+
+        template<typename T>
+        class Vector2BaseImpl
+        {
+        public:
+            using value_type = T;
+            using size_type = size_t;
+            static constexpr size_type Size = 2;
+
+            using Traits = SIMD::Traits<value_type, Size>;
+            using SIMDType = typename Traits::SIMDType;
+            static constexpr size_type Capacity = Size;
+            using ArrayType = std::array<value_type, Size>;
+
+            union
+            {
+                ArrayType values;
+                struct
+                {
+                    value_type x, y;
+                };
+            };
+
+            Vector2BaseImpl( value_type xv, value_type yv)
+                : x( xv ), y(yv)
+            { }
+
+            Vector2BaseImpl( const Vector2SimdImpl<T>& other );
+            
+
+
+        };
+
+        template<typename T>
+        using Vector2FloatImpl = Vector2BaseImpl<T>;
+
+        template<typename T>
+        using Vector2IntegerImpl = Vector2BaseImpl<T>;
+
+        template<typename T>
+        class Vector2SimdImpl
+        {
+        public:
+            using value_type = T;
+            using size_type = size_t;
+            static constexpr size_type Size = 2;
+
+            using Traits = SIMD::Traits<value_type, Size>;
+            using SIMDType = typename Traits::SIMDType;
+            
+            static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
+            
+            SIMDType simd;
+
+            Vector2SimdImpl( )
+                : simd( Traits::Zero( ) )
+            { }
+
+            Vector2SimdImpl( SIMDType other )
+                : simd( other )
+            { }
+
+            Vector2SimdImpl( const Vector2BaseImpl<value_type>& other )
+                : simd( Traits::Load( other.values.data() ) )
+            { }
+
+            void Assign( const Vector2BaseImpl<value_type>& other )
+            {
+                simd = Traits::Load( other.values.data( ) );
+            }
+            void Assign( T x, T y )
+            {
+                simd = Traits::Set( y, x );
+            }
+
+            void Assign( SIMDType other )
+            {
+                simd = other;
+            }
+
+            friend Vector2SimdImpl operator + ( const Vector2SimdImpl& lhs, const Vector2SimdImpl& rhs )
+            {
+                return Traits::Add( lhs.simd, rhs.simd );
+            }
+            friend Vector2SimdImpl operator + ( SIMDType lhs, const Vector2SimdImpl& rhs )
+            {
+                return Traits::Add( lhs, rhs.simd );
+            }
+            friend Vector2SimdImpl operator + ( const Vector2SimdImpl& lhs, SIMDType rhs )
+            {
+                return Traits::Add( lhs.simd, rhs );
+            }
+            friend Vector2SimdImpl operator - ( const Vector2SimdImpl& lhs, const Vector2SimdImpl& rhs )
+            {
+                return Traits::Sub( lhs.simd, rhs.simd );
+            }
+            friend Vector2SimdImpl operator - ( SIMDType lhs, const Vector2SimdImpl& rhs )
+            {
+                return Traits::Sub( lhs, rhs.simd );
+            }
+            friend Vector2SimdImpl operator - ( const Vector2SimdImpl& lhs, SIMDType rhs )
+            {
+                return Traits::Sub( lhs.simd, rhs );
+            }
+        };
+
+        template<typename T>
+        inline Vector2BaseImpl<T>::Vector2BaseImpl( const Vector2SimdImpl<T>& other )
+            : values(Traits::ToArray( other.simd ))
+        { }
+
+
+
+        template<typename T>
+        class Vector3SimdImpl;
+
+        template<typename T>
+        class Vector3BaseImpl
+        {
+        public:
+            using value_type = T;
+            using size_type = size_t;
+            static constexpr size_type Size = 3;
+
+            using Traits = SIMD::Traits<value_type, Size>;
+            using SIMDType = typename Traits::SIMDType;
+            
+            static constexpr size_type Capacity = Size;
+            using ArrayType = std::array<value_type, Size>;
+
+            union
+            {
+                ArrayType values;
+                struct
+                {
+                    value_type x, y, z;
+                };
+            };
+        };
+
+        template<typename T>
+        using Vector3FloatImpl = Vector3BaseImpl<T>;
+
+        template<typename T>
+        using Vector3IntegerImpl = Vector3BaseImpl<T>;
+
+        template<typename T>
+        class Vector3SimdImpl
+        {
+        public:
+            using size_type = size_t;
+            using value_type = T;
+            static constexpr size_type Size = 3;
+
+            using Traits = SIMD::Traits<value_type, Size>;
+            using SIMDType = typename Traits::SIMDType;
+            static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
+            SIMDType simd;
+        };
+
+        template<typename T>
+        class Vector4SimdImpl;
+
+        template<typename T>
+        class Vector4BaseImpl
+        {
+        public:
+            using value_type = T;
+            using size_type = size_t;
+            static constexpr size_type Size = 4;
+
+            using Traits = SIMD::Traits<value_type, Size>;
+            using SIMDType = typename Traits::SIMDType;
+            
+            static constexpr size_type Capacity = Size;
+            using ArrayType = typename Traits::ArrayType;
+
+            union
+            {
+                ArrayType values;
+                struct
+                {
+                    value_type x, y, z, w;
+                };
+            };
+        };
+
+        template<typename T>
+        using Vector4FloatImpl = Vector4BaseImpl<T>;
+
+        template<typename T>
+        using Vector4IntegerImpl = Vector4BaseImpl<T>;
+
+        template<typename T>
+        class Vector4SimdImpl
+        {
+        public:
+            using size_type = size_t;
+            using value_type = T;
+            static constexpr size_type Size = 4;
+            using Traits = SIMD::Traits<value_type, Size>;
+            using SIMDType = typename Traits::SIMDType;
+            static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
+            
+            SIMDType simd;
+        };
+
+        
+
+    }
+
+    template<typename T, size_t N>
+    class SimdVector
+    {
+    public:
+
+    };
+
+    template<>
+    class SimdVector<float, 2> : public Internal::Vector2SimdImpl<float>
+    {
+    public:
+
+    };
+
+    template<>
+    class SimdVector<float, 3> : public Internal::Vector2SimdImpl<float>
+    {
+    public:
+
+    };
+
+    template<>
+    class SimdVector<float, 4> : public Internal::Vector4SimdImpl<float>
+    {
+    public:
+
+    };
+
+    template<>
+    class Vector<float, 2> : public Internal::Vector2FloatImpl<float>
+    {
+
+    };
+
+    template<>
+    class Vector<float, 3> : public Internal::Vector3FloatImpl<float>
+    {
+
+    };
+
+    template<>
+    class Vector<float, 4> : public Internal::Vector4FloatImpl<float>
+    {
+
+    };
+
+
 
 
 

@@ -132,10 +132,16 @@ int NextPrime(int x) {
     // Up to about 2B, the biggest gap between primes:
     // https://en.wikipedia.org/wiki/Prime_gap
     const int maxPrimeGap = 320;
-    for (int n = 3; n < int(std::sqrt(x + maxPrimeGap)) + 1; n += 2)
-        if (isPrime(n))
-            smallPrimes.push_back(n);
-
+#ifdef PBRT_USES_HCCMATH_SQRT
+    int limit = int( Math::Sqrt( static_cast<Float>(x + maxPrimeGap) ) ) + 1;
+#else
+    int limit = int( std::sqrt( x + maxPrimeGap ) ) + 1;
+#endif
+    for ( int n = 3; n < limit; n += 2 )
+    {
+        if ( isPrime( n ) )
+            smallPrimes.push_back( n );
+    }
     while (!isPrime(x))
         x += 2;
 

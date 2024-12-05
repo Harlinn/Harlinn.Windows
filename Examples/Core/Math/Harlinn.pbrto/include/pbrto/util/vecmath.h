@@ -67,10 +67,18 @@ struct TupleLength<Interval> {
 
 // Tuple2 Definition
 template <template <typename> class Child, typename T>
-class Tuple2 {
-  public:
+class Tuple2 
+{
+public:
+#ifdef PBRT_USES_HCCSIMD
+    using Traits = SIMD::Traits<T, 2>;
+#endif
     // Tuple2 Public Methods
     static const int nDimensions = 2;
+
+    // Tuple2 Public Members
+    T x{}, y{};
+
 
     Tuple2() = default;
     PBRT_CPU_GPU
@@ -101,7 +109,8 @@ class Tuple2 {
         return {x + c.x, y + c.y};
     }
     template <typename U>
-    PBRT_CPU_GPU Child<T> &operator+=(Child<U> c) {
+    PBRT_CPU_GPU Child<T> &operator+=(Child<U> c) 
+    {
         DCHECK(!c.HasNaN());
         x += c.x;
         y += c.y;
@@ -169,8 +178,7 @@ class Tuple2 {
 
     std::string ToString() const { return internal::ToString2(x, y); }
 
-    // Tuple2 Public Members
-    T x{}, y{};
+    
 };
 
 // Tuple2 Inline Functions
@@ -260,8 +268,15 @@ PBRT_CPU_GPU inline T HProd(Tuple2<C, T> t) {
 
 // Tuple3 Definition
 template <template <typename> class Child, typename T>
-class Tuple3 {
-  public:
+class Tuple3 
+{
+public:
+#ifdef PBRT_USES_HCCSIMD
+    using Traits = SIMD::Traits<T, 3>;
+#endif
+    // Tuple3 Public Members
+    T x{}, y{}, z{};
+
     // Tuple3 Public Methods
     Tuple3() = default;
     PBRT_CPU_GPU
@@ -378,8 +393,6 @@ class Tuple3 {
 
     std::string ToString() const { return internal::ToString3(x, y, z); }
 
-    // Tuple3 Public Members
-    T x{}, y{}, z{};
 };
 
 // Tuple3 Inline Functions
@@ -906,8 +919,20 @@ PBRT_CPU_GPU inline auto LengthSquared(Vector2<T> v) -> typename TupleLength<T>:
 
 template <typename T>
 PBRT_CPU_GPU inline auto Length(Vector2<T> v) -> typename TupleLength<T>::type {
-    using std::sqrt;
-    return sqrt(LengthSquared(v));
+    if constexpr ( std::is_floating_point_v<T> )
+    {
+#ifdef PBRT_USES_HCCMATH_SQRT
+        return Math::Sqrt( LengthSquared( v ) );
+#else
+        using std::sqrt;
+        return sqrt( LengthSquared( v ) );
+#endif
+    }
+    else
+    {
+        using std::sqrt;
+        return sqrt( LengthSquared( v ) );
+    }
 }
 
 template <typename T>
@@ -955,8 +980,20 @@ PBRT_CPU_GPU inline T LengthSquared(Vector3<T> v) {
 
 template <typename T>
 PBRT_CPU_GPU inline auto Length(Vector3<T> v) -> typename TupleLength<T>::type {
-    using std::sqrt;
-    return sqrt(LengthSquared(v));
+    if constexpr ( std::is_floating_point_v<T> )
+    {
+#ifdef PBRT_USES_HCCMATH_SQRT
+        return Math::Sqrt( LengthSquared( v ) );
+#else
+        using std::sqrt;
+        return sqrt( LengthSquared( v ) );
+#endif
+    }
+    else
+    {
+        using std::sqrt;
+        return sqrt( LengthSquared( v ) );
+    }
 }
 
 template <typename T>
@@ -1048,8 +1085,20 @@ PBRT_CPU_GPU inline auto LengthSquared(Normal3<T> n) -> typename TupleLength<T>:
 
 template <typename T>
 PBRT_CPU_GPU inline auto Length(Normal3<T> n) -> typename TupleLength<T>::type {
-    using std::sqrt;
-    return sqrt(LengthSquared(n));
+    if constexpr ( std::is_floating_point_v<T> )
+    {
+#ifdef PBRT_USES_HCCMATH_SQRT
+        return Math::Sqrt( LengthSquared( n ) );
+#else
+        using std::sqrt;
+        return sqrt( LengthSquared( n ) );
+#endif
+    }
+    else
+    {
+        using std::sqrt;
+        return sqrt( LengthSquared( n ) );
+    }
 }
 
 template <typename T>
@@ -1132,7 +1181,11 @@ PBRT_CPU_GPU inline Float Dot(Quaternion q1, Quaternion q2) {
 }
 
 PBRT_CPU_GPU inline Float Length(Quaternion q) {
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Math::Sqrt( Dot( q, q ) );
+#else
     return std::sqrt(Dot(q, q));
+#endif
 }
 PBRT_CPU_GPU inline Quaternion Normalize(Quaternion q) {
     DCHECK_GT(Length(q), 0);
@@ -1536,7 +1589,11 @@ template <typename T, typename U>
 PBRT_CPU_GPU inline auto Distance(Point3<T> p, const Bounds3<U> &b) {
     auto dist2 = DistanceSquared(p, b);
     using TDist = typename TupleLength<decltype(dist2)>::type;
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Math::Sqrt( TDist( dist2 ) );
+#else
     return std::sqrt(TDist(dist2));
+#endif
 }
 
 template <typename T, typename U>
@@ -1703,7 +1760,11 @@ PBRT_CPU_GPU inline Float Sin2Theta(Vector3f w) {
     return std::max<Float>(0, 1 - Cos2Theta(w));
 }
 PBRT_CPU_GPU inline Float SinTheta(Vector3f w) {
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Math::Sqrt( Sin2Theta( w ) );
+#else
     return std::sqrt(Sin2Theta(w));
+#endif
 }
 
 PBRT_CPU_GPU inline Float TanTheta(Vector3f w) {
@@ -1726,7 +1787,11 @@ PBRT_CPU_GPU inline Float CosDPhi(Vector3f wa, Vector3f wb) {
     Float waxy = Sqr(wa.x) + Sqr(wa.y), wbxy = Sqr(wb.x) + Sqr(wb.y);
     if (waxy == 0 || wbxy == 0)
         return 1;
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Clamp( ( wa.x * wb.x + wa.y * wb.y ) / Math::Sqrt( waxy * wbxy ), -1, 1 );
+#else
     return Clamp((wa.x * wb.x + wa.y * wb.y) / std::sqrt(waxy * wbxy), -1, 1);
+#endif
 }
 
 PBRT_CPU_GPU inline bool SameHemisphere(Vector3f w, Vector3f wp) {

@@ -16,6 +16,9 @@
 
 #include "pch.h"
 
+#include <HCCMath.h>
+
+
 using namespace Harlinn::Common::Core;
 using namespace Harlinn::Common::Core::Math;
 namespace
@@ -103,6 +106,7 @@ BOOST_AUTO_TEST_CASE( ConstexprStdTest1 )
 BOOST_AUTO_TEST_CASE( ConstexprMathTest1 )
 {
     constexpr double absResult = Abs( -1.0 );
+    BOOST_CHECK( absResult == 1.0 );
 }
 
 
@@ -1408,7 +1412,83 @@ BOOST_AUTO_TEST_CASE( NextDownDoubleTest1 )
 
 }
 
+// --run_test=MathTests/HypotDoubleTest1
+BOOST_AUTO_TEST_CASE( HypotDoubleTest1 )
+{
+    constexpr double val1 = 2.0;
+    constexpr double val2 = 3.0;
 
+    constexpr double result1 = Hypot( val1, val2 );
+    static_assert( result1 > val2 );
+
+    double result2 = Hypot( val1, val2 );
+    double result3 = std::hypot( val1, val2 );
+
+    bool equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+    equal = IsSameValue( result3, result2 );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=MathTests/HypotFloatTest1 )
+BOOST_AUTO_TEST_CASE( HypotFloatTest1 )
+{
+    constexpr float val1 = 2.0;
+    constexpr float val2 = 3.0;
+
+    constexpr float result1 = Hypot( val1, val2 );
+    static_assert( result1 > val2 );
+
+    float result2 = Hypot( val1, val2 );
+    float result3 = std::hypot( val1, val2 );
+
+    bool equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+    equal = IsSameValue( result3, result2 );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=MathTests/Hypot3DoubleTest1
+BOOST_AUTO_TEST_CASE( Hypot3DoubleTest1 )
+{
+    constexpr double val1 = 2.0;
+    constexpr double val2 = 3.0;
+    constexpr double val3 = 4.0;
+
+    constexpr double result1 = Hypot( val1, val2, val3 );
+    static_assert( result1 > val2 );
+
+    double result2 = Hypot( val1, val2, val3 );
+    double result3 = std::hypot( val1, val2, val3 );
+
+    bool equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+    equal = IsSameValue( result3, result2 );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=MathTests/Hypot3FloatTest1 )
+BOOST_AUTO_TEST_CASE( Hypot3FloatTest1 )
+{
+    constexpr float val1 = 2.0;
+    constexpr float val2 = 3.0;
+    constexpr float val3 = 4.0;
+
+    constexpr float result1 = Hypot( val1, val2, val3 );
+    static_assert( result1 > val2 );
+
+    float result2 = Hypot( val1, val2, val3 );
+    float result3 = std::hypot( val1, val2, val3 );
+
+    bool equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+    equal = IsSameValue( result3, result2 );
+    BOOST_CHECK( equal );
+
+}
 
 
 

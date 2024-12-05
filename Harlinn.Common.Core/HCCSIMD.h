@@ -169,7 +169,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
         static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -233,7 +235,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -320,7 +322,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
         static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -384,7 +388,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -464,7 +468,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
         static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -528,7 +534,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -609,7 +615,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 8 : 16;
         static constexpr size_t Capacity = UseShortSIMDType ? 8 : ( ( N + 15 ) & static_cast<Int64>( -16 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -673,7 +681,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -754,7 +762,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 8 : 16;
         static constexpr size_t Capacity = UseShortSIMDType ? 8 : ( ( N + 15 ) & static_cast<Int64>( -16 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -818,7 +828,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -912,7 +922,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -976,7 +988,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -1069,7 +1081,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -1134,7 +1148,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -1229,7 +1243,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 2 : 4;
         static constexpr size_t Capacity = UseShortSIMDType ? 2 : ( ( N + 3 ) & static_cast<Int64>( -4 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -1293,7 +1309,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -1403,7 +1419,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 2 : 4;
         static constexpr size_t Capacity = UseShortSIMDType ? 2 : ( ( N + 3 ) & static_cast<Int64>( -4 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -1467,7 +1485,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -1580,7 +1598,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -1608,11 +1628,97 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static SIMDType Set( Type value1 ) noexcept 
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_ps( 0.f, 0.f, 0.f, value1 );
+            }
+            else
+            {
+                return _mm256_set_ps( 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value2, Type value1 ) noexcept requires (N > 1)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_ps( 0.f, 0.f, value2, value1 );
+            }
+            else
+            {
+                return _mm256_set_ps( 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, value2, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value3, Type value2, Type value1 ) noexcept requires (N > 2)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_ps( 0.f, value3, value2, value1 );
+            }
+            else
+            {
+                return _mm256_set_ps( 0.f, 0.f, 0.f, 0.f, 0.f, value3, value2, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value4, Type value3, Type value2, Type value1 ) noexcept requires (N > 3)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_ps( value4, value3, value2, value1 );
+            }
+            else
+            {
+                return _mm256_set_ps( 0.f, 0.f, 0.f, 0.f, value4, value3, value2, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires (N > 4)
+        {
+            return _mm256_set_ps( 0.f, 0.f, 0.f, value5, value4, value3, value2, value1 );
+        }
+
+        static SIMDType Set( Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires (N > 5)
+        {
+            return _mm256_set_ps( 0.f, 0.f, value6, value5, value4, value3, value2, value1 );
+        }
+
+        static SIMDType Set( Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires (N > 6)
+        {
+            return _mm256_set_ps( 0.f, value7, value6, value5, value4, value3, value2, value1 );
+        }
+
+        static SIMDType Set( Type value8, Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept requires (N > 7)
+        {
+            return _mm256_set_ps( value8, value7, value6, value5, value4, value3, value2, value1 );
+        }
+
+
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_load_ps( src );
+                if constexpr ( N == 1 )
+                {
+                    return _mm_load_ss( src );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    _mm_load_sd( reinterpret_cast< const double* >( src ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
+                    __m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 2 ) );
+                    return _mm_insert_ps( low, high, 0x20 );
+                }
+                else
+                {
+                    return _mm_load_ps( src );
+                }
             }
             else
             {
@@ -1642,7 +1748,7 @@ namespace Harlinn::Common::Core::SIMD
                 _mm256_store_ps( dest, src );
             }
         }
-        static void UnaligedStore( Type* dest, SIMDType src ) noexcept
+        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -1653,6 +1759,50 @@ namespace Harlinn::Common::Core::SIMD
                 _mm256_storeu_ps( dest, src );
             }
         }
+
+        static Type Lower( SIMDType src )
+        {
+            alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> values;
+            Store( values.data(), src );
+            return values[ 0 ];
+        }
+
+        static ArrayType ToArray( SIMDType src )
+        {
+            if constexpr ( N == SIMDTypeCapacity )
+            {
+                alignas(AlignAs) ArrayType result;
+                Store( result.data( ), src );
+                return result;
+            }
+            else if constexpr ( N == 1 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                _mm_store_ss( result.data( ), src );
+                return result;
+            }
+            else if constexpr ( N == 2 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castps_pd( src ) );
+                return result;
+            }
+            else if constexpr ( N == 3 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castps_pd( src ) );
+                result[2] = std::bit_cast<Type>(_mm_extract_ps( src, 2 ));
+                return result;
+            }
+            else
+            {
+                alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> tmp;
+                Store( tmp.data( ), src );
+                ArrayType result( tmp.begin(), tmp.begin( ) + N );
+                return result;
+            }
+        }
+
 
         /// <summary>
         /// Adds two float32 vectors.
@@ -1703,8 +1853,23 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                __m128 r1 = _mm_add_ps( v, _mm_movehl_ps( v, v ) );
-                return _mm_add_ss( r1, _mm_movehdup_ps( r1 ) );
+                if constexpr ( N == 1 )
+                {
+                    return v;
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_add_ps( v, _mm_permute_ps( v, 0b11'10'00'01 ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return _mm_add_ps( v, _mm_add_ps( _mm_permute_ps( v, 0b11'10'00'01 ), _mm_permute_ps( v, 0b11'00'01'10 ) ) );
+                }
+                else
+                {
+                    return _mm_add_ps( _mm_add_ps( v, _mm_permute_ps( v, 0b10'01'00'11 ) ),
+                        _mm_add_ps( _mm_permute_ps( v, 0b01'00'11'10 ), _mm_permute_ps( v, 0b00'11'10'01 ) ) );
+                }
             }
             else
             {
@@ -1712,7 +1877,7 @@ namespace Harlinn::Common::Core::SIMD
                 __m128 high = _mm256_extractf128_ps( v, 1 );
                 __m128 r1 = _mm_add_ps( low, high );
                 __m128 r2 = _mm_add_ps( r1, _mm_movehl_ps( r1, r1 ) );
-                return _mm_add_ss( r2, _mm_movehdup_ps( r2 ) );
+                return _mm256_broadcastss_ps( _mm_add_ss( r2, _mm_movehdup_ps( r2 ) ));
             }
         }
 
@@ -2095,6 +2260,88 @@ namespace Harlinn::Common::Core::SIMD
         }
 
 
+        static SIMDType Dot( SIMDType a, SIMDType b )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N = 2 )
+                {
+                    return _mm_dp_ps( a, b, 0x3f );
+                }
+                else if constexpr ( N = 3 )
+                {
+                    return _mm_dp_ps( a, b, 0x7f );
+                }
+                else if constexpr ( N = 4 )
+                {
+                    return _mm_dp_ps( a, b, 0xff );
+                }
+            }
+            else
+            {
+                if constexpr ( N = 5 )
+                {
+                    return _mm256_dp_ps( a, b, 0x3f );
+                }
+            }
+        }
+
+        static SIMDType Cross( SIMDType a, SIMDType b )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N = 2 )
+                {
+                    auto rmm1 = _mm_permute_ps( b, _MM_SHUFFLE( 0, 1, 0, 1 ) );
+                    rmm1 = _mm_mul_ps( rmm1, a );
+                    auto rmm2 = _mm_permute_ps( rmm1, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+                    rmm1 = _mm_sub_ss( rmm1, rmm2 );
+                    return _mm_permute_ps( rmm1, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+                }
+                else if constexpr ( N = 3 )
+                {
+                    auto rmm1 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+                    auto rmm2 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 1, 0, 2 ) );
+                    auto rmm3 = _mm_mul_ps( rmm1, b );
+                    auto rmm4 = _mm_mul_ps( rmm1, rmm2 );
+                    auto rmm5 = _mm_shuffle_ps( rmm3, rmm3, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+                    return _mm_sub_ps( rmm4, rmm5 );
+                }
+                else if constexpr ( N = 4 )
+                {
+                    /*
+                    auto vResult = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 2, 1, 3, 2 ) );
+                    auto vTemp3 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 1, 3, 2, 3 ) );
+                    vResult = _mm_mul_ps( vResult, vTemp3 );
+                    auto vTemp2 = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 1, 3, 2, 3 ) );
+                    vTemp3 = XM_PERMUTE_PS( vTemp3, _MM_SHUFFLE( 1, 3, 0, 1 ) );
+                    vResult = XM_FNMADD_PS( vTemp2, vTemp3, vResult );
+                    auto vTemp1 = XM_PERMUTE_PS( V1, _MM_SHUFFLE( 0, 0, 0, 1 ) );
+                    vResult = _mm_mul_ps( vResult, vTemp1 );
+                    vTemp2 = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 2, 0, 3, 1 ) );
+                    vTemp3 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 0, 3, 0, 3 ) );
+                    vTemp3 = _mm_mul_ps( vTemp3, vTemp2 );
+                    vTemp2 = XM_PERMUTE_PS( vTemp2, _MM_SHUFFLE( 2, 1, 2, 1 ) );
+                    vTemp1 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 2, 0, 3, 1 ) );
+                    vTemp3 = XM_FNMADD_PS( vTemp2, vTemp1, vTemp3 );
+                    vTemp1 = XM_PERMUTE_PS( V1, _MM_SHUFFLE( 1, 1, 2, 2 ) );
+                    vResult = XM_FNMADD_PS( vTemp1, vTemp3, vResult );
+                    vTemp2 = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 1, 0, 2, 1 ) );
+                    vTemp3 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 0, 1, 0, 2 ) );
+                    vTemp3 = _mm_mul_ps( vTemp3, vTemp2 );
+                    vTemp2 = XM_PERMUTE_PS( vTemp2, _MM_SHUFFLE( 2, 0, 2, 1 ) );
+                    vTemp1 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 1, 0, 2, 1 ) );
+                    vTemp3 = XM_FNMADD_PS( vTemp1, vTemp2, vTemp3 );
+                    vTemp1 = XM_PERMUTE_PS( V1, _MM_SHUFFLE( 2, 3, 3, 3 ) );
+                    vResult = XM_FMADD_PS( vTemp3, vTemp1, vResult );
+                    return vResult;
+                    */
+                }
+            }
+
+        }
+
+
 
     };
     template<size_t N>
@@ -2108,8 +2355,9 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
-
+        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 2 : 4;
         static constexpr size_t Capacity = UseShortSIMDType ? 2 : ( ( N + 3 ) & static_cast<Int64>( -4 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
@@ -2136,6 +2384,41 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_set1_pd( value );
             }
         }
+
+        static SIMDType Set( Type value1 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_pd( 0.f, value1 );
+            }
+            else
+            {
+                return _mm256_set_pd( 0.f, 0.f, 0.f, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value2, Type value1 ) noexcept requires (N > 1)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_pd( value2, value1 );
+            }
+            else
+            {
+                return _mm256_set_pd( 0.f, 0.f, value2, value1 );
+            }
+        }
+
+        static SIMDType Set( Type value3, Type value2, Type value1 ) noexcept requires ( N > 2 )
+        {
+            return _mm256_set_pd( 0.f, value3, value2, value1 );
+        }
+
+        static SIMDType Set( Type value4, Type value3, Type value2, Type value1 ) noexcept requires ( N > 3 )
+        {
+            return _mm256_set_pd( value4, value3, value2, value1 );
+        }
+
 
         static SIMDType Load( const Type* src ) noexcept
         {
@@ -2184,6 +2467,13 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static Type Lower( SIMDType src )
+        {
+            alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> values;
+            Store( values.data( ), src );
+            return values[ 0 ];
+        }
+
         /// <summary>
         /// Adds two float64 vectors.
         /// </summary>
@@ -2228,24 +2518,37 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        /*
+        
         static SIMDType HSum( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                __m128d r1 = _mm_add_pd( v, _mm_movehl_pd( v, v ) );
-                return _mm_add_sd( r1, _mm_movehdup_pd( r1 ) );
+                return _mm_add_pd( v, _mm_permute_pd(v, 1) );
             }
             else
             {
-                __m128d low = _mm256_castpd256_pd128( v );
-                __m128d high = _mm256_extractf128_pd( v, 1 );
-                __m128d r1 = _mm_add_pd( low, high );
-                __m128d r2 = _mm_add_pd( r1, _mm_movehl_pd( r1, r1 ) );
-                return _mm_add_sd( r2, _mm_movehdup_pd( r2 ) );
+                auto low = _mm256_castpd256_pd128( v );
+                auto high = _mm256_extractf128_pd( v, 1 );
+                if constexpr ( N == 3 )
+                {
+                    auto r1 = _mm_permute_pd( high, 0b00'00 );
+                    auto r2 = _mm_add_pd( _mm_add_pd( low, _mm_permute_pd( low, 1 ) ), r1);
+                    return _mm256_broadcastsd_pd( r2 );
+                }
+                else
+                {
+                    auto r2 = _mm_add_pd( _mm_add_pd( low, _mm_permute_pd( low, 1 ) ), _mm_add_pd( high, _mm_permute_pd( high, 1 ) ) );
+                    return _mm256_broadcastsd_pd( r2 );
+                }
+                /*
+                auto rmm1 = _mm256_add_pd( v, _mm256_permute_pd( v, 0b0101 ) );
+                auto low = _mm256_castpd256_pd128( rmm1 );
+                auto high = _mm256_extractf128_pd( rmm1, 1 );
+                return _mm256_broadcastsd_pd( _mm_add_pd( low, high ) );
+                */
             }
         }
-        */
+        
 
         /// <summary>
         /// Subtracts float64 vectors.

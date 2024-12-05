@@ -123,7 +123,11 @@ PBRT_CPU_GPU inline Float SampleLinear(Float u, Float a, Float b) {
     DCHECK(a >= 0 && b >= 0);
     if (u == 0 && a == 0)
         return 0;
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float x = u * ( a + b ) / ( a + Math::Sqrt( Lerp( u, Sqr( a ), Sqr( b ) ) ) );
+#else
     Float x = u * (a + b) / (a + std::sqrt(Lerp(u, Sqr(a), Sqr(b))));
+#endif
     return std::min(x, OneMinusEpsilon);
 }
 
@@ -221,12 +225,20 @@ PBRT_CPU_GPU inline Float ExponentialPDF(Float x, Float a) {
 
 PBRT_CPU_GPU inline Float SampleExponential(Float u, Float a) {
     DCHECK_GT(a, 0);
+#ifdef PBRT_USES_HCCMATH_LOG
+    return -Math::Log( 1 - u ) / a;
+#else
     return -std::log(1 - u) / a;
+#endif
 }
 
 PBRT_CPU_GPU inline Float InvertExponentialSample(Float x, Float a) {
     DCHECK_GT(a, 0);
+#ifdef PBRT_USES_HCCMATH_EXP
+    return 1 - Math::Exp( -a * x );
+#else
     return 1 - std::exp(-a * x);
+#endif
 }
 
 PBRT_CPU_GPU inline Float NormalPDF(Float x, Float mu = 0, Float sigma = 1) {
@@ -243,27 +255,53 @@ inline Float InvertNormalSample(Float x, Float mu = 0, Float sigma = 1) {
 }
 
 PBRT_CPU_GPU inline Point2f SampleTwoNormal(Point2f u, Float mu = 0, Float sigma = 1) {
+#ifdef PBRT_USES_HCCMATH_LOG
+    Float r2 = -2 * Math::Log( 1 - u[ 0 ] );
+#else
     Float r2 = -2 * std::log(1 - u[0]);
+#endif
 #ifdef PBRT_USES_HCCMATH_SINCOS
+#ifdef PBRT_USES_HCCMATH_SQRT
     return { mu + sigma * Math::Sqrt( r2 * Math::Cos( 2 * Pi * u[ 1 ] ) ),
             mu + sigma * Math::Sqrt( r2 * Math::Sin( 2 * Pi * u[ 1 ] ) ) };
 #else
+    return { mu + sigma * std::sqrt( r2 * Math::Cos( 2 * Pi * u[ 1 ] ) ),
+            mu + sigma * std::sqrt( r2 * Math::Sin( 2 * Pi * u[ 1 ] ) ) };
+#endif
+#else
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return { mu + sigma * Math::Sqrt( r2 * std::cos( 2 * Pi * u[ 1 ] ) ),
+            mu + sigma * Math::Sqrt( r2 * std::sin( 2 * Pi * u[ 1 ] ) ) };
+#else
     return {mu + sigma * std::sqrt(r2 * std::cos(2 * Pi * u[1])),
             mu + sigma * std::sqrt(r2 * std::sin(2 * Pi * u[1]))};
+#endif
 #endif
 }
 
 PBRT_CPU_GPU inline Float LogisticPDF(Float x, Float s) {
     x = std::abs(x);
+#ifdef PBRT_USES_HCCMATH_EXP
+    return Math::Exp( -x / s ) / ( s * Sqr( 1 + Math::Exp( -x / s ) ) );
+#else
     return std::exp(-x / s) / (s * Sqr(1 + std::exp(-x / s)));
+#endif
 }
 
 PBRT_CPU_GPU inline Float SampleLogistic(Float u, Float s) {
+#ifdef PBRT_USES_HCCMATH_LOG
+    return -s * Math::Log( 1 / u - 1 );
+#else
     return -s * std::log(1 / u - 1);
+#endif
 }
 
 PBRT_CPU_GPU inline Float InvertLogisticSample(Float x, Float s) {
+#ifdef PBRT_USES_HCCMATH_EXP
+    return 1 / ( 1 + Math::Exp( -x / s ) );
+#else
     return 1 / (1 + std::exp(-x / s));
+#endif
 }
 
 PBRT_CPU_GPU inline Float TrimmedLogisticPDF(Float x, Float s, Float a, Float b) {
@@ -314,7 +352,11 @@ PBRT_CPU_GPU inline Float InvertSmoothStepSample(Float x, Float a, Float b) {
 }
 
 PBRT_CPU_GPU inline Point2f SampleUniformDiskPolar(Point2f u) {
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float r = Math::Sqrt( u[ 0 ] );
+#else
     Float r = std::sqrt(u[0]);
+#endif
     Float theta = 2 * Pi * u[1];
 #ifdef PBRT_USES_HCCMATH_SINCOS
     return { r * Math::Cos( theta ), r * Math::Sin( theta ) };
@@ -465,7 +507,19 @@ PBRT_CPU_GPU inline Point2f InvertUniformConeSample(Vector3f w, Float cosThetaMa
 // Sample from e^(-c x), x from 0 to xMax
 PBRT_CPU_GPU
 inline Float SampleTrimmedExponential(Float u, Float c, Float xMax) {
+#ifdef PBRT_USES_HCCMATH_LOG
+#ifdef PBRT_USES_HCCMATH_EXP
+    return Math::Log( 1 - u * ( 1 - Math::Exp( -c * xMax ) ) ) / -c;
+#else
+    return Math::Log( 1 - u * ( 1 - std::exp( -c * xMax ) ) ) / -c;
+#endif
+#else
+#ifdef PBRT_USES_HCCMATH_EXP
+    return std::log( 1 - u * ( 1 - Math::Exp( -c * xMax ) ) ) / -c;
+#else
     return std::log(1 - u * (1 - std::exp(-c * xMax))) / -c;
+#endif
+#endif
 }
 
 PBRT_CPU_GPU
@@ -500,11 +554,21 @@ inline Vector3f SampleUniformHemisphereConcentric(Point2f u) {
         theta = PiOver2 - PiOver4 * (uOffset.x / uOffset.y);
     }
 #ifdef PBRT_USES_HCCMATH_SINCOS
+#ifdef PBRT_USES_HCCMATH_SQRT
     return Vector3f( Math::Cos( theta ) * r * Math::Sqrt( 2 - r * r ),
         Math::Sin( theta ) * r * Math::Sqrt( 2 - r * r ), 1 - r * r );
 #else
+    return Vector3f( Math::Cos( theta ) * r * std::sqrt( 2 - r * r ),
+        Math::Sin( theta ) * r * std::sqrt( 2 - r * r ), 1 - r * r );
+#endif
+#else
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Vector3f( std::cos( theta ) * r * Math::Sqrt( 2 - r * r ),
+        std::sin( theta ) * r * Math::Sqrt( 2 - r * r ), 1 - r * r );
+#else
     return Vector3f(std::cos(theta) * r * std::sqrt(2 - r * r),
                     std::sin(theta) * r * std::sqrt(2 - r * r), 1 - r * r);
+#endif
 #endif
 }
 

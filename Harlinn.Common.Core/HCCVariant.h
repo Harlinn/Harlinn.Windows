@@ -448,22 +448,22 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] constexpr iterator begin( ) noexcept
         {
-            return bstr_;
+            return iterator(bstr_);
         }
 
         [[nodiscard]] constexpr iterator end( ) noexcept
         {
-            return bstr_ + length();
+            return iterator( bstr_ + length() );
         }
 
         [[nodiscard]] constexpr const_iterator begin( ) const noexcept
         {
-            return bstr_;
+            return const_iterator( bstr_ );
         }
 
         [[nodiscard]] constexpr const_iterator end( ) const noexcept
         {
-            return bstr_ + length( );
+            return const_iterator( bstr_ + length( ) );
         }
 
         [[nodiscard]] constexpr const_iterator cbegin( ) const noexcept

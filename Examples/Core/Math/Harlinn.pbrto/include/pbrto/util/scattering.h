@@ -35,8 +35,11 @@ PBRT_CPU_GPU inline bool Refract(Vector3f wi, Normal3f n, Float eta, Float *etap
     // Handle total internal reflection case
     if (sin2Theta_t >= 1)
         return false;
-
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float cosTheta_t = std::sqrt( 1 - sin2Theta_t );
+#else
     Float cosTheta_t = std::sqrt(1 - sin2Theta_t);
+#endif
 
     *wt = -wi / eta + (cosTheta_i / eta - cosTheta_t) * Vector3f(n);
     // Provide relative IOR along ray to caller
@@ -145,7 +148,11 @@ class TrowbridgeReitzDistribution {
         if (IsInf(tan2Theta))
             return 0;
         Float alpha2 = Sqr(CosPhi(w) * alpha_x) + Sqr(SinPhi(w) * alpha_y);
+#ifdef PBRT_USES_HCCMATH_SQRT
+        return ( Math::Sqrt( 1 + alpha2 * tan2Theta ) - 1 ) / 2;
+#else
         return (std::sqrt(1 + alpha2 * tan2Theta) - 1) / 2;
+#endif
     }
 
     PBRT_CPU_GPU
@@ -175,11 +182,19 @@ class TrowbridgeReitzDistribution {
         Point2f p = SampleUniformDiskPolar(u);
 
         // Warp hemispherical projection for visible normal sampling
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float h = Math::Sqrt( 1 - Sqr( p.x ) );
+#else
         Float h = std::sqrt(1 - Sqr(p.x));
+#endif
         p.y = Lerp((1 + wh.z) / 2, h, p.y);
 
         // Reproject to hemisphere and transform normal to ellipsoid configuration
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float pz = Math::Sqrt( std::max<Float>( 0, 1 - LengthSquared( Vector2f( p ) ) ) );
+#else
         Float pz = std::sqrt(std::max<Float>(0, 1 - LengthSquared(Vector2f(p))));
+#endif
         Vector3f nh = p.x * T1 + p.y * T2 + pz * wh;
         CHECK_RARE(1e-5f, nh.z == 0);
         return Normalize(
@@ -189,7 +204,14 @@ class TrowbridgeReitzDistribution {
     std::string ToString() const;
 
     PBRT_CPU_GPU
-    static Float RoughnessToAlpha(Float roughness) { return std::sqrt(roughness); }
+    static Float RoughnessToAlpha(Float roughness) 
+    { 
+#ifdef PBRT_USES_HCCMATH_SQRT
+        return Math::Sqrt( roughness );
+#else
+        return std::sqrt(roughness); 
+#endif
+    }
 
     PBRT_CPU_GPU
     void Regularize() {

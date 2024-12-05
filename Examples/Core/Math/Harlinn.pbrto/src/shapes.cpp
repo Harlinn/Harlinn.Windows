@@ -702,7 +702,11 @@ bool Curve::RecursiveIntersect(const Ray &ray, Float tMax, pstd::span<const Poin
 
             // Initialize _SurfaceInteraction_ _intr_ for curve intersection
             // Compute $v$ coordinate of curve intersection point
+#ifdef PBRT_USES_HCCMATH_SQRT
+            Float ptCurveDist = Math::Sqrt( ptCurveDist2 );
+#else
             Float ptCurveDist = std::sqrt(ptCurveDist2);
+#endif
             Float edgeFunc = dpcdw.x * -pc.y + pc.x * dpcdw.y;
             Float v = (edgeFunc > 0) ? 0.5f + ptCurveDist / hitWidth
                                      : 0.5f - ptCurveDist / hitWidth;

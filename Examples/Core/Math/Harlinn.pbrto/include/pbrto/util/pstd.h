@@ -1109,10 +1109,18 @@ struct complex {
 };
 
 PBRT_CPU_GPU inline float sqrt(float f) {
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Math::Sqrt( f );
+#else
     return ::sqrtf(f);
+#endif
 }
 PBRT_CPU_GPU inline double sqrt(double f) {
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Math::Sqrt( f );
+#else
     return ::sqrt(f);
+#endif
 }
 PBRT_CPU_GPU inline float abs(float f) {
     return ::fabsf(f);

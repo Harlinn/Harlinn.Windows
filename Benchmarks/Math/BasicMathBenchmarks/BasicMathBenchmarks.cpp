@@ -1416,6 +1416,46 @@ static void BenchmarkFloatStdHypot( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatStdHypot );
 
+static void BenchmarkDoubleHypot3( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Hypot( DoubleGenerator( ), 16.0, 42.0 ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleHypot3 );
+
+static void BenchmarkDoubleStdHypot3( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::hypot( DoubleGenerator( ), 16.0, 42.0 ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleStdHypot3 );
+
+static void BenchmarkFloatHypot3( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Hypot( FloatGenerator( ), 16.0f, 42.0f ) );
+    }
+}
+BENCHMARK( BenchmarkFloatHypot3 );
+
+static void BenchmarkFloatStdHypot3( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::hypot( FloatGenerator( ), 16.0f, 42.0f ) );
+    }
+}
+BENCHMARK( BenchmarkFloatStdHypot3 );
+
 
 static void BenchmarkDoubleInternalLog( benchmark::State& state )
 {

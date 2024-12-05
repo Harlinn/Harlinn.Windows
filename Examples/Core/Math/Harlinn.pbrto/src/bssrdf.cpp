@@ -55,7 +55,11 @@ Float BeamDiffusionMS(Float sigma_s, Float sigma_a, Float g, Float eta, Float r)
 
         // Evaluate dipole integrand $E_{\roman{d}}$ at $\depthreal$ and add to _Ed_
         Float zv = -zr + 2 * ze;
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float dr = Math::Sqrt( Sqr( r ) + Sqr( zr ) ), dv = Math::Sqrt( Sqr( r ) + Sqr( zv ) );
+#else
         Float dr = std::sqrt(Sqr(r) + Sqr(zr)), dv = std::sqrt(Sqr(r) + Sqr(zv));
+#endif
         // Compute dipole fluence rate $\dipole(r)$ using Equation
         // $(\ref{eq:diffusion-dipole})$
         Float phiD =
@@ -86,7 +90,11 @@ Float BeamDiffusionSS(Float sigma_s, Float sigma_a, Float g, Float eta, Float r)
         // Evaluate single-scattering integrand and add to _Ess_
         Float ti = tCrit + SampleExponential((i + 0.5f) / nSamples, sigma_t);
         // Determine length $d$ of connecting segment and $\cos\theta_\roman{o}$
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float d = Math::Sqrt( Sqr( r ) + Sqr( ti ) );
+#else
         Float d = std::sqrt(Sqr(r) + Sqr(ti));
+#endif
         Float cosTheta_o = ti / d;
 
         // Add contribution of single scattering at depth $t$

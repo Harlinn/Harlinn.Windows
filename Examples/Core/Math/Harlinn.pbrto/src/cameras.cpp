@@ -708,7 +708,11 @@ RealisticCamera::RealisticCamera(CameraBaseParameters baseParameters,
     // Compute film's physical extent
     Float aspect = (Float)film.FullResolution().y / (Float)film.FullResolution().x;
     Float diagonal = film.Diagonal();
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float x = Math::Sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
+#else
     Float x = std::sqrt(Sqr(diagonal) / (1 + Sqr(aspect)));
+#endif
     Float y = aspect * x;
     physicalExtent = Bounds2f(Point2f(-x / 2, -y / 2), Point2f(x / 2, y / 2));
 
@@ -858,7 +862,11 @@ Float RealisticCamera::FocusThickLens(Float focusDistance) {
         ErrorExit("Coefficient must be positive. It looks focusDistance %f "
                   " is too short for a given lenses configuration",
                   focusDistance);
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float delta = ( pz[ 1 ] - z + pz[ 0 ] - Math::Sqrt( c ) ) / 2;
+#else
     Float delta = (pz[1] - z + pz[0] - std::sqrt(c)) / 2;
+#endif
 
     return elementInterfaces.back().thickness + delta;
 }
@@ -893,8 +901,13 @@ Bounds2f RealisticCamera::BoundExitPupil(Float filmX0, Float filmX1) const {
     }
 
     // Expand bounds to account for sample spacing
+#ifdef PBRT_USES_HCCMATH_SQRT
+    pupilBounds =
+        Expand( pupilBounds, 2 * Length( projRearBounds.Diagonal( ) ) / Math::Sqrt( static_cast<Float>( nSamples ) ) );
+#else
     pupilBounds =
         Expand(pupilBounds, 2 * Length(projRearBounds.Diagonal()) / std::sqrt(nSamples));
+#endif
 
     return pupilBounds;
 }
@@ -902,7 +915,11 @@ Bounds2f RealisticCamera::BoundExitPupil(Float filmX0, Float filmX1) const {
 PBRT_CPU_GPU pstd::optional<ExitPupilSample> RealisticCamera::SampleExitPupil(Point2f pFilm,
                                                                  Point2f uLens) const {
     // Find exit pupil bound for sample distance from film center
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float rFilm = Math::Sqrt( Sqr( pFilm.x ) + Sqr( pFilm.y ) );
+#else
     Float rFilm = std::sqrt(Sqr(pFilm.x) + Sqr(pFilm.y));
+#endif
     int rIndex = rFilm / (film.Diagonal() / 2) * exitPupilBounds.size();
     rIndex = std::min<int>(exitPupilBounds.size() - 1, rIndex);
     Bounds2f pupilBounds = exitPupilBounds[rIndex];
@@ -1378,10 +1395,17 @@ RealisticCamera *RealisticCamera::Create(const ParameterDictionary &parameters,
                     apertureImage.SetChannel({x, y}, 0, 4.f);
         } else if (apertureName == "pentagon") {
             // https://mathworld.wolfram.com/RegularPentagon.html
+#ifdef PBRT_USES_HCCMATH_SQRT
+            constexpr Float c1 = ( Math::Sqrt( 5.f ) - 1 ) / 4;
+            constexpr Float c2 = ( Math::Sqrt( 5.f ) + 1 ) / 4;
+            constexpr Float s1 = Math::Sqrt( 10.f + 2.f * Math::Sqrt( 5.f ) ) / 4;
+            constexpr Float s2 = Math::Sqrt( 10.f - 2.f * Math::Sqrt( 5.f ) ) / 4;
+#else
             Float c1 = (std::sqrt(5.f) - 1) / 4;
             Float c2 = (std::sqrt(5.f) + 1) / 4;
             Float s1 = std::sqrt(10.f + 2.f * std::sqrt(5.f)) / 4;
             Float s2 = std::sqrt(10.f - 2.f * std::sqrt(5.f)) / 4;
+#endif
             // Vertices in CW order.
             Point2f vert[5] = {Point2f(0, 1), {s1, c1}, {s2, -c2}, {-s2, -c2}, {-s1, c1}};
             // Scale down slightly

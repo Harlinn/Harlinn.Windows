@@ -1134,8 +1134,13 @@ void FormattingParserTarget::PixelFilter(const std::string &name,
             std::vector<Float> alpha = dict.GetFloatArray("alpha");
             if (alpha.size() == 1) {
                 dict.RemoveFloat("alpha");
+#ifdef PBRT_USES_HCCMATH_SQRT
+                extra += StringPrintf( "%s\"float sigma\" [ %f ]\n", indent( 1 ),
+                    1 / Math::Sqrt( 2 * alpha[ 0 ] ) );
+#else
                 extra += StringPrintf("%s\"float sigma\" [ %f ]\n", indent(1),
                                       1 / std::sqrt(2 * alpha[0]));
+#endif
             }
         }
     }

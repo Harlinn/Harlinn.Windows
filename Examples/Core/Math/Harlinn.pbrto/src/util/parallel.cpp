@@ -318,10 +318,15 @@ void ParallelFor2D(const Bounds2i &extent, std::function<void(Bounds2i)> func) {
     // Want at least 8 tiles per thread, subject to not too big and not too
     // small.
     // TODO: should we do non-square?
+#ifdef PBRT_USES_HCCMATH_SQRT
+    int tileSize = Clamp( int( Math::Sqrt( static_cast<Float>( extent.Diagonal( ).x * extent.Diagonal( ).y /
+        ( 8 * RunningThreads( ) ) ) ) ),
+        1, 32 );
+#else
     int tileSize = Clamp(int(std::sqrt(extent.Diagonal().x * extent.Diagonal().y /
                                        (8 * RunningThreads()))),
                          1, 32);
-
+#endif
     ParallelForLoop2D loop(extent, tileSize, std::move(func));
     std::unique_lock<std::mutex> lock = ParallelJob::threadPool->AddToJobList(&loop);
 

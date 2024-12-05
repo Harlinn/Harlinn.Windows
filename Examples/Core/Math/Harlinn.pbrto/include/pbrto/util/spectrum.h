@@ -656,8 +656,14 @@ inline SampledSpectrum ClampZero(const SampledSpectrum &s) {
 PBRT_CPU_GPU
 inline SampledSpectrum Sqrt(const SampledSpectrum &s) {
     SampledSpectrum ret;
-    for (int i = 0; i < NSpectrumSamples; ++i)
-        ret[i] = std::sqrt(s[i]);
+    for ( int i = 0; i < NSpectrumSamples; ++i )
+    {
+#ifdef PBRT_USES_HCCMATH_SQRT
+        ret[ i ] = Math::Sqrt( s[ i ] );
+#else
+        ret[ i ] = std::sqrt( s[ i ] );
+#endif
+    }
     DCHECK(!ret.HasNaNs());
     return ret;
 }

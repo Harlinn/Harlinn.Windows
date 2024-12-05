@@ -21,6 +21,7 @@
 
 #include <HCCDef.h>
 
+
 #ifdef BUILDING_HARLINN_PBRTO
 #define PBRTO_EXPORT __declspec(dllexport)
 #define PBRTO_TEMPLATE_EXPORT __declspec(dllexport)
@@ -75,8 +76,23 @@
 #define PBRT_USES_HCCMATH 1
 #define PBRT_USES_HCCMATH_SINCOS 1
 #define PBRT_USES_HCCMATH_SQRT 1
+#define PBRT_USES_HCCMATH_HYPOT 1
+#define PBRT_USES_HCCMATH_COPYSIGN 1
+#define PBRT_USES_HCCMATH_ATAN 1
+#define PBRT_USES_HCCMATH_ATAN2 1
+#define PBRT_USES_HCCMATH_EXP 1
+#define PBRT_USES_HCCMATH_LOG 1
+#define PBRT_USES_HCCMATH_LOG2 1
+#define PBRT_USES_HCCMATH_LOG10 1
+#define PBRT_USES_HCCMATH_FMOD 1
+#define PBRT_USES_HCCSIMD 1
 
 #define PBRT_CONSTEXPR constexpr
+
+#ifdef PBRT_USES_HCCMATH
+#include <HCCMath.h>
+using namespace Harlinn::Common::Core;
+#endif
 
 
 #endif

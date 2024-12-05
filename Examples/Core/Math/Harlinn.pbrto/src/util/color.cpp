@@ -35,10 +35,16 @@ PBRT_CPU_GPU RGBSigmoidPolynomial RGBToSpectrumTable::operator()(RGB rgb) const 
            rgb[1] <= 1.f && rgb[2] <= 1.f);
 
     // Handle uniform _rgb_ values
-    if (rgb[0] == rgb[1] && rgb[1] == rgb[2])
-        return RGBSigmoidPolynomial(0, 0,
-                                    (rgb[0] - .5f) / std::sqrt(rgb[0] * (1 - rgb[0])));
-
+    if ( rgb[ 0 ] == rgb[ 1 ] && rgb[ 1 ] == rgb[ 2 ] )
+    {
+#ifdef PBRT_USES_HCCMATH_SQRT
+        return RGBSigmoidPolynomial( 0, 0,
+            ( rgb[ 0 ] - .5f ) / Math::Sqrt( rgb[ 0 ] * ( 1 - rgb[ 0 ] ) ) );
+#else
+        return RGBSigmoidPolynomial( 0, 0,
+            ( rgb[ 0 ] - .5f ) / std::sqrt( rgb[ 0 ] * ( 1 - rgb[ 0 ] ) ) );
+#endif
+    }
     // Find maximum component and compute remapped component values
     int maxc =
         (rgb[0] > rgb[1]) ? ((rgb[0] > rgb[2]) ? 0 : 2) : ((rgb[1] > rgb[2]) ? 1 : 2);

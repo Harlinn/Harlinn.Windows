@@ -303,7 +303,11 @@ StratifiedSampler *StratifiedSampler::Create(const ParameterDictionary &paramete
     int ySamples = parameters.GetOneInt("ysamples", 4);
     if (Options->pixelSamples) {
         int nSamples = *Options->pixelSamples;
+#ifdef PBRT_USES_HCCMATH_SQRT
+        int div = Math::Sqrt( static_cast<Float>( nSamples ) );
+#else
         int div = std::sqrt(nSamples);
+#endif
         while (nSamples % div) {
             CHECK_GT(div, 0);
             --div;
@@ -372,7 +376,11 @@ PBRT_CPU_GPU void MLTSampler::EnsureReady(int index) {
     else {
         int64_t nSmall = currentIteration - X_i.lastModificationIteration;
         // Apply _nSmall_ small step mutations to $\VEC{X}_i$
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float effSigma = sigma * Math::Sqrt( ( Float )nSmall );
+#else
         Float effSigma = sigma * std::sqrt((Float)nSmall);
+#endif
         Float delta = SampleNormal(rng.Uniform<Float>(), 0, effSigma);
         X_i.value += delta;
         X_i.value -= pstd::floor(X_i.value);

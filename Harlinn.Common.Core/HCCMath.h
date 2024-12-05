@@ -6393,6 +6393,16 @@ namespace Harlinn::Common::Core::Math
         else
         {   
             using FloatT = std::remove_cvref_t<T>;
+            using Traits = SIMD::Traits<FloatT,2>;
+            
+            auto v = Traits::Set( y, x );
+            v = Traits::Mul( v, v );
+            v = Traits::HSum( v );
+            v = Traits::Sqrt( v );
+            return Traits::Lower( v );
+
+            /*
+            using FloatT = std::remove_cvref_t<T>;
             if constexpr ( std::is_same_v<FloatT, float> )
             {
                 return Math::Internal::HypotImpl( x, y );
@@ -6401,6 +6411,30 @@ namespace Harlinn::Common::Core::Math
             {
                 return std::hypot( x, y );
             }
+            */
+        }
+    }
+
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Hypot( T x, T y, T z ) noexcept
+    {
+        if ( std::is_constant_evaluated( ) )
+        {
+            return Sqrt( x*x + y*y + z*z );
+        }
+        else
+        {
+            using FloatT = std::remove_cvref_t<T>;
+            using Traits = SIMD::Traits<FloatT, 3>;
+
+            auto v = Traits::Set( z, y, x );
+            v = Traits::Mul( v, v );
+            v = Traits::HSum( v );
+            v = Traits::Sqrt( v );
+            return Traits::Lower( v );
+
         }
     }
 

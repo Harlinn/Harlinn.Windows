@@ -249,8 +249,13 @@ void RayIntegrator::EvaluatePixelSample(Point2i pPixel, int sampleIndex, Sampler
         DCHECK_GT(Length(cameraRay->ray.d), .999f);
         DCHECK_LT(Length(cameraRay->ray.d), 1.001f);
         // Scale camera ray differentials based on image sampling rate
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float rayDiffScale =
+            std::max<Float>( .125f, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
+#else
         Float rayDiffScale =
             std::max<Float>(.125f, 1 / std::sqrt((Float)sampler.SamplesPerPixel()));
+#endif
         if (!Options->disablePixelJitter)
             cameraRay->ray.ScaleDifferentials(rayDiffScale);
 
@@ -1738,8 +1743,14 @@ struct Vertex {
         if (LengthSquared(w) == 0)
             return 0;
         Float invDist2 = 1 / LengthSquared(w);
-        if (next.IsOnSurface())
-            pdf *= AbsDot(next.ng(), w * std::sqrt(invDist2));
+        if ( next.IsOnSurface( ) )
+        {
+#ifdef PBRT_USES_HCCMATH_SQRT
+            pdf *= AbsDot( next.ng( ), w * Math::Sqrt( invDist2 ) );
+#else
+            pdf *= AbsDot( next.ng( ), w * std::sqrt( invDist2 ) );
+#endif
+        }
         return pdf * invDist2;
     }
 
@@ -1779,7 +1790,11 @@ struct Vertex {
     Float PDFLight(const Integrator &integrator, const Vertex &v) const {
         Vector3f w = v.p() - p();
         Float invDist2 = 1 / LengthSquared(w);
+#ifdef PBRT_USES_HCCMATH_SQRT
+        w *= Math::Sqrt( invDist2 );
+#else
         w *= std::sqrt(invDist2);
+#endif
         // Compute sampling density _pdf_ for light type
         Float pdf;
         if (IsInfiniteLight()) {
@@ -2119,7 +2134,11 @@ SampledSpectrum G(const Integrator &integrator, Sampler sampler, const Vertex &v
                   const Vertex &v1, const SampledWavelengths &lambda) {
     Vector3f d = v0.p() - v1.p();
     Float g = 1 / LengthSquared(d);
+#ifdef PBRT_USES_HCCMATH_SQRT
+    d *= Math::Sqrt( g );
+#else
     d *= std::sqrt(g);
+#endif
     if (v0.IsOnSurface())
         g *= AbsDot(v0.ns(), d);
     if (v1.IsOnSurface())
@@ -2516,8 +2535,13 @@ SampledSpectrum MLTIntegrator::L(ScratchBuffer &scratchBuffer, MLTSampler &sampl
         camera.GenerateRayDifferential(cameraSample, *lambda);
     if (!crd || !crd->weight)
         return SampledSpectrum(0.f);
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float rayDiffScale =
+        std::max<Float>( .125, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
+#else
     Float rayDiffScale =
         std::max<Float>(.125, 1 / std::sqrt((Float)sampler.SamplesPerPixel()));
+#endif
     crd->ray.ScaleDifferentials(rayDiffScale);
 
     if (GenerateCameraSubpath(*this, crd->ray, *lambda, &sampler, scratchBuffer, t,
@@ -2817,7 +2841,11 @@ void SPPMIntegrator::Render() {
     // Define variables for commonly used values in SPPM rendering
     int nIterations = samplerPrototype.SamplesPerPixel();
     ProgressReporter progress(2 * nIterations, "Rendering", Options->quiet);
+#ifdef PBRT_USES_HCCMATH_SQRT
+    const Float invSqrtSPP = 1.f / Math::Sqrt( static_cast< Float >( nIterations ) );
+#else
     const Float invSqrtSPP = 1.f / std::sqrt(nIterations);
+#endif
     Film film = camera.GetFilm();
     Bounds2i pixelBounds = film.PixelBounds();
     int nPixels = pixelBounds.Area();
@@ -3199,7 +3227,11 @@ void SPPMIntegrator::Render() {
                 // Compute new photon count and search radius given photons
                 Float gamma = (Float)2 / (Float)3;
                 Float nNew = p.n + gamma * m;
+#ifdef PBRT_USES_HCCMATH_SQRT
+                Float rNew = p.radius * Math::Sqrt( nNew / ( p.n + m ) );
+#else
                 Float rNew = p.radius * std::sqrt(nNew / (p.n + m));
+#endif
 
                 // Update $\tau$ for pixel
                 RGB Phi_i(p.Phi_i[0], p.Phi_i[1], p.Phi_i[2]);
@@ -3383,10 +3415,17 @@ static double rotatedCheckerboard(Point2f p) {
            nrm;
 }
 static double gaussian(Point2f p) {
+#ifdef PBRT_USES_HCCMATH_SQRT
+    auto Gaussian = []( double x, double mu = 0, double sigma = 1 ) {
+        return 1 / Math::Sqrt( 2 * Pi * sigma * sigma ) *
+            std::exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
+        };
+#else
     auto Gaussian = [](double x, double mu = 0, double sigma = 1) {
         return 1 / std::sqrt(2 * Pi * sigma * sigma) *
                std::exp(-Sqr(x - mu) / (2 * sigma * sigma));
     };
+#endif
     auto GaussianIntegral = [](double x0, double x1, double mu = 0, double sigma = 1) {
         double sigmaRoot2 = sigma * double(1.414213562373095);
         return 0.5f *
@@ -3490,7 +3529,12 @@ void FunctionIntegrator::Render() {
         bool reportResult = true;
         if (skipBad) {
             int nSamples = sampleIndex + 1;
+#ifdef PBRT_USES_HCCMATH_SQRT
+            if ( isStratified && Sqr( int( Math::Sqrt( static_cast< Float >( nSamples ) ) ) ) != nSamples )
+            {
+#else
             if (isStratified && Sqr(int(std::sqrt(nSamples))) != nSamples) {
+#endif
                 prog.Update();
                 continue;
             } else if (isSobol && !IsPowerOf2(nSamples))
@@ -3516,7 +3560,11 @@ void FunctionIntegrator::Render() {
 
         if (isStratified) {
             int spp = sampleIndex + 1;
+#ifdef PBRT_USES_HCCMATH_SQRT
+            int factor = int( Math::Sqrt( static_cast< Float >( spp ) ) );
+#else
             int factor = int(std::sqrt(spp));
+#endif
 
             while ((spp % factor) != 0)
                 --factor;

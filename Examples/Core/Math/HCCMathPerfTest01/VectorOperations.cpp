@@ -453,6 +453,7 @@ void RunAddFloat1BTest( Int64 outerIterationCount )
     RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg1, const auto& arg2 ) { return arg1 + arg2; }, baseValue1, baseValue2, increment );
 }
 
+/*
 void RunAddFloat2ATest( Int64 outerIterationCount )
 {
     using VectorType = Math::Vector<float, 2>;
@@ -506,7 +507,7 @@ void RunAddFloat4BTest( Int64 outerIterationCount )
     VectorType increment( 0.000001f, 0.000002f, 0.000003f, 0.000004f );
     RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg1, const auto& arg2 ) { return arg1 + arg2; }, baseValue1, baseValue2, increment );
 }
-
+*/
 void RunAddFloat5ATest( Int64 outerIterationCount )
 {
     using VectorType = Math::Vector<float, 5>;
@@ -812,7 +813,7 @@ void RunVectorOperations( )
 
     RunAddFloat1ATest( outerIterationCount );
     RunAddFloat1BTest( outerIterationCount );
-    
+    /*
     RunAddFloat2ATest( outerIterationCount );
     RunAddFloat2BTest( outerIterationCount );
     
@@ -821,7 +822,7 @@ void RunVectorOperations( )
 
     RunAddFloat4ATest( outerIterationCount );
     RunAddFloat4BTest( outerIterationCount );
-
+    */
     RunAddFloat5ATest( outerIterationCount );
     RunAddFloat5BTest( outerIterationCount );
 

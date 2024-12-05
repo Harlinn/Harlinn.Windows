@@ -959,9 +959,15 @@ class HairBxDF {
     PBRT_CPU_GPU static Float Mp(Float cosTheta_i, Float cosTheta_o, Float sinTheta_i,
                                  Float sinTheta_o, Float v) {
         Float a = cosTheta_i * cosTheta_o / v, b = sinTheta_i * sinTheta_o / v;
+#ifdef PBRT_USES_HCCMATH_LOG
+        Float mp = ( v <= .1 )
+            ? ( FastExp( LogI0( a ) - b - 1 / v + 0.6931f + Math::Log( 1 / ( 2 * v ) ) ) )
+            : ( FastExp( -b ) * I0( a ) ) / ( std::sinh( 1 / v ) * 2 * v );
+#else
         Float mp = (v <= .1)
                        ? (FastExp(LogI0(a) - b - 1 / v + 0.6931f + std::log(1 / (2 * v))))
                        : (FastExp(-b) * I0(a)) / (std::sinh(1 / v) * 2 * v);
+#endif
         DCHECK(!IsInf(mp) && !IsNaN(mp));
         return mp;
     }

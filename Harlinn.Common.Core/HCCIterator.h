@@ -40,7 +40,7 @@ namespace Harlinn::Common::Core::Internal
             : ptr_( nullptr )
         {
         }
-        constexpr ConstPointerIterator( pointer ptr ) noexcept
+        explicit constexpr ConstPointerIterator( pointer ptr ) noexcept
             : ptr_( const_cast<Pointer>(ptr) )
         {
         }
@@ -137,6 +137,17 @@ namespace Harlinn::Common::Core::Internal
         {
             return UnwrapPointer( ptr_ ) <=> UnwrapPointer( other.ptr_ );
         }
+
+        [[nodiscard]] constexpr bool operator==( nullptr_t ) const noexcept
+        {
+            return ptr_ == nullptr;
+        }
+
+        [[nodiscard]] constexpr bool operator!=( nullptr_t ) const noexcept
+        {
+            return ptr_ != nullptr;
+        }
+
     };
 }
 
@@ -181,7 +192,7 @@ namespace Harlinn::Common::Core::Internal
         {
         }
 
-        constexpr PointerIterator( pointer ptr ) noexcept
+        explicit constexpr PointerIterator( pointer ptr ) noexcept
             : Base( ptr )
         {
         }

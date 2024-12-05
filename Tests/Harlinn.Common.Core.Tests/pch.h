@@ -36,8 +36,6 @@
 #include <HCCLib.h>
 #include <HCCLMDB.h>
 #include <HCCLoggerLMDBSinkStorage.h>
-#include <HCCMath.h>
-#include <HCCMatrix.h>
 #include <HCCObj.h>
 #include <HCCProcess.h>
 #include <HCCSecurity.h>

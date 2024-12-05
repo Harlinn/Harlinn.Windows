@@ -212,7 +212,39 @@ PBRT_CPU_GPU Point3f SampleSphericalRectangle(Point3f pRef, Point3f s, Vector3f 
 #else
     Float fu = ( std::cos( au ) * b0 - b1 ) / std::sin( au );
 #endif
-    Float cu = pstd::copysign(1 / std::sqrt(Sqr(fu) + Sqr(b0)), fu);
+
+//#undef PBRT_USES_HCCMATH_COPYSIGN
+//#undef PBRT_USES_HCCMATH_SQRT
+
+#ifdef PBRT_USES_HCCMATH_SQRT
+#ifdef PBRT_USES_HCCMATH_COPYSIGN
+#ifdef PBRT_USES_HCCMATH_HYPOT
+    Float cu = Math::CopySign( 1 / Math::Hypot( fu, b0 ), fu );
+#else
+    Float cu = Math::CopySign( 1 / Math::Sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
+#endif
+#else
+#ifdef PBRT_USES_HCCMATH_HYPOT
+    Float cu = pstd::copysign( 1 / Math::Hypot( fu, b0 ), fu );
+#else
+    Float cu = pstd::copysign( 1 / Math::Sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
+#endif
+#endif
+#else
+#ifdef PBRT_USES_HCCMATH_COPYSIGN
+#ifdef PBRT_USES_HCCMATH_HYPOT
+    Float cu = Math::CopySign( 1 / Math::Hypot( fu, b0 ), fu );
+#else
+    Float cu = Math::CopySign(1 / std::sqrt(Sqr(fu) + Sqr(b0)), fu);
+#endif
+#else
+#ifdef PBRT_USES_HCCMATH_HYPOT
+    Float cu = pstd::copysign( 1 / Math::Hypot( fu,b0 ), fu );
+#else
+    Float cu = pstd::copysign( 1 / std::sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
+#endif
+#endif
+#endif
     cu = Clamp(cu, -OneMinusEpsilon, OneMinusEpsilon);  // avoid NaNs
 
     // Find _xu_ along $x$ edge for spherical rectangle sample
@@ -220,12 +252,35 @@ PBRT_CPU_GPU Point3f SampleSphericalRectangle(Point3f pRef, Point3f s, Vector3f 
     xu = Clamp(xu, x0, x1);
 
     // Find _xv_ along $y$ edge for spherical rectangle sample
+#ifdef PBRT_USES_HCCMATH_SQRT
+#ifdef PBRT_USES_HCCMATH_HYPOT
+    Float dd = Math::Hypot( xu, z0 );
+    Float h0 = y0 / Math::Hypot( dd, y0 );
+    Float h1 = y1 / Math::Hypot( dd, y1 );
+    Float hv = h0 + u[ 1 ] * ( h1 - h0 ), hvsq = Sqr( hv );
+    Float yv = ( hvsq < 1 - 1e-6f ) ? ( hv * dd ) / Math::Sqrt( 1 - hvsq ) : y1;
+#else
+    Float dd = Math::Sqrt( Sqr( xu ) + Sqr( z0 ) );
+    Float h0 = y0 / Math::Sqrt( Sqr( dd ) + Sqr( y0 ) );
+    Float h1 = y1 / Math::Sqrt( Sqr( dd ) + Sqr( y1 ) );
+    Float hv = h0 + u[ 1 ] * ( h1 - h0 ), hvsq = Sqr( hv );
+    Float yv = ( hvsq < 1 - 1e-6f ) ? ( hv * dd ) / Math::Sqrt( 1 - hvsq ) : y1;
+#endif
+#else
+#ifdef PBRT_USES_HCCMATH_HYPOT
+    Float dd = Math::Hypot( xu, z0 );
+    Float h0 = y0 / Math::Hypot( dd, y0 );
+    Float h1 = y1 / Math::Hypot( dd, y1 );
+    Float hv = h0 + u[ 1 ] * ( h1 - h0 ), hvsq = Sqr( hv );
+    Float yv = ( hvsq < 1 - 1e-6f ) ? ( hv * dd ) / std::sqrt( 1 - hvsq ) : y1;
+#else
     Float dd = std::sqrt(Sqr(xu) + Sqr(z0));
     Float h0 = y0 / std::sqrt(Sqr(dd) + Sqr(y0));
     Float h1 = y1 / std::sqrt(Sqr(dd) + Sqr(y1));
     Float hv = h0 + u[1] * (h1 - h0), hvsq = Sqr(hv);
     Float yv = (hvsq < 1 - 1e-6f) ? (hv * dd) / std::sqrt(1 - hvsq) : y1;
-
+#endif
+#endif
     // Return spherical triangle sample in original coordinate system
     return pRef + R.FromLocal(Vector3f(xu, yv, z0));
 }
@@ -297,7 +352,11 @@ PBRT_CPU_GPU Point2f InvertSphericalRectangleSample(Point3f pRef, Point3f s, Vec
     // Float fusq = 1 / Sqr(cu) - b0sq;  // more stable
     Float invcusq = 1 + z0sq / Sqr(xu);
     Float fusq = invcusq - b0sq;  // the winner so far
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float fu = pstd::copysign( Math::Sqrt( fusq ), xu );
+#else
     Float fu = pstd::copysign(std::sqrt(fusq), xu);
+#endif
     // Note, though have 1 + z^2/x^2 - b0^2, which isn't great if b0 \approx 1
     // double fusq = 1. - Sqr(double(b0)) + Sqr(double(z0) / double(xu));  //
     // this is worse?? double fu = pstd::copysign(std::sqrt(fusq), cu);
@@ -330,25 +389,43 @@ PBRT_CPU_GPU Point2f InvertSphericalRectangleSample(Point3f pRef, Point3f s, Vec
     Float u0 = (au + g2 + g3) / solidAngle;
 
     Float ddsq = Sqr(xu) + z0sq;
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float dd = Math::Sqrt( ddsq );
+    Float h0 = y0 / Math::Sqrt( ddsq + y0sq );
+    Float h1 = y1 / Math::Sqrt( ddsq + y1sq );
+#else
     Float dd = std::sqrt(ddsq);
     Float h0 = y0 / std::sqrt(ddsq + y0sq);
     Float h1 = y1 / std::sqrt(ddsq + y1sq);
+#endif
     Float yvsq = Sqr(yv);
 
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float u1[ 2 ] = { ( DifferenceOfProducts( h0, h0, h0, h1 ) -
+                    std::abs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
+                       Sqr( h0 - h1 ),
+                   ( DifferenceOfProducts( h0, h0, h0, h1 ) +
+                    std::abs( h0 - h1 ) * Math::Sqrt( yvsq * ( ddsq + yvsq ) ) / ( ddsq + yvsq ) ) /
+                       Sqr( h0 - h1 ) };
+#else
     Float u1[2] = {(DifferenceOfProducts(h0, h0, h0, h1) -
                     std::abs(h0 - h1) * std::sqrt(yvsq * (ddsq + yvsq)) / (ddsq + yvsq)) /
                        Sqr(h0 - h1),
                    (DifferenceOfProducts(h0, h0, h0, h1) +
                     std::abs(h0 - h1) * std::sqrt(yvsq * (ddsq + yvsq)) / (ddsq + yvsq)) /
                        Sqr(h0 - h1)};
-
+#endif
     // TODO: yuck is there a better way to figure out which is the right
     // solution?
     Float hv[2] = {Lerp(u1[0], h0, h1), Lerp(u1[1], h0, h1)};
     Float hvsq[2] = {Sqr(hv[0]), Sqr(hv[1])};
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float yz[ 2 ] = { ( hv[ 0 ] * dd ) / Math::Sqrt( 1 - hvsq[ 0 ] ),
+                   ( hv[ 1 ] * dd ) / Math::Sqrt( 1 - hvsq[ 1 ] ) };
+#else
     Float yz[2] = {(hv[0] * dd) / std::sqrt(1 - hvsq[0]),
                    (hv[1] * dd) / std::sqrt(1 - hvsq[1])};
-
+#endif
     Point2f u = (std::abs(yz[0] - yv) < std::abs(yz[1] - yv))
                     ? Point2f(Clamp(u0, 0, 1), u1[0])
                     : Point2f(Clamp(u0, 0, 1), u1[1]);

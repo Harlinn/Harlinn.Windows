@@ -173,7 +173,11 @@ PBRT_CPU_GPU Transform::operator Quaternion() const {
     if (trace > 0.f) {
         // Compute w from matrix trace, then xyz
         // 4w^2 = m[0][0] + m[1][1] + m[2][2] + m[3][3] (but m[3][3] == 1)
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float s = Math::Sqrt( trace + 1.0f );
+#else
         Float s = std::sqrt(trace + 1.0f);
+#endif
         quat.w = s / 2.0f;
         s = 0.5f / s;
         quat.v.x = (m[2][1] - m[1][2]) * s;

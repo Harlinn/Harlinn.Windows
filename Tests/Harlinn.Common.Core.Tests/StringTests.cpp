@@ -10149,7 +10149,66 @@ BOOST_AUTO_TEST_CASE( ParseBooleanTest1A )
     BOOST_TEST( equal );
 }
 
+// --run_test=StringTests/InsertTest1
+BOOST_AUTO_TEST_CASE( InsertTest1 )
+{
+    WideString s;
+    s.Insert( 0ULL, 1ULL, L'H' );
+    auto equal = s == L"H";
+    BOOST_TEST( equal );
+}
 
+// --run_test=StringTests/InsertTest2
+BOOST_AUTO_TEST_CASE( InsertTest2 )
+{
+    WideString s;
+    s.Insert( 2ULL, 1ULL, L'H' );
+    auto equal = s == L"  H";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/InsertTest3
+BOOST_AUTO_TEST_CASE( InsertTest3 )
+{
+    WideString s1(L"AC" );
+    WideString s2( L"B" );
+    s1.Insert( 1ULL, s2 );
+    auto equal = s1 == L"ABC";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/InsertTest4
+BOOST_AUTO_TEST_CASE( InsertTest4 )
+{
+    WideString s1( L"AC" );
+    std::wstring s2( L"B" );
+    s1.Insert( 1ULL, s2 );
+    auto equal = s1 == L"ABC";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/InsertTest5
+BOOST_AUTO_TEST_CASE( InsertTest5 )
+{
+    WideString s1( L"AC" );
+    std::wstring_view s2( L"B" );
+    s1.Insert( 1ULL, s2 );
+    auto equal = s1 == L"ABC";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/InsertTest6
+BOOST_AUTO_TEST_CASE( InsertTest6 )
+{
+    WideString s1( L"AC" );
+    std::wstring_view s2( L"B" );
+    WideString s3 = s1;
+    s1.Insert( 1ULL, s2 );
+    auto equal = s1 == L"ABC";
+    BOOST_TEST( equal );
+    equal = s3 == L"AC";
+    BOOST_TEST( equal );
+}
 
 
 BOOST_AUTO_TEST_SUITE_END( )

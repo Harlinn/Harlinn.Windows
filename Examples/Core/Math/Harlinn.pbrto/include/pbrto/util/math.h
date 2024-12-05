@@ -275,13 +275,21 @@ PBRT_CPU_GPU inline Float SmoothStep(Float x, Float a, Float b) {
 
 PBRT_CPU_GPU inline float SafeSqrt(float x) {
     DCHECK_GE(x, -1e-3f);  // not too negative
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Math::Sqrt( std::max( 0.f, x ) );
+#else
     return std::sqrt(std::max(0.f, x));
+#endif
 }
 
 PBRT_CPU_GPU
 inline double SafeSqrt(double x) {
     DCHECK_GE(x, -1e-3);  // not too negative
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return Math::Sqrt( std::max( 0., x ) );
+#else
     return std::sqrt(std::max(0., x));
+#endif
 }
 
 template <typename T>
@@ -386,7 +394,7 @@ inline double SafeACos(double x) {
 
 PBRT_CPU_GPU inline Float Log2(Float x) {
     const Float invLog2 = 1.442695040888963387004650940071;
-#ifdef PBRT_USES_HCCMATH
+#ifdef PBRT_USES_HCCMATH_LOG
     return Math::Log( x ) * invLog2;
 #else
     return std::log(x) * invLog2;
@@ -499,8 +507,13 @@ PBRT_CPU_GPU inline float FastExp(float x) {
 }
 
 PBRT_CPU_GPU inline Float Gaussian(Float x, Float mu = 0, Float sigma = 1) {
+#ifdef PBRT_USES_HCCMATH_SQRT
+    return 1 / Math::Sqrt( 2 * Pi * sigma * sigma ) *
+        FastExp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
+#else
     return 1 / std::sqrt(2 * Pi * sigma * sigma) *
            FastExp(-Sqr(x - mu) / (2 * sigma * sigma));
+#endif
 }
 
 PBRT_CPU_GPU inline Float GaussianIntegral(Float x0, Float x1, Float mu = 0,
@@ -647,7 +660,11 @@ PBRT_CPU_GPU inline bool Quadratic(float a, float b, float c, float *t0, float *
     float discrim = DifferenceOfProducts(b, b, 4 * a, c);
     if (discrim < 0)
         return false;
+#ifdef PBRT_USES_HCCMATH_SQRT
+    float rootDiscrim = Math::Sqrt( discrim );
+#else
     float rootDiscrim = std::sqrt(discrim);
+#endif
 
     // Compute quadratic _t_ values
     float q = -0.5f * (b + pstd::copysign(rootDiscrim, b));
@@ -665,7 +682,11 @@ inline bool Quadratic(double a, double b, double c, double *t0, double *t1) {
     double discrim = DifferenceOfProducts(b, b, 4 * a, c);
     if (discrim < 0)
         return false;
+#ifdef PBRT_USES_HCCMATH_SQRT
+    double rootDiscrim = Math::Sqrt( discrim );
+#else
     double rootDiscrim = std::sqrt(discrim);
+#endif
 
     if (a == 0) {
         *t0 = *t1 = -c / b;
@@ -785,7 +806,11 @@ inline Float ErfInv(Float a) {
 #else
     // https://stackoverflow.com/a/49743348
     float p;
+#ifdef PBRT_USES_HCCMATH_LOG
+    float t = Math::Log( std::max( FMA( a, -a, 1 ), std::numeric_limits<Float>::min( ) ) );
+#else
     float t = std::log(std::max(FMA(a, -a, 1), std::numeric_limits<Float>::min()));
+#endif
     CHECK(!IsNaN(t) && !IsInf(t));
     if (std::abs(t) > 6.125f) {          // maximum ulp error = 2.35793
         p = 3.03697567e-10f;             //  0x1.4deb44p-32
@@ -832,10 +857,22 @@ inline Float I0(Float x) {
 
 PBRT_CPU_GPU
 inline Float LogI0(Float x) {
-    if (x > 12)
-        return x + 0.5f * (-std::log(2 * Pi) + std::log(1 / x) + 1 / (8 * x));
+    if ( x > 12 )
+    {
+#ifdef PBRT_USES_HCCMATH_LOG
+        return x + 0.5f * ( -Math::Log( 2 * Pi ) + Math::Log( 1 / x ) + 1 / ( 8 * x ) );
+#else
+        return x + 0.5f * ( -std::log( 2 * Pi ) + std::log( 1 / x ) + 1 / ( 8 * x ) );
+#endif
+    }
     else
-        return std::log(I0(x));
+    {
+#ifdef PBRT_USES_HCCMATH_LOG
+        return Math::Log( I0( x ) );
+#else
+        return std::log( I0( x ) );
+#endif
+    }
 }
 
 // Interval Definition
