@@ -16,7 +16,7 @@
 
 #include "pch.h"
 
-#include <HCCMatrix.h>
+#include <HCCVectorMath.h>
 
 
 using namespace Harlinn::Common::Core;

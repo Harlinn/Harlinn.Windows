@@ -1,53 +1,37 @@
-// BasicMathBenchmarks.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+/*
+   Copyright 2024 Espen Harlinn
 
-#include <HCCMath.h>
-#include <pbrto/util/math.h>
-#include <benchmark/benchmark.h>
-#include <random>
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-using namespace Harlinn::Common::Core;
+       http://www.apache.org/licenses/LICENSE-2.0
 
-template<typename FloatT, size_t N >
-struct RandomGenerator
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+#include "BenchmarkUtils.h"
+
+#ifdef RUN_BASIC_MATH_BENCHMARKS
+namespace
 {
-    using FloatType = FloatT;
-    std::array<FloatType, N> Values;
-    size_t Counter = 0;
-    RandomGenerator( FloatT lowerBound = -10000, FloatT upperBound = 10000 )
-    {
-        std::uniform_real_distribution<FloatType> unif( lowerBound, upperBound );
-        std::default_random_engine re;
-        for ( size_t i = 0; i < N; i++ )
-        {
-            Values[ i ] = unif( re );
-        }
-    }
-    __forceinline FloatType operator( )( )
-    {
-        return Values[ Counter++%N ];
-    }
-    void Reset()
-    {
-        Counter = 0;
-    }
-};
+    RandomGenerator<double, SampleCount> DoubleGenerator;
+    RandomGenerator<float, SampleCount> FloatGenerator;
+    RandomGenerator<double, SampleCount> DoubleAngleInDegreesGenerator( 0.0, 360.0 );
+    RandomGenerator<float, SampleCount> FloatAngleInDegreesGenerator( 0.0f, 360.0f );
+    RandomGenerator<double, SampleCount> DoubleAngleInRadiansGenerator( 0.0, M_PI * 2 );
+    RandomGenerator<float, SampleCount> FloatAngleInRadiansGenerator( 0.0f, ( float )M_PI * 2 );
 
-constexpr size_t SampleCount = 64;
+    RandomGenerator<double, SampleCount> DoubleZeroToOneGenerator( 0.0, 1.0 );
+    RandomGenerator<float, SampleCount> FloatZeroToOneGenerator( 0.0f, 1.0f );
 
-RandomGenerator<double, SampleCount> DoubleGenerator;
-RandomGenerator<float, SampleCount> FloatGenerator;
-RandomGenerator<double, SampleCount> DoubleAngleInDegreesGenerator(0.0,360.0);
-RandomGenerator<float, SampleCount> FloatAngleInDegreesGenerator( 0.0f, 360.0f );
-RandomGenerator<double, SampleCount> DoubleAngleInRadiansGenerator( 0.0, M_PI * 2 );
-RandomGenerator<float, SampleCount> FloatAngleInRadiansGenerator( 0.0f, (float) M_PI * 2 );
-
-RandomGenerator<double, SampleCount> DoubleZeroToOneGenerator( 0.0, 1.0 );
-RandomGenerator<float, SampleCount> FloatZeroToOneGenerator( 0.0f, 1.0f );
-
-RandomGenerator<double, SampleCount> DoubleMinusOneToOneGenerator( -1.0, 1.0 );
-RandomGenerator<float, SampleCount> FloatMinusOneToOneGenerator( -1.0f, 1.0f );
-
+    RandomGenerator<double, SampleCount> DoubleMinusOneToOneGenerator( -1.0, 1.0 );
+    RandomGenerator<float, SampleCount> FloatMinusOneToOneGenerator( -1.0f, 1.0f );
+}
 
 static void BenchmarkDoubleGenerator( benchmark::State& state )
 {
@@ -2081,6 +2065,6 @@ static void BenchmarkFloatStdATan2( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatStdATan2 );
-
+#endif
 
 BENCHMARK_MAIN( );

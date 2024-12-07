@@ -202,6 +202,9 @@
     <ClCompile Include="IOPathTests.cpp" />
     <ClCompile Include="ListTests.cpp" />
     <ClCompile Include="LoggerLevelTests.cpp" />
+    <ClCompile Include="MathVector2FloatTests.cpp" />
+    <ClCompile Include="MathVector3FloatTests.cpp" />
+    <ClCompile Include="MathVector4FloatTests.cpp" />
     <ClCompile Include="PersistentPrinterTests.cpp" />
     <ClCompile Include="SerializationRWTests.cpp" />
     <ClCompile Include="SIMDDoubleTests.cpp" />

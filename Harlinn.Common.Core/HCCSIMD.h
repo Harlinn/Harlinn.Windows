@@ -19,6 +19,7 @@
 
 //#include <HCCMath.h>
 #include <HCCLib.h>
+#include <HCCBits.h>
 #include <zmmintrin.h>
 
 namespace Harlinn::Common::Core::SIMD
@@ -64,10 +65,11 @@ namespace Harlinn::Common::Core::SIMD
     };
 
     template<DataType dt>
-    struct DataTypeTraits;
+    struct DataTypeTraits : public std::false_type
+    { };
 
     template<>
-    struct DataTypeTraits<DataType::m64>
+    struct DataTypeTraits<DataType::m64> : public std::true_type
     {
         static constexpr DataType Id = DataType::m64;
         static constexpr size_t AlignAs = 8;
@@ -76,7 +78,7 @@ namespace Harlinn::Common::Core::SIMD
     };
 
     template<>
-    struct DataTypeTraits<DataType::m128>
+    struct DataTypeTraits<DataType::m128> : public std::true_type
     {
         static constexpr DataType Id = DataType::m128;
         static constexpr size_t AlignAs = 16;
@@ -84,7 +86,7 @@ namespace Harlinn::Common::Core::SIMD
         using Type = __m128;
     };
     template<>
-    struct DataTypeTraits<DataType::m128i>
+    struct DataTypeTraits<DataType::m128i> : public std::true_type
     {
         static constexpr DataType Id = DataType::m128i;
         static constexpr size_t AlignAs = 16;
@@ -92,7 +94,7 @@ namespace Harlinn::Common::Core::SIMD
         using Type = __m128i;
     };
     template<>
-    struct DataTypeTraits<DataType::m128d>
+    struct DataTypeTraits<DataType::m128d> : public std::true_type
     {
         static constexpr DataType Id = DataType::m128d;
         static constexpr size_t AlignAs = 16;
@@ -101,7 +103,7 @@ namespace Harlinn::Common::Core::SIMD
     };
 
     template<>
-    struct DataTypeTraits<DataType::m256>
+    struct DataTypeTraits<DataType::m256> : public std::true_type
     {
         static constexpr DataType Id = DataType::m256;
         static constexpr size_t AlignAs = 32;
@@ -109,7 +111,7 @@ namespace Harlinn::Common::Core::SIMD
         using Type = __m256;
     };
     template<>
-    struct DataTypeTraits<DataType::m256i>
+    struct DataTypeTraits<DataType::m256i> : public std::true_type
     {
         static constexpr DataType Id = DataType::m256i;
         static constexpr size_t AlignAs = 32;
@@ -117,7 +119,7 @@ namespace Harlinn::Common::Core::SIMD
         using Type = __m256i;
     };
     template<>
-    struct DataTypeTraits<DataType::m256d>
+    struct DataTypeTraits<DataType::m256d> : public std::true_type
     {
         static constexpr DataType Id = DataType::m256d;
         static constexpr size_t AlignAs = 32;
@@ -125,7 +127,7 @@ namespace Harlinn::Common::Core::SIMD
         using Type = __m256d;
     };
     template<>
-    struct DataTypeTraits<DataType::m512>
+    struct DataTypeTraits<DataType::m512> : public std::true_type
     {
         static constexpr DataType Id = DataType::m512;
         static constexpr size_t AlignAs = 64;
@@ -133,7 +135,7 @@ namespace Harlinn::Common::Core::SIMD
         using Type = __m512;
     };
     template<>
-    struct DataTypeTraits<DataType::m512i>
+    struct DataTypeTraits<DataType::m512i> : public std::true_type
     {
         static constexpr DataType Id = DataType::m512i;
         static constexpr size_t AlignAs = 64;
@@ -141,7 +143,7 @@ namespace Harlinn::Common::Core::SIMD
         using Type = __m512i;
     };
     template<>
-    struct DataTypeTraits<DataType::m512d>
+    struct DataTypeTraits<DataType::m512d> : public std::true_type
     {
         static constexpr DataType Id = DataType::m512d;
         static constexpr size_t AlignAs = 64;
@@ -152,14 +154,14 @@ namespace Harlinn::Common::Core::SIMD
 
 
     template<typename T, size_t N>
-    struct Traits
+    struct Traits : public std::false_type
     {
         using Type = std::remove_cvref_t<T>;
     };
 
 
     template<size_t N>
-    struct Traits<char, N>
+    struct Traits<char, N> : public std::true_type
     {
         using Type = char;
     private:
@@ -312,7 +314,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<SByte, N>
+    struct Traits<SByte, N> : public std::true_type
     {
         using Type = SByte;
     private:
@@ -458,7 +460,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<Byte, N>
+    struct Traits<Byte, N> : public std::true_type
     {
         using Type = Byte;
     private:
@@ -605,7 +607,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<Int16, N>
+    struct Traits<Int16, N> : public std::true_type
     {
         using Type = Int16;
     private:
@@ -752,7 +754,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<UInt16, N>
+    struct Traits<UInt16, N> : public std::true_type
     {
         using Type = UInt16;
     private:
@@ -912,7 +914,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<Int32, N>
+    struct Traits<Int32, N> : public std::true_type
     {
         using Type = Int32;
     private:
@@ -1071,7 +1073,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<UInt32, N>
+    struct Traits<UInt32, N> : public std::true_type
     {
         using Type = UInt32;
     private:
@@ -1233,7 +1235,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<Int64, N>
+    struct Traits<Int64, N> : public std::true_type
     {
         using Type = Int64;
     private:
@@ -1409,7 +1411,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<UInt64, N>
+    struct Traits<UInt64, N> : public std::true_type
     {
         using Type = UInt64;
     private:
@@ -1588,7 +1590,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<float, N>
+    struct Traits<float, N> : public std::true_type
     {
         using Type = float;
     private:
@@ -1707,7 +1709,7 @@ namespace Harlinn::Common::Core::SIMD
                 }
                 else if constexpr ( N == 2 )
                 {
-                    _mm_load_sd( reinterpret_cast< const double* >( src ) );
+                    return _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
                 }
                 else if constexpr ( N == 3 )
                 {
@@ -1954,6 +1956,17 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static SIMDType Mul( Type lhs, SIMDType rhs ) noexcept
+        {
+            return Mul( Fill( lhs ), rhs );
+        }
+
+        static SIMDType Mul( SIMDType lhs, Type rhs ) noexcept
+        {
+            return Mul( lhs, Fill( rhs ) );
+        }
+
+
         /// <summary>
         /// Devides one float32 vector by another.
         /// </summary>
@@ -1975,6 +1988,559 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_div_ps( lhs, rhs );
             }
         }
+
+        static SIMDType Div( SIMDType lhs, Type rhs ) noexcept
+        {
+            return Div( lhs, Fill( rhs ) );
+        }
+
+        template<int shuffleMask>
+        static SIMDType Permute( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_permute_ps( v, shuffleMask );
+            }
+            else
+            {
+                return _mm256_permute_ps( v, shuffleMask );
+            }
+        }
+
+        static SIMDType Abs( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_max_ps( _mm_sub_ps( _mm_setzero_ps( ), v ), v );
+            }
+            else
+            {
+                return _mm256_max_ps( _mm256_sub_ps( _mm256_setzero_ps( ), v ), v );
+            }
+        }
+
+
+
+        static SIMDType Min( SIMDType lhs, SIMDType rhs )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_min_ps( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_min_ps( lhs, rhs );
+            }
+        }
+
+        static SIMDType Max( SIMDType lhs, SIMDType rhs )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_max_ps( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_max_ps( lhs, rhs );
+            }
+        }
+
+        static Type HorizontalMin( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return _mm_cvtss_f32( v );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_cvtss_f32( _mm_min_ps( v, _mm_permute_ps( v, 1 ) ));
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return _mm_cvtss_f32( _mm_min_ps( v, _mm_min_ps( _mm_permute_ps( v, 0b11'01'00'10 ), _mm_permute_ps( v, 0b11'00'10'01 ) ) ) );
+                }
+                else // N == 4
+                {
+                    return _mm_cvtss_f32( _mm_min_ps( _mm_min_ps(v, _mm_permute_ps( v, 0b10'01'00'11 ) ),
+                        _mm_min_ps( _mm_permute_ps( v, 0b01'00'11'10 ), _mm_permute_ps( v, 0b00'11'10'01 ) ) ) );
+                }
+            }
+            else
+            {
+                
+            }
+        }
+
+        static Type HorizontalMax( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return _mm_cvtss_f32( v );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_cvtss_f32( _mm_max_ps( v, _mm_permute_ps( v, 1 ) ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return _mm_cvtss_f32( _mm_max_ps( v, _mm_max_ps( _mm_permute_ps( v, 0b11'01'00'10 ), _mm_permute_ps( v, 0b11'00'10'01 ) ) ));
+                }
+                else // N == 4
+                {
+                    return _mm_cvtss_f32( _mm_max_ps( _mm_max_ps( v, _mm_permute_ps( v, 0b10'01'00'11 ) ),
+                        _mm_max_ps( _mm_permute_ps( v, 0b01'00'11'10 ), _mm_permute_ps( v, 0b00'11'10'01 ) ) ) );
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+
+
+        static SIMDType Round( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_round_ps( v, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC );
+            }
+            else
+            {
+                return _mm256_round_ps( v, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC );
+            }
+        }
+
+        static SIMDType Truncate( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_round_ps( v, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC );
+            }
+            else
+            {
+                return _mm256_round_ps( v, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC );
+            }
+        }
+
+        static SIMDType Floor( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_round_ps( v, _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC );
+            }
+            else
+            {
+                return _mm256_round_ps( v, _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC );
+            }
+        }
+
+        static SIMDType Ceil( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_round_ps( v, _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC );
+            }
+            else
+            {
+                return _mm256_round_ps( v, _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC );
+            }
+        }
+
+        static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_min_ps( upperBounds, _mm_max_ps( lowerBounds, v ) );
+            }
+            else
+            {
+                return _mm256_min_ps( upperBounds, _mm256_max_ps( lowerBounds, v ) );
+            }
+        }
+
+        static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_fmadd_ps( _mm_sub_ps( v2, v1 ), _mm_set_ps1( t ), v1 );
+            }
+            else
+            {                                                    
+                return _mm256_fmadd_ps( _mm256_sub_ps( v2, v1 ), _mm256_set1_ps( t ), v1 );
+            }
+        }
+
+
+        static SIMDType Saturate( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_min_ps( _mm_max_ps( v, { { { 0.0f, 0.0f, 0.0f, 0.0f } } } ), { { { 1.0f, 1.0f, 1.0f, 1.0f } } } );
+            }
+            else
+            {
+                return _mm256_min_ps( _mm256_max_ps( v, { { { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f } } } ), { { { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } } );
+            }
+        }
+
+        static SIMDType Negate( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sub_ps( _mm_setzero_ps( ), v );
+            }
+            else
+            {
+                return _mm256_sub_ps( _mm256_setzero_ps( ), v );
+            }
+        }
+
+        
+
+        static SIMDType Sin( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sin_ps( v );
+            }
+            else
+            {
+                return _mm256_sin_ps( v );
+            }
+        }
+
+        static SIMDType Cos( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cos_ps( v );
+            }
+            else
+            {
+                return _mm256_cos_ps( v );
+            }
+        }
+
+        static SIMDType Tan( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_tan_ps( v );
+            }
+            else
+            {
+                return _mm256_tan_ps( v );
+            }
+        }
+
+        static SIMDType ASin( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_asin_ps( v );
+            }
+            else
+            {
+                return _mm256_asin_ps( v );
+            }
+        }
+
+        static SIMDType ACos( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_acos_ps( v );
+            }
+            else
+            {
+                return _mm256_acos_ps( v );
+            }
+        }
+
+        static SIMDType ATan( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_atan_ps( v );
+            }
+            else
+            {
+                return _mm256_atan_ps( v );
+            }
+        }
+
+        static SIMDType ATan2( SIMDType x, SIMDType y )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_atan2_ps( x, y );
+            }
+            else
+            {
+                return _mm256_atan2_ps( x, y );
+            }
+        }
+
+        static SIMDType SinH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sinh_ps( v );
+            }
+            else
+            {
+                return _mm256_sinh_ps( v );
+            }
+        }
+
+        static SIMDType CosH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cosh_ps( v );
+            }
+            else
+            {
+                return _mm256_cosh_ps( v );
+            }
+        }
+
+        static SIMDType TanH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_tanh_ps( v );
+            }
+            else
+            {
+                return _mm256_tanh_ps( v );
+            }
+        }
+
+        static SIMDType ASinH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_asinh_ps( v );
+            }
+            else
+            {
+                return _mm256_asinh_ps( v );
+            }
+        }
+
+        static SIMDType ACosH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_acosh_ps( v );
+            }
+            else
+            {
+                return _mm256_acosh_ps( v );
+            }
+        }
+
+        static SIMDType ATanH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_atanh_ps( v );
+            }
+            else
+            {
+                return _mm256_atanh_ps( v );
+            }
+        }
+
+        static SIMDType Log( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_log_ps( v );
+            }
+            else
+            {
+                return _mm256_log_ps( v );
+            }
+        }
+
+        static SIMDType Log1P( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_log1p_ps( v );
+            }
+            else
+            {
+                return _mm256_log1p_ps( v );
+            }
+        }
+
+        static SIMDType Log10( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_log10_ps( v );
+            }
+            else
+            {
+                return _mm256_log10_ps( v );
+            }
+        }
+
+        static SIMDType Log2( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_log2_ps( v );
+            }
+            else
+            {
+                return _mm256_log2_ps( v );
+            }
+        }
+
+        static SIMDType Exp( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_exp_ps( v );
+            }
+            else
+            {
+                return _mm256_exp_ps( v );
+            }
+        }
+
+        static SIMDType Exp10( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_exp10_ps( v );
+            }
+            else
+            {
+                return _mm256_exp10_ps( v );
+            }
+        }
+
+        static SIMDType Exp2( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_exp2_ps( v );
+            }
+            else
+            {
+                return _mm256_exp2_ps( v );
+            }
+        }
+
+        static SIMDType ExpM1( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_expm1_ps( v );
+            }
+            else
+            {
+                return _mm256_expm1_ps( v );
+            }
+        }
+
+        static SIMDType Pow( SIMDType base, SIMDType exponent )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_pow_ps( base, exponent );
+            }
+            else
+            {
+                return _mm256_pow_ps( base, exponent );
+            }
+        }
+
+        static SIMDType FMod( SIMDType x, SIMDType y )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_fmod_ps( x, y );
+            }
+            else
+            {
+                return _mm256_fmod_ps( x, y );
+            }
+        }
+
+        static SIMDType Hypot( SIMDType x, SIMDType y )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_hypot_ps( x, y );
+            }
+            else
+            {
+                return _mm256_hypot_ps( x, y );
+            }
+        }
+
+
+        static bool Equal( SIMDType v1, SIMDType v2 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    auto rmm1 = _mm_cmpeq_ps( v1, v2 );
+                    return ( _mm_movemask_ps( rmm1 ) & 1 ) == 1;
+                }
+                else if constexpr ( N == 2 )
+                {
+                    auto rmm1 = _mm_cmpeq_ps( v1, v2 );
+                    return ( _mm_movemask_ps( rmm1 ) & 3 ) == 3;
+                }
+                else if constexpr ( N == 3 )
+                {
+                    auto rmm1 = _mm_cmpeq_ps( v1, v2 );
+                    return ( _mm_movemask_ps( rmm1 ) & 7 ) == 7;
+                }
+                else
+                {
+                    auto rmm1 = _mm_cmpeq_ps( v1, v2 );
+                    return ( _mm_movemask_ps( rmm1 ) & 3 ) == 15;
+                }
+            }
+            else
+            {
+                if constexpr ( N == 5 )
+                {
+                    auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
+                    return ( _mm256_movemask_ps( rmm1 ) & 31 ) == 31;
+                }
+                else if constexpr ( N == 6 )
+                {
+                    auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
+                    return ( _mm256_movemask_ps( rmm1 ) & 63 ) == 63;
+                }
+                else if constexpr ( N == 7 )
+                {
+                    auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
+                    return ( _mm256_movemask_ps( rmm1 ) & 127 ) == 127;
+                }
+                else 
+                {
+                    auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
+                    return ( _mm256_movemask_ps( rmm1 ) & 255 ) == 255;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Square Root of Single-Precision Floating-Point Values
@@ -2264,24 +2830,24 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                if constexpr ( N = 2 )
+                if constexpr ( N == 2 )
                 {
                     return _mm_dp_ps( a, b, 0x3f );
                 }
-                else if constexpr ( N = 3 )
+                else if constexpr ( N == 3 )
                 {
                     return _mm_dp_ps( a, b, 0x7f );
                 }
-                else if constexpr ( N = 4 )
+                else if constexpr ( N == 4 )
                 {
                     return _mm_dp_ps( a, b, 0xff );
                 }
             }
             else
             {
-                if constexpr ( N = 5 )
+                if constexpr ( N == 5 )
                 {
-                    return _mm256_dp_ps( a, b, 0x3f );
+                    return _mm256_dp_ps( a, b, 0x3fff );
                 }
             }
         }
@@ -2345,7 +2911,7 @@ namespace Harlinn::Common::Core::SIMD
 
     };
     template<size_t N>
-    struct Traits<double, N>
+    struct Traits<double, N> : public std::true_type
     {
         using Type = double;
     private:
@@ -2934,6 +3500,9 @@ namespace Harlinn::Common::Core::SIMD
 
 
     };
+
+    template<typename T>
+    constexpr bool IsSIMDType = Traits<T, 4>::value;
 
 
 }

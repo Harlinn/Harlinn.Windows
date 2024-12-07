@@ -271,7 +271,7 @@
     <ClInclude Include="HCCLoggerLMDBSinkStorage.h" />
     <ClInclude Include="HCCLogging.h" />
     <ClInclude Include="HCCMath.h" />
-    <ClInclude Include="HCCMatrix.h" />
+    <ClInclude Include="HCCVectorMath.h" />
     <ClInclude Include="HCCMeta.h" />
     <ClInclude Include="HCCMemory.h" />
     <ClInclude Include="HCCObj.h" />

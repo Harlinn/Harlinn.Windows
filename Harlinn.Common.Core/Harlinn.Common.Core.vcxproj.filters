@@ -237,7 +237,7 @@
     <ClInclude Include="HCCMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCMatrix.h">
+    <ClInclude Include="HCCVectorMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCSIMD.h">
