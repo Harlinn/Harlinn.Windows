@@ -3366,6 +3366,11 @@ namespace Harlinn::Common::Core::Math
             };
         };
 
+        Tuple4( )
+            : x( 0.0 ), y( 0.0 ), z( 0.0 ), w( 0.0 )
+        {
+        }
+
         Tuple4( value_type xv, value_type yv, value_type zv, value_type wv )
             : x( xv ), y( yv ), z( zv ), w( wv )
         {
@@ -4717,6 +4722,28 @@ namespace Harlinn::Common::Core::Math
 
     
     template<>
+    class Vector<double, 2> : public Tuple2<Vector<double, 2>, double>
+    {
+    public:
+        using Base = Tuple2<Vector<double, 2>, double>;
+        using Simd = Tuple2Simd<Vector<double, 2>>;
+        using Traits = Base::Traits;
+
+        Vector( ) = default;
+        Vector( double xv, double yv )
+            : Base( xv, yv )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other )
+            : Base( other )
+        {
+        }
+    };
+
+    template<>
     class Vector<float, 3> : public Tuple3<Vector<float, 3>,float>
     {
     public:
@@ -4764,6 +4791,28 @@ namespace Harlinn::Common::Core::Math
 
 
     template<>
+    class Vector<double, 3> : public Tuple3<Vector<double, 3>, double>
+    {
+    public:
+        using Base = Tuple3<Vector<double, 3>, double>;
+        using Simd = Tuple3Simd<Vector<double, 3>>;
+        using Traits = Base::Traits;
+
+        Vector( ) = default;
+        Vector( double xv, double yv, double zv )
+            : Base( xv, yv, zv )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other )
+            : Base( other )
+        {
+        }
+    };
+
+    template<>
     class Vector<float, 4> : public Tuple4<Vector<float, 4>,float>
     {
     public:
@@ -4809,6 +4858,29 @@ namespace Harlinn::Common::Core::Math
         using Traits = Vector<float, 4>::Traits;
         return Traits::Dot( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
     }
+
+    template<>
+    class Vector<double, 4> : public Tuple4<Vector<double, 4>, double>
+    {
+    public:
+        using Base = Tuple4<Vector<double, 4>, double>;
+
+        using Simd = Tuple4Simd<Vector<double, 4>>;
+        using Traits = Base::Traits;
+
+        Vector( ) = default;
+        Vector( double xv, double yv, double zv, double wv )
+            : Base( xv, yv, zv, wv )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other )
+            : Base( other )
+        {
+        }
+    };
 
 
     /*

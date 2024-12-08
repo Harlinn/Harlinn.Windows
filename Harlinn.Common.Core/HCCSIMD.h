@@ -1724,9 +1724,36 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                return _mm256_load_ps( src );
+                if constexpr ( N == 5 )
+                {
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_load_ps( src ) ), _mm_load_ss( src + 4 ), 1 );
+                }
+                else if constexpr ( N == 6 )
+                {
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_load_ps( src ) ), _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src + 4 ) ) ), 1 );
+                }
+                else if constexpr ( N == 7 )
+                {
+                    auto rmm1 = _mm_load_ps( src );
+                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src + 4 ) ) );
+                    __m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 6 ) );
+                    auto rmm2 = _mm_insert_ps( low, high, 0x20 );
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm2, 1 );
+                }
+                else
+                {
+                    return _mm256_load_ps( src );
+                }
             }
         }
+
+        template<size_t NA>
+            requires (NA >= N)
+        static SIMDType Load( const std::array<Type, NA>& src ) noexcept
+        {
+            return Load( src.data( ) );
+        }
+
         static SIMDType UnalignedLoad( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -1764,9 +1791,14 @@ namespace Harlinn::Common::Core::SIMD
 
         static Type Lower( SIMDType src )
         {
-            alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> values;
-            Store( values.data(), src );
-            return values[ 0 ];
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cvtss_f32( src );
+            }
+            else
+            {
+                return _mm256_cvtss_f32( src );
+            }
         }
 
         static ArrayType ToArray( SIMDType src )
@@ -1800,8 +1832,13 @@ namespace Harlinn::Common::Core::SIMD
             {
                 alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> tmp;
                 Store( tmp.data( ), src );
-                ArrayType result( tmp.begin(), tmp.begin( ) + N );
-                return result;
+                return [ &tmp ] <std::size_t... I>
+                    ( std::index_sequence<I...> )
+                {
+                    ArrayType result;
+                    ( ( result[ I ] = tmp[ I ] ), ... );
+                    return result;
+                }( std::make_index_sequence<N>() );
             }
         }
 
@@ -1865,7 +1902,7 @@ namespace Harlinn::Common::Core::SIMD
                 }
                 else if constexpr ( N == 3 )
                 {
-                    return _mm_add_ps( v, _mm_add_ps( _mm_permute_ps( v, 0b11'10'00'01 ), _mm_permute_ps( v, 0b11'00'01'10 ) ) );
+                    return _mm_add_ps( v, _mm_add_ps( _mm_permute_ps( v, _MM_SHUFFLE( 3, 1, 0, 2 ) ), _mm_permute_ps( v, _MM_SHUFFLE( 3, 0, 2, 1 ) ) ) );
                 }
                 else
                 {
@@ -2069,7 +2106,31 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                
+                __m128 low = _mm256_castps256_ps128( v );
+                __m128 high = _mm256_extractf128_ps( v, 1 );
+                auto rmm1 = _mm_min_ps( _mm_min_ps( low, _mm_permute_ps( low, 0b10'01'00'11 ) ),
+                    _mm_min_ps( _mm_permute_ps( low, 0b01'00'11'10 ), _mm_permute_ps( low, 0b00'11'10'01 ) ) );
+                if constexpr ( N == 5 )
+                {
+                    auto rmm2 = _mm_min_ps( high, rmm1 );
+                    return _mm_cvtss_f32( rmm2 );
+                }
+                else if constexpr ( N == 6 )
+                {
+                    auto rmm2 = _mm_min_ps( _mm_min_ps( high, _mm_permute_ps( high, 1 ) ), rmm1 );
+                    return _mm_cvtss_f32( rmm2 );
+                }
+                else if constexpr ( N == 7 )
+                {
+                    auto rmm2 = _mm_min_ps( _mm_min_ps( high, _mm_min_ps( _mm_permute_ps( high, 0b11'01'00'10 ), _mm_permute_ps( high, 0b11'00'10'01 ) ) ), rmm1 );
+                    return _mm_cvtss_f32( rmm2 );
+                }
+                else // N == 8 
+                {
+                    auto rmm2 = _mm_min_ps( _mm_min_ps( _mm_min_ps( high, _mm_permute_ps( high, 0b10'01'00'11 ) ),
+                        _mm_min_ps( _mm_permute_ps( high, 0b01'00'11'10 ), _mm_permute_ps( high, 0b00'11'10'01 ) ) ), rmm1 );
+                    return _mm_cvtss_f32( rmm2 );
+                }
             }
         }
 
@@ -2097,7 +2158,31 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-
+                __m128 low = _mm256_castps256_ps128( v );
+                __m128 high = _mm256_extractf128_ps( v, 1 );
+                auto rmm1 = _mm_max_ps( _mm_max_ps( low, _mm_permute_ps( low, 0b10'01'00'11 ) ),
+                    _mm_max_ps( _mm_permute_ps( low, 0b01'00'11'10 ), _mm_permute_ps( low, 0b00'11'10'01 ) ) );
+                if constexpr ( N == 5 )
+                {
+                    auto rmm2 = _mm_max_ps( high, rmm1 );
+                    return _mm_cvtss_f32( rmm2 );
+                }
+                else if constexpr ( N == 6 )
+                {
+                    auto rmm2 = _mm_max_ps( _mm_max_ps( high, _mm_permute_ps( high, 1 ) ), rmm1 );
+                    return _mm_cvtss_f32( rmm2 );
+                }
+                else if constexpr ( N == 7 )
+                {
+                    auto rmm2 = _mm_max_ps( _mm_max_ps( high, _mm_max_ps( _mm_permute_ps( high, 0b11'01'00'10 ), _mm_permute_ps( high, 0b11'00'10'01 ) ) ), rmm1 );
+                    return _mm_cvtss_f32( rmm2 );
+                }
+                else // N == 8 
+                {
+                    auto rmm2 = _mm_max_ps( _mm_max_ps( _mm_max_ps( high, _mm_permute_ps( high, 0b10'01'00'11 ) ),
+                        _mm_max_ps( _mm_permute_ps( high, 0b01'00'11'10 ), _mm_permute_ps( high, 0b00'11'10'01 ) ) ), rmm1 );
+                    return _mm_cvtss_f32( rmm2 );
+                }
             }
         }
 
@@ -2167,11 +2252,23 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_fmadd_ps( _mm_sub_ps( v2, v1 ), _mm_set_ps1( t ), v1 );
+                return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( _mm_set_ps1( 1.f ), v2 ), _mm_set_ps1( t ) ) );
             }
             else
-            {                                                    
-                return _mm256_fmadd_ps( _mm256_sub_ps( v2, v1 ), _mm256_set1_ps( t ), v1 );
+            {   
+                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( _mm256_set1_ps( 1.f ), v2 ), _mm256_set1_ps( t ) ) );
+            }
+        }
+
+        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType v3 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_fmadd_ps( v3, v2, _mm_mul_ps( _mm_sub_ps( _mm_set_ps1( 1.f ), v3 ), v1));
+            }
+            else
+            {
+                return _mm256_fmadd_ps( v3, v2, _mm256_mul_ps( _mm256_sub_ps( _mm256_set1_ps( 1.f ), v3 ), v1 ) );
             }
         }
 
@@ -2990,13 +3087,35 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_load_pd( src );
+                if constexpr ( N == 1 )
+                {
+                    return _mm_load_sd( src );
+                }
+                else
+                {
+                    return _mm_load_pd( src );
+                }
             }
             else
             {
-                return _mm256_load_pd( src );
+                if constexpr ( N == 3 )
+                {
+                    return _mm256_insertf128_pd( _mm256_castpd128_pd256( _mm_load_pd( src ) ), _mm_load_pd( src + 2 ), 1 );
+                }
+                else
+                {
+                    return _mm256_load_pd( src );
+                }
             }
         }
+
+        template<size_t NA>
+            requires ( NA >= N )
+        static SIMDType Load( const std::array<Type, NA>& src ) noexcept
+        {
+            return Load( src.data( ) );
+        }
+
         static SIMDType UnalignedLoad( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3035,10 +3154,44 @@ namespace Harlinn::Common::Core::SIMD
 
         static Type Lower( SIMDType src )
         {
-            alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> values;
-            Store( values.data( ), src );
-            return values[ 0 ];
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cvtsd_f64( src );
+            }
+            else
+            {
+                return _mm256_cvtsd_f64( src );
+            }
         }
+
+        static ArrayType ToArray( SIMDType src )
+        {
+            if constexpr ( N == SIMDTypeCapacity )  // N == 2 || N == 4
+            {
+                alignas( AlignAs ) ArrayType result;
+                Store( result.data( ), src );
+                return result;
+            }
+            else if constexpr ( N == 1 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                _mm_store_sd( result.data( ), src );
+                return result;
+            }
+            else // N == 3
+            {
+                alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> tmp;
+                Store( tmp.data( ), src );
+                return[ &tmp ] <std::size_t... I>
+                    ( std::index_sequence<I...> )
+                {
+                    ArrayType result;
+                    ( ( result[ I ] = tmp[ I ] ), ... );
+                    return result;
+                }( std::make_index_sequence<N>( ) );
+            }
+        }
+
 
         /// <summary>
         /// Adds two float64 vectors.
@@ -3190,6 +3343,16 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static SIMDType Mul( Type lhs, SIMDType rhs ) noexcept
+        {
+            return Mul( Fill( lhs ), rhs );
+        }
+
+        static SIMDType Mul( SIMDType lhs, Type rhs ) noexcept
+        {
+            return Mul( lhs, Fill( rhs ) );
+        }
+
         /// <summary>
         /// Devides one float64 vector by another.
         /// </summary>
@@ -3211,6 +3374,554 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_div_pd( lhs, rhs );
             }
         }
+
+        static SIMDType Div( SIMDType lhs, Type rhs ) noexcept
+        {
+            return Div( lhs, Fill( rhs ) );
+        }
+
+        template<int shuffleMask>
+        static SIMDType Permute( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_permute_pd( v, shuffleMask );
+            }
+            else
+            {
+                return _mm256_permute_pd( v, shuffleMask );
+            }
+        }
+
+        static SIMDType Abs( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_max_pd( _mm_sub_pd( _mm_setzero_pd( ), v ), v );
+            }
+            else
+            {
+                return _mm256_max_pd( _mm256_sub_pd( _mm256_setzero_pd( ), v ), v );
+            }
+        }
+
+        static SIMDType Min( SIMDType lhs, SIMDType rhs )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_min_pd( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_min_pd( lhs, rhs );
+            }
+        }
+
+        static SIMDType Max( SIMDType lhs, SIMDType rhs )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_max_pd( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_max_pd( lhs, rhs );
+            }
+        }
+
+        static Type HorizontalMin( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return _mm_cvtsd_f64( v );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_cvtsd_f64( _mm_min_pd( v, _mm_permute_pd( v, _MM_SHUFFLE2(0,1 ) ) ) );
+                }
+            }
+            else
+            {
+                __m128d low = _mm256_castpd256_pd128( v );
+                __m128d high = _mm256_extractf128_pd( v, 1 );
+                auto rmm1 = _mm_min_pd( low, _mm_permute_pd( low, _MM_SHUFFLE2( 0, 1 ) ) );
+                if constexpr ( N == 3 )
+                {
+                    auto rmm2 = _mm_min_pd( high, rmm1 );
+                    return _mm_cvtsd_f64( rmm2 );
+                }
+                else // N == 4
+                {
+                    auto rmm2 = _mm_min_pd( _mm_min_pd( high, _mm_permute_pd( high, 1 ) ), rmm1 );
+                    return _mm_cvtsd_f64( rmm2 );
+                }
+                
+            }
+        }
+
+        static Type HorizontalMax( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return _mm_cvtsd_f64( v );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_cvtsd_f64( _mm_max_pd( v, _mm_permute_pd( v, _MM_SHUFFLE2( 0, 1 ) ) ) );
+                }
+            }
+            else
+            {
+                __m128d low = _mm256_castpd256_pd128( v );
+                __m128d high = _mm256_extractf128_pd( v, 1 );
+                auto rmm1 = _mm_max_pd( low, _mm_permute_pd( low, _MM_SHUFFLE2( 0, 1 ) ) );
+                if constexpr ( N == 3 )
+                {
+                    auto rmm2 = _mm_max_pd( high, rmm1 );
+                    return _mm_cvtsd_f64( rmm2 );
+                }
+                else // N == 4
+                {
+                    auto rmm2 = _mm_max_pd( _mm_max_pd( high, _mm_permute_pd( high, 1 ) ), rmm1 );
+                    return _mm_cvtsd_f64( rmm2 );
+                }
+
+            }
+        }
+
+        static SIMDType Round( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_round_pd( v, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC );
+            }
+            else
+            {
+                return _mm256_round_pd( v, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC );
+            }
+        }
+
+        static SIMDType Truncate( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_round_pd( v, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC );
+            }
+            else
+            {
+                return _mm256_round_pd( v, _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC );
+            }
+        }
+
+        static SIMDType Floor( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_round_pd( v, _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC );
+            }
+            else
+            {
+                return _mm256_round_pd( v, _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC );
+            }
+        }
+
+        static SIMDType Ceil( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_round_pd( v, _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC );
+            }
+            else
+            {
+                return _mm256_round_pd( v, _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC );
+            }
+        }
+
+        static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_min_pd( upperBounds, _mm_max_pd( lowerBounds, v ) );
+            }
+            else
+            {
+                return _mm256_min_pd( upperBounds, _mm256_max_pd( lowerBounds, v ) );
+            }
+        }
+
+        static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_fmadd_pd( v2, v1, _mm_mul_pd( _mm_sub_ps( _mm_set_pd1( 1.f ), v2 ), _mm_set_pd1( t ) ) );
+            }
+            else
+            {
+                return _mm256_fmadd_pd( v2, v1, _mm256_mul_pd( _mm256_sub_pd( _mm256_set1_pd( 1.f ), v2 ), _mm256_set1_pd( t ) ) );
+            }
+        }
+
+        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType v3 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_fmadd_pd( v3, v2, _mm_mul_pd( _mm_sub_pd( _mm_set_pd1( 1.f ), v3 ), v1 ) );
+            }
+            else
+            {
+                return _mm256_fmadd_pd( v3, v2, _mm256_mul_pd( _mm256_sub_pd( _mm256_set1_pd( 1.f ), v3 ), v1 ) );
+            }
+        }
+
+
+        static SIMDType Saturate( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_min_pd( _mm_max_pd( v, { { { 0.0, 0.0 } } } ), { { { 1.0, 1.0 } } } );
+            }
+            else
+            {
+                return _mm256_min_pd( _mm256_max_pd( v, { { { 0.0, 0.0, 0.0, 0.0 } } } ), { { { 1.0, 1.0, 1.0, 1.0 } } } );
+            }
+        }
+
+        static SIMDType Negate( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sub_pd( _mm_setzero_pd( ), v );
+            }
+            else
+            {
+                return _mm256_sub_pd( _mm256_setzero_pd( ), v );
+            }
+        }
+
+
+
+        static SIMDType Sin( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sin_pd( v );
+            }
+            else
+            {
+                return _mm256_sin_pd( v );
+            }
+        }
+
+        static SIMDType Cos( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cos_pd( v );
+            }
+            else
+            {
+                return _mm256_cos_pd( v );
+            }
+        }
+
+        static SIMDType Tan( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_tan_pd( v );
+            }
+            else
+            {
+                return _mm256_tan_pd( v );
+            }
+        }
+
+        static SIMDType ASin( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_asin_pd( v );
+            }
+            else
+            {
+                return _mm256_asin_pd( v );
+            }
+        }
+
+        static SIMDType ACos( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_acos_pd( v );
+            }
+            else
+            {
+                return _mm256_acos_pd( v );
+            }
+        }
+
+        static SIMDType ATan( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_atan_pd( v );
+            }
+            else
+            {
+                return _mm256_atan_pd( v );
+            }
+        }
+
+        static SIMDType ATan2( SIMDType x, SIMDType y )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_atan2_pd( x, y );
+            }
+            else
+            {
+                return _mm256_atan2_pd( x, y );
+            }
+        }
+
+        static SIMDType SinH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sinh_pd( v );
+            }
+            else
+            {
+                return _mm256_sinh_pd( v );
+            }
+        }
+
+        static SIMDType CosH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cosh_pd( v );
+            }
+            else
+            {
+                return _mm256_cosh_pd( v );
+            }
+        }
+
+        static SIMDType TanH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_tanh_pd( v );
+            }
+            else
+            {
+                return _mm256_tanh_pd( v );
+            }
+        }
+
+        static SIMDType ASinH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_asinh_pd( v );
+            }
+            else
+            {
+                return _mm256_asinh_pd( v );
+            }
+        }
+
+        static SIMDType ACosH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_acosh_pd( v );
+            }
+            else
+            {
+                return _mm256_acosh_pd( v );
+            }
+        }
+
+        static SIMDType ATanH( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_atanh_pd( v );
+            }
+            else
+            {
+                return _mm256_atanh_pd( v );
+            }
+        }
+
+        static SIMDType Log( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_log_pd( v );
+            }
+            else
+            {
+                return _mm256_log_pd( v );
+            }
+        }
+
+        static SIMDType Log1P( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_log1p_pd( v );
+            }
+            else
+            {
+                return _mm256_log1p_pd( v );
+            }
+        }
+
+        static SIMDType Log10( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_log10_pd( v );
+            }
+            else
+            {
+                return _mm256_log10_pd( v );
+            }
+        }
+
+        static SIMDType Log2( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_log2_pd( v );
+            }
+            else
+            {
+                return _mm256_log2_pd( v );
+            }
+        }
+
+        static SIMDType Exp( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_exp_pd( v );
+            }
+            else
+            {
+                return _mm256_exp_pd( v );
+            }
+        }
+
+        static SIMDType Exp10( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_exp10_pd( v );
+            }
+            else
+            {
+                return _mm256_exp10_pd( v );
+            }
+        }
+
+        static SIMDType Exp2( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_exp2_pd( v );
+            }
+            else
+            {
+                return _mm256_exp2_pd( v );
+            }
+        }
+
+        static SIMDType ExpM1( SIMDType v )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_expm1_pd( v );
+            }
+            else
+            {
+                return _mm256_expm1_pd( v );
+            }
+        }
+
+        static SIMDType Pow( SIMDType base, SIMDType exponent )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_pow_pd( base, exponent );
+            }
+            else
+            {
+                return _mm256_pow_pd( base, exponent );
+            }
+        }
+
+        static SIMDType FMod( SIMDType x, SIMDType y )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_fmod_pd( x, y );
+            }
+            else
+            {
+                return _mm256_fmod_pd( x, y );
+            }
+        }
+
+        static SIMDType Hypot( SIMDType x, SIMDType y )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_hypot_pd( x, y );
+            }
+            else
+            {
+                return _mm256_hypot_pd( x, y );
+            }
+        }
+
+        static bool Equal( SIMDType v1, SIMDType v2 )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    auto rmm1 = _mm_cmpeq_pd( v1, v2 );
+                    return ( _mm_movemask_pd( rmm1 ) & 1 ) == 1;
+                }
+                else // N == 2
+                {
+                    auto rmm1 = _mm_cmpeq_pd( v1, v2 );
+                    return ( _mm_movemask_pd( rmm1 ) & 3 ) == 3;
+                }
+            }
+            else
+            {
+                if constexpr ( N == 3 )
+                {
+                    auto rmm1 = _mm256_cmpeq_epi64( _mm256_castpd_si256( v1 ), _mm256_castpd_si256( v2 ) );
+                    return ( _mm256_movemask_epi8( rmm1 ) & 7 ) == 7;
+                }
+                else // N == 4
+                {
+                    auto rmm1 = _mm256_cmpeq_epi64( _mm256_castpd_si256( v1 ), _mm256_castpd_si256( v2 ) );
+                    return ( _mm256_movemask_epi8( rmm1 ) & 15 ) == 15;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Square Root of float64 vector
