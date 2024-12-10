@@ -54,8 +54,9 @@ static constexpr float OneMinusEpsilon = FloatOneMinusEpsilon;
 
 // Floating-point Inline Functions
 template <typename T>
-inline PBRT_CPU_GPU typename std::enable_if_t<std::is_floating_point_v<T>, bool> IsNaN(
-    T v) {
+    requires std::is_floating_point_v<T>
+inline PBRT_CPU_GPU bool IsNaN( T v ) 
+{
 #ifdef PBRT_IS_GPU_CODE
     return isnan(v);
 #else
@@ -64,13 +65,16 @@ inline PBRT_CPU_GPU typename std::enable_if_t<std::is_floating_point_v<T>, bool>
 }
 
 template <typename T>
-inline PBRT_CPU_GPU typename std::enable_if_t<std::is_integral_v<T>, bool> IsNaN(T v) {
+    requires std::is_integral_v<T>
+inline PBRT_CPU_GPU bool IsNaN(T v) 
+{
     return false;
 }
 
 template <typename T>
-inline PBRT_CPU_GPU typename std::enable_if_t<std::is_floating_point_v<T>, bool> IsInf(
-    T v) {
+    requires std::is_floating_point_v<T>
+inline PBRT_CPU_GPU bool IsInf(T v) 
+{
 #ifdef PBRT_IS_GPU_CODE
     return isinf(v);
 #else
@@ -79,13 +83,16 @@ inline PBRT_CPU_GPU typename std::enable_if_t<std::is_floating_point_v<T>, bool>
 }
 
 template <typename T>
-inline PBRT_CPU_GPU typename std::enable_if_t<std::is_integral_v<T>, bool> IsInf(T v) {
+    requires std::is_integral_v<T>
+inline PBRT_CPU_GPU bool IsInf(T v) 
+{
     return false;
 }
 
 template <typename T>
-inline PBRT_CPU_GPU typename std::enable_if_t<std::is_floating_point_v<T>, bool> IsFinite(
-    T v) {
+    requires std::is_floating_point_v<T>
+inline PBRT_CPU_GPU bool IsFinite( T v) 
+{
 #ifdef PBRT_IS_GPU_CODE
     return isfinite(v);
 #else
@@ -93,25 +100,31 @@ inline PBRT_CPU_GPU typename std::enable_if_t<std::is_floating_point_v<T>, bool>
 #endif
 }
 template <typename T>
-inline PBRT_CPU_GPU typename std::enable_if_t<std::is_integral_v<T>, bool> IsFinite(T v) {
+    requires std::is_integral_v<T>
+inline PBRT_CPU_GPU bool IsFinite(T v) 
+{
     return true;
 }
 
-PBRT_CPU_GPU inline float FMA(float a, float b, float c) {
+PBRT_CPU_GPU inline float FMA(float a, float b, float c) 
+{
     return std::fma(a, b, c);
 }
 
 PBRT_CPU_GPU
-inline double FMA(double a, double b, double c) {
+inline double FMA(double a, double b, double c) 
+{
     return std::fma(a, b, c);
 }
-inline long double FMA(long double a, long double b, long double c) {
+inline long double FMA(long double a, long double b, long double c) 
+{
     return std::fma(a, b, c);
 }
 
 PBRT_CPU_GPU
 PBRT_CONSTEXPR
-inline uint32_t FloatToBits(float f) {
+inline uint32_t FloatToBits(float f) 
+{
 #ifdef PBRT_IS_GPU_CODE
     return __float_as_uint(f);
 #else
@@ -125,7 +138,8 @@ inline uint32_t FloatToBits(float f) {
 
 PBRT_CPU_GPU
 PBRT_CONSTEXPR
-inline float BitsToFloat(uint32_t ui) {
+inline float BitsToFloat(uint32_t ui) 
+{
 #ifdef PBRT_IS_GPU_CODE
     return __uint_as_float(ui);
 #else
@@ -139,25 +153,29 @@ inline float BitsToFloat(uint32_t ui) {
 
 PBRT_CPU_GPU
 PBRT_CONSTEXPR
-inline int Exponent(float v) {
+inline int Exponent(float v) 
+{
     return (FloatToBits(v) >> 23) - 127;
 }
 
 PBRT_CPU_GPU
 PBRT_CONSTEXPR
-inline int Significand(float v) {
+inline int Significand(float v) 
+{
     return FloatToBits(v) & ((1 << 23) - 1);
 }
 
 PBRT_CPU_GPU
 PBRT_CONSTEXPR
-inline uint32_t SignBit(float v) {
+inline uint32_t SignBit(float v) 
+{
     return FloatToBits(v) & 0x80000000;
 }
 
 PBRT_CPU_GPU
 PBRT_CONSTEXPR
-inline uint64_t FloatToBits(double f) {
+inline uint64_t FloatToBits(double f) 
+{
 #ifdef PBRT_IS_GPU_CODE
     return __double_as_longlong(f);
 #else
@@ -171,7 +189,8 @@ inline uint64_t FloatToBits(double f) {
 
 PBRT_CPU_GPU
 PBRT_CONSTEXPR
-inline double BitsToFloat(uint64_t ui) {
+inline double BitsToFloat(uint64_t ui) 
+{
 #ifdef PBRT_IS_GPU_CODE
     return __longlong_as_double(ui);
 #else
@@ -184,7 +203,8 @@ inline double BitsToFloat(uint64_t ui) {
 }
 
 PBRT_CPU_GPU
-inline float NextFloatUp(float v) {
+inline float NextFloatUp(float v) 
+{
     // Handle infinity and negative zero for _NextFloatUp()_
     if (IsInf(v) && v > 0.f)
         return v;
@@ -201,7 +221,8 @@ inline float NextFloatUp(float v) {
 }
 
 PBRT_CPU_GPU
-inline float NextFloatDown(float v) {
+inline float NextFloatDown(float v) 
+{
     // Handle infinity and positive zero for _NextFloatDown()_
     if (IsInf(v) && v < 0.)
         return v;
@@ -215,11 +236,13 @@ inline float NextFloatDown(float v) {
     return BitsToFloat(ui);
 }
 
-inline constexpr Float gamma(int n) {
+inline constexpr Float gamma(int n) 
+{
     return (n * MachineEpsilon) / (1 - n * MachineEpsilon);
 }
 
-inline PBRT_CPU_GPU Float AddRoundUp(Float a, Float b) {
+inline PBRT_CPU_GPU Float AddRoundUp(Float a, Float b) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __dadd_ru(a, b);
@@ -230,7 +253,8 @@ inline PBRT_CPU_GPU Float AddRoundUp(Float a, Float b) {
     return NextFloatUp(a + b);
 #endif
 }
-inline PBRT_CPU_GPU Float AddRoundDown(Float a, Float b) {
+inline PBRT_CPU_GPU Float AddRoundDown(Float a, Float b) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __dadd_rd(a, b);
@@ -242,14 +266,17 @@ inline PBRT_CPU_GPU Float AddRoundDown(Float a, Float b) {
 #endif
 }
 
-inline PBRT_CPU_GPU Float SubRoundUp(Float a, Float b) {
+inline PBRT_CPU_GPU Float SubRoundUp(Float a, Float b) 
+{
     return AddRoundUp(a, -b);
 }
-inline PBRT_CPU_GPU Float SubRoundDown(Float a, Float b) {
+inline PBRT_CPU_GPU Float SubRoundDown(Float a, Float b) 
+{
     return AddRoundDown(a, -b);
 }
 
-inline PBRT_CPU_GPU Float MulRoundUp(Float a, Float b) {
+inline PBRT_CPU_GPU Float MulRoundUp(Float a, Float b) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __dmul_ru(a, b);
@@ -261,7 +288,8 @@ inline PBRT_CPU_GPU Float MulRoundUp(Float a, Float b) {
 #endif
 }
 
-inline PBRT_CPU_GPU Float MulRoundDown(Float a, Float b) {
+inline PBRT_CPU_GPU Float MulRoundDown(Float a, Float b) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __dmul_rd(a, b);
@@ -273,7 +301,8 @@ inline PBRT_CPU_GPU Float MulRoundDown(Float a, Float b) {
 #endif
 }
 
-inline PBRT_CPU_GPU Float DivRoundUp(Float a, Float b) {
+inline PBRT_CPU_GPU Float DivRoundUp(Float a, Float b) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __ddiv_ru(a, b);
@@ -285,7 +314,8 @@ inline PBRT_CPU_GPU Float DivRoundUp(Float a, Float b) {
 #endif
 }
 
-inline PBRT_CPU_GPU Float DivRoundDown(Float a, Float b) {
+inline PBRT_CPU_GPU Float DivRoundDown(Float a, Float b) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __ddiv_rd(a, b);
@@ -297,7 +327,8 @@ inline PBRT_CPU_GPU Float DivRoundDown(Float a, Float b) {
 #endif
 }
 
-inline PBRT_CPU_GPU Float SqrtRoundUp(Float a) {
+inline PBRT_CPU_GPU Float SqrtRoundUp(Float a) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __dsqrt_ru(a);
@@ -313,7 +344,8 @@ inline PBRT_CPU_GPU Float SqrtRoundUp(Float a) {
 #endif
 }
 
-inline PBRT_CPU_GPU Float SqrtRoundDown(Float a) {
+inline PBRT_CPU_GPU Float SqrtRoundDown(Float a) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __dsqrt_rd(a);
@@ -329,7 +361,8 @@ inline PBRT_CPU_GPU Float SqrtRoundDown(Float a) {
 #endif
 }
 
-inline PBRT_CPU_GPU Float FMARoundUp(Float a, Float b, Float c) {
+inline PBRT_CPU_GPU Float FMARoundUp(Float a, Float b, Float c) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __fma_ru(a, b, c);  // FIXME: what to do here?
@@ -341,7 +374,8 @@ inline PBRT_CPU_GPU Float FMARoundUp(Float a, Float b, Float c) {
 #endif
 }
 
-inline PBRT_CPU_GPU Float FMARoundDown(Float a, Float b, Float c) {
+inline PBRT_CPU_GPU Float FMARoundDown(Float a, Float b, Float c) 
+{
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_FLOAT_AS_DOUBLE
     return __fma_rd(a, b, c);  // FIXME: what to do here?
@@ -354,7 +388,8 @@ inline PBRT_CPU_GPU Float FMARoundDown(Float a, Float b, Float c) {
 }
 
 PBRT_CPU_GPU
-inline double NextFloatUp(double v) {
+inline double NextFloatUp(double v) 
+{
     if (IsInf(v) && v > 0.)
         return v;
     if (v == -0.f)
@@ -368,7 +403,8 @@ inline double NextFloatUp(double v) {
 }
 
 PBRT_CPU_GPU
-inline double NextFloatDown(double v) {
+inline double NextFloatDown(double v) 
+{
     if (IsInf(v) && v < 0.)
         return v;
     if (v == 0.f)
@@ -382,22 +418,26 @@ inline double NextFloatDown(double v) {
 }
 
 PBRT_CPU_GPU
-inline int Exponent(double d) {
+inline int Exponent(double d) 
+{
     return (FloatToBits(d) >> 52) - 1023;
 }
 
 PBRT_CPU_GPU
-inline uint64_t Significand(double d) {
+inline uint64_t Significand(double d) 
+{
     return FloatToBits(d) & ((1ull << 52) - 1);
 }
 
 PBRT_CPU_GPU
-inline uint64_t SignBit(double v) {
+inline uint64_t SignBit(double v) 
+{
     return FloatToBits(v) & 0x8000000000000000;
 }
 
 PBRT_CPU_GPU
-inline double FlipSign(double a, double b) {
+inline double FlipSign(double a, double b) 
+{
     return BitsToFloat(FloatToBits(a) ^ SignBit(b));
 }
 
@@ -414,7 +454,8 @@ namespace {
 // TODO: support for non-AVX systems, check CPUID stuff, etc..
 
 // https://gist.github.com/rygorous/2156668
-union FP32 {
+union FP32 
+{
     uint32_t u;
     float f;
     struct {
@@ -424,7 +465,8 @@ union FP32 {
     };
 };
 
-union FP16 {
+union FP16 
+{
     uint16_t u;
     struct {
         unsigned int Mantissa : 10;
@@ -435,7 +477,8 @@ union FP16 {
 
 }  // namespace
 
-class Half {
+class Half 
+{
   public:
     Half() = default;
     Half(const Half &) = default;

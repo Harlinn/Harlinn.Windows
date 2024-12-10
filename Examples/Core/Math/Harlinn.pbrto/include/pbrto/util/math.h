@@ -876,21 +876,40 @@ inline Float LogI0(Float x) {
 }
 
 // Interval Definition
-class Interval {
-  public:
+class Interval 
+{
+public:
+#ifndef PBRT_IS_GPU_CODE
+    static const Interval Pi;
+#endif
+private:
+    friend struct SOA<Interval>;
+    // Interval Private Members
+    Float low = static_cast< Float >( 0 ); 
+    Float high = static_cast< Float >( 0 );
+public:
     // Interval Public Methods
-    Interval() = default;
+    constexpr Interval() = default;
     PBRT_CPU_GPU
-    explicit Interval(Float v) : low(v), high(v) {}
-    PBRT_CPU_GPU constexpr Interval(Float low, Float high)
-        : low(std::min(low, high)), high(std::max(low, high)) {}
+    constexpr explicit Interval(Float v)
+        : low(v), high(v) 
+    {}
+
+    PBRT_CPU_GPU 
+    constexpr Interval(Float low, Float high)
+        : low(std::min(low, high)), high(std::max(low, high)) 
+    {}
 
     PBRT_CPU_GPU
-    static Interval FromValueAndError(Float v, Float err) {
+    static Interval FromValueAndError(Float v, Float err) 
+    {
         Interval i;
-        if (err == 0)
+        if ( err == 0 )
+        {
             i.low = i.high = v;
-        else {
+        }
+        else 
+        {
             i.low = SubRoundDown(v, err);
             i.high = AddRoundUp(v, err);
         }
@@ -898,7 +917,8 @@ class Interval {
     }
 
     PBRT_CPU_GPU
-    Interval &operator=(Float v) {
+    Interval &operator=(Float v) 
+    {
         low = high = v;
         return *this;
     }
@@ -913,35 +933,51 @@ class Interval {
     Float Width() const { return high - low; }
 
     PBRT_CPU_GPU
-    Float operator[](int i) const {
+    Float operator[](int i) const 
+    {
         DCHECK(i == 0 || i == 1);
         return (i == 0) ? low : high;
     }
 
     PBRT_CPU_GPU
-    explicit operator Float() const { return Midpoint(); }
+    explicit operator Float() const 
+    { 
+        return Midpoint(); 
+    }
 
     PBRT_CPU_GPU
-    bool Exactly(Float v) const { return low == v && high == v; }
+    bool Exactly(Float v) const 
+    { 
+        return low == v && high == v; 
+    }
 
     PBRT_CPU_GPU
-    bool operator==(Float v) const { return Exactly(v); }
+    bool operator==(Float v) const 
+    { 
+        return Exactly(v); 
+    }
 
     PBRT_CPU_GPU
-    Interval operator-() const { return {-high, -low}; }
+    Interval operator-() const 
+    { 
+        return {-high, -low}; 
+    }
 
     PBRT_CPU_GPU
-    Interval operator+(Interval i) const {
+    Interval operator+(Interval i) const 
+    {
         return {AddRoundDown(low, i.low), AddRoundUp(high, i.high)};
     }
 
     PBRT_CPU_GPU
-    Interval operator-(Interval i) const {
+    Interval operator-(Interval i) const 
+    {
         return {SubRoundDown(low, i.high), SubRoundUp(high, i.low)};
     }
 
     PBRT_CPU_GPU
-    Interval operator*(Interval i) const {
+    Interval operator*(Interval i) const 
+    {
         Float lp[4] = {MulRoundDown(low, i.low), MulRoundDown(high, i.low),
                        MulRoundDown(low, i.high), MulRoundDown(high, i.high)};
         Float hp[4] = {MulRoundUp(low, i.low), MulRoundUp(high, i.low),
@@ -953,28 +989,36 @@ class Interval {
     PBRT_CPU_GPU
     Interval operator/(Interval i) const;
 
-    PBRT_CPU_GPU bool operator==(Interval i) const {
+    PBRT_CPU_GPU bool operator==(Interval i) const 
+    {
         return low == i.low && high == i.high;
     }
 
     PBRT_CPU_GPU
-    bool operator!=(Float f) const { return f < low || f > high; }
+    bool operator!=(Float f) const 
+    { 
+        return f < low || f > high; 
+    }
 
     std::string ToString() const;
 
-    PBRT_CPU_GPU Interval &operator+=(Interval i) {
+    PBRT_CPU_GPU Interval &operator+=(Interval i) 
+    {
         *this = Interval(*this + i);
         return *this;
     }
-    PBRT_CPU_GPU Interval &operator-=(Interval i) {
+    PBRT_CPU_GPU Interval &operator-=(Interval i) 
+    {
         *this = Interval(*this - i);
         return *this;
     }
-    PBRT_CPU_GPU Interval &operator*=(Interval i) {
+    PBRT_CPU_GPU Interval &operator*=(Interval i) 
+    {
         *this = Interval(*this * i);
         return *this;
     }
-    PBRT_CPU_GPU Interval &operator/=(Interval i) {
+    PBRT_CPU_GPU Interval &operator/=(Interval i) 
+    {
         *this = Interval(*this / i);
         return *this;
     }
@@ -983,7 +1027,8 @@ class Interval {
     PBRT_CPU_GPU
     Interval &operator-=(Float f) { return *this -= Interval(f); }
     PBRT_CPU_GPU
-    Interval &operator*=(Float f) {
+    Interval &operator*=(Float f) 
+    {
         if (f > 0)
             *this = Interval(MulRoundDown(f, low), MulRoundUp(f, high));
         else
@@ -991,7 +1036,8 @@ class Interval {
         return *this;
     }
     PBRT_CPU_GPU
-    Interval &operator/=(Float f) {
+    Interval &operator/=(Float f) 
+    {
         if (f > 0)
             *this = Interval(DivRoundDown(low, f), DivRoundUp(high, f));
         else
@@ -999,25 +1045,20 @@ class Interval {
         return *this;
     }
 
-#ifndef PBRT_IS_GPU_CODE
-    static const Interval Pi;
-#endif
-
-  private:
-    friend struct SOA<Interval>;
-    // Interval Private Members
-    Float low, high;
 };
 
 // Interval Inline Functions
-PBRT_CPU_GPU inline bool InRange(Float v, Interval i) {
+PBRT_CPU_GPU inline bool InRange(Float v, Interval i) 
+{
     return v >= i.LowerBound() && v <= i.UpperBound();
 }
-PBRT_CPU_GPU inline bool InRange(Interval a, Interval b) {
+PBRT_CPU_GPU inline bool InRange(Interval a, Interval b) 
+{
     return a.LowerBound() <= b.UpperBound() && a.UpperBound() >= b.LowerBound();
 }
 
-PBRT_CPU_GPU inline Interval Interval::operator/(Interval i) const {
+PBRT_CPU_GPU inline Interval Interval::operator/(Interval i) const 
+{
     if (InRange(0, i))
         // The interval we're dividing by straddles zero, so just
         // return an interval of everything.

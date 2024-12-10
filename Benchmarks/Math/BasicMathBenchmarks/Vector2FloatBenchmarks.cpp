@@ -34,11 +34,11 @@ namespace
     RandomGenerator<float, SampleCount> FloatMinusOneToOneGenerator( -1.0f, 1.0f );
 }
 
-static void BenchmarkVector2Add( benchmark::State& state )
+static void BenchmarkVector2MultipleOperations( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
     using Vector = Math::Vector<float, 3>;
-    DoubleGenerator.Reset( );
+    FloatGenerator.Reset( );
 
     for ( auto _ : state )
     {
@@ -47,13 +47,13 @@ static void BenchmarkVector2Add( benchmark::State& state )
         benchmark::DoNotOptimize( Dot( Abs( Max( Ceil( -v1 ), Floor( v2 ) ) ), v2 ) );
     }
 }
-BENCHMARK( BenchmarkVector2Add );
+BENCHMARK( BenchmarkVector2MultipleOperations );
 
-static void BenchmarkPBRTVector2fAdd( benchmark::State& state )
+static void BenchmarkPBRTVector2fMultipleOperations( benchmark::State& state )
 {
     using namespace pbrt;
     using Vector = pbrt::Vector3f;
-    DoubleGenerator.Reset( );
+    FloatGenerator.Reset( );
 
 
     for ( auto _ : state )
@@ -63,6 +63,285 @@ static void BenchmarkPBRTVector2fAdd( benchmark::State& state )
         benchmark::DoNotOptimize( Dot( Abs( Max( Ceil( -v1 ), Floor( v2 ) ) ), v2 ) );
     }
 }
-BENCHMARK( BenchmarkPBRTVector2fAdd );
+BENCHMARK( BenchmarkPBRTVector2fMultipleOperations );
+
+static void BenchmarkMathFMA1( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        auto a = FloatGenerator( );
+        auto b = FloatGenerator( );
+        auto c = FloatGenerator( );
+        benchmark::DoNotOptimize( Math::FMA( a, b, c ) );
+    }
+}
+BENCHMARK( BenchmarkMathFMA1 );
+
+static void BenchmarkPbrtFMA1( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        auto a = FloatGenerator( );
+        auto b = FloatGenerator( );
+        auto c = FloatGenerator( );
+        benchmark::DoNotOptimize( pbrt::FMA( a, b, c ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFMA1 );
+
+static void BenchmarkMathFMA2( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = Math::Vector<float, 2>;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        auto a = FloatGenerator( );
+        Vector b( FloatGenerator( ), FloatGenerator( ) );
+        Vector c( FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( Math::FMA( a, b, c ) );
+    }
+}
+BENCHMARK( BenchmarkMathFMA2 );
+
+static void BenchmarkPbrtFMA2( benchmark::State& state )
+{
+    using Vector = pbrt::Vector2f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        auto a = FloatGenerator( );
+        Vector b( FloatGenerator( ), FloatGenerator( ) );
+        Vector c( FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize(pbrt::FMA( a, b, c ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFMA2 );
+
+
+static void BenchmarkMathFMA3( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = Math::Vector<float, 3>;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        auto a = FloatGenerator( );
+        Vector b( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector c( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( Math::FMA( a, b, c ) );
+    }
+}
+BENCHMARK( BenchmarkMathFMA3 );
+
+static void BenchmarkPbrtFMA3( benchmark::State& state )
+{
+    using Vector = pbrt::Vector3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        auto a = FloatGenerator( );
+        Vector b( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector c( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( pbrt::FMA( a, b, c ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFMA3 );
+
+
+static void BenchmarkMathQuaternionAdd( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Quaternion = Math::Quaternion<float>;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Quaternion q1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Quaternion q2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( q1 + q2 );
+    }
+}
+BENCHMARK( BenchmarkMathQuaternionAdd );
+
+static void BenchmarkPbrtQuaternionAdd( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Quaternion = pbrt::Quaternion;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Quaternion q1( { FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) }, FloatGenerator( ) );
+        Quaternion q2( { FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) }, FloatGenerator( ) );
+        benchmark::DoNotOptimize( q1 + q2 );
+    }
+}
+BENCHMARK( BenchmarkPbrtQuaternionAdd );
+
+static void BenchmarkMathPoint3Distance( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Point = Math::Point3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Point p1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Point p2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( Distance(p1, p2) );
+    }
+}
+BENCHMARK( BenchmarkMathPoint3Distance );
+
+static void BenchmarkPbrtPoint3Distance( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Point = pbrt::Point3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Point p1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Point p2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( pbrt::Distance( p1, p2 ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtPoint3Distance );
+
+static void BenchmarkMathPoint3DistanceSquared( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Point = Math::Point3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Point p1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Point p2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( DistanceSquared( p1, p2 ) );
+    }
+}
+BENCHMARK( BenchmarkMathPoint3DistanceSquared );
+
+static void BenchmarkPbrtPoint3DistanceSquared( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Point = pbrt::Point3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Point p1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Point p2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( pbrt::DistanceSquared( p1, p2 ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtPoint3DistanceSquared );
+
+static void BenchmarkMathVector3Cross( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = Math::Vector3f;
+    using Normal = Math::Normal3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( Cross( v1, v2 ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3Cross );
+
+static void BenchmarkMathPbrtVector3Cross( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = pbrt::Vector3f;
+    using Normal = pbrt::Normal3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Normal v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( pbrt::Cross( v1, v2 ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3Cross );
+
+
+static void BenchmarkMathVector3Dot( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = Math::Vector3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( Dot( v1, v2 ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector3Dot );
+
+static void BenchmarkPbrtVector3Dot( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = pbrt::Vector3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( pbrt::Dot( v1, v2 ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtVector3Dot );
+
+
+static void BenchmarkMathVector3AngleBetween( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = Math::Vector3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( AngleBetween( v1, v2 ) );
+        //DebugBreak( );
+    }
+}
+BENCHMARK( BenchmarkMathVector3AngleBetween );
+
+static void BenchmarkPbrtVector3AngleBetween( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = pbrt::Vector3f;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        benchmark::DoNotOptimize( pbrt::AngleBetween( v1, v2 ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtVector3AngleBetween );
+
 
 #endif

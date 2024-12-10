@@ -1610,11 +1610,13 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_setzero_ps( );
+                static auto result = _mm_setzero_ps( );
+                return result;
             }
             else
             {
-                return _mm256_setzero_ps( );
+                static auto result = _mm256_setzero_ps( );
+                return result;
             }
         }
 
@@ -1789,7 +1791,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static Type Lower( SIMDType src )
+        static Type Lower( SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -1801,7 +1803,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static ArrayType ToArray( SIMDType src )
+        static ArrayType ToArray( SIMDType src ) noexcept
         {
             if constexpr ( N == SIMDTypeCapacity )
             {
@@ -1839,6 +1841,61 @@ namespace Harlinn::Common::Core::SIMD
                     ( ( result[ I ] = tmp[ I ] ), ... );
                     return result;
                 }( std::make_index_sequence<N>() );
+            }
+        }
+
+        static bool HasNaN( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                auto rmm1 = _mm_cmpneq_ps( v, v );
+                if constexpr ( N == 1 )
+                {
+                    return ( _mm_movemask_ps( rmm1 ) & 1 ) != 0;
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return ( _mm_movemask_ps( rmm1 ) & 3 ) != 0;
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return ( _mm_movemask_ps( rmm1 ) & 7 ) != 0;
+                }
+                else // N == 3 
+                {
+                    return ( _mm_movemask_ps( rmm1 ) & 15 ) != 0;
+                }
+            }
+            else
+            {
+                __m128 low = _mm256_castps256_ps128( v );
+                auto rmm1 = _mm_cmpneq_ps( low, low );
+                if ( ( _mm_movemask_ps( rmm1 ) & 15 ) != 0 )
+                {
+                    return true;
+                }
+                else
+                {
+                    __m128 high = _mm256_extractf128_ps( v, 1 );
+                    auto rmm2 = _mm_cmpneq_ps( high, high );
+                    if constexpr ( N == 5 )
+                    {
+                        return ( _mm_movemask_ps( rmm2 ) & 1 ) != 0;
+                    }
+                    else if constexpr ( N == 6 )
+                    {
+                        return ( _mm_movemask_ps( rmm2 ) & 3 ) != 0;
+                    }
+                    else if constexpr ( N == 7 )
+                    {
+                        return ( _mm_movemask_ps( rmm2 ) & 7 ) != 0;
+                    }
+                    else // N == 8
+                    {
+                        return ( _mm_movemask_ps( rmm2 ) & 15 ) != 0;
+                    }
+                }
+
             }
         }
 
@@ -1898,11 +1955,11 @@ namespace Harlinn::Common::Core::SIMD
                 }
                 else if constexpr ( N == 2 )
                 {
-                    return _mm_add_ps( v, _mm_permute_ps( v, 0b11'10'00'01 ) );
+                    return _mm_add_ps( _mm_permute_ps( v, 0b01'00'01'00 ), _mm_permute_ps( v, 0b00'01'00'01 ) );
                 }
                 else if constexpr ( N == 3 )
                 {
-                    return _mm_add_ps( v, _mm_add_ps( _mm_permute_ps( v, _MM_SHUFFLE( 3, 1, 0, 2 ) ), _mm_permute_ps( v, _MM_SHUFFLE( 3, 0, 2, 1 ) ) ) );
+                    return _mm_add_ps( _mm_permute_ps( v, _MM_SHUFFLE( 0, 2, 1, 0 ) ), _mm_add_ps( _mm_permute_ps( v, _MM_SHUFFLE( 1, 1, 0, 2 ) ), _mm_permute_ps( v, _MM_SHUFFLE( 2, 0, 2, 1 ) ) ) );
                 }
                 else
                 {
@@ -2003,6 +2060,66 @@ namespace Harlinn::Common::Core::SIMD
             return Mul( lhs, Fill( rhs ) );
         }
 
+        static SIMDType HProd( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return v;
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_mul_ps( v, _mm_permute_ps( v, 0b11'10'00'01 ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return _mm_mul_ps( v, _mm_mul_ps( _mm_permute_ps( v, _MM_SHUFFLE( 3, 1, 0, 2 ) ), _mm_permute_ps( v, _MM_SHUFFLE( 3, 0, 2, 1 ) ) ) );
+                }
+                else
+                {
+                    return _mm_mul_ps( _mm_mul_ps( v, _mm_permute_ps( v, 0b10'01'00'11 ) ),
+                        _mm_mul_ps( _mm_permute_ps( v, 0b01'00'11'10 ), _mm_permute_ps( v, 0b00'11'10'01 ) ) );
+                }
+            }
+            else
+            {
+                __m128 low = _mm256_castps256_ps128( v );
+                __m128 high = _mm256_extractf128_ps( v, 1 );
+                auto rmm1 = _mm_mul_ps( _mm_mul_ps( low, _mm_permute_ps( low, 0b10'01'00'11 ) ),
+                                        _mm_mul_ps( _mm_permute_ps( low, 0b01'00'11'10 ), _mm_permute_ps( low, 0b00'11'10'01 ) ) );
+
+                if constexpr ( N == 5 )
+                {
+                    auto rmm2 = _mm_broadcastss_ps( high );
+                    rmm1 = _mm_mul_ps( rmm2, rmm1 );
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm1, 1 );
+                }
+                else if constexpr ( N == 6 )
+                {
+                    auto rmm2 = _mm_mul_ps( _mm_permute_ps( high, 0b01'00'01'00 ), _mm_permute_ps( high, 0b00'01'00'01 ) );
+                    rmm1 = _mm_mul_ps( rmm2, rmm1 );
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm1, 1 );
+                }
+                else if constexpr ( N == 7 )
+                {
+                    high = _mm_permute_ps( _mm_move_ss( _mm_permute_ps( high, _MM_SHUFFLE( 0, 2, 1, 3 ) ), _mm_set1_ps( 1.0f ) ), _MM_SHUFFLE( 0, 2, 1, 3 ) );
+
+                    auto rmm2 = _mm_mul_ps( _mm_mul_ps( high, _mm_permute_ps( high, 0b10'01'00'11 ) ),
+                                    _mm_mul_ps( _mm_permute_ps( high, 0b01'00'11'10 ), _mm_permute_ps( high, 0b00'11'10'01 ) ) );
+                    rmm1 = _mm_mul_ps( rmm2, rmm1 );
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm1, 1 );
+                }
+                else
+                {
+                    auto rmm2 = _mm_mul_ps( _mm_mul_ps( high, _mm_permute_ps( high, 0b10'01'00'11 ) ),
+                                            _mm_mul_ps( _mm_permute_ps( high, 0b01'00'11'10 ), _mm_permute_ps( high, 0b00'11'10'01 ) ) );
+                    rmm1 = _mm_mul_ps( rmm2, rmm1 );
+                    return _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm1, 1 );
+                }
+            }
+        }
+
 
         /// <summary>
         /// Devides one float32 vector by another.
@@ -2032,7 +2149,7 @@ namespace Harlinn::Common::Core::SIMD
         }
 
         template<int shuffleMask>
-        static SIMDType Permute( SIMDType v )
+        static SIMDType Permute( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2044,7 +2161,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Abs( SIMDType v )
+        static SIMDType Abs( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2058,7 +2175,7 @@ namespace Harlinn::Common::Core::SIMD
 
 
 
-        static SIMDType Min( SIMDType lhs, SIMDType rhs )
+        static SIMDType Min( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2070,7 +2187,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Max( SIMDType lhs, SIMDType rhs )
+        static SIMDType Max( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2082,7 +2199,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static Type HorizontalMin( SIMDType v )
+        static Type HorizontalMin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2134,7 +2251,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static Type HorizontalMax( SIMDType v )
+        static Type HorizontalMax( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2188,7 +2305,7 @@ namespace Harlinn::Common::Core::SIMD
 
 
 
-        static SIMDType Round( SIMDType v )
+        static SIMDType Round( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2200,7 +2317,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Truncate( SIMDType v )
+        static SIMDType Truncate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2212,7 +2329,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Floor( SIMDType v )
+        static SIMDType Floor( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2224,7 +2341,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Ceil( SIMDType v )
+        static SIMDType Ceil( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2236,7 +2353,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds )
+        static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2248,7 +2365,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 )
+        static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2260,7 +2377,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType v3 )
+        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType v3 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2273,7 +2390,7 @@ namespace Harlinn::Common::Core::SIMD
         }
 
 
-        static SIMDType Saturate( SIMDType v )
+        static SIMDType Saturate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2285,7 +2402,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Negate( SIMDType v )
+        static SIMDType Negate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2299,7 +2416,7 @@ namespace Harlinn::Common::Core::SIMD
 
         
 
-        static SIMDType Sin( SIMDType v )
+        static SIMDType Sin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2311,7 +2428,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Cos( SIMDType v )
+        static SIMDType Cos( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2323,7 +2440,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Tan( SIMDType v )
+        static SIMDType Tan( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2335,7 +2452,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ASin( SIMDType v )
+        static SIMDType ASin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2347,7 +2464,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ACos( SIMDType v )
+        static SIMDType ACos( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2359,7 +2476,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ATan( SIMDType v )
+        static SIMDType ATan( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2371,7 +2488,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ATan2( SIMDType x, SIMDType y )
+        static SIMDType ATan2( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2383,7 +2500,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType SinH( SIMDType v )
+        static SIMDType SinH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2395,7 +2512,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType CosH( SIMDType v )
+        static SIMDType CosH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2407,7 +2524,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType TanH( SIMDType v )
+        static SIMDType TanH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2419,7 +2536,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ASinH( SIMDType v )
+        static SIMDType ASinH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2431,7 +2548,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ACosH( SIMDType v )
+        static SIMDType ACosH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2443,7 +2560,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ATanH( SIMDType v )
+        static SIMDType ATanH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2455,7 +2572,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Log( SIMDType v )
+        static SIMDType Log( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2467,7 +2584,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Log1P( SIMDType v )
+        static SIMDType Log1P( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2479,7 +2596,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Log10( SIMDType v )
+        static SIMDType Log10( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2491,7 +2608,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Log2( SIMDType v )
+        static SIMDType Log2( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2503,7 +2620,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Exp( SIMDType v )
+        static SIMDType Exp( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2515,7 +2632,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Exp10( SIMDType v )
+        static SIMDType Exp10( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2527,7 +2644,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Exp2( SIMDType v )
+        static SIMDType Exp2( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2539,7 +2656,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ExpM1( SIMDType v )
+        static SIMDType ExpM1( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2551,7 +2668,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Pow( SIMDType base, SIMDType exponent )
+        static SIMDType Pow( SIMDType base, SIMDType exponent ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2563,7 +2680,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType FMod( SIMDType x, SIMDType y )
+        static SIMDType FMod( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2575,7 +2692,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Hypot( SIMDType x, SIMDType y )
+        static SIMDType Hypot( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2588,7 +2705,7 @@ namespace Harlinn::Common::Core::SIMD
         }
 
 
-        static bool Equal( SIMDType v1, SIMDType v2 )
+        static bool Equal( SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -2923,10 +3040,11 @@ namespace Harlinn::Common::Core::SIMD
         }
 
 
-        static SIMDType Dot( SIMDType a, SIMDType b )
+        static SIMDType Dot( SIMDType a, SIMDType b ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
+                /*
                 if constexpr ( N == 2 )
                 {
                     return _mm_dp_ps( a, b, 0x3f );
@@ -2939,21 +3057,30 @@ namespace Harlinn::Common::Core::SIMD
                 {
                     return _mm_dp_ps( a, b, 0xff );
                 }
+                */
+                return _mm_dp_ps( a, b, 0xff );
             }
             else
             {
+                __m256 rmm1 = _mm256_dp_ps( a, b, 0xff );
+                __m256 rmm2 = _mm256_permute2f128_ps( rmm1, rmm1, 1 );
+                return _mm256_add_ps( rmm1, rmm2 );
+
+                //return _mm256_dp_ps( a, b, 0xffffffff );
+                /*
                 if constexpr ( N == 5 )
                 {
                     return _mm256_dp_ps( a, b, 0x3fff );
                 }
+                */
             }
         }
 
-        static SIMDType Cross( SIMDType a, SIMDType b )
+        static SIMDType Cross( SIMDType a, SIMDType b ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                if constexpr ( N = 2 )
+                if constexpr ( N == 2 )
                 {
                     auto rmm1 = _mm_permute_ps( b, _MM_SHUFFLE( 0, 1, 0, 1 ) );
                     rmm1 = _mm_mul_ps( rmm1, a );
@@ -2961,7 +3088,7 @@ namespace Harlinn::Common::Core::SIMD
                     rmm1 = _mm_sub_ss( rmm1, rmm2 );
                     return _mm_permute_ps( rmm1, _MM_SHUFFLE( 0, 0, 0, 0 ) );
                 }
-                else if constexpr ( N = 3 )
+                else if constexpr ( N == 3 )
                 {
                     auto rmm1 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 0, 2, 1 ) );
                     auto rmm2 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 1, 0, 2 ) );
@@ -2970,7 +3097,7 @@ namespace Harlinn::Common::Core::SIMD
                     auto rmm5 = _mm_shuffle_ps( rmm3, rmm3, _MM_SHUFFLE( 3, 0, 2, 1 ) );
                     return _mm_sub_ps( rmm4, rmm5 );
                 }
-                else if constexpr ( N = 4 )
+                else if constexpr ( N == 4 )
                 {
                     /*
                     auto vResult = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 2, 1, 3, 2 ) );
@@ -3152,7 +3279,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static Type Lower( SIMDType src )
+        static Type Lower( SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3164,7 +3291,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static ArrayType ToArray( SIMDType src )
+        static ArrayType ToArray( SIMDType src ) noexcept
         {
             if constexpr ( N == SIMDTypeCapacity )  // N == 2 || N == 4
             {
@@ -3189,6 +3316,44 @@ namespace Harlinn::Common::Core::SIMD
                     ( ( result[ I ] = tmp[ I ] ), ... );
                     return result;
                 }( std::make_index_sequence<N>( ) );
+            }
+        }
+
+        static bool HasNaN( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                auto rmm1 = _mm_cmpneq_pd( v, v );
+                if constexpr ( N == 1 )
+                {
+                    return ( _mm_movemask_pd( rmm1 ) & 1 ) != 0;
+                }
+                else
+                {
+                    return ( _mm_movemask_pd( rmm1 ) & 3 ) != 0;
+                }
+            }
+            else
+            {
+                __m128d low = _mm256_castpd256_pd128( v );
+                auto rmm1 = _mm_cmpneq_pd( low, low );
+                if ( ( _mm_movemask_pd( rmm1 ) & 3 ) != 0 )
+                {
+                    return true;
+                }
+                else
+                {
+                    __m128d high = _mm256_extractf128_pd( v, 1 );
+                    auto rmm2 = _mm_cmpneq_pd( high, high );
+                    if constexpr ( N == 3 )
+                    {
+                        return ( _mm_movemask_pd( rmm2 ) & 1 ) != 0;
+                    }
+                    else
+                    {
+                        return ( _mm_movemask_pd( rmm2 ) & 3 ) != 0;
+                    }
+                }
             }
         }
 
@@ -3242,7 +3407,14 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_add_pd( v, _mm_permute_pd(v, 1) );
+                if constexpr ( N == 1 )
+                {
+                    return v;
+                }
+                else
+                {
+                    return _mm_add_pd( v, _mm_permute_pd( v, 1 ) );
+                }
             }
             else
             {
@@ -3353,6 +3525,44 @@ namespace Harlinn::Common::Core::SIMD
             return Mul( lhs, Fill( rhs ) );
         }
 
+        static SIMDType HProd( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return v;
+                }
+                else
+                {
+                    return _mm_mul_pd( v, _mm_permute_pd( v, 1 ) );
+                }
+            }
+            else
+            {
+                auto low = _mm256_castpd256_pd128( v );
+                auto high = _mm256_extractf128_pd( v, 1 );
+                if constexpr ( N == 3 )
+                {
+                    auto r1 = _mm_permute_pd( high, 0b00'00 );
+                    auto r2 = _mm_mul_pd( _mm_mul_pd( low, _mm_permute_pd( low, 1 ) ), r1 );
+                    return _mm256_broadcastsd_pd( r2 );
+                }
+                else
+                {
+                    auto r2 = _mm_mul_pd( _mm_mul_pd( low, _mm_permute_pd( low, 1 ) ), _mm_mul_pd( high, _mm_permute_pd( high, 1 ) ) );
+                    return _mm256_broadcastsd_pd( r2 );
+                }
+                /*
+                auto rmm1 = _mm256_add_pd( v, _mm256_permute_pd( v, 0b0101 ) );
+                auto low = _mm256_castpd256_pd128( rmm1 );
+                auto high = _mm256_extractf128_pd( rmm1, 1 );
+                return _mm256_broadcastsd_pd( _mm_add_pd( low, high ) );
+                */
+            }
+        }
+
+
         /// <summary>
         /// Devides one float64 vector by another.
         /// </summary>
@@ -3381,7 +3591,7 @@ namespace Harlinn::Common::Core::SIMD
         }
 
         template<int shuffleMask>
-        static SIMDType Permute( SIMDType v )
+        static SIMDType Permute( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3393,7 +3603,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Abs( SIMDType v )
+        static SIMDType Abs( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3405,7 +3615,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Min( SIMDType lhs, SIMDType rhs )
+        static SIMDType Min( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3417,7 +3627,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Max( SIMDType lhs, SIMDType rhs )
+        static SIMDType Max( SIMDType lhs, SIMDType rhs ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3429,7 +3639,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static Type HorizontalMin( SIMDType v )
+        static Type HorizontalMin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3461,7 +3671,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static Type HorizontalMax( SIMDType v )
+        static Type HorizontalMax( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3493,7 +3703,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Round( SIMDType v )
+        static SIMDType Round( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3505,7 +3715,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Truncate( SIMDType v )
+        static SIMDType Truncate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3517,7 +3727,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Floor( SIMDType v )
+        static SIMDType Floor( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3529,7 +3739,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Ceil( SIMDType v )
+        static SIMDType Ceil( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3541,7 +3751,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds )
+        static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3553,7 +3763,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 )
+        static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3565,7 +3775,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType v3 )
+        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType v3 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3578,7 +3788,7 @@ namespace Harlinn::Common::Core::SIMD
         }
 
 
-        static SIMDType Saturate( SIMDType v )
+        static SIMDType Saturate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3590,7 +3800,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Negate( SIMDType v )
+        static SIMDType Negate( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3604,7 +3814,7 @@ namespace Harlinn::Common::Core::SIMD
 
 
 
-        static SIMDType Sin( SIMDType v )
+        static SIMDType Sin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3616,7 +3826,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Cos( SIMDType v )
+        static SIMDType Cos( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3628,7 +3838,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Tan( SIMDType v )
+        static SIMDType Tan( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3640,7 +3850,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ASin( SIMDType v )
+        static SIMDType ASin( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3652,7 +3862,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ACos( SIMDType v )
+        static SIMDType ACos( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3664,7 +3874,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ATan( SIMDType v )
+        static SIMDType ATan( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3676,7 +3886,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ATan2( SIMDType x, SIMDType y )
+        static SIMDType ATan2( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3688,7 +3898,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType SinH( SIMDType v )
+        static SIMDType SinH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3700,7 +3910,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType CosH( SIMDType v )
+        static SIMDType CosH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3712,7 +3922,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType TanH( SIMDType v )
+        static SIMDType TanH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3724,7 +3934,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ASinH( SIMDType v )
+        static SIMDType ASinH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3736,7 +3946,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ACosH( SIMDType v )
+        static SIMDType ACosH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3748,7 +3958,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ATanH( SIMDType v )
+        static SIMDType ATanH( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3760,7 +3970,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Log( SIMDType v )
+        static SIMDType Log( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3772,7 +3982,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Log1P( SIMDType v )
+        static SIMDType Log1P( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3784,7 +3994,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Log10( SIMDType v )
+        static SIMDType Log10( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3796,7 +4006,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Log2( SIMDType v )
+        static SIMDType Log2( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3808,7 +4018,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Exp( SIMDType v )
+        static SIMDType Exp( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3820,7 +4030,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Exp10( SIMDType v )
+        static SIMDType Exp10( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3832,7 +4042,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Exp2( SIMDType v )
+        static SIMDType Exp2( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3844,7 +4054,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType ExpM1( SIMDType v )
+        static SIMDType ExpM1( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3856,7 +4066,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Pow( SIMDType base, SIMDType exponent )
+        static SIMDType Pow( SIMDType base, SIMDType exponent ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3868,7 +4078,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType FMod( SIMDType x, SIMDType y )
+        static SIMDType FMod( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3880,7 +4090,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Hypot( SIMDType x, SIMDType y )
+        static SIMDType Hypot( SIMDType x, SIMDType y ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3892,7 +4102,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static bool Equal( SIMDType v1, SIMDType v2 )
+        static bool Equal( SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {

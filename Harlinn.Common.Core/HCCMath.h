@@ -21,6 +21,54 @@
 
 namespace Harlinn::Common::Core::Math
 {
+    template<typename ArthmeticT>
+    struct Constants : public std::false_type
+    { };
+
+    template<>
+    struct Constants<float> : public std::true_type
+    {
+        using ValueType = float;
+        static constexpr ValueType ShadowEpsilon = static_cast< ValueType >( 0.0001 );
+
+        static constexpr ValueType Pi = static_cast< ValueType >( 3.14159265358979323846 );
+        static constexpr ValueType InvPi = static_cast< ValueType >( 0.31830988618379067154 );
+        static constexpr ValueType Inv2Pi = static_cast< ValueType >( 0.15915494309189533577 );
+        static constexpr ValueType Inv4Pi = static_cast< ValueType >( 0.07957747154594766788 );
+        static constexpr ValueType PiOver2 = static_cast< ValueType >( 1.57079632679489661923 );
+        static constexpr ValueType PiOver4 = static_cast< ValueType >( 0.78539816339744830961 );
+        static constexpr ValueType Sqrt2 = static_cast< ValueType >( 1.41421356237309504880 );
+        static constexpr ValueType Infinity = std::numeric_limits<ValueType >::infinity( );
+
+        static constexpr ValueType MachineEpsilon = std::numeric_limits<ValueType>::epsilon( ) * 0.5f;
+        
+        static constexpr ValueType OneMinusEpsilon = 0x1.fffffep-1f;
+
+
+    };
+    template<>
+    struct Constants<double> : public std::true_type
+    {
+        using ValueType = double;
+        static constexpr ValueType ShadowEpsilon = static_cast< ValueType >( 0.0001 );
+
+        static constexpr ValueType Pi = static_cast< ValueType >( 3.14159265358979323846 );
+        static constexpr ValueType InvPi = static_cast< ValueType >( 0.31830988618379067154 );
+        static constexpr ValueType Inv2Pi = static_cast< ValueType >( 0.15915494309189533577 );
+        static constexpr ValueType Inv4Pi = static_cast< ValueType >( 0.07957747154594766788 );
+        static constexpr ValueType PiOver2 = static_cast< ValueType >( 1.57079632679489661923 );
+        static constexpr ValueType PiOver4 = static_cast< ValueType >( 0.78539816339744830961 );
+        static constexpr ValueType Sqrt2 = static_cast< ValueType >( 1.41421356237309504880 );
+                                                                   
+        static constexpr ValueType Infinity = std::numeric_limits<ValueType>::infinity( );
+
+        static constexpr ValueType MachineEpsilon = std::numeric_limits<ValueType>::epsilon( ) * 0.5;
+        static constexpr double OneMinusEpsilon = 0x1.fffffffffffffp-1;
+
+    };
+
+
+
     /// <summary>
     /// Tests whether two double precision floating
     /// point values holds the same value. This function
@@ -944,14 +992,14 @@ namespace Harlinn::Common::Core::Math
         };
 
         template <typename T>
-        struct ExponenBias;
+        struct ExponentBias;
         template <>
-        struct ExponenBias<float>
+        struct ExponentBias<float>
         {
             static constexpr UInt32 value = _FBIAS;
         };
         template <>
-        struct ExponenBias<double>
+        struct ExponentBias<double>
         {
             static constexpr UInt32 value = _DBIAS;
         };
@@ -5180,7 +5228,7 @@ namespace Harlinn::Common::Core::Math
     /// The value within [minimumValue, maximumValue], or the nearest boundary.
     /// </returns>
     template<typename T>
-        requires IsFloatingPoint<T>
+        requires IsFloatingPoint<T> || IsInteger<T>
     constexpr inline std::remove_cvref_t<T> Clamp( T value, T minimumValue, T maximumValue ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
@@ -5208,6 +5256,7 @@ namespace Harlinn::Common::Core::Math
             */
         }
     }
+
 
     /// <summary>
     /// If the value is within [minimumValue, maximumValue], the function 
@@ -6937,17 +6986,6 @@ namespace Harlinn::Common::Core::Math
         else
         {
             return Math::Internal::Log2Impl( x );
-            /*
-            using FloatT = std::remove_cvref_t<T>;
-            if constexpr ( std::is_same_v<FloatT, double> )
-            {
-                return std::log2( x );
-            }
-            else
-            {
-                return Math::Internal::Log2Impl( x );
-            }
-            */
         }
         
     }
@@ -7413,6 +7451,727 @@ namespace Harlinn::Common::Core::Math
         sinResult = Sin( x );
         cosResult = Cos( x );
     }
+
+
+    template<typename T>
+        requires IsInteger<T>
+    inline constexpr T FMA( T a, T b, T c ) noexcept
+    {
+        return a * b + c;
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    inline constexpr T FMA( T a, T b, T c ) noexcept
+    {
+        if ( std::is_constant_evaluated( ) )
+        {
+            return a * b + c;
+        }
+        else
+        {
+            using Traits = SIMD::Traits<T, 1>;
+            return Traits::Lower( Traits::FMAdd( Traits::Load( &a ), Traits::Load( &b ), Traits::Load( &c ) ) );
+        }
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SinXOverX( FloatT x )
+    {
+        if ( 1 - x * x == 1 )
+        {
+            return 1;
+        }
+        return Math::Sin( x ) / x;
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr FloatT ExpM1( FloatT x )
+    {
+        FloatT u = Exp( x );
+        if ( u == static_cast< FloatT >( 1. ) )
+        {
+            return x;
+        }
+        if ( u - static_cast< FloatT >( 1. ) == static_cast< FloatT >( -1. ) )
+        {
+            return static_cast< FloatT >( -1. );
+        }
+        return ( u - static_cast< FloatT >( 1. ) ) * x / Log( u ); 
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT Sinc( FloatT x )
+    {
+        return SinXOverX( Constants<FloatT>::Pi * x );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT WindowedSinc( FloatT x, FloatT radius, FloatT tau )
+    {
+        if ( Abs( x ) > radius )
+        {
+            return 0;
+        }
+        return Sinc( x ) * Sinc( x / tau );
+    }
+
+    template<typename T>
+        requires (IsFloatingPoint<T> == false)
+    constexpr inline T Mod( T a, T b )
+    {
+        T result = a - ( a / b ) * b;
+        return static_cast<T>( result < 0 ? result + b : result );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT Mod( FloatT a, FloatT b )
+    {
+        return FMod( a, b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT Radians( FloatT deg )
+    {
+        return ( Constants<FloatT>:: Pi / static_cast < FloatT >(180) ) * deg;
+    }
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT Degrees( FloatT rad )
+    {
+        return ( static_cast< FloatT >(180) / Constants<FloatT>::Pi ) * rad;
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SmoothStep( FloatT x, FloatT a, FloatT b )
+    {
+        if ( a == b )
+        {
+            return x < a ? 0 : 1;
+        }
+        FloatT t = Clamp( ( x - a ) / ( b - a ), static_cast< FloatT >( 0 ), static_cast< FloatT >( 1 ) );
+        return t * t * ( static_cast< FloatT >( 3 ) - static_cast< FloatT >( 2 ) * t );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SafeSqrt( FloatT x )
+    {
+        return Sqrt( std::max( static_cast< FloatT >( 0. ), x ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT Sqr( FloatT v )
+    {
+        return v * v;
+    }
+
+    /*
+    template<int n, typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT FastPow( FloatT v )
+    {
+        if constexpr ( n < 0 )
+        {
+            return static_cast< FloatT >( 1 )/ Pow<-n>( v );
+        }
+        auto n2 = Pow<n / 2>( v );
+        return n2 * n2 * Pow<n & 1>( v );
+    }
+
+    template<> 
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT FastPow<1>( FloatT v )
+    {
+        return v;
+    }
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT FastPow<0, FloatT>( FloatT v )
+    {
+        return static_cast< FloatT >( 1 );
+    }
+    */
+
+    template <typename FloatT, typename C>
+    constexpr inline FloatT EvaluatePolynomial( FloatT t, C c )
+    {
+        return c;
+    }
+
+    template <typename FloatT, typename C, typename... Args>
+    constexpr inline FloatT EvaluatePolynomial( FloatT t, C c, Args... remaining )
+    {
+        return FMA( t, EvaluatePolynomial( t, remaining... ), c );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SafeASin( FloatT x )
+    {
+        return ASin( Clamp( x, static_cast< FloatT >( -1.0 ), static_cast< FloatT >( 1.0 ) ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SafeACos( FloatT x )
+    {
+        return ACos( Clamp( x, static_cast< FloatT >( -1.0 ), static_cast< FloatT >( 1.0 ) ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT NextFloatUp( FloatT v )
+    {
+        if ( IsInf( v ) && v > static_cast< FloatT >( 0. ) )
+        {
+            return v;
+        }
+        if ( v == static_cast< FloatT >( -0. ) )
+        {
+            v = static_cast< FloatT >( 0. );
+        }
+        auto ui = std::bit_cast< MakeUnsigned<FloatT> >( v );
+        if ( v >= static_cast< FloatT >( 0. ) )
+        {
+            ++ui;
+        }
+        else
+        {
+            --ui;
+        }
+        return std::bit_cast<FloatT>( ui );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr float NextFloatDown( float v )
+    {
+        if ( IsInf( v ) && v < static_cast< FloatT >( 0. ) )
+        {
+            return v;
+        }
+        if ( v == static_cast< FloatT >( 0. ) )
+        {
+            v = static_cast< FloatT >( -0. );
+        }
+        uint32_t ui = std::bit_cast< MakeUnsigned<FloatT> >( v );
+        if ( v > static_cast< FloatT >( 0. ) )
+        {
+            --ui;
+        }
+        else
+        {
+            ++ui;
+        }
+        return std::bit_cast< FloatT >( ui );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT Gamma( int n )
+    {
+        return ( static_cast< FloatT >( n ) * Constants<FloatT>::MachineEpsilon ) / ( static_cast< FloatT >( 1. ) - static_cast< FloatT >( n ) * Constants<FloatT>::MachineEpsilon );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT AddRoundUp( FloatT a, FloatT b )
+    {
+        return NextFloatUp( a + b );
+    }
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT AddRoundDown( FloatT a, FloatT b )
+    {
+        return NextFloatDown( a + b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SubRoundUp( FloatT a, FloatT b )
+    {
+        return AddRoundUp( a, -b );
+    }
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SubRoundDown( FloatT a, FloatT b )
+    {
+        return AddRoundDown( a, -b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT MulRoundUp( FloatT a, FloatT b )
+    {
+        return NextFloatUp( a * b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT MulRoundDown( FloatT a, FloatT b )
+    {
+        return NextFloatDown( a * b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT DivRoundUp( FloatT a, FloatT b )
+    {
+        return NextFloatUp( a / b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT DivRoundDown( FloatT a, FloatT b )
+    {
+        return NextFloatDown( a / b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SqrtRoundUp( FloatT a )
+    {
+        return NextFloatUp( std::sqrt( a ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SqrtRoundDown( FloatT a )
+    {
+        return std::max<FloatT>( 0, NextFloatDown( Sqrt( a ) ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT FMARoundUp( FloatT a, FloatT b, FloatT c )
+    {
+        return NextFloatUp( FMA( a, b, c ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT FMARoundDown( FloatT a, FloatT b, FloatT c )
+    {
+        return NextFloatDown( FMA( a, b, c ) );
+    }
+
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT FastLog2( FloatT x )
+    {
+        constexpr FloatT invLog2 = static_cast< FloatT >( 1.442695040888963387004650940071 );
+        return Math::Log( x ) * invLog2;
+    }
+
+    constexpr inline int Log2Int( float v )
+    {
+        if ( v < 1.f )
+        {
+            return -Log2Int( 1.f / v );
+        }
+        else
+        {
+            constexpr UInt32 midSignificand = 0b00000000001101010000010011110011;
+            return Exponent( v ) + ( ( Significand( v ) >= midSignificand ) ? 1 : 0 );
+        }
+    }
+
+    constexpr inline int Log2Int( double v )
+    {
+        if ( v < 1. )
+        {
+            return -Log2Int( 1. / v );
+        }
+        else
+        {
+            constexpr UInt64 midSignificand = 0b110101000001001111001100110011111110011101111001101;
+            return Exponent( v ) + ( ( Significand( v ) >= midSignificand ) ? 1 : 0 );
+        }
+    }
+
+    constexpr inline int Log2Int( UInt32 v )
+    {
+        unsigned long index = 0;
+        if ( IndexOfBitFromMSB( &index, v ) )
+        {
+            return std::bit_cast<int>( index );
+        }
+        return 0;
+    }
+    constexpr inline int Log2Int( Int32 v )
+    {
+        return Log2Int( std::bit_cast< UInt32 >( v ) );
+    }
+
+    constexpr inline int Log2Int( UInt64 v )
+    {
+        unsigned long index = 0;
+        IndexOfBitFromMSB( &index, v );
+        return std::bit_cast< int >( index );
+    }
+
+    constexpr inline int Log2Int( Int64 v )
+    {
+        return Log2Int( std::bit_cast< UInt64 >( v ) );
+    }
+
+    template <typename T>
+        requires std::is_arithmetic_v<T>
+    constexpr inline int Log4Int( T v )
+    {
+        return Log2Int( v ) / 2;
+    }
+
+    // https://stackoverflow.com/a/10792321
+    constexpr inline float FastExp( float x )
+    {
+        // Compute $x'$ such that $\roman{e}^x = 2^{x'}$
+        float xp = x * 1.442695041f;
+
+        // Find integer and fractional components of $x'$
+        float fxp = Floor( xp ), f = xp - fxp;
+        auto i = static_cast<int>( fxp );
+
+        // Evaluate polynomial approximation of $2^f$
+        float twoToF = EvaluatePolynomial( f, 1.f, 0.695556856f, 0.226173572f, 0.0781455737f );
+
+        // Scale $2^f$ by $2^i$ and return final result
+        int exponent = Exponent( twoToF ) + i;
+        if ( exponent < -126 )
+        {
+            return 0;
+        }
+        if ( exponent > 127 )
+        {
+            return Constants<float>::Infinity;
+        }
+        auto bits = std::bit_cast<UInt32>( twoToF );
+        bits &= 0b10000000011111111111111111111111u;
+        bits |= ( exponent + 127 ) << 23;
+        return std::bit_cast<float>( bits );
+    }
+
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT Gaussian( FloatT x, FloatT mu = 0, FloatT sigma = 1 )
+    {
+        return static_cast<FloatT>( 1 )/ Sqrt( static_cast< FloatT >( 2 ) * Constants<FloatT>::Pi * sigma * sigma ) *
+            FastExp( -Sqr( x - mu ) / ( static_cast< FloatT >( 2 ) * sigma * sigma ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT GaussianIntegral( FloatT x0, FloatT x1, FloatT mu = 0, FloatT sigma = 1 )
+    {
+        FloatT sigmaRoot2 = sigma * Constants<FloatT>::Sqrt2;
+        return static_cast< FloatT >( 0.5 ) * ( std::erf( ( mu - x0 ) / sigmaRoot2 ) - std::erf( ( mu - x1 ) / sigmaRoot2 ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT Logistic( FloatT x, FloatT s )
+    {
+        x = Abs( x );
+        return Exp( -x / s ) / ( s * Sqr( 1 + Exp( -x / s ) ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT LogisticCDF( FloatT x, FloatT s )
+    {
+        return 1 / ( 1 + Exp( -x / s ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT TrimmedLogistic( FloatT x, FloatT s, FloatT a, FloatT b )
+    {
+        return Logistic( x, s ) / ( LogisticCDF( b, s ) - LogisticCDF( a, s ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT ErfInv( FloatT a );
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT I0( FloatT x );
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT LogI0( FloatT x );
+
+    template<typename Predicate>
+    constexpr inline size_t FindInterval( size_t sz, const Predicate& pred )
+    {
+        using ssize_t = std::make_signed_t<size_t>;
+        ssize_t size = ( ssize_t )sz - 2, first = 1;
+        while ( size > 0 )
+        {
+            // Evaluate predicate at midpoint and update _first_ and _size_
+            size_t half = ( size_t )size >> 1, middle = first + half;
+            bool predResult = pred( middle );
+            first = predResult ? middle + 1 : first;
+            size = predResult ? size - ( half + 1 ) : half;
+        }
+        return ( size_t )Clamp( ( ssize_t )first - 1, ( ssize_t )0, ( ssize_t )sz - 2 );
+    }
+
+    template <typename T>
+    constexpr inline bool IsPowerOf4( T v )
+    {
+        return v == 1 << ( 2 * Log4Int( v ) );
+    }
+
+    constexpr inline Int32 RoundUpPow2( Int32 v )
+    {
+        return NextPowerOfTwo( v );
+    }
+
+    constexpr inline Int64 RoundUpPow2( Int64 v )
+    {
+        return NextPowerOfTwo( v );
+    }
+
+    template <typename T>
+    constexpr inline T RoundUpPow4( T v )
+    {
+        return IsPowerOf4( v ) ? v : ( 1 << ( 2 * ( 1 + Log4Int( v ) ) ) );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    class CompensatedSum
+    {
+    public:
+        using value_type = T;
+        using ValueType = T;
+    private:
+        ValueType sum_ = 0;
+        ValueType c_ = 0;
+    public:
+        // CompensatedSum Public Methods
+        constexpr CompensatedSum( ) noexcept = default;
+        
+        constexpr explicit CompensatedSum( ValueType v ) noexcept
+            : sum_( v ) 
+        {}
+
+        constexpr CompensatedSum& operator=( ValueType v ) noexcept
+        {
+            sum_ = v;
+            c_ = 0;
+            return *this;
+        }
+
+        constexpr CompensatedSum& operator+=( ValueType v ) noexcept
+        {
+            ValueType delta = v - c_;
+            ValueType newSum = sum_ + delta;
+            c_ = ( newSum - sum_ ) - delta;
+            sum_ = newSum;
+            return *this;
+        }
+
+        constexpr explicit operator ValueType( ) const noexcept
+        { 
+            return sum_; 
+        }
+
+        std::string ToString( ) const;
+
+    private:
+        
+    };
+
+    // CompensatedFloat Definition
+    template<typename T>
+        requires IsFloatingPoint<T>
+    class CompensatedFloat
+    {
+    public:
+        using value_type = T;
+        using ValueType = T;
+
+        ValueType v{};
+        ValueType err{};
+    
+    public:
+        // CompensatedFloat Public Methods
+        constexpr CompensatedFloat( ValueType v, ValueType err = 0 ) noexcept
+            : v( v ), err( err ) 
+        {}
+        constexpr explicit operator float( ) const noexcept
+        { 
+            return float( v ) + float( err );
+        }
+        constexpr explicit operator double( ) const noexcept
+        { 
+            return double( v ) + double( err ); 
+        }
+        std::string ToString( ) const;
+    };
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline CompensatedFloat<FloatT> TwoProd( FloatT a, FloatT b )
+    {
+        FloatT ab = a * b;
+        return { ab, FMA( a, b, -ab ) };
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline CompensatedFloat<FloatT> TwoSum( FloatT a, FloatT b )
+    {
+        FloatT s = a + b, delta = s - a;
+        return { s, ( a - ( s - delta ) ) + ( b - delta ) };
+    }
+
+    template <typename Ta, typename Tb, typename Tc, typename Td>
+    constexpr inline auto DifferenceOfProducts( Ta a, Tb b, Tc c, Td d )
+    {
+        auto cd = c * d;
+        auto differenceOfProducts = FMA( a, b, -cd );
+        auto error = FMA( -c, d, cd );
+        return differenceOfProducts + error;
+    }
+
+    template <typename Ta, typename Tb, typename Tc, typename Td>
+    constexpr inline auto SumOfProducts( Ta a, Tb b, Tc c, Td d )
+    {
+        auto cd = c * d;
+        auto sumOfProducts = FMA( a, b, cd );
+        auto error = FMA( c, d, -cd );
+        return sumOfProducts + error;
+    }
+
+    namespace Internal
+    {
+        // InnerProduct Helper Functions
+        template<typename FloatT>
+            requires IsFloatingPoint<FloatT>
+        constexpr CompensatedFloat<FloatT> InnerProduct( FloatT a, FloatT b )
+        {
+            return TwoProd( a, b );
+        }
+
+        // Accurate dot products with FMA: Graillat et al.,
+        // https://www-pequan.lip6.fr/~graillat/papers/posterRNC7.pdf
+        //
+        // Accurate summation, dot product and polynomial evaluation in complex
+        // floating point arithmetic, Graillat and Menissier-Morain.
+        template <typename FloatT, typename... T>
+            requires IsFloatingPoint<FloatT>
+        constexpr inline CompensatedFloat<FloatT> InnerProduct( FloatT a, FloatT b, T... terms )
+        {
+            auto ab = TwoProd( a, b );
+            auto tp = InnerProduct( terms... );
+            auto sum = TwoSum( ab.v, tp.v );
+            return { sum.v, ab.err + ( tp.err + sum.err ) };
+        }
+
+    }  
+
+    template <typename FloatT, typename... T>
+        requires std::conjunction_v<std::is_arithmetic<T>...>
+    constexpr inline FloatT InnerProduct( FloatT term, T... terms )
+    {
+        auto ip = Internal::InnerProduct( term, terms... );
+        return static_cast< FloatT >( ip );
+    }
+
+    template <typename FloatT, typename... T>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline bool Quadratic( FloatT a, FloatT b, FloatT c, FloatT* t0, FloatT* t1 )
+    {
+        // Handle case of $a=0$ for quadratic solution
+        if ( a == 0 )
+        {
+            if ( b == 0 )
+            {
+                return false;
+            }
+            *t0 = *t1 = -c / b;
+            return true;
+        }
+
+        // Find quadratic discriminant
+        FloatT discrim = DifferenceOfProducts( b, b, 4 * a, c );
+        if ( discrim < 0 )
+        {
+            return false;
+        }
+        FloatT rootDiscrim = Sqrt( discrim );
+
+        // Compute quadratic _t_ values
+        FloatT q = -0.5f * ( b + CopySign( rootDiscrim, b ) );
+        *t0 = q / a;
+        *t1 = c / q;
+        if ( *t0 > *t1 )
+        {
+            std::swap( *t0, *t1 );
+        }
+        return true;
+    }
+
+
+    template <typename Func, typename FloatT>
+    constexpr inline FloatT NewtonBisection( FloatT x0, FloatT x1, Func f, FloatT xEps = static_cast< FloatT >(1e-6), FloatT fEps = static_cast< FloatT >(1e-6) )
+    {
+        FloatT fx0 = f( x0 ).first, fx1 = f( x1 ).first;
+        if ( Abs( fx0 ) < fEps )
+        {
+            return x0;
+        }
+        if ( Abs( fx1 ) < fEps )
+        {
+            return x1;
+        }
+        bool startIsNegative = fx0 < 0;
+
+        // Set initial midpoint using linear approximation of f
+        FloatT xMid = x0 + ( x1 - x0 ) * -fx0 / ( fx1 - fx0 );
+
+        while ( true )
+        {
+            // Fall back to bisection if _xMid_ is out of bounds
+            if ( !( x0 < xMid && xMid < x1 ) )
+            {
+                xMid = ( x0 + x1 ) / static_cast< FloatT >( 2 );
+            }
+
+            // Evaluate function and narrow bracket range _[x0, x1]_
+            std::pair<FloatT, FloatT> fxMid = f( xMid );
+            
+            if ( startIsNegative == ( fxMid.first < static_cast< FloatT >( 0 ) ) )
+            {
+                x0 = xMid;
+            }
+            else
+            {
+                x1 = xMid;
+            }
+
+            // Stop the iteration if converged
+            if ( ( x1 - x0 ) < xEps || std::abs( fxMid.first ) < fEps )
+            {
+                return xMid;
+            }
+            // Perform a Newton step
+            xMid -= fxMid.first / fxMid.second;
+        }
+    }
+
 
 
 

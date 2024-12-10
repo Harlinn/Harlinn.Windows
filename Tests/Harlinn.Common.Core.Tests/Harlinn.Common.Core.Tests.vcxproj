@@ -202,6 +202,8 @@
     <ClCompile Include="IOPathTests.cpp" />
     <ClCompile Include="ListTests.cpp" />
     <ClCompile Include="LoggerLevelTests.cpp" />
+    <ClCompile Include="MathVector2DoubleTests.cpp" />
+    <ClCompile Include="MathVector3DoubleTests.cpp" />
     <ClCompile Include="MathVector4DoubleTests.cpp" />
     <ClCompile Include="MathVector2FloatTests.cpp" />
     <ClCompile Include="MathVector3FloatTests.cpp" />

@@ -295,6 +295,42 @@ namespace Harlinn::Common::Core
         return std::bit_cast<Double>( ReverseBits( std::bit_cast<UInt64>( val ) ) );
     }
 
+    template<typename T>
+        requires std::is_integral_v<T>
+    constexpr bool IndexOfBitFromMSB( unsigned long* index, T bits )
+    {
+        using UIntType = std::make_unsigned_t<T>;
+        auto value = std::bit_cast< UIntType >( bits );
+        if ( std::is_constant_evaluated( ) )
+        {
+            auto maskSize = ( ( sizeof( bits ) - 1 ) * 8 ) + 7;
+            for ( int i = static_cast<int>( maskSize ); i >= 0; i-- )
+            {
+                if ( value & ( static_cast< UIntType >( 1 ) << i ) )
+                {
+                    if ( index )
+                    {
+                        *index = i;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+        else
+        {
+            auto bitsSize = sizeof( bits );
+            if ( bitsSize > 4 )
+            {
+                return _BitScanReverse64( index, bits ) != 0;
+            }
+            else
+            {
+                return _BitScanReverse( index, bits ) != 0;
+            }
+        }
+    }
+
     
 
     /// <summary>
@@ -501,6 +537,53 @@ namespace Harlinn::Common::Core
     {
         return std::bit_cast<T1>(  (static_cast<UInt64>( high32Bits ) << 32) + static_cast<UInt64>( low32Bits ) );
     }
+
+    constexpr inline int Exponent( double value ) noexcept
+    {
+        return static_cast<int>( std::bit_cast<Int64>( std::bit_cast<UInt64>( value ) >> 52 ) - 1023 );
+    }
+    constexpr inline int Exponent( float v ) noexcept
+    {
+        return std::bit_cast< Int32 >( std::bit_cast< UInt32 >( v ) >> 23 ) - 127;
+    }
+
+
+    constexpr inline UInt64 Significand( double value ) noexcept
+    {
+        return std::bit_cast< UInt64 >( value ) & ( ( 1ULL << 52 ) - 1 );
+    }
+
+    constexpr inline int Significand( float v ) noexcept
+    {
+        return std::bit_cast< UInt32 >( v ) & ( ( 1 << 23 ) - 1 );
+    }
+
+
+    constexpr inline UInt64 SignBit( double value )
+    {
+        return std::bit_cast< UInt64 >( value ) & 0x8000000000000000;
+    }
+
+    constexpr uint32_t SignBit( float v )
+    {
+        return std::bit_cast< UInt32 >( v ) & 0x80000000;
+    }
+
+
+    constexpr inline double FlipSign( double a, double b )
+    {
+        return std::bit_cast<double>( std::bit_cast< UInt64 >( a ) ^ SignBit( b ) );
+    }
+    constexpr inline float FlipSign( float a, float b )
+    {
+        return std::bit_cast< float >( std::bit_cast< UInt32 >( a ) ^ SignBit( b ) );
+    }
+
+
+
+
+
+
 
 
     inline void MemCopy( char* dest, const char* source, size_t length ) noexcept
@@ -1135,6 +1218,12 @@ namespace Harlinn::Common::Core
     {
         return v != 0 && ( v & ( v - 1 ) ) == 0;
     }
+    template<typename T>
+        requires IsInteger<T>
+    constexpr inline bool IsPowerOf2( T v ) noexcept
+    {
+        return IsPowerOfTwo( v );
+    }
 
     template<typename T>
         requires std::is_enum_v<std::remove_cvref_t<T>>
@@ -1142,6 +1231,12 @@ namespace Harlinn::Common::Core
     {
         auto val = std::bit_cast<std::underlying_type_t<std::remove_cvref_t<T>>>( v );
         return val != 0 && ( val & ( val - 1 ) ) == 0;
+    }
+    template<typename T>
+        requires std::is_enum_v<std::remove_cvref_t<T>>
+    constexpr inline bool IsPowerOf2( T v ) noexcept
+    {
+        return IsPowerOfTwo( v );
     }
 
     

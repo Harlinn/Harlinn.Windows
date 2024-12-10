@@ -2155,4 +2155,606 @@ BOOST_AUTO_TEST_CASE( Lerp8Test1 )
 }
 
 
+// --run_test=SIMDFloatTests/HasNaN1Test1
+BOOST_AUTO_TEST_CASE( HasNaN1Test1 )
+{
+    using Traits = SIMD::Traits<float, 1>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { NaN } );
+    ArrayType arg2( { 1 } );
+    
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HasNaN2Test1
+BOOST_AUTO_TEST_CASE( HasNaN2Test1 )
+{
+    using Traits = SIMD::Traits<float, 2>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2, NaN } );
+    ArrayType arg2( { 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HasNaN3Test1
+BOOST_AUTO_TEST_CASE( HasNaN3Test1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 3, 2, NaN } );
+    ArrayType arg2( { 3, 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HasNaN4Test1
+BOOST_AUTO_TEST_CASE( HasNaN4Test1 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 4, 3, 2, NaN } );
+    ArrayType arg2( { 4, 3, 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HasNaN5Test1
+BOOST_AUTO_TEST_CASE( HasNaN5Test1 )
+{
+    using Traits = SIMD::Traits<float, 5>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 5, 4, 3, 2, NaN } );
+    ArrayType arg2( { 5, 4, 3, 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HasNaN5Test2
+BOOST_AUTO_TEST_CASE( HasNaN5Test2 )
+{
+    using Traits = SIMD::Traits<float, 5>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { NaN, 4, 3, 2, 1 } );
+    ArrayType arg2( { 5, 4, 3, 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HasNaN6Test1
+BOOST_AUTO_TEST_CASE( HasNaN6Test1 )
+{
+    using Traits = SIMD::Traits<float, 6>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 6, NaN, 4, 3, 2, 1 } );
+    ArrayType arg2( { 6, 5, 4, 3, 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+
+// --run_test=SIMDFloatTests/HasNaN6Test2
+BOOST_AUTO_TEST_CASE( HasNaN6Test2 )
+{
+    using Traits = SIMD::Traits<float, 6>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { NaN, 5, 4, 3, 2, 1 } );
+    ArrayType arg2( { 6, 5, 4, 3, 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HasNaN7Test1
+BOOST_AUTO_TEST_CASE( HasNaN7Test1 )
+{
+    using Traits = SIMD::Traits<float, 7>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { NaN, 6, 5, 4, 3, 2, 1 } );
+    ArrayType arg2( { 7, 6, 5, 4, 3, 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HasNaN8Test1
+BOOST_AUTO_TEST_CASE( HasNaN8Test1 )
+{
+    using Traits = SIMD::Traits<float, 8>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { NaN, 7, 6, 5, 4, 3, 2, 1 } );
+    ArrayType arg2( { 8, 7, 6, 5, 4, 3, 2, 1 } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto hasNaN = Traits::HasNaN( rmm1 );
+    auto hasNotNaN = Traits::HasNaN( rmm2 ) == false;
+
+    BOOST_CHECK( hasNaN );
+    BOOST_CHECK( hasNotNaN );
+}
+
+// --run_test=SIMDFloatTests/HProd1Test1
+BOOST_AUTO_TEST_CASE( HProd1Test1 )
+{
+    using Traits = SIMD::Traits<float, 1>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f } );
+    auto one = static_cast< Type >( 1 );
+    Type value = one;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        value *= arg1[ i ];
+    }
+    ArrayType expected;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        expected[i] = value;
+    }
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::HProd( rmm1 );
+    auto result = Traits::ToArray( rmm2 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/HProd2Test1
+BOOST_AUTO_TEST_CASE( HProd2Test1 )
+{
+    using Traits = SIMD::Traits<float, 2>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, 3.1f } );
+    auto one = static_cast< Type >( 1 );
+    Type value = one;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        value *= arg1[ i ];
+    }
+    ArrayType expected;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        expected[ i ] = value;
+    }
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::HProd( rmm1 );
+    auto result = Traits::ToArray( rmm2 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/HProd3Test1
+BOOST_AUTO_TEST_CASE( HProd3Test1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, 3.1f, -1.7f } );
+    auto one = static_cast< Type >( 1 );
+    Type value = one;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        value *= arg1[ i ];
+    }
+    ArrayType expected;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        expected[ i ] = value;
+    }
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::HProd( rmm1 );
+    auto result = Traits::ToArray( rmm2 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/HProd4Test1
+BOOST_AUTO_TEST_CASE( HProd4Test1 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, 3.1f, -1.7f, -3.9f } );
+    auto one = static_cast< Type >( 1 );
+    Type value = one;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        value *= arg1[ i ];
+    }
+    ArrayType expected;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        expected[ i ] = value;
+    }
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::HProd( rmm1 );
+    auto result = Traits::ToArray( rmm2 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/HProd5Test1
+BOOST_AUTO_TEST_CASE( HProd5Test1 )
+{
+    using Traits = SIMD::Traits<float, 5>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, 3.1f, -1.7f, -3.9f, 2.8f } );
+    auto one = static_cast< Type >( 1 );
+    Type value = one;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        value *= arg1[ i ];
+    }
+    ArrayType expected;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        expected[ i ] = value;
+    }
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::HProd( rmm1 );
+    auto result = Traits::ToArray( rmm2 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/HProd6Test1
+BOOST_AUTO_TEST_CASE( HProd6Test1 )
+{
+    using Traits = SIMD::Traits<float, 6>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, 3.1f, -1.7f, -3.9f, 2.8f, 2.54f } );
+    auto one = static_cast< Type >( 1 );
+    Type value = one;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        value *= arg1[ i ];
+    }
+    ArrayType expected;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        expected[ i ] = value;
+    }
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::HProd( rmm1 );
+    auto result = Traits::ToArray( rmm2 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/HProd7Test1
+BOOST_AUTO_TEST_CASE( HProd7Test1 )
+{
+    using Traits = SIMD::Traits<float, 7>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, 3.1f, -1.7f, -3.9f, 2.8f, 2.54f, 1.84f } );
+    auto one = static_cast< Type >( 1 );
+    Type value = one;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        value *= arg1[ i ];
+    }
+    ArrayType expected;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        expected[ i ] = value;
+    }
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::HProd( rmm1 );
+    auto result = Traits::ToArray( rmm2 );
+
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        BOOST_CHECK_CLOSE( expected[ i ], result[i],0.001f );
+    }
+
+    
+}
+
+// --run_test=SIMDFloatTests/HProd8Test1
+BOOST_AUTO_TEST_CASE( HProd8Test1 )
+{
+    using Traits = SIMD::Traits<float, 8>;
+    using Type = typename Traits::Type;
+    constexpr auto NaN = std::numeric_limits<Type>::quiet_NaN( );
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, 3.1f, -1.7f, -3.9f, 2.8f, 2.54f, 1.84f, 0.77f } );
+    auto one = static_cast< Type >( 1 );
+    Type value = one;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        value *= arg1[ i ];
+    }
+    ArrayType expected;
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        expected[ i ] = value;
+    }
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::HProd( rmm1 );
+    auto result = Traits::ToArray( rmm2 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/Dot1Test1
+BOOST_AUTO_TEST_CASE( Dot1Test1 )
+{
+    using Traits = SIMD::Traits<float, 1>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f } );
+    ArrayType arg2( { 3.0f } );
+
+    auto dotProduct = inner_product( arg1.begin( ), arg1.end( ), arg2.begin( ), 0.f );
+
+    ArrayType expected;
+    std::fill( expected.begin( ), expected.end( ), dotProduct );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Dot( rmm1, rmm2 );
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/Dot2Test1
+BOOST_AUTO_TEST_CASE( Dot2Test1 )
+{
+    using Traits = SIMD::Traits<float, 2>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, -1.0f } );
+    ArrayType arg2( { 3.0f, -2.0f } );
+
+    auto dotProduct = inner_product( arg1.begin( ), arg1.end( ), arg2.begin( ), 0.f );
+
+    ArrayType expected;
+    std::fill( expected.begin( ), expected.end( ), dotProduct );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Dot( rmm1, rmm2 );
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/Dot3Test1
+BOOST_AUTO_TEST_CASE( Dot3Test1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, -1.0f, 2.f } );
+    ArrayType arg2( { 3.0f, -2.0f, 4.f } );
+
+    auto dotProduct = inner_product( arg1.begin( ), arg1.end( ), arg2.begin( ), 0.f );
+
+    ArrayType expected;
+    std::fill( expected.begin( ), expected.end( ), dotProduct );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Dot( rmm1, rmm2 );
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/Dot4Test1
+BOOST_AUTO_TEST_CASE( Dot4Test1 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, -1.0f, 2.f, 1.0f } );
+    ArrayType arg2( { 3.0f, -2.0f, 4.f, 1.2f } );
+
+    auto dotProduct = inner_product( arg1.begin( ), arg1.end( ), arg2.begin( ), 0.f );
+
+    ArrayType expected;
+    std::fill( expected.begin( ), expected.end( ), dotProduct );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Dot( rmm1, rmm2 );
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/Dot5Test1
+BOOST_AUTO_TEST_CASE( Dot5Test1 )
+{
+    using Traits = SIMD::Traits<float, 5>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, -1.0f, 2.f, 1.0f, -5.f } );
+    ArrayType arg2( { 3.0f, -2.0f, 4.f, 1.2f, 5.f } );
+
+    auto dotProduct = inner_product( arg1.begin( ), arg1.end( ), arg2.begin( ), 0.f );
+
+    ArrayType expected;
+    std::fill( expected.begin( ), expected.end( ), dotProduct );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Dot( rmm1, rmm2 );
+    auto result = Traits::ToArray( rmm3 );
+
+    BOOST_CHECK( result == expected );
+}
+
+// --run_test=SIMDFloatTests/Dot6Test1
+BOOST_AUTO_TEST_CASE( Dot6Test1 )
+{
+    using Traits = SIMD::Traits<float, 6>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, -1.0f, 2.f, 1.0f, -5.f, 1.6f } );
+    ArrayType arg2( { 3.0f, -2.0f, 4.f, 1.2f, 5.f, 1.7f } );
+
+    auto dotProduct = inner_product( arg1.begin( ), arg1.end( ), arg2.begin( ), 0.f );
+
+    ArrayType expected;
+    std::fill( expected.begin( ), expected.end( ), dotProduct );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Dot( rmm1, rmm2 );
+    auto result = Traits::ToArray( rmm3 );
+
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        BOOST_CHECK_CLOSE( expected[ i ], result[ i ], 0.001f );
+    }
+}
+
+// --run_test=SIMDFloatTests/Dot7Test1
+BOOST_AUTO_TEST_CASE( Dot7Test1 )
+{
+    using Traits = SIMD::Traits<float, 7>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, -1.0f, 2.f, 1.0f, -5.f, 1.6f, 2.f } );
+    ArrayType arg2( { 3.0f, -2.0f, 4.f, 1.2f, 5.f, 1.7f, 2.f } );
+
+    auto dotProduct = inner_product( arg1.begin( ), arg1.end( ), arg2.begin( ), 0.f );
+
+    ArrayType expected;
+    std::fill( expected.begin( ), expected.end( ), dotProduct );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Dot( rmm1, rmm2 );
+    auto result = Traits::ToArray( rmm3 );
+
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        BOOST_CHECK_CLOSE( expected[ i ], result[ i ], 0.001f );
+    }
+}
+
+// --run_test=SIMDFloatTests/Dot8Test1
+BOOST_AUTO_TEST_CASE( Dot8Test1 )
+{
+    using Traits = SIMD::Traits<float, 8>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 2.0f, -1.0f, 2.f, 1.0f, -5.f, 1.6f, 2.f, 3.f } );
+    ArrayType arg2( { 3.0f, -2.0f, 4.f, 1.2f, 5.f, 1.7f, 2.f, 3.f } );
+
+    auto dotProduct = inner_product( arg1.begin( ), arg1.end( ), arg2.begin( ), 0.f );
+
+    ArrayType expected;
+    std::fill( expected.begin( ), expected.end( ), dotProduct );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Dot( rmm1, rmm2 );
+    auto result = Traits::ToArray( rmm3 );
+
+    for ( size_t i = 0; i < arg1.size( ); i++ )
+    {
+        BOOST_CHECK_CLOSE( expected[ i ], result[ i ], 0.001f );
+    }
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END( )
