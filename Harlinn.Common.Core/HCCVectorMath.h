@@ -642,9 +642,168 @@ namespace Harlinn::Common::Core::Math
 
     };
 
-    
-    template<typename Tuple2T>
-    class Tuple2Simd;
+    /// <summary>
+    /// <para>
+    /// Holds the SIMD value for a Tuple2, Tuple3 or Tuple4.
+    /// </para>
+    /// <para>
+    /// Mathematical operations for a particular Tuple2, Tuple3 
+    /// or Tuple4 derived type should generally be performed as 
+    /// a sequence of operations on this type, not the Tuple2, Tuple3 
+    /// or Tuple4 derived type, as this type represents the loaded
+    /// state of the data. 
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TraitsT">
+    /// The SIMD::Traits specialization that will be
+    /// used to select the SIMD intrinsics that
+    /// operates on the simd value held by this TupleSimd.
+    /// </typeparam>
+    /// <typeparam name="TupleT">
+    /// A Tuple2, Tuple3 or Tuple4 derived type.
+    /// </typeparam>
+
+
+    template<typename TraitsT, typename TupleT>
+    class TupleSimd
+    {
+    public:
+        using Traits = TraitsT;
+        using TupleType = TupleT;
+        using value_type = typename Traits::Type;
+        using size_type = size_t;
+
+        using SIMDType = typename Traits::SIMDType;
+
+        static constexpr size_type Size = TupleType::Size;
+        static constexpr bool Loaded = true;
+        static constexpr bool Unloaded = false;
+        static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
+
+        SIMDType simd;
+
+        TupleSimd( ) noexcept
+            : simd( Traits::Zero( ) )
+        {
+        }
+
+        TupleSimd( SIMDType other ) noexcept
+            : simd( other )
+        {
+        }
+
+        TupleSimd( const TupleType& other ) noexcept
+            : simd( Traits::Load( other.values.data( ) ) )
+        {
+        }
+
+        bool operator == ( const TupleSimd& other ) const noexcept
+        {
+            return Traits::Equals( simd, other.simd );
+        }
+
+        bool operator != ( const TupleSimd& other ) const noexcept
+        {
+            return Traits::Equals( simd, other.simd ) == false;
+        }
+
+        template<typename T>
+            requires (T::Unloaded && T::Size == Size && std::is_same_v<value_type, typename T::value_type>)
+        bool operator == ( const T& other ) const noexcept
+        {
+            return Traits::Equals( simd, Traits::Load( other.values.data() ) );
+        }
+
+        template<typename T>
+            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        bool operator != ( const T& other ) const noexcept
+        {
+            return Traits::Equals( simd, Traits::Load( other.values.data() ) ) == false;
+        }
+
+        template<typename T>
+            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        TupleSimd& operator += ( const T& other ) noexcept
+        {
+            simd = Traits::Add( simd, Traits::Load( other.values.data( ) ) );
+            return *this;
+        }
+        TupleSimd& operator += ( const TupleSimd& other ) noexcept
+        {
+            simd = Traits::Add( simd, other.simd );
+            return *this;
+        }
+
+        template<typename T>
+            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        TupleSimd& operator -= ( const T& other ) noexcept
+        {
+            simd = Traits::Sub( simd, Traits::Load( other.values.data( ) ) );
+            return *this;
+        }
+        TupleSimd& operator -= ( const TupleSimd& other ) noexcept
+        {
+            simd = Traits::Sub( simd, other.simd );
+            return *this;
+        }
+
+        template<typename T>
+            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        TupleSimd& operator *= ( const T& other ) noexcept
+        {
+            simd = Traits::Mul( simd, Traits::Load( other.values.data( ) ) );
+            return *this;
+        }
+        TupleSimd& operator *= ( const TupleSimd& other ) noexcept
+        {
+            simd = Traits::Mul( simd, other.simd );
+            return *this;
+        }
+
+        template<typename T>
+            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        TupleSimd& operator /= ( const T& other ) noexcept
+        {
+            simd = Traits::Div( simd, Traits::Load( other.values.data( ) ) );
+            return *this;
+        }
+        TupleSimd& operator /= ( const TupleSimd& other ) noexcept
+        {
+            simd = Traits::Div( simd, other.simd );
+            return *this;
+        }
+
+        template<typename T>
+            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        void Assign( const T& other ) noexcept
+        {
+            simd = Traits::Load( other.values.data( ) );
+        }
+
+        void Assign( SIMDType other ) noexcept
+        {
+            simd = other;
+        }
+
+        bool HasNaN( ) const noexcept
+        {
+            return Traits::HasNaN( simd );
+        }
+    };
+
+    namespace Internal
+    {
+        template<typename T>
+        concept SimdType = T::Loaded;
+
+        template<typename T>
+        concept TupleType = T::Unloaded;
+
+        template<typename SimdT1, typename SimdT2>
+        constexpr bool IsCompatible =
+            std::is_same_v<typename SimdT1::Traits, typename SimdT2::Traits>;
+    }
+
 
     /// <summary>
     /// A tuple holding two numbers.
@@ -671,12 +830,12 @@ namespace Harlinn::Common::Core::Math
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
         static constexpr size_type Capacity = Size;
-        using ArrayType = std::array<value_type, Size>;
+        using ArrayType = typename Traits::ArrayType;
         /// <summary>
         /// The mathematical operations are performed using 
         /// this type which holds a SIMD vector.  
         /// </summary>
-        using SimdImpl = Tuple2Simd<DerivedT>;
+        using Simd = TupleSimd<Traits,DerivedT>;
 
         union
         {
@@ -696,13 +855,20 @@ namespace Harlinn::Common::Core::Math
             : x( xv ), y(yv)
         { }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT> && std::is_same_v<T2, T>
-        Tuple2( const Tuple2Simd< Tuple2<DerivedT2, T2> >& other ) noexcept;
+        template<typename T>
+            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        Tuple2( const T& other ) noexcept
+            : values( Traits::ToArray( other.simd ) )
+        {
+        }
             
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        DerivedT& operator = ( const Tuple2Simd< Tuple2<DerivedT2, T2> >& other ) noexcept;
+        template<typename T>
+            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        DerivedType& operator = ( const T& other ) noexcept
+        {
+            values = Traits::ToArray( other.simd );
+            return static_cast< DerivedType& >( *this );
+        }
 
         constexpr bool operator == ( const Tuple2& other ) const noexcept
         {
@@ -713,15 +879,24 @@ namespace Harlinn::Common::Core::Math
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y );
         }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        bool operator == ( const Tuple2Simd< Tuple2<DerivedT2, T2> >& other ) const noexcept;
+        template<typename T>
+            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        bool operator == ( const T& other ) const noexcept
+        {
+            return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
+        }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        bool operator != ( const Tuple2Simd< Tuple2<DerivedT2, T2> >& other ) const noexcept;
+        template<typename T>
+            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        bool operator != ( const T& other ) const noexcept
+        {
+            return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
+        }
 
-        Tuple2Simd<Tuple2<DerivedT, T>> operator-( ) const noexcept;
+        Simd operator-( ) const noexcept
+        {
+            return Traits::Negate( Traits::Load( values.data( ) ) );
+        }
 
         void Assign( value_type xv, value_type yv ) noexcept
         {
@@ -754,1316 +929,6 @@ namespace Harlinn::Common::Core::Math
 
     };
 
-    /// <summary>
-    /// <para>
-    /// Holds the SIMD value for a Tuple2.
-    /// </para>
-    /// <para>
-    /// Mathematical operations for a particular Tuple2
-    /// derived type should generally be performed as 
-    /// a sequence of operations on this type, not the Tuple2
-    /// derived type, as this type represents the loaded
-    /// state of the data from the Tuple2 type. 
-    /// </para>
-    /// </summary>
-    /// <typeparam name="Tuple2T">
-    /// A Tuple2 derived type.
-    /// </typeparam>
-    template<typename Tuple2T>
-    class Tuple2Simd
-    {
-    public:
-        using TupleType = Tuple2T;
-        using value_type = typename TupleType::value_type;
-        using size_type = size_t;
-        static constexpr size_type Size = 2;
-        static constexpr bool Loaded = true;
-        static constexpr bool Unloaded = false;
-
-        using Traits = SIMD::Traits<value_type, Size>;
-        using SIMDType = typename Traits::SIMDType;
-            
-        static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
-            
-        SIMDType simd;
-
-        Tuple2Simd( ) noexcept
-            : simd( Traits::Zero( ) )
-        { }
-
-        Tuple2Simd( SIMDType other ) noexcept
-            : simd( other )
-        { }
-
-        Tuple2Simd( const TupleType& other ) noexcept
-            : simd( Traits::Load( other.values.data() ) )
-        { }
-
-        bool operator == ( const Tuple2Simd& other ) const noexcept
-        {
-            return Traits::Equals( other.simd );
-        }
-
-        bool operator != ( const Tuple2Simd& other ) const noexcept
-        {
-            return Traits::Equals( other.simd ) == false;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        bool operator == ( const Tuple2<DerivedT, T>& other ) const noexcept
-        {
-            return Traits::Equals( Traits::Load( other.values ) );
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        bool operator != ( const Tuple2<DerivedT, T>& other ) const noexcept
-        {
-            return Traits::Equals( Traits::Load( other.values ) ) == false;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple2Simd& operator += ( const Tuple2<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Add( simd, Traits::Load( other.values.data() ) );
-            return *this;
-        }
-        Tuple2Simd& operator += ( const Tuple2Simd& other ) noexcept
-        {
-            simd = Traits::Add( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple2Simd& operator -= ( const Tuple2<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Sub( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple2Simd& operator -= ( const Tuple2Simd& other ) noexcept
-        {
-            simd = Traits::Sub( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple2Simd& operator *= ( const Tuple2<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Mul( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple2Simd& operator *= ( const Tuple2Simd& other ) noexcept
-        {
-            simd = Traits::Mul( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple2Simd& operator /= ( const Tuple2<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Div( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple2Simd& operator /= ( const Tuple2Simd& other ) noexcept
-        {
-            simd = Traits::Div( simd, other.simd );
-            return *this;
-        }
-
-
-        void Assign( const Tuple2T& other ) noexcept
-        {
-            simd = Traits::Load( other.values.data( ) );
-        }
-        void Assign( value_type x, value_type y ) noexcept
-        {
-            simd = Traits::Set( y, x );
-        }
-
-        void Assign( SIMDType other ) noexcept
-        {
-            simd = other;
-        }
-
-        bool HasNaN( ) const noexcept
-        {
-            return Traits::HasNaN( simd );
-        }
-
-    };
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    inline Tuple2<DerivedT, T>::Tuple2( const Tuple2Simd< Tuple2<DerivedT2, T2> >& other ) noexcept
-        : values(Traits::ToArray( other.simd ))
-    { }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    DerivedT& Tuple2<DerivedT, T>::operator = ( const Tuple2Simd< Tuple2<DerivedT2, T2> >& other ) noexcept
-    {
-        values = Traits::ToArray( other.simd );
-        return reinterpret_cast< DerivedT& >( *this );
-    }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    bool Tuple2<DerivedT, T>::operator == ( const Tuple2Simd< Tuple2<DerivedT2, T2> >& other ) const noexcept
-    {
-        return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
-    }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    bool Tuple2<DerivedT, T>::operator != ( const Tuple2Simd< Tuple2<DerivedT2, T2> >& other ) const noexcept
-    {
-        return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
-    }
-
-    template<typename DerivedT, typename T>
-    Tuple2Simd<Tuple2<DerivedT, T>> Tuple2<DerivedT, T>::operator-( ) const noexcept
-    {
-        return Traits::Negate( Traits::Load( values.data( ) ) );
-    }
-
-
-    // Addition
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator + ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs.simd, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator + ( typename Tuple2Simd<Tuple2<DerivedT, NumberT>>::SIMDType lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator + ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, typename Tuple2Simd<Tuple2<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator + ( const Tuple2<DerivedT, NumberT>& lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Add( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator + ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator + ( const Tuple2<DerivedT, NumberT>& lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Add( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-        
-    // Subtraction
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator - ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs.simd, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator - ( typename Tuple2Simd<Tuple2<DerivedT, NumberT>>::SIMDType lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator - ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, typename Tuple2Simd<Tuple2<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator - ( const Tuple2<DerivedT, NumberT>& lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sub( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator - ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator - ( const Tuple2<DerivedT, NumberT>& lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sub( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-
-    // Multiplication
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( typename Tuple2Simd<Tuple2<DerivedT, NumberT>>::SIMDType lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, typename Tuple2Simd<Tuple2<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( const Tuple2<DerivedT, NumberT>& lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( const Tuple2<DerivedT, NumberT>& lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( NumberT lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, NumberT rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( NumberT lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator * ( const Tuple2<DerivedT, NumberT>& lhs, NumberT rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), rhs );
-    }
-
-    // Division
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator / ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator / ( typename Tuple2Simd<Tuple2<DerivedT, NumberT>>::SIMDType lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator / ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, typename Tuple2Simd<Tuple2<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator / ( const Tuple2<DerivedT, NumberT>& lhs, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator / ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator / ( const Tuple2<DerivedT, NumberT>& lhs, const Tuple2<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator / ( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lhs, NumberT rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> operator / ( const Tuple2<DerivedT, NumberT>& lhs, NumberT rhs ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), rhs );
-    }
-     
-    // Operations
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> HSum( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::HSum( t.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline NumberT HSum( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        return t.x + t.y;
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> HProd( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::HProd( t.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline NumberT HProd( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        return t.x * t.y;
-    }
-
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Abs( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Abs( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Abs( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Abs( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Min( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t1, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Min( t1.simd, t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Min( const Tuple2<DerivedT, NumberT>& t1, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Min( Traits::Load( t1.values.data( ) ), t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Min( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t1, const Tuple2<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Min( t1.simd, Traits::Load( t2.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Min( const Tuple2<DerivedT, NumberT>& t1, const Tuple2<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Min( Traits::Load( t1.values.data( ) ), Traits::Load( t2.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Max( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t1, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Max( t1.simd, t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Max( const Tuple2<DerivedT, NumberT>& t1, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Max( Traits::Load( t1.values.data( ) ), t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Max( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t1, const Tuple2<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Max( t1.simd, Traits::Load( t2.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Max( const Tuple2<DerivedT, NumberT>& t1, const Tuple2<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Max( Traits::Load( t1.values.data( ) ), Traits::Load( t2.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Sqr( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Mul( t.simd, t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Sqr( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Sqr( Traits::Load( t.values.data( ) ) );
-    }
-
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Ceil( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Ceil( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Ceil( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Ceil( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Floor( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Floor( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Floor( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Floor( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Round( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Round( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Round( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Round( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Trunc( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Trunc( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Trunc( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Trunc( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Lerp( NumberT t, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v0, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v1) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, v0.simd, v1.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Lerp( NumberT t, const Tuple2<DerivedT, NumberT>& v0, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v1 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, Traits::Load( v0.values.data( ) ), v1.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Lerp( NumberT t, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v0, Tuple2<DerivedT, NumberT>& v1 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, v0.simd, Traits::Load( v1.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Lerp( NumberT t, const Tuple2<DerivedT, NumberT>& v0, const Tuple2<DerivedT, NumberT>& v1 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, Traits::Load( v0.values.data( ) ), Traits::Load( v1.values.data( ) ) );
-    }
-
-    template<int shuffleMask, typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Permute( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Permute<shuffleMask>( v.simd );
-    }
-    template<int shuffleMask, typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Permute( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Permute<shuffleMask>( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Clamp
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Clamp( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lowerBounds, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, lowerBounds.simd, upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Clamp( const Tuple2<DerivedT, NumberT>& v, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lowerBounds, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Clamp( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v, const Tuple2<DerivedT, NumberT>& lowerBounds, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Clamp( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lowerBounds, const Tuple2<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Clamp( const Tuple2<DerivedT, NumberT>& v, const Tuple2<DerivedT, NumberT>& lowerBounds, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Clamp( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v, const Tuple2<DerivedT, NumberT>& lowerBounds, const Tuple2<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Clamp( const Tuple2<DerivedT, NumberT>& v, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& lowerBounds, const Tuple2<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Clamp( const Tuple2<DerivedT, NumberT>& v, const Tuple2<DerivedT, NumberT>& lowerBounds, const Tuple2<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    // Saturate
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Saturate( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Saturate( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Saturate( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Saturate( Traits::Load( t.values.data( ) ) );
-    }
-
-    // Sqrt
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Sqrt( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sqrt( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Sqrt( const Tuple2<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Saturate( Traits::Load( t.values.data( ) ) );
-    }
-
-    // FMA
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2<DerivedT, NumberT>& a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, const Tuple2<DerivedT, NumberT>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2<DerivedT, NumberT>& a, const Tuple2<DerivedT, NumberT>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, const Tuple2<DerivedT, NumberT>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2<DerivedT, NumberT>& a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2<DerivedT, NumberT>& a, const Tuple2<DerivedT, NumberT>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( NumberT a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), b.simd, c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( NumberT a, const Tuple2<DerivedT, NumberT>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( NumberT a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( NumberT a, const Tuple2<DerivedT, NumberT>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-        //return Traits::FMAdd( Traits::Set( a, a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, NumberT b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2<DerivedT, NumberT>& a, NumberT b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, NumberT b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMA( const Tuple2<DerivedT, NumberT>& a, NumberT b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-
-    // FMSub
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2<DerivedT, NumberT>& a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, const Tuple2<DerivedT, NumberT>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2<DerivedT, NumberT>& a, const Tuple2<DerivedT, NumberT>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, const Tuple2<DerivedT, NumberT>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2<DerivedT, NumberT>& a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2<DerivedT, NumberT>& a, const Tuple2<DerivedT, NumberT>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( NumberT a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), b.simd, c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( NumberT a, const Tuple2<DerivedT, NumberT>& b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( NumberT a, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( NumberT a, const Tuple2<DerivedT, NumberT>& b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, NumberT b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2<DerivedT, NumberT>& a, NumberT b, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& a, NumberT b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> FMSub( const Tuple2<DerivedT, NumberT>& a, NumberT b, const Tuple2<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-
-    // Sin
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Sin( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sin( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Sin( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Sin( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Cos
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Cos( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Cos( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Cos( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Cos( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Tan
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Tan( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Tan( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Tan( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Tan( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ASin
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ASin( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ASin( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ASin( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ASin( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ACos
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ACos( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ACos( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ACos( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ACos( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ATan
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ATan( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ATan( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ATan( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ATan( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ATan2
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ATan2( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& x, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& y ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( x.simd, y.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ATan2( const Tuple2<DerivedT, NumberT>& x, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& y ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( Traits::Load( x.values.data( ) ), y.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ATan2( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& x, const Tuple2<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( x.simd, Traits::Load( y.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ATan2( const Tuple2<DerivedT, NumberT>& x, const Tuple2<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
-    }
-
-    // SinH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> SinH( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::SinH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> SinH( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::SinH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // CosH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> CosH( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::CosH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> CosH( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::CosH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // TanH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> TanH( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::TanH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> TanH( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::TanH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ASinH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ASinH( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ASinH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ASinH( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ASinH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ACosH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ACosH( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ACosH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ACosH( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ACosH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ATanH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ATanH( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ATanH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ATanH( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ATanH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Log
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Log( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Log( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Log( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Log( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Log1P
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Log1P( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Log1P( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Log1P( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Log1P( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Log10
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Log10( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Log10( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Log10( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Log10( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Log2
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Log2( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Log2( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Log2( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Log2( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Exp
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Exp( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Exp( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Exp( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Exp( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Exp10
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Exp10( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Exp10( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Exp10( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Exp10( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Exp2
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Exp2( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Exp2( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Exp2( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Exp2( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ExpM1
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ExpM1( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ExpM1( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> ExpM1( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::ExpM1( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Pow
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Pow( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& base, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& exponent ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Pow( base.simd, exponent.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Pow( const Tuple2<DerivedT, NumberT>& base, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& exponent ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Pow( Traits::Load( base.values.data( ) ), exponent.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Pow( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& base, const Tuple2<DerivedT, NumberT>& exponent ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Pow( base.simd, Traits::Load( exponent.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Pow( const Tuple2<DerivedT, NumberT>& base, const Tuple2<DerivedT, NumberT>& exponent ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Pow( Traits::Load( base.values.data( ) ), Traits::Load( exponent.values.data( ) ) );
-    }
-
-    // Hypot
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Hypot( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& x, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& y ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( x.simd, y.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Hypot( const Tuple2<DerivedT, NumberT>& x, const Tuple2Simd<Tuple2<DerivedT, NumberT>>& y ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( Traits::Load( x.values.data( ) ), y.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Hypot( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& x, const Tuple2<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( x.simd, Traits::Load( y.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple2Simd<Tuple2<DerivedT, NumberT>> Hypot( const Tuple2<DerivedT, NumberT>& x, const Tuple2<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
-    }
-
-    
-
-
-
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MinComponentValue( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::HorizontalMin( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MinComponentValue( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        return std::min( v.x, v.y );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MaxComponentValue( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, NumberT>::Traits;
-        return Traits::HorizontalMax( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MaxComponentValue( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        return std::max( v.x, v.y );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline int MinComponentIndex( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        return v.x < v.y ? 0 : 1;
-    }
-    template<typename DerivedT, typename NumberT>
-    inline int MinComponentIndex( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        Tuple2<DerivedT, NumberT> tmp( v );
-        return MinComponentIndex( tmp );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline int MaxComponentIndex( const Tuple2<DerivedT, NumberT>& v ) noexcept
-    {
-        return v.x > v.y ? 0 : 1;
-    }
-    template<typename DerivedT, typename NumberT>
-    inline int MaxComponentIndex( const Tuple2Simd<Tuple2<DerivedT, NumberT>>& v ) noexcept
-    {
-        Tuple2<DerivedT, NumberT> tmp( v );
-        return MaxComponentIndex( tmp );
-    }
-
-
-    template<typename Tuple3T>
-    class Tuple3Simd;
-
     template<typename DerivedT, typename T>
     class Tuple3
     {
@@ -2079,10 +944,13 @@ namespace Harlinn::Common::Core::Math
 
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
-            
         static constexpr size_type Capacity = Size;
-        using ArrayType = std::array<value_type, Size>;
-        using SimdImpl = Tuple3Simd<DerivedT>;
+        using ArrayType = typename Traits::ArrayType;
+        /// <summary>
+        /// The mathematical operations are performed using 
+        /// this type which holds a SIMD vector.  
+        /// </summary>
+        using Simd = TupleSimd<Traits, DerivedT>;
 
         union
         {
@@ -2093,18 +961,27 @@ namespace Harlinn::Common::Core::Math
             };
         };
 
+        Tuple3( ) noexcept
+            : x{}, y{}, z{}
+        { }
+
         Tuple3( value_type xv, value_type yv, value_type zv ) noexcept
             : x( xv ), y( yv ), z( zv )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        Tuple3( const T& other ) noexcept
+            : values( Traits::ToArray( other.simd ) )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        DerivedType& operator = ( const T& other ) noexcept
         {
+            values = Traits::ToArray( other.simd );
+            return static_cast< DerivedType& >( *this );
         }
-
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        Tuple3( const Tuple3Simd< Tuple3<DerivedT2, T2> >& other ) noexcept;
-
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        DerivedT& operator = ( const Tuple3Simd< Tuple3<DerivedT2, T2> >& other ) noexcept;
 
         constexpr bool operator == ( const Tuple3& other ) const noexcept
         {
@@ -2115,15 +992,24 @@ namespace Harlinn::Common::Core::Math
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y ) || !IsSameValue( z, other.z );
         }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        bool operator == ( const Tuple3Simd< Tuple3<DerivedT2, T2> >& other ) const noexcept;
+        template<Internal::SimdType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        bool operator == ( const T& other ) const noexcept
+        {
+            return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
+        }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        bool operator != ( const Tuple3Simd< Tuple3<DerivedT2, T2> >& other ) const noexcept;
+        template<Internal::SimdType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        bool operator != ( const T& other ) const noexcept
+        {
+            return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
+        }
 
-        Tuple3Simd<Tuple3<DerivedT, T>> operator-( ) const noexcept;
+        Simd operator-( ) const noexcept
+        {
+            return Traits::Negate( Traits::Load( values.data( ) ) );
+        }
 
         void Assign( value_type xv, value_type yv, value_type zv ) noexcept
         {
@@ -2157,1297 +1043,6 @@ namespace Harlinn::Common::Core::Math
 
     };
 
-
-    template<typename Tuple3T>
-    class Tuple3Simd
-    {
-    public:
-        using size_type = size_t;
-        using value_type = typename Tuple3T::value_type;
-        static constexpr size_type Size = 3;
-        static constexpr bool Loaded = true;
-        static constexpr bool Unloaded = false;
-
-        using Traits = SIMD::Traits<value_type, Size>;
-        using SIMDType = typename Traits::SIMDType;
-        static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
-        SIMDType simd;
-
-        Tuple3Simd( ) noexcept
-            : simd( Traits::Zero( ) )
-        {
-        }
-
-        Tuple3Simd( SIMDType other ) noexcept
-            : simd( other )
-        {
-        }
-
-        Tuple3Simd( const Tuple3T& other ) noexcept
-            : simd( Traits::Load( other.values.data( ) ) )
-        {
-        }
-
-        bool operator == ( const Tuple3Simd& other ) const noexcept
-        {
-            return Traits::Equals( other.simd );
-        }
-
-        bool operator != ( const Tuple3Simd& other ) const noexcept
-        {
-            return Traits::Equals( other.simd ) == false;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        bool operator == ( const Tuple3<DerivedT, T>& other ) const noexcept
-        {
-            return Traits::Equals( Traits::Load( other.values ) );
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        bool operator != ( const Tuple3<DerivedT, T>& other ) const noexcept
-        {
-            return Traits::Equals( Traits::Load( other.values ) ) == false;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple3Simd& operator += ( const Tuple3<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Add( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple3Simd& operator += ( const Tuple3Simd& other ) noexcept
-        {
-            simd = Traits::Add( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple3Simd& operator -= ( const Tuple3<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Sub( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple3Simd& operator -= ( const Tuple3Simd& other ) noexcept
-        {
-            simd = Traits::Sub( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple3Simd& operator *= ( const Tuple3<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Mul( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple3Simd& operator *= ( const Tuple3Simd& other ) noexcept
-        {
-            simd = Traits::Mul( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple3Simd& operator /= ( const Tuple3<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Div( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple3Simd& operator /= ( const Tuple3Simd& other ) noexcept
-        {
-            simd = Traits::Div( simd, other.simd );
-            return *this;
-        }
-
-        void Assign( const Tuple3T& other ) noexcept
-        {
-            simd = Traits::Load( other.values.data( ) );
-        }
-        void Assign( value_type x, value_type y, value_type z ) noexcept
-        {
-            simd = Traits::Set( z, y, x );
-        }
-
-        void Assign( SIMDType other ) noexcept
-        {
-            simd = other;
-        }
-
-        bool HasNaN( ) const noexcept
-        {
-            return Traits::HasNaN( simd );
-        }
-    };
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    inline Tuple3<DerivedT, T>::Tuple3( const Tuple3Simd< Tuple3<DerivedT2, T2> >& other ) noexcept
-        : values( Traits::ToArray( other.simd ) ) 
-    {
-    }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    DerivedT& Tuple3<DerivedT, T>::operator = ( const Tuple3Simd< Tuple3<DerivedT2, T2> >& other ) noexcept
-    {
-        values = Traits::ToArray( other.simd );
-        return reinterpret_cast< DerivedT& >( *this );
-    }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    bool Tuple3<DerivedT, T>::operator == ( const Tuple3Simd< Tuple3<DerivedT2, T2> >& other ) const noexcept
-    {
-        return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
-    }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    bool Tuple3<DerivedT, T>::operator != ( const Tuple3Simd< Tuple3<DerivedT2, T2> >& other ) const noexcept
-    {
-        return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
-    }
-
-    template<typename DerivedT, typename T>
-    Tuple3Simd<Tuple3<DerivedT, T>> Tuple3<DerivedT, T>::operator-( ) const noexcept
-    {
-        return Traits::Negate( Traits::Load( values.data( ) ) );
-    }
-
-    // Addition
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator + ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs.simd, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator + ( typename Tuple3Simd<Tuple3<DerivedT, NumberT>>::SIMDType lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator + ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, typename Tuple3Simd<Tuple3<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator + ( const Tuple3<DerivedT, NumberT>& lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Add( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator + ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator + ( const Tuple3<DerivedT, NumberT>& lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Add( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-
-    // Subtraction
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator - ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs.simd, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator - ( typename Tuple3Simd<Tuple3<DerivedT, NumberT>>::SIMDType lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator - ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, typename Tuple3Simd<Tuple3<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator - ( const Tuple3<DerivedT, NumberT>& lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sub( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator - ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator - ( const Tuple3<DerivedT, NumberT>& lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sub( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-
-    // Multiplication
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( typename Tuple3Simd<Tuple3<DerivedT, NumberT>>::SIMDType lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, typename Tuple3Simd<Tuple3<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( const Tuple3<DerivedT, NumberT>& lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( const Tuple3<DerivedT, NumberT>& lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( NumberT lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, NumberT rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( NumberT lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator * ( const Tuple3<DerivedT, NumberT>& lhs, NumberT rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), rhs );
-    }
-
-    // Division
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator / ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator / ( typename Tuple3Simd<Tuple3<DerivedT, NumberT>>::SIMDType lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator / ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, typename Tuple3Simd<Tuple3<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator / ( const Tuple3<DerivedT, NumberT>& lhs, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator / ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator / ( const Tuple3<DerivedT, NumberT>& lhs, const Tuple3<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator / ( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lhs, NumberT rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> operator / ( const Tuple3<DerivedT, NumberT>& lhs, NumberT rhs ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), rhs );
-    }
-
-    // Operations
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> HSum( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::HSum( t.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline NumberT HSum( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        return t.x + t.y + t.z;
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> HProd( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::HProd( t.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline NumberT HProd( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        return t.x * t.y * t.z;
-    }
-
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Abs( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Abs( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Abs( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Abs( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Min( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t1, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Min( t1.simd, t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Min( const Tuple3<DerivedT, NumberT>& t1, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Min( Traits::Load( t1.values.data( ) ), t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Min( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t1, const Tuple3<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Min( t1.simd, Traits::Load( t2.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Min( const Tuple3<DerivedT, NumberT>& t1, const Tuple3<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Min( Traits::Load( t1.values.data( ) ), Traits::Load( t2.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Max( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t1, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Max( t1.simd, t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Max( const Tuple3<DerivedT, NumberT>& t1, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Max( Traits::Load( t1.values.data( ) ), t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Max( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t1, const Tuple3<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Max( t1.simd, Traits::Load( t2.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Max( const Tuple3<DerivedT, NumberT>& t1, const Tuple3<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Max( Traits::Load( t1.values.data( ) ), Traits::Load( t2.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Sqr( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Mul( t.simd, t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Sqr( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Sqr( Traits::Load( t.values.data( ) ) );
-    }
-
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Ceil( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Ceil( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Ceil( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Ceil( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Floor( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Floor( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Floor( const Tuple3<DerivedT, NumberT>& t )
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Floor( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Round( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Round( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Round( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Round( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Trunc( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Trunc( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Trunc( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Trunc( Traits::Load( t.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Lerp( NumberT t, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v0, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v1 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, v0.simd, v1.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Lerp( NumberT t, const Tuple3<DerivedT, NumberT>& v0, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v1 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, Traits::Load( v0.values.data( ) ), v1.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Lerp( NumberT t, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v0, Tuple3<DerivedT, NumberT>& v1 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, v0.simd, Traits::Load( v1.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Lerp( NumberT t, const Tuple3<DerivedT, NumberT>& v0, const Tuple3<DerivedT, NumberT>& v1 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, Traits::Load( v0.values.data( ) ), Traits::Load( v1.values.data( ) ) );
-    }
-
-    template<int shuffleMask, typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Permute( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Permute<shuffleMask>( v.simd );
-    }
-    template<int shuffleMask, typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Permute( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Permute<shuffleMask>( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Clamp
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Clamp( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lowerBounds, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, lowerBounds.simd, upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Clamp( const Tuple3<DerivedT, NumberT>& v, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lowerBounds, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Clamp( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v, const Tuple3<DerivedT, NumberT>& lowerBounds, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Clamp( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lowerBounds, const Tuple3<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Clamp( const Tuple3<DerivedT, NumberT>& v, const Tuple3<DerivedT, NumberT>& lowerBounds, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Clamp( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v, const Tuple3<DerivedT, NumberT>& lowerBounds, const Tuple3<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Clamp( const Tuple3<DerivedT, NumberT>& v, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& lowerBounds, const Tuple3<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Clamp( const Tuple3<DerivedT, NumberT>& v, const Tuple3<DerivedT, NumberT>& lowerBounds, const Tuple3<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
-    }
-
-    // Saturate
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Saturate( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Saturate( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Saturate( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Saturate( Traits::Load( t.values.data( ) ) );
-    }
-
-    // Sqrt
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Sqrt( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sqrt( t.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Sqrt( const Tuple3<DerivedT, NumberT>& t ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Saturate( Traits::Load( t.values.data( ) ) );
-    }
-
-    // FMA
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3<DerivedT, NumberT>& a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, const Tuple3<DerivedT, NumberT>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3<DerivedT, NumberT>& a, const Tuple3<DerivedT, NumberT>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, const Tuple3<DerivedT, NumberT>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3<DerivedT, NumberT>& a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3<DerivedT, NumberT>& a, const Tuple3<DerivedT, NumberT>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( NumberT a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), b.simd, c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( NumberT a, const Tuple3<DerivedT, NumberT>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( NumberT a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( NumberT a, const Tuple3<DerivedT, NumberT>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        //return Traits::FMAdd( Traits::Fill( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-        return Traits::FMAdd( Traits::Fill( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, NumberT b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3<DerivedT, NumberT>& a, NumberT b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, NumberT b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMA( const Tuple3<DerivedT, NumberT>& a, NumberT b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-
-    // FMSub
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3<DerivedT, NumberT>& a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, const Tuple3<DerivedT, NumberT>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3<DerivedT, NumberT>& a, const Tuple3<DerivedT, NumberT>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, const Tuple3<DerivedT, NumberT>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3<DerivedT, NumberT>& a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3<DerivedT, NumberT>& a, const Tuple3<DerivedT, NumberT>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( NumberT a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), b.simd, c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( NumberT a, const Tuple3<DerivedT, NumberT>& b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( NumberT a, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( NumberT a, const Tuple3<DerivedT, NumberT>& b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, NumberT b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3<DerivedT, NumberT>& a, NumberT b, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& a, NumberT b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> FMSub( const Tuple3<DerivedT, NumberT>& a, NumberT b, const Tuple3<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-
-    // Sin
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Sin( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sin( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Sin( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Sin( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Cos
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Cos( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Cos( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Cos( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Cos( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Tan
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Tan( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Tan( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Tan( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Tan( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ASin
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ASin( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ASin( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ASin( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ASin( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ACos
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ACos( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ACos( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ACos( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ACos( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ATan
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ATan( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ATan( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ATan( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ATan( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ATan2
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ATan2( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& x, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& y ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( x.simd, y.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ATan2( const Tuple3<DerivedT, NumberT>& x, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& y ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( Traits::Load( x.values.data( ) ), y.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ATan2( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& x, const Tuple3<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( x.simd, Traits::Load( y.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ATan2( const Tuple3<DerivedT, NumberT>& x, const Tuple3<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
-    }
-
-    // SinH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> SinH( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::SinH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> SinH( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::SinH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // CosH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> CosH( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::CosH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> CosH( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::CosH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // TanH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> TanH( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::TanH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> TanH( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::TanH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ASinH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ASinH( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ASinH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ASinH( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ASinH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ACosH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ACosH( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ACosH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ACosH( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ACosH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ATanH
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ATanH( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ATanH( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ATanH( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ATanH( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Log
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Log( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Log( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Log( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Log( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Log1P
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Log1P( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Log1P( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Log1P( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Log1P( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Log10
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Log10( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Log10( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Log10( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Log10( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Log2
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Log2( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Log2( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Log2( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Log2( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Exp
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Exp( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Exp( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Exp( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Exp( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Exp10
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Exp10( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Exp10( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Exp10( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Exp10( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Exp2
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Exp2( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Exp2( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Exp2( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Exp2( Traits::Load( v.values.data( ) ) );
-    }
-
-    // ExpM1
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ExpM1( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ExpM1( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> ExpM1( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::ExpM1( Traits::Load( v.values.data( ) ) );
-    }
-
-    // Pow
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Pow( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& base, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& exponent ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Pow( base.simd, exponent.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Pow( const Tuple3<DerivedT, NumberT>& base, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& exponent ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Pow( Traits::Load( base.values.data( ) ), exponent.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Pow( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& base, const Tuple3<DerivedT, NumberT>& exponent ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Pow( base.simd, Traits::Load( exponent.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Pow( const Tuple3<DerivedT, NumberT>& base, const Tuple3<DerivedT, NumberT>& exponent ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Pow( Traits::Load( base.values.data( ) ), Traits::Load( exponent.values.data( ) ) );
-    }
-
-    // Hypot
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Hypot( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& x, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& y ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( x.simd, y.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Hypot( const Tuple3<DerivedT, NumberT>& x, const Tuple3Simd<Tuple3<DerivedT, NumberT>>& y ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( Traits::Load( x.values.data( ) ), y.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Hypot( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& x, const Tuple3<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( x.simd, Traits::Load( y.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple3Simd<Tuple3<DerivedT, NumberT>> Hypot( const Tuple3<DerivedT, NumberT>& x, const Tuple3<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
-    }
-
-
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MinComponentValue( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::HorizontalMin( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MinComponentValue( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        return std::min( v.x, std::min( v.y, v.z ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MaxComponentValue( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, NumberT>::Traits;
-        return Traits::HorizontalMax( v.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MaxComponentValue( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        return std::max( v.x, std::max( v.y, v.z ) );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline int MinComponentIndex( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        return ( v.x < v.y ) ? ( ( v.x < v.z ) ? 0 : 2 ) : ( ( v.y < v.z ) ? 1 : 2 );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline int MinComponentIndex( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        Tuple3<DerivedT, NumberT> tmp( v );
-        return MinComponentIndex( tmp );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline int MaxComponentIndex( const Tuple3<DerivedT, NumberT>& v ) noexcept
-    {
-        return ( v.x > v.y ) ? ( ( v.x > v.z ) ? 0 : 2 ) : ( ( v.y > v.z ) ? 1 : 2 );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline int MaxComponentIndex( const Tuple3Simd<Tuple3<DerivedT, NumberT>>& v ) noexcept
-    {
-        Tuple3<DerivedT, NumberT> tmp( v );
-        return MaxComponentIndex( tmp );
-    }
-
-
-    template<typename Tuple4T>
-    class Tuple4Simd;
-
     template<typename DerivedT, typename T>
     class Tuple4
     {
@@ -3463,11 +1058,13 @@ namespace Harlinn::Common::Core::Math
 
         using Traits = SIMD::Traits<value_type, Size>;
         using SIMDType = typename Traits::SIMDType;
-            
         static constexpr size_type Capacity = Size;
         using ArrayType = typename Traits::ArrayType;
-
-        using SimdImpl = Tuple4Simd<DerivedT>;
+        /// <summary>
+        /// The mathematical operations are performed using 
+        /// this type which holds a SIMD vector.  
+        /// </summary>
+        using Simd = TupleSimd<Traits, DerivedT>;
 
         union
         {
@@ -3488,13 +1085,20 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        Tuple4( const Tuple4Simd< Tuple4<DerivedT2, T2> >& other ) noexcept;
+        template<typename T>
+            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        Tuple4( const T& other ) noexcept
+            : values( Traits::ToArray( other.simd ) )
+        {
+        }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        DerivedT& operator = ( const Tuple4Simd< Tuple4<DerivedT2, T2> >& other ) noexcept;
+        template<typename T>
+            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        DerivedType& operator = ( const T& other ) noexcept
+        {
+            values = Traits::ToArray( other.simd );
+            return static_cast< DerivedType& >( *this );
+        }
 
         constexpr bool operator == ( const Tuple4& other ) const noexcept
         {
@@ -3505,15 +1109,24 @@ namespace Harlinn::Common::Core::Math
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y ) || !IsSameValue( z, other.z ) || !IsSameValue( w, other.w );
         }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        bool operator == ( const Tuple4Simd< Tuple4<DerivedT2, T2> >& other ) const noexcept;
+        template<typename T>
+            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        bool operator == ( const T& other ) const noexcept
+        {
+            return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
+        }
 
-        template<class DerivedT2, typename T2>
-            requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-        bool operator != ( const Tuple4Simd< Tuple4<DerivedT2, T2> >& other ) const noexcept;
+        template<typename T>
+            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        bool operator != ( const T& other ) const noexcept
+        {
+            return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
+        }
 
-        Tuple4Simd<Tuple4<DerivedT, T>> operator-( ) const noexcept;
+        Simd operator-( ) const noexcept
+        {
+            return Traits::Negate( Traits::Load( values.data( ) ) );
+        }
 
         void Assign( value_type xv, value_type yv, value_type zv, value_type wv ) noexcept
         {
@@ -3548,1289 +1161,1692 @@ namespace Harlinn::Common::Core::Math
 
     };
 
+    
 
-    template<typename Tuple4T>
-    class Tuple4Simd
-    {
-    public:
-        using size_type = size_t;
-        using value_type = typename Tuple4T::value_type;
-        static constexpr size_type Size = 4;
-        static constexpr bool Loaded = true;
-        static constexpr bool Unloaded = false;
-
-        using Traits = SIMD::Traits<value_type, Size>;
-        using SIMDType = typename Traits::SIMDType;
-        static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
-            
-        SIMDType simd;
-
-        Tuple4Simd( ) noexcept
-            : simd( Traits::Zero( ) )
-        {
-        }
-
-        Tuple4Simd( SIMDType other ) noexcept
-            : simd( other )
-        {
-        }
-
-        Tuple4Simd( const Tuple4T& other ) noexcept
-            : simd( Traits::Load( other.values.data( ) ) )
-        {
-        }
-
-        bool operator == ( const Tuple4Simd& other ) const noexcept
-        {
-            return Traits::Equals( other.simd );
-        }
-
-        bool operator != ( const Tuple4Simd& other ) const noexcept
-        {
-            return Traits::Equals( other.simd ) == false;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        bool operator == ( const Tuple4<DerivedT, T>& other ) const noexcept
-        {
-            return Traits::Equals( simd, Traits::Load( other.values ) );
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        bool operator != ( const Tuple4<DerivedT, T>& other ) const noexcept
-        {
-            return Traits::Equals( simd, Traits::Load( other.values ) ) == false;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple4Simd& operator += ( const Tuple4<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Add( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple4Simd& operator += ( const Tuple4Simd& other )
-        {
-            simd = Traits::Add( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple4Simd& operator -= ( const Tuple4<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Sub( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple4Simd& operator -= ( const Tuple4Simd& other ) noexcept
-        {
-            simd = Traits::Sub( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple4Simd& operator *= ( const Tuple4<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Mul( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple4Simd& operator *= ( const Tuple4Simd& other ) noexcept
-        {
-            simd = Traits::Mul( simd, other.simd );
-            return *this;
-        }
-
-        template<class DerivedT, typename T>
-            requires std::is_same_v<T, value_type>
-        Tuple4Simd& operator /= ( const Tuple4<DerivedT, T>& other ) noexcept
-        {
-            simd = Traits::Div( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
-        }
-        Tuple4Simd& operator /= ( const Tuple4Simd& other ) noexcept
-        {
-            simd = Traits::Div( simd, other.simd );
-            return *this;
-        }
-
-        void Assign( const Tuple4T& other ) noexcept
-        {
-            simd = Traits::Load( other.values.data( ) );
-        }
-        void Assign( value_type x, value_type y, value_type z, value_type w ) noexcept
-        {
-            simd = Traits::Set( w, z, y, x );
-        }
-
-        void Assign( SIMDType other ) noexcept
-        {
-            simd = other;
-        }
-
-        bool HasNaN( ) const noexcept
-        {
-            return Traits::HasNaN( simd );
-        }
-
-    };
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    inline Tuple4<DerivedT, T>::Tuple4( const Tuple4Simd< Tuple4<DerivedT2, T2> >& other ) noexcept
-        : values( Traits::ToArray( other.simd ) ) 
-    {
-    }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    DerivedT& Tuple4<DerivedT, T>::operator = ( const Tuple4Simd< Tuple4<DerivedT2, T2> >& other ) noexcept
-    {
-        values = Traits::ToArray( other.simd );
-        return reinterpret_cast< DerivedT& >( *this );
-    }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    bool Tuple4<DerivedT, T>::operator == ( const Tuple4Simd< Tuple4<DerivedT2, T2> >& other ) const noexcept
-    {
-        return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
-    }
-
-    template<typename DerivedT, typename T>
-    template<class DerivedT2, typename T2>
-        requires std::is_same_v<DerivedT2, DerivedT>&& std::is_same_v<T2, T>
-    bool Tuple4<DerivedT, T>::operator != ( const Tuple4Simd< Tuple4<DerivedT2, T2> >& other ) const noexcept
-    {
-        return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
-    }
-
-    template<typename DerivedT, typename T>
-    Tuple4Simd<Tuple4<DerivedT, T>> Tuple4<DerivedT, T>::operator-( ) const noexcept
-    {
-        return Traits::Negate( Traits::Load( values.data( ) ) );
-    }
 
     // Addition
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator + ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T,U>
+    inline T operator + ( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Add( lhs.simd, rhs.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator + ( typename Tuple4Simd<Tuple4<DerivedT, NumberT>>::SIMDType lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+    
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T operator + ( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator + ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, typename Tuple4Simd<Tuple4<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Add( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator + ( const Tuple4<DerivedT, NumberT>& lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Add( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator + ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Add( lhs.simd, Traits::Load( rhs.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator + ( const Tuple4<DerivedT, NumberT>& lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T operator + ( const U& lhs, const T& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Add( Traits::Load( lhs.values.data( ) ), rhs.simd );
+    }
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT operator + ( const T& lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::Add( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
     }
 
     // Subtraction
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator - ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T operator - ( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Sub( lhs.simd, rhs.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator - ( typename Tuple4Simd<Tuple4<DerivedT, NumberT>>::SIMDType lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T operator - ( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator - ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, typename Tuple4Simd<Tuple4<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Sub( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator - ( const Tuple4<DerivedT, NumberT>& lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Sub( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator - ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Sub( lhs.simd, Traits::Load( rhs.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator - ( const Tuple4<DerivedT, NumberT>& lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T operator - ( const U& lhs, const T& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Sub( Traits::Load( lhs.values.data( ), rhs.simd ) );
+    }
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT operator - ( const T& lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::Sub( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
     }
 
     // Multiplication
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T operator * ( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Mul( lhs.simd, rhs.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( typename Tuple4Simd<Tuple4<DerivedT, NumberT>>::SIMDType lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T operator * ( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, typename Tuple4Simd<Tuple4<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( const Tuple4<DerivedT, NumberT>& lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Mul( lhs.simd, Traits::Load( rhs.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( const Tuple4<DerivedT, NumberT>& lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T operator * ( const U& lhs, const T& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Mul( Traits::Load( lhs.values.data( ) ), lhs.simd );
+    }
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT operator * ( const T& lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::Mul( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( NumberT lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+
+    template<Internal::SimdType T, typename U>
+        requires std::is_arithmetic_v<U>
+    inline T operator * ( const T& lhs, const U rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, rhs.simd );
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Traits::Mul( lhs.simd, Traits::Fill( static_cast< Type >( rhs ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, NumberT rhs ) noexcept
+    template<typename U, Internal::SimdType T>
+        requires std::is_arithmetic_v<U>
+    inline T operator * ( const U lhs, const T& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs.simd, rhs );
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Traits::Mul( Traits::Fill( static_cast< Type >( lhs ) ), rhs.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( NumberT lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
+
+    template<Internal::TupleType T, typename U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<U>
+    inline ResultT operator * ( const T& lhs, const U rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Mul( lhs, Traits::Load( rhs.values.data( ) ) );
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Traits::Mul( Traits::Load( lhs.values.data( ) ), Traits::Fill( static_cast< Type >( rhs ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator * ( const Tuple4<DerivedT, NumberT>& lhs, NumberT rhs ) noexcept
+    template<typename U, Internal::TupleType T, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<U>
+    inline ResultT operator * ( const U lhs, const T& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), rhs );
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Traits::Mul( Traits::Fill( static_cast< Type >( lhs ) ), Traits::Load( rhs.values.data( ) ) );
     }
+
 
     // Division
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator / ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T operator / ( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Div( lhs.simd, rhs.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator / ( typename Tuple4Simd<Tuple4<DerivedT, NumberT>>::SIMDType lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T operator / ( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs, rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator / ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, typename Tuple4Simd<Tuple4<DerivedT, NumberT>>::SIMDType rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, rhs );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator / ( const Tuple4<DerivedT, NumberT>& lhs, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), rhs.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator / ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Div( lhs.simd, Traits::Load( rhs.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator / ( const Tuple4<DerivedT, NumberT>& lhs, const Tuple4<DerivedT, NumberT>& rhs ) noexcept
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T operator / ( const U& lhs, const T& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Div( Traits::Load( lhs.values.data( ) ), lhs.simd );
+    }
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT operator / ( const T& lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator / ( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lhs, NumberT rhs ) noexcept
+
+    template<Internal::SimdType T, typename U>
+        requires std::is_arithmetic_v<U>
+    inline T operator / ( const T& lhs, const U rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Div( lhs.simd, rhs );
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Traits::Div( lhs.simd, Traits::Fill( static_cast< Type >( rhs ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> operator / ( const Tuple4<DerivedT, NumberT>& lhs, NumberT rhs ) noexcept
+    template<typename U, Internal::SimdType T>
+        requires std::is_arithmetic_v<U>
+    inline T operator / ( const U lhs, const T& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Div( Traits::Load( lhs.values.data( ) ), rhs );
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Traits::Div( Traits::Fill( static_cast< Type >( lhs ) ), rhs.simd );
+    }
+
+    template<Internal::TupleType T, typename U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<U>
+    inline ResultT operator / ( const T& lhs, const U rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::Fill( static_cast< Type >( rhs ) ) );
+    }
+    template<typename U, Internal::TupleType T, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<U>
+    inline ResultT operator / ( const U lhs, const T& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        return Traits::Div( Traits::Fill( static_cast< Type >( lhs ) ), Traits::Load( rhs.values.data( ) ) );
     }
 
     // Operations
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> HSum( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+    
+    
+    /// <summary>
+    /// Calculates the horizontal sum of the elements in the vector.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T HSum( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::HSum( t.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline NumberT HSum( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    /// <summary>
+    /// Calculates the horizontal sum of the elements in the vector.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::value_type>
+    inline ResultT ScalarHSum( const T& t ) noexcept
     {
-        return t.x + t.y + t.z + t.w;
+        if constexpr ( T::Size == 2 )
+        {
+            return t.x + t.y;
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            return t.x + t.y + t.z;
+        }
+        else 
+        {
+            return t.x + t.y + t.z + t.w;
+        }
+    }
+    /// <summary>
+    /// Calculates the horizontal sum of the elements in the vector.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT HSum( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Fill( ScalarHSum( t ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> HProd( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+    /// <summary>
+    /// Calculates the horizontal product of the elements in the vector.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T HProd( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::HProd( t.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline NumberT HProd( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    /// <summary>
+    /// Calculates the horizontal product of the elements in the vector.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::value_type>
+    inline ResultT ScalarHProd( const T& t ) noexcept
     {
-        return t.x * t.y * t.z * t.w;
+        if constexpr ( T::Size == 2 )
+        {
+            return t.x * t.y;
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            return t.x * t.y * t.z;
+        }
+        else
+        {
+            return t.x * t.y * t.z * t.w;
+        }
+    }
+    /// <summary>
+    /// Calculates the horizontal product of the elements in the vector.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT HProd( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Fill( ScalarHProc( t ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Abs( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+    // Abs
+
+    template<Internal::SimdType T>
+    inline T Abs( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Abs( t.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Abs( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Abs( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Abs( Traits::Load( t.values.data( ) ) );
+        using Traits = typename T::Traits;
+        return Traits::Abs( Traits::Load( t.values.data() ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Min( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t1, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t2 ) noexcept
+    // Min
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Min( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Min( t1.simd, t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Min( const Tuple4<DerivedT, NumberT>& t1, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t2 ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Min( Traits::Load( t1.values.data( ) ), t2.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Min( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t1, const Tuple4<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Min( t1.simd, Traits::Load( t2.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Min( const Tuple4<DerivedT, NumberT>& t1, const Tuple4<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Min( Traits::Load( t1.values.data( ) ), Traits::Load( t2.values.data( ) ) );
+        using Traits = typename T::Traits;
+        return Traits::Min( lhs.simd, rhs.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Max( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t1, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t2 ) noexcept
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Min( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Max( t1.simd, t2.simd );
+        using Traits = typename T::Traits;
+        return Traits::Min( lhs.simd, Traits::Load( rhs.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Max( const Tuple4<DerivedT, NumberT>& t1, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t2 ) noexcept
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T Min( const U& lhs, const T& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Max( Traits::Load( t1.values.data( ) ), t2.simd );
+        using Traits = typename T::Traits;
+        return Traits::Min( Traits::Load( lhs.values.data( ) ), rhs.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Max( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t1, const Tuple4<DerivedT, NumberT>& t2 ) noexcept
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Min( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Max( t1.simd, Traits::Load( t2.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Max( const Tuple4<DerivedT, NumberT>& t1, const Tuple4<DerivedT, NumberT>& t2 ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Max( Traits::Load( t1.values.data( ) ), Traits::Load( t2.values.data( ) ) );
+        using Traits = typename T::Traits;
+        return Traits::Min( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Sqr( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+    // Max
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Max( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Mul( t.simd, t.simd );
+        using Traits = typename T::Traits;
+        return Traits::Max( lhs.simd, rhs.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Sqr( const Tuple4<DerivedT, NumberT>& t ) noexcept
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Max( const T& lhs, const U& rhs ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Max( lhs.simd, Traits::Load( rhs.values.data( ) ) );
+    }
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T Max( const U& lhs, const T& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Max( Traits::Load( lhs.values.data( ) ), rhs.simd );
+    }
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Max( const T& lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Max( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
+    }
+
+
+    // Sqr
+
+    template<Internal::SimdType T>
+    inline T Sqr( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqr( t.simd, t.simd );
+    }
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Sqr( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Sqr( Traits::Load( t.values.data( ) ) );
     }
 
+    // Ceil
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Ceil( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+    template<Internal::SimdType T>
+    inline T Ceil( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Ceil( t.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Ceil( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Ceil( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Ceil( Traits::Load( t.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Floor( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+    // Floor
+
+    template<Internal::SimdType T>
+    inline T Floor( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Floor( t.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Floor( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Floor( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Floor( Traits::Load( t.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Round( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+    // Round
+
+    template<Internal::SimdType T>
+    inline T Round( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Round( t.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Round( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Round( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Round( Traits::Load( t.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Trunc( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+    // Trunc
+
+    template<Internal::SimdType T>
+    inline T Trunc( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Trunc( t.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Trunc( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Trunc( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Trunc( Traits::Load( t.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Lerp( NumberT t, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v0, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v1 ) noexcept
+    // Lerp
+
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT> && Internal::IsCompatible<T, U> 
+    inline T Lerp( NumberT a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, v0.simd, v1.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Lerp( NumberT t, const Tuple4<DerivedT, NumberT>& v0, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v1 ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, Traits::Load( v0.values.data( ) ), v1.simd );
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp( static_cast<Type>( a ), b.simd, c.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Lerp( NumberT t, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v0, Tuple4<DerivedT, NumberT>& v1 ) noexcept
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T Lerp( NumberT a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, v0.simd, Traits::Load( v1.values.data( ) ) );
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp( static_cast< Type >( a ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Lerp( NumberT t, const Tuple4<DerivedT, NumberT>& v0, const Tuple4<DerivedT, NumberT>& v1 ) noexcept
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U Lerp( NumberT a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Lerp( t, Traits::Load( v0.values.data( ) ), Traits::Load( v1.values.data( ) ) );
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp( static_cast< Type >( a ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
-    template<int shuffleMask, typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Permute( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT Lerp( NumberT a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Permute<shuffleMask>( v.simd );
-    }
-    template<int shuffleMask, typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Permute( const Tuple4<DerivedT, NumberT>& v ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Permute<shuffleMask>( Traits::Load( v.values.data( ) ) );
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp( static_cast< Type >( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
+    //
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Lerp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp( a.simd, b.simd, c.simd );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Lerp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U Lerp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp( a.simd, Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S Lerp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Lerp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp( Traits::Load( a.values.data( ) ), b.simd, c.simd );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Lerp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U Lerp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT Lerp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+    
+    // Permute
+
+    template<int shuffleMask, Internal::SimdType T>
+    inline T Permute( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Permute<shuffleMask>( t.simd );
+    }
+    template<int shuffleMask, Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Permute( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Permute<shuffleMask>( Traits::Load( t.values.data( ) ) );
+    }
 
     // Clamp
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Clamp( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lowerBounds, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& upperBounds ) noexcept
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Clamp( v.simd, lowerBounds.simd, upperBounds.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Clamp( const Tuple4<DerivedT, NumberT>& v, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lowerBounds, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& upperBounds ) noexcept
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Clamp( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v, const Tuple4<DerivedT, NumberT>& lowerBounds, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Clamp( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lowerBounds, const Tuple4<DerivedT, NumberT>& upperBounds ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Clamp( v.simd, lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Clamp( const Tuple4<DerivedT, NumberT>& v, const Tuple4<DerivedT, NumberT>& lowerBounds, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& upperBounds ) noexcept
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
+        using Traits = typename T::Traits;
+        return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Clamp( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v, const Tuple4<DerivedT, NumberT>& lowerBounds, const Tuple4<DerivedT, NumberT>& upperBounds ) noexcept
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Clamp( const Tuple4<DerivedT, NumberT>& v, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& lowerBounds, const Tuple4<DerivedT, NumberT>& upperBounds ) noexcept
+    //
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, upperBounds.simd );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Clamp( const Tuple4<DerivedT, NumberT>& v, const Tuple4<DerivedT, NumberT>& lowerBounds, const Tuple4<DerivedT, NumberT>& upperBounds ) noexcept
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename S::Simd>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
     }
 
+
     // Saturate
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Saturate( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+
+    template<Internal::SimdType T>
+    inline T Saturate( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Saturate( t.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Saturate( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Saturate( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Saturate( Traits::Load( t.values.data( ) ) );
     }
 
     // Sqrt
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Sqrt( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& t ) noexcept
+
+    template<Internal::SimdType T>
+    inline T Sqrt( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Sqrt( t.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Sqrt( const Tuple4<DerivedT, NumberT>& t ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Sqrt( const T& t ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Saturate( Traits::Load( t.values.data( ) ) );
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( Traits::Load( t.values.data( ) ) );
     }
+
 
     // FMA
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMA( NumberT a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+    }
+
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMA( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMA( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMA( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMA( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMA( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMA( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMA( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMA( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::FMAdd( a.simd, b.simd, c.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4<DerivedT, NumberT>& a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMA( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, const Tuple4<DerivedT, NumberT>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4<DerivedT, NumberT>& a, const Tuple4<DerivedT, NumberT>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMA( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+        using Traits = typename T::Traits;
+        return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, const Tuple4<DerivedT, NumberT>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S FMA( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4<DerivedT, NumberT>& a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
+    //
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMA( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMA( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4<DerivedT, NumberT>& a, const Tuple4<DerivedT, NumberT>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMA( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        using Traits = typename T::Traits;
+        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( NumberT a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT FMA( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), b.simd, c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( NumberT a, const Tuple4<DerivedT, NumberT>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( NumberT a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( NumberT a, const Tuple4<DerivedT, NumberT>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Fill( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, NumberT b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4<DerivedT, NumberT>& a, NumberT b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, NumberT b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( a.simd, Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMA( const Tuple4<DerivedT, NumberT>& a, NumberT b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
+        using Traits = typename T::Traits;
+        return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
     // FMSub
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMSub( NumberT a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+    }
+
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::FMSub( a.simd, b.simd, c.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4<DerivedT, NumberT>& a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMSub( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, const Tuple4<DerivedT, NumberT>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::FMSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4<DerivedT, NumberT>& a, const Tuple4<DerivedT, NumberT>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMSub( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+        using Traits = typename T::Traits;
+        return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, const Tuple4<DerivedT, NumberT>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S FMSub( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4<DerivedT, NumberT>& a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
+    //
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMSub( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4<DerivedT, NumberT>& a, const Tuple4<DerivedT, NumberT>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMSub( const S& a, const T& b, const U& c ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT FMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( NumberT a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), b.simd, c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( NumberT a, const Tuple4<DerivedT, NumberT>& b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), Traits::Load( b.values.data( ) ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( NumberT a, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), b.simd, Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( NumberT a, const Tuple4<DerivedT, NumberT>& b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Fill( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, NumberT b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4<DerivedT, NumberT>& a, NumberT b, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( b ), c.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& a, NumberT b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( a.simd, Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> FMSub( const Tuple4<DerivedT, NumberT>& a, NumberT b, const Tuple4<DerivedT, NumberT>& c ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( b ), Traits::Load( c.values.data( ) ) );
-    }
 
     // Sin
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Sin( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Sin( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Sin( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Sin( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Sin( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Sin( Traits::Load( v.values.data( ) ) );
     }
 
     // Cos
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Cos( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Cos( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Cos( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Cos( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Cos( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Cos( Traits::Load( v.values.data( ) ) );
     }
 
     // Tan
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Tan( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Tan( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Tan( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Tan( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Tan( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Tan( Traits::Load( v.values.data( ) ) );
     }
 
     // ASin
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ASin( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T ASin( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ASin( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ASin( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ASin( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ASin( Traits::Load( v.values.data( ) ) );
     }
 
     // ACos
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ACos( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T ACos( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ACos( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ACos( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ACos( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ACos( Traits::Load( v.values.data( ) ) );
     }
 
     // ATan
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ATan( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T ATan( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ATan( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ATan( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ATan( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ATan( Traits::Load( v.values.data( ) ) );
     }
 
+
     // ATan2
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ATan2( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& x, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& y ) noexcept
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T ATan2( const T& x, const U& y ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ATan2( x.simd, y.simd );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ATan2( const Tuple4<DerivedT, NumberT>& x, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& y ) noexcept
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T ATan2( const T& x, const U& y ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::ATan2( Traits::Load( x.values.data( ) ), y.simd );
-    }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ATan2( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& x, const Tuple4<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ATan2( x.simd, Traits::Load( y.values.data( ) ) );
     }
-
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ATan2( const Tuple4<DerivedT, NumberT>& x, const Tuple4<DerivedT, NumberT>& y ) noexcept
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T ATan2( const U& x, const T& y ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::ATan2( Traits::Load( x.values.data( ) ), y.simd );
+    }
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT ATan2( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::ATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
     }
 
     // SinH
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> SinH( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T SinH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::SinH( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> SinH( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT SinH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::SinH( Traits::Load( v.values.data( ) ) );
     }
 
+
     // CosH
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> CosH( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T CosH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::CosH( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> CosH( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT CosH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::CosH( Traits::Load( v.values.data( ) ) );
     }
 
     // TanH
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> TanH( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T TanH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::TanH( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> TanH( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT TanH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::TanH( Traits::Load( v.values.data( ) ) );
     }
 
     // ASinH
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ASinH( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T ASinH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ASinH( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ASinH( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ASinH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ASinH( Traits::Load( v.values.data( ) ) );
     }
 
     // ACosH
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ACosH( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T ACosH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ACosH( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ACosH( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ACosH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ACosH( Traits::Load( v.values.data( ) ) );
     }
 
     // ATanH
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ATanH( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T ATanH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ATanH( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ATanH( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ATanH( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ATanH( Traits::Load( v.values.data( ) ) );
     }
 
     // Log
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Log( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Log( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Log( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Log( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Log( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Log( Traits::Load( v.values.data( ) ) );
     }
 
     // Log1P
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Log1P( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Log1P( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Log1P( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Log1P( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Log1P( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Log1P( Traits::Load( v.values.data( ) ) );
     }
 
     // Log10
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Log10( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Log10( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Log10( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Log10( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Log10( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Log10( Traits::Load( v.values.data( ) ) );
     }
 
     // Log2
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Log2( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Log2( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Log2( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Log2( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Log2( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Log2( Traits::Load( v.values.data( ) ) );
     }
 
     // Exp
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Exp( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Exp( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Exp( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Exp( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Exp( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Exp( Traits::Load( v.values.data( ) ) );
     }
 
     // Exp10
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Exp10( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Exp10( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Exp10( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Exp10( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Exp10( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Exp10( Traits::Load( v.values.data( ) ) );
     }
 
     // Exp2
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Exp2( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T Exp2( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Exp2( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Exp2( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Exp2( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Exp2( Traits::Load( v.values.data( ) ) );
     }
 
     // ExpM1
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ExpM1( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T>
+    inline T ExpM1( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ExpM1( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> ExpM1( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ExpM1( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::ExpM1( Traits::Load( v.values.data( ) ) );
     }
 
+
     // Pow
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Pow( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& base, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& exponent ) noexcept
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Pow( const T& base, const U& exponent ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Pow( base.simd, exponent.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Pow( const Tuple4<DerivedT, NumberT>& base, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& exponent ) noexcept
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Pow( const T& base, const U& exponent ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Pow( Traits::Load( base.values.data( ) ), exponent.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Pow( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& base, const Tuple4<DerivedT, NumberT>& exponent ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Pow( base.simd, Traits::Load( exponent.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Pow( const Tuple4<DerivedT, NumberT>& base, const Tuple4<DerivedT, NumberT>& exponent ) noexcept
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T Pow( const U& base, const T& exponent ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Pow( Traits::Load( base.values.data( ) ), exponent.simd );
+    }
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Pow( const T& base, const U& exponent ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::Pow( Traits::Load( base.values.data( ) ), Traits::Load( exponent.values.data( ) ) );
     }
 
     // Hypot
 
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Hypot( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& x, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& y ) noexcept
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Hypot( const T& x, const U& y ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Hypot( x.simd, y.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Hypot( const Tuple4<DerivedT, NumberT>& x, const Tuple4Simd<Tuple4<DerivedT, NumberT>>& y ) noexcept
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Hypot( const T& x, const U& y ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
-        return Traits::Hypot( Traits::Load( x.values.data( ) ), y.simd );
-    }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Hypot( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& x, const Tuple4<DerivedT, NumberT>& y ) noexcept
-    {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Hypot( x.simd, Traits::Load( y.values.data( ) ) );
     }
-    template<typename DerivedT, typename NumberT>
-    inline Tuple4Simd<Tuple4<DerivedT, NumberT>> Hypot( const Tuple4<DerivedT, NumberT>& x, const Tuple4<DerivedT, NumberT>& y ) noexcept
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T Hypot( const U& x, const T& y ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Hypot( Traits::Load( x.values.data( ) ), y.simd );
+    }
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Hypot( const T& x, const U& y ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::Hypot( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MinComponentValue( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    // Dot
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Dot( const T& v1, const U& v2 ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
+        return Traits::Dot( v1.simd, v2.simd );
+    }
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Dot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Dot( v1.simd, Traits::Load( v2.values.data( ) ) );
+    }
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T Dot( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Dot( Traits::Load( v1.values.data( ) ), v2.simd );
+    }
+
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::value_type>
+        requires Internal::IsCompatible<T, U>
+    constexpr inline ResultT ScalarDot( const T& v1, const U& v2 ) noexcept
+    {
+        if constexpr ( T::Size == 2 )
+        {
+            return v1.x * v2.x + v1.y * v2.y;
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+        }
+        else if constexpr ( T::Size == 4 )
+        {
+            return v1.x* v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
+        }
+        
+    }
+
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Dot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Fill( ScalarDot( v1, v2 ) );
+    }
+
+    // Cross
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Cross( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Cross( v1.simd, v2.simd );
+    }
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Cross( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Cross( v1.simd, Traits::Load( v2.values.data( ) ) );
+    }
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T Cross( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Cross( Traits::Load( v1.values.data( ) ), v2.simd );
+    }
+
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Cross( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Cross( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
+    }
+
+
+    // LengthSquared
+
+    template<Internal::SimdType T>
+    inline T LengthSquared( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::HSum( Sqr( v ).simd );
+    }
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT LengthSquared( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::HSum( Sqr( v ).simd );
+    }
+
+
+    // Length
+
+    template<Internal::SimdType T>
+    inline T Length( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( LengthSquared( v ).simd );
+    }
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Length( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( LengthSquared( v ).simd );
+    }
+
+    // Normalize
+
+    template<Internal::SimdType T>
+    inline T Normalize( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return v / Length( v );
+    }
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Normalize( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Normalize( Traits::Load( v.values ) );
+    }
+
+    // ReciprocalLength
+
+    template<Internal::SimdType T>
+    inline T ReciprocalLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = typename Traits::Type;
+        auto length = Length( v );
+        return Traits::Div( Traits::Fill( static_cast< Type >(1.) ), length.simd );
+    }
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ReciprocalLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return ReciprocalLength( Traits::Load( v.values ) );
+    }
+
+
+    // DistanceSquared
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T DistanceSquared( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        auto diff = Traits::Sub( v1.simd, v2.simd );
+        return Traits::HSum( Traits::Mul( diff, diff ) );
+    }
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T DistanceSquared( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        auto diff = Traits::Sub( v1.simd, Traits::Load( v2.values.data( ) ) );
+        return Traits::HSum( Traits::Mul( diff, diff ) );
+    }
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T DistanceSquared( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        auto diff = Traits::Sub( Traits::Load( v1.values.data( ) ), v2.simd );
+        return Traits::HSum( Traits::Mul( diff, diff ) );
+    }
+
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT DistanceSquared( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        auto diff = Traits::Sub( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
+        return Traits::HSum( Traits::Mul( diff, diff ) );
+    }
+
+    // Distance
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Distance( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
+    }
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T Distance( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
+    }
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T Distance( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
+    }
+
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Distance( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
+    }
+
+    
+
+
+
+    template<Internal::SimdType T, typename ResultT = typename T::value_type >
+    inline ResultT MinComponentValue( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
         return Traits::HorizontalMin( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MinComponentValue( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::value_type>
+    constexpr inline ResultT MinComponentValue( const T& v ) noexcept
     {
-        return std::min( v.x, v.y, v.z, v.w );
+        if constexpr ( T::Size == 2 )
+        {
+            return std::min( v.x, v.y );
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            return std::min( v.x, v.y, v.z );
+        }
+        else
+        {
+            return std::min( v.x, v.y, v.z, v.w );
+        }
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MaxComponentValue( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::SimdType T, typename ResultT = typename T::value_type >
+    inline ResultT MaxComponentValue( const T& v ) noexcept
     {
-        using Traits = typename Tuple4<DerivedT, NumberT>::Traits;
+        using Traits = typename T::Traits;
         return Traits::HorizontalMax( v.simd );
     }
-    template<typename DerivedT, typename NumberT>
-    inline NumberT MaxComponentValue( const Tuple4<DerivedT, NumberT>& v ) noexcept
+    template<Internal::TupleType T, typename ResultT = typename T::value_type>
+    constexpr inline ResultT MaxComponentValue( const T& v ) noexcept
     {
-        return std::max( v.x, v.y, v.z, v.w );
+        if constexpr ( T::Size == 2 )
+        {
+            return std::max( v.x, v.y );
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            return std::max( v.x, v.y, v.z );
+        }
+        else
+        {
+            return std::max( v.x, v.y, v.z, v.w );
+        }
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline int MinComponentIndex( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    namespace Internal
     {
-        Tuple4<DerivedT, NumberT> tmp( v );
-        return MinComponentIndex( tmp );
+        template<typename FloatT, size_t N>
+        constexpr size_t MinIndex( const std::array<FloatT, N>& values, size_t first, size_t second )
+        {
+            return values[ first ] <= values[ second ] ? first : second;
+        }
+        template<typename FloatT, size_t N>
+        constexpr size_t MaxIndex( const std::array<FloatT, N>& values, size_t first, size_t second )
+        {
+            return values[ first ] >= values[ second ] ? first : second;
+        }
     }
 
-    template<typename DerivedT, typename NumberT>
-    inline int MaxComponentIndex( const Tuple4Simd<Tuple4<DerivedT, NumberT>>& v ) noexcept
+    template<Internal::TupleType T>
+    constexpr inline size_t MaxComponentIndex( const T& v ) noexcept
     {
-        Tuple4<DerivedT, NumberT> tmp( v );
+        if constexpr ( T::Size == 2 )
+        {
+            return Internal::MaxIndex( v.values, 0, 1 );
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            return Internal::MaxIndex( v.values, Internal::MaxIndex( v.values, 0, 1 ), 2);
+        }
+        else
+        {
+            return Internal::MaxIndex( v.values, Internal::MaxIndex( v.values, 0, 1 ), Internal::MaxIndex( v.values, 2, 3 ) );
+        }
+    }
+
+    template<Internal::SimdType T, typename ResultT = typename T::value_type >
+    constexpr inline size_t MaxComponentIndex( const T& v ) noexcept
+    {
+        using TupleT = T::TupleType;
+        TupleT tmp( v );
         return MaxComponentIndex( tmp );
     }
 
+    template<Internal::TupleType T>
+    constexpr inline size_t MinComponentIndex( const T& v ) noexcept
+    {
+        if constexpr ( T::Size == 2 )
+        {
+            return Internal::MinIndex( v.values, 0, 1 );
+        }
+        else if constexpr ( T::Size == 3 )
+        {
+            return Internal::MinIndex( v.values, Internal::MinIndex( v.values, 0, 1 ), 2 );
+        }
+        else
+        {
+            return Internal::MinIndex( v.values, Internal::MinIndex( v.values, 0, 1 ), Internal::MinIndex( v.values, 2, 3 ) );
+        }
+    }
+
+    template<Internal::SimdType T, typename ResultT = typename T::value_type >
+    constexpr inline size_t MinComponentIndex( const T& v ) noexcept
+    {
+        using TupleT = T::TupleType;
+        TupleT tmp( v );
+        return MinComponentIndex( tmp );
+    }
+
+    
+    
     template<>
     class Vector<float, 2> : public Tuple2<Vector<float, 2>, float>
     {
     public:
         using Base = Tuple2<Vector<float, 2>, float>;
-        using Simd = Tuple2Simd<Vector<float, 2>>;
+        
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -4845,33 +2861,8 @@ namespace Harlinn::Common::Core::Math
         { }
     };
 
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> Dot( const Tuple2Simd<Tuple2<DerivedT, FloatT>>& v1, const Tuple2Simd<Tuple2<DerivedT, FloatT>>& v2 ) noexcept
-    {
-        using Traits = Tuple2<DerivedT, FloatT>::Traits;
-        return Traits::Dot( v1.simd, v2.simd );
-    }
+    
 
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> Dot( const Tuple2<DerivedT, FloatT>& v1, const Tuple2Simd<Tuple2<DerivedT, FloatT>>& v2 ) noexcept
-    {
-        using Traits = Tuple2<DerivedT, FloatT>::Traits;
-        return Traits::Dot( Traits::Load( v1.values.data( ) ), v2.simd );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> Dot( const Tuple2Simd<Tuple2<DerivedT, FloatT>>& v1, const Tuple2<DerivedT, FloatT>& v2 ) noexcept
-    {
-        using Traits = Tuple2<DerivedT, FloatT>::Traits;
-        return Traits::Dot( v1.simd, Traits::Load( v2.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> Dot( const Tuple2<DerivedT, FloatT>& v1, const Tuple2<DerivedT, FloatT>& v2 ) noexcept
-    {
-        using Traits = Tuple2<DerivedT, FloatT>::Traits;
-        return Traits::Dot( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
-    }
 
     
     template<>
@@ -4879,7 +2870,6 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Vector<double, 2>, double>;
-        using Simd = Tuple2Simd<Vector<double, 2>>;
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -4901,7 +2891,6 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Vector<float, 3>, float>;
-        using Simd = Tuple3Simd<Vector<float, 3>>;
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -4918,41 +2907,11 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Dot( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v1, const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v2 ) noexcept
-    {
-        using Traits = Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Dot( v1.simd, v2.simd );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Dot( const Tuple3<DerivedT, FloatT>& v1, const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v2 ) noexcept
-    {
-        using Traits = Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Dot( Traits::Load( v1.values.data( ) ), v2.simd );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Dot( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v1, const Tuple3<DerivedT, FloatT>& v2 ) noexcept
-    {
-        using Traits = Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Dot( v1.simd, Traits::Load( v2.values.data( ) ) );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Dot( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 ) noexcept
-    {
-        using Traits = Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Dot( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
-    }
-
-
     template<>
     class Vector<double, 3> : public Tuple3<Vector<double, 3>, double>
     {
     public:
         using Base = Tuple3<Vector<double, 3>, double>;
-        using Simd = Tuple3Simd<Vector<double, 3>>;
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -4975,8 +2934,9 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Vector<float, 4>, float>;
 
-        using Simd = Tuple4Simd<Vector<float, 4>>;
         using Traits = Base::Traits;
+        using Base::Size;
+        using value_type = Base::value_type;
 
         Vector( ) noexcept = default;
         Vector( float xv, float yv, float zv, float wv ) noexcept
@@ -4991,30 +2951,8 @@ namespace Harlinn::Common::Core::Math
         {
         }
     };
-    
-    inline Vector<float, 4>::Simd Dot( const Vector<float, 4>::Simd& v1, const Vector<float, 4>::Simd& v2 ) noexcept
-    {
-        using Traits = Vector<float, 4>::Traits;
-        return Traits::Dot( v1.simd, v2.simd );
-    }
 
-    inline Vector<float, 4>::Simd Dot( const Vector<float, 4>& v1, const Vector<float, 4>::Simd& v2 ) noexcept
-    {
-        using Traits = Vector<float, 4>::Traits;
-        return Traits::Dot( Traits::Load( v1.values.data( ) ), v2.simd );
-    }
 
-    inline Vector<float, 4>::Simd Dot( const Vector<float, 4>::Simd& v1, const Vector<float, 4>& v2 ) noexcept
-    {
-        using Traits = Vector<float, 4>::Traits;
-        return Traits::Dot( v1.simd, Traits::Load( v2.values.data( ) ) );
-    }
-
-    inline Vector<float, 4>::Simd Dot( const Vector<float, 4>& v1, const Vector<float, 4>& v2 ) noexcept
-    {
-        using Traits = Vector<float, 4>::Traits;
-        return Traits::Dot( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
-    }
 
     template<>
     class Vector<double, 4> : public Tuple4<Vector<double, 4>, double>
@@ -5022,7 +2960,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Vector<double, 4>, double>;
 
-        using Simd = Tuple4Simd<Vector<double, 4>>;
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -5046,7 +2983,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Vector<Int32, 2>, Int32>;
 
-        using Simd = Tuple3Simd<Vector<Int32, 2>>;
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -5069,7 +3005,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Vector<Int32, 3>, Int32>;
 
-        using Simd = Tuple3Simd<Vector<Int32, 3>>;
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -5092,7 +3027,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple4<Vector<Int32, 4>, Int32>;
 
-        using Simd = Tuple4Simd<Vector<Int32, 4>>;
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
@@ -5124,7 +3058,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple2<Point2i, Int32>;
 
-        using Simd = Tuple3Simd<Point2i>;
         using Traits = Base::Traits;
 
         Point2i( ) noexcept = default;
@@ -5146,7 +3079,6 @@ namespace Harlinn::Common::Core::Math
     public:
         using Base = Tuple3<Point3i, Int32>;
 
-        using Simd = Tuple3Simd<Point3i>;
         using Traits = Base::Traits;
 
         Point3i( ) noexcept = default;
@@ -5167,7 +3099,6 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple2<Point2f, float>;
-        using Simd = Tuple3Simd<Point2f>;
         using Traits = Base::Traits;
 
         Point2f( ) noexcept = default;
@@ -5188,7 +3119,6 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Point3f, float>;
-        using Simd = Tuple3Simd<Point3f>;
         using Traits = Base::Traits;
 
         Point3f( ) noexcept = default;
@@ -5209,7 +3139,6 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using Base = Tuple3<Normal3f, float>;
-        using Simd = Tuple3Simd<Normal3f>;
         using Traits = Base::Traits;
 
         Normal3f( ) noexcept = default;
@@ -5240,6 +3169,8 @@ namespace Harlinn::Common::Core::Math
         using size_type = size_t;
         using value_type = ValueType;
         static constexpr size_type Size = 4;
+        static constexpr bool Loaded = true;
+        static constexpr bool Unloaded = false;
 
         using Traits = SIMD::Traits<ValueType, Size>;
 
@@ -5351,6 +3282,8 @@ namespace Harlinn::Common::Core::Math
         using ValueType = value_type;
         using SizeType = size_type;
         static constexpr size_type Size = 4;
+        static constexpr bool Loaded = false;
+        static constexpr bool Unloaded = true;
 
         using Traits = SIMD::Traits<ValueType, Size>;
         using SIMDType = typename Traits::SIMDType;
@@ -5660,162 +3593,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::Mul( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) );
     }
 
-
-
-
-
     
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> LengthSquared( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::HSum( Sqr( v ).simd );
-    }
 
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> LengthSquared( const Tuple3<DerivedT, FloatT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        Tuple3Simd<Tuple3<DerivedT, FloatT>> vl( v );
-        return Traits::HSum( Sqr( vl ).simd );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Length( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( LengthSquared(v).simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Length( const Tuple3<DerivedT, FloatT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( LengthSquared( v ).simd );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Normalize( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v ) noexcept
-    {
-        return v / Length( v );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Normalize( const Tuple3<DerivedT, FloatT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Normalize( Traits::Load( v.values ) );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> DistanceSquared( const Tuple2<DerivedT, FloatT>& p1, const Tuple2<DerivedT, FloatT>& p2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, FloatT>::Traits;
-        auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), Traits::Load( p2.values.data( ) ) );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> DistanceSquared( const Tuple2Simd<Tuple2<DerivedT, FloatT>>& p1, const Tuple2<DerivedT, FloatT>& p2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, FloatT>::Traits;
-        auto diff = Traits::Sub( p1.simd, Traits::Load( p2.values.data( ) ) );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> DistanceSquared( const Tuple2<DerivedT, FloatT>& p1, const Tuple2Simd<Tuple2<DerivedT, FloatT>>& p2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, FloatT>::Traits;
-        auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), p2.simd );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> DistanceSquared( const Tuple2Simd<Tuple2<DerivedT, FloatT>>& p1, const Tuple2Simd<Tuple2<DerivedT, FloatT>>& p2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, FloatT>::Traits;
-        auto diff = Traits::Sub( p1.simd, p2.simd );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> DistanceSquared( const Tuple3<DerivedT, FloatT>& p1, const Tuple3<DerivedT, FloatT>& p2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), Traits::Load( p2.values.data( ) ) );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> DistanceSquared( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& p1, const Tuple3<DerivedT, FloatT>& p2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        auto diff = Traits::Sub( p1.simd, Traits::Load( p2.values.data( ) ) );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> DistanceSquared( const Tuple3<DerivedT, FloatT>& p1, const Tuple3Simd<Tuple3<DerivedT, FloatT>>& p2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), p2.simd );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> DistanceSquared( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& p1, const Tuple3Simd<Tuple3<DerivedT, FloatT>>& p2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        auto diff = Traits::Sub( p1.simd, p2.simd );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> Distance( const Tuple2<DerivedT, FloatT>& p1, const Tuple2<DerivedT, FloatT>& p2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> Distance( const Tuple2Simd<Tuple2<DerivedT, FloatT>>& p1, const Tuple2<DerivedT, FloatT>& p2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> Distance( const Tuple2<DerivedT, FloatT>& p1, const Tuple2Simd<Tuple2<DerivedT, FloatT>>& p2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple2Simd<Tuple2<DerivedT, FloatT>> Distance( const Tuple2Simd<Tuple2<DerivedT, FloatT>>& p1, const Tuple2Simd<Tuple2<DerivedT, FloatT>>& p2 ) noexcept
-    {
-        using Traits = typename Tuple2<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Distance( const Tuple3<DerivedT, FloatT>& p1, const Tuple3<DerivedT, FloatT>& p2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Distance( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& p1, const Tuple3<DerivedT, FloatT>& p2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Distance( const Tuple3<DerivedT, FloatT>& p1, const Tuple3Simd<Tuple3<DerivedT, FloatT>>& p2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Distance( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& p1, const Tuple3Simd<Tuple3<DerivedT, FloatT>>& p2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
-    }
-
+    /*
     template<typename DerivedT, typename FloatT>
     inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Cross( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 ) noexcept
     {
@@ -5843,100 +3623,211 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> ReciprocalLength( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        auto length = Length( v );
-        return Traits::Div( Traits::Fill( 1.f ), length.simd );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> ReciprocalLength( const Tuple3<DerivedT, FloatT>& v ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        Tuple3Simd<Tuple3<DerivedT, FloatT>> vl( v );
-        return ReciprocalLength( vl );
-    }
+    */
 
     template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> AngleBetween( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 )
+    constexpr inline FloatT ScalarAngleBetween( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 )
     {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        using SimdT = Tuple3Simd<Tuple3<DerivedT, FloatT>>;
-        SimdT vl1( v1 );
-        SimdT vl2( v2 );
-        Tuple3<DerivedT, FloatT> multiplied = vl1 * vl2;
-        auto dotProduct = HSum( multiplied );
+        auto dotProduct = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 
         if ( dotProduct < 0 )
         {
-            return Traits::Fill( Constants<FloatT>::Pi - 2 * SafeASin( Traits::Lower( Length( v1 + v2 ).simd ) / 2 ) );
+            // Expanding the code inline performs consistently better 
+            auto sx = v1.x + v2.x;
+            sx *= sx;
+            auto sy = v1.y + v2.y; 
+            sy *= sy;
+            auto sz = v1.z + v2.z;
+            sz *= sz;
+            
+            /*
+            auto sx = Sqr(v1.x + v2.x);
+            auto sy = Sqr(v1.y + v2.y);
+            auto sz = Sqr(v1.z + v2.z);
+            */
+            auto halfLength = Sqrt( sz + sy + sz ) / static_cast< FloatT >( 2. );
+            return Constants<FloatT>::Pi - static_cast< FloatT >( 2. ) * SafeASin( halfLength );
         }
         else
         {
-            return Traits::Fill( 2 * SafeASin( Traits::Lower( Length( v2 - v1 ).simd ) / 2 ) );
+            // Expanding the code inline performs consistently better 
+            auto sx = v2.x - v1.x;
+            sx *= sx;
+            auto sy = v2.y - v1.y;
+            sy *= sy;
+            auto sz = v2.z - v1.z;
+            sz *= sz;
+
+            /*
+            auto sx = Sqr(v2.x - v1.x);
+            auto sy = Sqr(v2.y - v1.y);
+            auto sz = Sqr(v2.z - v1.z);
+            */
+            auto halfLength = Sqrt( sz + sy + sz ) / static_cast< FloatT >( 2. );
+            return static_cast< FloatT >( 2. ) * SafeASin( halfLength );
+        }
+    }
+
+    template<typename DerivedT, typename FloatT>
+    inline Tuple3<DerivedT, FloatT> AngleBetween( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 )
+    {
+        auto angle = ScalarAngleBetween( v1, v2 );
+        return Tuple3<DerivedT, FloatT>( angle, angle, angle );
+    }
+
+    namespace Internal
+    {
+        template <int N, typename FloatT>
+        constexpr inline void InitMatrix( std::array<std::array<FloatT, N>, N>& m, int i, int j ) 
+        {}
+
+        template <int N, typename FloatT, typename... Args>
+        constexpr inline void InitMatrix( std::array<std::array<FloatT, N>, N>& m, int i, int j, FloatT v, Args... args )
+        {
+            m[ i ][ j ] = v;
+            if ( ++j == N )
+            {
+                ++i;
+                j = 0;
+            }
+            InitMatrix<N>( m, i, j, args... );
         }
 
+        template <int N, typename FloatT>
+        constexpr inline void InitDiagonalMatrix( std::array<std::array<FloatT, N>, N>& m, int i ) {}
 
+        template <int N, typename FloatT, typename... Args>
+        constexpr inline void InitDiagonalMatrix( std::array<std::array<FloatT, N>, N>& m, int i, FloatT v, Args... args )
+        {
+            m[ i ][ i ] = v;
+            InitDiagonalMatrix<N>( m, i + 1, args... );
+        }
     }
     
 
-    /*
-    template<typename FloatT, size_t rows, size_t columns>
-    class MatrixBase
+    // SquareMatrix Definition
+    template <typename FloatT, int N>
+        requires IsFloatingPoint<FloatT> && ((N == 3)|| ( N == 4 ) )
+    class SquareMatrix
     {
     public:
-        using ValueType = FloatT;
-        static constexpr size_t Rows = rows;
-        static constexpr size_t Columns = columns;
-        static constexpr size_t Size = Rows * Columns;
-    protected:
-        ValueType values_[Size];
+        using value_type = FloatT;
+        using Data = std::array<std::array<value_type, N>, N>;
+    private:
+        Data m;
     public:
+        // SquareMatrix Public Methods
+        constexpr static SquareMatrix Zero( )
+        {
+            SquareMatrix m{};
+            return m;
+        }
 
+        SquareMatrix( )
+        {
+            for ( int i = 0; i < N; ++i )
+            {
+                for ( int j = 0; j < N; ++j )
+                {
+                    m[ i ][ j ] = ( i == j ) ? 1 : 0;
+                }
+            }
+        }
+        SquareMatrix( const value_type mat[ N ][ N ] )
+        {
+            for ( int i = 0; i < N; ++i )
+                for ( int j = 0; j < N; ++j )
+                    m[ i ][ j ] = mat[ i ][ j ];
+        }
+
+        SquareMatrix( std::span<const FloatT> t );
+
+        template <typename... Args>
+        SquareMatrix( value_type v, Args... args )
+        {
+            static_assert( 1 + sizeof...( Args ) == N * N,
+                "Incorrect number of values provided to SquareMatrix constructor" );
+            Internal::InitMatrix<N>( m, 0, 0, v, args... );
+        }
+        template <typename... Args>
+        static SquareMatrix Diag( value_type v, Args... args )
+        {
+            static_assert( 1 + sizeof...( Args ) == N,
+                "Incorrect number of values provided to SquareMatrix::Diag" );
+            SquareMatrix m;
+            InitDiagonalMatrix<N>( m.m, 0, v, args... );
+            return m;
+        }
+
+        SquareMatrix operator+( const SquareMatrix& m ) const
+        {
+            SquareMatrix r = *this;
+            for ( int i = 0; i < N; ++i )
+                for ( int j = 0; j < N; ++j )
+                    r.m[ i ][ j ] += m.m[ i ][ j ];
+            return r;
+        }
+
+        SquareMatrix operator*( value_type s ) const
+        {
+            SquareMatrix r = *this;
+            for ( int i = 0; i < N; ++i )
+                for ( int j = 0; j < N; ++j )
+                    r.m[ i ][ j ] *= s;
+            return r;
+        }
+        SquareMatrix operator/( value_type s ) const
+        {
+            SquareMatrix r = *this;
+            for ( int i = 0; i < N; ++i )
+                for ( int j = 0; j < N; ++j )
+                    r.m[ i ][ j ] /= s;
+            return r;
+        }
+
+        bool operator==( const SquareMatrix& m2 ) const
+        {
+            for ( int i = 0; i < N; ++i )
+                for ( int j = 0; j < N; ++j )
+                    if ( m[ i ][ j ] != m2.m[ i ][ j ] )
+                        return false;
+            return true;
+        }
+
+        bool operator!=( const SquareMatrix& m2 ) const
+        {
+            for ( int i = 0; i < N; ++i )
+                for ( int j = 0; j < N; ++j )
+                    if ( m[ i ][ j ] != m2.m[ i ][ j ] )
+                        return true;
+            return false;
+        }
+
+        bool operator<( const SquareMatrix& m2 ) const
+        {
+            for ( int i = 0; i < N; ++i )
+            {
+                for ( int j = 0; j < N; ++j )
+                {
+                    if ( m[ i ][ j ] < m2.m[ i ][ j ] )
+                        return true;
+                    if ( m[ i ][ j ] > m2.m[ i ][ j ] )
+                        return false;
+                }
+            }
+            return false;
+        }
+
+        bool IsIdentity( ) const;
+
+        std::string ToString( ) const;
+
+        std::span<const value_type> operator[]( int i ) const { return m[ i ]; }
+        std::span<value_type> operator[]( int i ) { return std::span<value_type>( m[ i ] ); }
+
+    
+        
     };
-
-    template<typename FloatT, size_t rows, size_t columns>
-    class Matrix : public MatrixBase<FloatT, rows, columns>
-    {
-    public:
-        using Base = MatrixBase<FloatT, rows, columns>;
-        using ValueType = Base::ValueType;
-        using UIntType = Base::UIntType;
-
-    };
-
-
-    template<typename FloatT>
-    class Matrix<FloatT, 2, 2> : public MatrixBase<FloatT, 2, 2>
-    {
-    public:
-        using Base = MatrixBase<FloatT, 2, 2>;
-        using ValueType = Base::ValueType;
-        using UIntType = Base::UIntType;
-
-    };
-
-    template<typename FloatT>
-    class Matrix<FloatT, 3, 3> : public MatrixBase<FloatT, 3,3>
-    {
-    public:
-        using Base = MatrixBase<FloatT, 3, 3>;
-        using ValueType = Base::ValueType;
-        using UIntType = Base::UIntType;
-
-    };
-
-    template<typename FloatT>
-    class Matrix<FloatT, 4, 4> : public MatrixBase<FloatT, 4, 4>
-    {
-    public:
-        using Base = MatrixBase<FloatT, 4, 4>;
-        using ValueType = Base::ValueType;
-        using UIntType = Base::UIntType;
-
-    };
-    */
 
 }
 

@@ -319,14 +319,17 @@ namespace Harlinn::Common::Core
         }
         else
         {
-            auto bitsSize = sizeof( bits );
-            if ( bitsSize > 4 )
+            constexpr auto bitsSize = sizeof( bits );
+            
+            if constexpr ( bitsSize > 4 )
             {
-                return _BitScanReverse64( index, bits ) != 0;
+                auto value = std::bit_cast< UInt64 >( bits );
+                return _BitScanReverse64( index, value ) != 0;
             }
             else
             {
-                return _BitScanReverse( index, bits ) != 0;
+                auto value = std::bit_cast< unsigned long >( bits );
+                return _BitScanReverse( index, value ) != 0;
             }
         }
     }

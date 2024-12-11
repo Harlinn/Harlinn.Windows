@@ -34,6 +34,65 @@ namespace
     RandomGenerator<float, SampleCount> FloatMinusOneToOneGenerator( -1.0f, 1.0f );
 }
 
+/*
+for ( auto _ : state )
+{
+    Vector v1( 1.0f, 2.0f, 3.f, 1.0f );
+    Vector v2( 1.0f, 2.0f, 3.f, 1.0f );
+    Vector v3 = ( v1 + v2 ) + ( v1 + v2 ) + ( v1 + v2 );
+    DebugBreak( );
+    benchmark::DoNotOptimize( v3 );
+}
+*/
+
+static void BenchmarkVector2MultipleAdds( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = Math::Vector<float, 4>;
+    using VectorSimd = typename Vector::Simd;
+    using Traits = typename Vector::Traits;
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        VectorSimd l1 = Traits::Load( v1.values.data() );
+        VectorSimd l2 = Traits::Load( v2.values.data( ) );
+        benchmark::DoNotOptimize( (( l1 + l2 ) + l1 ) + (( l2 + l1 ) + l2 ) );
+    }
+}
+BENCHMARK( BenchmarkVector2MultipleAdds );
+
+
+static void BenchmarkVector2MultipleXMVectorAdd( benchmark::State& state )
+{
+    using namespace DirectX;
+    using Vector = XMFLOAT4A;
+    FloatGenerator.Reset( );
+    
+    for ( auto _ : state )
+    {
+        Vector v1( { FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) } );
+        Vector v2( { FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) } );
+        auto v1Loaded = XMLoadFloat4A( &v1 );
+        auto v2Loaded = XMLoadFloat4A( &v2 );
+        benchmark::DoNotOptimize( 
+            XMVectorAdd(
+                XMVectorAdd( 
+                    XMVectorAdd( 
+                        v1Loaded,
+                        v2Loaded ),
+                    v1Loaded ),
+                XMVectorAdd( 
+                    XMVectorAdd( 
+                        v2Loaded,
+                        v1Loaded ),
+                    v2Loaded ) ) );
+    }
+}
+BENCHMARK( BenchmarkVector2MultipleXMVectorAdd );
+
+
 static void BenchmarkVector2MultipleOperations( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -342,6 +401,23 @@ static void BenchmarkPbrtVector3AngleBetween( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtVector3AngleBetween );
+
+// XMVector3AngleBetweenVectors
+
+static void BenchmarkXMVector3AngleBetweenVectors( benchmark::State& state )
+{
+    using namespace DirectX;
+    FloatGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        XMFLOAT3A v1( { FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) } );
+        XMFLOAT3A v2( { FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) } );
+        benchmark::DoNotOptimize( XMVector3AngleBetweenVectors( XMLoadFloat3A(&v1 ), XMLoadFloat3A( &v2 ) ) );
+    }
+}
+BENCHMARK( BenchmarkXMVector3AngleBetweenVectors );
+
 
 
 #endif

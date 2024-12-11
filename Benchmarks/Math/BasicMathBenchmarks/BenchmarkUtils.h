@@ -23,6 +23,7 @@
 #include <pbrto/util/math.h>
 #include <benchmark/benchmark.h>
 #include <random>
+#include <DirectXMath.h>
 
 //#define RUN_BASIC_MATH_BENCHMARKS
 #define RUN_VECTOR2FLOAT_BENCHMARKS

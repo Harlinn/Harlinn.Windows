@@ -452,42 +452,105 @@ BOOST_AUTO_TEST_CASE( AbsDoubleTest1 )
 BOOST_AUTO_TEST_CASE( SignBitDoubleTest1 )
 {
     double value = -std::numeric_limits<double>::quiet_NaN( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    auto signBit1 = SignBit( value ) != 0;
+    auto signBit2 = std::signbit( value );
+
+    BOOST_CHECK( signBit1 == signBit2 );
 
     value = std::numeric_limits<double>::quiet_NaN( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) == 0;
+    signBit2 = std::signbit( value ) == false;
+
+    BOOST_CHECK( signBit1 == signBit2 );
 
     value = -std::numeric_limits<double>::infinity( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) != 0;
+    signBit2 = std::signbit( value );
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
     value = std::numeric_limits<double>::infinity( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) == 0;
+    signBit2 = std::signbit( value ) == false;
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = std::numeric_limits<double>::lowest( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) != 0;
+    signBit2 = std::signbit( value );
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = std::numeric_limits<double>::min( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) == 0;
+    signBit2 = std::signbit( value ) == false;
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = -std::numeric_limits<double>::min( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) != 0;
+    signBit2 = std::signbit( value );
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = std::numeric_limits<double>::max( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) == 0;
+    signBit2 = std::signbit( value ) == false;
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = std::numeric_limits<double>::epsilon( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) == 0;
+    signBit2 = std::signbit( value ) == false;
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = std::numeric_limits<double>::denorm_min( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) == 0;
+    signBit2 = std::signbit( value ) == false;
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = -std::numeric_limits<double>::denorm_min( );
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) != 0;
+    signBit2 = std::signbit( value );
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = -0.0;
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) != 0; 
+    signBit2 = std::signbit( value );
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 
     value = 0.0;
-    BOOST_CHECK( SignBit( value ) == std::signbit( value ) );
+
+    signBit1 = SignBit( value ) == 0;
+    signBit2 = std::signbit( value ) == false;
+
+    BOOST_CHECK( signBit1 == signBit2 );
+
 }
 
 // --run_test=MathTests/FRExpDoubleTest1

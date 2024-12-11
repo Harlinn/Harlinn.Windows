@@ -183,15 +183,11 @@ BOOST_AUTO_TEST_CASE( AngleBetweenTest2 )
     Vector v1( 2.0f, 2.0f, 2.f );
     Vector v2( 2.0f, 0.0f, 2.f );
 
-    Vector v3 = AngleBetween( v1, v2 );;
+    auto angle = ScalarAngleBetween( v1, v2 );
 
-    bool xAsExpected = v3.x == 2.f;
-    bool yAsExpected = v3.y == 3.f;
-    bool zAsExpected = v3.z == 4.f;
+    bool angleAsExpected = AreNearlyEqual( angle, Math::Constants<float>::Pi);
 
-    BOOST_CHECK( xAsExpected );
-    BOOST_CHECK( yAsExpected );
-    BOOST_CHECK( zAsExpected );
+    BOOST_CHECK( angleAsExpected );
 }
 
 
