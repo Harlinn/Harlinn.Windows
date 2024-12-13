@@ -642,6 +642,15 @@ namespace Harlinn::Common::Core::Math
 
     };
 
+    namespace Internal
+    {
+        struct TupleBase
+        { };
+
+        struct TupleSimdBase
+        { };
+    }
+
     /// <summary>
     /// <para>
     /// Holds the SIMD value for a Tuple2, Tuple3 or Tuple4.
@@ -665,7 +674,7 @@ namespace Harlinn::Common::Core::Math
 
 
     template<typename TraitsT, typename TupleT>
-    class TupleSimd
+    class TupleSimd : public Internal::TupleSimdBase
     {
     public:
         using Traits = TraitsT;
@@ -794,14 +803,14 @@ namespace Harlinn::Common::Core::Math
     namespace Internal
     {
         template<typename T>
-        concept SimdType = T::Loaded;
+        concept SimdType = std::is_base_of_v<TupleSimdBase, T>;
 
         template<typename T>
-        concept TupleType = T::Unloaded;
+        concept TupleType = std::is_base_of_v<TupleBase,T>;
 
-        template<typename SimdT1, typename SimdT2>
+        template<typename T1, typename T2>
         constexpr bool IsCompatible =
-            std::is_same_v<typename SimdT1::Traits, typename SimdT2::Traits>;
+            std::is_same_v<typename T1::Traits, typename T2::Traits>;
     }
 
 
@@ -815,7 +824,7 @@ namespace Harlinn::Common::Core::Math
     /// The type of the values.
     /// </typeparam>
     template<class DerivedT, typename T>
-    class Tuple2
+    class Tuple2 : public Internal::TupleBase
     {
     public:
         using DerivedType = DerivedT;
@@ -930,7 +939,7 @@ namespace Harlinn::Common::Core::Math
     };
 
     template<typename DerivedT, typename T>
-    class Tuple3
+    class Tuple3 : public Internal::TupleBase
     {
     public:
         using DerivedType = DerivedT;
@@ -1044,7 +1053,7 @@ namespace Harlinn::Common::Core::Math
     };
 
     template<typename DerivedT, typename T>
-    class Tuple4
+    class Tuple4 : public Internal::TupleBase
     {
     public:
         using DerivedType = DerivedT;
@@ -3677,157 +3686,746 @@ namespace Harlinn::Common::Core::Math
 
     namespace Internal
     {
-        template <int N, typename FloatT>
-        constexpr inline void InitMatrix( std::array<std::array<FloatT, N>, N>& m, int i, int j ) 
-        {}
-
-        template <int N, typename FloatT, typename... Args>
-        constexpr inline void InitMatrix( std::array<std::array<FloatT, N>, N>& m, int i, int j, FloatT v, Args... args )
+        template <size_t N, size_t... I, typename FloatT, typename... Args>
+        constexpr inline void InitMatrix( std::index_sequence<I...>, std::array < std::array<FloatT, N>, N>& dest,Args... args )
         {
-            m[ i ][ j ] = v;
-            if ( ++j == N )
-            {
-                ++i;
-                j = 0;
-            }
-            InitMatrix<N>( m, i, j, args... );
+            ( ( dest[ I/N ][ I%N ] = static_cast< FloatT >( args ) ), ... );
         }
 
-        template <int N, typename FloatT>
-        constexpr inline void InitDiagonalMatrix( std::array<std::array<FloatT, N>, N>& m, int i ) {}
-
-        template <int N, typename FloatT, typename... Args>
-        constexpr inline void InitDiagonalMatrix( std::array<std::array<FloatT, N>, N>& m, int i, FloatT v, Args... args )
+        template <size_t N, size_t... I, typename FloatT, typename... Args>
+        constexpr inline void InitDiagonalMatrix( std::index_sequence<I...>, std::array < std::array<FloatT, N>,N>& dest, Args... args )
         {
-            m[ i ][ i ] = v;
-            InitDiagonalMatrix<N>( m, i + 1, args... );
+            ( ( dest[ I ][ I ] = static_cast< FloatT >( args ) ), ... );
         }
+
+        struct MatrixSimdBase
+        { };
+
+        struct MatrixBase
+        { };
+
+        template<typename MatrixT, typename TraitsT = typename MatrixT::Traits>
+        struct alignas( TraitsT::AlignAs ) SquareMatrixSimd : public std::array<typename TraitsT::SIMDType, TraitsT::Size>, public MatrixSimdBase
+        {
+            using MatrixType = MatrixT;
+            using Traits = typename MatrixType::Traits;
+            using SIMDType = typename Traits::SIMDType;
+            using value_type = typename MatrixType::value_type;
+            static constexpr size_t Size = Traits::Size;
+            static constexpr bool Loaded = true;
+            static constexpr bool Unloaded = false;
+            static constexpr bool IsSquareMatrix = true;
+        };
+
+        template<typename T>
+        concept SquareMatrixSimdType = std::is_base_of_v<MatrixSimdBase,T>;
+
+        template<typename T>
+        concept SquareMatrixType = std::is_base_of_v<MatrixBase, T>;
+
+        template<typename T1, typename T2>
+        constexpr bool IsCompatibleMatrix =
+            std::is_same_v<typename T1::Traits, typename T2::Traits> && T1::Size == T2::Size;
+
     }
-    
+
+    template <typename FloatT, size_t N>
+    class SquareMatrix;
+    template <typename FloatT, size_t N>
+    SquareMatrix<FloatT, N> operator*( const SquareMatrix<FloatT, N>& matrix1, const SquareMatrix<FloatT, N>& matrix2 );
+
 
     // SquareMatrix Definition
-    template <typename FloatT, int N>
-        requires IsFloatingPoint<FloatT> && ((N == 3)|| ( N == 4 ) )
-    class SquareMatrix
+    template <typename FloatT, size_t N>
+    class SquareMatrix : public Internal::MatrixBase
     {
+        template <typename FloatT, size_t N>
+        friend SquareMatrix<FloatT, N> operator*( const SquareMatrix<FloatT, N>& matrix1, const SquareMatrix<FloatT, N>& matrix2 );
     public:
         using value_type = FloatT;
-        using Data = std::array<std::array<value_type, N>, N>;
+        static constexpr size_t Size = N;
+        using Traits = SIMD::Traits<FloatT, Size>;
+        using ArrayType = typename Traits::ArrayType;
+
+        using Data = std::array<ArrayType, N>;
+        using Simd = Internal::SquareMatrixSimd<SquareMatrix>;
+
+        static constexpr bool Loaded = false;
+        static constexpr bool Unloaded = true;
+        static constexpr bool IsSquareMatrix = true;
     private:
-        Data m;
+        static constexpr Data MakeDefaultValue( ) noexcept
+        {
+            Data m;
+            for ( int i = 0; i < N; ++i )
+            {
+                for ( int j = 0; j < N; ++j )
+                {
+                    m[ i ][ j ] = ( i == j ) ? static_cast<value_type>( 1 ) : static_cast< value_type >( 0 );
+                }
+            }
+            return m;
+        }
+        static constexpr Data DefaultValue = MakeDefaultValue( );
+        Data data_ = DefaultValue;
+
     public:
         // SquareMatrix Public Methods
-        constexpr static SquareMatrix Zero( )
+        constexpr static SquareMatrix Zero( ) noexcept
         {
             SquareMatrix m{};
             return m;
         }
 
-        SquareMatrix( )
+        constexpr SquareMatrix( ) noexcept = default;
+
+        SquareMatrix( const value_type (&mat)[ N ][ N ] )
+            : data_( mat )
         {
-            for ( int i = 0; i < N; ++i )
+        }
+
+        SquareMatrix( const Simd& simd ) noexcept
+        {
+            for ( size_t i = 0; i < N; i++ )
             {
-                for ( int j = 0; j < N; ++j )
-                {
-                    m[ i ][ j ] = ( i == j ) ? 1 : 0;
-                }
+                data_[ i ] = Traits::ToArray( simd[i] );
             }
         }
-        SquareMatrix( const value_type mat[ N ][ N ] )
+
+        SquareMatrix( const Data& data ) noexcept
+            : data_( data )
         {
-            for ( int i = 0; i < N; ++i )
-                for ( int j = 0; j < N; ++j )
-                    m[ i ][ j ] = mat[ i ][ j ];
         }
 
-        SquareMatrix( std::span<const FloatT> t );
+        SquareMatrix& operator = ( const Simd& simd ) noexcept
+        {
+            for ( size_t i = 0; i < N; i++ )
+            {
+                data_[ i ] = Traits::ToArray( simd[ i ] );
+            }
+            return *this;
+        }
 
-        template <typename... Args>
+        SquareMatrix& operator = ( const Data& data ) noexcept
+        {
+            data_ = data;
+            return *this;
+        }
+
+        /*
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, value_type>
+        SquareMatrix( const T& t );
+        */
+
+        template<typename...Args>
+            requires ( sizeof...( Args ) == ( ( N * N ) - 1 ) ) 
         SquareMatrix( value_type v, Args... args )
         {
-            static_assert( 1 + sizeof...( Args ) == N * N,
-                "Incorrect number of values provided to SquareMatrix constructor" );
-            Internal::InitMatrix<N>( m, 0, 0, v, args... );
+            Internal::InitMatrix( std::make_index_sequence<N * N>( ), data_, v, args... );
         }
         template <typename... Args>
         static SquareMatrix Diag( value_type v, Args... args )
         {
-            static_assert( 1 + sizeof...( Args ) == N,
-                "Incorrect number of values provided to SquareMatrix::Diag" );
             SquareMatrix m;
-            InitDiagonalMatrix<N>( m.m, 0, v, args... );
+            InitDiagonalMatrix( std::make_index_sequence<N>( ), m.data_, v, args... );
             return m;
         }
 
-        SquareMatrix operator+( const SquareMatrix& m ) const
+        const ArrayType& operator[]( size_t index ) const
         {
-            SquareMatrix r = *this;
-            for ( int i = 0; i < N; ++i )
-                for ( int j = 0; j < N; ++j )
-                    r.m[ i ][ j ] += m.m[ i ][ j ];
-            return r;
+            return data_[ index ];
+        }
+        ArrayType& operator[]( size_t index )
+        {
+            return data_[ index ];
+        }
+        const value_type& operator[]( size_t row, size_t column ) const
+        {
+            return data_[ row ][ column ];
+        }
+        value_type& operator[]( size_t row, size_t column )
+        {
+            return data_[ row ][ column ];
         }
 
-        SquareMatrix operator*( value_type s ) const
+        Simd ToSimd( ) const noexcept
         {
-            SquareMatrix r = *this;
-            for ( int i = 0; i < N; ++i )
-                for ( int j = 0; j < N; ++j )
-                    r.m[ i ][ j ] *= s;
-            return r;
-        }
-        SquareMatrix operator/( value_type s ) const
-        {
-            SquareMatrix r = *this;
-            for ( int i = 0; i < N; ++i )
-                for ( int j = 0; j < N; ++j )
-                    r.m[ i ][ j ] /= s;
-            return r;
-        }
-
-        bool operator==( const SquareMatrix& m2 ) const
-        {
-            for ( int i = 0; i < N; ++i )
-                for ( int j = 0; j < N; ++j )
-                    if ( m[ i ][ j ] != m2.m[ i ][ j ] )
-                        return false;
-            return true;
-        }
-
-        bool operator!=( const SquareMatrix& m2 ) const
-        {
-            for ( int i = 0; i < N; ++i )
-                for ( int j = 0; j < N; ++j )
-                    if ( m[ i ][ j ] != m2.m[ i ][ j ] )
-                        return true;
-            return false;
-        }
-
-        bool operator<( const SquareMatrix& m2 ) const
-        {
-            for ( int i = 0; i < N; ++i )
+            if constexpr ( N == 2 )
             {
-                for ( int j = 0; j < N; ++j )
-                {
-                    if ( m[ i ][ j ] < m2.m[ i ][ j ] )
-                        return true;
-                    if ( m[ i ][ j ] > m2.m[ i ][ j ] )
-                        return false;
-                }
+                Simd result;
+                result[ 0 ] = Traits::Load( data_[ 0 ] );
+                result[ 1 ] = Traits::Load( data_[ 1 ] );
+                return result;
             }
-            return false;
+            else if constexpr ( N == 3 )
+            {
+                Simd result;
+                result[ 0 ] = Traits::Load( data_[ 0 ] );
+                result[ 1 ] = Traits::Load( data_[ 1 ] );
+                result[ 2 ] = Traits::Load( data_[ 2 ] );
+                return result;
+            }
+            else if constexpr ( N == 4 )
+            {
+                Simd result;
+                result[ 0 ] = Traits::Load( data_[ 0 ] );
+                result[ 1 ] = Traits::Load( data_[ 1 ] );
+                result[ 2 ] = Traits::Load( data_[ 2 ] );
+                result[ 3 ] = Traits::Load( data_[ 3 ] );
+                return result;
+            }
+            else
+            {
+                // Not supported
+            }
+        }
+        
+
+        bool operator==( const SquareMatrix& other ) const
+        {
+            return data_ == other.data_;
         }
 
-        bool IsIdentity( ) const;
+        bool operator!=( const SquareMatrix& other ) const
+        {
+            return data_ != other.data_;
+        }
+
+        bool operator<( const SquareMatrix& other ) const
+        {
+            return data_ < other.data_;
+        }
+
+        bool IsIdentity( ) const
+        {
+            return data_ == DefaultValue;
+        }
 
         std::string ToString( ) const;
 
-        std::span<const value_type> operator[]( int i ) const { return m[ i ]; }
-        std::span<value_type> operator[]( int i ) { return std::span<value_type>( m[ i ] ); }
-
-    
-        
     };
+
+
+    // Addition
+
+    template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixSimdType T2>
+        requires Internal::IsCompatibleMatrix<T1,T2>
+    T1 operator+( const T1& m1, const T2& m2 ) noexcept
+    {
+        using Traits = typename T1::Traits;
+        using Simd = T1;
+        constexpr auto N = Traits::Size;
+        if constexpr ( N == 2 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Add( m1[ 0 ], m2[ 0 ] );
+            result[ 1 ] = Traits::Add( m1[ 1 ], m2[ 1 ] );
+            return result;
+
+        }
+        else if constexpr ( N == 3 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Add( m1[ 0 ], m2[ 0 ] );
+            result[ 1 ] = Traits::Add( m1[ 1 ], m2[ 1 ] );
+            result[ 2 ] = Traits::Add( m1[ 2 ], m2[ 2 ] );
+            return result;
+
+        }
+        else if constexpr ( N == 4 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Add( m1[ 0 ], m2[ 0 ] );
+            result[ 1 ] = Traits::Add( m1[ 1 ], m2[ 1 ] );
+            result[ 2 ] = Traits::Add( m1[ 2 ], m2[ 2 ] );
+            result[ 3 ] = Traits::Add( m1[ 3 ], m2[ 3 ] );
+            return result;
+        }
+        else
+        {
+            // Not supported
+        }
+    }
+
+    template<Internal::SquareMatrixType T1, Internal::SquareMatrixSimdType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    T2 operator+( const T1& m1, const T2& m2 ) noexcept
+    {
+        return m1.ToSimd( ) + m2;
+    }
+
+    template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    T1 operator+( const T1& m1, const T2& m2 ) noexcept
+    {
+        return m1 + m2.ToSimd( );
+    }
+
+    template<Internal::SquareMatrixType T1, Internal::SquareMatrixType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    T1 operator+( const T1& m1, const T2& m2 ) noexcept
+    {
+        return m1.ToSimd( ) + m2.ToSimd( );
+    }
+
+
+    // Subtraction
+
+    template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixSimdType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    T1 operator-( const T1& m1, const T2& m2 ) noexcept
+    {
+        using Traits = typename T1::Traits;
+        using Simd = T1;
+        constexpr auto N = Traits::Size;
+        if constexpr ( N == 2 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Sub( m1[ 0 ], m2[ 0 ] );
+            result[ 1 ] = Traits::Sub( m1[ 1 ], m2[ 1 ] );
+            return result;
+
+        }
+        else if constexpr ( N == 3 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Sub( m1[ 0 ], m2[ 0 ] );
+            result[ 1 ] = Traits::Sub( m1[ 1 ], m2[ 1 ] );
+            result[ 2 ] = Traits::Sub( m1[ 2 ], m2[ 2 ] );
+            return result;
+
+        }
+        else if constexpr ( N == 4 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Sub( m1[ 0 ], m2[ 0 ] );
+            result[ 1 ] = Traits::Sub( m1[ 1 ], m2[ 1 ] );
+            result[ 2 ] = Traits::Sub( m1[ 2 ], m2[ 2 ] );
+            result[ 3 ] = Traits::Sub( m1[ 3 ], m2[ 3 ] );
+            return result;
+        }
+        else
+        {
+            // Not supported
+        }
+    }
+
+    template<Internal::SquareMatrixType T1, Internal::SquareMatrixSimdType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    T2 operator-( const T1& m1, const T2& m2 ) noexcept
+    {
+        return m1.ToSimd( ) - m2;
+    }
+
+    template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    T1 operator-( const T1& m1, const T2& m2 ) noexcept
+    {
+        return m1 - m2.ToSimd( );
+    }
+
+    template<Internal::SquareMatrixType T1, Internal::SquareMatrixType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    T1 operator-( const T1& m1, const T2& m2 ) noexcept
+    {
+        return m1.ToSimd( ) - m2.ToSimd( );
+    }
+
+
+    // Multiplication
+
+    template<Internal::SquareMatrixSimdType T1, typename T2>
+        requires std::is_arithmetic_v<T2>
+    T1 operator*( const T1& m, const T2 value ) noexcept
+    {
+        using Traits = typename T1::Traits;
+        using Simd = T1;
+        using ValueType = typename Traits::Type;
+        constexpr auto N = Traits::Size;
+        auto v = Traits::Fill( static_cast< ValueType >( value ) );
+        
+        if constexpr ( N == 2 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Mul( m[ 0 ], v );
+            result[ 1 ] = Traits::Mul( m[ 1 ], v );
+            return result;
+
+        }
+        else if constexpr ( N == 3 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Mul( m[ 0 ], v );
+            result[ 1 ] = Traits::Mul( m[ 1 ], v );
+            result[ 2 ] = Traits::Mul( m[ 2 ], v );
+            return result;
+
+        }
+        else if constexpr ( N == 4 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Mul( m[ 0 ], v );
+            result[ 1 ] = Traits::Mul( m[ 1 ], v );
+            result[ 2 ] = Traits::Mul( m[ 2 ], v );
+            result[ 3 ] = Traits::Mul( m[ 3 ], v );
+            return result;
+        }
+        else
+        {
+            // Not supported
+        }
+    }
+
+    template<Internal::SquareMatrixType T1, typename T2>
+        requires std::is_arithmetic_v<T2>
+    T1 operator*( const T1& m, const T2 value ) noexcept
+    {
+        return m.ToSimd( ) * value;
+    }
+
+    template<Internal::SquareMatrixSimdType T1, typename T2>
+        requires std::is_arithmetic_v<T2>
+    T2 operator*( const T2 value, const T2& m ) noexcept
+    {
+        return m * value;
+    }
+
+    template<Internal::SquareMatrixType T1, typename T2>
+        requires std::is_arithmetic_v<T2>
+    T2 operator*( const T2 value, const T2& m ) noexcept
+    {
+        return m.ToSimd() * value;
+    }
+
+
+    template <>
+    inline SquareMatrix<float, 4> operator*<float, 4>( const SquareMatrix<float, 4>& matrix1, const SquareMatrix<float, 4>& matrix2 )
+    {
+        using Traits = typename SquareMatrix<float, 4>::Traits;
+        auto rmm1 = _mm256_castps128_ps256( Traits::Load( matrix1.data_[ 0 ].data( ) ) );
+        rmm1 = _mm256_insertf128_ps( rmm1, Traits::Load( matrix1.data_[ 1 ].data( ) ), 1 );
+        auto rmm2 = _mm256_castps128_ps256( Traits::Load( matrix1.data_[ 2 ].data( ) ) );
+        rmm2 = _mm256_insertf128_ps( rmm2, Traits::Load( matrix1.data_[ 3 ].data( ) ), 1 );
+
+        auto rmm3 = _mm256_castps128_ps256( Traits::Load( matrix2.data_[ 0 ].data( ) ) );
+        rmm3 = _mm256_insertf128_ps( rmm3, Traits::Load( matrix2.data_[ 1 ].data( ) ), 1 );
+        auto rmm4 = _mm256_castps128_ps256( Traits::Load( matrix2.data_[ 2 ].data( ) ) );
+        rmm4 = _mm256_insertf128_ps( rmm4, Traits::Load( matrix2.data_[ 3 ].data( ) ), 1 );
+
+        auto rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+        auto rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+        auto rmm7 = _mm256_permute2f128_ps( rmm3, rmm3, 0x00 );
+        auto rmm8 = _mm256_mul_ps( rmm5, rmm7 );
+        auto rmm9 = _mm256_mul_ps( rmm6, rmm7 );
+
+        rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+        rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+        rmm7 = _mm256_permute2f128_ps( rmm3, rmm3, 0x11 );
+        auto rmm10 = _mm256_fmadd_ps( rmm5, rmm7, rmm8 );
+        auto rmm11 = _mm256_fmadd_ps( rmm6, rmm7, rmm9 );
+
+        rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+        rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+        auto rmm12 = _mm256_permute2f128_ps( rmm4, rmm4, 0x00 );
+        auto rmm13 = _mm256_mul_ps( rmm5, rmm12 );
+        auto rmm14 = _mm256_mul_ps( rmm6, rmm12 );
+
+        rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 3, 3, 3, 3 ) );
+        rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 3, 3, 3, 3 ) );
+        rmm12 = _mm256_permute2f128_ps( rmm4, rmm4, 0x11 );
+        auto rmm15 = _mm256_fmadd_ps( rmm5, rmm12, rmm13 );
+        auto rmm16 = _mm256_fmadd_ps( rmm6, rmm12, rmm14 );
+
+        rmm1 = _mm256_add_ps( rmm10, rmm15 );
+        rmm2 = _mm256_add_ps( rmm11, rmm16 );
+
+        SquareMatrix<float, 4> result;
+        Traits::Store( result.data_[ 0 ].data( ), _mm256_castps256_ps128( rmm1 ) );
+        Traits::Store( result.data_[ 1 ].data( ), _mm256_extractf128_ps( rmm1, 1 ) );
+        Traits::Store( result.data_[ 2 ].data( ), _mm256_castps256_ps128( rmm2 ) );
+        Traits::Store( result.data_[ 3 ].data( ), _mm256_extractf128_ps( rmm2, 1 ) );
+        return result;
+    }
+
+    // Division
+
+    template<Internal::SquareMatrixSimdType T1, typename T2>
+        requires std::is_arithmetic_v<T2>
+    T1 operator/( const T1& m, const T2 value ) noexcept
+    {
+        using Traits = typename T1::Traits;
+        using Simd = T1;
+        using ValueType = typename Traits::Type;
+        constexpr auto N = Traits::Size;
+        auto v = Traits::Fill( static_cast< ValueType >( value ) );
+
+        if constexpr ( N == 2 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Div( m[ 0 ], v );
+            result[ 1 ] = Traits::Div( m[ 1 ], v );
+            return result;
+
+        }
+        else if constexpr ( N == 3 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Div( m[ 0 ], v );
+            result[ 1 ] = Traits::Div( m[ 1 ], v );
+            result[ 2 ] = Traits::Div( m[ 2 ], v );
+            return result;
+
+        }
+        else if constexpr ( N == 4 )
+        {
+            Simd result;
+            result[ 0 ] = Traits::Div( m[ 0 ], v );
+            result[ 1 ] = Traits::Div( m[ 1 ], v );
+            result[ 2 ] = Traits::Div( m[ 2 ], v );
+            result[ 3 ] = Traits::Div( m[ 3 ], v );
+            return result;
+        }
+        else
+        {
+            // Not supported
+        }
+    }
+
+    template<Internal::SquareMatrixType T1, typename T2>
+        requires std::is_arithmetic_v<T2>
+    T1 operator/( const T1& m, const T2 value ) noexcept
+    {
+        return m.ToSimd( ) * value;
+    }
+
+
+
+
+    template <typename FloatT, size_t N>
+    Vector<FloatT,N>::Simd Determinant( const SquareMatrix<FloatT,N>& matrix );
+
+    template <typename FloatT, size_t N>
+    FloatT ScalarDeterminant( const SquareMatrix<FloatT, N>& matrix );
+
+    template <>
+    inline Vector<float,4>::Simd Determinant<float, 4>( const SquareMatrix<float, 4>& matrix )
+    {
+        using Traits = typename SquareMatrix<float, 4>::Traits;
+        using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
+        using Union = typename Traits::Union;
+        using Select = typename Traits::Select;
+        Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, -1.0f } } );
+        
+        auto matrix2 = Traits::Load( matrix[ 2 ] );
+        auto matrix3 = Traits::Load( matrix[ 3 ] );
+
+        auto rmm0 = Traits::Swizzle<Select::X, Select::X, Select::X, Select::Y>( matrix2 );
+        auto rmm1 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix3 );
+        auto rmm2 = Traits::Swizzle<Select::Z, Select::W, Select::W, Select::W>( matrix3 );
+        auto rmm3 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix2 );
+
+        auto rmm4 = Traits::Mul( rmm0, rmm1 );
+        auto rmm5 = Traits::Mul( rmm0, rmm2 );
+        auto rmm6 = Traits::Mul( rmm3, rmm2 );
+        rmm0 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix2 );
+        rmm1 = Traits::Swizzle<Select::X, Select::X, Select::X, Select::Y>( matrix3 );
+        rmm2 = Traits::Swizzle<Select::Z, Select::W, Select::W, Select::W>( matrix2 );
+        rmm3 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix3 );
+
+        rmm4 = Traits::FNMAdd( rmm0, rmm1, rmm4 );
+        rmm5 = Traits::FNMAdd( rmm2, rmm1, rmm5 );
+        rmm6 = Traits::FNMAdd( rmm2, rmm3, rmm6 );
+
+        rmm3 = Traits::Load( matrix[ 1 ] );
+
+        rmm0 = Traits::Swizzle<Select::Z, Select::W, Select::W, Select::W>( rmm3 );
+        rmm1 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( rmm3 );
+        rmm2 = Traits::Swizzle<Select::X, Select::X, Select::X, Select::Y>( rmm3 );
+        
+        auto rmm7 = Traits::Mul( rmm0, rmm4 );
+        rmm7 = Traits::FNMAdd( rmm1, rmm5, rmm7 );
+        rmm7 = Traits::FMAdd( rmm2, rmm6, rmm7 );
+
+        rmm3 = Traits::Load( matrix[ 0 ] );
+        rmm3 = Traits::Mul( rmm3, sign );
+
+        return Traits::Dot( rmm3, rmm7 );
+    }
+
+    template <>
+    inline float ScalarDeterminant<float, 4>( const SquareMatrix<float, 4>& matrix )
+    {
+        using Traits = typename SquareMatrix<float, 4>::Traits;
+        return Traits::Lower( Determinant( matrix ).simd );
+    }
+
+    inline SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        using Traits = typename SquareMatrix<float, 4>::Traits;
+        using MatrixSimd = SquareMatrix<float, 4>::Simd;
+
+        auto rmm1 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 0 ], matrix[ 1 ] );
+        auto rmm3 = Traits::Shuffle<3, 2, 3, 2>( matrix[ 0 ], matrix[ 1 ] );
+        auto rmm2 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 2 ], matrix[ 3 ] );
+        auto rmm4 = Traits::Shuffle<3, 2, 3, 2>( matrix[ 2 ], matrix[ 3 ] );
+
+        MatrixSimd result;
+
+        result[ 0 ] = Traits::Shuffle<2, 0, 2, 0>( rmm1, rmm2 );
+        result[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( rmm1, rmm2 );
+        result[ 2 ] = Traits::Shuffle<2, 0, 2, 0>( rmm3, rmm4 );
+        result[ 3 ] = Traits::Shuffle<3, 1, 3, 1>( rmm3, rmm4 );
+
+        return result;
+    }
+
+    inline SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>& matrix )
+    {
+        return Transpose( matrix.ToSimd( ) );
+    }
+
+
+    inline SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>::Simd& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
+    {
+        using Traits = typename SquareMatrix<float, 4>::Traits;
+        using MatrixSimd = SquareMatrix<float, 4>::Simd;
+
+        auto vTemp1 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 0 ], matrix[ 1 ] );
+        auto vTemp3 = Traits::Shuffle<3, 2, 3, 2>( matrix[ 0 ], matrix[ 1 ] );
+        auto vTemp2 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 2 ], matrix[ 3 ] );
+        auto vTemp4 = Traits::Shuffle<3, 2, 3, 2>( matrix[ 2 ], matrix[ 3 ] );
+
+        MatrixSimd transposed;
+
+        transposed[ 0 ] = Traits::Shuffle<2, 0, 2, 0>( vTemp1, vTemp2 );
+        transposed[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( vTemp1, vTemp2 );
+        transposed[ 2 ] = Traits::Shuffle<2, 0, 2, 0>( vTemp3, vTemp4 );
+        transposed[ 3 ] = Traits::Shuffle<3, 1, 3, 1>( vTemp3, vTemp4 );
+        
+        auto V00 = Traits::Swizzle<1, 1, 0, 0>( transposed[ 2 ] );
+        auto V10 = Traits::Swizzle<3, 2, 3, 2>( transposed[ 3 ] );
+        auto V01 = Traits::Swizzle<1, 1, 0, 0>( transposed[ 0 ] );
+        auto V11 = Traits::Swizzle<3, 2, 3, 2>( transposed[ 1 ] );
+
+        auto V02 = Traits::Shuffle<2, 0, 2, 0>( transposed[ 2 ], transposed[ 0 ] );
+        auto V12 = Traits::Shuffle<3, 1, 3, 1>( transposed[ 3 ], transposed[ 1 ] );
+
+        auto D0 = Traits::Mul( V00, V10 );
+        auto D1 = Traits::Mul( V01, V11 );
+        auto D2 = Traits::Mul( V02, V12 );
+
+
+        V00 = Traits::Swizzle<3, 2, 3, 2>( transposed[ 2 ]);
+        V10 = Traits::Swizzle<1, 1, 0, 0>( transposed[ 3 ]);
+        V01 = Traits::Swizzle<3, 2, 3, 2>( transposed[ 0 ]);
+        V11 = Traits::Swizzle<1, 1, 0, 0>( transposed[ 1 ]);
+
+        V02 = Traits::Shuffle<3, 1, 3, 1>( transposed[ 2 ], transposed[ 0 ] );
+        V12 = Traits::Shuffle<2, 0, 2, 0>( transposed[ 3 ], transposed[ 1 ] );
+
+
+        D0 = Traits::FNMAdd( V00, V10, D0 );
+        D1 = Traits::FNMAdd( V01, V11, D1 );
+        D2 = Traits::FNMAdd( V02, V12, D2 );
+
+        // V11 = D0Y,D0W,D2Y,D2Y
+        V11 = Traits::Shuffle<1, 1, 3, 1>( D0, D2 );
+        V00 = Traits::Swizzle<1, 0, 2, 1>( transposed[ 1 ] );
+        V10 = Traits::Shuffle<0, 3, 0, 2>( V11, D0 );
+        V01 = Traits::Swizzle<0, 1, 0, 2>( transposed[ 0 ] );
+        V11 = Traits::Shuffle<2, 1, 2, 1>( V11, D0 );
+
+        // V13 = D1Y,D1W,D2W,D2W
+        auto V13 = Traits::Shuffle<3, 3, 3, 1>( D1, D2 );
+        V02 = Traits::Swizzle<1, 0, 2, 1>( transposed[ 3 ] );
+        V12 = Traits::Shuffle<0, 3, 0, 2>( V13, D1 );
+        auto V03 = Traits::Swizzle<0, 1, 0, 2>( transposed[ 2 ] );
+        V13 = Traits::Shuffle<2, 1, 2, 1>( V13, D1 );
+
+        auto C0 = Traits::Mul( V00, V10 );
+        auto C2 = Traits::Mul( V01, V11 );
+        auto C4 = Traits::Mul( V02, V12 );
+        auto C6 = Traits::Mul( V03, V13 );
+
+
+        // V11 = D0X,D0Y,D2X,D2X
+        V11 = Traits::Shuffle<0, 0, 1, 0>( D0, D2 );
+        V00 = Traits::Swizzle<2, 1, 3, 2>( transposed[ 1 ] );
+        V10 = Traits::Shuffle<2, 1, 0, 3>( D0, V11 );
+        V01 = Traits::Swizzle<1, 3, 2, 3>( transposed[ 0 ] );
+        V11 = Traits::Shuffle<0, 2, 1, 2>( D0, V11 );
+        // V13 = D1X,D1Y,D2Z,D2Z
+        V13 = Traits::Shuffle<2, 2, 1, 0>( D1, D2 );
+        V02 = Traits::Swizzle<2, 1, 3, 2>( transposed[ 3 ] );
+        V12 = Traits::Shuffle<2, 1, 0, 3>( D1, V13 );
+        V03 = Traits::Swizzle<1, 3, 2, 3>( transposed[ 2 ] );
+        V13 = Traits::Shuffle<0, 2, 1, 2>( D1, V13 );
+
+        C0 = Traits::FNMAdd( V00, V10, C0 );
+        C2 = Traits::FNMAdd( V01, V11, C2 );
+        C4 = Traits::FNMAdd( V02, V12, C4 );
+        C6 = Traits::FNMAdd( V03, V13, C6 );
+
+        V00 = Traits::Swizzle<0, 3, 0, 3>( transposed[ 1 ] );
+        // V10 = D0Z,D0Z,D2X,D2Y
+        V10 = Traits::Shuffle<1, 0, 2, 2>( D0, D2 );
+        V10 = Traits::Swizzle<0, 2, 3, 0>( V10 );
+        V01 = Traits::Swizzle<2, 0, 3, 1>( transposed[ 0 ] );
+        // V11 = D0X,D0W,D2X,D2Y
+        V11 = Traits::Shuffle<1, 0, 3, 0>( D0, D2 );
+        V11 = Traits::Swizzle<2, 1, 0, 3>( V11 );
+        V02 = Traits::Swizzle<0, 3, 0, 3>( transposed[ 3 ] );
+        // V12 = D1Z,D1Z,D2Z,D2W
+        V12 = Traits::Shuffle<3, 2, 2, 2>( D1, D2 );
+        V12 = Traits::Swizzle<0, 2, 3, 0>( V12 );
+        V03 = Traits::Swizzle<2, 0, 3, 1>( transposed[ 2 ] );
+        // V13 = D1X,D1W,D2Z,D2W
+        V13 = Traits::Shuffle<3, 2, 3, 0>( D1, D2 );
+        V13 = Traits::Swizzle<2, 1, 0, 3>( V13 );
+
+        V00 = Traits::Mul( V00, V10 );
+        V01 = Traits::Mul( V01, V11 );
+        V02 = Traits::Mul( V02, V12 );
+        V03 = Traits::Mul( V03, V13 );
+
+        auto C1 = Traits::Sub( C0, V00 );
+        C0 = Traits::Add( C0, V00 );
+        auto C3 = Traits::Add( C2, V01 );
+        C2 = Traits::Sub( C2, V01 );
+        auto C5 = Traits::Sub( C4, V02 );
+        C4 = Traits::Add( C4, V02 );
+        auto C7 = Traits::Add( C6, V03 );
+        C6 = Traits::Sub( C6, V03 );
+
+        C0 = Traits::Shuffle<3, 1, 2, 0>( C0, C1 );
+        C2 = Traits::Shuffle<3, 1, 2, 0>( C2, C3 );
+        C4 = Traits::Shuffle<3, 1, 2, 0>( C4, C5 );
+        C6 = Traits::Shuffle<3, 1, 2, 0>( C6, C7 );
+        C0 = Traits::Swizzle<3, 1, 2, 0>( C0 );
+        C2 = Traits::Swizzle<3, 1, 2, 0>( C2 );
+        C4 = Traits::Swizzle<3, 1, 2, 0>( C4 );
+        C6 = Traits::Swizzle<3, 1, 2, 0>( C6 );
+        // Get the determinant
+        auto vTemp = Traits::Dot( C0, transposed[ 0 ] );
+        if ( determinant != nullptr )
+        {
+            *determinant = vTemp;
+        }
+        vTemp = Traits::Div( Traits::Fill(1.f), vTemp );
+        MatrixSimd result;
+        result[ 0 ] = Traits::Mul( C0, vTemp );
+        result[ 1 ] = Traits::Mul( C2, vTemp );
+        result[ 2 ] = Traits::Mul( C4, vTemp );
+        result[ 3 ] = Traits::Mul( C6, vTemp );
+        return result;
+    }
+
+    inline SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
+    {
+        return Inverse( matrix.ToSimd( ), determinant );
+    }
+
 
 }
 

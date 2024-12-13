@@ -21,6 +21,9 @@
 
 namespace Harlinn::Common::Core::Math
 {
+    template<typename T>
+    concept FloatingPoint = std::is_floating_point_v<T>;
+
     template<typename ArthmeticT>
     struct Constants : public std::false_type
     { };
@@ -31,7 +34,11 @@ namespace Harlinn::Common::Core::Math
         using ValueType = float;
         static constexpr ValueType ShadowEpsilon = static_cast< ValueType >( 0.0001 );
 
+        static constexpr ValueType Zero = 0.f;
+        static constexpr ValueType One = 1.f;
+        static constexpr ValueType MinusOne = -1.f;
         static constexpr ValueType Pi = static_cast< ValueType >( 3.14159265358979323846 );
+        static constexpr ValueType PiTimes2 = static_cast< ValueType >( M_2_PI );
         static constexpr ValueType InvPi = static_cast< ValueType >( 0.31830988618379067154 );
         static constexpr ValueType Inv2Pi = static_cast< ValueType >( 0.15915494309189533577 );
         static constexpr ValueType Inv4Pi = static_cast< ValueType >( 0.07957747154594766788 );
@@ -52,13 +59,17 @@ namespace Harlinn::Common::Core::Math
         using ValueType = double;
         static constexpr ValueType ShadowEpsilon = static_cast< ValueType >( 0.0001 );
 
-        static constexpr ValueType Pi = static_cast< ValueType >( 3.14159265358979323846 );
-        static constexpr ValueType InvPi = static_cast< ValueType >( 0.31830988618379067154 );
-        static constexpr ValueType Inv2Pi = static_cast< ValueType >( 0.15915494309189533577 );
-        static constexpr ValueType Inv4Pi = static_cast< ValueType >( 0.07957747154594766788 );
-        static constexpr ValueType PiOver2 = static_cast< ValueType >( 1.57079632679489661923 );
-        static constexpr ValueType PiOver4 = static_cast< ValueType >( 0.78539816339744830961 );
-        static constexpr ValueType Sqrt2 = static_cast< ValueType >( 1.41421356237309504880 );
+        static constexpr ValueType Zero = 0.;
+        static constexpr ValueType One = 1.;
+        static constexpr ValueType MinusOne = -1.;
+        static constexpr ValueType Pi = 3.14159265358979323846;
+        static constexpr ValueType PiTimes2 = M_2_PI;
+        static constexpr ValueType InvPi = 0.31830988618379067154;
+        static constexpr ValueType Inv2Pi = 0.15915494309189533577;
+        static constexpr ValueType Inv4Pi = 0.07957747154594766788;
+        static constexpr ValueType PiOver2 = 1.57079632679489661923;
+        static constexpr ValueType PiOver4 = 0.78539816339744830961;
+        static constexpr ValueType Sqrt2 = 1.41421356237309504880;
                                                                    
         static constexpr ValueType Infinity = std::numeric_limits<ValueType>::infinity( );
 
@@ -2159,10 +2170,10 @@ namespace Harlinn::Common::Core::Math
             Int32 e0, i, n;
             UInt32 low;
             // high word of x 
-            Int32 hx = GetLow32Bits<Int32>( x );
+            Int32 hx = GetHigh32Bits<Int32>( x );
 
-            Int32 ix = hx & 0x7fffffff;
-#if 0 // This *must* be handled by caller. 
+            UInt32 ix = std::bit_cast<UInt32>(hx) & 0x7fffffff;
+
             if ( ix <= 0x3fe921fb )   
             {
                 // |x| ~<= pi/4 , no need for reduction 
@@ -2170,7 +2181,7 @@ namespace Harlinn::Common::Core::Math
                 y[1] = 0; 
                 return 0;
             }
-#endif
+
             if ( ix <= 0x400f6a7a )
             {		
                 // |x| ~<= 5pi/4 
@@ -2376,6 +2387,7 @@ namespace Harlinn::Common::Core::Math
             return n;
 
         }
+
 
         /*
          * ====================================================
@@ -2775,7 +2787,24 @@ namespace Harlinn::Common::Core::Math
          * ====================================================
          */
 
-        
+         /// <summary>
+         /// constexpr implementation if sin.
+         /// <para>
+         /// This function has been tested with all valid 
+         /// single precision floating point values, as double precision 
+         /// point values, between -((2*pi)+epsilon) and ((2*pi)+epsilon), and
+         /// 2400646 out of 2173837238 values generated a different 
+         /// result than <c>std::sin</c>. The maximum deviation
+         /// from <c>std::sin</c> was 1.11022e-16 for the value
+         /// -5.75955.
+         /// </para>
+         /// </summary>
+         /// <param name="x">
+         /// An angle in radians to calculate the sine for.
+         /// </param>
+         /// <returns>
+         /// The sine of the input value.
+         /// </returns>
         inline constexpr double SinImpl( double x ) noexcept
         {
             // pi/4 
@@ -2830,6 +2859,25 @@ namespace Harlinn::Common::Core::Math
           * is preserved.
           * ====================================================
           */
+
+        /// <summary>
+        /// constexpr implementation if sin.
+        /// <para>
+        /// This function has been tested with all valid 
+        /// single precision floating point values between 
+        /// -((2*pi)+epsilon) and ((2*pi)+epsilon), and
+        /// 131312 out of 2173837238 values generated a different 
+        /// result than <c>std::sin</c>. The maximum deviation
+        /// from <c>std::sin</c> was 5.96046e-08 for the value
+        /// -5.75846.
+        /// </para>
+        /// </summary>
+        /// <param name="x">
+        /// An angle in radians to calculate the sine for.
+        /// </param>
+        /// <returns>
+        /// The sine of the input value.
+        /// </returns>
         inline constexpr float SinImpl( float x ) noexcept
         {
             constexpr double s1pio2 = 1 * M_PI_2;
@@ -2837,7 +2885,7 @@ namespace Harlinn::Common::Core::Math
             constexpr double s3pio2 = 3 * M_PI_2;
             constexpr double s4pio2 = 4 * M_PI_2;
 
-            auto hx = std::bit_cast<UInt32>( x );
+            auto hx = std::bit_cast<Int32>( x );
             auto ix = hx & 0x7fffffff;
 
             if ( ix <= 0x3f490fda )
@@ -3067,6 +3115,25 @@ namespace Harlinn::Common::Core::Math
          * is preserved.
          * ====================================================
          */
+
+        /// <summary>
+        /// constexpr implementation if cos.
+        /// <para>
+        /// This function has been tested with all valid 
+        /// single precision floating point values between 
+        /// -((2*pi)+epsilon) and ((2*pi)+epsilon), and
+        /// 2499716 out of 2173837238 values generated a different 
+        /// result than <c>std::sin</c>. The maximum deviation
+        /// from <c>std::sin</c> was 1.11022e-16 for the value
+        /// -6.177.
+        /// </para>
+        /// </summary>
+        /// <param name="x">
+        /// An angle in radians to calculate the cosine for.
+        /// </param>
+        /// <returns>
+        /// The cosine of the input value.
+        /// </returns>
         inline constexpr double CosImpl( double x ) noexcept
         {
             auto ix = GetHigh32Bits<Int32>( x );
@@ -3125,6 +3192,24 @@ namespace Harlinn::Common::Core::Math
          * ====================================================
          */
 
+         /// <summary>
+         /// constexpr implementation if cos.
+         /// <para>
+         /// This function has been tested with all valid 
+         /// single precision floating point values between 
+         /// -((2*pi)+epsilon) and ((2*pi)+epsilon), and
+         /// 166488 out of 2173837238 values generated a different 
+         /// result than <c>std::sin</c>. The maximum deviation
+         /// from <c>std::sin</c> was 5.96046e-08 for the value
+         /// -6.24929.
+         /// </para>
+         /// </summary>
+         /// <param name="x">
+         /// An angle in radians to calculate the cosine for.
+         /// </param>
+         /// <returns>
+         /// The cosine of the input value.
+         /// </returns>
         inline constexpr float CosImpl( float x ) noexcept
         {
             constexpr double c1pio2 = 1 * M_PI_2;
@@ -3294,6 +3379,181 @@ namespace Harlinn::Common::Core::Math
                 return 2.0 * ( df + w );
             }
         }
+
+
+#ifdef TEST
+        template<typename FloatT>
+        inline constexpr FloatT SinImpl( FloatT value ) noexcept
+        {
+            using IntType = std::conditional_t<std::is_same_v<float, FloatT>, Int32, Int64>;
+
+            FloatT x = FMod( value, Constants<FloatT>::Pi ); //Constants<FloatT>::InvPi * value;
+            FloatT quotient = Constants<FloatT>::Inv2Pi * x;
+            if ( AreNearlyEqual( Abs(x), Constants<FloatT>::PiOver2, static_cast< FloatT >( 0.0007 ) ) )
+            {
+                return Constants<FloatT>::One;
+            }
+            else if ( AreNearlyEqual( Abs( x ), Constants<FloatT>::Zero, static_cast< FloatT >( 0.0007 ) ) )
+            {
+                return Constants<FloatT>::Zero;
+            }
+
+            // Map x to y in [-pi,pi], x = 2*pi*quotient + remainder.
+            
+            if ( x >= Constants<FloatT>::Zero )
+            {
+                quotient = static_cast< FloatT >( static_cast< IntType >( quotient + static_cast< FloatT >( 0.5 ) ) );
+            }
+            else
+            {
+                quotient = static_cast< FloatT >( static_cast< IntType >( quotient - static_cast< FloatT >( 0.5 ) ) );
+            }
+            
+            FloatT y = x - Constants<FloatT>::PiTimes2 * quotient;
+
+            // Map y to [-pi/2,pi/2] with sin(y) = sin(x).
+            if ( y > Constants<FloatT>::PiOver2 )
+            {
+                y = Constants<FloatT>::Pi - y;
+            }
+            else if ( y < -Constants<FloatT>::PiOver2 )
+            {
+                y = -Constants<FloatT>::Pi - y;
+            }
+
+            // 11-degree minimax approximation
+            FloatT y2 = y * y;
+            return ( ( ( ( ( static_cast< FloatT >( -2.3889859e-08 ) * y2 + static_cast< FloatT >( 2.7525562e-06 ) ) * y2 - static_cast< FloatT >( 0.00019840874 ) ) * y2 + static_cast< FloatT >( 0.0083333310 ) ) * y2 - static_cast< FloatT >( 0.16666667 ) ) * y2 + static_cast< FloatT >( 1.0 ) ) * y;
+        }
+
+        template<typename FloatT>
+        inline constexpr FloatT CosImpl( FloatT x ) noexcept
+        {
+            using IntType = std::conditional_t<std::is_same_v<float, FloatT>, Int32, Int64>;
+            // Map x to y in [-pi,pi], x = 2*pi*quotient + remainder.
+            FloatT quotient = Constants<FloatT>::Inv2Pi * x;
+            if ( x >= Constants<FloatT>::Zero )
+            {
+                quotient = static_cast< FloatT >( static_cast< IntType >( quotient + static_cast< FloatT >( 0.5 ) ) );
+            }
+            else
+            {
+                quotient = static_cast< FloatT >( static_cast< IntType >( quotient - static_cast< FloatT >( 0.5 ) ) );
+            }
+            FloatT y = x - Constants<FloatT>::PiTimes2 * quotient;
+
+            // Map y to [-pi/2,pi/2] with cos(y) = sign*cos(x).
+            FloatT sign;
+            if ( y > Constants<FloatT>::PiOver2 )
+            {
+                y = Constants<FloatT>::Pi - y;
+                sign = Constants<FloatT>::MinusOne;
+            }
+            else if ( y < -Constants<FloatT>::PiOver2 )
+            {
+                y = -Constants<FloatT>::Pi - y;
+                sign = Constants<FloatT>::MinusOne;
+            }
+            else
+            {
+                sign = Constants<FloatT>::One;
+            }
+
+            // 10-degree minimax approximation
+            FloatT y2 = y * y;
+            FloatT p = ( ( ( ( static_cast< FloatT >( -2.6051615e-07 ) * y2 + static_cast< FloatT >( 2.4760495e-05 ) ) * y2 - static_cast< FloatT >( 0.0013888378 ) ) * y2 + static_cast< FloatT >( 0.041666638 ) ) * y2 - static_cast< FloatT >( 0.5) ) * y2 + static_cast< FloatT >( 1.0 );
+            return sign * p;
+        }
+
+        template<typename FloatT>
+        constexpr inline void SinCosImpl( float value, float* sine, float* cosine ) noexcept
+        {
+            using IntType = std::conditional_t<std::is_same_v<float, FloatT>, Int32, Int64>;
+            assert( sine );
+            assert( cosine );
+
+            // Map value to y in [-pi,pi], x = 2*pi*quotient + remainder.
+            FloatT quotient = Constants<FloatT>::Inv2Pi * value;
+            if ( value >= Constants<FloatT>::Zero )
+            {
+                quotient = static_cast< FloatT >( static_cast< IntType >( quotient + static_cast< FloatT >( 0.5 ) ) );
+            }
+            else
+            {
+                quotient = static_cast< FloatT >( static_cast< IntType >( quotient - static_cast< FloatT >( 0.5 ) ) );
+            }
+            FloatT y = value - Constants<FloatT>::PiTimes2 * quotient;
+
+            // Map y to [-pi/2,pi/2] with sin(y) = sin(value).
+            FloatT sign;
+            if ( y > Constants<FloatT>::PiOver2 )
+            {
+                y = Constants<FloatT>::Pi - y;
+                sign = Constants<FloatT>::MinusOne;
+            }
+            else if ( y < -Constants<FloatT>::PiOver2 )
+            {
+                y = -Constants<FloatT>::Pi - y;
+                sign = Constants<FloatT>::MinusOne;
+            }
+            else
+            {
+                sign = Constants<FloatT>::One;
+            }
+
+            FloatT y2 = y * y;
+
+            // 11-degree minimax approximation
+            *sine = ( ( ( ( ( static_cast< FloatT >(-2.3889859e-08) * y2 + static_cast< FloatT >(2.7525562e-06) ) * y2 - static_cast< FloatT >(0.00019840874) ) * y2 + static_cast< FloatT >(0.0083333310) ) * y2 - static_cast< FloatT >(0.16666667) ) * y2 + static_cast< FloatT >(1.0) ) * y;
+
+            // 10-degree minimax approximation
+            FloatT p = ( ( ( ( static_cast< FloatT >(-2.6051615e-07) * y2 + static_cast< FloatT >(2.4760495e-05) ) * y2 - static_cast< FloatT >(0.0013888378) ) * y2 + static_cast< FloatT >(0.041666638) ) * y2 - static_cast< FloatT >(0.5) ) * y2 + static_cast< FloatT >(1.0);
+            *cosine = sign * p;
+        }
+
+        template<typename FloatT>
+        constexpr inline float ASinImpl( FloatT Value ) noexcept
+        {
+            // Clamp input to [-1,1].
+            bool nonnegative = ( Value >= Constants<FloatT>::Zero );
+            FloatT x = Abs( Value );
+            FloatT omx = Constants<FloatT>::One - x;
+            if ( omx < Constants<FloatT>::Zero )
+            {
+                omx = Constants<FloatT>::Zero;
+            }
+            FloatT root = Sqrt( omx );
+
+            // 7-degree minimax approximation
+            FloatT result = ( ( ( ( ( ( static_cast< FloatT >( -0.0012624911) * x + static_cast< FloatT >(0.0066700901) ) * x - static_cast< FloatT >(0.0170881256) ) * x + static_cast< FloatT >(0.0308918810) ) * x - static_cast< FloatT >(0.0501743046) ) * x + static_cast< FloatT >(0.0889789874) ) * x - static_cast< FloatT >(0.2145988016) ) * x + static_cast< FloatT >( 1.5707963050);
+            result *= root;  // acos(|x|)
+
+            // acos(x) = pi - acos(-x) when x < 0, asin(x) = pi/2 - acos(x)
+            return ( nonnegative ? Constants<FloatT>::PiOver2 - result : result - Constants<FloatT>::PiOver2 );
+        }
+
+        template<typename FloatT>
+        inline FloatT ACosImpl( FloatT Value ) noexcept
+        {
+            // Clamp input to [-1,1].
+            bool nonnegative = Value >= Constants<FloatT>::Zero;
+            FloatT x = Abs( Value );
+            FloatT omx = Constants<FloatT>::One - x;
+            if ( omx < Constants<FloatT>::Zero )
+            {
+                omx = Constants<FloatT>::Zero;
+            }
+            FloatT root = Sqrt( omx );
+
+            // 7-degree minimax approximation
+            FloatT result = ( ( ( ( ( ( static_cast< FloatT >(-0.0012624911) * x + static_cast< FloatT >(0.0066700901) ) * x - static_cast< FloatT >(0.0170881256) ) * x + static_cast< FloatT >(0.0308918810) ) * x - static_cast< FloatT >(0.0501743046) ) * x + static_cast< FloatT >(0.0889789874) ) * x - static_cast< FloatT >(0.2145988016) ) * x + static_cast< FloatT >(1.5707963050);
+            result *= root;
+
+            // acos(x) = pi - acos(-x) when x < 0
+            return ( nonnegative ? result : Constants<FloatT>::Pi - result );
+        }
+#endif
+
 
 
         /* e_acosf.c -- float version of e_acos.c.

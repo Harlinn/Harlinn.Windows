@@ -164,6 +164,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<char, N> : public std::true_type
     {
         using Type = char;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 16;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -176,6 +177,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
         static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -317,6 +324,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<SByte, N> : public std::true_type
     {
         using Type = SByte;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 16;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -329,6 +337,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
         static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -463,6 +477,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<Byte, N> : public std::true_type
     {
         using Type = Byte;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 16;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -475,6 +490,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
         static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -610,6 +631,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<Int16, N> : public std::true_type
     {
         using Type = Int16;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 8;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -622,6 +644,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 8 : 16;
         static constexpr size_t Capacity = UseShortSIMDType ? 8 : ( ( N + 15 ) & static_cast<Int64>( -16 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -757,6 +785,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<UInt16, N> : public std::true_type
     {
         using Type = UInt16;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 8;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -769,6 +798,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 8 : 16;
         static constexpr size_t Capacity = UseShortSIMDType ? 8 : ( ( N + 15 ) & static_cast<Int64>( -16 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -917,6 +952,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<Int32, N> : public std::true_type
     {
         using Type = Int32;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 4;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -929,6 +965,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -1076,6 +1118,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<UInt32, N> : public std::true_type
     {
         using Type = UInt32;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 4;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -1088,6 +1131,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -1238,6 +1287,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<Int64, N> : public std::true_type
     {
         using Type = Int64;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 2;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -1250,6 +1300,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 2 : 4;
         static constexpr size_t Capacity = UseShortSIMDType ? 2 : ( ( N + 3 ) & static_cast<Int64>( -4 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -1414,6 +1470,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<UInt64, N> : public std::true_type
     {
         using Type = UInt64;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 2;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
@@ -1426,6 +1483,12 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 2 : 4;
         static constexpr size_t Capacity = UseShortSIMDType ? 2 : ( ( N + 3 ) & static_cast<Int64>( -4 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -1593,6 +1656,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<float, N> : public std::true_type
     {
         using Type = float;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 4;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128>, SIMD::DataTypeTraits<DataType::m256> >;
@@ -1605,6 +1669,48 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+
+        struct Union
+        {
+            SIMDType simd;
+            ArrayType values;
+        };
+    private:
+        struct m128Select
+        {
+            static constexpr UInt32 X = 0;
+            static constexpr UInt32 Y = 1;
+            static constexpr UInt32 Z = 2;
+            static constexpr UInt32 W = 3;
+
+            static constexpr UInt32 V0 = 0;
+            static constexpr UInt32 V1 = 1;
+            static constexpr UInt32 V2 = 2;
+            static constexpr UInt32 V3 = 3;
+        };
+
+        struct m256Select
+        {
+            static constexpr UInt32 X0 = 0;
+            static constexpr UInt32 Y0 = 1;
+            static constexpr UInt32 Z0 = 2;
+            static constexpr UInt32 W0 = 3;
+            static constexpr UInt32 X1 = 4;
+            static constexpr UInt32 Y1 = 5;
+            static constexpr UInt32 Z1 = 6;
+            static constexpr UInt32 W1 = 7;
+
+            static constexpr UInt32 V0 = 0;
+            static constexpr UInt32 V1 = 1;
+            static constexpr UInt32 V2 = 2;
+            static constexpr UInt32 V3 = 3;
+            static constexpr UInt32 V4 = 4;
+            static constexpr UInt32 V5 = 5;
+            static constexpr UInt32 V6 = 6;
+            static constexpr UInt32 V7 = 7;
+        };
+    public:
+        using Select = std::conditional_t<UseShortSIMDType, m128Select, m256Select>;
 
         static SIMDType Zero( ) noexcept
         {
@@ -2160,6 +2266,34 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_permute_ps( v, shuffleMask );
             }
         }
+
+        static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept requires( UseShortSIMDType )
+        {
+            std::array<UInt32, 4> selection{ selection1, selection2, selection3, selection4 };
+            __m128i selectionControl = _mm_loadu_si128( reinterpret_cast< const __m128i* >( selection[ 0 ].data( ) ) );
+            return _mm_permutevar_ps( v, selectionControl );
+        }
+
+        static SIMDType Swizzle( SIMDType v, UInt32 selection8, UInt32 selection7, UInt32 selection6, UInt32 selection5, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept requires( UseShortSIMDType == false )
+        {
+            std::array<UInt32, 8> selection{ selection1, selection2, selection3, selection4, selection5, selection6, selection7, selection8 };
+            __m128i selectionControl = _mm256_loadu_si256( reinterpret_cast< const __m256i* >( selection[ 0 ].data( ) ) );
+            return _mm256_permutevar8x32_ps( v, selectionControl );
+        }
+
+        template<UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1>
+        static SIMDType Swizzle( SIMDType v ) noexcept requires( UseShortSIMDType )
+        {
+            return _mm_permute_ps( v, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
+        }
+
+
+        template<UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1>
+        static SIMDType Shuffle( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType )
+        {
+            return _mm_shuffle_ps( v1, v2, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
+        }
+
 
         static SIMDType Abs( SIMDType v ) noexcept
         {
@@ -3044,20 +3178,6 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                /*
-                if constexpr ( N == 2 )
-                {
-                    return _mm_dp_ps( a, b, 0x3f );
-                }
-                else if constexpr ( N == 3 )
-                {
-                    return _mm_dp_ps( a, b, 0x7f );
-                }
-                else if constexpr ( N == 4 )
-                {
-                    return _mm_dp_ps( a, b, 0xff );
-                }
-                */
                 return _mm_dp_ps( a, b, 0xff );
             }
             else
@@ -3065,14 +3185,6 @@ namespace Harlinn::Common::Core::SIMD
                 __m256 rmm1 = _mm256_dp_ps( a, b, 0xff );
                 __m256 rmm2 = _mm256_permute2f128_ps( rmm1, rmm1, 1 );
                 return _mm256_add_ps( rmm1, rmm2 );
-
-                //return _mm256_dp_ps( a, b, 0xffffffff );
-                /*
-                if constexpr ( N == 5 )
-                {
-                    return _mm256_dp_ps( a, b, 0x3fff );
-                }
-                */
             }
         }
 
@@ -3093,38 +3205,30 @@ namespace Harlinn::Common::Core::SIMD
                     auto rmm1 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 0, 2, 1 ) );
                     auto rmm2 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 1, 0, 2 ) );
                     auto rmm3 = _mm_mul_ps( rmm1, b );
-                    auto rmm4 = _mm_mul_ps( rmm1, rmm2 );
-                    auto rmm5 = _mm_shuffle_ps( rmm3, rmm3, _MM_SHUFFLE( 3, 0, 2, 1 ) );
-                    return _mm_sub_ps( rmm4, rmm5 );
+                    rmm3 = _mm_shuffle_ps( rmm3, rmm3, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+                    rmm1 = _mm_mul_ps( rmm1, rmm2 );
+                    return _mm_sub_ps( rmm1, rmm3 );
                 }
                 else if constexpr ( N == 4 )
                 {
+                    auto rmm1 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+                    auto rmm2 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 1, 0, 2 ) );
+                    rmm1 = _mm_mul_ps( rmm1, rmm2 );
+
+                    rmm2 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 1, 0, 2 ) );
+                    auto rmm3 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+                    rmm2 = _mm_mul_ps( rmm2, rmm3 );
+
+                    return _mm_sub_ps( rmm1, rmm2 );
+
                     /*
-                    auto vResult = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 2, 1, 3, 2 ) );
-                    auto vTemp3 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 1, 3, 2, 3 ) );
-                    vResult = _mm_mul_ps( vResult, vTemp3 );
-                    auto vTemp2 = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 1, 3, 2, 3 ) );
-                    vTemp3 = XM_PERMUTE_PS( vTemp3, _MM_SHUFFLE( 1, 3, 0, 1 ) );
-                    vResult = XM_FNMADD_PS( vTemp2, vTemp3, vResult );
-                    auto vTemp1 = XM_PERMUTE_PS( V1, _MM_SHUFFLE( 0, 0, 0, 1 ) );
-                    vResult = _mm_mul_ps( vResult, vTemp1 );
-                    vTemp2 = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 2, 0, 3, 1 ) );
-                    vTemp3 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 0, 3, 0, 3 ) );
-                    vTemp3 = _mm_mul_ps( vTemp3, vTemp2 );
-                    vTemp2 = XM_PERMUTE_PS( vTemp2, _MM_SHUFFLE( 2, 1, 2, 1 ) );
-                    vTemp1 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 2, 0, 3, 1 ) );
-                    vTemp3 = XM_FNMADD_PS( vTemp2, vTemp1, vTemp3 );
-                    vTemp1 = XM_PERMUTE_PS( V1, _MM_SHUFFLE( 1, 1, 2, 2 ) );
-                    vResult = XM_FNMADD_PS( vTemp1, vTemp3, vResult );
-                    vTemp2 = XM_PERMUTE_PS( V2, _MM_SHUFFLE( 1, 0, 2, 1 ) );
-                    vTemp3 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 0, 1, 0, 2 ) );
-                    vTemp3 = _mm_mul_ps( vTemp3, vTemp2 );
-                    vTemp2 = XM_PERMUTE_PS( vTemp2, _MM_SHUFFLE( 2, 0, 2, 1 ) );
-                    vTemp1 = XM_PERMUTE_PS( V3, _MM_SHUFFLE( 1, 0, 2, 1 ) );
-                    vTemp3 = XM_FNMADD_PS( vTemp1, vTemp2, vTemp3 );
-                    vTemp1 = XM_PERMUTE_PS( V1, _MM_SHUFFLE( 2, 3, 3, 3 ) );
-                    vResult = XM_FMADD_PS( vTemp3, vTemp1, vResult );
-                    return vResult;
+                    auto rmm1 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+                    auto rmm2 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 1, 0, 2 ) );
+                    auto rmm3 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+                    auto rmm4 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 1, 0, 2 ) );
+                    auto rmm1 = _mm_mul_ps( rmm1, rmm4 );
+                    auto rmm2 = _mm_mul_ps( rmm2, rmm3 );
+                    return _mm_sub_ps( rmm1, rmm2 );
                     */
                 }
             }
@@ -3138,6 +3242,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<double, N> : public std::true_type
     {
         using Type = double;
+        static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 2;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128d>, SIMD::DataTypeTraits<DataType::m256d> >;
@@ -3602,6 +3707,19 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_permute_pd( v, shuffleMask );
             }
         }
+
+        template< UInt32 selection2, UInt32 selection1>
+        static SIMDType Swizzle( SIMDType v ) noexcept requires( UseShortSIMDType )
+        {
+            return _mm_permute_pd( v, _MM_SHUFFLE2( selection2, selection1 ) );
+        }
+
+        template<UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1>
+        static SIMDType Swizzle( SIMDType v ) noexcept requires( UseShortSIMDType == false )
+        {
+            return _mm256_permute4x64_pd( v, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
+        }
+
 
         static SIMDType Abs( SIMDType v ) noexcept
         {

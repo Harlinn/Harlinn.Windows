@@ -202,16 +202,8 @@
     <ClCompile Include="IOPathTests.cpp" />
     <ClCompile Include="ListTests.cpp" />
     <ClCompile Include="LoggerLevelTests.cpp" />
-    <ClCompile Include="MathVector2DoubleTests.cpp" />
-    <ClCompile Include="MathVector3DoubleTests.cpp" />
-    <ClCompile Include="MathVector4DoubleTests.cpp" />
-    <ClCompile Include="MathVector2FloatTests.cpp" />
-    <ClCompile Include="MathVector3FloatTests.cpp" />
-    <ClCompile Include="MathVector4FloatTests.cpp" />
     <ClCompile Include="PersistentPrinterTests.cpp" />
     <ClCompile Include="SerializationRWTests.cpp" />
-    <ClCompile Include="SIMDDoubleTests.cpp" />
-    <ClCompile Include="SIMDFloatTests.cpp" />
     <ClCompile Include="SimpleConcurrentQueueTests.cpp" />
     <ClCompile Include="ContextTests.cpp" />
     <ClCompile Include="ConvertersTests.cpp" />
@@ -231,8 +223,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="LoggerLMDBSinkStorageTests.cpp" />
-    <ClCompile Include="MathMatrixTests.cpp" />
-    <ClCompile Include="MathTests.cpp" />
     <ClCompile Include="CommDeviceTests.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -314,10 +314,11 @@ static void BenchmarkMathVector3Cross( benchmark::State& state )
     using Normal = Math::Normal3f;
     FloatGenerator.Reset( );
 
+    Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
     for ( auto _ : state )
     {
-        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
-        Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        v1.x = FloatGenerator( );
         benchmark::DoNotOptimize( Cross( v1, v2 ) );
     }
 }
@@ -330,14 +331,36 @@ static void BenchmarkMathPbrtVector3Cross( benchmark::State& state )
     using Normal = pbrt::Normal3f;
     FloatGenerator.Reset( );
 
+    Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    Normal v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
     for ( auto _ : state )
     {
-        Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
-        Normal v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+        v1.x = FloatGenerator( );
         benchmark::DoNotOptimize( pbrt::Cross( v1, v2 ) );
     }
 }
-BENCHMARK( BenchmarkMathVector3Cross );
+BENCHMARK( BenchmarkMathPbrtVector3Cross );
+
+
+static void BenchmarkMathVector4Cross( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Vector = Math::Vector<float,4>;
+    using Normal = Math::Vector<float,4>;
+    FloatGenerator.Reset( );
+
+    Vector v1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    Vector v2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        v1.x = FloatGenerator( );
+        benchmark::DoNotOptimize( Cross( v1, v2 ) );
+    }
+}
+BENCHMARK( BenchmarkMathVector4Cross );
+
 
 
 static void BenchmarkMathVector3Dot( benchmark::State& state )

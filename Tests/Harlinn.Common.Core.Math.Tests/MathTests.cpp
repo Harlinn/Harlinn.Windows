@@ -87,9 +87,95 @@ namespace
             floor_ = fp_.Floor( );
             fpfloor_ = __floor( v );
         }
-
-
     };
+
+
+    template<typename StdFunc, typename MathFunc, typename StepFunc, typename FloatT>
+    void RangeTest( const char* testName, StdFunc stdFunc, MathFunc mathFunc, StepFunc stepFunc, FloatT start, FloatT stop, double maxAllowedDeviation = 1e-5 )
+    {
+        auto value = start;
+        Int64 unexpectedDeviationCount = 0;
+        Int64 testCount = 0;
+        bool isFirst = true;
+        double maxDeviation = 0.0;
+        double maxDeviationFor = 0.0;
+        double maxDeviationStdResult = 0.0;
+        double maxDeviationMathResult = 0.0;
+        double firstDeviation = 0.0;
+        double lastDeviation = 0.0;
+        while ( value < stop )
+        {
+            auto stdResult = stdFunc( value );
+            auto mathResult = mathFunc( value );
+            auto deviation = Deviation( stdResult, mathResult );
+
+            if ( deviation > maxDeviation )
+            {
+                maxDeviationFor = value;
+                maxDeviation = deviation;
+                maxDeviationStdResult = stdResult;
+                maxDeviationMathResult = mathResult;
+            }
+
+            if ( deviation > maxAllowedDeviation )
+            {
+                if ( isFirst )
+                {
+                    firstDeviation = value;
+                    isFirst = false;
+                }
+                lastDeviation = value;
+                unexpectedDeviationCount++;
+                
+            }
+            value = stepFunc( value );
+            testCount++;
+        }
+        if ( unexpectedDeviationCount )
+        {
+            BOOST_CHECK( unexpectedDeviationCount == 0 );
+            PrintLn( "{} -> Iterations: {}, unexpected deviations: {}, max deviation: {:g}, for: {:g}, std: {:g}, Math: {:g}, first unexpected: {:g}, last unexpected: {:g}",
+                testName, testCount, unexpectedDeviationCount, maxDeviation, maxDeviationFor, maxDeviationStdResult, maxDeviationMathResult, firstDeviation, lastDeviation );
+        }
+        else
+        {
+            PrintLn( "{} -> Iterations: {}, no unexpected deviations, max deviation: {:g}, for: {:g}, std: {:g}, Math: {:g}",
+                testName, testCount, maxDeviation, maxDeviationFor, maxDeviationStdResult, maxDeviationMathResult );
+        }
+    }
+
+    template<typename FloatT, typename StdFunc, typename MathFunc>
+    void TrigonometricRangeTest( const char* testName, StdFunc stdFunc, MathFunc mathFunc, double maxDeviation = 1e-5 )
+    {
+        constexpr FloatT start = ( static_cast< FloatT >( -2 ) * Constants<FloatT>::Pi ) - std::numeric_limits<FloatT>::epsilon( );
+        constexpr FloatT stop = ( static_cast< FloatT >( 2 ) * Constants<FloatT>::Pi ) + std::numeric_limits<FloatT>::epsilon( );
+
+        if constexpr ( std::is_same_v<float, FloatT> )
+        {
+            RangeTest( testName, stdFunc, mathFunc, []( float value ) { return NextUp( value ); }, start, stop, maxDeviation );
+        }
+        else
+        {
+            RangeTest( testName, stdFunc, mathFunc, []( double value ) { return static_cast< double >( NextUp( static_cast< float >( value ) ) ); }, start, stop, maxDeviation );
+        }
+    }
+
+    template<typename FloatT, typename StdFunc, typename MathFunc>
+    void ReverseTrigonometricRangeTest( const char* testName, StdFunc stdFunc, MathFunc mathFunc, double maxDeviation = 1e-5 )
+    {
+        constexpr FloatT start = static_cast< FloatT >( -1. );
+        constexpr FloatT stop = static_cast< FloatT >( 1. );
+
+        if constexpr ( std::is_same_v<float, FloatT> )
+        {
+            RangeTest( testName, stdFunc, mathFunc, []( float value ) { return NextUp( value ); }, start, stop, maxDeviation );
+        }
+        else
+        {
+            RangeTest( testName, stdFunc, mathFunc, []( double value ) { return static_cast< double >( NextUp( static_cast< float >( value ) ) ); }, start, stop, maxDeviation );
+        }
+    }
+
 
 }
 
@@ -1335,9 +1421,729 @@ BOOST_AUTO_TEST_CASE( SinDoubleTest1 )
     BOOST_CHECK( result1b == 1.7453292519057202e-5 );
 }
 
+// --run_test=MathTests/SinFloatTest2
+BOOST_AUTO_TEST_CASE( SinFloatTest2 )
+{
+    TrigonometricRangeTest<float>( "SinFloatTest2", []( float value ) { return std::sin( value ); }, []( float value ) { return Sin( value ); } );
+}
+
+
+// --run_test=MathTests/SinDoubleTest2
+BOOST_AUTO_TEST_CASE( SinDoubleTest2 )
+{
+    TrigonometricRangeTest<double>( "SinDoubleTest2", []( double value ) { return std::sin( value ); }, []( double value ) { return Sin( value ); } );
+}
+
+// --run_test=MathTests/CosFloatTest2
+BOOST_AUTO_TEST_CASE( CosFloatTest2 )
+{
+    TrigonometricRangeTest<float>( "CosFloatTest2", []( float value ) { return std::cos( value ); }, []( float value ) { return Cos( value ); } );
+}
+
+// --run_test=MathTests/CosDoubleTest2
+BOOST_AUTO_TEST_CASE( CosDoubleTest2 )
+{
+    TrigonometricRangeTest<double>( "CosDoubleTest2", []( double value ) { return std::cos( value ); }, []( double value ) { return Cos( value ); } );
+}
+
+// --run_test=MathTests/TanFloatTest2
+BOOST_AUTO_TEST_CASE( TanFloatTest2 )
+{
+    TrigonometricRangeTest<float>( "TanFloatTest2", []( float value ) { return std::tan( value ); }, []( float value ) { return Tan( value ); } );
+}
+
+
+// --run_test=MathTests/TanDoubleTest2
+BOOST_AUTO_TEST_CASE( TanDoubleTest2 )
+{
+    TrigonometricRangeTest<double>( "TanFloatTest2", []( double value ) { return std::tan( value ); }, []( double value ) { return Tan( value ); } );
+}
+
+
+
+// --run_test=MathTests/ASinFloatTest2
+BOOST_AUTO_TEST_CASE( ASinFloatTest2 )
+{
+    ReverseTrigonometricRangeTest<float>( "ASinFloatTest2", []( float value ) { return std::asin( value ); }, []( float value ) { return ASin( value ); } );
+}
+
+// --run_test=MathTests/ASinDoubleTest2
+BOOST_AUTO_TEST_CASE( ASinDoubleTest2 )
+{
+    ReverseTrigonometricRangeTest<double>( "ASinDoubleTest2", []( double value ) { return std::asin( value ); }, []( double value ) { return ASin( value ); } );
+}
+
+
+// --run_test=MathTests/ACosFloatTest2
+BOOST_AUTO_TEST_CASE( ACosFloatTest2 )
+{
+    ReverseTrigonometricRangeTest<float>( "ACosFloatTest2", []( float value ) { return std::acos( value ); }, []( float value ) { return ACos( value ); } );
+}
+
+
+
+// --run_test=MathTests/ACosDoubleTest2
+BOOST_AUTO_TEST_CASE( ACosDoubleTest2 )
+{
+    ReverseTrigonometricRangeTest<double>( "ACosDoubleTest2", []( double value ) { return std::acos( value ); }, []( double value ) { return ACos( value ); } );
+}
+
+
+// --run_test=MathTests/ATanFloatTest2
+BOOST_AUTO_TEST_CASE( ATanFloatTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<float, Iterations> generator;
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::atan( value );
+        auto result = Math::Internal::ATanImpl( value );
+        if ( stdResult != result )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-5 );
+        PrintLn( "ATanFloatTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, firstUnequal, lastUnequal );
+    }
+}
+
+// --run_test=MathTests/ATanDoubleTest2
+BOOST_AUTO_TEST_CASE( ATanDoubleTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<double, Iterations> generator;
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::atan( value );
+        auto result = Math::Internal::ATanImpl( value );
+        if ( stdResult != result )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-5 );
+    }
+    PrintLn( "ATanDoubleTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, firstUnequal, lastUnequal );
+}
+
+
+// --run_test=MathTests/ATan2FloatTest2
+BOOST_AUTO_TEST_CASE( ATan2FloatTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<float, Iterations> generator;
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto x = generator( );
+        auto y = generator( );
+        if ( y )
+        {
+            auto stdResult = std::atan2( x , y );
+            auto result = Math::Internal::ATan2Impl( x, y );
+            if ( stdResult != result )
+            {
+                if ( isFirst )
+                {
+                    firstUnequal = x / y;
+                    isFirst = false;
+                }
+                lastUnequal = x / y;
+                unequalCount++;
+                auto difference = std::abs( stdResult - result );
+                if ( difference > maxDifference )
+                {
+                    maxDifferenceFor = x / y;
+                    maxDifference = difference;
+                }
+            }
+            testCount++;
+        }
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-5 );
+    }
+    PrintLn( "ATan2FloatTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/ATan2DoubleTest2
+BOOST_AUTO_TEST_CASE( ATan2DoubleTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<double, Iterations> generator;
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto x = generator( );
+        auto y = generator( );
+        if ( y )
+        {
+            auto stdResult = std::atan2( x, y );
+            auto result = Math::Internal::ATan2Impl( x, y );
+            if ( stdResult != result )
+            {
+                if ( isFirst )
+                {
+                    firstUnequal = x / y;
+                    isFirst = false;
+                }
+                lastUnequal = x / y;
+                unequalCount++;
+                auto difference = std::abs( stdResult - result );
+                if ( difference > maxDifference )
+                {
+                    maxDifferenceFor = x / y;
+                    maxDifference = difference;
+                }
+            }
+            testCount++;
+        }
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-5 );
+    }
+    PrintLn( "ATan2FloatTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/FModFloatTest2
+BOOST_AUTO_TEST_CASE( FModFloatTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<float, Iterations> generator;
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto x = generator( );
+        auto y = generator( );
+        if ( y )
+        {
+            auto stdResult = std::fmod( x, y );
+            auto result = Math::FMod( x, y );
+            if ( stdResult != result )
+            {
+                if ( isFirst )
+                {
+                    firstUnequal = x / y;
+                    isFirst = false;
+                }
+                lastUnequal = x / y;
+                unequalCount++;
+                auto difference = std::abs( stdResult - result );
+                if ( difference > maxDifference )
+                {
+                    maxDifferenceFor = x / y;
+                    maxDifference = difference;
+                }
+            }
+            testCount++;
+        }
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-5 );
+    }
+    PrintLn( "FModDoubleTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, firstUnequal, lastUnequal );
+}
+
+
+// --run_test=MathTests/FModDoubleTest2
+BOOST_AUTO_TEST_CASE( FModDoubleTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<double, Iterations> generator;
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto x = generator( );
+        auto y = generator( );
+        if ( y )
+        {
+            auto stdResult = std::fmod( x, y );
+            auto result = Math::FMod( x, y );
+            if ( stdResult != result )
+            {
+                if ( isFirst )
+                {
+                    firstUnequal = x / y;
+                    isFirst = false;
+                }
+                lastUnequal = x / y;
+                unequalCount++;
+                auto difference = std::abs( stdResult - result );
+                if ( difference > maxDifference )
+                {
+                    maxDifferenceFor = x / y;
+                    maxDifference = difference;
+                }
+            }
+            testCount++;
+        }
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-5 );
+    }
+    PrintLn( "FModDoubleTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/ExpFloatTest2
+BOOST_AUTO_TEST_CASE( ExpFloatTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<float, Iterations> generator( -9, 10 );
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double maxStdResult = 0.0;
+    double maxResult = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::exp( value );
+        auto result = Math::Internal::ExpImpl( value );
+        if ( stdResult != result && stdResult != HUGE_VAL )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+                maxStdResult = stdResult;
+                maxResult = result;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-2 );
+    }
+    PrintLn( "ExpFloatTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, std: {:g}, Math: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, maxStdResult, maxResult, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/ExpDoubleTest2
+BOOST_AUTO_TEST_CASE( ExpDoubleTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<float, Iterations> generator( -9, 10 );
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double maxStdResult = 0.0;
+    double maxResult = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::exp( value );
+        auto result = Math::Internal::ExpImpl( value );
+        if ( stdResult != result && stdResult != HUGE_VAL )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+                maxStdResult = stdResult;
+                maxResult = result;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-2 );
+    }
+    PrintLn( "ExpDoubleTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, std: {:g}, Math: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, maxStdResult, maxResult, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/LogFloatTest2
+BOOST_AUTO_TEST_CASE( LogFloatTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<float, Iterations> generator( 0, 100000 );
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double maxStdResult = 0.0;
+    double maxResult = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::log( value );
+        auto result = Math::Internal::LogImpl( value );
+        if ( stdResult != result && stdResult != HUGE_VAL )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+                maxStdResult = stdResult;
+                maxResult = result;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-2 );
+    }
+    PrintLn( "LogFloatTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, std: {:g}, Math: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, maxStdResult, maxResult, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/LogDoubleTest2
+BOOST_AUTO_TEST_CASE( LogDoubleTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<double, Iterations> generator( 0, 100000 );
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double maxStdResult = 0.0;
+    double maxResult = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::log( value );
+        auto result = Math::Internal::LogImpl( value );
+        if ( stdResult != result && stdResult != HUGE_VAL )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+                maxStdResult = stdResult;
+                maxResult = result;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-2 );
+    }
+    PrintLn( "LogDoubleTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, std: {:g}, Math: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, maxStdResult, maxResult, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/Log2FloatTest2
+BOOST_AUTO_TEST_CASE( Log2FloatTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<float, Iterations> generator( 0, 100000 );
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double maxStdResult = 0.0;
+    double maxResult = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::log2( value );
+        auto result = Math::Internal::Log2Impl( value );
+        if ( stdResult != result && stdResult != HUGE_VAL )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+                maxStdResult = stdResult;
+                maxResult = result;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-2 );
+    }
+    PrintLn( "Log2FloatTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, std: {:g}, Math: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, maxStdResult, maxResult, firstUnequal, lastUnequal );
+}
 
 // --run_test=MathTests/Log2DoubleTest2
 BOOST_AUTO_TEST_CASE( Log2DoubleTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<double, Iterations> generator( 0, 100000 );
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double maxStdResult = 0.0;
+    double maxResult = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::log2( value );
+        auto result = Math::Internal::Log2Impl( value );
+        if ( stdResult != result && stdResult != HUGE_VAL )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+                maxStdResult = stdResult;
+                maxResult = result;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-2 );
+    }
+    PrintLn( "Log2DoubleTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, std: {:g}, Math: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, maxStdResult, maxResult, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/Log10FloatTest2
+BOOST_AUTO_TEST_CASE( Log10FloatTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<float, Iterations> generator( 0, 100000 );
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double maxStdResult = 0.0;
+    double maxResult = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::log10( value );
+        auto result = Math::Internal::Log10Impl( value );
+        if ( stdResult != result && stdResult != HUGE_VAL )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+                maxStdResult = stdResult;
+                maxResult = result;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-2 );
+    }
+    PrintLn( "Log10FloatTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, std: {:g}, Math: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, maxStdResult, maxResult, firstUnequal, lastUnequal );
+}
+
+// --run_test=MathTests/Log10DoubleTest2
+BOOST_AUTO_TEST_CASE( Log10DoubleTest2 )
+{
+    constexpr size_t Iterations = 10000;
+    RandomGenerator<double, Iterations> generator( 0, 100000 );
+
+    Int64 unequalCount = 0;
+    Int64 testCount = 0;
+    bool isFirst = true;
+    double maxDifference = 0.0;
+    double maxDifferenceFor = 0.0;
+    double maxStdResult = 0.0;
+    double maxResult = 0.0;
+    double firstUnequal = 0.0;
+    double lastUnequal = 0.0;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value = generator( );
+        auto stdResult = std::log10( value );
+        auto result = Math::Internal::Log10Impl( value );
+        if ( stdResult != result && stdResult != HUGE_VAL )
+        {
+            if ( isFirst )
+            {
+                firstUnequal = value;
+                isFirst = false;
+            }
+            lastUnequal = value;
+            unequalCount++;
+            auto difference = std::abs( stdResult - result );
+            if ( difference > maxDifference )
+            {
+                maxDifferenceFor = value;
+                maxDifference = difference;
+                maxStdResult = stdResult;
+                maxResult = result;
+            }
+        }
+        testCount++;
+    }
+    if ( unequalCount )
+    {
+        BOOST_CHECK( maxDifference < 1.0e-2 );
+    }
+    PrintLn( "Log10FloatTest2 -> Iterations: {}, Unequal: {}, max difference: {:g}, for: {:g}, std: {:g}, Math: {:g}, first: {:g}, last: {:g}", testCount, unequalCount, maxDifference, maxDifferenceFor, maxStdResult, maxResult, firstUnequal, lastUnequal );
+}
+
+
+// --run_test=MathTests/Log2DoubleTest3
+BOOST_AUTO_TEST_CASE( Log2DoubleTest3 )
 {
     constexpr double increment = 1.0000000000000001e-09;
     constexpr double argValue2 = 1.4142112734437984;

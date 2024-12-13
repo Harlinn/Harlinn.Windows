@@ -25,8 +25,9 @@
 #include <random>
 #include <DirectXMath.h>
 
-//#define RUN_BASIC_MATH_BENCHMARKS
+#define RUN_BASIC_MATH_BENCHMARKS
 #define RUN_VECTOR2FLOAT_BENCHMARKS
+#define RUN_SQUAREMATRIX_BENCHMARKS 1
 
 using namespace Harlinn::Common::Core;
 
