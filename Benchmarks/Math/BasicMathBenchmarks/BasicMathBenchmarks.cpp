@@ -1064,6 +1064,17 @@ static void BenchmarkFloatPbrtClamp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatPbrtClamp );
 
+static void BenchmarkDoubleInternalLerpImpl( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::LerpImpl( 5.0, 10.0, DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleInternalLerpImpl );
+
+
 static void BenchmarkDoubleLerp( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -1093,6 +1104,17 @@ static void BenchmarkFloatLerp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatLerp );
+
+
+static void BenchmarkFloatInternalLerpImpl( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::LerpImpl( 5.0f, 10.0f, FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatInternalLerpImpl );
 
 static void BenchmarkFloatStdLerp( benchmark::State& state )
 {
@@ -1706,7 +1728,7 @@ static void BenchmarkDoubleStdCos( benchmark::State& state )
     DoubleAngleInRadiansGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( std::sin( DoubleAngleInRadiansGenerator( ) ) );
+        benchmark::DoNotOptimize( std::cos( DoubleAngleInRadiansGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkDoubleStdCos );
@@ -1736,7 +1758,7 @@ static void BenchmarkFloatStdCos( benchmark::State& state )
     FloatAngleInRadiansGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( std::sin( FloatAngleInRadiansGenerator( ) ) );
+        benchmark::DoNotOptimize( std::cos( FloatAngleInRadiansGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatStdCos );
@@ -1767,7 +1789,7 @@ static void BenchmarkDoubleStdTan( benchmark::State& state )
     DoubleAngleInRadiansGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( std::sin( DoubleAngleInRadiansGenerator( ) ) );
+        benchmark::DoNotOptimize( std::tan( DoubleAngleInRadiansGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkDoubleStdTan );
@@ -1797,7 +1819,7 @@ static void BenchmarkFloatStdTan( benchmark::State& state )
     FloatAngleInRadiansGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( std::sin( FloatAngleInRadiansGenerator( ) ) );
+        benchmark::DoNotOptimize( std::tan( FloatAngleInRadiansGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatStdTan );
@@ -1896,7 +1918,7 @@ static void BenchmarkDoubleStdASin( benchmark::State& state )
     DoubleMinusOneToOneGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( std::atan( DoubleMinusOneToOneGenerator( ) ) );
+        benchmark::DoNotOptimize( std::asin( DoubleMinusOneToOneGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkDoubleStdASin );
@@ -1929,7 +1951,7 @@ static void BenchmarkFloatStdASin( benchmark::State& state )
     FloatMinusOneToOneGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( std::atan( FloatMinusOneToOneGenerator( ) ) );
+        benchmark::DoNotOptimize( std::asin( FloatMinusOneToOneGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatStdASin );
@@ -1962,7 +1984,7 @@ static void BenchmarkDoubleStdACos( benchmark::State& state )
     DoubleMinusOneToOneGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( std::atan( DoubleMinusOneToOneGenerator( ) ) );
+        benchmark::DoNotOptimize( std::acos( DoubleMinusOneToOneGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkDoubleStdACos );
@@ -1995,7 +2017,7 @@ static void BenchmarkFloatStdACos( benchmark::State& state )
     FloatMinusOneToOneGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( std::atan( FloatMinusOneToOneGenerator( ) ) );
+        benchmark::DoNotOptimize( std::acos( FloatMinusOneToOneGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatStdACos );

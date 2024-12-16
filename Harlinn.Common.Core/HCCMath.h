@@ -5579,7 +5579,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            std::lerp( a, b, t );
+            return std::lerp( a, b, t );
         }
     }
 

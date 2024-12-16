@@ -293,57 +293,25 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HCCArrayPerf01", "Examples\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Array", "Array", "{DF6C3BEF-B36B-4A06-868E-A8035EBA56EB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.Timeseries", "Harlinn.Timeseries\Harlinn.Timeseries.vcxproj", "{E68D9334-FB09-4EE2-B931-94ECA75C9A71}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B47470E4-2B24-4119-BAC1-4E8BC52FB19D} = {B47470E4-2B24-4119-BAC1-4E8BC52FB19D}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Timeseries", "Timeseries", "{85A093F7-2096-4148-A319-F9338E24B5ED}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HExPerf01", "Examples\Timeseries\HExPerf01\HExPerf01.vcxproj", "{BF3EA603-F944-4433-BD11-ED72A1589EDB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HExPerf02", "Examples\Timeseries\HExPerf02\HExPerf02.vcxproj", "{3D771388-2F11-4A2B-97E8-A0DA4624AF45}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HExPerf03", "Examples\Timeseries\HExPerf03\HExPerf03.vcxproj", "{132A8BC3-52C9-4D60-A758-5C25E980512F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HExPerf04", "Examples\Timeseries\HExPerf04\HExPerf04.vcxproj", "{D80C9441-83E5-4B20-8EA4-9A0EB8C72352}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HExPerf05", "Examples\Timeseries\HExPerf05\HExPerf05.vcxproj", "{9C4322C7-9EF8-40FD-A793-C54AE9358957}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HExPerf06", "Examples\Timeseries\HExPerf06\HExPerf06.vcxproj", "{C38DA308-D17C-4D2F-921A-374F172F6577}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HExPerf07", "Examples\Timeseries\HExPerf07\HExPerf07.vcxproj", "{46E1FA31-BABB-42C7-A179-BCBDA185AEFA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleTsDemo", "Examples\Timeseries\SimpleTsDemo\SimpleTsDemo.vcxproj", "{8DDD5709-64AF-41A4-B8D5-ABE40A93D424}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.Timeseries.Tests", "Tests\Harlinn.Timeseries.Tests\Harlinn.Timeseries.Tests.vcxproj", "{49A45CAB-5E49-4013-B4CA-E7E9F85C69EA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71} = {E68D9334-FB09-4EE2-B931-94ECA75C9A71}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Math", "Math", "{D5D9ACA3-5CA2-4080-B8A3-0B4F616DDA18}"
 EndProject
@@ -4481,28 +4449,6 @@ Global
 		{24F36CA9-2EAD-4D68-9F49-536FD2FA0BF4}.Release|x64.Build.0 = Release|x64
 		{24F36CA9-2EAD-4D68-9F49-536FD2FA0BF4}.Release|x86.ActiveCfg = Release|Win32
 		{24F36CA9-2EAD-4D68-9F49-536FD2FA0BF4}.Release|x86.Build.0 = Release|Win32
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Debug|ARM64.ActiveCfg = Debug|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Debug|ARM64.Build.0 = Debug|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Debug|x64.ActiveCfg = Debug|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Debug|x64.Build.0 = Debug|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Debug|x86.ActiveCfg = Debug|Win32
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Debug|x86.Build.0 = Debug|Win32
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Profile|Any CPU.ActiveCfg = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Profile|Any CPU.Build.0 = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Profile|ARM64.ActiveCfg = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Profile|ARM64.Build.0 = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Profile|x64.ActiveCfg = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Profile|x64.Build.0 = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Profile|x86.ActiveCfg = Release|Win32
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Profile|x86.Build.0 = Release|Win32
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Release|Any CPU.ActiveCfg = Release|Win32
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Release|ARM64.ActiveCfg = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Release|ARM64.Build.0 = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Release|x64.ActiveCfg = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Release|x64.Build.0 = Release|x64
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Release|x86.ActiveCfg = Release|Win32
-		{E68D9334-FB09-4EE2-B931-94ECA75C9A71}.Release|x86.Build.0 = Release|Win32
 		{BF3EA603-F944-4433-BD11-ED72A1589EDB}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{BF3EA603-F944-4433-BD11-ED72A1589EDB}.Debug|ARM64.ActiveCfg = Debug|x64
 		{BF3EA603-F944-4433-BD11-ED72A1589EDB}.Debug|ARM64.Build.0 = Debug|x64
