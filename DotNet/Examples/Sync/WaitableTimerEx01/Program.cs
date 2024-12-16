@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Harlinn.Common.Net.Sync;
+using Harlinn.Common.Core.Net.Sync;
 
 namespace WaitableTimerEx01
 {

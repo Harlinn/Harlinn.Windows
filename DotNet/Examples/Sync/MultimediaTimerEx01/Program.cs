@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Harlinn.Common.Net.Sync;
+using Harlinn.Common.Core.Net.Sync;
 
 
 namespace MultimediaTimerEx01

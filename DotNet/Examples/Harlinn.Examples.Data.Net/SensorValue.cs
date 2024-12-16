@@ -1,9 +1,10 @@
 ﻿using System;
-using Harlinn.Common.Net.IO;
+using System.IO;
+using Harlinn.Common.Core.Net.IO;
 
 namespace Harlinn.Examples.Data.Net
 {
-    public struct SensorValue : Common.Net.IReadWrite
+    public struct SensorValue : IReadWrite
     {
         Guid _sensor;
         DateTime _timestamp;

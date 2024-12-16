@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Harlinn.Common.Net.IO;
+﻿using System;
+using System.IO;
+using Harlinn.Common.Core.Net.IO;
 
 namespace Harlinn.Examples.TcpClient.Net.Types
 {
-    public class Header : Common.Net.IReadWrite
+    public class Header : IReadWrite
     {
         RequestReplyType _type;
 

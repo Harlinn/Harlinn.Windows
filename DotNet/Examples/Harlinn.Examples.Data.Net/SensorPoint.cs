@@ -1,10 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
-using Harlinn.Common.Net.IO;
+using Harlinn.Common.Core.Net.IO;
 
 namespace Harlinn.Examples.Data.Net
 {
-    public struct SensorPoint : Common.Net.IReadWrite
+    public struct SensorPoint : IReadWrite
     {
         DateTime _timestamp;
         long _flags;

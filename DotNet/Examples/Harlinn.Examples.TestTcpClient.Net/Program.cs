@@ -172,7 +172,7 @@ namespace Harlinn.Examples.TestTcpClient.Net
             int minutes = (int)duration.TotalMinutes;
             var step = TimeSpan.FromMinutes(1);
 
-            var generator = new Harlinn.Common.Net.Generators.SineGenerator(10, TimeSpan.FromHours(1), offset, 5);
+            var generator = new Harlinn.Common.Core.Net.Generators.SineGenerator(10, TimeSpan.FromHours(1), offset, 5);
 
             var points = new SensorPoint[minutes];
             var current = start;

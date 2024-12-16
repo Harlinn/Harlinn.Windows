@@ -1,11 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\..\Harlinn.Common.Net\Harlinn.Common.Net.csproj" />
+    <ProjectReference Include="..\..\Libraries\Harlinn.Common.Core.Net\Harlinn.Common.Core.Net.csproj" />
   </ItemGroup>
-
 </Project>

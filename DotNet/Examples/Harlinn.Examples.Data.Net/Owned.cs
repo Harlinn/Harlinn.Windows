@@ -1,5 +1,6 @@
 ﻿using System;
-using Harlinn.Common.Net.IO;
+using System.IO;
+using Harlinn.Common.Core.Net.IO;
 
 namespace Harlinn.Examples.Data.Net
 {

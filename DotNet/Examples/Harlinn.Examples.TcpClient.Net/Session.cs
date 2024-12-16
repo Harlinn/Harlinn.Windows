@@ -1,10 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using Harlinn.Examples.Data.Net;
-using Harlinn.Common.Net.IO;
-using Harlinn.Common.Net;
+using Harlinn.Common.Core.Net.IO;
 
 namespace Harlinn.Examples.TcpClient.Net
 {

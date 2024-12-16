@@ -2,11 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Harlinn.Common.Net\Harlinn.Common.Net.csproj" />
     <ProjectReference Include="..\Harlinn.Examples.Data.Net\Harlinn.Examples.Data.Net.csproj" />
     <ProjectReference Include="..\Harlinn.Examples.TcpClient.Net\Harlinn.Examples.TcpClient.Net.csproj" />
   </ItemGroup>
