@@ -25,8 +25,8 @@
 #include <random>
 #include <DirectXMath.h>
 
-#define RUN_BASIC_MATH_BENCHMARKS
-#define RUN_VECTOR2FLOAT_BENCHMARKS
+#define RUN_BASIC_MATH_BENCHMARKS 1
+#define RUN_VECTOR2FLOAT_BENCHMARKS 1
 #define RUN_SQUAREMATRIX_BENCHMARKS 1
 
 using namespace Harlinn::Common::Core;
@@ -37,7 +37,10 @@ struct RandomGenerator
     using FloatType = FloatT;
     std::array<FloatType, N> Values;
     size_t Counter = 0;
+    const FloatType LowerBound;
+    const FloatType UpperBound;
     RandomGenerator( FloatT lowerBound = -10000, FloatT upperBound = 10000 )
+        : LowerBound( lowerBound ), UpperBound( upperBound )
     {
         std::uniform_real_distribution<FloatType> unif( lowerBound, upperBound );
         std::default_random_engine re;
@@ -46,6 +49,9 @@ struct RandomGenerator
             Values[ i ] = unif( re );
         }
     }
+
+
+
     __forceinline FloatType operator( )( )
     {
         return Values[ Counter++ % N ];

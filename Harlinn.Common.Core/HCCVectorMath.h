@@ -2734,8 +2734,249 @@ namespace Harlinn::Common::Core::Math
         return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
     }
 
-    
+    // DifferenceOfProducts
 
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U> && Internal::IsCompatible<S, V>
+    inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        auto v34 = v3 * v4;
+        auto differenceOfProducts = FMA( v1, v2, -v34 );
+        auto error = FMA( -v3, v4, v34 );
+        return differenceOfProducts + error;
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( v1, v2, v3, Traits::Load( v4.values) );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( v1, v2, Traits::Load( v3.values ), v4  );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( v1, v2, Traits::Load( v3.values ), Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( v1, Traits::Load( v2.values ), v3, v4 );
+    }
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( v1, Traits::Load( v2.values ), v3, Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( v1, Traits::Load( v2.values ), Traits::Load( v3.values ), v4 );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( v1, Traits::Load( v2.values ), Traits::Load( v3.values ), Traits::Load( v4.values ) );
+    }
+    //
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( Traits::Load( v1.values ), v2, v3, Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( Traits::Load( v1.values ), v2, Traits::Load( v3.values ), v4 );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( Traits::Load( v1.values ), v2, Traits::Load( v3.values ), Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline U DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), v3, v4 );
+    }
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline U DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), v3, Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline V DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( v3.values ), v4 );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline typename S::Simd DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return DifferenceOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( v3.values ), Traits::Load( v4.values ) );
+    }
+
+    // SumOfProducts
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        auto v34 = v3 * v4;
+        auto sumOfProducts = FMA( v1, v2, v34 );
+        auto error = FMA( v3, v4, -v34 );
+        return sumOfProducts + error;
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( v1, v2, v3, Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( v1, v2, Traits::Load( v3.values ), v4 );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( v1, v2, Traits::Load( v3.values ), Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( v1, Traits::Load( v2.values ), v3, v4 );
+    }
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( v1, Traits::Load( v2.values ), v3, Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( v1, Traits::Load( v2.values ), Traits::Load( v3.values ), v4 );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( v1, Traits::Load( v2.values ), Traits::Load( v3.values ), Traits::Load( v4.values ) );
+    }
+    //
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( Traits::Load( v1.values ), v2, v3, Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( Traits::Load( v1.values ), v2, Traits::Load( v3.values ), v4 );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( Traits::Load( v1.values ), v2, Traits::Load( v3.values ), Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline U SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), v3, v4 );
+    }
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline U SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), v3, Traits::Load( v4.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline V SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( v3.values ), v4 );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
+    inline typename S::Simd SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return SumOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( v3.values ), Traits::Load( v4.values ) );
+    }
 
 
     template<Internal::SimdType T, typename ResultT = typename T::value_type >
@@ -3123,6 +3364,56 @@ namespace Harlinn::Common::Core::Math
         {
         }
     };
+
+    // https://www.iquilezles.org/www/articles/ibilinear/ibilinear.htm,
+    // with a fix for perfect quads
+    inline Point2f InvertBilinear( const Point2f& p, const std::span<const Point2f>& vert )
+    {
+        using FloatT = typename Point2f::value_type;
+        // The below assumes a quad (vs uv parametric layout) in v....
+        auto a = vert[ 0 ];  
+        auto b = vert[ 1 ]; 
+        auto c = vert[ 3 ]; 
+        auto d = vert[ 2 ];
+        
+        Vector2f e = b - a; 
+        Vector2f f = d - a; 
+        Vector2f g = ( a - b ) + ( c - d ); 
+        Vector2f h = p - a;
+
+        auto cross2d = []( Vector2f a, Vector2f b ) { return DifferenceOfProducts( a.x, b.y, a.y, b.x ); };
+
+        FloatT k2 = cross2d( g, f );
+        FloatT k1 = cross2d( e, f ) + cross2d( h, g );
+        FloatT k0 = cross2d( h, e );
+
+        // if edges are parallel, this is a linear equation
+        if ( std::abs( k2 ) < 0.001f )
+        {
+            if ( std::abs( e.x * k1 - g.x * k0 ) < 1e-5f )
+            {
+                return Point2f( ( h.y * k1 + f.y * k0 ) / ( e.y * k1 - g.y * k0 ), -k0 / k1 );
+            }
+            else
+            {
+                return Point2f( ( h.x * k1 + f.x * k0 ) / ( e.x * k1 - g.x * k0 ), -k0 / k1 );
+            }
+        }
+
+        FloatT v0, v1;
+        if ( !Quadratic( k2, k1, k0, &v0, &v1 ) )
+        {
+            return Point2f( 0, 0 );
+        }
+        FloatT u = ( h.x - f.x * v0 ) / ( e.x + g.x * v0 );
+        if ( u < 0 || u > 1 || v0 < 0 || v0 > 1 )
+        {
+            return Point2f( ( h.x - f.x * v1 ) / ( e.x + g.x * v1 ), v1 );
+        }
+        return Point2f( u, v0 );
+    }
+
+
 
     class Point3f : public Tuple3<Point3f, float>
     {

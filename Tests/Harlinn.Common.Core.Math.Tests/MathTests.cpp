@@ -1094,6 +1094,22 @@ BOOST_AUTO_TEST_CASE( ModFDoubleTest1 )
 
 }
 
+// --run_test=MathTests/InternalMinImplFloatTest1
+BOOST_AUTO_TEST_CASE( InternalMinImplFloatTest1 )
+{
+    auto minValue = Math::Internal::MinImpl( 5.f, 4.f, 3.f, 4.f, 4.f );
+    bool equal = minValue == 3.f;
+    BOOST_CHECK( equal );
+}
+
+// --run_test=MathTests/InternalMaxImplFloatTest1
+BOOST_AUTO_TEST_CASE( InternalMaxImplFloatTest1 )
+{
+    auto minValue = Math::Internal::MaxImpl( 5.f, 4.f, 3.f, 4.f, 4.f );
+    bool equal = minValue == 5.f;
+    BOOST_CHECK( equal );
+}
+
 
 
 // --run_test=MathTests/MinDoubleTest1
@@ -1826,21 +1842,90 @@ BOOST_AUTO_TEST_CASE( NextAfterDoubleTest1 )
 
 }
 
-// --run_test=MathTests/NextUpDoubleTest1
-BOOST_AUTO_TEST_CASE( NextUpDoubleTest1 )
+// --run_test=MathTests/NextUpFloatTest1
+BOOST_AUTO_TEST_CASE( NextUpFloatTest1 )
 {
-    constexpr double val1 = 2.0;
-    constexpr double val2 = 1.0;
+    constexpr float val1 = 2.0f;
+    constexpr float val2 = 1.0f;
 
-    constexpr double result1 = NextUp( val2 );
+    constexpr float result1 = NextUp( val2 );
     static_assert( result1 > val2 );
 
-    double result2 = std::nextafter( val2, val1 );
+    float result2 = std::nextafter( val2, val1 );
+
+    float result3 = pbrt::NextFloatUp( val2 );
 
     bool equal = IsSameValue( result2, result1 );
     BOOST_CHECK( equal );
 
+    equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+
 }
+
+// --run_test=MathTests/NextUpFloatTest2
+BOOST_AUTO_TEST_CASE( NextUpFloatTest2 )
+{
+    constexpr float val1 = -2.0f;
+    constexpr float val2 = -1.0f;
+
+    constexpr float result1 = NextUp( val2 );
+    static_assert( result1 > val2 );
+
+    float result2 = std::nextafter( val2, 0 );
+
+    float result3 = pbrt::NextFloatUp( val2 );
+
+    bool equal = IsSameValue( result2, result1 );
+    BOOST_CHECK( equal );
+
+    equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=MathTests/NextDownFloatTest1
+BOOST_AUTO_TEST_CASE( NextDownFloatTest1 )
+{
+    constexpr float val1 = 2.0f;
+    constexpr float val2 = 1.0f;
+
+    constexpr float result1 = NextDown( val1 );
+    static_assert( result1 < val1 );
+
+    float result2 = std::nextafter( val1, val2 );
+
+    float result3 = pbrt::NextFloatDown( val1 );
+
+    bool equal = IsSameValue( result2, result1 );
+    BOOST_CHECK( equal );
+
+    equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=MathTests/NextDownFloatTest2
+BOOST_AUTO_TEST_CASE( NextDownFloatTest2 )
+{
+    constexpr float val1 = -2.0f;
+    constexpr float val2 = -1.0f;
+
+    constexpr float result1 = NextDown( val2 );
+    static_assert( result1 < val2 );
+
+    float result2 = std::nextafter( val2, val1 );
+
+    float result3 = pbrt::NextFloatDown( val2 );
+
+    bool equal = IsSameValue( result2, result1 );
+    BOOST_CHECK( equal );
+
+    equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+
+}
+
+
 
 // --run_test=MathTests/NextDownDoubleTest1
 BOOST_AUTO_TEST_CASE( NextDownDoubleTest1 )

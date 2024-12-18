@@ -34,9 +34,13 @@ namespace Harlinn::Common::Core::Math
         using ValueType = float;
         static constexpr ValueType ShadowEpsilon = static_cast< ValueType >( 0.0001 );
 
+        static constexpr ValueType MinusOne = -1.f;
+        static constexpr ValueType MinusZero = -0.f;
         static constexpr ValueType Zero = 0.f;
         static constexpr ValueType One = 1.f;
-        static constexpr ValueType MinusOne = -1.f;
+        static constexpr ValueType Two = 2.f;
+        static constexpr ValueType Three = 3.f;
+        
         static constexpr ValueType Pi = static_cast< ValueType >( 3.14159265358979323846 );
         static constexpr ValueType PiTimes2 = static_cast< ValueType >( M_2_PI );
         static constexpr ValueType InvPi = static_cast< ValueType >( 0.31830988618379067154 );
@@ -59,9 +63,12 @@ namespace Harlinn::Common::Core::Math
         using ValueType = double;
         static constexpr ValueType ShadowEpsilon = static_cast< ValueType >( 0.0001 );
 
+        static constexpr ValueType MinusOne = -1.;
+        static constexpr ValueType MinusZero = -0.;
         static constexpr ValueType Zero = 0.;
         static constexpr ValueType One = 1.;
-        static constexpr ValueType MinusOne = -1.;
+        static constexpr ValueType Two = 2.;
+        static constexpr ValueType Three = 3.;
         static constexpr ValueType Pi = 3.14159265358979323846;
         static constexpr ValueType PiTimes2 = M_2_PI;
         static constexpr ValueType InvPi = 0.31830988618379067154;
@@ -4952,7 +4959,32 @@ namespace Harlinn::Common::Core::Math
         return Internal::ModFImpl( val, integerPart );
     }
 
+    namespace Internal
+    {
+        template<typename FloatT>
+        constexpr inline FloatT MinImpl( FloatT first, FloatT second )
+        {
+            return std::min( first, second );
+        }
 
+        template<typename FloatT, typename ...Args>
+        constexpr inline FloatT MinImpl( FloatT first, FloatT second, Args... remaining )
+        {
+            return MinImpl( std::min( first, second ), remaining... );
+        }
+
+        template<typename FloatT>
+        constexpr inline FloatT MaxImpl( FloatT first, FloatT second )
+        {
+            return std::max( first, second );
+        }
+
+        template<typename FloatT, typename ...Args>
+        constexpr inline FloatT MaxImpl( FloatT first, FloatT second, Args... remaining )
+        {
+            return MaxImpl( std::max( first, second ), remaining... );
+        }
+    }
 
 #ifdef HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP
     /// <summary>
@@ -5026,6 +5058,13 @@ namespace Harlinn::Common::Core::Math
         return std::min( first, second );
     }
 #endif
+    template<typename T, typename ...Args>
+        requires IsFloatingPoint<T> || IsInteger<T>
+    constexpr inline T Min( T first, T second, Args... remaining )
+    {
+        return Min( Min( first, second ), remaining... );
+    }
+
 
 #ifdef HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP
     /// <summary>
@@ -5099,6 +5138,13 @@ namespace Harlinn::Common::Core::Math
         return std::max( first, second );
     }
 #endif
+
+    template<typename T, typename ...Args>
+        requires IsFloatingPoint<T> || IsInteger<T>
+    constexpr inline T Max( T first, T second, Args... remaining )
+    {
+        return Max( Max( first, second ), remaining... );
+    }
 
     /// <summary>
     /// <para>
@@ -5226,20 +5272,6 @@ namespace Harlinn::Common::Core::Math
                 return result;
             }
             */
-            /*
-            if constexpr ( std::is_same_v<double, T> )
-            {
-                double result;
-                _mm_store_sd( &result, _mm_floor_pd( _mm_set_sd( value ) ) );
-                return result;
-            }
-            else
-            {
-                float result;
-                _mm_store_ss( &result, _mm_floor_ps( _mm_set_ss( value ) ) );
-                return result;
-            }
-            */
 #else
             if constexpr ( std::is_same_v<FloatT, float> )
             {
@@ -5320,20 +5352,6 @@ namespace Harlinn::Common::Core::Math
             {
                 float result;
                 _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC ) );
-                return result;
-            }
-            */
-            /*
-            if constexpr ( std::is_same_v<double, T> )
-            {
-                double result;
-                _mm_store_sd( &result, _mm_ceil_pd( _mm_set_sd( value ) ) );
-                return result;
-            }
-            else
-            {
-                float result;
-                _mm_store_ss( &result, _mm_ceil_ps( _mm_set_ss( value ) ) );
                 return result;
             }
             */
@@ -5499,7 +5517,34 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            return std::clamp( value, minimumValue, maximumValue );
+            if ( value < minimumValue )
+            {
+                return minimumValue;
+            }
+            else if ( value > maximumValue )
+            {
+                return maximumValue;
+            }
+            else
+            {
+                return value;
+            }
+
+            /*
+            if ( value >= minimumValue && value <= maximumValue ) [[likely]]
+            {
+                return value;
+            }
+            else if ( value > maximumValue )
+            {
+                return maximumValue;
+            }
+            
+            return minimumValue;
+            */
+            //const FloatT tmp = value < minimumValue ? minimumValue : value;
+            //return tmp > maximumValue ? maximumValue : tmp;
+            //return std::clamp( value, minimumValue, maximumValue );
             /*
             if constexpr ( std::is_same_v<FloatT, float> )
             {
@@ -7466,8 +7511,8 @@ namespace Harlinn::Common::Core::Math
         {
             if constexpr ( std::is_same_v<std::remove_cvref_t<T>, float> )
             {
-                //return Math::Internal::SinImpl( x );
-                return sinf( x );
+                return Math::Internal::SinImpl( x );
+                //return sinf( x );
             }
             else
             {
@@ -7529,8 +7574,8 @@ namespace Harlinn::Common::Core::Math
         {
             if constexpr ( std::is_same_v<std::remove_cvref_t<T>, float> )
             {
-                //return Math::Internal::CosImpl( x );
-                return cosf( x );
+                return Math::Internal::CosImpl( x );
+                //return cosf( x );
             }
             else
             {
@@ -7730,8 +7775,7 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            using Traits = SIMD::Traits<T, 1>;
-            return Traits::Lower( Traits::FMAdd( Traits::Load( &a ), Traits::Load( &b ), Traits::Load( &c ) ) );
+            return std::fma( a, b, c );
         }
     }
 
@@ -7750,16 +7794,24 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<FloatT>
     constexpr FloatT ExpM1( FloatT x )
     {
-        FloatT u = Exp( x );
-        if ( u == static_cast< FloatT >( 1. ) )
+        if ( std::is_constant_evaluated( ) )
         {
-            return x;
+            FloatT u = Exp( x );
+            if ( u == static_cast< FloatT >( 1. ) )
+            {
+                return x;
+            }
+            if ( u - static_cast< FloatT >( 1. ) == static_cast< FloatT >( -1. ) )
+            {
+                return static_cast< FloatT >( -1. );
+            }
+            return ( u - static_cast< FloatT >( 1. ) ) * x / Log( u );
         }
-        if ( u - static_cast< FloatT >( 1. ) == static_cast< FloatT >( -1. ) )
+        else
         {
-            return static_cast< FloatT >( -1. );
+            using Traits = SIMD::Traits<FloatT, 1>;
+            return Traits::Lower( Traits::ExpM1( Traits::Load( &x ) ) );
         }
-        return ( u - static_cast< FloatT >( 1. ) ) * x / Log( u ); 
     }
 
     template<typename FloatT>
@@ -7814,17 +7866,17 @@ namespace Harlinn::Common::Core::Math
     {
         if ( a == b )
         {
-            return x < a ? 0 : 1;
+            return x < a ? Constants< FloatT>::Zero : Constants< FloatT>::One;
         }
-        FloatT t = Clamp( ( x - a ) / ( b - a ), static_cast< FloatT >( 0 ), static_cast< FloatT >( 1 ) );
-        return t * t * ( static_cast< FloatT >( 3 ) - static_cast< FloatT >( 2 ) * t );
+        FloatT t = Clamp( ( x - a ) / ( b - a ), Constants< FloatT>::Zero, Constants< FloatT>::One );
+        return t * t * ( Constants< FloatT>::Three - Constants< FloatT>::Two * t );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT SafeSqrt( FloatT x )
     {
-        return Sqrt( std::max( static_cast< FloatT >( 0. ), x ) );
+        return Sqrt( std::max( Constants< FloatT>::Zero, x ) );
     }
 
     template<typename FloatT>
@@ -7834,32 +7886,43 @@ namespace Harlinn::Common::Core::Math
         return v * v;
     }
 
-    /*
+    
+    namespace Internal
+    {
+        template<typename FloatT>
+        struct FastPowImpl
+        {
+            template<int n>
+            static constexpr inline FloatT Pow( FloatT v )
+            {
+                if constexpr ( n < 0 )
+                {
+                    return Constants< FloatT>::One / Pow<-n>( v );
+                }
+                auto n2 = Pow<n / 2>( v );
+                return n2 * n2 * Pow<n & 1>( v );
+            }
+
+            template<>
+            static constexpr inline FloatT Pow<1>( FloatT v )
+            {
+                return v;
+            }
+            template<>
+            static constexpr inline FloatT Pow<0>( FloatT v )
+            {
+                return Constants< FloatT>::One;
+            }
+        };
+    }
+
     template<int n, typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT FastPow( FloatT v )
     {
-        if constexpr ( n < 0 )
-        {
-            return static_cast< FloatT >( 1 )/ Pow<-n>( v );
-        }
-        auto n2 = Pow<n / 2>( v );
-        return n2 * n2 * Pow<n & 1>( v );
+        return Internal::FastPowImpl<FloatT>::Pow<n>( v );
     }
 
-    template<> 
-        requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT FastPow<1>( FloatT v )
-    {
-        return v;
-    }
-    template<typename FloatT>
-        requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT FastPow<0, FloatT>( FloatT v )
-    {
-        return static_cast< FloatT >( 1 );
-    }
-    */
 
     template <typename FloatT, typename C>
     constexpr inline FloatT EvaluatePolynomial( FloatT t, C c )
@@ -7877,30 +7940,32 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT SafeASin( FloatT x )
     {
-        return ASin( Clamp( x, static_cast< FloatT >( -1.0 ), static_cast< FloatT >( 1.0 ) ) );
+        return ASin( Clamp( x, Constants< FloatT >::MinusOne, Constants< FloatT >::One ) );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT SafeACos( FloatT x )
     {
-        return ACos( Clamp( x, static_cast< FloatT >( -1.0 ), static_cast< FloatT >( 1.0 ) ) );
+        return ACos( Clamp( x, Constants< FloatT >::MinusOne, Constants< FloatT >::One ) );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT NextFloatUp( FloatT v )
-    {
+    {   
+        return NextUp( v );
+        /*
         if ( IsInf( v ) && v > static_cast< FloatT >( 0. ) )
         {
             return v;
         }
         if ( v == static_cast< FloatT >( -0. ) )
         {
-            v = static_cast< FloatT >( 0. );
+            v = static_cast< FloatT >( 0 );
         }
         auto ui = std::bit_cast< MakeUnsigned<FloatT> >( v );
-        if ( v >= static_cast< FloatT >( 0. ) )
+        if ( v >= static_cast< FloatT >( 0 ) )
         {
             ++ui;
         }
@@ -7909,12 +7974,15 @@ namespace Harlinn::Common::Core::Math
             --ui;
         }
         return std::bit_cast<FloatT>( ui );
+        */
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr float NextFloatDown( float v )
+    constexpr FloatT NextFloatDown( FloatT v )
     {
+        return NextDown( v );
+        /*
         if ( IsInf( v ) && v < static_cast< FloatT >( 0. ) )
         {
             return v;
@@ -7923,7 +7991,7 @@ namespace Harlinn::Common::Core::Math
         {
             v = static_cast< FloatT >( -0. );
         }
-        uint32_t ui = std::bit_cast< MakeUnsigned<FloatT> >( v );
+        auto ui = std::bit_cast< MakeUnsigned<FloatT> >( v );
         if ( v > static_cast< FloatT >( 0. ) )
         {
             --ui;
@@ -7933,13 +8001,14 @@ namespace Harlinn::Common::Core::Math
             ++ui;
         }
         return std::bit_cast< FloatT >( ui );
+        */
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT Gamma( int n )
     {
-        return ( static_cast< FloatT >( n ) * Constants<FloatT>::MachineEpsilon ) / ( static_cast< FloatT >( 1. ) - static_cast< FloatT >( n ) * Constants<FloatT>::MachineEpsilon );
+        return ( static_cast< FloatT >( n ) * Constants<FloatT>::MachineEpsilon ) / ( Constants< FloatT >::One - static_cast< FloatT >( n ) * Constants<FloatT>::MachineEpsilon );
     }
 
     template<typename FloatT>
@@ -8000,7 +8069,7 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT SqrtRoundUp( FloatT a )
     {
-        return NextFloatUp( std::sqrt( a ) );
+        return NextFloatUp( Sqrt( a ) );
     }
 
     template<typename FloatT>
@@ -8150,7 +8219,7 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT LogisticCDF( FloatT x, FloatT s )
     {
-        return 1 / ( 1 + Exp( -x / s ) );
+        return static_cast< FloatT >( 1 ) / ( static_cast< FloatT >( 1 ) + Exp( -x / s ) );
     }
 
     template<typename FloatT>
@@ -8298,6 +8367,7 @@ namespace Harlinn::Common::Core::Math
     }
 
     template <typename Ta, typename Tb, typename Tc, typename Td>
+        requires IsFloatingPoint<Ta> && IsFloatingPoint<Tb> && IsFloatingPoint<Tc> && IsFloatingPoint<Td>
     constexpr inline auto DifferenceOfProducts( Ta a, Tb b, Tc c, Td d )
     {
         auto cd = c * d;
@@ -8307,6 +8377,7 @@ namespace Harlinn::Common::Core::Math
     }
 
     template <typename Ta, typename Tb, typename Tc, typename Td>
+        requires IsFloatingPoint<Ta>&& IsFloatingPoint<Tb>&& IsFloatingPoint<Tc>&& IsFloatingPoint<Td>
     constexpr inline auto SumOfProducts( Ta a, Tb b, Tc c, Td d )
     {
         auto cd = c * d;
@@ -8355,9 +8426,9 @@ namespace Harlinn::Common::Core::Math
     constexpr inline bool Quadratic( FloatT a, FloatT b, FloatT c, FloatT* t0, FloatT* t1 )
     {
         // Handle case of $a=0$ for quadratic solution
-        if ( a == 0 )
+        if ( a == static_cast< FloatT >( 0 ) )
         {
-            if ( b == 0 )
+            if ( b == static_cast< FloatT >( 0 ) )
             {
                 return false;
             }
@@ -8374,7 +8445,7 @@ namespace Harlinn::Common::Core::Math
         FloatT rootDiscrim = Sqrt( discrim );
 
         // Compute quadratic _t_ values
-        FloatT q = -0.5f * ( b + CopySign( rootDiscrim, b ) );
+        FloatT q = static_cast< FloatT >( -0.5 ) * ( b + CopySign( rootDiscrim, b ) );
         *t0 = q / a;
         *t1 = c / q;
         if ( *t0 > *t1 )
@@ -8397,7 +8468,7 @@ namespace Harlinn::Common::Core::Math
         {
             return x1;
         }
-        bool startIsNegative = fx0 < 0;
+        bool startIsNegative = fx0 < static_cast< FloatT >( 0 );
 
         // Set initial midpoint using linear approximation of f
         FloatT xMid = x0 + ( x1 - x0 ) * -fx0 / ( fx1 - fx0 );
@@ -8423,7 +8494,7 @@ namespace Harlinn::Common::Core::Math
             }
 
             // Stop the iteration if converged
-            if ( ( x1 - x0 ) < xEps || std::abs( fxMid.first ) < fEps )
+            if ( ( x1 - x0 ) < xEps || Abs( fxMid.first ) < fEps )
             {
                 return xMid;
             }
@@ -8432,7 +8503,609 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    
 
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    class Interval 
+    {
+    public:
+        using value_type = T;
+        //static constexpr Interval Pi{Constants<value_type>::Pi,Constants<value_type>::Pi };
+    private:
+        value_type lowerBound_ = static_cast< value_type >( 0 );
+        value_type upperBound_ = static_cast< value_type >( 0 );
+    public:
+        constexpr Interval( ) = default;
+
+        constexpr explicit Interval( value_type v )
+            : lowerBound_( v ), upperBound_( v )
+        {
+        }
+
+        constexpr Interval( value_type low, value_type high )
+            : lowerBound_( std::min(low, high) ), upperBound_( std::max(low, high ) )
+        {
+        }
+    private:
+        constexpr Interval( value_type low, value_type high, bool )
+            : lowerBound_( low ), upperBound_( high )
+        {
+        }
+    public:
+        constexpr static Interval FromValueAndError( value_type v, value_type err )
+        {
+            if ( err == static_cast< value_type >( 0 ) )
+            {
+                return Interval(v);
+            }
+            else
+            {
+                return Interval( SubRoundDown( v, err ), AddRoundUp( v, err ) );
+            }
+        }
+
+        constexpr Interval& operator=( value_type v )
+        {
+            lowerBound_ = v; 
+            upperBound_ = v;
+            return *this;
+        }
+
+        constexpr value_type UpperBound( ) const { return upperBound_; }
+        constexpr value_type LowerBound( ) const { return lowerBound_; }
+        constexpr value_type Midpoint( ) const { return ( lowerBound_ + upperBound_ ) / 2; }
+        constexpr value_type Width( ) const { return upperBound_ - lowerBound_; }
+
+        constexpr value_type operator[]( size_t i ) const
+        {
+            return i == 0 ? lowerBound_ : upperBound_;
+        }
+
+        constexpr explicit operator value_type( ) const
+        {
+            return Midpoint( );
+        }
+
+        
+        constexpr bool Exactly( value_type v ) const
+        {
+            return lowerBound_ == v && upperBound_ == v;
+        }
+
+        constexpr bool operator==( value_type v ) const
+        {
+            return Exactly( v );
+        }
+
+        constexpr Interval operator-( ) const
+        {
+            return { -upperBound_, -lowerBound_ };
+        }
+
+        constexpr Interval operator+( const Interval& i ) const
+        {
+            return { AddRoundDown( lowerBound_, i.lowerBound_ ), AddRoundUp( upperBound_, i.upperBound_ ) };
+        }
+
+        constexpr Interval operator-( const Interval& i ) const
+        {
+            return { SubRoundDown( lowerBound_, i.upperBound_ ), SubRoundUp( upperBound_, i.lowerBound_ ) };
+        }
+
+        constexpr Interval operator*( const Interval& i ) const
+        {
+            value_type lp[ 4 ] = 
+            { 
+                MulRoundDown( lowerBound_, i.lowerBound_ ), 
+                MulRoundDown( upperBound_, i.lowerBound_ ),
+                MulRoundDown( lowerBound_, i.upperBound_ ), 
+                MulRoundDown( upperBound_, i.upperBound_ ) 
+            };
+            value_type hp[ 4 ] = 
+            { 
+                MulRoundUp( lowerBound_, i.lowerBound_ ), 
+                MulRoundUp( upperBound_, i.lowerBound_ ),
+                MulRoundUp( lowerBound_, i.upperBound_ ), 
+                MulRoundUp( upperBound_, i.upperBound_ ) 
+            };
+            return { Min( lp[ 0 ], lp[ 1 ], lp[ 2 ], lp[ 3 ] ),
+                    Max( hp[ 0 ], hp[ 1 ], hp[ 2 ], hp[ 3 ] ) };
+
+
+            /*
+            return { std::min( {lp[ 0 ], lp[ 1 ], lp[ 2 ], lp[ 3 ]} ),
+                    std::max( {hp[ 0 ], hp[ 1 ], hp[ 2 ], hp[ 3 ]} ) };
+            */
+        }
+
+        constexpr Interval operator/( const Interval& i ) const;
+
+        constexpr bool operator==( const Interval& i ) const
+        {
+            return lowerBound_ == i.lowerBound_ && upperBound_ == i.upperBound_;
+        }
+
+        constexpr bool operator!=( value_type f ) const
+        {
+            return f < lowerBound_ || f > upperBound_;
+        }
+
+        std::string ToString( ) const;
+
+        constexpr Interval& operator+=( Interval i )
+        {
+            *this = Interval( *this + i );
+            return *this;
+        }
+        constexpr Interval& operator-=( Interval i )
+        {
+            *this = Interval( *this - i );
+            return *this;
+        }
+        constexpr Interval& operator*=( Interval i )
+        {
+            *this = Interval( *this * i );
+            return *this;
+        }
+        constexpr Interval& operator/=( Interval i )
+        {
+            *this = Interval( *this / i );
+            return *this;
+        }
+        constexpr Interval& operator+=( value_type f ) { return *this += Interval( f ); }
+        constexpr Interval& operator-=( value_type f ) { return *this -= Interval( f ); }
+        constexpr Interval& operator*=( value_type f )
+        {
+            if ( f > static_cast< value_type >( 0 ) )
+            {
+                *this = Interval( MulRoundDown( f, lowerBound_ ), MulRoundUp( f, upperBound_ ) );
+            }
+            else
+            {
+                *this = Interval( MulRoundDown( f, upperBound_ ), MulRoundUp( f, lowerBound_ ) );
+            }
+            return *this;
+        }
+        constexpr Interval& operator/=( value_type f )
+        {
+            if ( f > static_cast< value_type >( 0 ) )
+            {
+                *this = Interval( DivRoundDown( lowerBound_, f ), DivRoundUp( upperBound_, f ) );
+            }
+            else
+            {
+                *this = Interval( DivRoundDown( upperBound_, f ), DivRoundUp( lowerBound_, f ) );
+            }
+            return *this;
+        }
+
+
+    };
+
+    // Interval Inline Functions
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline bool InRange( FloatT value, const Interval<FloatT>& interval )
+    {
+        return value >= interval.LowerBound( ) && value <= interval.UpperBound( );
+    }
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline bool InRange( const Interval<FloatT>& first, const Interval<FloatT>& second )
+    {
+        return first.LowerBound( ) <= second.UpperBound( ) && first.UpperBound( ) >= second.LowerBound( );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline Interval<FloatT> Interval<FloatT>::operator/( const Interval<FloatT>& interval ) const
+    {
+        if ( InRange( static_cast< FloatT >( 0 ), interval ) )
+        {
+            // The interval we're dividing by straddles zero, so just
+            // return an interval of everything.
+            return Interval<FloatT>( -std::numeric_limits<FloatT>::infinity(), std::numeric_limits<FloatT>::infinity( ) );
+        }
+        FloatT lowQuot[ 4 ] = { DivRoundDown( lowerBound_, interval.lowerBound_ ), DivRoundDown( upperBound_, interval.lowerBound_ ),
+                            DivRoundDown( lowerBound_, interval.upperBound_ ), DivRoundDown( upperBound_, interval.upperBound_ ) };
+        FloatT highQuot[ 4 ] = { DivRoundUp( lowerBound_, interval.lowerBound_ ), DivRoundUp( upperBound_, interval.lowerBound_ ),
+                             DivRoundUp( lowerBound_, interval.upperBound_ ), DivRoundUp( upperBound_, interval.upperBound_ ) };
+        return { Min( lowQuot[ 0 ], lowQuot[ 1 ], lowQuot[ 2 ], lowQuot[ 3 ] ),
+                Max( highQuot[ 0 ], highQuot[ 1 ], highQuot[ 2 ], highQuot[ 3 ] ) };
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline Interval<FloatT> Sqr( const Interval<FloatT>& interval )
+    {
+        FloatT alow = Abs( interval.LowerBound( ) ); 
+        FloatT ahigh = Abs( interval.UpperBound( ) );
+        if ( alow > ahigh )
+        {
+            std::swap( alow, ahigh );
+        }
+        if ( InRange( static_cast< FloatT >( 0 ), interval ) )
+        {
+            return Interval<FloatT>( static_cast< FloatT >( 0 ), MulRoundUp( ahigh, ahigh ) );
+        }
+        return Interval<FloatT>( MulRoundDown( alow, alow ), MulRoundUp( ahigh, ahigh ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> MulPow2( FloatT s, const Interval<FloatT>& i );
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> MulPow2( const Interval<FloatT>& i, FloatT s );
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> operator+( FloatT f, const Interval<FloatT>& i )
+    {
+        return Interval<FloatT>( f ) + i;
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> operator-( FloatT f, const Interval<FloatT>& i )
+    {
+        return Interval<FloatT>( f ) - i;
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> operator*( FloatT f, const Interval<FloatT>& i )
+    {
+        if ( f > static_cast< FloatT >( 0 ) )
+        {
+            return Interval<FloatT>( MulRoundDown( f, i.LowerBound( ) ), MulRoundUp( f, i.UpperBound( ) ) );
+        }
+        else
+        {
+            return Interval<FloatT>( MulRoundDown( f, i.UpperBound( ) ), MulRoundUp( f, i.LowerBound( ) ) );
+        }
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> operator/( FloatT f, const Interval<FloatT>& i )
+    {
+        if ( InRange( static_cast< FloatT >( 0 ), i ) )
+        {
+            // The interval we're dividing by straddles zero, so just
+            // return an interval of everything.
+            return Interval<FloatT>( -std::numeric_limits<FloatT>::infinity( ), std::numeric_limits<FloatT>::infinity( ) );
+        }
+
+        if ( f > static_cast< FloatT >( 0 ) )
+        {
+            return Interval( DivRoundDown( f, i.UpperBound( ) ), DivRoundUp( f, i.LowerBound( ) ) );
+        }
+        else
+        {
+            return Interval( DivRoundDown( f, i.LowerBound( ) ), DivRoundUp( f, i.UpperBound( ) ) );
+        }
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> operator+( const Interval<FloatT>& i, FloatT f )
+    {
+        return i + Interval( f );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> operator-( const Interval<FloatT>& i, FloatT f )
+    {
+        return i - Interval( f );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> operator*( const Interval<FloatT>& i, FloatT f )
+    {
+        if ( f > static_cast< FloatT >( 0 ) )
+            return Interval( MulRoundDown( f, i.LowerBound( ) ), MulRoundUp( f, i.UpperBound( ) ) );
+        else
+            return Interval( MulRoundDown( f, i.UpperBound( ) ), MulRoundUp( f, i.LowerBound( ) ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> operator/( const Interval<FloatT>& i, FloatT f )
+    {
+        if ( f == static_cast< FloatT >( 0 ) )
+        {
+            return Interval( -std::numeric_limits<FloatT>::infinity( ), std::numeric_limits<FloatT>::infinity( ) );
+        }
+
+        if ( f > static_cast< FloatT >( 0 ) )
+        {
+            return Interval( DivRoundDown( i.LowerBound( ), f ), DivRoundUp( i.UpperBound( ), f ) );
+        }
+        else
+        {
+            return Interval( DivRoundDown( i.UpperBound( ), f ), DivRoundUp( i.LowerBound( ), f ) );
+        }
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline FloatT Floor( const Interval<FloatT>& i )
+    {
+        return Floor( i.LowerBound( ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline FloatT Ceil( const Interval<FloatT>& i )
+    {
+        return Ceil( i.UpperBound( ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline FloatT floor( const Interval<FloatT>& i )
+    {
+        return Floor( i );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline FloatT ceil( const Interval<FloatT>& i )
+    {
+        return Ceil( i );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline FloatT Min( const Interval<FloatT>& a, const Interval<FloatT>& b )
+    {
+        return std::min( a.LowerBound( ), b.LowerBound( ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline FloatT Max( const Interval<FloatT>& a, const Interval<FloatT>& b )
+    {
+        return std::max( a.UpperBound( ), b.UpperBound( ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline FloatT min( const Interval<FloatT>& a, const Interval<FloatT>& b )
+    {
+        return Min( a, b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline FloatT max( const Interval<FloatT>& a, const Interval<FloatT>& b )
+    {
+        return Max( a, b );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> Sqrt( const Interval<FloatT>& i )
+    {
+        return { SqrtRoundDown( i.LowerBound( ) ), SqrtRoundUp( i.UpperBound( ) ) };
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> sqrt( const Interval<FloatT>& i )
+    {
+        return Sqrt( i );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> FMA( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c )
+    {
+        FloatT low = Min( FMARoundDown( a.LowerBound( ), b.LowerBound( ), c.LowerBound( ) ),
+                              FMARoundDown( a.UpperBound( ), b.LowerBound( ), c.LowerBound( ) ),
+                              FMARoundDown( a.LowerBound( ), b.UpperBound( ), c.LowerBound( ) ),
+                              FMARoundDown( a.UpperBound( ), b.UpperBound( ), c.LowerBound( ) ) );
+        FloatT high = Max( FMARoundUp( a.LowerBound( ), b.LowerBound( ), c.UpperBound( ) ),
+                               FMARoundUp( a.UpperBound( ), b.LowerBound( ), c.UpperBound( ) ),
+                               FMARoundUp( a.LowerBound( ), b.UpperBound( ), c.UpperBound( ) ),
+                               FMARoundUp( a.UpperBound( ), b.UpperBound( ), c.UpperBound( ) ) );
+        return Interval<FloatT>( low, high );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> DifferenceOfProducts( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, const Interval<FloatT>& d )
+    {
+        FloatT ab[ 4 ] = 
+        { 
+            a.LowerBound( ) * b.LowerBound( ), 
+            a.UpperBound( ) * b.LowerBound( ),
+            a.LowerBound( ) * b.UpperBound( ), 
+            a.UpperBound( ) * b.UpperBound( ) 
+        };
+        FloatT abLow = Min( ab[ 0 ], ab[ 1 ], ab[ 2 ], ab[ 3 ] );
+        FloatT abHigh = Max( ab[ 0 ], ab[ 1 ], ab[ 2 ], ab[ 3 ] );
+        int abLowIndex = abLow == ab[ 0 ] ? 0 : ( abLow == ab[ 1 ] ? 1 : ( abLow == ab[ 2 ] ? 2 : 3 ) );
+        int abHighIndex =
+            abHigh == ab[ 0 ] ? 0 : ( abHigh == ab[ 1 ] ? 1 : ( abHigh == ab[ 2 ] ? 2 : 3 ) );
+
+        FloatT cd[ 4 ] = 
+        { 
+            c.LowerBound( ) * d.LowerBound( ), 
+            c.UpperBound( ) * d.LowerBound( ),
+            c.LowerBound( ) * d.UpperBound( ), 
+            c.UpperBound( ) * d.UpperBound( ) 
+        };
+        FloatT cdLow = Min( cd[ 0 ], cd[ 1 ], cd[ 2 ], cd[ 3 ] );
+        FloatT cdHigh = Max( cd[ 0 ], cd[ 1 ], cd[ 2 ], cd[ 3 ] );
+        int cdLowIndex = cdLow == cd[ 0 ] ? 0 : ( cdLow == cd[ 1 ] ? 1 : ( cdLow == cd[ 2 ] ? 2 : 3 ) );
+        int cdHighIndex = cdHigh == cd[ 0 ] ? 0 : ( cdHigh == cd[ 1 ] ? 1 : ( cdHigh == cd[ 2 ] ? 2 : 3 ) );
+
+        // Invert cd Indices since it's subtracted...
+        FloatT low = DifferenceOfProducts( a[ abLowIndex & 1 ], b[ abLowIndex >> 1 ], c[ cdHighIndex & 1 ], d[ cdHighIndex >> 1 ] );
+        FloatT high = DifferenceOfProducts( a[ abHighIndex & 1 ], b[ abHighIndex >> 1 ], c[ cdLowIndex & 1 ], d[ cdLowIndex >> 1 ] );
+        
+
+        return { NextFloatDown( NextFloatDown( low ) ), NextFloatUp( NextFloatUp( high ) ) };
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> SumOfProducts( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, const Interval<FloatT>& d )
+    {
+        return DifferenceOfProducts( a, b, -c, d );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> MulPow2( FloatT s, const Interval<FloatT>& i )
+    {
+        return MulPow2( i, s );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> MulPow2( const Interval<FloatT>& i, FloatT s )
+    {
+        FloatT as = std::abs( s );
+
+        // Multiplication by powers of 2 is exaact
+        return Interval<FloatT>( std::min( i.LowerBound( ) * s, i.UpperBound( ) * s ),
+            std::max( i.LowerBound( ) * s, i.UpperBound( ) * s ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> Abs( const Interval<FloatT>& i )
+    {
+        if ( i.LowerBound( ) >= static_cast< FloatT >( 0 ) )
+        {
+            // The entire interval is greater than zero, so we're all set.
+            return i;
+        }
+        else if ( i.UpperBound( ) <= static_cast< FloatT >( 0 ) )
+        {
+            // The entire interval is less than zero.
+            return Interval( -i.UpperBound( ), -i.LowerBound( ) );
+        }
+        else
+        {
+            // The interval straddles zero.
+            return Interval( static_cast< FloatT >( 0 ), std::max( -i.LowerBound( ), i.UpperBound( ) ) );
+        }
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> abs( const Interval<FloatT>& i )
+    {
+        return Abs( i );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> ACos( const Interval<FloatT>& i )
+    {
+        FloatT low = ACos( std::min<FloatT>( static_cast< FloatT >( 1 ), i.UpperBound( ) ) );
+        FloatT high = ACos( std::max<FloatT>( static_cast< FloatT >( -1 ), i.LowerBound( ) ) );
+
+        return Interval<FloatT>( std::max<FloatT>( static_cast< FloatT >( 0 ), NextFloatDown( low ) ), NextFloatUp( high ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> Sin( const Interval<FloatT>& i )
+    {
+        FloatT low = Math::Sin( std::max<FloatT>( static_cast< FloatT >( 0 ), i.LowerBound( ) ) );
+        FloatT high = Math::Sin( i.UpperBound( ) );
+
+        if ( low > high )
+        {
+            std::swap( low, high );
+        }
+        low = std::max<FloatT>( static_cast< FloatT >( -1 ), NextFloatDown( low ) );
+        high = std::min<FloatT>( static_cast< FloatT >( 1 ), NextFloatUp( high ) );
+        if ( InRange( Constants<FloatT>::PiOver2, i ) )
+        {
+            high = static_cast< FloatT >( 1 );
+        }
+        if ( InRange( ( static_cast< FloatT >( 3. ) / static_cast< FloatT >( 2. ) ) * Constants<FloatT>::Pi, i ) )
+        {
+            low = static_cast< FloatT >( -1 );
+        }
+        return Interval( low, high );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> Cos( const Interval<FloatT>& i )
+    {
+        FloatT low = std::cos( std::max<FloatT>( static_cast< FloatT >( 0 ), i.LowerBound( ) ) );
+        FloatT high = Cos( i.UpperBound( ) );
+        if ( low > high )
+        {
+            std::swap( low, high );
+        }
+        low = std::max<FloatT>( static_cast< FloatT >( -1 ), NextFloatDown( low ) );
+        high = std::min<FloatT>( static_cast< FloatT >( 1 ), NextFloatUp( high ) );
+        if ( InRange( Constants<FloatT>::Pi, i ) )
+        {
+            low = static_cast< FloatT >( -1 );
+        }
+
+        return Interval( low, high );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline bool Quadratic( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, Interval<FloatT>* t0, Interval<FloatT>* t1 )
+    {
+        // Find quadratic discriminant
+        auto discrim = DifferenceOfProducts( b, b, MulPow2( static_cast< FloatT >( 4 ), a ), c );
+        if ( discrim.LowerBound( ) < static_cast< FloatT >( 0 ) )
+        {
+            return false;
+        }
+        Interval<FloatT> floatRootDiscrim = Sqrt( discrim );
+
+        // Compute quadratic _t_ values
+        Interval<FloatT> q;
+        if ( ( FloatT )b < static_cast< FloatT >( 0 ) )
+        {
+            q = MulPow2( static_cast< FloatT >( -.5 ), b - floatRootDiscrim );
+        }
+        else
+        {
+            q = MulPow2( static_cast< FloatT >( -.5 ), b + floatRootDiscrim );
+        }
+        *t0 = q / a;
+        *t1 = c / q;
+        if ( t0->LowerBound( ) > t1->LowerBound( ) )
+        {
+            std::swap( *t0, *t1 );
+        }
+        return true;
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> SumSquares( const Interval<FloatT>& i )
+    {
+        return Sqr( i );
+    }
+
+    template <typename FloatT, typename... Args>
+        requires IsFloatingPoint<FloatT>
+    inline Interval<FloatT> SumSquares( const Interval<FloatT>& i, Args... args )
+    {
+        Interval ss = FMA( i, i, SumSquares( args... ) );
+        return Interval( std::max<FloatT>( 0, ss.LowerBound( ) ), ss.UpperBound( ) );
+    }
 
 
 }

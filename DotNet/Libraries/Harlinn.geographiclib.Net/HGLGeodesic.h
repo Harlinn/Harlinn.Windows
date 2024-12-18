@@ -140,6 +140,12 @@ namespace Harlinn::GeographicLib::Net
                 }
             }
         }
+    internal:
+        ::GeographicLib::Geodesic* Impl( )
+        {
+            return impl_;
+        }
+    public:    
 
         static property Geodesic^ WGS84
         {
@@ -172,17 +178,13 @@ namespace Harlinn::GeographicLib::Net
             return result;
         }
 
-        double Direct( GeoPoint^ point1, double azi1, double s12,
+        double Direct( GeoPoint point1, double azi1, double s12,
             [ Runtime::InteropServices::Out ] double% lat2, [ Runtime::InteropServices::Out ] double% lon2, [ Runtime::InteropServices::Out ] double% azi2,
             [ Runtime::InteropServices::Out ] double% m12, [ Runtime::InteropServices::Out ] double% M12, [ Runtime::InteropServices::Out ] double% M21, [ Runtime::InteropServices::Out ] double% S12 )
         {
-            if ( point1 == nullptr )
-            {
-                throw gcnew System::ArgumentNullException( L"point1" );
-            }
             double llat2, llon2, lazi2,
                 lm12, lM12, lM21, lS12;
-            double result = impl_->Direct( point1->Latitude, point1->Longitude, azi1, s12, llat2, llon2, lazi2, lm12, lM12, lM21, lS12 );
+            double result = impl_->Direct( point1.Latitude, point1.Longitude, azi1, s12, llat2, llon2, lazi2, lm12, lM12, lM21, lS12 );
             lat2 = llat2;
             lon2 = llon2;
             azi2 = lazi2;
@@ -203,15 +205,11 @@ namespace Harlinn::GeographicLib::Net
             return result;
         }
 
-        double Direct( GeoPoint^ point1, double azi1, double s12,
+        double Direct( GeoPoint point1, double azi1, double s12,
             [ Runtime::InteropServices::Out ] double% lat2, [ Runtime::InteropServices::Out ] double% lon2 )
         {
-            if ( point1 == nullptr )
-            {
-                throw gcnew System::ArgumentNullException( L"point1" );
-            }
             double llat2, llon2;
-            double result = impl_->Direct( point1->Latitude, point1->Longitude, azi1, s12, llat2, llon2 );
+            double result = impl_->Direct( point1.Latitude, point1.Longitude, azi1, s12, llat2, llon2 );
             lat2 = llat2;
             lon2 = llon2;
             return result;
@@ -229,16 +227,12 @@ namespace Harlinn::GeographicLib::Net
             return result;
         }
 
-        double Direct( GeoPoint^ point1, double azi1, double s12,
+        double Direct( GeoPoint point1, double azi1, double s12,
             [ Runtime::InteropServices::Out ] double% lat2, [ Runtime::InteropServices::Out ] double% lon2, [ Runtime::InteropServices::Out ] double% azi2 )
         {
-            if ( point1 == nullptr )
-            {
-                throw gcnew System::ArgumentNullException( L"point1" );
-            }
             double llat2, llon2, lazi2;
 
-            double result = impl_->Direct( point1->Latitude, point1->Longitude, azi1, s12, llat2, llon2, lazi2 );
+            double result = impl_->Direct( point1.Latitude, point1.Longitude, azi1, s12, llat2, llon2, lazi2 );
             lat2 = llat2;
             lon2 = llon2;
             azi2 = lazi2;
@@ -259,16 +253,12 @@ namespace Harlinn::GeographicLib::Net
             return result;
         }
 
-        double Direct( GeoPoint^ point1, double azi1, double s12,
+        double Direct( GeoPoint point1, double azi1, double s12,
             [ Runtime::InteropServices::Out ] double% lat2, [ Runtime::InteropServices::Out ] double% lon2, [ Runtime::InteropServices::Out ] double% azi2, [ Runtime::InteropServices::Out ] double% m12 )
         {
-            if ( point1 == nullptr )
-            {
-                throw gcnew System::ArgumentNullException( L"point1" );
-            }
             double llat2, llon2, lazi2, lm12;
 
-            double result = impl_->Direct( point1->Latitude, point1->Longitude, azi1, s12, llat2, llon2, lazi2, lm12 );
+            double result = impl_->Direct( point1.Latitude, point1.Longitude, azi1, s12, llat2, llon2, lazi2, lm12 );
             lat2 = llat2;
             lon2 = llon2;
             azi2 = lazi2;
@@ -290,16 +280,12 @@ namespace Harlinn::GeographicLib::Net
             return result;
         }
 
-        double Direct( GeoPoint^ point1, double azi1, double s12,
+        double Direct( GeoPoint point1, double azi1, double s12,
             [ Runtime::InteropServices::Out ] double% lat2, [ Runtime::InteropServices::Out ] double% lon2, [ Runtime::InteropServices::Out ] double% azi2, [ Runtime::InteropServices::Out ] double% M12, [ Runtime::InteropServices::Out ] double% M21 )
         {
-            if ( point1 == nullptr )
-            {
-                throw gcnew System::ArgumentNullException( L"point1" );
-            }
             double llat2, llon2, lazi2, lM12, lM21;
 
-            double result = impl_->Direct( point1->Latitude, point1->Longitude, azi1, s12, llat2, llon2, lazi2, lM12, lM21 );
+            double result = impl_->Direct( point1.Latitude, point1.Longitude, azi1, s12, llat2, llon2, lazi2, lM12, lM21 );
             lat2 = llat2;
             lon2 = llon2;
             azi2 = lazi2;
