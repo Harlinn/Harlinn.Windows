@@ -18,7 +18,7 @@
     <ClCompile Include="BasicMathBenchmarks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vector2FloatBenchmarks.cpp">
+    <ClCompile Include="TupleFloatBenchmarks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SquareMatrixBenchmarks.cpp">

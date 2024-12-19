@@ -1897,7 +1897,15 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static Type Lower( SIMDType src ) noexcept
+        /// <summary>
+        /// Returns the first element of <c>src</<>. The first
+        /// element is the element at the lowest position of <c>src</<>.
+        /// </summary>
+        /// <param name="src">SIMDType to extract the first value from.</param>
+        /// <returns>
+        /// The first element of <c>src</<>.
+        /// </returns>
+        static Type First( SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -1909,6 +1917,17 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Returns an array containing the lower <c>N</c> elements
+        /// of <c>v</c>.
+        /// </summary>
+        /// <param name="src">
+        /// The SIMDType holding the values to return
+        /// </param>
+        /// <returns>
+        /// An array containing the lower <c>N</c> elements
+        /// of <c>v</c>.
+        /// </returns>
         static ArrayType ToArray( SIMDType src ) noexcept
         {
             if constexpr ( N == SIMDTypeCapacity )
@@ -1919,8 +1938,8 @@ namespace Harlinn::Common::Core::SIMD
             }
             else if constexpr ( N == 1 )
             {
-                alignas( AlignAs ) ArrayType result;
-                _mm_store_ss( result.data( ), src );
+                ArrayType result;
+                result[ 0 ] = _mm_cvtss_f32( src );
                 return result;
             }
             else if constexpr ( N == 2 )
@@ -1950,6 +1969,184 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Returns a SIMDType with all elements set to the
+        /// value of <c>v[index]</c>.
+        /// </summary>
+        /// <typeparam name="index">
+        /// The index of the value, in <c>v</c> to assign to ell the elements
+        /// of the result, 
+        /// </typeparam>
+        /// <param name="v">
+        /// The SIMDType type containing the the source value.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with all elements set to the
+        /// value of <c>v[index]</c>.
+        /// </returns>
+        template<size_t index>
+            requires (index < Size)
+        static SIMDType At( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( index == 0)
+                {
+                    return _mm_permute_ps( v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+                }
+                else if constexpr ( index == 1 )
+                {
+                    return _mm_permute_ps( v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+                }
+                else if constexpr ( index == 2 )
+                {
+                    return _mm_permute_ps( v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+                }
+                else
+                {
+                    return _mm_permute_ps( v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
+                }
+            }
+            else
+            {
+                if constexpr ( index < 4 )
+                {
+                    auto low = _mm256_castps256_ps128( v );
+                    if constexpr ( index == 0 )
+                    {
+                        return _mm256_broadcastss_ps( low );
+                    }
+                    else if constexpr ( index == 1 )
+                    {
+                        return _mm256_broadcastss_ps( _mm_permute_ps( low, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                    }
+                    else if constexpr ( index == 2 )
+                    {
+                        return _mm256_broadcastss_ps( _mm_permute_ps( low, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                    }
+                    else
+                    {
+                        return _mm256_broadcastss_ps( _mm_permute_ps( low, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                    }
+                }
+                else
+                {
+                    auto high = _mm256_extractf128_ps( v, 1 );
+                    if constexpr ( index == 4 )
+                    {
+                        return _mm256_broadcastss_ps( high );
+                    }
+                    else if constexpr ( index == 5 )
+                    {
+                        return _mm256_broadcastss_ps( _mm_permute_ps( high, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                    }
+                    else if constexpr ( index == 6 )
+                    {
+                        return _mm256_broadcastss_ps( _mm_permute_ps( high, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                    }
+                    else
+                    {
+                        return _mm256_broadcastss_ps( _mm_permute_ps( high, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the value of <c>v[index]</c>.
+        /// </summary>
+        /// <typeparam name="index">
+        /// The index of the value, in <c>v</c>.
+        /// </typeparam>
+        /// <param name="v">
+        /// The SIMDType type containing the the source value.
+        /// </param>
+        /// <returns>
+        /// The value of <c>v[index]</c>.
+        /// </returns>
+        template<size_t index>
+            requires ( index < Size )
+        static Type Extract( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( index == 0 )
+                {
+                    return _mm_cvtss_f32( v );
+                }
+                else if constexpr ( index == 1 )
+                {
+                    return _mm_cvtss_f32( _mm_permute_ps( v, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                }
+                else if constexpr ( index == 2 )
+                {
+                    return _mm_cvtss_f32( _mm_permute_ps( v, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                }
+                else
+                {
+                    return _mm_cvtss_f32( _mm_permute_ps( v, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                }
+            }
+            else
+            {
+                if constexpr ( index < 4 )
+                {
+                    auto low = _mm256_castps256_ps128( v );
+                    if constexpr ( index == 0 )
+                    {
+                        return _mm_cvtss_f32( low );
+                    }
+                    else if constexpr ( index == 1 )
+                    {
+                        return _mm_cvtss_f32( _mm_permute_ps( low, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                    }
+                    else if constexpr ( index == 2 )
+                    {
+                        return _mm_cvtss_f32( _mm_permute_ps( low, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                    }
+                    else
+                    {
+                        return _mm_cvtss_f32( _mm_permute_ps( low, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                    }
+                }
+                else
+                {
+                    auto high = _mm256_extractf128_ps( v, 1 );
+                    if constexpr ( index == 4 )
+                    {
+                        return _mm_cvtss_f32( high );
+                    }
+                    else if constexpr ( index == 5 )
+                    {
+                        return _mm_cvtss_f32( _mm_permute_ps( high, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                    }
+                    else if constexpr ( index == 6 )
+                    {
+                        return _mm_cvtss_f32( _mm_permute_ps( high, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                    }
+                    else
+                    {
+                        return _mm_cvtss_f32( _mm_permute_ps( high, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                    }
+                }
+            }
+        }
+
+        
+
+
+
+        /// <summary>
+        /// Returns true if at least one of the values in <c>v</c> is NaN,
+        /// otherwise false.
+        /// </summary>
+        /// <param name="v">
+        /// A SIMDType holding the values to test.
+        /// </param>
+        /// <returns>
+        /// Returns true if at least one of the values in <c>v</c> is NaN,
+        /// otherwise false.
+        /// </returns>
         static bool HasNaN( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2267,14 +2464,16 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept requires( UseShortSIMDType )
+        static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept 
+            requires( UseShortSIMDType )
         {
             std::array<UInt32, 4> selection{ selection1, selection2, selection3, selection4 };
             __m128i selectionControl = _mm_loadu_si128( reinterpret_cast< const __m128i* >( selection[ 0 ].data( ) ) );
             return _mm_permutevar_ps( v, selectionControl );
         }
 
-        static SIMDType Swizzle( SIMDType v, UInt32 selection8, UInt32 selection7, UInt32 selection6, UInt32 selection5, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept requires( UseShortSIMDType == false )
+        static SIMDType Swizzle( SIMDType v, UInt32 selection8, UInt32 selection7, UInt32 selection6, UInt32 selection5, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept 
+            requires( UseShortSIMDType == false )
         {
             std::array<UInt32, 8> selection{ selection1, selection2, selection3, selection4, selection5, selection6, selection7, selection8 };
             __m128i selectionControl = _mm256_loadu_si256( reinterpret_cast< const __m256i* >( selection[ 0 ].data( ) ) );
@@ -2861,7 +3060,7 @@ namespace Harlinn::Common::Core::SIMD
                 else
                 {
                     auto rmm1 = _mm_cmpeq_ps( v1, v2 );
-                    return ( _mm_movemask_ps( rmm1 ) & 3 ) == 15;
+                    return ( _mm_movemask_ps( rmm1 ) & 15 ) == 15;
                 }
             }
             else
@@ -2869,22 +3068,22 @@ namespace Harlinn::Common::Core::SIMD
                 if constexpr ( N == 5 )
                 {
                     auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( rmm1 ) & 31 ) == 31;
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 31 ) == 31;
                 }
                 else if constexpr ( N == 6 )
                 {
                     auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( rmm1 ) & 63 ) == 63;
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 63 ) == 63;
                 }
                 else if constexpr ( N == 7 )
                 {
                     auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( rmm1 ) & 127 ) == 127;
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 127 ) == 127;
                 }
                 else 
                 {
                     auto rmm1 = _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
-                    return ( _mm256_movemask_ps( rmm1 ) & 255 ) == 255;
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( rmm1 ) ) & 255 ) == 255;
                 }
             }
         }
@@ -3384,7 +3583,15 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static Type Lower( SIMDType src ) noexcept
+        /// <summary>
+        /// Returns the first element of <c>src</<>. The first
+        /// element is the element at the lowest position of <c>src</<>.
+        /// </summary>
+        /// <param name="src">SIMDType to extract the first value from.</param>
+        /// <returns>
+        /// The first element of <c>src</<>.
+        /// </returns>
+        static Type First( SIMDType src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3396,6 +3603,17 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Returns an array containing the lower <c>N</c> elements
+        /// of <c>v</c>.
+        /// </summary>
+        /// <param name="src">
+        /// The SIMDType holding the values to return
+        /// </param>
+        /// <returns>
+        /// An array containing the lower <c>N</c> elements
+        /// of <c>v</c>.
+        /// </returns>
         static ArrayType ToArray( SIMDType src ) noexcept
         {
             if constexpr ( N == SIMDTypeCapacity )  // N == 2 || N == 4
@@ -3424,6 +3642,120 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Returns a SIMDType with all elements set to the
+        /// value of <c>v[index]</c>.
+        /// </summary>
+        /// <typeparam name="index">
+        /// The index of the value, in <c>v</c> to assign to ell the elements
+        /// of the result, 
+        /// </typeparam>
+        /// <param name="v">
+        /// The SIMDType type containing the the source value.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with all elements set to the
+        /// value of <c>v[index]</c>.
+        /// </returns>
+        template<size_t index>
+            requires ( index < Size )
+        static SIMDType At( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( index == 0 )
+                {
+                    return _mm_permute_pd( v, _MM_SHUFFLE2( 0, 0 ) );
+                }
+                else
+                {
+                    return _mm_permute_pd( v, _MM_SHUFFLE2( 1, 1 ) );
+                }
+                
+            }
+            else
+            {
+                if constexpr ( index == 0 )
+                {
+                    return _mm256_permute4x64_pd( v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+                }
+                else if constexpr ( index == 1 )
+                {
+                    return _mm256_permute4x64_pd( v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+                }
+                else if constexpr ( index == 2 )
+                {
+                    return _mm256_permute4x64_pd( v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+                }
+                else 
+                {
+                    return _mm256_permute4x64_pd( v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the value of <c>v[index]</c>.
+        /// </summary>
+        /// <typeparam name="index">
+        /// The index of the value, in <c>v</c>.
+        /// </typeparam>
+        /// <param name="v">
+        /// The SIMDType type containing the the source value.
+        /// </param>
+        /// <returns>
+        /// The value of <c>v[index]</c>.
+        /// </returns>
+        template<size_t index>
+            requires ( index < Size )
+        static Type Extract( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( index == 0 )
+                {
+                    return _mm_cvtsd_f64( v );
+                }
+                else
+                {
+                    return _mm_cvtsd_f64( _mm_permute_pd( v, _MM_SHUFFLE2( 1, 1 ) ) );
+                }
+
+            }
+            else
+            {
+                if constexpr ( index == 0 )
+                {
+                    return _mm256_cvtsd_f64( v );
+                }
+                else if constexpr ( index == 1 )
+                {
+                    return _mm256_cvtsd_f64( _mm256_permute4x64_pd( v, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                }
+                else if constexpr ( index == 2 )
+                {
+                    return _mm256_cvtsd_f64( _mm256_permute4x64_pd( v, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                }
+                else
+                {
+                    return _mm256_cvtsd_f64( _mm256_permute4x64_pd( v, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Returns true if at least one of the values in <c>v</c> is NaN,
+        /// otherwise false.
+        /// </summary>
+        /// <param name="v">
+        /// A SIMDType holding the values to test.
+        /// </param>
+        /// <returns>
+        /// Returns true if at least one of the values in <c>v</c> is NaN,
+        /// otherwise false.
+        /// </returns>
         static bool HasNaN( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )

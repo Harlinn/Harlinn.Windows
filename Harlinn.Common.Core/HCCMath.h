@@ -6753,7 +6753,7 @@ namespace Harlinn::Common::Core::Math
             v = Traits::Mul( v, v );
             v = Traits::HSum( v );
             v = Traits::Sqrt( v );
-            return Traits::Lower( v );
+            return Traits::First( v );
 
             /*
             using FloatT = std::remove_cvref_t<T>;
@@ -6787,7 +6787,7 @@ namespace Harlinn::Common::Core::Math
             v = Traits::Mul( v, v );
             v = Traits::HSum( v );
             v = Traits::Sqrt( v );
-            return Traits::Lower( v );
+            return Traits::First( v );
 
         }
     }
@@ -7810,7 +7810,7 @@ namespace Harlinn::Common::Core::Math
         else
         {
             using Traits = SIMD::Traits<FloatT, 1>;
-            return Traits::Lower( Traits::ExpM1( Traits::Load( &x ) ) );
+            return Traits::First( Traits::ExpM1( Traits::Load( &x ) ) );
         }
     }
 

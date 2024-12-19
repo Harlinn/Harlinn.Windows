@@ -2781,8 +2781,352 @@ static void BenchmarkPbrtFloatIntervalDivide( benchmark::State& state )
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalDivide );
 
+static void BenchmarkFloatIntervalScalarMultiply( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) * Float1To100Generator( ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalScalarMultiply );
+
+static void BenchmarkPbrtFloatIntervalScalarMultiply( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) * Float1To100Generator( ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalScalarMultiply );
+
+static void BenchmarkFloatIntervalScalarDivision( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) / Float1To100Generator( ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalScalarDivision );
+
+static void BenchmarkPbrtFloatIntervalScalarDivision( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) / Float1To100Generator( ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalScalarDivision );
+
+static void BenchmarkFloatIntervalAddition( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) + Interval( Float1To100Generator( ), Float1To100Generator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalAddition );
+
+static void BenchmarkPbrtFloatIntervalAddition( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) + Interval( Float1To100Generator( ), Float1To100Generator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalAddition );
+
+static void BenchmarkFloatIntervalSubtraction( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) - Interval( Float1To100Generator( ), Float1To100Generator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalSubtraction );
+
+static void BenchmarkPbrtFloatIntervalSubtraction( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) - Interval( Float1To100Generator( ), Float1To100Generator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalSubtraction );
+
+static void BenchmarkFloatIntervalScalarAddition( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) + Float1To100Generator( ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalScalarAddition );
+
+static void BenchmarkPbrtFloatIntervalScalarAddition( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) + Float1To100Generator( ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalScalarAddition );
+
+static void BenchmarkFloatIntervalScalarSubtraction( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) - Float1To100Generator( ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalScalarSubtraction );
+
+static void BenchmarkPbrtFloatIntervalScalarSubtraction( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Interval( Float1To100Generator( ), Float1To100Generator( ) ) - Float1To100Generator( ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalScalarSubtraction );
+
+static void BenchmarkFloatIntervalSqrt( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Sqrt( Interval( Float1To100Generator( ), Float1To100Generator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalSqrt );
+
+static void BenchmarkPbrtFloatIntervalSqrt( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Sqrt( Interval( Float1To100Generator( ), Float1To100Generator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalSqrt );
+
+static void BenchmarkFloatIntervalFMA( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::FMA( Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalFMA );
+
+static void BenchmarkPbrtFloatIntervalFMA( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::FMA( Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalFMA );
+
+static void BenchmarkFloatIntervalDifferenceOfProducts( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::DifferenceOfProducts( Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalDifferenceOfProducts );
+
+static void BenchmarkPbrtFloatIntervalDifferenceOfProducts( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::DifferenceOfProducts( Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalDifferenceOfProducts );
+
+static void BenchmarkFloatIntervalSumOfProducts( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::SumOfProducts( Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalSumOfProducts );
+
+static void BenchmarkPbrtFloatIntervalSumOfProducts( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::SumOfProducts( Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalSumOfProducts );
+
+static void BenchmarkFloatIntervalQuadratic( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    Interval t0, t1;
+
+    for ( auto _ : state )
+    {
+        Math::Quadratic( Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), &t0, &t1 );
+        benchmark::DoNotOptimize( t0 );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalQuadratic );
+
+static void BenchmarkPbrtFloatIntervalQuadratic( benchmark::State& state )
+{
+    Float1To100Generator.Reset( );
+    using Interval = pbrt::Interval;
+
+    Interval t0, t1;
+
+    for ( auto _ : state )
+    {
+        pbrt::Quadratic( Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), Interval( Float1To100Generator( ), Float1To100Generator( ) ), &t0, &t1 );
+        benchmark::DoNotOptimize( t0 );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalQuadratic );
+
+static void BenchmarkFloatIntervalACos( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::ACos( Interval( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalACos );
+
+static void BenchmarkPbrtFloatIntervalACos( benchmark::State& state )
+{
+    FloatMinusOneToOneGenerator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::ACos( Interval( FloatMinusOneToOneGenerator( ), FloatMinusOneToOneGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalACos );
+
+static void BenchmarkFloatIntervalCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Cos( Interval( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalCos );
+
+static void BenchmarkPbrtFloatIntervalCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Cos( Interval( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalCos );
+
+
+static void BenchmarkFloatIntervalSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    using Interval = Math::Interval<float>;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Sin( Interval( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatIntervalSin );
+
+static void BenchmarkPbrtFloatIntervalSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    using Interval = pbrt::Interval;
+
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( pbrt::Sin( Interval( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) ) ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtFloatIntervalSin );
+
 
 #endif
+
 
 
 

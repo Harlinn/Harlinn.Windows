@@ -1536,13 +1536,13 @@ namespace Harlinn::Common::Core::Math
     inline T Sqr( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sqr( t.simd, t.simd );
+        return Traits::Mul( t.simd, t.simd );
     }
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Sqr( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Sqr( Traits::Load( t.values.data( ) ) );
+        return Sqr<typename T::Simd>( Traits::Load( t.values.data( ) ) );
     }
 
     // Ceil
@@ -1596,13 +1596,13 @@ namespace Harlinn::Common::Core::Math
     inline T Trunc( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trunc( t.simd );
+        return Traits::Truncate( t.simd );
     }
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Trunc( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Trunc( Traits::Load( t.values.data( ) ) );
+        return Traits::Truncate( Traits::Load( t.values.data( ) ) );
     }
 
     // Lerp
@@ -1792,6 +1792,14 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
+    }
+
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT> && Internal::IsCompatible<T, U>
+    inline ResultT Clamp( NumberT v, const T& lowerBounds, const U& upperBounds ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Clamp( Traits::Fill( v ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
     }
 
 
@@ -4548,7 +4556,7 @@ namespace Harlinn::Common::Core::Math
     inline float ScalarDeterminant<float, 4>( const SquareMatrix<float, 4>& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
-        return Traits::Lower( Determinant( matrix ).simd );
+        return Traits::First( Determinant( matrix ).simd );
     }
 
     inline SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>::Simd& matrix )

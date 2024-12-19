@@ -149,7 +149,7 @@
   <ItemGroup>
     <ClCompile Include="BasicMathBenchmarks.cpp" />
     <ClCompile Include="SquareMatrixBenchmarks.cpp" />
-    <ClCompile Include="Vector2FloatBenchmarks.cpp" />
+    <ClCompile Include="TupleFloatBenchmarks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BenchmarkUtils.h" />

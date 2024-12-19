@@ -2755,6 +2755,516 @@ BOOST_AUTO_TEST_CASE( Dot8Test1 )
     }
 }
 
+// --run_test=SIMDFloatTests/At1Test1
+BOOST_AUTO_TEST_CASE( At1Test1 )
+{
+    using Traits = SIMD::Traits<float, 1>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f } );
+    auto expected = Traits::Fill( 1.f );
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmmAt = Traits::At<0>( rmm1 );
+    auto equal = Traits::Equal( rmmAt, expected );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/At2Test1
+BOOST_AUTO_TEST_CASE( At2Test1 )
+{
+    using Traits = SIMD::Traits<float, 2>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f } );
+    auto expected1 = SIMD::Traits<float, 4>::Fill( 1.f );
+    auto expected2 = SIMD::Traits<float, 4>::Fill( 2.f );
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmmAt = Traits::At<0>( rmm1 );
+    auto equal = Traits::Equal( rmmAt, expected1 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<1>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected2 );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/At3Test1
+BOOST_AUTO_TEST_CASE( At3Test1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f } );
+    auto expected1 = SIMD::Traits<float, 4>::Fill( 1.f );
+    auto expected2 = SIMD::Traits<float, 4>::Fill( 2.f );
+    auto expected3 = SIMD::Traits<float, 4>::Fill( 3.f );
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmmAt = Traits::At<0>( rmm1 );
+    auto equal = Traits::Equal( rmmAt, expected1 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<1>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected2 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<2>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected3 );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/At4Test1
+BOOST_AUTO_TEST_CASE( At4Test1 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f } );
+    auto expected1 = SIMD::Traits<float, 4>::Fill( 1.f );
+    auto expected2 = SIMD::Traits<float, 4>::Fill( 2.f );
+    auto expected3 = SIMD::Traits<float, 4>::Fill( 3.f );
+    auto expected4 = SIMD::Traits<float, 4>::Fill( 4.f );
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmmAt = Traits::At<0>( rmm1 );
+    auto equal = Traits::Equal( rmmAt, expected1 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<1>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected2 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<2>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected3 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<3>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected4 );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/At5Test1
+BOOST_AUTO_TEST_CASE( At5Test1 )
+{
+    using Traits = SIMD::Traits<float, 5>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f, 5.f } );
+    auto expected1 = SIMD::Traits<float, 8>::Fill( 1.f );
+    auto expected2 = SIMD::Traits<float, 8>::Fill( 2.f );
+    auto expected3 = SIMD::Traits<float, 8>::Fill( 3.f );
+    auto expected4 = SIMD::Traits<float, 8>::Fill( 4.f );
+    auto expected5 = SIMD::Traits<float, 8>::Fill( 5.f );
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmmAt = Traits::At<0>( rmm1 );
+    auto equal = Traits::Equal( rmmAt, expected1 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<1>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected2 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<2>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected3 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<3>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected4 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<4>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected5 );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/At6Test1
+BOOST_AUTO_TEST_CASE( At6Test1 )
+{
+    using Traits = SIMD::Traits<float, 6>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f } );
+    auto expected1 = SIMD::Traits<float, 8>::Fill( 1.f );
+    auto expected2 = SIMD::Traits<float, 8>::Fill( 2.f );
+    auto expected3 = SIMD::Traits<float, 8>::Fill( 3.f );
+    auto expected4 = SIMD::Traits<float, 8>::Fill( 4.f );
+    auto expected5 = SIMD::Traits<float, 8>::Fill( 5.f );
+    auto expected6 = SIMD::Traits<float, 8>::Fill( 6.f );
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmmAt = Traits::At<0>( rmm1 );
+    auto equal = Traits::Equal( rmmAt, expected1 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<1>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected2 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<2>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected3 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<3>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected4 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<4>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected5 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<5>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected6 );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/At7Test1
+BOOST_AUTO_TEST_CASE( At7Test1 )
+{
+    using Traits = SIMD::Traits<float, 7>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f } );
+    auto expected1 = SIMD::Traits<float, 8>::Fill( 1.f );
+    auto expected2 = SIMD::Traits<float, 8>::Fill( 2.f );
+    auto expected3 = SIMD::Traits<float, 8>::Fill( 3.f );
+    auto expected4 = SIMD::Traits<float, 8>::Fill( 4.f );
+    auto expected5 = SIMD::Traits<float, 8>::Fill( 5.f );
+    auto expected6 = SIMD::Traits<float, 8>::Fill( 6.f );
+    auto expected7 = SIMD::Traits<float, 8>::Fill( 7.f );
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmmAt = Traits::At<0>( rmm1 );
+    auto equal = Traits::Equal( rmmAt, expected1 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<1>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected2 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<2>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected3 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<3>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected4 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<4>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected5 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<5>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected6 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<6>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected7 );
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=SIMDFloatTests/At8Test1
+BOOST_AUTO_TEST_CASE( At8Test1 )
+{
+    using Traits = SIMD::Traits<float, 8>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f } );
+    auto expected1 = SIMD::Traits<float, 8>::Fill( 1.f );
+    auto expected2 = SIMD::Traits<float, 8>::Fill( 2.f );
+    auto expected3 = SIMD::Traits<float, 8>::Fill( 3.f );
+    auto expected4 = SIMD::Traits<float, 8>::Fill( 4.f );
+    auto expected5 = SIMD::Traits<float, 8>::Fill( 5.f );
+    auto expected6 = SIMD::Traits<float, 8>::Fill( 6.f );
+    auto expected7 = SIMD::Traits<float, 8>::Fill( 7.f );
+    auto expected8 = SIMD::Traits<float, 8>::Fill( 8.f );
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmmAt = Traits::At<0>( rmm1 );
+    auto equal = Traits::Equal( rmmAt, expected1 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<1>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected2 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<2>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected3 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<3>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected4 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<4>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected5 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<5>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected6 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<6>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected7 );
+    BOOST_CHECK( equal );
+
+    rmmAt = Traits::At<7>( rmm1 );
+    equal = Traits::Equal( rmmAt, expected8 );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=SIMDFloatTests/Extract1Test1
+BOOST_AUTO_TEST_CASE( Extract1Test1 )
+{
+    using Traits = SIMD::Traits<float, 1>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f } );
+    auto expected = 1.f;
+    auto rmm1 = Traits::Load( arg1 );
+    auto extracted = Traits::Extract<0>( rmm1 );
+    auto equal = expected == extracted;
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/Extract2Test1
+BOOST_AUTO_TEST_CASE( Extract2Test1 )
+{
+    using Traits = SIMD::Traits<float, 2>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f } );
+    auto expected1 = 1.f;
+    auto expected2 = 2.f;
+    auto rmm1 = Traits::Load( arg1 );
+    auto extracted = Traits::Extract<0>( rmm1 );
+    auto equal = expected1 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<1>( rmm1 );
+    equal = expected2 == extracted;
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=SIMDFloatTests/Extract3Test1
+BOOST_AUTO_TEST_CASE( Extract3Test1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f } );
+    auto expected1 = 1.f;
+    auto expected2 = 2.f;
+    auto expected3 = 3.f;
+    auto rmm1 = Traits::Load( arg1 );
+    auto extracted = Traits::Extract<0>( rmm1 );
+    auto equal = expected1 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<1>( rmm1 );
+    equal = expected2 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<2>( rmm1 );
+    equal = expected3 == extracted;
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/Extract4Test1
+BOOST_AUTO_TEST_CASE( Extract4Test1 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f } );
+    auto expected1 = 1.f;
+    auto expected2 = 2.f;
+    auto expected3 = 3.f;
+    auto expected4 = 4.f;
+    auto rmm1 = Traits::Load( arg1 );
+    auto extracted = Traits::Extract<0>( rmm1 );
+    auto equal = expected1 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<1>( rmm1 );
+    equal = expected2 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<2>( rmm1 );
+    equal = expected3 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<3>( rmm1 );
+    equal = expected4 == extracted;
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=SIMDFloatTests/Extract5Test1
+BOOST_AUTO_TEST_CASE( Extract5Test1 )
+{
+    using Traits = SIMD::Traits<float, 5>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f, 5.f } );
+    auto expected1 = 1.f;
+    auto expected2 = 2.f;
+    auto expected3 = 3.f;
+    auto expected4 = 4.f;
+    auto expected5 = 5.f;
+    auto rmm1 = Traits::Load( arg1 );
+    auto extracted = Traits::Extract<0>( rmm1 );
+    auto equal = expected1 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<1>( rmm1 );
+    equal = expected2 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<2>( rmm1 );
+    equal = expected3 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<3>( rmm1 );
+    equal = expected4 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<4>( rmm1 );
+    equal = expected5 == extracted;
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/Extract6Test1
+BOOST_AUTO_TEST_CASE( Extract6Test1 )
+{
+    using Traits = SIMD::Traits<float, 6>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f } );
+    auto expected1 = 1.f;
+    auto expected2 = 2.f;
+    auto expected3 = 3.f;
+    auto expected4 = 4.f;
+    auto expected5 = 5.f;
+    auto expected6 = 6.f;
+    auto rmm1 = Traits::Load( arg1 );
+    auto extracted = Traits::Extract<0>( rmm1 );
+    auto equal = expected1 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<1>( rmm1 );
+    equal = expected2 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<2>( rmm1 );
+    equal = expected3 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<3>( rmm1 );
+    equal = expected4 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<4>( rmm1 );
+    equal = expected5 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<5>( rmm1 );
+    equal = expected6 == extracted;
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=SIMDFloatTests/Extract7Test1
+BOOST_AUTO_TEST_CASE( Extract7Test1 )
+{
+    using Traits = SIMD::Traits<float, 7>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f } );
+    auto expected1 = 1.f;
+    auto expected2 = 2.f;
+    auto expected3 = 3.f;
+    auto expected4 = 4.f;
+    auto expected5 = 5.f;
+    auto expected6 = 6.f;
+    auto expected7 = 7.f;
+    auto rmm1 = Traits::Load( arg1 );
+    auto extracted = Traits::Extract<0>( rmm1 );
+    auto equal = expected1 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<1>( rmm1 );
+    equal = expected2 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<2>( rmm1 );
+    equal = expected3 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<3>( rmm1 );
+    equal = expected4 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<4>( rmm1 );
+    equal = expected5 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<5>( rmm1 );
+    equal = expected6 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<6>( rmm1 );
+    equal = expected7 == extracted;
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=SIMDFloatTests/Extract8Test1
+BOOST_AUTO_TEST_CASE( Extract8Test1 )
+{
+    using Traits = SIMD::Traits<float, 8>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+    ArrayType arg1( { 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f } );
+    auto expected1 = 1.f;
+    auto expected2 = 2.f;
+    auto expected3 = 3.f;
+    auto expected4 = 4.f;
+    auto expected5 = 5.f;
+    auto expected6 = 6.f;
+    auto expected7 = 7.f;
+    auto expected8 = 8.f;
+    auto rmm1 = Traits::Load( arg1 );
+    auto extracted = Traits::Extract<0>( rmm1 );
+    auto equal = expected1 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<1>( rmm1 );
+    equal = expected2 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<2>( rmm1 );
+    equal = expected3 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<3>( rmm1 );
+    equal = expected4 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<4>( rmm1 );
+    equal = expected5 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<5>( rmm1 );
+    equal = expected6 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<6>( rmm1 );
+    equal = expected7 == extracted;
+    BOOST_CHECK( equal );
+
+    extracted = Traits::Extract<7>( rmm1 );
+    equal = expected8 == extracted;
+    BOOST_CHECK( equal );
+
+}
 
 
 BOOST_AUTO_TEST_SUITE_END( )
