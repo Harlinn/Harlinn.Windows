@@ -22,45 +22,17 @@
 #include <HCCVectorMath.h>
 #include <pbrto/util/math.h>
 #include <benchmark/benchmark.h>
-#include <random>
+#include <HCCTestUtils.h>
 #include <DirectXMath.h>
 
-//#define RUN_BASIC_MATH_BENCHMARKS 1
-//#define RUN_VECTOR2FLOAT_BENCHMARKS 1
-//#define RUN_SQUAREMATRIX_BENCHMARKS 1
+#define RUN_BASIC_MATH_BENCHMARKS 1
+#define RUN_VECTOR2FLOAT_BENCHMARKS 1
+#define RUN_SQUAREMATRIX_BENCHMARKS 1
 
 using namespace Harlinn::Common::Core;
 
-template<typename FloatT, size_t N >
-struct RandomGenerator
-{
-    using FloatType = FloatT;
-    std::array<FloatType, N> Values;
-    size_t Counter = 0;
-    const FloatType LowerBound;
-    const FloatType UpperBound;
-    RandomGenerator( FloatT lowerBound = -10000, FloatT upperBound = 10000 )
-        : LowerBound( lowerBound ), UpperBound( upperBound )
-    {
-        std::uniform_real_distribution<FloatType> unif( lowerBound, upperBound );
-        std::default_random_engine re;
-        for ( size_t i = 0; i < N; i++ )
-        {
-            Values[ i ] = unif( re );
-        }
-    }
-
-
-
-    __forceinline FloatType operator( )( )
-    {
-        return Values[ Counter++ % N ];
-    }
-    void Reset( )
-    {
-        Counter = 0;
-    }
-};
+template<typename ValueT, size_t N >
+using RandomGenerator = Test::Generators::RandomGenerator<ValueT, N>;
 
 constexpr size_t SampleCount = 64;
 

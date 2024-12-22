@@ -170,6 +170,87 @@ namespace Harlinn::Common::Core
     using BitMask_t = typename BitMask<N>::type;
 
     /// <summary>
+    /// Creates a bitmask with the <c>N</c> right-most bits set to 1, and all other bits
+    /// set to 0.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An unsigned integral type.
+    /// </typeparam>
+    /// <typeparam name="N">
+    /// The number if rightmost bits to set.
+    /// </typeparam>
+    /// <returns>
+    /// The bitmask.
+    /// </returns>
+    template <typename T, size_t N>
+        requires IsUnsignedInteger<T> && (N <= CHAR_BIT * sizeof( T ) )
+    constexpr T MaskTrailingOnes( )
+    {
+        return BitMask_v<N>;
+    }
+
+    /// <summary>
+    /// Creates a bitmask with the <c>N</c> left-most bits set to 1, and all other bits
+    /// set to 0.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An unsigned integral type.
+    /// </typeparam>
+    /// <typeparam name="N">
+    /// The number if rightmost bits to set.
+    /// </typeparam>
+    /// <returns>
+    /// The bitmask.
+    /// </returns>
+    template <typename T, size_t N>
+        requires IsUnsignedInteger<T> && ( N <= CHAR_BIT * sizeof( T ) )
+    constexpr T MaskLeadingOnes( )
+    {
+        return ~BitMask_v<( CHAR_BIT * sizeof( T ) ) - N>;
+    }
+
+    /// <summary>
+    /// Creates a bitmask with the <c>N</c> right-most bits set to 0, and all other bits
+    /// set to 1.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An unsigned integral type.
+    /// </typeparam>
+    /// <typeparam name="N">
+    /// The number if rightmost bits to clear.
+    /// </typeparam>
+    /// <returns>
+    /// The bitmask.
+    /// </returns>
+    template <typename T, size_t N>
+        requires IsUnsignedInteger<T> && ( N <= CHAR_BIT * sizeof( T ) )
+    constexpr T MaskTrailingZeros( )
+    {
+        return ~BitMask_v<N>;
+    }
+
+    /// <summary>
+    /// Creates a bitmask with the <c>N</c> left-most bits set to 0, and all other bits
+    /// set to 1.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An unsigned integral type.
+    /// </typeparam>
+    /// <typeparam name="N">
+    /// The number if rightmost bits to clear.
+    /// </typeparam>
+    /// <returns>
+    /// The bitmask.
+    /// </returns>
+    template <typename T, size_t N>
+        requires IsUnsignedInteger<T> && ( N <= CHAR_BIT * sizeof( T ) )
+    constexpr T MaskLeadingZeros( )
+    {
+        return BitMask_v<( CHAR_BIT * sizeof( T ) ) - N>;
+    }
+
+
+    /// <summary>
     /// Reverses the order of the bits of a byte.
     /// </summary>
     inline constexpr Byte ReverseBits( Byte b ) noexcept
@@ -181,15 +262,24 @@ namespace Harlinn::Common::Core
         return b;
     }
 
+    /// <summary>
+    /// Reverses the order of the bits of a SByte.
+    /// </summary>
     inline constexpr SByte ReverseBits( SByte b ) noexcept
     {
         return std::bit_cast<SByte>( ReverseBits( std::bit_cast<Byte>(b) ) );
     }
+    /// <summary>
+    /// Reverses the order of the bits of a char.
+    /// </summary>
     inline constexpr char ReverseBits( char b ) noexcept
     {
         return std::bit_cast<char>( ReverseBits( std::bit_cast<Byte>( b ) ) );
     }
 
+    /// <summary>
+    /// Reverses the order of the bits of an UInt16.
+    /// </summary>
     inline constexpr UInt16 ReverseBits( UInt16 val ) noexcept
     {
         if ( std::is_constant_evaluated( ) )
@@ -210,6 +300,9 @@ namespace Harlinn::Common::Core
             return result;
         }
     }
+    /// <summary>
+    /// Reverses the order of the bits of an Int16.
+    /// </summary>
     inline constexpr Int16 ReverseBits( Int16 val ) noexcept
     {
         return std::bit_cast<Int16>( ReverseBits( std::bit_cast<UInt16>( val ) ) );
@@ -220,6 +313,9 @@ namespace Harlinn::Common::Core
     }
 
 
+    /// <summary>
+    /// Reverses the order of the bits of an UInt32.
+    /// </summary>
     inline constexpr UInt32 ReverseBits( UInt32 val ) noexcept
     {
         if ( std::is_constant_evaluated( ) )
@@ -242,20 +338,31 @@ namespace Harlinn::Common::Core
             return result;
         }
     }
+    /// <summary>
+    /// Reverses the order of the bits of an Int32.
+    /// </summary>
     inline constexpr Int32 ReverseBits( Int32 val ) noexcept
     {
         return std::bit_cast<Int32>( ReverseBits( std::bit_cast<UInt32>( val ) ) );
     }
+    /// <summary>
+    /// Reverses the order of the bits of a long.
+    /// </summary>
     inline constexpr long ReverseBits( long val ) noexcept
     {
         return std::bit_cast<long>( ReverseBits( std::bit_cast<UInt32>( val ) ) );
     }
+    /// <summary>
+    /// Reverses the order of the bits of an unsigned long.
+    /// </summary>
     inline constexpr unsigned long ReverseBits( unsigned long val ) noexcept
     {
         return std::bit_cast<unsigned long>( ReverseBits( std::bit_cast<UInt32>( val ) ) );
     }
 
-
+    /// <summary>
+    /// Reverses the order of the bits of an UInt64.
+    /// </summary>
     inline constexpr UInt64 ReverseBits( UInt64 val ) noexcept
     {
         if ( std::is_constant_evaluated( ) )
@@ -282,15 +389,25 @@ namespace Harlinn::Common::Core
             return result;
         }
     }
+
+    /// <summary>
+    /// Reverses the order of the bits of an Int64.
+    /// </summary>
     inline constexpr Int64 ReverseBits( Int64 val ) noexcept
     {
         return std::bit_cast<Int64>( ReverseBits( std::bit_cast<UInt64>( val ) ) );
     }
-    inline constexpr Single ReverseBits( Single val ) noexcept
+    /// <summary>
+    /// Reverses the order of the bits of a float.
+    /// </summary>
+    inline constexpr Single ReverseBits( float val ) noexcept
     {
         return std::bit_cast<Single>( ReverseBits( std::bit_cast<UInt32>( val ) ) );
     }
-    inline constexpr Double ReverseBits( Double val ) noexcept
+    /// <summary>
+    /// Reverses the order of the bits of a double.
+    /// </summary>
+    inline constexpr Double ReverseBits( double val ) noexcept
     {
         return std::bit_cast<Double>( ReverseBits( std::bit_cast<UInt64>( val ) ) );
     }
@@ -448,16 +565,52 @@ namespace Harlinn::Common::Core
     }
 
     
+    /// <summary>
+    /// Calculates the address that is aligned on an <c>N</c> byte boundary
+    /// greater, or equal, to <c>address</c>. 
+    /// </summary>
+    /// <typeparam name="N">
+    /// The requested alignment.
+    /// </typeparam>
+    /// <param name="address">
+    /// The address to calculate the alignment for. 
+    /// </param>
+    /// <returns>
+    /// The aligned address.
+    /// </returns>
     template<size_t N>
     inline const void* AlignTo( const void* address )
     {
         return reinterpret_cast<const void*>(( reinterpret_cast<size_t>(address) + N ) & ~static_cast<size_t>( N ));
     }
+    
+    /// <summary>
+    /// Calculates the address that is aligned on an <c>N</c> byte boundary
+    /// greater, or equal, to <c>address</c>. 
+    /// </summary>
+    /// <typeparam name="N">
+    /// The requested alignment.
+    /// </typeparam>
+    /// <param name="address">
+    /// The address to calculate the alignment for. 
+    /// </param>
+    /// <returns>
+    /// The aligned address.
+    /// </returns>
     template<size_t N>
     inline void* AlignTo( void* address )
     {
         return reinterpret_cast<void*>( ( reinterpret_cast<size_t>( address ) + N ) & ~static_cast<size_t>( N ) );
     }
+
+    /// <summary>
+    /// Calculates the number of bytes between the argument <c>address</c> 
+    /// and an address that is aligned on an <c>N</c> byte boundary
+    /// greater, or equal, to <c>address</c>. 
+    /// </summary>
+    /// <typeparam name="N"></typeparam>
+    /// <param name="address"></param>
+    /// <returns></returns>
     template<size_t N>
     inline size_t AlignedPaddingFor( const void* address )
     {
@@ -469,6 +622,15 @@ namespace Harlinn::Common::Core
     template<typename T>
     inline constexpr bool IsGUID = std::is_same_v<std::remove_cv_t<T>, GUID>;
 
+    /// <summary>
+    /// Swaps the bytes of the Data1, Data2 and Data3 fields
+    /// of a Guid or GUID, while leaving Data4 as it is. 
+    /// </summary>
+    /// <typeparam name="T">Guid or GUID</typeparam>
+    /// <param name="guid">A GUID type.</param>
+    /// <returns>
+    /// The GUID type with the bytes swapped.
+    /// </returns>
     template<typename T>
         requires IsGUID<T>
     inline constexpr T ByteSwap( const T& guid ) noexcept
@@ -476,7 +638,18 @@ namespace Harlinn::Common::Core
         return GUID{ ByteSwap( guid.Data1 ), ByteSwap( guid.Data2 ), ByteSwap( guid.Data3 ), { guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7] } };
     }
 
-
+    /// <summary>
+    /// Reverses the bytes of a floating point value, or an enum.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type, or an enum type.
+    /// </typeparam>
+    /// <param name="value">
+    /// The value.
+    /// </param>
+    /// <returns>
+    /// The result.
+    /// </returns>
     template<typename T>
         requires (IsFloatingPoint<std::remove_cvref_t<T>> || std::is_enum_v<std::remove_cvref_t<T>> )
     inline constexpr T ByteSwap( const T value ) noexcept

@@ -32,7 +32,7 @@ namespace
 
     struct FloatingPointDecoder
     {
-        using FloatingPoint = Math::Internal::FloatingPoint<double>;
+        using FloatingPoint = Math::FloatingPoint<double>;
         static constexpr UInt64 FractionMask = FloatingPoint::FractionMask;
         static constexpr Int32 FractionWidth = FloatingPoint::FractionWidth;
 
@@ -509,595 +509,276 @@ BOOST_AUTO_TEST_CASE( FloatingPointDoubleExponentTest1 )
 
 }
 
+inline double DeviationTest( double first, double second )
+{
+    using std::abs;
+    if ( first <= second )
+    {
+        return abs( second - first ) / abs( first );
+    }
+    else
+    {
+        return abs( first - second  ) / abs( first );
+    }
+}
+
+// --run_test=MathTests/DeviationTest1
+BOOST_AUTO_TEST_CASE( DeviationTest1 )
+{
+    using namespace Test;
+    auto deviation = DeviationTest( 3.f, 3.f );
+    BOOST_CHECK( deviation == 0.f );
+
+    deviation = DeviationTest( -3.f, 3.f );
+    BOOST_CHECK( deviation == 2.f );
+
+    deviation = DeviationTest( 3.f, -3.f );
+    BOOST_CHECK( deviation == 2.f );
+
+    auto expected = ( 4.5f / 3.f );
+    deviation = DeviationTest( -3.f, 1.5f );
+    BOOST_CHECK( deviation == expected );
+
+    expected = ( 4.5f / 3.f );
+    deviation = DeviationTest( 3.f, -1.5f );
+    BOOST_CHECK( deviation == expected );
+
+    expected = ( 4.5f / 1.5f );
+    deviation = DeviationTest( -1.5f, 3.f );
+    BOOST_CHECK( deviation == expected );
+
+    expected = ( 4.5f / 1.5f );
+    deviation = DeviationTest( 1.5f, -3.f );
+    BOOST_CHECK( deviation == expected );
+
+    expected = ( 1.5f / 1.5f );
+    deviation = DeviationTest( -1.5f, -3.f );
+    BOOST_CHECK( deviation == expected );
+
+    expected = ( 1.5f / 3.f );
+    deviation = DeviationTest( -3.f, -1.5f );
+    BOOST_CHECK( deviation == expected );
+
+
+}
+
 // --run_test=MathTests/IsNaNDoubleTest1
 BOOST_AUTO_TEST_CASE( IsNaNDoubleTest1 )
 {
-    double value = std::numeric_limits<double>::quiet_NaN( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = -std::numeric_limits<double>::infinity( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-    value = std::numeric_limits<double>::infinity( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = std::numeric_limits<double>::lowest( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = std::numeric_limits<double>::min( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = -std::numeric_limits<double>::min( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = std::numeric_limits<double>::max( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = std::numeric_limits<double>::epsilon( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = std::numeric_limits<double>::denorm_min( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = -std::numeric_limits<double>::denorm_min( );
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = -0.0;
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
-
-    value = 0.0;
-    BOOST_CHECK( IsNaN( value ) == std::isnan( value ) );
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "IsNaNDoubleTest1" );
+    auto success = test.Run( generator, std::isnan<FloatT>, IsNaN<FloatT>,
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
 }
 
 
 // --run_test=MathTests/IsInfDoubleTest1
 BOOST_AUTO_TEST_CASE( IsInfDoubleTest1 )
 {
-    double value = std::numeric_limits<double>::quiet_NaN( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "IsInfDoubleTest1" );
+    auto success = test.Run( generator, std::isinf<FloatT>, IsInf<FloatT>,
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
 
-    value = -std::numeric_limits<double>::infinity( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-    value = std::numeric_limits<double>::infinity( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = std::numeric_limits<double>::lowest( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = std::numeric_limits<double>::min( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = -std::numeric_limits<double>::min( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = std::numeric_limits<double>::max( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = std::numeric_limits<double>::epsilon( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = std::numeric_limits<double>::denorm_min( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = -std::numeric_limits<double>::denorm_min( );
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = -0.0;
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
-
-    value = 0.0;
-    BOOST_CHECK( IsInf( value ) == std::isinf( value ) );
 }
 
 // --run_test=MathTests/AbsDoubleTest1
 BOOST_AUTO_TEST_CASE( AbsDoubleTest1 )
 {
-    double value = std::numeric_limits<double>::quiet_NaN( );
-    double result = Abs( value );
-    double stdResult = std::abs( value );
-    UInt64 uiResult = std::bit_cast<UInt64>( result );
-    UInt64 stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::isinf( result ) == std::isinf( stdResult ) );
-
-    value = -std::numeric_limits<double>::infinity( );
-    result = Abs( value );
-    result = Math::Internal::AbsImpl<double>( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = std::numeric_limits<double>::infinity( );
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = std::numeric_limits<double>::lowest( );
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = std::numeric_limits<double>::min( );
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = -std::numeric_limits<double>::min( );
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = std::numeric_limits<double>::max( );
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = std::numeric_limits<double>::epsilon( );
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = std::numeric_limits<double>::denorm_min( );
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = -std::numeric_limits<double>::denorm_min( );
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = -0.0;
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
-
-    value = 0.0;
-    result = Abs( value );
-    stdResult = std::abs( value );
-    uiResult = std::bit_cast<UInt64>( result );
-    stdUInt64Result = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "AbsDoubleTest1" );
+    auto success = test.Run( generator, []( auto x ) { return std::abs( x ); }, []( auto x ) { return Abs( x ); },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
 }
+
+// --run_test=MathTests/AbsImplDoubleTest1
+BOOST_AUTO_TEST_CASE( AbsImplDoubleTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "Math::Internal::AbsImplDoubleTest1" );
+    auto success = test.Run( generator, []( auto x ) { return std::abs( x ); }, []( auto x ) { return Math::Internal::AbsImpl( x ); },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
+}
+
 
 // --run_test=MathTests/SignBitDoubleTest1
 BOOST_AUTO_TEST_CASE( SignBitDoubleTest1 )
 {
-    double value = -std::numeric_limits<double>::quiet_NaN( );
-
-    auto signBit1 = SignBit( value ) != 0;
-    auto signBit2 = std::signbit( value );
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-    value = std::numeric_limits<double>::quiet_NaN( );
-
-    signBit1 = SignBit( value ) == 0;
-    signBit2 = std::signbit( value ) == false;
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-    value = -std::numeric_limits<double>::infinity( );
-
-    signBit1 = SignBit( value ) != 0;
-    signBit2 = std::signbit( value );
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-    value = std::numeric_limits<double>::infinity( );
-
-    signBit1 = SignBit( value ) == 0;
-    signBit2 = std::signbit( value ) == false;
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = std::numeric_limits<double>::lowest( );
-
-    signBit1 = SignBit( value ) != 0;
-    signBit2 = std::signbit( value );
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = std::numeric_limits<double>::min( );
-
-    signBit1 = SignBit( value ) == 0;
-    signBit2 = std::signbit( value ) == false;
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = -std::numeric_limits<double>::min( );
-
-    signBit1 = SignBit( value ) != 0;
-    signBit2 = std::signbit( value );
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = std::numeric_limits<double>::max( );
-
-    signBit1 = SignBit( value ) == 0;
-    signBit2 = std::signbit( value ) == false;
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = std::numeric_limits<double>::epsilon( );
-
-    signBit1 = SignBit( value ) == 0;
-    signBit2 = std::signbit( value ) == false;
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = std::numeric_limits<double>::denorm_min( );
-
-    signBit1 = SignBit( value ) == 0;
-    signBit2 = std::signbit( value ) == false;
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = -std::numeric_limits<double>::denorm_min( );
-
-    signBit1 = SignBit( value ) != 0;
-    signBit2 = std::signbit( value );
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = -0.0;
-
-    signBit1 = SignBit( value ) != 0; 
-    signBit2 = std::signbit( value );
-
-    BOOST_CHECK( signBit1 == signBit2 );
-
-
-    value = 0.0;
-
-    signBit1 = SignBit( value ) == 0;
-    signBit2 = std::signbit( value ) == false;
-
-    BOOST_CHECK( signBit1 == signBit2 );
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "SignBitDoubleTest1" );
+    auto success = test.Run( generator, []( auto x ) { return std::signbit( x ); }, []( auto x ) { return SignBit( x ) != 0; },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
 
 }
 
 // --run_test=MathTests/FRExpDoubleTest1
 BOOST_AUTO_TEST_CASE( FRExpDoubleTest1 )
 {
-    double value = -std::numeric_limits<double>::quiet_NaN( );
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "FRExpDoubleTest1" );
+    auto success = test.Run( generator, 
+        []( auto x ) 
+        { 
+            int exp = 0; 
+            auto fraction = std::frexp( x, &exp ); 
+            return std::make_pair( fraction, static_cast<double>( exp ) );
+        }, 
+        []( auto x ) 
+        { 
+            int exp = 0; 
+            auto fraction = FRExp( x, exp );
+            return std::make_pair( fraction, static_cast< double >( exp ) );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
 
-    int exp = 0;
-    double result = FRExp( value, exp );
-    int stdExp = 0;
-    double stdResult = std::frexp( value, &stdExp );
-    UInt64 uiResult = std::bit_cast<UInt64>( result );
-    UInt64 uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = std::numeric_limits<double>::quiet_NaN( );
-
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = -std::numeric_limits<double>::infinity( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = std::numeric_limits<double>::infinity( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = std::numeric_limits<double>::lowest( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = std::numeric_limits<double>::min( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = -std::numeric_limits<double>::min( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = std::numeric_limits<double>::max( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = std::numeric_limits<double>::epsilon( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = std::numeric_limits<double>::denorm_min( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = -std::numeric_limits<double>::denorm_min( );
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = -0.0;
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
-
-    value = 0.0;
-    exp = 0;
-    result = FRExp( value, exp );
-    stdExp = 0;
-    stdResult = std::frexp( value, &stdExp );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( exp == stdExp );
 }
 
 // --run_test=MathTests/ModFDoubleTest1
 BOOST_AUTO_TEST_CASE( ModFDoubleTest1 )
 {
-    double value = -std::numeric_limits<double>::quiet_NaN( );
-
-    double integerPart = 0;
-    double result = ModF( value, integerPart );
-    double stdIntegerPart = 0;
-    double stdResult = std::modf( value, &stdIntegerPart );
-    UInt64 uiResult = std::bit_cast<UInt64>( result );
-    UInt64 uiStdResult = std::bit_cast<UInt64>( stdResult );
-    UInt64 uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    UInt64 uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = std::numeric_limits<double>::quiet_NaN( );
-     
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = -std::numeric_limits<double>::infinity( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = std::numeric_limits<double>::infinity( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = std::numeric_limits<double>::lowest( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = std::numeric_limits<double>::min( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = -std::numeric_limits<double>::min( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = std::numeric_limits<double>::max( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = std::numeric_limits<double>::epsilon( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = std::numeric_limits<double>::denorm_min( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = -std::numeric_limits<double>::denorm_min( );
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = -0.0;
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = 0.0;
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-    value = M_PI;
-    integerPart = 0;
-    result = ModF( value, integerPart );
-    stdIntegerPart = 0;
-    stdResult = std::modf( value, &stdIntegerPart );
-    uiResult = std::bit_cast<UInt64>( result );
-    uiStdResult = std::bit_cast<UInt64>( stdResult );
-    uiIntegerPart = std::bit_cast<UInt64>( integerPart );
-    uiStdIntegerPart = std::bit_cast<UInt64>( stdIntegerPart );
-    BOOST_CHECK( uiResult == uiStdResult );
-    BOOST_CHECK( uiIntegerPart == uiStdIntegerPart );
-
-
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "ModFDoubleTest1" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            using FloatT = std::remove_cvref_t<decltype( x )>;
+            FloatT exp = 0;
+            auto fraction = std::modf( x, &exp );
+            return std::make_pair( fraction, exp );
+        },
+        []( auto x )
+        {
+            using FloatT = std::remove_cvref_t<decltype( x )>;
+            FloatT exp = 0;
+            auto fraction = ModF( x, exp );
+            return std::make_pair( fraction, exp );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
 }
 
 // --run_test=MathTests/InternalMinImplFloatTest1
 BOOST_AUTO_TEST_CASE( InternalMinImplFloatTest1 )
 {
-    auto minValue = Math::Internal::MinImpl( 5.f, 4.f, 3.f, 4.f, 4.f );
+    auto minValue = Math::Min( 5.f, 4.f, 3.f, 4.f, 4.f );
     bool equal = minValue == 3.f;
     BOOST_CHECK( equal );
 }
@@ -1105,7 +786,7 @@ BOOST_AUTO_TEST_CASE( InternalMinImplFloatTest1 )
 // --run_test=MathTests/InternalMaxImplFloatTest1
 BOOST_AUTO_TEST_CASE( InternalMaxImplFloatTest1 )
 {
-    auto minValue = Math::Internal::MaxImpl( 5.f, 4.f, 3.f, 4.f, 4.f );
+    auto minValue = Math::Max( 5.f, 4.f, 3.f, 4.f, 4.f );
     bool equal = minValue == 5.f;
     BOOST_CHECK( equal );
 }
@@ -1580,12 +1261,160 @@ BOOST_AUTO_TEST_CASE( SinDoubleTest1 )
     BOOST_CHECK( result1b == 1.7453292519057202e-5 );
 }
 
-// --run_test=MathTests/SinFloatTest2
-BOOST_AUTO_TEST_CASE( SinFloatTest2 )
+// 2.40557816965e+19
+// --run_test=MathTests/DebugSinImplFloatTest1
+BOOST_AUTO_TEST_CASE( DebugSinImplFloatTest1 )
+{
+    float arg = 2.40557816965e+19f;
+
+    auto result = Math::Internal::SinImpl( arg );
+
+    BOOST_CHECK_CLOSE( result, -0.205346256495f, 0.001f );
+
+}
+
+// --run_test=MathTests/SinImplFloatTest1
+BOOST_AUTO_TEST_CASE( SinImplFloatTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = float;
+    Generators::RangeGenerator<FloatT> generator( -2.0 * M_PI, 2.0 * M_PI );
+    
+    //Generators::RangeGenerator<FloatT> generator( -42781604.0, 42781604.0 );
+    NumericTest test( "Math::Internal::SinImplFloatTest1" );
+    auto success = test.Run( generator, 
+        []( auto x ) 
+        { 
+            return std::sin( x ); 
+        }, 
+        []( auto x ) 
+        { 
+            return Math::Internal::SinImpl( x ); 
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            -1e5,
+            -1e10,
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            1e5,
+            1e10,
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0,
+            std::bit_cast<float>(0x3f06'0a92U), // x = pi/6
+            std::bit_cast<float>(0x3f3a'dc51U), // x = 0x1.75b8a2p-1f
+            std::bit_cast<float>(0x3f49'0fdbU), // x = pi/4
+            std::bit_cast<float>(0x3f86'0a92U), // x = pi/3
+            std::bit_cast<float>(0x3fa7'832aU), // x = 0x1.4f0654p+0f
+            std::bit_cast<float>(0x3fc9'0fdbU), // x = pi/2
+            std::bit_cast<float>(0x4017'1973U), // x = 0x1.2e32e6p+1f
+            std::bit_cast<float>(0x4049'0fdbU), // x = pi
+            std::bit_cast<float>(0x4096'cbe4U), // x = 0x1.2d97c8p+2f
+            std::bit_cast<float>(0x40c9'0fdbU), // x = 2*pi
+            std::bit_cast<float>(0x433b'7490U), // x = 0x1.76e92p+7f
+            std::bit_cast<float>(0x437c'e5f1U), // x = 0x1.f9cbe2p+7f
+            std::bit_cast<float>(0x4619'9998U), // x = 0x1.33333p+13f
+            std::bit_cast<float>(0x474d'246fU), // x = 0x1.9a48dep+15f
+            std::bit_cast<float>(0x4afd'ece4U), // x = 0x1.fbd9c8p+22f
+            std::bit_cast<float>(0x4c23'32e9U), // x = 0x1.4665d2p+25f
+            //std::bit_cast<float>(0x50a3'e87fU), // x = 0x1.47d0fep+34f
+            //std::bit_cast<float>(0x5239'47f6U), // x = 0x1.728fecp+37f
+            //std::bit_cast<float>(0x53b1'46a6U), // x = 0x1.628d4cp+40f
+            //std::bit_cast<float>(0x55ca'fb2aU), // x = 0x1.95f654p+44f
+            //std::bit_cast<float>(0x588e'f060U), // x = 0x1.1de0cp+50f
+            //std::bit_cast<float>(0x5c07'bcd0U), // x = 0x1.0f79ap+57f
+            //std::bit_cast<float>(0x5ebc'fddeU), // x = 0x1.79fbbcp+62f
+            //std::bit_cast<float>(0x5fa6'eba7U), // x = 0x1.4dd74ep+64f
+            //std::bit_cast<float>(0x61a4'0b40U), // x = 0x1.48168p+68f
+            //std::bit_cast<float>(0x6386'134eU), // x = 0x1.0c269cp+72f
+            //std::bit_cast<float>(0x6589'8498U), // x = 0x1.13093p+76f
+            //std::bit_cast<float>(0x6600'0001U), // x = 0x1.000002p+77f
+            //std::bit_cast<float>(0x664e'46e4U), // x = 0x1.9c8dc8p+77f
+            //std::bit_cast<float>(0x66b0'14aaU), // x = 0x1.602954p+78f
+            //std::bit_cast<float>(0x67a9'242bU), // x = 0x1.524856p+80f
+            //std::bit_cast<float>(0x6a19'76f1U), // x = 0x1.32ede2p+85f
+            //std::bit_cast<float>(0x6c55'da58U), // x = 0x1.abb4bp+89f
+            //std::bit_cast<float>(0x6f79'be45U), // x = 0x1.f37c8ap+95f
+            //std::bit_cast<float>(0x7276'69d4U), // x = 0x1.ecd3a8p+101f
+            //std::bit_cast<float>(0x7758'4625U), // x = 0x1.b08c4ap+111f
+        } );
+    BOOST_CHECK( success );
+}
+
+
+// --run_test=MathTests/SIMDTraitsSinDoubleTest1
+BOOST_AUTO_TEST_CASE( SIMDTraitsSinDoubleTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RangeGenerator<FloatT> generator( -M_PI * 2, M_PI * 2 );
+    NumericTest test( "Math::Internal::SinImplDoubleTest1" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            return std::sin( x );
+        },
+        []( auto x )
+        {
+            using Traits = SIMD::Traits<double, 2>;
+            auto rmmx = Traits::Fill( x );
+            return Traits::First( Traits::Sin( rmmx ) );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            -1e5,
+            -1e10,
+            -1e50,
+            -1e100,
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            1e5,
+            1e10,
+            1e50,
+            1e100,
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0,
+            0x1.940c877fb7dacp-7,    0x1.fffffffffdb6p24,    0x1.fd4da4ef37075p29,
+              0x1.b951f1572eba5p+31,   0x1.55202aefde314p+31,  /*0x1.85fc0f04c0128p101,
+              0x1.7776c2343ba4ep101,   0x1.678309fa50d58p110,  0x1.fffffffffef4ep199,*/
+              -0x1.ab514bfc61c76p+7,   -0x1.f7898d5a756ddp+2,  -0x1.f42fb19b5b9b2p-6,
+              0x1.5f09cad750ab1p+3,    -0x1.14823229799c2p+7,  -0x1.0285070f9f1bcp-5,
+              0x1.23f40dccdef72p+0,    0x1.43cf16358c9d7p+0,   0x1.addf3b9722265p+0,
+              0x1.48ff1782ca91dp+8,    0x1.a211877de55dbp+4,   0x1.dcbfda0c7559ep+8,
+              0x1.1ffb509f3db15p+5,    0x1.2345d1e090529p+5,   0x1.ae945054939c2p+10,
+              0x1.2e566149bf5fdp+9,    0x1.be886d9c2324dp+6,   -0x1.119471e9216cdp+10,
+              -0x1.aaf85537ea4c7p+3,   0x1.cb996c60f437ep+9,   0x1.c96e28eb679f8p+5,
+              -0x1.a5eece87e8606p+4,   0x1.e31b55306f22cp+2,   0x1.ae78d360afa15p+0,
+              0x1.1685973506319p+3,    0x1.4f2b874135d27p+4,   0x1.ae945054939c2p+10,
+              /*0x1.3eec5912ea7cdp+331,*/  0x1.dcbfda0c7559ep+8,   0x1.a65d441ea6dcep+4,
+              0x1.e639103a05997p+2,    0x1.13114266f9764p+4,   /*-0x1.3eec5912ea7cdp+331,
+              0x1.08087e9aad90bp+887,  0x1.2b5fe88a9d8d5p+903, -0x1.a880417b7b119p+1023,
+              -0x1.6deb37da81129p+205, 0x1.08087e9aad90bp+887, 0x1.f6d7518808571p+1023,
+              -0x1.8bb5847d49973p+845, 0x1.f08b14e1c4d0fp+890, 0x1.6ac5b262ca1ffp+849,*/
+              0x1.e0000000001c2p-20
+        } );
+    BOOST_CHECK( success );
+
+        
+}
+
+// --run_test=MathTests/SinFloatTest1
+BOOST_AUTO_TEST_CASE( SinFloatTest1 )
 {
     TrigonometricRangeTest<float>( "SinFloatTest2", []( float value ) { return std::sin( value ); }, []( float value ) { return Math::Internal::SinImpl( value ); } );
 }
-
 
 // --run_test=MathTests/SinDoubleTest2
 BOOST_AUTO_TEST_CASE( SinDoubleTest2 )
@@ -1689,13 +1518,112 @@ BOOST_AUTO_TEST_CASE( FModDoubleTest2 )
 // --run_test=MathTests/ExpFloatTest2
 BOOST_AUTO_TEST_CASE( ExpFloatTest2 )
 {
-    RandomValueTest<float, 10000>( "ExpFloatTest2", []( float value ) { return std::exp( value ); }, []( float value ) { return Math::Exp( value ); }, -9, 10 );
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = float;
+    //Generators::RandomGenerator<FloatT, 200000> generator( -9, 10 );
+    Generators::RangeGenerator<FloatT> generator( -89, 89 );
+    NumericTest test( "ExpFloatTest2" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            return std::exp( x );
+        },
+        []( auto x )
+        {
+            return Exp( x );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
+    //RandomValueTest<float, 10000>( "ExpFloatTest2", []( float value ) { return std::exp( value ); }, []( float value ) { return Math::Exp( value ); }, -9, 10 );
 }
+
+
+
+// --run_test=MathTests/PbrtFastExpFloatTest1
+BOOST_AUTO_TEST_CASE( PbrtFastExpFloatTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = float;
+    //Generators::RandomGenerator<FloatT, 200000> generator( -9, 10 );
+    Generators::RangeGenerator<FloatT> generator( 0, 1 );
+    NumericTest test( "PbrtFastExpFloatTest1" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            return std::exp( x );
+        },
+        []( auto x )
+        {
+            return pbrt::FastExp( x );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+        BOOST_CHECK( success );
+        //RandomValueTest<float, 10000>( "ExpFloatTest2", []( float value ) { return std::exp( value ); }, []( float value ) { return Math::Exp( value ); }, -9, 10 );
+}
+
 
 // --run_test=MathTests/ExpDoubleTest2
 BOOST_AUTO_TEST_CASE( ExpDoubleTest2 )
 {
-    RandomValueTest<double, 10000>( "ExpDoubleTest2", []( double value ) { return std::exp( value ); }, []( double value ) { return Math::Exp( value ); }, -9, 10 );
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    //auto generator = std::make_unique<Generators::RandomGenerator<FloatT, 200000>>( -9, 10 );
+    Generators::RangeGenerator<FloatT> generator( -744, 710 );
+    NumericTest test( "ExpDoubleTest2" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            return std::exp( x );
+        },
+        []( auto x )
+        {
+            return Exp( x );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
+    //RandomValueTest<double, 10000>( "ExpDoubleTest2", []( double value ) { return std::exp( value ); }, []( double value ) { return Math::Exp( value ); }, -9, 10 );
 }
 
 // --run_test=MathTests/LogFloatTest2
@@ -1872,7 +1800,7 @@ BOOST_AUTO_TEST_CASE( NextUpFloatTest2 )
     constexpr float result1 = NextUp( val2 );
     static_assert( result1 > val2 );
 
-    float result2 = std::nextafter( val2, 0 );
+    float result2 = std::nextafter( val2, 0.f );
 
     float result3 = pbrt::NextFloatUp( val2 );
 

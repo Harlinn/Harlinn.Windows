@@ -615,28 +615,28 @@ namespace Harlinn::Common::Core::Math
 
 
 
-        [[nodiscard]] AnsiString ToString( ) const
+        [[nodiscard]] WideString ToString( ) const
         {
             if ( Size )
             {
-                AnsiString result( "[" );
+                WideString result( L"[" );
                 for ( size_t i = 0; i < Size; ++i )
                 {
                     if ( ( i + 1 ) != Size )
                     {
-                        result += Format( "{},", values_[i] );
+                        result += Format( L"{},", values_[i] );
                     }
                     else
                     {
-                        result += Format( "{}", values_[i] );
+                        result += Format( L"{}", values_[i] );
                     }
                 }
-                result += "]";
+                result += L"]";
                 return result;
             }
             else
             {
-                return AnsiString("[]");
+                return WideString(L"[]");
             }
         }
 
@@ -907,6 +907,59 @@ namespace Harlinn::Common::Core::Math
             return Traits::Negate( Traits::Load( values.data( ) ) );
         }
 
+        Tuple2& operator += ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple2& operator += ( const Tuple2& other ) noexcept
+        {
+            x += other.x;
+            y += other.y;
+            return *this;
+        }
+
+        Tuple2& operator -= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple2& operator -= ( const Tuple2& other ) noexcept
+        {
+            x -= other.x;
+            y -= other.y;
+            return *this;
+        }
+
+        Tuple2& operator *= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple2& operator *= ( const Tuple2& other ) noexcept
+        {
+            x *= other.x;
+            y *= other.y;
+            return *this;
+        }
+
+        Tuple2& operator /= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple2& operator /= ( const Tuple2& other ) noexcept
+        {
+            x /= other.x;
+            y /= other.y;
+            return *this;
+        }
+
+
         void Assign( value_type xv, value_type yv ) noexcept
         {
             x = xv;
@@ -935,6 +988,13 @@ namespace Harlinn::Common::Core::Math
         {
             return std::isinf( x ) || std::isinf( y );
         }
+
+        
+        WideString ToString( ) const
+        {
+            return Format( L"[{}, {}]", x, y );
+        }
+
 
     };
 
@@ -1020,6 +1080,63 @@ namespace Harlinn::Common::Core::Math
             return Traits::Negate( Traits::Load( values.data( ) ) );
         }
 
+        Tuple3& operator += ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple3& operator += ( const Tuple3& other ) noexcept
+        {
+            x += other.x;
+            y += other.y;
+            z += other.z;
+            return *this;
+        }
+
+        Tuple3& operator -= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple3& operator -= ( const Tuple3& other ) noexcept
+        {
+            x -= other.x;
+            y -= other.y;
+            z -= other.z;
+            return *this;
+        }
+
+        Tuple3& operator *= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple3& operator *= ( const Tuple3& other ) noexcept
+        {
+            x *= other.x;
+            y *= other.y;
+            z *= other.z;
+            return *this;
+        }
+
+        Tuple3& operator /= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple3& operator /= ( const Tuple3& other ) noexcept
+        {
+            x /= other.x;
+            y /= other.y;
+            z /= other.z;
+            return *this;
+        }
+
+
         void Assign( value_type xv, value_type yv, value_type zv ) noexcept
         {
             x = xv;
@@ -1050,6 +1167,10 @@ namespace Harlinn::Common::Core::Math
             return std::isinf( x ) || std::isinf( y ) || std::isinf( z );
         }
 
+        WideString ToString( ) const
+        {
+            return Format( L"[{}, {}, {}]", x, y, z );
+        }
     };
 
     template<typename DerivedT, typename T>
@@ -1137,6 +1258,66 @@ namespace Harlinn::Common::Core::Math
             return Traits::Negate( Traits::Load( values.data( ) ) );
         }
 
+        Tuple4& operator += ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple4& operator += ( const Tuple4& other ) noexcept
+        {
+            x += other.x;
+            y += other.y;
+            z += other.z;
+            w += other.w;
+            return *this;
+        }
+
+        Tuple4& operator -= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple4& operator -= ( const Tuple4& other ) noexcept
+        {
+            x -= other.x;
+            y -= other.y;
+            z -= other.z;
+            w -= other.w;
+            return *this;
+        }
+
+        Tuple4& operator *= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple4& operator *= ( const Tuple4& other ) noexcept
+        {
+            x *= other.x;
+            y *= other.y;
+            z *= other.z;
+            w *= other.w;
+            return *this;
+        }
+
+        Tuple4& operator /= ( const Simd& other ) noexcept
+        {
+            values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
+            return *this;
+        }
+
+        Tuple4& operator /= ( const Tuple4& other ) noexcept
+        {
+            x /= other.x;
+            y /= other.y;
+            z /= other.z;
+            w /= other.w;
+            return *this;
+        }
+
         void Assign( value_type xv, value_type yv, value_type zv, value_type wv ) noexcept
         {
             x = xv;
@@ -1166,6 +1347,11 @@ namespace Harlinn::Common::Core::Math
         bool IsInfinite( ) const noexcept
         {
             return std::isinf( x ) || std::isinf( y ) || std::isinf( z ) || std::isinf( w );
+        }
+
+        WideString ToString( ) const
+        {
+            return Format( L"[{}, {}, {}, {}]", x, y, z, w );
         }
 
     };

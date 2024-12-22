@@ -16,6 +16,12 @@
     <Filter Include="Support">
       <UniqueIdentifier>{1e8e447f-0af3-4461-8360-99ff5ed446d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Internal">
+      <UniqueIdentifier>{0b1c1a7b-aac8-463f-bbde-d999807602c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Internal\Math">
+      <UniqueIdentifier>{d290589c-98f6-4d2d-ba49-c6a3d2ec3e9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -399,6 +405,15 @@
     <ClInclude Include="HCCUtf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCTestUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCMathForward.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCFloatingPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -539,6 +554,12 @@
     </None>
     <None Include="HCCDemangle.m">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="Internal\Math\sqrt.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\trigonometry.inl">
+      <Filter>Header Files\Internal\Math</Filter>
     </None>
   </ItemGroup>
 </Project>

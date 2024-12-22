@@ -224,6 +224,7 @@
     <ClInclude Include="HCCDoxygen.h" />
     <ClInclude Include="HCCEseOptions.h" />
     <ClInclude Include="HCCFlags.h" />
+    <ClInclude Include="HCCFloatingPoint.h" />
     <ClInclude Include="HCCFormatStringParser.h" />
     <ClInclude Include="HCCGenerators.h" />
     <ClInclude Include="HCCHtmlNamedCharacters.h" />
@@ -271,6 +272,7 @@
     <ClInclude Include="HCCLoggerLMDBSinkStorage.h" />
     <ClInclude Include="HCCLogging.h" />
     <ClInclude Include="HCCMath.h" />
+    <ClInclude Include="HCCTestUtils.h" />
     <ClInclude Include="HCCVectorMath.h" />
     <ClInclude Include="HCCMeta.h" />
     <ClInclude Include="HCCMemory.h" />
@@ -321,6 +323,7 @@
     <ClInclude Include="HCCWinError.h" />
     <ClInclude Include="HCCXml.h" />
     <ClInclude Include="HCCZMQ.h" />
+    <ClInclude Include="HCCMathForward.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="xxh3.h" />
     <ClInclude Include="xxhash.h" />
@@ -396,6 +399,8 @@
     <None Include="HCCComInterfaces.xm" />
     <None Include="HCCComRegistry.inl" />
     <None Include="HCCDemangle.m" />
+    <None Include="Internal\Math\sqrt.inl" />
+    <None Include="Internal\Math\trigonometry.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

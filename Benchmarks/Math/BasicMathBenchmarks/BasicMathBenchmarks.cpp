@@ -1371,15 +1371,6 @@ static void BenchmarkFloatPbrtFastExp( benchmark::State& state )
 BENCHMARK( BenchmarkFloatPbrtFastExp );
 
 
-static void BenchmarkDoubleInternalHypot( benchmark::State& state )
-{
-    DoubleGenerator.Reset( );
-    for ( auto _ : state )
-    {
-        benchmark::DoNotOptimize( Math::Internal::HypotImpl( DoubleGenerator( ), 16.0 ) );
-    }
-}
-BENCHMARK( BenchmarkDoubleInternalHypot );
 
 static void BenchmarkDoubleHypot( benchmark::State& state )
 {
@@ -1401,15 +1392,6 @@ static void BenchmarkDoubleStdHypot( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleStdHypot );
 
-static void BenchmarkFloatInternalHypot( benchmark::State& state )
-{
-    FloatGenerator.Reset( );
-    for ( auto _ : state )
-    {
-        benchmark::DoNotOptimize( Math::Internal::HypotImpl( FloatGenerator( ), 16.0f ) );
-    }
-}
-BENCHMARK( BenchmarkFloatInternalHypot );
 
 static void BenchmarkFloatHypot( benchmark::State& state )
 {

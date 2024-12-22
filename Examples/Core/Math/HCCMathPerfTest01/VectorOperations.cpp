@@ -17,7 +17,7 @@
 
 #include "HCCMathPerfTest01.h"
 
-#include <HCCMatrix.h>
+#include <HCCVectorMath.h>
 #include <HCCDateTime.h>
 #include <HCCString.h>
 
@@ -48,8 +48,8 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            PrintLn( "{}: Duration={}, Accumulated={}",
-                testName, duration, accumulated.ToString() );
+            PrintLn( L"{}: Duration={}, Accumulated={}",
+                ToWideString( testName ), duration, accumulated.ToString() );
         }
     }
 
@@ -78,8 +78,8 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            PrintLn( "{}: Duration={}, Accumulated={}",
-                testName, duration, accumulated.ToString( ) );
+            PrintLn( L"{}: Duration={}, Accumulated={}",
+                ToWideString( testName ), duration, accumulated.ToString( ) );
         }
     }
 
@@ -110,8 +110,8 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            PrintLn( "{}: Duration={}, Accumulated={}",
-                testName, duration, accumulated.ToString( ) );
+            PrintLn( L"{}: Duration={}, Accumulated={}",
+                ToWideString( testName ), duration, accumulated.ToString( ) );
         }
     }
 
@@ -165,92 +165,6 @@ void RunSubDouble1BTest( Int64 outerIterationCount )
 }
 
 
-
-
-void RunAddDouble2ATest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 2>;
-    VectorType baseValue( 1 );
-    VectorType increment( 0.000001, 0.000002 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg ) { return arg; }, baseValue, increment );
-}
-
-void RunAddDouble2BTest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 2>;
-    VectorType baseValue1( 1.0 );
-    VectorType baseValue2( 10.0 );
-    VectorType increment( 0.000001, 0.000002 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg1, const auto& arg2 ) { return arg1 + arg2; }, baseValue1, baseValue2, increment );
-}
-
-void RunAddDouble2CTest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 2>;
-    using FloatType = VectorType::ValueType;
-    VectorType baseValue1( 1.0 );
-    FloatType baseValue2 = static_cast<FloatType>( 10.0 );
-    FloatType increment = static_cast<FloatType>( 0.000001 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg1, auto arg2 ) { return arg1 + arg2; }, baseValue1, baseValue2, increment );
-}
-
-
-
-void RunSubDouble2ATest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 2>;
-    VectorType baseValue( 1 );
-    VectorType increment( 0.000001, 0.000002 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg ) { return -arg; }, baseValue, increment );
-
-}
-
-void RunSubDouble2BTest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 2>;
-    VectorType baseValue1( 1.0 );
-    VectorType baseValue2( 10.0 );
-    VectorType increment( 0.000001, 0.000002 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg1, const auto& arg2 ) { return -arg1 - arg2; }, baseValue1, baseValue2, increment );
-}
-
-
-
-void RunAddDouble3ATest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 3>;
-    VectorType baseValue( 1 );
-    VectorType increment( 0.000001, 0.000002, 0.000003 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg ) { return arg; }, baseValue, increment );
-}
-
-void RunAddDouble3BTest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 3>;
-    VectorType baseValue1( 1.0 );
-    VectorType baseValue2( 10.0 );
-    VectorType increment( 0.000001, 0.000002, 0.000003 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg1, const auto& arg2 ) { return arg1 + arg2; }, baseValue1, baseValue2, increment );
-}
-
-
-void RunAddDouble4ATest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 4>;
-    VectorType baseValue( 1 );
-    VectorType increment( 0.000001, 0.000002, 0.000003, 0.000004 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg ) { return arg; }, baseValue, increment );
-}
-
-
-void RunAddDouble4BTest( Int64 outerIterationCount )
-{
-    using VectorType = Math::Vector<double, 4>;
-    VectorType baseValue1( 1.0 );
-    VectorType baseValue2( 10.0 );
-    VectorType increment( 0.000001, 0.000002, 0.000003, 0.000004 );
-    RunTest<VectorType>( outerIterationCount, __FUNCTION__, []( const auto& arg1, const auto& arg2 ) { return arg1 + arg2; }, baseValue1, baseValue2, increment );
-}
 
 void RunAddDouble5ATest( Int64 outerIterationCount )
 {
@@ -762,20 +676,6 @@ void RunVectorOperations( )
     RunSubDouble1BTest( outerIterationCount );
 
 
-    RunAddDouble2ATest( outerIterationCount );
-    RunAddDouble2BTest( outerIterationCount );
-    RunAddDouble2CTest( outerIterationCount );
-
-    RunSubDouble2ATest( outerIterationCount );
-    RunSubDouble2BTest( outerIterationCount );
-
-
-    RunAddDouble3ATest( outerIterationCount );
-    RunAddDouble3BTest( outerIterationCount );
-
-    RunAddDouble4ATest( outerIterationCount );
-    
-    RunAddDouble4BTest( outerIterationCount );
     
     
     RunAddDouble5ATest( outerIterationCount );
@@ -813,16 +713,7 @@ void RunVectorOperations( )
 
     RunAddFloat1ATest( outerIterationCount );
     RunAddFloat1BTest( outerIterationCount );
-    /*
-    RunAddFloat2ATest( outerIterationCount );
-    RunAddFloat2BTest( outerIterationCount );
-    
-    RunAddFloat3ATest( outerIterationCount );
-    RunAddFloat3BTest( outerIterationCount );
 
-    RunAddFloat4ATest( outerIterationCount );
-    RunAddFloat4BTest( outerIterationCount );
-    */
     RunAddFloat5ATest( outerIterationCount );
     RunAddFloat5BTest( outerIterationCount );
 

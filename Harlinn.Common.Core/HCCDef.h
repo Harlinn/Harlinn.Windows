@@ -256,6 +256,7 @@
 #include <source_location>
 #include <cctype>
 #include <cwctype>
+#include <random>
 
 #include <ppl.h>
 

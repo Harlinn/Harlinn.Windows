@@ -2467,16 +2467,16 @@ namespace Harlinn::Common::Core::SIMD
         static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept 
             requires( UseShortSIMDType )
         {
-            std::array<UInt32, 4> selection{ selection1, selection2, selection3, selection4 };
-            __m128i selectionControl = _mm_loadu_si128( reinterpret_cast< const __m128i* >( selection[ 0 ].data( ) ) );
+            alignas( AlignAs ) std::array<UInt32, 4> selection{ selection1, selection2, selection3, selection4 };
+            __m128i selectionControl = _mm_load_si128( reinterpret_cast< const __m128i* >( selection[ 0 ].data( ) ) );
             return _mm_permutevar_ps( v, selectionControl );
         }
 
         static SIMDType Swizzle( SIMDType v, UInt32 selection8, UInt32 selection7, UInt32 selection6, UInt32 selection5, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept 
             requires( UseShortSIMDType == false )
         {
-            std::array<UInt32, 8> selection{ selection1, selection2, selection3, selection4, selection5, selection6, selection7, selection8 };
-            __m128i selectionControl = _mm256_loadu_si256( reinterpret_cast< const __m256i* >( selection[ 0 ].data( ) ) );
+            alignas(AlignAs) std::array<UInt32, 8> selection{ selection1, selection2, selection3, selection4, selection5, selection6, selection7, selection8 };
+            __m128i selectionControl = _mm256_load_si256( reinterpret_cast< const __m256i* >( selection[ 0 ].data( ) ) );
             return _mm256_permutevar8x32_ps( v, selectionControl );
         }
 

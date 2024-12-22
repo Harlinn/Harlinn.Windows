@@ -58,7 +58,7 @@ namespace
     template<typename FloatT>
     void PrintAccumulated( FloatT accumulated1, FloatT accumulated2 )
     {
-        using FloatingPointType = Math::Internal::FloatingPoint<FloatT>;
+        using FloatingPointType = Math::FloatingPoint<FloatT>;
         using UIntType = typename FloatingPointType::UIntType;
         if ( std::bit_cast<UIntType>( accumulated1 ) != std::bit_cast<UIntType>( accumulated2 ) )
         {
@@ -80,7 +80,7 @@ namespace
     template<typename FloatT>
     void PrintAccumulated( FloatT accumulated1a, FloatT accumulated1b, FloatT accumulated2a, FloatT accumulated2b )
     {
-        using FloatingPointType = Math::Internal::FloatingPoint<FloatT>;
+        using FloatingPointType = Math::FloatingPoint<FloatT>;
         using UIntType = typename FloatingPointType::UIntType;
         if ( std::bit_cast<UIntType>( accumulated1a ) != std::bit_cast<UIntType>( accumulated2a ) || std::bit_cast<UIntType>( accumulated1b ) != std::bit_cast<UIntType>( accumulated2b ) )
         {
@@ -174,7 +174,7 @@ namespace
     template<typename FloatT, typename Func1, typename Func2 >
     void RunCompareTest( Int64 outerIterationCount, const char* testName, Func1&& func1, Func2&& func2, FloatT base = static_cast<FloatT>( M_PI ), FloatT increment = static_cast<FloatT>( 0.000001 ) )
     {
-        using FloatingPointType = Math::Internal::FloatingPoint<FloatT>;
+        using FloatingPointType = Math::FloatingPoint<FloatT>;
         using UIntType = typename FloatingPointType::UIntType;
         Int64 innerIterationCount = 1'000'000'000;
         PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
