@@ -228,6 +228,7 @@
     <ClInclude Include="HCCFormatStringParser.h" />
     <ClInclude Include="HCCGenerators.h" />
     <ClInclude Include="HCCHtmlNamedCharacters.h" />
+    <ClInclude Include="HCCInteger.h" />
     <ClInclude Include="HCCIOBufferStream.h" />
     <ClInclude Include="HCCCom.h" />
     <ClInclude Include="HCCConsole.h" />
@@ -324,6 +325,9 @@
     <ClInclude Include="HCCXml.h" />
     <ClInclude Include="HCCZMQ.h" />
     <ClInclude Include="HCCMathForward.h" />
+    <ClInclude Include="Internal\Math\NearestInteger.h" />
+    <ClInclude Include="Internal\Math\sqrt.h" />
+    <ClInclude Include="Internal\Math\trigonometry.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="xxh3.h" />
     <ClInclude Include="xxhash.h" />
@@ -399,8 +403,7 @@
     <None Include="HCCComInterfaces.xm" />
     <None Include="HCCComRegistry.inl" />
     <None Include="HCCDemangle.m" />
-    <None Include="Internal\Math\sqrt.inl" />
-    <None Include="Internal\Math\trigonometry.inl" />
+    <None Include="Internal\Math\RangeReduction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

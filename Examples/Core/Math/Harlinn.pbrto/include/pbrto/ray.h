@@ -74,7 +74,11 @@ class RayDifferential : public Ray {
 // Ray Inline Functions
 PBRT_CPU_GPU inline Point3f OffsetRayOrigin(Point3fi pi, Normal3f n, Vector3f w) {
     // Find vector _offset_ to corner of error bounds and compute initial _po_
+#ifdef PBRT_USES_HCCMATH
+    Float d = ScalarDot( Abs( n ), pi.Error( ) );
+#else
     Float d = Dot(Abs(n), pi.Error());
+#endif
     Vector3f offset = d * Vector3f(n);
     if (Dot(w, n) < 0)
         offset = -offset;

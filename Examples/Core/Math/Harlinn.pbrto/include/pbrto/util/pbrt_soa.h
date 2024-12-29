@@ -18,15 +18,13 @@ template <> struct SOA<Interval> {
     struct GetSetIndirector {
         PBRT_CPU_GPU
         operator Interval() const {
-            Interval r;
-            r.low = soa->low[i];
-            r.high = soa->high[i];
+            Interval r( soa->low[ i ], soa->high[ i ] );
             return r;
         }
         PBRT_CPU_GPU
         void operator=(const Interval &a) {
-            soa->low[i] = a.low;
-            soa->high[i] = a.high;
+            soa->low[i] = a.LowerBound();
+            soa->high[i] = a.UpperBound();
         }
 
         SOA *soa;
@@ -41,9 +39,7 @@ template <> struct SOA<Interval> {
     PBRT_CPU_GPU
     Interval operator[](int i) const {
         DCHECK_LT(i, nAlloc);
-        Interval r;
-        r.low = this->low[i];
-        r.high = this->high[i];
+        Interval r( this->low[ i ], this->high[ i ] );
         return r;
     }
 

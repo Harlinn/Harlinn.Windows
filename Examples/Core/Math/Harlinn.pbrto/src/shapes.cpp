@@ -170,8 +170,13 @@ PBRT_CPU_GPU pstd::optional<TriangleIntersection> IntersectTriangle(const Ray &r
                                                        Point3f p0, Point3f p1,
                                                        Point3f p2) {
     // Return no intersection if triangle is degenerate
+#ifdef PBRT_USES_HCCMATH
+    if ( ScalarLengthSquared( Math::Cross( p2 - p0, p1 - p0 ) ) == 0 )
+        return {};
+#else
     if (LengthSquared(Cross(p2 - p0, p1 - p0)) == 0)
         return {};
+#endif
 
     // Transform triangle vertices to ray coordinate space
     // Translate vertices based on ray origin
@@ -539,8 +544,14 @@ PBRT_CPU_GPU Float Curve::Area() const {
     Float width1 = Lerp(uMax, common->width[0], common->width[1]);
     Float avgWidth = (width0 + width1) * 0.5f;
     Float approxLength = 0.f;
-    for (int i = 0; i < 3; ++i)
-        approxLength += Distance(cpObj[i], cpObj[i + 1]);
+    for ( int i = 0; i < 3; ++i )
+    {
+#ifdef PBRT_USES_HCCMATH
+        approxLength += ScalarDistance( cpObj[ i ], cpObj[ i + 1 ] );
+#else
+        approxLength += Distance( cpObj[ i ], cpObj[ i + 1 ] );
+#endif
+    }
     return approxLength * avgWidth;
 }
 
@@ -653,7 +664,11 @@ bool Curve::RecursiveIntersect(const Ray &ray, Float tMax, pstd::span<const Poin
         Float denom = LengthSquared(segmentDir);
         if (denom == 0)
             return false;
+#ifdef PBRT_USES_HCCMATH
+        Float w = ScalarDot( -Vector2f( cp[ 0 ].x, cp[ 0 ].y ), segmentDir ) / denom;
+#else
         Float w = Dot(-Vector2f(cp[0].x, cp[0].y), segmentDir) / denom;
+#endif
 
         // Compute $u$ coordinate of curve intersection point and _hitWidth_
         Float u = Clamp(Lerp(w, u0, u1), u0, u1);
@@ -1058,11 +1073,19 @@ BilinearPatch::BilinearPatch(const BilinearPatchMesh *mesh, int meshIndex, int b
     // Store area of bilinear patch in _area_
     // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
     const int *v = &mesh->vertexIndices[4 * blpIndex];
-    Point3f p00 = mesh->p[v[0]], p10 = mesh->p[v[1]];
-    Point3f p01 = mesh->p[v[2]], p11 = mesh->p[v[3]];
+    Point3f p00 = mesh->p[ v[ 0 ] ]; 
+    Point3f p10 = mesh->p[ v[ 1 ] ];
+    Point3f p01 = mesh->p[ v[ 2 ] ]; 
+    Point3f p11 = mesh->p[ v[ 3 ] ];
 
-    if (IsRectangle(mesh))
-        area = Distance(p00, p01) * Distance(p00, p10);
+    if ( IsRectangle( mesh ) )
+    {
+#ifdef PBRT_USES_HCCMATH
+        area = ScalarDistance( p00, p01 ) * ScalarDistance( p00, p10 );
+#else
+        area = Distance( p00, p01 ) * Distance( p00, p10 );
+#endif
+    }
     else {
         // Compute approximate area of bilinear patch
         // FIXME: it would be good to skip this for flat patches, or to
@@ -1077,10 +1100,19 @@ BilinearPatch::BilinearPatch(const BilinearPatchMesh *mesh, int meshIndex, int b
             }
         }
         area = 0;
-        for (int i = 0; i < na; ++i)
-            for (int j = 0; j < na; ++j)
-                area += 0.5f * Length(Cross(p[i + 1][j + 1] - p[i][j],
-                                            p[i + 1][j] - p[i][j + 1]));
+        for ( int i = 0; i < na; ++i )
+        {
+            for ( int j = 0; j < na; ++j )
+            {
+#ifdef PBRT_USES_HCCMATH
+                area += 0.5f * ScalarLength( Cross( p[ i + 1 ][ j + 1 ] - p[ i ][ j ],
+                    p[ i + 1 ][ j ] - p[ i ][ j + 1 ] ) );
+#else
+                area += 0.5f * Length( Cross( p[ i + 1 ][ j + 1 ] - p[ i ][ j ],
+                    p[ i + 1 ][ j ] - p[ i ][ j + 1 ] ) );
+#endif
+            }
+        }
     }
 }
 
@@ -1184,10 +1216,15 @@ PBRT_CPU_GPU pstd::optional<ShapeSample> BilinearPatch::Sample(Point2f u) const 
     else if (!IsRectangle(mesh)) {
         // Sample patch $(u,v)$ with approximate uniform area sampling
         // Initialize _w_ array with differential area at bilinear patch corners
+#ifdef PBRT_USES_HCCMATH
+        pstd::array<Float, 4> w = {
+            ScalarLength( Cross( p10 - p00, p01 - p00 ) ), ScalarLength( Cross( p10 - p00, p11 - p10 ) ),
+            ScalarLength( Cross( p01 - p00, p11 - p01 ) ), ScalarLength( Cross( p11 - p10, p11 - p01 ) ) };
+#else
         pstd::array<Float, 4> w = {
             Length(Cross(p10 - p00, p01 - p00)), Length(Cross(p10 - p00, p11 - p10)),
             Length(Cross(p01 - p00, p11 - p01)), Length(Cross(p11 - p10, p11 - p01))};
-
+#endif
         uv = SampleBilinear(u, w);
         pdf = BilinearPDF(uv, w);
 
@@ -1251,9 +1288,15 @@ PBRT_CPU_GPU Float BilinearPatch::PDF(const Interaction &intr) const {
         pdf = mesh->imageDistribution->PDF(uv);
     else if (!IsRectangle(mesh)) {
         // Initialize _w_ array with differential area at bilinear patch corners
+#ifdef PBRT_USES_HCCMATH
+        pstd::array<Float, 4> w = {
+            ScalarLength( Cross( p10 - p00, p01 - p00 ) ), ScalarLength( Cross( p10 - p00, p11 - p10 ) ),
+            ScalarLength( Cross( p01 - p00, p11 - p01 ) ), ScalarLength( Cross( p11 - p10, p11 - p01 ) ) };
+#else
         pstd::array<Float, 4> w = {
             Length(Cross(p10 - p00, p01 - p00)), Length(Cross(p10 - p00, p11 - p10)),
             Length(Cross(p01 - p00, p11 - p01)), Length(Cross(p11 - p10, p11 - p01))};
+#endif
 
         pdf = BilinearPDF(uv, w);
     } else
@@ -1291,7 +1334,11 @@ PBRT_CPU_GPU pstd::optional<ShapeSample> BilinearPatch::Sample(const ShapeSample
         wi = Normalize(wi);
 
         // Convert area sampling PDF in _ss_ to solid angle measure
+#ifdef PBRT_USES_HCCMATH
+        ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctx.p( ), ss->intr.p( ) );
+#else
         ss->pdf /= AbsDot(ss->intr.n, -wi) / DistanceSquared(ctx.p(), ss->intr.p());
+#endif
         if (IsInf(ss->pdf))
             return {};
 
@@ -1319,8 +1366,13 @@ PBRT_CPU_GPU pstd::optional<ShapeSample> BilinearPatch::Sample(const ShapeSample
     pdf *= quadPDF;
 
     // Compute $(u,v)$ and surface normal for sampled point on rectangle
+#ifdef PBRT_USES_HCCMATH
+    Point2f uv( ScalarDot( p - p00, eu ) / ScalarDistanceSquared( p10, p00 ),
+        ScalarDot( p - p00, ev ) / ScalarDistanceSquared( p01, p00 ) );
+#else
     Point2f uv(Dot(p - p00, eu) / DistanceSquared(p10, p00),
                Dot(p - p00, ev) / DistanceSquared(p01, p00));
+#endif
     Normal3f n = Normal3f(Normalize(Cross(eu, ev)));
     // Flip normal at sampled $(u,v)$ if necessary
     if (mesh->n) {
@@ -1362,8 +1414,13 @@ PBRT_CPU_GPU Float BilinearPatch::PDF(const ShapeSampleContext &ctx, Vector3f wi
     if (!IsRectangle(mesh) || mesh->imageDistribution ||
         SphericalQuadArea(v00, v10, v11, v01) <= MinSphericalSampleArea) {
         // Return solid angle PDF for area-sampled bilinear patch
+#ifdef PBRT_USES_HCCMATH
+        Float pdf = PDF( isect->intr ) * ( ScalarDistanceSquared( ctx.p( ), isect->intr.p( ) ) /
+            ScalarAbsDot( isect->intr.n, -wi ) );
+#else
         Float pdf = PDF(isect->intr) * (DistanceSquared(ctx.p(), isect->intr.p()) /
                                         AbsDot(isect->intr.n, -wi));
+#endif
         return IsInf(pdf) ? 0 : pdf;
 
     } else {
@@ -1451,7 +1508,11 @@ pstd::vector<Shape> Shape::Create(
                 [&](Point3f v0, Point3f v1) {
                     v0 = (*renderFromObject)(v0);
                     v1 = (*renderFromObject)(v1);
+#ifdef PBRT_USES_HCCMATH
+                    return ScalarDistance( v0, v1 );
+#else
                     return Distance(v0, v1);
+#endif
                 },
                 edgeLength,
                 [&](Point3f *p, const Normal3f *n, const Point2f *uv, int nVertices) {

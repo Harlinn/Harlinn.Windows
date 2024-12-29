@@ -223,7 +223,11 @@ class PointLight : public LightBase {
                                            bool allowIncompletePDF) const {
         Point3f p = renderFromLight(Point3f(0, 0, 0));
         Vector3f wi = Normalize(p - ctx.p());
+#ifdef PBRT_USES_HCCMATH
+        SampledSpectrum Li = scale * I->Sample( lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
+#else
         SampledSpectrum Li = scale * I->Sample(lambda) / DistanceSquared(p, ctx.p());
+#endif
         return LightLiSample(Li, wi, 1, Interaction(p, &mediumInterface));
     }
 
@@ -715,7 +719,11 @@ class PortalImageInfiniteLight : public LightBase {
 
     PBRT_CPU_GPU
     Float Area() const {
+#ifdef PBRT_USES_HCCMATH
+        return ScalarLength( portal[ 1 ] - portal[ 0 ] ) * ScalarLength( portal[ 3 ] - portal[ 0 ] );
+#else
         return Length(portal[1] - portal[0]) * Length(portal[3] - portal[0]);
+#endif
     }
 
     // PortalImageInfiniteLight Private Members
@@ -774,8 +782,16 @@ class SpotLight : public LightBase {
         Point3f p = renderFromLight(Point3f(0, 0, 0));
         Vector3f wi = Normalize(p - ctx.p());
         // Compute incident radiance _Li_ for _SpotLight_
+#ifdef PBRT_USES_HCCMATH
+        Vector3f wLight = Normalize( renderFromLight.ApplyInverse( Vector3f( -wi ) ) );
+#else
         Vector3f wLight = Normalize(renderFromLight.ApplyInverse(-wi));
+#endif
+#ifdef PBRT_USES_HCCMATH
+        SampledSpectrum Li = I( wLight, lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
+#else
         SampledSpectrum Li = I(wLight, lambda) / DistanceSquared(p, ctx.p());
+#endif
 
         if (!Li)
             return {};

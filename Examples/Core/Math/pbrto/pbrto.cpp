@@ -138,7 +138,7 @@ int main( int argc, char* argv[ ] )
                 usage( "Didn't find four values after --cropwindow" );
                 return 1;
             }
-            options.cropWindow = Bounds2f( Point2f( c[ 0 ], c[ 2 ] ), Point2f( c[ 1 ], c[ 3 ] ) );
+            options.cropWindow = Bounds2f( pbrt::Point2f( c[ 0 ], c[ 2 ] ), pbrt::Point2f( c[ 1 ], c[ 3 ] ) );
         }
         else if ( ParseArg( &iter, args.end( ), "pixel", &pixel, onError ) )
         {
@@ -149,7 +149,7 @@ int main( int argc, char* argv[ ] )
                 return 1;
             }
             options.pixelBounds =
-                Bounds2i( Point2i( p[ 0 ], p[ 1 ] ), Point2i( p[ 0 ] + 1, p[ 1 ] + 1 ) );
+                Bounds2i( pbrt::Point2i( p[ 0 ], p[ 1 ] ), pbrt::Point2i( p[ 0 ] + 1, p[ 1 ] + 1 ) );
         }
         else if ( ParseArg( &iter, args.end( ), "pixelbounds", &pixelBounds, onError ) )
         {
@@ -159,7 +159,7 @@ int main( int argc, char* argv[ ] )
                 usage( "Didn't find four integer values after --pixelbounds" );
                 return 1;
             }
-            options.pixelBounds = Bounds2i( Point2i( p[ 0 ], p[ 2 ] ), Point2i( p[ 1 ], p[ 3 ] ) );
+            options.pixelBounds = Bounds2i( pbrt::Point2i( p[ 0 ], p[ 2 ] ), pbrt::Point2i( p[ 1 ], p[ 3 ] ) );
         }
         else if ( ParseArg( &iter, args.end( ), "pixelmaterial", &pixelMaterial,
             onError ) )
@@ -170,7 +170,7 @@ int main( int argc, char* argv[ ] )
                 usage( "Didn't find two values after --pixelmaterial" );
                 return 1;
             }
-            options.pixelMaterial = Point2i( p[ 0 ], p[ 1 ] );
+            options.pixelMaterial = pbrt::Point2i( p[ 0 ], p[ 1 ] );
         }
         else if (
 #ifdef PBRT_BUILD_GPU_RENDERER

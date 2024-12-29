@@ -20,8 +20,8 @@
 #include "HCCSIMD.h"
 #include "HCCMathForward.h"
 #include "HCCFloatingPoint.h"
-#include "Internal/Math/sqrt.inl"
-#include "Internal/Math/trigonometry.inl"
+#include "Internal/Math/sqrt.h"
+#include "Internal/Math/trigonometry.h"
 
 namespace Harlinn::Common::Core::Math
 {
@@ -43,7 +43,8 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType Three = 3.f;
         
         static constexpr ValueType Pi = static_cast< ValueType >( 3.14159265358979323846 );
-        static constexpr ValueType PiTimes2 = static_cast< ValueType >( M_2_PI );
+        static constexpr ValueType NegativePi = -Pi;
+        static constexpr ValueType PiTimes2 = static_cast< ValueType >( 2. * M_PI );
         static constexpr ValueType InvPi = static_cast< ValueType >( 0.31830988618379067154 );
         static constexpr ValueType Inv2Pi = static_cast< ValueType >( 0.15915494309189533577 );
         static constexpr ValueType Inv4Pi = static_cast< ValueType >( 0.07957747154594766788 );
@@ -71,7 +72,8 @@ namespace Harlinn::Common::Core::Math
         static constexpr ValueType Two = 2.;
         static constexpr ValueType Three = 3.;
         static constexpr ValueType Pi = 3.14159265358979323846;
-        static constexpr ValueType PiTimes2 = M_2_PI;
+        static constexpr ValueType NegativePi = -Pi;
+        static constexpr ValueType PiTimes2 = 2. * M_PI;
         static constexpr ValueType InvPi = 0.31830988618379067154;
         static constexpr ValueType Inv2Pi = 0.15915494309189533577;
         static constexpr ValueType Inv4Pi = 0.07957747154594766788;
@@ -1868,6 +1870,10 @@ namespace Harlinn::Common::Core::Math
     /// The value within [minimumValue, maximumValue], or the nearest boundary.
     /// </returns>
     template<typename T>
+        requires requires(const T& t1, const T& t2 )
+        { 
+            { t1 < t2 }->std::convertible_to<bool>;
+        }
     constexpr inline const T& Clamp( const T& value, const T& minimumValue, const T& maximumValue )
     {
         if ( value < minimumValue )
@@ -4129,7 +4135,7 @@ namespace Harlinn::Common::Core::Math
         else
         {
             constexpr UInt32 midSignificand = 0b00000000001101010000010011110011;
-            return Exponent( v ) + ( ( Significand( v ) >= midSignificand ) ? 1 : 0 );
+            return Core::Exponent( v ) + ( ( Core::Significand( v ) >= midSignificand ) ? 1 : 0 );
         }
     }
 
@@ -4142,7 +4148,7 @@ namespace Harlinn::Common::Core::Math
         else
         {
             constexpr UInt64 midSignificand = 0b110101000001001111001100110011111110011101111001101;
-            return Exponent( v ) + ( ( Significand( v ) >= midSignificand ) ? 1 : 0 );
+            return Core::Exponent( v ) + ( ( Core::Significand( v ) >= midSignificand ) ? 1 : 0 );
         }
     }
 
@@ -4193,7 +4199,7 @@ namespace Harlinn::Common::Core::Math
         float twoToF = EvaluatePolynomial( f, 1.f, 0.695556856f, 0.226173572f, 0.0781455737f );
 
         // Scale $2^f$ by $2^i$ and return final result
-        int exponent = Exponent( twoToF ) + i;
+        int exponent = Core::Exponent( twoToF ) + i;
         if ( exponent < -126 )
         {
             return 0;

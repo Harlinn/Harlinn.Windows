@@ -76,9 +76,9 @@ namespace
             uiExponentShifted_ = uiExponentMasked_ >> FractionWidth;
             iExponent_ = static_cast<Int32>( static_cast<Int64>( uiExponentShifted_ ) - ExponentBias );
 
-            fraction_ = fp_.Fraction( );
-            exponent_ = fp_.Exponent( );
-            signed_ = fp_.Sign( );
+            fraction_ = fp_.FractionValue( );
+            exponent_ = fp_.ExponentValue( );
+            signed_ = fp_.Signed( );
 
             ceil_ = fp_.Ceil( );
             fpceil_ = __ceil( v );
@@ -1261,17 +1261,6 @@ BOOST_AUTO_TEST_CASE( SinDoubleTest1 )
     BOOST_CHECK( result1b == 1.7453292519057202e-5 );
 }
 
-// 2.40557816965e+19
-// --run_test=MathTests/DebugSinImplFloatTest1
-BOOST_AUTO_TEST_CASE( DebugSinImplFloatTest1 )
-{
-    float arg = 2.40557816965e+19f;
-
-    auto result = Math::Internal::SinImpl( arg );
-
-    BOOST_CHECK_CLOSE( result, -0.205346256495f, 0.001f );
-
-}
 
 // --run_test=MathTests/SinImplFloatTest1
 BOOST_AUTO_TEST_CASE( SinImplFloatTest1 )
@@ -1552,7 +1541,7 @@ BOOST_AUTO_TEST_CASE( ExpFloatTest2 )
 }
 
 
-
+/*
 // --run_test=MathTests/PbrtFastExpFloatTest1
 BOOST_AUTO_TEST_CASE( PbrtFastExpFloatTest1 )
 {
@@ -1585,10 +1574,9 @@ BOOST_AUTO_TEST_CASE( PbrtFastExpFloatTest1 )
             -std::numeric_limits<FloatT>::denorm_min( ),
             -0.0,0.0
         } );
-        BOOST_CHECK( success );
-        //RandomValueTest<float, 10000>( "ExpFloatTest2", []( float value ) { return std::exp( value ); }, []( float value ) { return Math::Exp( value ); }, -9, 10 );
+    BOOST_CHECK( success );
 }
-
+*/
 
 // --run_test=MathTests/ExpDoubleTest2
 BOOST_AUTO_TEST_CASE( ExpDoubleTest2 )

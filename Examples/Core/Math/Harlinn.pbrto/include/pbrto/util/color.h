@@ -356,11 +356,11 @@ class RGBSigmoidPolynomial {
     PBRT_CPU_GPU
     static Float s(Float x) {
         if (IsInf(x))
-            return x > 0 ? 1 : 0;
+            return x > static_cast< Float >( 0 ) ? static_cast< Float >( 1 ) : static_cast< Float >( 0 );
 #ifdef PBRT_USES_HCCMATH_SQRT
-        return .5f + x / ( 2 * Math::Sqrt( 1 + Sqr( x ) ) );
+        return static_cast< Float >( .5 ) + x / ( static_cast< Float >( 2 ) * Math::Sqrt( static_cast< Float >( 1 ) + Sqr( x ) ) );
 #else
-        return .5f + x / (2 * std::sqrt(1 + Sqr(x)));
+        return static_cast< Float >( .5 ) + x / ( static_cast< Float >( 2 ) * std::sqrt( static_cast< Float >( 1 ) + Sqr(x)));
 #endif
     };
 
@@ -518,7 +518,7 @@ inline uint8_t LinearToSRGB8(Float value, Float dither = 0) {
         return 0;
     if (value >= 1)
         return 255;
-    return Clamp(pstd::round(255.f * LinearToSRGB(value) + dither), 0, 255);
+    return static_cast< uint8_t >( Clamp(pstd::round(255.f * LinearToSRGB(value) + dither), 0, 255) );
 }
 
 PBRT_CPU_GPU
@@ -544,12 +544,14 @@ inline Float SRGB8ToLinear(uint8_t value) {
 // White Balance Definitions
 // clang-format off
 // These are the Bradford transformation matrices.
-const SquareMatrix<3> LMSFromXYZ( 0.8951,  0.2664, -0.1614,
-                                 -0.7502,  1.7135,  0.0367,
-                                  0.0389, -0.0685,  1.0296);
-const SquareMatrix<3> XYZFromLMS( 0.986993,   -0.147054,  0.159963,
-                                  0.432305,    0.51836,   0.0492912,
-                                 -0.00852866,  0.0400428, 0.968487);
+const SquareMatrix<3> LMSFromXYZ( 
+    static_cast<Float>(0.8951), static_cast< Float >( 0.2664 ), static_cast< Float >( -0.1614 ),
+    static_cast< Float >( -0.7502 ), static_cast< Float >( 1.7135 ), static_cast< Float >( 0.0367 ),
+    static_cast< Float >( 0.0389 ), static_cast< Float >( -0.0685 ), static_cast< Float >( 1.0296 ));
+const SquareMatrix<3> XYZFromLMS( 
+    static_cast< Float >( 0.986993 ), static_cast< Float >( -0.147054 ), static_cast< Float >( 0.159963 ),
+    static_cast< Float >( 0.432305 ), static_cast< Float >( 0.51836 ), static_cast< Float >( 0.0492912 ),
+    static_cast< Float >( -0.00852866 ), static_cast< Float >( 0.0400428 ), static_cast< Float >( 0.968487 ));
 // clang-format on
 
 inline SquareMatrix<3> WhiteBalance(Point2f srcWhite, Point2f targetWhite) {

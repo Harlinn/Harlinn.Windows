@@ -156,9 +156,16 @@ const Interval Interval::Pi = Interval(3.1415925f, 3.14159274f);
 #endif
 #endif
 
+#ifdef PBRT_USES_HCCMATH_INTERVAL
+std::string Interval::ToString( ) const
+{
+    return StringPrintf( "[ Interval [%f, %f] ]", LowerBound(), UpperBound() );
+}
+#else
 std::string Interval::ToString() const {
     return StringPrintf("[ Interval [%f, %f] ]", low, high);
 }
+#endif
 
 // Spline Interpolation Function Definitions
 PBRT_CPU_GPU bool CatmullRomWeights(pstd::span<const Float> nodes, Float x, int *offset,

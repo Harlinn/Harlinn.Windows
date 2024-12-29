@@ -135,7 +135,11 @@ PBRTO_EXPORT void RenderCPU(BasicScene &parsedScene) {
                 Printf("World-space p: %s\n", worldFromRender(intr.p()));
                 Printf("World-space n: %s\n", worldFromRender(intr.n));
                 Printf("World-space ns: %s\n", worldFromRender(intr.shading.n));
+#ifdef PBRT_USES_HCCMATH
+                Printf( "Distance from camera: %f\n", ScalarDistance( intr.p( ), cr->ray.o ) );
+#else
                 Printf("Distance from camera: %f\n", Distance(intr.p(), cr->ray.o));
+#endif
 
                 bool isNamed = false;
                 for (const auto &mtl : namedMaterials)

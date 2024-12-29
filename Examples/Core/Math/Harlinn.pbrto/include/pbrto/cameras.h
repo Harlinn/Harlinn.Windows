@@ -183,10 +183,19 @@ class CameraBase {
                 ? 1
                 : std::max<Float>(.125, 1 / std::sqrt((Float)samplesPerPixel));
 #endif
+#ifdef PBRT_USES_HCCMATH
+        Point3f pxAdjusted = px - pDownZ;
+        Point3f pyAdjusted = py - pDownZ;
+        * dpdx =
+            sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( pxAdjusted ), time );
+        *dpdy =
+            sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( pyAdjusted ), time );
+#else
         *dpdx =
             sppScale * RenderFromCamera(DownZFromCamera.ApplyInverse(px - pDownZ), time);
         *dpdy =
             sppScale * RenderFromCamera(DownZFromCamera.ApplyInverse(py - pDownZ), time);
+#endif
     }
 
   protected:
@@ -561,7 +570,11 @@ class RealisticCamera : public CameraBase {
 
         // Compute surface normal of element at ray intersection point
         *n = Normal3f(Vector3f(o + *t * ray.d));
+#ifdef PBRT_USES_HCCMATH
+        *n = FaceForward( Normal3f( Normalize( *n ) ), Vector3f( -ray.d ) );
+#else
         *n = FaceForward(Normalize(*n), -ray.d);
+#endif
 
         return true;
     }

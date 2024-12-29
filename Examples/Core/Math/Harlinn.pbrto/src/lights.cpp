@@ -109,7 +109,11 @@ PBRT_CPU_GPU Float LightBounds::Importance(Point3f p, Normal3f n) const {
     // Return importance for light bounds at reference point
     // Compute clamped squared distance to reference point
     Point3f pc = (bounds.pMin + bounds.pMax) / 2;
+#ifdef PBRT_USES_HCCMATH
+    Float d2 = ScalarDistanceSquared( p, pc );
+#else
     Float d2 = DistanceSquared(p, pc);
+#endif
     d2 = std::max(d2, Length(bounds.Diagonal()) / 2);
 
     // Define cosine and sine clamped subtraction lambdas
@@ -324,8 +328,14 @@ PBRT_CPU_GPU pstd::optional<LightLiSample> ProjectionLight::SampleLi(LightSample
     // Return sample for incident radiance from _ProjectionLight_
     Point3f p = renderFromLight(Point3f(0, 0, 0));
     Vector3f wi = Normalize(p - ctx.p());
+#ifdef PBRT_USES_HCCMATH
+    Vector3f wl = renderFromLight.ApplyInverse( Vector3f( -wi ) );
+    SampledSpectrum Li = I( wl, lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
+#else
     Vector3f wl = renderFromLight.ApplyInverse(-wi);
-    SampledSpectrum Li = I(wl, lambda) / DistanceSquared(p, ctx.p());
+    SampledSpectrum Li = I( wl, lambda ) / DistanceSquared( p, ctx.p( ) );
+#endif
+    
     if (!Li)
         return {};
     return LightLiSample(Li, wi, 1, Interaction(p, &mediumInterface));
@@ -542,8 +552,13 @@ PBRT_CPU_GPU pstd::optional<LightLiSample> GoniometricLight::SampleLi(LightSampl
                                                          bool allowIncompletePDF) const {
     Point3f p = renderFromLight(Point3f(0, 0, 0));
     Vector3f wi = Normalize(p - ctx.p());
+#ifdef PBRT_USES_HCCMATH
+    SampledSpectrum L =
+        I( renderFromLight.ApplyInverse( Vector3f( -wi ) ), lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
+#else
     SampledSpectrum L =
         I(renderFromLight.ApplyInverse(-wi), lambda) / DistanceSquared(p, ctx.p());
+#endif
     return LightLiSample(L, wi, 1, Interaction(p, &mediumInterface));
 }
 

@@ -1656,6 +1656,7 @@ namespace Harlinn::Common::Core::SIMD
     struct Traits<float, N> : public std::true_type
     {
         using Type = float;
+        using UIntType = UInt32;
         static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 4;
@@ -1736,6 +1737,61 @@ namespace Harlinn::Common::Core::SIMD
             {
                 return _mm256_set1_ps( value );
             }
+        }
+
+        
+
+        static SIMDType Mask( UIntType value ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Size == 1 )
+                {
+                    return _mm_castsi128_ps( _mm_set_epi32( 0x00000000, 0x00000000, 0x00000000, value ) );
+                }
+                else if constexpr ( Size == 2 )
+                {
+                    return _mm_castsi128_ps( _mm_set_epi32( 0x00000000, 0x00000000, value, value ) );
+                }
+                else if constexpr ( Size == 3 )
+                {
+                    return _mm_castsi128_ps( _mm_set_epi32( 0x00000000, value, value, value ) );
+                }
+                else
+                {
+                    return _mm_castsi128_ps( _mm_set_epi32( value, value, value, value ) );
+                }
+            }
+            else
+            {
+                if constexpr ( Size == 5 )
+                {
+                    return _mm256_castsi256_ps( _mm256_set_epi32( 0x00000000, 0x00000000, 0x00000000, value, value, value, value, value ) );
+                }
+                else if constexpr ( Size == 6 )
+                {
+                    return _mm256_castsi256_ps( _mm256_set_epi32( 0x00000000, 0x00000000, value, value, value, value, value, value ) );
+                }
+                else if constexpr ( Size == 7 )
+                {
+                    return _mm256_castsi256_ps( _mm256_set_epi32( 0x00000000, value, value, value, value, value, value, value ) );
+                }
+                else
+                {
+                    return _mm256_castsi256_ps( _mm256_set_epi32( value, value, value, value, value, value, value, value ) );
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a mask suitable for extracting
+        /// the <c>Size</c> lowest elements from
+        /// the <c>SIMDType</c> using the <c>And</c> function.
+        /// </summary>
+        /// <returns></returns>
+        static SIMDType Mask( ) noexcept
+        {
+            return Mask( 0xFFFFFFFF );
         }
 
         static SIMDType Set( Type value1 ) noexcept 
@@ -2201,6 +2257,71 @@ namespace Harlinn::Common::Core::SIMD
 
             }
         }
+        /// <summary>
+        /// Compute the bitwise AND of packed single-precision (32-bit) 
+        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType And( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_and_ps( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_and_ps( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise NOT of packed single-precision (32-bit) floating-point 
+        /// elements in <c>lhs</c> and then AND with <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType AndNot( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_andnot_ps( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_andnot_ps( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise OR of packed single-precision (32-bit) 
+        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType Or( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_or_ps( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_or_ps( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise XOR of packed single-precision (32-bit) 
+        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType Xor( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_xor_ps( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_xor_ps( lhs, rhs );
+            }
+        }
+
+
 
 
         /// <summary>
@@ -2493,6 +2614,63 @@ namespace Harlinn::Common::Core::SIMD
             return _mm_shuffle_ps( v1, v2, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
         }
 
+        /// <summary>
+        /// Unpack and interleave single-precision (32-bit) floating-point elements 
+        /// from the high half v1 and v2, returning the results.
+        /// </summary>
+        static SIMDType UnpackHigh( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType )
+        {
+            return _mm_unpackhi_ps( v1, v2 );
+        }
+
+        /// <summary>
+        /// Unpack and interleave single-precision (32-bit) floating-point elements 
+        /// from the high half of each 128-bit lane in v1 and v2, returning the results.
+        /// </summary>
+        static SIMDType UnpackHigh( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType == false )
+        {
+            return _mm256_unpackhi_ps( v1, v2 );
+        }
+
+        /// <summary>
+        /// Unpack and interleave single-precision (32-bit) floating-point elements 
+        /// from the low half of v1 and v2, returning the results.
+        /// </summary>
+        static SIMDType UnpackLow( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType )
+        {
+            return _mm_unpacklo_ps( v1, v2 );
+        }
+
+        /// <summary>
+        /// Unpack and interleave single-precision (32-bit) floating-point elements 
+        /// from the low half of each 128-bit lane in v1 and v2, returning the results. 
+        /// </summary>
+        static SIMDType UnpackLow( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType == false )
+        {
+            return _mm256_unpacklo_ps( v1, v2 );
+        }
+
+        /// <summary>
+        /// Combines the two upper single-precision (32-bit) floating-point elements from v1,
+        /// and the two lower single-precision (32-bit) floating-point elements from v2, returning the results.
+        /// </summary>
+        static SIMDType High2Low2( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType )
+        {
+            return _mm_castpd_ps( _mm_move_sd(_mm_castps_pd( v1 ), _mm_castps_pd( v2 ) ) );
+        }
+
+        /// <summary>
+        /// Combines the three upper single-precision (32-bit) floating-point elements from v1,
+        /// and the lower single-precision (32-bit) floating-point elements from v2, returning the results.
+        /// </summary>
+        static SIMDType High3Low1( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType )
+        {
+            return _mm_move_ss( v1, v2 );
+        }
+
+
+
+
 
         static SIMDType Abs( SIMDType v ) noexcept
         {
@@ -2727,11 +2905,11 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_min_ps( _mm_max_ps( v, { { { 0.0f, 0.0f, 0.0f, 0.0f } } } ), { { { 1.0f, 1.0f, 1.0f, 1.0f } } } );
+                return _mm_min_ps( _mm_max_ps( v, { { 0.0f, 0.0f, 0.0f, 0.0f } } ), { { 1.0f, 1.0f, 1.0f, 1.0f } } );
             }
             else
             {
-                return _mm256_min_ps( _mm256_max_ps( v, { { { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f } } } ), { { { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } } );
+                return _mm256_min_ps( _mm256_max_ps( v, { { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f } } ), { { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } } );
             }
         }
 
@@ -3034,6 +3212,32 @@ namespace Harlinn::Common::Core::SIMD
             else
             {
                 return _mm256_hypot_ps( x, y );
+            }
+        }
+
+        static SIMDType LessThan( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmplt_ps( v1, v2 );
+            }
+            else
+            {
+                // LT_OQ => 0x11
+                return _mm256_cmp_ps( v1, v2, 0x11 );
+            }
+        }
+
+        static SIMDType GreaterOrEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpge_ps( v1, v2 );
+            }
+            else
+            {
+                // GE_OQ => 0x1D
+                return _mm256_cmp_ps( v1, v2, 0x1D );
             }
         }
 
@@ -3479,6 +3683,39 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Returns a mask suitable for extracting
+        /// the <c>Size</c> lowest elements from
+        /// the <c>SIMDType</c> using the <c>And</c> function.
+        /// </summary>
+        /// <returns></returns>
+        static SIMDType Mask( ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Size == 1 )
+                {
+                    return _mm_castsi128_pd( _mm_set_epi64x( 0x0000000000000000, 0xFFFFFFFFFFFFFFFF ) );
+                }
+                else 
+                {
+                    return _mm_castsi128_pd( _mm_set_epi64x( 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF ) );
+                }
+            }
+            else
+            {
+                if constexpr ( Size == 3 )
+                {
+                    return _mm256_castsi256_pd( _mm256_set_epi64x( 0x0000000000000000, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF ) );
+                }
+                else 
+                {
+                    return _mm256_castsi256_pd( _mm256_set_epi64x( 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF ) );
+                }
+            }
+        }
+
+
         static SIMDType Set( Type value1 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3793,6 +4030,72 @@ namespace Harlinn::Common::Core::SIMD
                 }
             }
         }
+
+
+        /// <summary>
+        /// Compute the bitwise AND of packed double-precision (64-bit) 
+        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType And( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_and_pd( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_and_pd( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise NOT of packed double-precision (64-bit) floating-point 
+        /// elements in <c>lhs</c> and then AND with <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType AndNot( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_andnot_pd( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_andnot_pd( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise OR of packed double-precision (64-bit) 
+        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType Or( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_or_pd( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_or_pd( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise XOR of packed double-precision (64-bit) 
+        /// floating-point elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType Xor( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_xor_pd( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_xor_pd( lhs, rhs );
+            }
+        }
+
 
 
         /// <summary>
@@ -4551,6 +4854,8 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_hypot_pd( x, y );
             }
         }
+
+        
 
         static bool Equal( SIMDType v1, SIMDType v2 ) noexcept
         {

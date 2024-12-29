@@ -414,6 +414,18 @@
     <ClInclude Include="HCCFloatingPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCInteger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\NearestInteger.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\sqrt.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\trigonometry.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -555,10 +567,7 @@
     <None Include="HCCDemangle.m">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Internal\Math\sqrt.inl">
-      <Filter>Header Files\Internal\Math</Filter>
-    </None>
-    <None Include="Internal\Math\trigonometry.inl">
+    <None Include="Internal\Math\RangeReduction.h">
       <Filter>Header Files\Internal\Math</Filter>
     </None>
   </ItemGroup>

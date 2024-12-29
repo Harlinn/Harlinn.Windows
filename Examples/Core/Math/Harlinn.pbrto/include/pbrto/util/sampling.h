@@ -1506,7 +1506,11 @@ class PiecewiseLinear2D {
             float *data_out = m_data.data();
 
             for (uint32_t slice = 0; slice < slices; ++slice) {
+#ifdef PBRT_USES_HCCMATH
+                float normalization = 1.f / ScalarHProd( m_inv_patch_size );
+#else
                 float normalization = 1.f / HProd(m_inv_patch_size);
+#endif
                 if (normalize) {
                     double sum = 0.0;
                     for (int y = 0; y < m_size.y - 1; ++y) {
@@ -1634,10 +1638,15 @@ class PiecewiseLinear2D {
         sample.x = is_const ? (2.f * sample.x)
                             : (c0 - SafeSqrt(c0 * c0 - 2.f * sample.x * (c0 - c1)));
         sample.x /= is_const ? (c0 + c1) : (c0 - c1);
-
+#ifdef PBRT_USES_HCCMATH
+        return {
+            Point2f( ( col + sample.x ) * m_patch_size.x, ( row + sample.y ) * m_patch_size.y ),
+            ( ( 1.f - sample.x ) * c0 + sample.x * c1 ) * ScalarHProd( m_inv_patch_size ) };
+#else
         return {
             Point2f((col + sample.x) * m_patch_size.x, (row + sample.y) * m_patch_size.y),
             ((1.f - sample.x) * c0 + sample.x * c1) * HProd(m_inv_patch_size)};
+#endif
     }
 
     /// Inverse of the mapping implemented in \c Sample()
@@ -1726,8 +1735,11 @@ class PiecewiseLinear2D {
 
         sample.y +=
             lookup<Dimension>(m_marginal_cdf.data(), offset, m_size.y, param_weight);
-
+#ifdef PBRT_USES_HCCMATH
+        return { sample, pdf * ScalarHProd( m_inv_patch_size ) };
+#else
         return {sample, pdf * HProd(m_inv_patch_size)};
+#endif
     }
 
     /**
@@ -1785,9 +1797,13 @@ class PiecewiseLinear2D {
                   lookup<Dimension>(m_data.data() + m_size.x, index, size, param_weight),
               v11 = lookup<Dimension>(m_data.data() + m_size.x + 1, index, size,
                                       param_weight);
-
+#ifdef PBRT_USES_HCCMATH
+        return FMA( w0.y, FMA( w0.x, v00, w1.x * v10 ), w1.y * FMA( w0.x, v01, w1.x * v11 ) ) *
+                ScalarHProd( m_inv_patch_size );
+#else
         return FMA(w0.y, FMA(w0.x, v00, w1.x * v10), w1.y * FMA(w0.x, v01, w1.x * v11)) *
                HProd(m_inv_patch_size);
+#endif
     }
 
     PBRT_CPU_GPU

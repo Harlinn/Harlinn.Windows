@@ -17,7 +17,7 @@
    limitations under the License.
 */
 
-#include "HCCLib.h";
+#include "HCCLib.h"
 
 namespace Harlinn::Common::Core::Math
 {
@@ -162,6 +162,10 @@ namespace Harlinn::Common::Core::Math
     constexpr inline std::remove_cvref_t<T> Round( T value ) noexcept;
 
     template<typename T>
+        requires requires( const T& t1, const T& t2 )
+        {
+            { t1 < t2 }->std::convertible_to<bool>;
+        }
     constexpr inline const T& Clamp( const T& value, const T& minimumValue, const T& maximumValue );
 
 

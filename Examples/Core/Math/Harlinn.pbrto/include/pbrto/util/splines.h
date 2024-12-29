@@ -34,8 +34,17 @@ PBRT_CPU_GPU inline Point3f EvaluateCubicBezier(pstd::span<const Point3f> cp, Fl
     Point3f cp2[2] = {Lerp(u, cp1[0], cp1[1]), Lerp(u, cp1[1], cp1[2])};
     if (deriv) {
         // Compute B\'ezier curve derivative at $u$
-        if (LengthSquared(cp2[1] - cp2[0]) > 0)
-            *deriv = 3 * (cp2[1] - cp2[0]);
+#ifdef PBRT_USES_HCCMATH
+        if ( ScalarLengthSquared( cp2[ 1 ] - cp2[ 0 ] ) > 0 )
+        {
+            *deriv = 3 * ( cp2[ 1 ] - cp2[ 0 ] );
+        }
+#else
+        if ( LengthSquared( cp2[ 1 ] - cp2[ 0 ] ) > 0 )
+        {
+            *deriv = 3 * ( cp2[ 1 ] - cp2[ 0 ] );
+        }
+#endif
         else
             *deriv = cp[3] - cp[0];
     }

@@ -235,7 +235,7 @@ namespace Harlinn::Common::Core::Test
                 }
                 else if constexpr ( std::is_same_v<value_type, double> )
                 {
-                    return static_cast< double >( Math::NextUp( static_cast< float >( Value ) ) );
+                    return static_cast<double>(Math::NextUp( static_cast<float>(Value) ));
                 }
                 else
                 {
@@ -404,7 +404,7 @@ namespace Harlinn::Common::Core::Test
             std::function<typename GeneratorT::value_type( typename GeneratorT::value_type )> expectedFunc,
             std::function<typename GeneratorT::value_type( typename GeneratorT::value_type )> testFunc )
         {
-            return operator()( generator, expectedFunc, testFunc, {} );
+            return Run( generator, expectedFunc, testFunc, {} );
         }
 
         template<typename GeneratorT>

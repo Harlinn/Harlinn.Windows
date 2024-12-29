@@ -649,6 +649,17 @@ namespace Harlinn::Common::Core::Math
 
         struct TupleSimdBase
         { };
+
+        template<typename T>
+        concept SimdType = std::is_base_of_v<TupleSimdBase, T>;
+
+        template<typename T>
+        concept TupleType = std::is_base_of_v<TupleBase, T>;
+
+        template<typename T1, typename T2>
+        constexpr bool IsCompatible =
+            std::is_same_v<typename T1::Traits, typename T2::Traits>;
+
     }
 
     /// <summary>
@@ -679,6 +690,7 @@ namespace Harlinn::Common::Core::Math
     public:
         using Traits = TraitsT;
         using TupleType = TupleT;
+        using DerivedType = typename TupleType::Simd;
         using value_type = typename Traits::Type;
         using size_type = size_t;
 
@@ -706,84 +718,100 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        TupleSimd operator - ( ) const noexcept
+        {
+            return Traits::Negate( simd );
+        }
+
         bool operator == ( const TupleSimd& other ) const noexcept
         {
-            return Traits::Equals( simd, other.simd );
+            return Traits::Equal( simd, other.simd );
         }
 
         bool operator != ( const TupleSimd& other ) const noexcept
         {
-            return Traits::Equals( simd, other.simd ) == false;
+            return Traits::Equal( simd, other.simd ) == false;
         }
 
-        template<typename T>
-            requires (T::Unloaded && T::Size == Size && std::is_same_v<value_type, typename T::value_type>)
+        bool operator == ( const value_type& value ) const noexcept
+        {
+            return Traits::Equal( simd, Traits::Fill( value ) );
+        }
+
+        bool operator != ( const value_type& value ) const noexcept
+        {
+            return Traits::Equal( simd, Traits::Fill( value ) ) == false;
+        }
+
+
+        template<Internal::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
         bool operator == ( const T& other ) const noexcept
         {
-            return Traits::Equals( simd, Traits::Load( other.values.data() ) );
+            return Traits::Equal( simd, Traits::Load( other.values.data() ) );
         }
 
-        template<typename T>
-            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        template<Internal::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
         bool operator != ( const T& other ) const noexcept
         {
-            return Traits::Equals( simd, Traits::Load( other.values.data() ) ) == false;
+            return Traits::Equal( simd, Traits::Load( other.values.data() ) ) == false;
         }
 
-        template<typename T>
-            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        TupleSimd& operator += ( const T& other ) noexcept
+        template<Internal::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        DerivedType& operator += ( const T& other ) noexcept
         {
             simd = Traits::Add( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
+            return static_cast< DerivedType& >(*this);
         }
-        TupleSimd& operator += ( const TupleSimd& other ) noexcept
+        DerivedType& operator += ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Add( simd, other.simd );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        template<typename T>
-            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        TupleSimd& operator -= ( const T& other ) noexcept
+        template<Internal::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        DerivedType& operator -= ( const T& other ) noexcept
         {
             simd = Traits::Sub( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
-        TupleSimd& operator -= ( const TupleSimd& other ) noexcept
+        DerivedType& operator -= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Sub( simd, other.simd );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        template<typename T>
-            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        TupleSimd& operator *= ( const T& other ) noexcept
+        template<Internal::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        DerivedType& operator *= ( const T& other ) noexcept
         {
             simd = Traits::Mul( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
-        TupleSimd& operator *= ( const TupleSimd& other ) noexcept
+        DerivedType& operator *= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Mul( simd, other.simd );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        template<typename T>
-            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        TupleSimd& operator /= ( const T& other ) noexcept
+        template<Internal::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
+        DerivedType& operator /= ( const T& other ) noexcept
         {
             simd = Traits::Div( simd, Traits::Load( other.values.data( ) ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
-        TupleSimd& operator /= ( const TupleSimd& other ) noexcept
+        DerivedType& operator /= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Div( simd, other.simd );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        template<typename T>
-            requires ( T::Unloaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
+        template<Internal::TupleType T>
+            requires std::is_same_v<Traits, typename T::Traits>
         void Assign( const T& other ) noexcept
         {
             simd = Traits::Load( other.values.data( ) );
@@ -798,21 +826,9 @@ namespace Harlinn::Common::Core::Math
         {
             return Traits::HasNaN( simd );
         }
+
+
     };
-
-    namespace Internal
-    {
-        template<typename T>
-        concept SimdType = std::is_base_of_v<TupleSimdBase, T>;
-
-        template<typename T>
-        concept TupleType = std::is_base_of_v<TupleBase,T>;
-
-        template<typename T1, typename T2>
-        constexpr bool IsCompatible =
-            std::is_same_v<typename T1::Traits, typename T2::Traits>;
-    }
-
 
     /// <summary>
     /// A tuple holding two numbers.
@@ -840,11 +856,22 @@ namespace Harlinn::Common::Core::Math
         using SIMDType = typename Traits::SIMDType;
         static constexpr size_type Capacity = Size;
         using ArrayType = typename Traits::ArrayType;
+
+        using reference = typename ArrayType::reference;
+        using const_reference = typename ArrayType::const_reference;
+        using pointer = typename ArrayType::pointer;
+        using const_pointer = typename ArrayType::const_pointer;
+        using iterator = typename ArrayType::iterator;
+        using const_iterator = typename ArrayType::const_iterator;
+        using reverse_iterator = typename ArrayType::reverse_iterator;
+        using const_reverse_iterator = typename ArrayType::const_reverse_iterator;
+
+
         /// <summary>
         /// The mathematical operations are performed using 
         /// this type which holds a SIMD vector.  
         /// </summary>
-        using Simd = TupleSimd<Traits,DerivedT>;
+        using Simd = TupleSimd<Traits,DerivedType>;
 
         union
         {
@@ -864,16 +891,23 @@ namespace Harlinn::Common::Core::Math
             : x( xv ), y(yv)
         { }
 
-        template<typename T>
-            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        Tuple2( const T& other ) noexcept
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        Tuple2( const U& other ) noexcept
             : values( Traits::ToArray( other.simd ) )
         {
         }
-            
-        template<typename T>
-            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        DerivedType& operator = ( const T& other ) noexcept
+
+        template<Internal::TupleType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        Tuple2( const U& other ) noexcept
+            : values( other.values )
+        {
+        }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        DerivedType& operator = ( const U& other ) noexcept
         {
             values = Traits::ToArray( other.simd );
             return static_cast< DerivedType& >( *this );
@@ -888,16 +922,26 @@ namespace Harlinn::Common::Core::Math
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y );
         }
 
-        template<typename T>
-            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        bool operator == ( const T& other ) const noexcept
+        constexpr bool operator == ( value_type value ) const noexcept
+        {
+            return IsSameValue( x, value ) && IsSameValue( y, value );
+        }
+        constexpr bool operator != ( value_type value ) const noexcept
+        {
+            return !IsSameValue( x, value ) || !IsSameValue( y, value );
+        }
+
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        bool operator == ( const U& other ) const noexcept
         {
             return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
         }
 
-        template<typename T>
-            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        bool operator != ( const T& other ) const noexcept
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        bool operator != ( const U& other ) const noexcept
         {
             return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
         }
@@ -907,57 +951,172 @@ namespace Harlinn::Common::Core::Math
             return Traits::Negate( Traits::Load( values.data( ) ) );
         }
 
-        Tuple2& operator += ( const Simd& other ) noexcept
+        DerivedType& operator += ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple2& operator += ( const Tuple2& other ) noexcept
+        DerivedType& operator += ( const Tuple2& other ) noexcept
         {
             x += other.x;
             y += other.y;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple2& operator -= ( const Simd& other ) noexcept
+        DerivedType& operator += ( const value_type& value ) noexcept
+        {
+            x += value;
+            y += value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator -= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple2& operator -= ( const Tuple2& other ) noexcept
+        DerivedType& operator -= ( const Tuple2& other ) noexcept
         {
             x -= other.x;
             y -= other.y;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple2& operator *= ( const Simd& other ) noexcept
+        DerivedType& operator -= ( const value_type& value ) noexcept
+        {
+            x -= value;
+            y -= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+
+        DerivedType& operator *= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple2& operator *= ( const Tuple2& other ) noexcept
+        DerivedType& operator *= ( const Tuple2& other ) noexcept
         {
             x *= other.x;
             y *= other.y;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple2& operator /= ( const Simd& other ) noexcept
+        DerivedType& operator *= ( const value_type& value ) noexcept
+        {
+            x *= value;
+            y *= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+
+        DerivedType& operator /= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple2& operator /= ( const Tuple2& other ) noexcept
+        DerivedType& operator /= ( const Tuple2& other ) noexcept
         {
             x /= other.x;
             y /= other.y;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
+
+        DerivedType& operator /= ( const value_type& value ) noexcept
+        {
+            x /= value;
+            y /= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        const_reference operator[]( size_t index ) const noexcept
+        {
+            return values[ index ];
+        }
+
+        reference operator[]( size_t index ) noexcept
+        {
+            return values[ index ];
+        }
+
+        const_pointer data( ) const noexcept
+        {
+            return values.data( );
+        }
+        pointer data( ) noexcept
+        {
+            return values.data( );
+        }
+
+        constexpr size_t size( ) const noexcept
+        {
+            return Size;
+        }
+
+        const_reference front( ) const noexcept
+        {
+            return values.front( );
+        }
+        reference front( ) noexcept
+        {
+            return values.front( );
+        }
+
+        const_reference back( ) const noexcept
+        {
+            return values.back( );
+        }
+        reference back( ) noexcept
+        {
+            return values.back( );
+        }
+
+        const_iterator begin( ) const noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator cbegin( ) const noexcept
+        {
+            return values.cbegin( );
+        }
+        iterator begin( ) noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator end( ) const noexcept
+        {
+            return values.end( );
+        }
+        const_iterator cend( ) const noexcept
+        {
+            return values.cend( );
+        }
+        iterator end( ) noexcept
+        {
+            return values.end( );
+        }
+        const_reverse_iterator rbegin( ) const noexcept
+        {
+            return values.rbegin( );
+        }
+        reverse_iterator rbegin( ) noexcept
+        {
+            return values.rbegin( );
+        }
+        const_reverse_iterator rend( ) const noexcept
+        {
+            return values.rend( );
+        }
+        reverse_iterator rend( ) noexcept
+        {
+            return values.rend( );
+        }
+
+
 
 
         void Assign( value_type xv, value_type yv ) noexcept
@@ -1015,11 +1174,21 @@ namespace Harlinn::Common::Core::Math
         using SIMDType = typename Traits::SIMDType;
         static constexpr size_type Capacity = Size;
         using ArrayType = typename Traits::ArrayType;
+
+        using reference = typename ArrayType::reference;
+        using const_reference = typename ArrayType::const_reference;
+        using pointer = typename ArrayType::pointer;
+        using const_pointer = typename ArrayType::const_pointer;
+        using iterator = typename ArrayType::iterator;
+        using const_iterator = typename ArrayType::const_iterator;
+        using reverse_iterator = typename ArrayType::reverse_iterator;
+        using const_reverse_iterator = typename ArrayType::const_reverse_iterator;
+
         /// <summary>
         /// The mathematical operations are performed using 
         /// this type which holds a SIMD vector.  
         /// </summary>
-        using Simd = TupleSimd<Traits, DerivedT>;
+        using Simd = TupleSimd<Traits, DerivedType>;
 
         union
         {
@@ -1038,15 +1207,21 @@ namespace Harlinn::Common::Core::Math
             : x( xv ), y( yv ), z( zv )
         { }
 
-        template<Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        Tuple3( const T& other ) noexcept
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        Tuple3( const U& other ) noexcept
             : values( Traits::ToArray( other.simd ) )
         { }
 
-        template<Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        DerivedType& operator = ( const T& other ) noexcept
+        template<Internal::TupleType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        Tuple3( const U& other ) noexcept
+            : values( other.values )
+        { }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        DerivedType& operator = ( const U& other ) noexcept
         {
             values = Traits::ToArray( other.simd );
             return static_cast< DerivedType& >( *this );
@@ -1061,16 +1236,25 @@ namespace Harlinn::Common::Core::Math
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y ) || !IsSameValue( z, other.z );
         }
 
-        template<Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        bool operator == ( const T& other ) const noexcept
+        constexpr bool operator == ( value_type value ) const noexcept
+        {
+            return IsSameValue( x, value ) && IsSameValue( y, value ) && IsSameValue( z, value );
+        }
+        constexpr bool operator != ( value_type value ) const noexcept
+        {
+            return !IsSameValue( x, value ) || !IsSameValue( y, value ) || !IsSameValue( z, value );
+        }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        bool operator == ( const U& other ) const noexcept
         {
             return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
         }
 
-        template<Internal::SimdType T>
-            requires std::is_same_v<Traits, typename T::Traits>
-        bool operator != ( const T& other ) const noexcept
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        bool operator != ( const U& other ) const noexcept
         {
             return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
         }
@@ -1080,62 +1264,177 @@ namespace Harlinn::Common::Core::Math
             return Traits::Negate( Traits::Load( values.data( ) ) );
         }
 
-        Tuple3& operator += ( const Simd& other ) noexcept
+        DerivedType& operator += ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >(*this );
         }
 
-        Tuple3& operator += ( const Tuple3& other ) noexcept
+        DerivedType& operator += ( const Tuple3& other ) noexcept
         {
             x += other.x;
             y += other.y;
             z += other.z;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple3& operator -= ( const Simd& other ) noexcept
+        DerivedType& operator += ( const value_type& value ) noexcept
+        {
+            x += value;
+            y += value;
+            z += value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator -= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple3& operator -= ( const Tuple3& other ) noexcept
+        DerivedType& operator -= ( const Tuple3& other ) noexcept
         {
             x -= other.x;
             y -= other.y;
             z -= other.z;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple3& operator *= ( const Simd& other ) noexcept
+        DerivedType& operator -= ( const value_type& value ) noexcept
+        {
+            x -= value;
+            y -= value;
+            z -= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator *= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple3& operator *= ( const Tuple3& other ) noexcept
+        DerivedType& operator *= ( const Tuple3& other ) noexcept
         {
             x *= other.x;
             y *= other.y;
             z *= other.z;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple3& operator /= ( const Simd& other ) noexcept
+        DerivedType& operator *= ( const value_type& value ) noexcept
+        {
+            x *= value;
+            y *= value;
+            z *= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+
+        DerivedType& operator /= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple3& operator /= ( const Tuple3& other ) noexcept
+        DerivedType& operator /= ( const Tuple3& other ) noexcept
         {
             x /= other.x;
             y /= other.y;
             z /= other.z;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
+        DerivedType& operator /= ( const value_type& value ) noexcept
+        {
+            x /= value;
+            y /= value;
+            z /= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        const_reference operator[]( size_t index ) const noexcept
+        {
+            return values[ index ];
+        }
+
+        reference operator[]( size_t index ) noexcept
+        {
+            return values[ index ];
+        }
+
+        const_pointer data( ) const noexcept
+        {
+            return values.data( );
+        }
+        pointer data( ) noexcept
+        {
+            return values.data( );
+        }
+
+        constexpr size_t size( ) const noexcept
+        {
+            return Size;
+        }
+
+        const_reference front( ) const noexcept
+        {
+            return values.front( );
+        }
+        reference front( ) noexcept
+        {
+            return values.front( );
+        }
+
+        const_reference back( ) const noexcept
+        {
+            return values.back( );
+        }
+        reference back( ) noexcept
+        {
+            return values.back( );
+        }
+
+        const_iterator begin( ) const noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator cbegin( ) const noexcept
+        {
+            return values.cbegin( );
+        }
+        iterator begin( ) noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator end( ) const noexcept
+        {
+            return values.end( );
+        }
+        const_iterator cend( ) const noexcept
+        {
+            return values.cend( );
+        }
+        iterator end( ) noexcept
+        {
+            return values.end( );
+        }
+        const_reverse_iterator rbegin( ) const noexcept
+        {
+            return values.rbegin( );
+        }
+        reverse_iterator rbegin( ) noexcept
+        {
+            return values.rbegin( );
+        }
+        const_reverse_iterator rend( ) const noexcept
+        {
+            return values.rend( );
+        }
+        reverse_iterator rend( ) noexcept
+        {
+            return values.rend( );
+        }
 
         void Assign( value_type xv, value_type yv, value_type zv ) noexcept
         {
@@ -1190,11 +1489,21 @@ namespace Harlinn::Common::Core::Math
         using SIMDType = typename Traits::SIMDType;
         static constexpr size_type Capacity = Size;
         using ArrayType = typename Traits::ArrayType;
+
+        using reference = typename ArrayType::reference;
+        using const_reference = typename ArrayType::const_reference;
+        using pointer = typename ArrayType::pointer;
+        using const_pointer = typename ArrayType::const_pointer;
+        using iterator = typename ArrayType::iterator;
+        using const_iterator = typename ArrayType::const_iterator;
+        using reverse_iterator = typename ArrayType::reverse_iterator;
+        using const_reverse_iterator = typename ArrayType::const_reverse_iterator;
+
         /// <summary>
         /// The mathematical operations are performed using 
         /// this type which holds a SIMD vector.  
         /// </summary>
-        using Simd = TupleSimd<Traits, DerivedT>;
+        using Simd = TupleSimd<Traits, DerivedType>;
 
         union
         {
@@ -1215,16 +1524,23 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
-        template<typename T>
-            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        Tuple4( const T& other ) noexcept
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        Tuple4( const U& other ) noexcept
             : values( Traits::ToArray( other.simd ) )
         {
         }
 
-        template<typename T>
-            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        DerivedType& operator = ( const T& other ) noexcept
+        template<Internal::TupleType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        Tuple4( const U& other ) noexcept
+            : values( other.values )
+        {
+        }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        DerivedType& operator = ( const U& other ) noexcept
         {
             values = Traits::ToArray( other.simd );
             return static_cast< DerivedType& >( *this );
@@ -1239,16 +1555,25 @@ namespace Harlinn::Common::Core::Math
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y ) || !IsSameValue( z, other.z ) || !IsSameValue( w, other.w );
         }
 
-        template<typename T>
-            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        bool operator == ( const T& other ) const noexcept
+        constexpr bool operator == ( value_type value ) const noexcept
+        {
+            return IsSameValue( x, value ) && IsSameValue( y, value ) && IsSameValue( z, value ) && IsSameValue( w, value );
+        }
+        constexpr bool operator != ( value_type value ) const noexcept
+        {
+            return !IsSameValue( x, value ) || !IsSameValue( y, value ) || !IsSameValue( z, value ) || !IsSameValue( w, value );
+        }
+
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        bool operator == ( const U& other ) const noexcept
         {
             return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
         }
 
-        template<typename T>
-            requires ( T::Loaded&& T::Size == Size && std::is_same_v<value_type, typename T::value_type> )
-        bool operator != ( const T& other ) const noexcept
+        template<Internal::SimdType U>
+            requires std::is_same_v<Traits, typename U::Traits>
+        bool operator != ( const U& other ) const noexcept
         {
             return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
         }
@@ -1258,64 +1583,184 @@ namespace Harlinn::Common::Core::Math
             return Traits::Negate( Traits::Load( values.data( ) ) );
         }
 
-        Tuple4& operator += ( const Simd& other ) noexcept
+        DerivedType& operator += ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple4& operator += ( const Tuple4& other ) noexcept
+        DerivedType& operator += ( const Tuple4& other ) noexcept
         {
             x += other.x;
             y += other.y;
             z += other.z;
             w += other.w;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple4& operator -= ( const Simd& other ) noexcept
+        DerivedType& operator += ( const value_type& value ) noexcept
+        {
+            x += value;
+            y += value;
+            z += value;
+            w += value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator -= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple4& operator -= ( const Tuple4& other ) noexcept
+        DerivedType& operator -= ( const Tuple4& other ) noexcept
         {
             x -= other.x;
             y -= other.y;
             z -= other.z;
             w -= other.w;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple4& operator *= ( const Simd& other ) noexcept
+        DerivedType& operator -= ( const value_type& value ) noexcept
+        {
+            x -= value;
+            y -= value;
+            z -= value;
+            w -= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+
+        DerivedType& operator *= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple4& operator *= ( const Tuple4& other ) noexcept
+        DerivedType& operator *= ( const Tuple4& other ) noexcept
         {
             x *= other.x;
             y *= other.y;
             z *= other.z;
             w *= other.w;
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple4& operator /= ( const Simd& other ) noexcept
+        DerivedType& operator *= ( const value_type& value ) noexcept
+        {
+            x *= value;
+            y *= value;
+            z *= value;
+            w *= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator /= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
-            return *this;
+            return static_cast< DerivedType& >( *this );
         }
 
-        Tuple4& operator /= ( const Tuple4& other ) noexcept
+        DerivedType& operator /= ( const Tuple4& other ) noexcept
         {
             x /= other.x;
             y /= other.y;
             z /= other.z;
             w /= other.w;
-            return *this;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        DerivedType& operator /= ( const value_type& value ) noexcept
+        {
+            x /= value;
+            y /= value;
+            z /= value;
+            w /= value;
+            return static_cast< DerivedType& >( *this );
+        }
+
+        const_reference operator[]( size_t index ) const noexcept
+        {
+            return values[ index ];
+        }
+
+        reference operator[]( size_t index ) noexcept
+        {
+            return values[ index ];
+        }
+
+        const_pointer data( ) const noexcept
+        {
+            return values.data( );
+        }
+        pointer data( ) noexcept
+        {
+            return values.data( );
+        }
+
+        constexpr size_t size( ) const noexcept
+        {
+            return Size;
+        }
+
+        const_reference front( ) const noexcept
+        {
+            return values.front( );
+        }
+        reference front( ) noexcept
+        {
+            return values.front( );
+        }
+
+        const_reference back( ) const noexcept
+        {
+            return values.back( );
+        }
+        reference back( ) noexcept
+        {
+            return values.back( );
+        }
+
+        const_iterator begin( ) const noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator cbegin( ) const noexcept
+        {
+            return values.cbegin( );
+        }
+        iterator begin( ) noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator end( ) const noexcept
+        {
+            return values.end( );
+        }
+        const_iterator cend( ) const noexcept
+        {
+            return values.cend( );
+        }
+        iterator end( ) noexcept
+        {
+            return values.end( );
+        }
+        const_reverse_iterator rbegin( ) const noexcept
+        {
+            return values.rbegin( );
+        }
+        reverse_iterator rbegin( ) noexcept
+        {
+            return values.rbegin( );
+        }
+        const_reverse_iterator rend( ) const noexcept
+        {
+            return values.rend( );
+        }
+        reverse_iterator rend( ) noexcept
+        {
+            return values.rend( );
         }
 
         void Assign( value_type xv, value_type yv, value_type zv, value_type wv ) noexcept
@@ -1412,7 +1857,7 @@ namespace Harlinn::Common::Core::Math
     inline T operator - ( const U& lhs, const T& rhs ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sub( Traits::Load( lhs.values.data( ), rhs.simd ) );
+        return Traits::Sub( Traits::Load( lhs.values ), rhs.simd );
     }
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
@@ -1607,6 +2052,13 @@ namespace Harlinn::Common::Core::Math
         return Traits::HProd( t.simd );
     }
 
+    template<Internal::SimdType T>
+    inline auto ScalarHProd( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::HProd( t ).simd );
+    }
+
     /// <summary>
     /// Calculates the horizontal product of the elements in the vector.
     /// </summary>
@@ -1636,14 +2088,25 @@ namespace Harlinn::Common::Core::Math
         return Traits::Fill( ScalarHProc( t ) );
     }
 
+
+
+    
+
+
     // Abs
 
+    /// <summary>
+    /// Computes the absolute value of each element held by the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Abs( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Abs( t.simd );
     }
+    /// <summary>
+    /// Computes the absolute value of each element held by the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Abs( const T& t ) noexcept
     {
@@ -1653,6 +2116,10 @@ namespace Harlinn::Common::Core::Math
 
     // Min
 
+    /// <summary>
+    /// Makes a comparison between the elements held by the two arguments, and 
+    /// returns a TupleSimd containing the smallest elements.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
     inline T Min( const T& lhs, const U& rhs ) noexcept
@@ -1661,6 +2128,10 @@ namespace Harlinn::Common::Core::Math
         return Traits::Min( lhs.simd, rhs.simd );
     }
 
+    /// <summary>
+    /// Makes a comparison between the elements held by the two arguments, and 
+    /// returns a TupleSimd containing the smallest elements.
+    /// </summary>
     template<Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
     inline T Min( const T& lhs, const U& rhs ) noexcept
@@ -1668,6 +2139,11 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Min( lhs.simd, Traits::Load( rhs.values.data( ) ) );
     }
+
+    /// <summary>
+    /// Makes a comparison between the elements held by the two arguments, and 
+    /// returns a TupleSimd containing the smallest elements.
+    /// </summary>
     template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
     inline T Min( const U& lhs, const T& rhs ) noexcept
@@ -1675,6 +2151,11 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Min( Traits::Load( lhs.values.data( ) ), rhs.simd );
     }
+
+    /// <summary>
+    /// Makes a comparison between the elements held by the two arguments, and 
+    /// returns a TupleSimd containing the smallest elements.
+    /// </summary>
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
     inline ResultT Min( const T& lhs, const U& rhs ) noexcept
@@ -1685,6 +2166,10 @@ namespace Harlinn::Common::Core::Math
 
     // Max
 
+    /// <summary>
+    /// Makes a comparison between the elements held by the two arguments, and 
+    /// returns a TupleSimd containing the largest elements.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
     inline T Max( const T& lhs, const U& rhs ) noexcept
@@ -1718,12 +2203,18 @@ namespace Harlinn::Common::Core::Math
 
     // Sqr
 
+    /// <summary>
+    /// Computes the square value of each element held by the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Sqr( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Mul( t.simd, t.simd );
     }
+    /// <summary>
+    /// Computes the square value of each element held by the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Sqr( const T& t ) noexcept
     {
@@ -1733,12 +2224,19 @@ namespace Harlinn::Common::Core::Math
 
     // Ceil
 
+
+    /// <summary>
+    /// Computes the ceiling of each element held by the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Ceil( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Ceil( t.simd );
     }
+    /// <summary>
+    /// Computes the ceiling of each element held by the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Ceil( const T& t ) noexcept
     {
@@ -1748,12 +2246,19 @@ namespace Harlinn::Common::Core::Math
 
     // Floor
 
+    /// <summary>
+    /// Computes the floor of each element held by the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Floor( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Floor( t.simd );
     }
+
+    /// <summary>
+    /// Computes the floor of each element held by the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Floor( const T& t ) noexcept
     {
@@ -1763,12 +2268,18 @@ namespace Harlinn::Common::Core::Math
 
     // Round
 
+    /// <summary>
+    /// Rounds each element held by the argument towards the nearest even integer.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Round( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Round( t.simd );
     }
+    /// <summary>
+    /// Rounds each element held by the argument towards the nearest even integer.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Round( const T& t ) noexcept
     {
@@ -1778,12 +2289,19 @@ namespace Harlinn::Common::Core::Math
 
     // Trunc
 
+
+    /// <summary>
+    /// Rounds each element held by the argument to the nearest integer in the direction of zero.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Trunc( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Truncate( t.simd );
     }
+    /// <summary>
+    /// Rounds each element held by the argument to the nearest integer in the direction of zero.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Trunc( const T& t ) noexcept
     {
@@ -1793,6 +2311,12 @@ namespace Harlinn::Common::Core::Math
 
     // Lerp
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT> && Internal::IsCompatible<T, U> 
     inline T Lerp( NumberT a, const T& b, const U& c ) noexcept
@@ -1802,6 +2326,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( static_cast<Type>( a ), b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T Lerp( NumberT a, const T& b, const U& c ) noexcept
@@ -1811,6 +2341,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( static_cast< Type >( a ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline U Lerp( NumberT a, const T& b, const U& c ) noexcept
@@ -1820,6 +2356,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( static_cast< Type >( a ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline ResultT Lerp( NumberT a, const T& b, const U& c ) noexcept
@@ -1829,8 +2371,14 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( static_cast< Type >( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
-    //
+    
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T Lerp( const S& a, const T& b, const U& c ) noexcept
@@ -1839,6 +2387,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( a.simd, b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T Lerp( const S& a, const T& b, const U& c ) noexcept
@@ -1847,6 +2401,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline U Lerp( const S& a, const T& b, const U& c ) noexcept
@@ -1855,6 +2415,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( a.simd, Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline S Lerp( const S& a, const T& b, const U& c ) noexcept
@@ -1865,6 +2431,12 @@ namespace Harlinn::Common::Core::Math
 
     //
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T Lerp( const S& a, const T& b, const U& c ) noexcept
@@ -1873,6 +2445,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( Traits::Load( a.values.data( ) ), b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T Lerp( const S& a, const T& b, const U& c ) noexcept
@@ -1881,6 +2459,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline U Lerp( const S& a, const T& b, const U& c ) noexcept
@@ -1889,6 +2473,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline ResultT Lerp( const S& a, const T& b, const U& c ) noexcept
@@ -1914,6 +2504,12 @@ namespace Harlinn::Common::Core::Math
 
     // Clamp
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1922,6 +2518,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( v.simd, lowerBounds.simd, upperBounds.simd );
     }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1930,6 +2532,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( v.simd, lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline U Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1938,6 +2546,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( v.simd, Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
     }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline S Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1947,7 +2561,12 @@ namespace Harlinn::Common::Core::Math
     }
 
     //
-
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1956,6 +2575,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, upperBounds.simd );
     }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1964,6 +2589,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( Traits::Load( v.values.data( ) ), lowerBounds.simd, Traits::Load( upperBounds.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline U Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1972,6 +2603,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), upperBounds.simd );
     }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename S::Simd>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline ResultT Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1980,6 +2617,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( Traits::Load( v.values.data( ) ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified the elements of lowerBounds
+    /// and the elements of upperBounds, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT> && Internal::IsCompatible<T, U>
     inline ResultT Clamp( NumberT v, const T& lowerBounds, const U& upperBounds ) noexcept
@@ -1991,37 +2634,100 @@ namespace Harlinn::Common::Core::Math
 
     // Saturate
 
+    /// <summary>
+    /// Saturates the elements of v to the range 0.0 to 1.0.
+    /// </summary>
     template<Internal::SimdType T>
-    inline T Saturate( const T& t ) noexcept
+    inline T Saturate( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Saturate( t.simd );
+        return Traits::Saturate( v.simd );
     }
+    /// <summary>
+    /// Saturates the elements of v to the range 0.0 to 1.0.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Saturate( const T& t ) noexcept
+    inline ResultT Saturate( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Saturate( Traits::Load( t.values.data( ) ) );
+        return Traits::Saturate( Traits::Load( v.values ) );
     }
 
     // Sqrt
 
+    /// <summary>
+    /// Calculates the square root of each element in the argument.
+    /// </summary>
     template<Internal::SimdType T>
-    inline T Sqrt( const T& t ) noexcept
+    inline T Sqrt( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sqrt( t.simd );
+        return Traits::Sqrt( v.simd );
     }
+
+    /// <summary>
+    /// Calculates the square root of each element in the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
-    inline ResultT Sqrt( const T& t ) noexcept
+    inline ResultT Sqrt( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sqrt( Traits::Load( t.values.data( ) ) );
+        return Traits::Sqrt( Traits::Load( v.values ) );
+    }
+
+    // ReciprocalSqrt
+
+    /// <summary>
+    /// Calculates the reciprocal square root of each element in the argument.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T ReciprocalSqrt( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        return Traits::Div(Traits::Fill(Constants<FloatT>::One), Traits::Sqrt( t.simd ));
+    }
+    /// <summary>
+    /// Calculates the reciprocal square root of each element in the argument.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ReciprocalSqrt( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        return Traits::Div( Traits::Fill( Constants<FloatT>::One ), Traits::Sqrt( Traits::Load( t.values ) ) );
+    }
+
+    // Reciprocal
+
+    /// <summary>
+    /// Calculates the reciprocal of each element in the argument.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T Reciprocal( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        return Traits::Div( Traits::Fill( Constants<FloatT>::One ), t.simd );
+    }
+
+    /// <summary>
+    /// Calculates the reciprocal of each element in the argument.
+    /// </summary>
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT Reciprocal( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        return Traits::Div( Traits::Fill( Constants<FloatT>::One ), Traits::Load( t.values ) );
     }
 
 
     // FMA
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T FMA( NumberT a, const T& b, const U& c ) noexcept
@@ -2031,6 +2737,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T FMA( NumberT a, const T& b, const U& c ) noexcept
@@ -2040,6 +2749,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline U FMA( NumberT a, const T& b, const U& c ) noexcept
@@ -2049,6 +2761,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline ResultT FMA( NumberT a, const T& b, const U& c ) noexcept
@@ -2060,6 +2775,9 @@ namespace Harlinn::Common::Core::Math
 
     //
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T FMA( const T& a, NumberT b, const U& c ) noexcept
@@ -2069,6 +2787,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T FMA( const T& a, NumberT b, const U& c ) noexcept
@@ -2078,6 +2799,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline U FMA( const T& a, NumberT b, const U& c ) noexcept
@@ -2087,6 +2811,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline ResultT FMA( const T& a, NumberT b, const U& c ) noexcept
@@ -2098,6 +2825,9 @@ namespace Harlinn::Common::Core::Math
 
     //
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T FMA( const S& a, const T& b, const U& c ) noexcept
@@ -2106,6 +2836,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( a.simd, b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T FMA( const S& a, const T& b, const U& c ) noexcept
@@ -2114,6 +2847,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline U FMA( const S& a, const T& b, const U& c ) noexcept
@@ -2122,6 +2858,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline S FMA( const S& a, const T& b, const U& c ) noexcept
@@ -2132,6 +2871,9 @@ namespace Harlinn::Common::Core::Math
 
     //
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T FMA( const S& a, const T& b, const U& c ) noexcept
@@ -2140,6 +2882,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T FMA( const S& a, const T& b, const U& c ) noexcept
@@ -2148,6 +2893,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline U FMA( const S& a, const T& b, const U& c ) noexcept
@@ -2156,6 +2904,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline ResultT FMA( const S& a, const T& b, const U& c ) noexcept
@@ -2166,6 +2917,12 @@ namespace Harlinn::Common::Core::Math
 
     // FMSub
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T FMSub( NumberT a, const T& b, const U& c ) noexcept
@@ -2175,6 +2932,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T FMSub( NumberT a, const T& b, const U& c ) noexcept
@@ -2184,6 +2947,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline U FMSub( NumberT a, const T& b, const U& c ) noexcept
@@ -2193,6 +2962,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline ResultT FMSub( NumberT a, const T& b, const U& c ) noexcept
@@ -2204,6 +2979,12 @@ namespace Harlinn::Common::Core::Math
 
     //
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T FMSub( const T& a, NumberT b, const U& c ) noexcept
@@ -2213,6 +2994,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline T FMSub( const T& a, NumberT b, const U& c ) noexcept
@@ -2222,6 +3009,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline U FMSub( const T& a, NumberT b, const U& c ) noexcept
@@ -2231,6 +3024,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
     inline ResultT FMSub( const T& a, NumberT b, const U& c ) noexcept
@@ -2242,6 +3041,12 @@ namespace Harlinn::Common::Core::Math
 
     //
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T FMSub( const S& a, const T& b, const U& c ) noexcept
@@ -2250,6 +3055,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( a.simd, b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T FMSub( const S& a, const T& b, const U& c ) noexcept
@@ -2258,6 +3069,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline U FMSub( const S& a, const T& b, const U& c ) noexcept
@@ -2266,6 +3083,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline S FMSub( const S& a, const T& b, const U& c ) noexcept
@@ -2276,6 +3099,12 @@ namespace Harlinn::Common::Core::Math
 
     //
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T FMSub( const S& a, const T& b, const U& c ) noexcept
@@ -2284,6 +3113,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline T FMSub( const S& a, const T& b, const U& c ) noexcept
@@ -2292,6 +3127,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline U FMSub( const S& a, const T& b, const U& c ) noexcept
@@ -2300,6 +3141,12 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-subtract computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the infinite precision intermediate results are obtained. From the 
+    /// infinite precision intermediate results, the values in the third operand, c, are subtracted. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
     inline ResultT FMSub( const S& a, const T& b, const U& c ) noexcept
@@ -2308,15 +3155,979 @@ namespace Harlinn::Common::Core::Math
         return Traits::FMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAddSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAddSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAddSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAddSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMAddSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAddSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAddSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAddSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAddSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAddSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAddSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAddSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMAddSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAddSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMAddSub( a.simd, b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMAddSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMAddSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMAddSub( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-add-subtract computation on a, b, and c. Corresponding values in two operands, a and b, are 
+    /// multiplied and infinite precision intermediate results are obtained. The odd values in the third operand, 
+    /// c, are added to the intermediate results while the even values are subtracted from them. The final results 
+    /// are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMAddSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    // FMSubAdd
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMSubAdd( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSubAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMSubAdd( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSubAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMSubAdd( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSubAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMSubAdd( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSubAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMSubAdd( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSubAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMSubAdd( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSubAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMSubAdd( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMSubAdd( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMSubAdd( a.simd, b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMSubAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMSubAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMSubAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of multiply-subtract-add computation on a, b, and c. Corresponding values in two operands, a and b, 
+    /// are multiplied and infinite precision intermediate results are obtained. The odd values in the third 
+    /// operand, c, are subtracted from the intermediate results while the even values are added to them. 
+    /// The final results are rounded to the nearest floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FMSubAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    // FNMAdd
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FNMAdd( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FNMAdd( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FNMAdd( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FNMAdd( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FNMAdd( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FNMAdd( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FNMAdd( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FNMAdd( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMAdd( a.simd, b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-add computation on a, b, and c. Corresponding values in two operands, 
+    /// a and b, are multiplied and the negated infinite precision intermediate results are added to 
+    /// the values in the third operand, c, after which the final results are rounded to the nearest 
+    /// floating point values.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    // FNMSub
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FNMSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FNMSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMSub( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FNMSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FNMSub( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMSub( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FNMSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FNMSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMSub( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FNMSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FNMSub( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMSub( a.simd, b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMSub( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMSub( a.simd, Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMSub( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMSub( Traits::Load( a.values.data( ) ), b.simd, c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMSub( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+    }
+
+    /// <summary>
+    /// Performs a set of negated multiply-subtract computation on a, b, and c. The values in two operands, a and b, 
+    /// are multiplied and the negated infinite precision intermediate result is obtained. From this negated 
+    /// intermediate result, the value in the third operand, c, is subtracted. The final result is rounded 
+    /// to the nearest floating point value.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT FNMSub( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::FNMSub( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+    }
+
 
     // Sin
 
+    /// <summary>
+    /// Calculates the sine of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Sin( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Sin( v.simd );
     }
+    /// <summary>
+    /// Calculates the sine of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Sin( const T& v ) noexcept
     {
@@ -2326,12 +4137,18 @@ namespace Harlinn::Common::Core::Math
 
     // Cos
 
+    /// <summary>
+    /// Calculates the cosine of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Cos( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Cos( v.simd );
     }
+    /// <summary>
+    /// Calculates the cosine of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Cos( const T& v ) noexcept
     {
@@ -2341,12 +4158,19 @@ namespace Harlinn::Common::Core::Math
 
     // Tan
 
+    /// <summary>
+    /// Calculates the tangent of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Tan( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Tan( v.simd );
     }
+
+    /// <summary>
+    /// Calculates the tangent of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Tan( const T& v ) noexcept
     {
@@ -2356,12 +4180,18 @@ namespace Harlinn::Common::Core::Math
 
     // ASin
 
+    /// <summary>
+    /// Calculates the inverse sine of each element in the argument, in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T ASin( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::ASin( v.simd );
     }
+    /// <summary>
+    /// Calculates the inverse sine of each element in the argument, in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ASin( const T& v ) noexcept
     {
@@ -2371,12 +4201,19 @@ namespace Harlinn::Common::Core::Math
 
     // ACos
 
+    /// <summary>
+    /// Calculates the inverse cosine of each element in the argument, in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T ACos( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::ACos( v.simd );
     }
+
+    /// <summary>
+    /// Calculates the inverse cosine of each element in the argument, in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ACos( const T& v ) noexcept
     {
@@ -2386,12 +4223,18 @@ namespace Harlinn::Common::Core::Math
 
     // ATan
 
+    /// <summary>
+    /// Calculates the inverse tangent of each element in the argument, in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T ATan( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::ATan( v.simd );
     }
+    /// <summary>
+    /// Calculates the inverse tangent of each element in the argument, in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ATan( const T& v ) noexcept
     {
@@ -2402,6 +4245,10 @@ namespace Harlinn::Common::Core::Math
 
     // ATan2
 
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
     inline T ATan2( const T& x, const U& y ) noexcept
@@ -2410,6 +4257,10 @@ namespace Harlinn::Common::Core::Math
         return Traits::ATan2( x.simd, y.simd );
     }
 
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
     template<Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
     inline T ATan2( const T& x, const U& y ) noexcept
@@ -2417,6 +4268,11 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ATan2( x.simd, Traits::Load( y.values.data( ) ) );
     }
+
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
     template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
     inline T ATan2( const U& x, const T& y ) noexcept
@@ -2424,6 +4280,11 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::ATan2( Traits::Load( x.values.data( ) ), y.simd );
     }
+
+    /// <summary>
+    /// Calculates the inverse tangent of each element in x divided by the
+    /// corresponding element in y, in radians.
+    /// </summary>
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
     inline ResultT ATan2( const T& x, const U& y ) noexcept
@@ -2432,14 +4293,186 @@ namespace Harlinn::Common::Core::Math
         return Traits::ATan2( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Calculates the angle modulo 2PI.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A TupleN SimdType 
+    /// </typeparam>
+    /// <param name="angles">
+    /// The angles in radians
+    /// </param>
+    /// <returns>
+    /// Returns a SimdType holding the angles modulo 2PI.
+    /// </returns>
+    template<Internal::SimdType T>
+    inline T ModAngles( const T& angles )
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        auto result = Traits::Round( Traits::Mul( angles.simd, Traits::Fill( Constants<FloatT>::Inv2Pi ) ) );
+        return Traits::FNMAdd( result, Traits::Fill( Constants<FloatT>::PiTimes2 ), angles.simd );
+    }
+    template<Internal::TupleType T, typename ResultT = typename T::Simd>
+    inline ResultT ModAngles( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Math::ModAngles( Simd( Traits::Load( v.values ) ) );
+    }
+
+    // AddAngles
+
+    /// <summary>
+    /// Adds the angles in the corresponding elements of v1 and v2.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T AddAngles( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        // Adjust the angles
+        auto result = Traits::Add( v1.simd, v2.simd );
+        // Less than Pi?
+        auto offset = Traits::LessThan( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
+        offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
+        // Add 2Pi to all entries less than -Pi
+        result = Traits::Add( result, offset );
+        // Greater than or equal to Pi?
+        offset = Traits::GreaterOrEqual( result, Traits::Fill( Constants<FloatT>::Pi ) );
+        offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
+        // Sub 2Pi to all entries greater than Pi
+        return Traits::Sub( result, offset );
+    }
+
+    /// <summary>
+    /// Adds the angles in the corresponding elements of v1 and v2.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T AddAngles( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Math::AddAngles( v1, Simd(Traits::Load( v2.values )) );
+    }
+
+    /// <summary>
+    /// Adds the angles in the corresponding elements of v1 and v2.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T AddAngles( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Math::AddAngles( Simd(Traits::Load( v1.values )), v2 );
+    }
+    /// <summary>
+    /// Adds the angles in the corresponding elements of v1 and v2.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT AddAngles( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Math::AddAngles( Simd(Traits::Load( v1.values )), Simd(Traits::Load( v2.values )) );
+    }
+
+    // SubtractAngles
+
+    /// <summary>
+    /// Subtracts the angles in v2 from the corresponding elements of v1.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T SubtractAngles( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        // Adjust the angles
+        auto result = Traits::Sub( v1.simd, v2.simd );
+        // Less than Pi?
+        auto offset = Traits::LessThan( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
+        offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
+        // Add 2Pi to all entries less than -Pi
+        result = Traits::Add( result, offset );
+        // Greater than or equal to Pi?
+        offset = Traits::GreaterOrEqual( result, Traits::Fill( Constants<FloatT>::Pi ) );
+        offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
+        // Sub 2Pi to all entries greater than Pi
+        return Traits::Sub( result, offset );
+    }
+
+    /// <summary>
+    /// Subtracts the angles in v2 from the corresponding elements of v1.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T SubtractAngles( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Math::SubtractAngles( v1, Simd( Traits::Load( v2.values ) ) );
+    }
+
+    /// <summary>
+    /// Subtracts the angles in v2 from the corresponding elements of v1.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T SubtractAngles( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Math::SubtractAngles( Simd( Traits::Load( v1.values ) ), v2 );
+    }
+
+    /// <summary>
+    /// Subtracts the angles in v2 from the corresponding elements of v1.
+    /// The argument angles must be in the range [-PI,PI), and the
+    /// computed angles will be in the range [-PI,PI) 
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT SubtractAngles( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Math::SubtractAngles( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ) );
+    }
+
+
     // SinH
 
+    /// <summary>
+    /// Calculates the hyperbolic sine of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T SinH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::SinH( v.simd );
     }
+    /// <summary>
+    /// Calculates the hyperbolic sine of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT SinH( const T& v ) noexcept
     {
@@ -2450,12 +4483,18 @@ namespace Harlinn::Common::Core::Math
 
     // CosH
 
+    /// <summary>
+    /// Calculates the hyperbolic cosine of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T CosH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::CosH( v.simd );
     }
+    /// <summary>
+    /// Calculates the hyperbolic cosine of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT CosH( const T& v ) noexcept
     {
@@ -2465,12 +4504,18 @@ namespace Harlinn::Common::Core::Math
 
     // TanH
 
+    /// <summary>
+    /// Calculates the hyperbolic tangent of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T TanH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::TanH( v.simd );
     }
+    /// <summary>
+    /// Calculates the hyperbolic tangent of each element in the argument expressed in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT TanH( const T& v ) noexcept
     {
@@ -2480,12 +4525,18 @@ namespace Harlinn::Common::Core::Math
 
     // ASinH
 
+    /// <summary>
+    /// Calculates the inverse hyperbolic sine of each element in the argument, in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T ASinH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::ASinH( v.simd );
     }
+    /// <summary>
+    /// Calculates the inverse hyperbolic sine of each element in the argument, in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ASinH( const T& v ) noexcept
     {
@@ -2495,12 +4546,18 @@ namespace Harlinn::Common::Core::Math
 
     // ACosH
 
+    /// <summary>
+    /// Calculates the inverse hyperbolic cosine of each element in the argument, in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T ACosH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::ACosH( v.simd );
     }
+    /// <summary>
+    /// Calculates the inverse hyperbolic cosine of each element in the argument, in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ACosH( const T& v ) noexcept
     {
@@ -2510,12 +4567,18 @@ namespace Harlinn::Common::Core::Math
 
     // ATanH
 
+    /// <summary>
+    /// Calculates the inverse hyperbolic tangent of each element in the argument, in radians.
+    /// </summary>
     template<Internal::SimdType T>
     inline T ATanH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::ATanH( v.simd );
     }
+    /// <summary>
+    /// Calculates the inverse hyperbolic tangent of each element in the argument, in radians.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ATanH( const T& v ) noexcept
     {
@@ -2525,12 +4588,19 @@ namespace Harlinn::Common::Core::Math
 
     // Log
 
+    /// <summary>
+    /// Calculates the natural logarithm of each element in the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Log( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Log( v.simd );
     }
+
+    /// <summary>
+    /// Calculates the natural logarithm of each element in the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Log( const T& v ) noexcept
     {
@@ -2540,6 +4610,9 @@ namespace Harlinn::Common::Core::Math
 
     // Log1P
 
+    /// <summary>
+    /// Calculates the natural logarithm of 1 + each element in the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Log1P( const T& v ) noexcept
     {
@@ -2555,12 +4628,18 @@ namespace Harlinn::Common::Core::Math
 
     // Log10
 
+    /// <summary>
+    /// Calculates the base-10 logarithm of each element in the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Log10( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Log10( v.simd );
     }
+    /// <summary>
+    /// Calculates the base-10 logarithm of each element in the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Log10( const T& v ) noexcept
     {
@@ -2570,12 +4649,18 @@ namespace Harlinn::Common::Core::Math
 
     // Log2
 
+    /// <summary>
+    /// Calculates the base-2 logarithm, $$log_{2}_$$, of each element in the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Log2( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Log2( v.simd );
     }
+    /// <summary>
+    /// Calculates the base-2 logarithm, $$log_{2}_$$, of each element in the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Log2( const T& v ) noexcept
     {
@@ -2585,12 +4670,18 @@ namespace Harlinn::Common::Core::Math
 
     // Exp
 
+    /// <summary>
+    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Exp( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Exp( v.simd );
     }
+    /// <summary>
+    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Exp( const T& v ) noexcept
     {
@@ -2600,12 +4691,18 @@ namespace Harlinn::Common::Core::Math
 
     // Exp10
 
+    /// <summary>
+    /// Calculates the base-10 exponential of each element in the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Exp10( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Exp10( v.simd );
     }
+    /// <summary>
+    /// Calculates the base-10 exponential of each element in the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Exp10( const T& v ) noexcept
     {
@@ -2615,12 +4712,18 @@ namespace Harlinn::Common::Core::Math
 
     // Exp2
 
+    /// <summary>
+    /// Calculates the base-2 exponential of each element in the argument.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Exp2( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Exp2( v.simd );
     }
+    /// <summary>
+    /// Calculates the base-2 exponential of each element in the argument.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Exp2( const T& v ) noexcept
     {
@@ -2630,12 +4733,18 @@ namespace Harlinn::Common::Core::Math
 
     // ExpM1
 
+    /// <summary>
+    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument, $$-1.0$$.
+    /// </summary>
     template<Internal::SimdType T>
     inline T ExpM1( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::ExpM1( v.simd );
     }
+    /// <summary>
+    /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument, $$-1.0$$.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ExpM1( const T& v ) noexcept
     {
@@ -2646,6 +4755,9 @@ namespace Harlinn::Common::Core::Math
 
     // Pow
 
+    /// <summary>
+    /// Calculates the elements in base raised to the corresponding element in exponent.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
     inline T Pow( const T& base, const U& exponent ) noexcept
@@ -2654,6 +4766,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::Pow( base.simd, exponent.simd );
     }
 
+    /// <summary>
+    /// Calculates the elements in base raised to the corresponding element in exponent.
+    /// </summary>
     template<Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
     inline T Pow( const T& base, const U& exponent ) noexcept
@@ -2661,6 +4776,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Pow( base.simd, Traits::Load( exponent.values.data( ) ) );
     }
+    /// <summary>
+    /// Calculates the elements in base raised to the corresponding element in exponent.
+    /// </summary>
     template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
     inline T Pow( const U& base, const T& exponent ) noexcept
@@ -2668,6 +4786,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Pow( Traits::Load( base.values.data( ) ), exponent.simd );
     }
+    /// <summary>
+    /// Calculates the elements in base raised to the corresponding element in exponent.
+    /// </summary>
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
     inline ResultT Pow( const T& base, const U& exponent ) noexcept
@@ -2678,6 +4799,11 @@ namespace Harlinn::Common::Core::Math
 
     // Hypot
 
+    /// <summary>
+    /// Calculates the square root of the sum of the squares of each corresponding 
+    /// element in x and y, without undue overflow or underflow at intermediate 
+    /// stages of the computation.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
     inline T Hypot( const T& x, const U& y ) noexcept
@@ -2686,6 +4812,11 @@ namespace Harlinn::Common::Core::Math
         return Traits::Hypot( x.simd, y.simd );
     }
 
+    /// <summary>
+    /// Calculates the square root of the sum of the squares of each corresponding 
+    /// element in x and y, without undue overflow or underflow at intermediate 
+    /// stages of the computation.
+    /// </summary>
     template<Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
     inline T Hypot( const T& x, const U& y ) noexcept
@@ -2693,6 +4824,12 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Hypot( x.simd, Traits::Load( y.values.data( ) ) );
     }
+
+    /// <summary>
+    /// Calculates the square root of the sum of the squares of each corresponding 
+    /// element in x and y, without undue overflow or underflow at intermediate 
+    /// stages of the computation.
+    /// </summary>
     template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
     inline T Hypot( const U& x, const T& y ) noexcept
@@ -2700,6 +4837,12 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Hypot( Traits::Load( x.values.data( ) ), y.simd );
     }
+
+    /// <summary>
+    /// Calculates the square root of the sum of the squares of each corresponding 
+    /// element in x and y, without undue overflow or underflow at intermediate 
+    /// stages of the computation.
+    /// </summary>
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
     inline ResultT Hypot( const T& x, const U& y ) noexcept
@@ -2708,8 +4851,218 @@ namespace Harlinn::Common::Core::Math
         return Traits::Hypot( Traits::Load( x.values.data( ) ), Traits::Load( y.values.data( ) ) );
     }
 
+    // Hermite
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<T, U> && Internal::IsCompatible<T, V> && Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename T::value_type;
+        auto t2 = t * t;
+        auto t3 = t * t2;
+
+        auto p0 = Traits::Fill( static_cast<FloatT>(2.0) * t3 - static_cast< FloatT >( 3.0 ) * t2 + static_cast< FloatT >( 1.0 ) );
+        auto t0 = Traits::Fill( t3 - static_cast< FloatT >( 2.0 ) * t2 + t );
+        auto p1 = Traits::Fill( static_cast< FloatT >( -2.0 ) * t3 + static_cast< FloatT >( 3.0 ) * t2 );
+        auto t1 = Traits::Fill( t3 - t2 );
+
+        auto result = Traits::Mul( p0, firstPosition.simd );
+        result = Traits::FMAdd( firstTangent.simd, t0, result );
+        result = Traits::FMAdd( secondPosition.simd, p1, result );
+        return Traits::FMAdd( secondTangent.simd, t1, result );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename W::Simd;
+        return Math::Hermite( firstPosition, firstTangent, secondPosition, Simd( Traits::Load( secondTangent.values ) ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename V::Simd;
+        return Math::Hermite( firstPosition, firstTangent, Simd( Traits::Load( secondPosition.values ) ), secondTangent, t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename V::Simd;
+        return Math::Hermite( firstPosition, firstTangent, Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename U::Simd;
+        return Math::Hermite( firstPosition, Simd( Traits::Load( firstTangent.values ) ), secondPosition, secondTangent, t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename W::Simd;
+        return Math::Hermite( firstPosition, Simd( Traits::Load( firstTangent.values ) ), secondPosition, Simd( Traits::Load( secondTangent.values ) ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename V::Simd;
+        return Math::Hermite( firstPosition, Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), secondTangent, t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename V::Simd;
+        return Math::Hermite( firstPosition, Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), firstTangent, secondPosition, secondTangent, t );
+    }
+
+    ///
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename W::Simd;
+        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), firstTangent, secondPosition, Simd( Traits::Load( secondTangent.values ) ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename V::Simd;
+        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), firstTangent, Simd( Traits::Load( secondPosition.values ) ), secondTangent, t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename V::Simd;
+        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), firstTangent, Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename U::Simd;
+        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), secondPosition, secondTangent, t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename W::Simd;
+        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), secondPosition, Simd( Traits::Load( secondTangent.values ) ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename V::Simd;
+        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), secondTangent, t );
+    }
+
+    /// <summary>
+    /// Calculates the Hermite spline interpolation, using the specified arguments.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<T, U>&& Internal::IsCompatible<T, V>&& Internal::IsCompatible<T, W>
+    inline T Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename V::Simd;
+        return Math::Hermite( Simd( Traits::Load( firstPosition.values ) ), Simd( Traits::Load( firstTangent.values ) ), Simd( Traits::Load( secondPosition.values ) ), Simd( Traits::Load( secondTangent.values ) ), t );
+    }
+
     // Dot
 
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
     inline T Dot( const T& v1, const U& v2 ) noexcept
@@ -2718,6 +5071,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::Dot( v1.simd, v2.simd );
     }
 
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
     template<Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
     inline T Dot( const T& v1, const U& v2 ) noexcept
@@ -2725,12 +5081,41 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Dot( v1.simd, Traits::Load( v2.values.data( ) ) );
     }
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
     template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
     inline T Dot( const U& v1, const T& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Dot( Traits::Load( v1.values.data( ) ), v2.simd );
+    }
+
+    // ScalarDot
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Dot(v1,v2).simd );
+    }
+
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Dot( v1, v2 ).simd );
+    }
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Dot( v1, v2 ).simd );
     }
 
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::value_type>
@@ -2749,9 +5134,11 @@ namespace Harlinn::Common::Core::Math
         {
             return v1.x* v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
         }
-        
     }
 
+    /// <summary>
+    /// Calculates the dot product between v1 and v2.
+    /// </summary>
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
     inline ResultT Dot( const T& v1, const U& v2 ) noexcept
@@ -2760,8 +5147,105 @@ namespace Harlinn::Common::Core::Math
         return Traits::Fill( ScalarDot( v1, v2 ) );
     }
 
+    // AbsDot
+
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline T AbsDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Abs( Dot( v1, v2 ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline T AbsDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Abs( Dot( v1, v2 ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline T AbsDot( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Abs( Dot( v1, v2 ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT AbsDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Abs( Dot( v1, v2 ).simd );
+    }
+
+    // ScalarAbsDot
+
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( AbsDot( v1, v2 ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( AbsDot( v1, v2 ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarAbsDot( const U& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( AbsDot( v1, v2 ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the absolute value of the dot product between v1 and v2.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( AbsDot( v1, v2 ).simd );
+    }
+
+
+
     // Cross
 
+    /// <summary>
+    /// Calculates the cross product between v1 and v2.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
     inline T Cross( const T& v1, const U& v2 ) noexcept
@@ -2770,6 +5254,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::Cross( v1.simd, v2.simd );
     }
 
+    /// <summary>
+    /// Calculates the cross product between v1 and v2.
+    /// </summary>
     template<Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
     inline T Cross( const T& v1, const U& v2 ) noexcept
@@ -2777,6 +5264,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Cross( v1.simd, Traits::Load( v2.values.data( ) ) );
     }
+    /// <summary>
+    /// Calculates the cross product between v1 and v2.
+    /// </summary>
     template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
     inline T Cross( const U& v1, const T& v2 ) noexcept
@@ -2785,6 +5275,9 @@ namespace Harlinn::Common::Core::Math
         return Traits::Cross( Traits::Load( v1.values.data( ) ), v2.simd );
     }
 
+    /// <summary>
+    /// Calculates the cross product between v1 and v2.
+    /// </summary>
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
     inline ResultT Cross( const T& v1, const U& v2 ) noexcept
@@ -2796,52 +5289,119 @@ namespace Harlinn::Common::Core::Math
 
     // LengthSquared
 
+
+    /// <summary>
+    /// Calculates the squared length of v.
+    /// </summary>
     template<Internal::SimdType T>
     inline T LengthSquared( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::HSum( Sqr( v ).simd );
+        return Traits::HSum( Traits::Mul( v.simd, v.simd ) );
     }
+    /// <summary>
+    /// Calculates the squared length of v.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT LengthSquared( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::HSum( Sqr( v ).simd );
+        return Math::LengthSquared( typename T::Simd(Traits::Load( v.values )) );
     }
 
 
+    // ScalarLengthSquared
+
+    /// <summary>
+    /// Calculates the squared length of v.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline auto ScalarLengthSquared( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::LengthSquared( v ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the squared length of v.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline auto ScalarLengthSquared( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::LengthSquared( v ).simd );
+    }
+
     // Length
 
+    /// <summary>
+    /// Calculates the length of v.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Length( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sqrt( LengthSquared( v ).simd );
+        return Traits::Sqrt( Math::LengthSquared( v ).simd );
     }
+    /// <summary>
+    /// Calculates the length of v.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Length( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sqrt( LengthSquared( v ).simd );
+        return Traits::Sqrt( Math::LengthSquared( v ).simd );
     }
+
+    // ScalarLength
+
+    /// <summary>
+    /// Calculates the length of v.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline auto ScalarLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::Length( v ).simd );
+    }
+    /// <summary>
+    /// Calculates the length of v.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline auto ScalarLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::Length( v ).simd );
+    }
+
 
     // Normalize
 
+    /// <summary>
+    /// Normalizes v.
+    /// </summary>
     template<Internal::SimdType T>
     inline T Normalize( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return v / Length( v );
     }
+    /// <summary>
+    /// Normalizes v.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT Normalize( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Normalize( Traits::Load( v.values ) );
+        using Simd = typename T::Simd;
+        return Normalize( Simd(Traits::Load( v.values )) );
     }
 
     // ReciprocalLength
 
+    /// <summary>
+    /// Calculates the reciprocal length of v.
+    /// </summary>
     template<Internal::SimdType T>
     inline T ReciprocalLength( const T& v ) noexcept
     {
@@ -2850,83 +5410,223 @@ namespace Harlinn::Common::Core::Math
         auto length = Length( v );
         return Traits::Div( Traits::Fill( static_cast< Type >(1.) ), length.simd );
     }
+    /// <summary>
+    /// Calculates the reciprocal length of v.
+    /// </summary>
     template<Internal::TupleType T, typename ResultT = typename T::Simd>
     inline ResultT ReciprocalLength( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return ReciprocalLength( Traits::Load( v.values ) );
+        using Simd = typename T::Simd;
+        return ReciprocalLength( Simd(Traits::Load( v.values )) );
     }
 
+    // ScalarReciprocalLength
+
+    /// <summary>
+    /// Calculates the squared length of v.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline auto ScalarReciprocalLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::ReciprocalLength( v ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the squared length of v.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline auto ScalarReciprocalLength( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Math::ReciprocalLength( v ).simd );
+    }
 
     // DistanceSquared
 
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
-    inline T DistanceSquared( const T& v1, const U& v2 ) noexcept
+    inline T DistanceSquared( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
-        auto diff = Traits::Sub( v1.simd, v2.simd );
+        auto diff = Traits::Sub( p1.simd, p2.simd );
         return Traits::HSum( Traits::Mul( diff, diff ) );
     }
 
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
     template<Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
-    inline T DistanceSquared( const T& v1, const U& v2 ) noexcept
+    inline T DistanceSquared( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
-        auto diff = Traits::Sub( v1.simd, Traits::Load( v2.values.data( ) ) );
-        return Traits::HSum( Traits::Mul( diff, diff ) );
-    }
-    template<Internal::TupleType U, Internal::SimdType T>
-        requires Internal::IsCompatible<T, U>
-    inline T DistanceSquared( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        auto diff = Traits::Sub( Traits::Load( v1.values.data( ) ), v2.simd );
+        auto diff = Traits::Sub( p1.simd, Traits::Load( p2.values.data( ) ) );
         return Traits::HSum( Traits::Mul( diff, diff ) );
     }
 
-    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
-    inline ResultT DistanceSquared( const T& v1, const U& v2 ) noexcept
+    inline T DistanceSquared( const U& p1, const T& p2 ) noexcept
     {
         using Traits = typename T::Traits;
-        auto diff = Traits::Sub( Traits::Load( v1.values.data( ) ), Traits::Load( v2.values.data( ) ) );
+        auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), p2.simd );
         return Traits::HSum( Traits::Mul( diff, diff ) );
+    }
+
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT DistanceSquared( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        auto diff = Traits::Sub( Traits::Load( p1.values.data( ) ), Traits::Load( p2.values.data( ) ) );
+        return Traits::HSum( Traits::Mul( diff, diff ) );
+    }
+
+    // ScalarDistanceSquared
+
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( DistanceSquared(p1, p2).simd );
+    }
+
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( DistanceSquared( p1, p2 ).simd );
+    }
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarDistanceSquared( const U& p1, const T& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( DistanceSquared( p1, p2 ).simd );
+    }
+    /// <summary>
+    /// Calculates the squared distance between p1 and p2.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( DistanceSquared( p1, p2 ).simd );
     }
 
     // Distance
 
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
-    inline T Distance( const T& v1, const U& v2 ) noexcept
+    inline T Distance( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
+        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
     }
 
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
     template<Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
-    inline T Distance( const T& v1, const U& v2 ) noexcept
+    inline T Distance( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
-    }
-    template<Internal::TupleType U, Internal::SimdType T>
-        requires Internal::IsCompatible<T, U>
-    inline T Distance( const U& v1, const T& v2 ) noexcept
-    {
-        using Traits = typename T::Traits;
-        return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
+        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
     }
 
-    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
-    inline ResultT Distance( const T& v1, const U& v2 ) noexcept
+    inline T Distance( const U& p1, const T& p2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sqrt( DistanceSquared( v1, v2 ).simd );
+        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
     }
+
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires Internal::IsCompatible<T, U>
+    inline ResultT Distance( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( DistanceSquared( p1, p2 ).simd );
+    }
+
+    // ScalarDistance
+
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Distance( p1, p2 ).simd );
+    }
+
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Distance( p1, p2 ).simd );
+    }
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
+    template<Internal::TupleType U, Internal::SimdType T>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarDistance( const U& p1, const T& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Distance( p1, p2 ).simd );
+    }
+    /// <summary>
+    /// Calculates the distance between p1 and p2.
+    /// </summary>
+    template<Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Distance( p1, p2 ).simd );
+    }
+
 
     // DifferenceOfProducts
 
@@ -2935,9 +5635,13 @@ namespace Harlinn::Common::Core::Math
     inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         auto v34 = v3 * v4;
+        return FMA( v1, v2, -v34 );
+        /*
+        auto v34 = v3 * v4;
         auto differenceOfProducts = FMA( v1, v2, -v34 );
         auto error = FMA( -v3, v4, v34 );
         return differenceOfProducts + error;
+        */
     }
 
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
@@ -2945,7 +5649,8 @@ namespace Harlinn::Common::Core::Math
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( v1, v2, v3, Traits::Load( v4.values) );
+        using Simd = typename V::Simd;
+        return DifferenceOfProducts( v1, v2, v3, Simd( Traits::Load( v4.values) ) );
     }
 
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
@@ -2953,7 +5658,8 @@ namespace Harlinn::Common::Core::Math
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( v1, v2, Traits::Load( v3.values ), v4  );
+        using Simd = typename U::Simd;
+        return DifferenceOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), v4  );
     }
 
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
@@ -2961,7 +5667,8 @@ namespace Harlinn::Common::Core::Math
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( v1, v2, Traits::Load( v3.values ), Traits::Load( v4.values ) );
+        using Simd = typename U::Simd;
+        return DifferenceOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
@@ -2969,14 +5676,16 @@ namespace Harlinn::Common::Core::Math
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( v1, Traits::Load( v2.values ), v3, v4 );
+        using Simd = typename T::Simd;
+        return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, v4 );
     }
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( v1, Traits::Load( v2.values ), v3, Traits::Load( v4.values ) );
+        using Simd = typename T::Simd;
+        return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
@@ -2984,7 +5693,8 @@ namespace Harlinn::Common::Core::Math
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( v1, Traits::Load( v2.values ), Traits::Load( v3.values ), v4 );
+        using Simd = typename T::Simd;
+        return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
     }
 
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
@@ -2992,62 +5702,70 @@ namespace Harlinn::Common::Core::Math
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( v1, Traits::Load( v2.values ), Traits::Load( v3.values ), Traits::Load( v4.values ) );
+        using Simd = typename T::Simd;
+        return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
     //
-    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( Traits::Load( v1.values ), v2, v3, Traits::Load( v4.values ) );
+        using Simd = typename S::Simd;
+        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, v3, Simd( Traits::Load( v4.values ) ) );
     }
 
-    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( Traits::Load( v1.values ), v2, Traits::Load( v3.values ), v4 );
+        using Simd = typename S::Simd;
+        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), v4 );
     }
 
-    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( Traits::Load( v1.values ), v2, Traits::Load( v3.values ), Traits::Load( v4.values ) );
+        using Simd = typename S::Simd;
+        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
-    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline U DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), v3, v4 );
+        using Simd = typename S::Simd;
+        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, v4 );
     }
-    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline U DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), v3, Traits::Load( v4.values ) );
+        using Simd = typename S::Simd;
+        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
     }
 
-    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline V DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( v3.values ), v4 );
+        using Simd = typename S::Simd;
+        return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
     }
 
-    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline typename S::Simd DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return DifferenceOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( v3.values ), Traits::Load( v4.values ) );
+        using Simd = typename S::Simd;
+        return DifferenceOfProducts( Simd(Traits::Load( v1.values )), Simd( Traits::Load( v2.values )), Simd( Traits::Load( v3.values )), Simd( Traits::Load( v4.values ) ) );
     }
 
     // SumOfProducts
@@ -3057,9 +5775,13 @@ namespace Harlinn::Common::Core::Math
     inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         auto v34 = v3 * v4;
+        return FMA( v1, v2, v34 );
+        /*
+        auto v34 = v3 * v4;
         auto sumOfProducts = FMA( v1, v2, v34 );
         auto error = FMA( v3, v4, -v34 );
         return sumOfProducts + error;
+        */
     }
 
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
@@ -3067,7 +5789,8 @@ namespace Harlinn::Common::Core::Math
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( v1, v2, v3, Traits::Load( v4.values ) );
+        using Simd = typename V::Simd;
+        return SumOfProducts( v1, v2, v3, Simd( Traits::Load( v4.values ) ) );
     }
 
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
@@ -3075,7 +5798,8 @@ namespace Harlinn::Common::Core::Math
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( v1, v2, Traits::Load( v3.values ), v4 );
+        using Simd = typename U::Simd;
+        return SumOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), v4 );
     }
 
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
@@ -3083,7 +5807,8 @@ namespace Harlinn::Common::Core::Math
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( v1, v2, Traits::Load( v3.values ), Traits::Load( v4.values ) );
+        using Simd = typename U::Simd;
+        return SumOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
@@ -3091,14 +5816,16 @@ namespace Harlinn::Common::Core::Math
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( v1, Traits::Load( v2.values ), v3, v4 );
+        using Simd = typename T::Simd;
+        return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, v4 );
     }
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( v1, Traits::Load( v2.values ), v3, Traits::Load( v4.values ) );
+        using Simd = typename T::Simd;
+        return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
     }
 
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
@@ -3106,7 +5833,8 @@ namespace Harlinn::Common::Core::Math
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( v1, Traits::Load( v2.values ), Traits::Load( v3.values ), v4 );
+        using Simd = typename T::Simd;
+        return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
     }
 
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
@@ -3114,62 +5842,70 @@ namespace Harlinn::Common::Core::Math
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( v1, Traits::Load( v2.values ), Traits::Load( v3.values ), Traits::Load( v4.values ) );
+        using Simd = typename T::Simd;
+        return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
     //
-    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( Traits::Load( v1.values ), v2, v3, Traits::Load( v4.values ) );
+        using Simd = typename S::Simd;
+        return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, v3, Simd( Traits::Load( v4.values ) ) );
     }
 
-    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( Traits::Load( v1.values ), v2, Traits::Load( v3.values ), v4 );
+        using Simd = typename S::Simd;
+        return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), v4 );
     }
 
-    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( Traits::Load( v1.values ), v2, Traits::Load( v3.values ), Traits::Load( v4.values ) );
+        using Simd = typename S::Simd;
+        return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
-    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline U SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), v3, v4 );
+        using Simd = typename S::Simd;
+        return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, v4 );
     }
-    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline U SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), v3, Traits::Load( v4.values ) );
+        using Simd = typename S::Simd;
+        return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
     }
 
-    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline V SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( v3.values ), v4 );
+        using Simd = typename S::Simd;
+        return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
     }
 
-    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline typename S::Simd SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         using Traits = typename S::Traits;
-        return SumOfProducts( Traits::Load( v1.values ), Traits::Load( v2.values ), Traits::Load( v3.values ), Traits::Load( v4.values ) );
+        using Simd = typename S::Simd;
+        return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
 
@@ -3184,15 +5920,15 @@ namespace Harlinn::Common::Core::Math
     {
         if constexpr ( T::Size == 2 )
         {
-            return std::min( v.x, v.y );
+            return Min( v.x, v.y );
         }
         else if constexpr ( T::Size == 3 )
         {
-            return std::min( v.x, v.y, v.z );
+            return Min( v.x, v.y, v.z );
         }
         else
         {
-            return std::min( v.x, v.y, v.z, v.w );
+            return Min( v.x, v.y, v.z, v.w );
         }
     }
 
@@ -3207,15 +5943,15 @@ namespace Harlinn::Common::Core::Math
     {
         if constexpr ( T::Size == 2 )
         {
-            return std::max( v.x, v.y );
+            return Max( v.x, v.y );
         }
         else if constexpr ( T::Size == 3 )
         {
-            return std::max( v.x, v.y, v.z );
+            return Max( v.x, v.y, v.z );
         }
         else
         {
-            return std::max( v.x, v.y, v.z, v.w );
+            return Max( v.x, v.y, v.z, v.w );
         }
     }
 
@@ -3294,6 +6030,10 @@ namespace Harlinn::Common::Core::Math
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
+        explicit Vector( float v ) noexcept
+            : Base( v, v )
+        {
+        }
         Vector( float xv, float yv ) noexcept
             : Base( xv, yv )
         { }
@@ -3317,6 +6057,10 @@ namespace Harlinn::Common::Core::Math
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
+        explicit Vector( double v ) noexcept
+            : Base( v, v )
+        {
+        }
         Vector( double xv, double yv ) noexcept
             : Base( xv, yv )
         {
@@ -3338,6 +6082,10 @@ namespace Harlinn::Common::Core::Math
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
+        explicit Vector( float v ) noexcept
+            : Base( v, v, v )
+        {
+        }
         Vector( float xv, float yv, float zv ) noexcept
             : Base( xv, yv, zv )
         {
@@ -3359,6 +6107,10 @@ namespace Harlinn::Common::Core::Math
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
+        explicit Vector( double v ) noexcept
+            : Base( v, v, v )
+        {
+        }
         Vector( double xv, double yv, double zv ) noexcept
             : Base( xv, yv, zv )
         {
@@ -3383,6 +6135,10 @@ namespace Harlinn::Common::Core::Math
         using value_type = Base::value_type;
 
         Vector( ) noexcept = default;
+        explicit Vector( float v ) noexcept
+            : Base( v, v, v, v )
+        {
+        }
         Vector( float xv, float yv, float zv, float wv ) noexcept
             : Base( xv, yv, zv, wv )
         {
@@ -3407,6 +6163,10 @@ namespace Harlinn::Common::Core::Math
         using Traits = Base::Traits;
 
         Vector( ) noexcept = default;
+        explicit Vector( double v ) noexcept
+            : Base( v, v, v, v )
+        {
+        }
         Vector( double xv, double yv, double zv, double wv ) noexcept
             : Base( xv, yv, zv, wv )
         {
@@ -3785,7 +6545,16 @@ namespace Harlinn::Common::Core::Math
         static constexpr size_type Capacity = Size;
         using ArrayType = typename Traits::ArrayType;
 
-        using SimdImpl = QuaternionSimd<ValueType>;
+        using reference = typename ArrayType::reference;
+        using const_reference = typename ArrayType::const_reference;
+        using pointer = typename ArrayType::pointer;
+        using const_pointer = typename ArrayType::const_pointer;
+        using iterator = typename ArrayType::iterator;
+        using const_iterator = typename ArrayType::const_iterator;
+        using reverse_iterator = typename ArrayType::reverse_iterator;
+        using const_reverse_iterator = typename ArrayType::const_reverse_iterator;
+
+        using Simd = QuaternionSimd<ValueType>;
 
         union
         {
@@ -3798,7 +6567,9 @@ namespace Harlinn::Common::Core::Math
         };
 
 
-        Quaternion( ) noexcept = default;
+        Quaternion( ) noexcept
+            : values{}
+        { }
         Quaternion( ValueType xv, ValueType yv, ValueType zv, ValueType wv ) noexcept
             : values( { xv, yv, zv, wv } )
         {
@@ -3853,6 +6624,94 @@ namespace Harlinn::Common::Core::Math
         bool operator != ( const Quaternion& other ) const noexcept
         {
             return values != other.values;
+        }
+
+        Simd operator - ( ) const
+        {
+            return Traits::Negate( Traits::Load( values ) );
+        }
+
+        const_reference operator[]( size_t index ) const noexcept
+        {
+            return values[ index ];
+        }
+
+        reference operator[]( size_t index ) noexcept
+        {
+            return values[ index ];
+        }
+
+        const_pointer data( ) const noexcept
+        {
+            return values.data( );
+        }
+        pointer data( ) noexcept
+        {
+            return values.data( );
+        }
+
+        constexpr size_t size( ) const noexcept
+        {
+            return Size;
+        }
+
+        const_reference front( ) const noexcept
+        {
+            return values.front( );
+        }
+        reference front( ) noexcept
+        {
+            return values.front( );
+        }
+
+        const_reference back( ) const noexcept
+        {
+            return values.back( );
+        }
+        reference back( ) noexcept
+        {
+            return values.back( );
+        }
+
+        const_iterator begin( ) const noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator cbegin( ) const noexcept
+        {
+            return values.cbegin( );
+        }
+        iterator begin( ) noexcept
+        {
+            return values.begin( );
+        }
+        const_iterator end( ) const noexcept
+        {
+            return values.end( );
+        }
+        const_iterator cend( ) const noexcept
+        {
+            return values.cend( );
+        }
+        iterator end( ) noexcept
+        {
+            return values.end( );
+        }
+        const_reverse_iterator rbegin( ) const noexcept
+        {
+            return values.rbegin( );
+        }
+        reverse_iterator rbegin( ) noexcept
+        {
+            return values.rbegin( );
+        }
+        const_reverse_iterator rend( ) const noexcept
+        {
+            return values.rend( );
+        }
+        reverse_iterator rend( ) noexcept
+        {
+            return values.rend( );
         }
 
 
@@ -4087,6 +6946,75 @@ namespace Harlinn::Common::Core::Math
         return Traits::Mul( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) );
     }
 
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T,4>::Simd Dot( const QuaternionSimd<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<T>::Traits;
+        return Traits::Dot( q1.simd, q2.simd );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Dot( const Quaternion<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<T>::Traits;
+        return Traits::Dot( Traits::Load( q1.values ), q2.simd );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Dot( const QuaternionSimd<T>& q1, const Quaternion<T>& q2 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<T>::Traits;
+        return Traits::Dot( q1.simd, Traits::Load( q2.values ) );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Dot( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        return Traits::Dot( Traits::Load( q1.values ), Traits::Load( q2.values ) );
+    }
+
+    // Length
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Length( const QuaternionSimd<T>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        return Traits::Sqrt( Traits::HSum( Traits::Mul( q1.simd, q1.simd ) ) );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Length( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        auto simd = Traits::Load( q1.values );
+        return Traits::Sqrt( Traits::HSum( Traits::Mul( simd, simd ) ) );
+    }
+
+    // ScalarLength
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarLength( const QuaternionSimd<T>& q1 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<T>::Traits;
+        return Traits::First( Length( q1 ).simd );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarLength( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        return Traits::First( Length( q1 ).simd );
+    }
+
     
 
     /*
@@ -4115,9 +7043,32 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
         return Traits::Cross( v1.simd, v2.simd );
     }
-
-
     */
+
+    template<Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    constexpr inline auto ScalarAngleBetween( const T& v1, const U& v2 )
+    {
+        using Traits = typename T::Traits;
+        using TypleType = typename T::TupleType;
+        using FloatT = typename TypleType::value_type;
+
+        auto dotProduct = Dot( v1, v2);
+
+        if ( Traits::First( dotProduct.simd ) < 0 )
+        {
+            TypleType s = Sqr( v1 + v2 );
+            auto halfLength = Sqrt( s.x + s.y + s.z ) / static_cast< FloatT >( 2. );
+            return Constants<FloatT>::Pi - static_cast< FloatT >( 2. ) * SafeASin( halfLength );
+        }
+        else
+        {
+            TypleType s = Sqr( v2 - v1 );
+            auto halfLength = Sqrt( s.x + s.y + s.z ) / static_cast< FloatT >( 2. );
+            return static_cast< FloatT >( 2. ) * SafeASin( halfLength );
+        }
+    }
+
 
     template<typename DerivedT, typename FloatT>
     constexpr inline FloatT ScalarAngleBetween( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 )
@@ -4139,7 +7090,7 @@ namespace Harlinn::Common::Core::Math
             auto sy = Sqr(v1.y + v2.y);
             auto sz = Sqr(v1.z + v2.z);
             */
-            auto halfLength = Sqrt( sz + sy + sz ) / static_cast< FloatT >( 2. );
+            auto halfLength = Sqrt( sx + sy + sz ) / static_cast< FloatT >( 2. );
             return Constants<FloatT>::Pi - static_cast< FloatT >( 2. ) * SafeASin( halfLength );
         }
         else
@@ -4157,7 +7108,7 @@ namespace Harlinn::Common::Core::Math
             auto sy = Sqr(v2.y - v1.y);
             auto sz = Sqr(v2.z - v1.z);
             */
-            auto halfLength = Sqrt( sz + sy + sz ) / static_cast< FloatT >( 2. );
+            auto halfLength = Sqrt( sx + sy + sz ) / static_cast< FloatT >( 2. );
             return static_cast< FloatT >( 2. ) * SafeASin( halfLength );
         }
     }
@@ -4214,18 +7165,18 @@ namespace Harlinn::Common::Core::Math
 
     }
 
-    template <typename FloatT, size_t N>
-    class SquareMatrix;
-    template <typename FloatT, size_t N>
-    SquareMatrix<FloatT, N> operator*( const SquareMatrix<FloatT, N>& matrix1, const SquareMatrix<FloatT, N>& matrix2 );
+    //template <typename FloatT, size_t N>
+    //class SquareMatrix;
+    //template <typename FloatT, size_t N>
+    //SquareMatrix<FloatT, N> operator*( const SquareMatrix<FloatT, N>& matrix1, const SquareMatrix<FloatT, N>& matrix2 );
 
 
     // SquareMatrix Definition
     template <typename FloatT, size_t N>
     class SquareMatrix : public Internal::MatrixBase
     {
-        template <typename FloatT, size_t N>
-        friend SquareMatrix<FloatT, N> operator*( const SquareMatrix<FloatT, N>& matrix1, const SquareMatrix<FloatT, N>& matrix2 );
+        //template <typename FloatT, size_t N>
+        //friend SquareMatrix<FloatT, N> operator*( const SquareMatrix<FloatT, N>& matrix1, const SquareMatrix<FloatT, N>& matrix2 );
     public:
         using value_type = FloatT;
         static constexpr size_t Size = N;
@@ -4265,6 +7216,11 @@ namespace Harlinn::Common::Core::Math
         constexpr SquareMatrix( ) noexcept = default;
 
         SquareMatrix( const value_type (&mat)[ N ][ N ] )
+            : data_( mat )
+        {
+        }
+
+        SquareMatrix( const value_type mat[ N ][ N ] )
             : data_( mat )
         {
         }
@@ -4362,7 +7318,7 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
-                // Not supported
+                static_assert( false, "Unsupported matrix dimensions." );
             }
         }
         
@@ -4396,7 +7352,7 @@ namespace Harlinn::Common::Core::Math
 
     template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixSimdType T2>
         requires Internal::IsCompatibleMatrix<T1,T2>
-    T1 operator+( const T1& m1, const T2& m2 ) noexcept
+    inline T1 operator+( const T1& m1, const T2& m2 ) noexcept
     {
         using Traits = typename T1::Traits;
         using Simd = T1;
@@ -4429,27 +7385,27 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            // Not supported
+            static_assert( false, "Unsupported matrix dimensions." );
         }
     }
 
     template<Internal::SquareMatrixType T1, Internal::SquareMatrixSimdType T2>
         requires Internal::IsCompatibleMatrix<T1, T2>
-    T2 operator+( const T1& m1, const T2& m2 ) noexcept
+    inline T2 operator+( const T1& m1, const T2& m2 ) noexcept
     {
         return m1.ToSimd( ) + m2;
     }
 
     template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixType T2>
         requires Internal::IsCompatibleMatrix<T1, T2>
-    T1 operator+( const T1& m1, const T2& m2 ) noexcept
+    inline T1 operator+( const T1& m1, const T2& m2 ) noexcept
     {
         return m1 + m2.ToSimd( );
     }
 
     template<Internal::SquareMatrixType T1, Internal::SquareMatrixType T2>
         requires Internal::IsCompatibleMatrix<T1, T2>
-    T1 operator+( const T1& m1, const T2& m2 ) noexcept
+    inline auto operator+( const T1& m1, const T2& m2 ) noexcept
     {
         return m1.ToSimd( ) + m2.ToSimd( );
     }
@@ -4459,7 +7415,7 @@ namespace Harlinn::Common::Core::Math
 
     template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixSimdType T2>
         requires Internal::IsCompatibleMatrix<T1, T2>
-    T1 operator-( const T1& m1, const T2& m2 ) noexcept
+    inline T1 operator-( const T1& m1, const T2& m2 ) noexcept
     {
         using Traits = typename T1::Traits;
         using Simd = T1;
@@ -4492,27 +7448,27 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            // Not supported
+            static_assert( false, "Unsupported matrix dimensions." );
         }
     }
 
     template<Internal::SquareMatrixType T1, Internal::SquareMatrixSimdType T2>
         requires Internal::IsCompatibleMatrix<T1, T2>
-    T2 operator-( const T1& m1, const T2& m2 ) noexcept
+    inline T2 operator-( const T1& m1, const T2& m2 ) noexcept
     {
         return m1.ToSimd( ) - m2;
     }
 
     template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixType T2>
         requires Internal::IsCompatibleMatrix<T1, T2>
-    T1 operator-( const T1& m1, const T2& m2 ) noexcept
+    inline T1 operator-( const T1& m1, const T2& m2 ) noexcept
     {
         return m1 - m2.ToSimd( );
     }
 
     template<Internal::SquareMatrixType T1, Internal::SquareMatrixType T2>
         requires Internal::IsCompatibleMatrix<T1, T2>
-    T1 operator-( const T1& m1, const T2& m2 ) noexcept
+    inline auto operator-( const T1& m1, const T2& m2 ) noexcept
     {
         return m1.ToSimd( ) - m2.ToSimd( );
     }
@@ -4558,45 +7514,45 @@ namespace Harlinn::Common::Core::Math
         }
         else
         {
-            // Not supported
+            static_assert( false, "Unsupported matrix dimensions." );
         }
     }
 
     template<Internal::SquareMatrixType T1, typename T2>
-        requires std::is_arithmetic_v<T2>
-    T1 operator*( const T1& m, const T2 value ) noexcept
+        requires IsFloatingPoint<T2>
+    inline auto operator*( const T1& m, const T2 value ) noexcept
     {
         return m.ToSimd( ) * value;
     }
 
     template<Internal::SquareMatrixSimdType T1, typename T2>
-        requires std::is_arithmetic_v<T2>
-    T2 operator*( const T2 value, const T2& m ) noexcept
+        requires IsFloatingPoint<T2>
+    inline auto operator*( const T2 value, const T1& m ) noexcept
     {
         return m * value;
     }
 
     template<Internal::SquareMatrixType T1, typename T2>
-        requires std::is_arithmetic_v<T2>
-    T2 operator*( const T2 value, const T2& m ) noexcept
+        requires IsFloatingPoint<T2>
+    inline auto operator*( const T2 value, const T1& m ) noexcept
     {
         return m.ToSimd() * value;
     }
 
-
-    template <>
-    inline SquareMatrix<float, 4> operator*<float, 4>( const SquareMatrix<float, 4>& matrix1, const SquareMatrix<float, 4>& matrix2 )
+    inline typename SquareMatrix<float, 4>::Simd Multiply( const typename SquareMatrix<float, 4>::Simd& matrix1, const typename SquareMatrix<float, 4>::Simd& matrix2 )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
-        auto rmm1 = _mm256_castps128_ps256( Traits::Load( matrix1.data_[ 0 ].data( ) ) );
-        rmm1 = _mm256_insertf128_ps( rmm1, Traits::Load( matrix1.data_[ 1 ].data( ) ), 1 );
-        auto rmm2 = _mm256_castps128_ps256( Traits::Load( matrix1.data_[ 2 ].data( ) ) );
-        rmm2 = _mm256_insertf128_ps( rmm2, Traits::Load( matrix1.data_[ 3 ].data( ) ), 1 );
+        using Simd = typename SquareMatrix<float, 4>::Simd;
 
-        auto rmm3 = _mm256_castps128_ps256( Traits::Load( matrix2.data_[ 0 ].data( ) ) );
-        rmm3 = _mm256_insertf128_ps( rmm3, Traits::Load( matrix2.data_[ 1 ].data( ) ), 1 );
-        auto rmm4 = _mm256_castps128_ps256( Traits::Load( matrix2.data_[ 2 ].data( ) ) );
-        rmm4 = _mm256_insertf128_ps( rmm4, Traits::Load( matrix2.data_[ 3 ].data( ) ), 1 );
+        auto rmm1 = _mm256_castps128_ps256( matrix1[ 0 ] );
+        rmm1 = _mm256_insertf128_ps( rmm1, matrix1[ 1 ], 1 );
+        auto rmm2 = _mm256_castps128_ps256( matrix1[ 2 ] );
+        rmm2 = _mm256_insertf128_ps( rmm2, matrix1[ 3 ], 1 );
+
+        auto rmm3 = _mm256_castps128_ps256( matrix2[ 0 ] );
+        rmm3 = _mm256_insertf128_ps( rmm3, matrix2[ 1 ], 1 );
+        auto rmm4 = _mm256_castps128_ps256( matrix2[ 2 ] );
+        rmm4 = _mm256_insertf128_ps( rmm4, matrix2[ 3 ], 1 );
 
         auto rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 0, 0, 0, 0 ) );
         auto rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 0, 0, 0, 0 ) );
@@ -4625,12 +7581,84 @@ namespace Harlinn::Common::Core::Math
         rmm1 = _mm256_add_ps( rmm10, rmm15 );
         rmm2 = _mm256_add_ps( rmm11, rmm16 );
 
-        SquareMatrix<float, 4> result;
-        Traits::Store( result.data_[ 0 ].data( ), _mm256_castps256_ps128( rmm1 ) );
-        Traits::Store( result.data_[ 1 ].data( ), _mm256_extractf128_ps( rmm1, 1 ) );
-        Traits::Store( result.data_[ 2 ].data( ), _mm256_castps256_ps128( rmm2 ) );
-        Traits::Store( result.data_[ 3 ].data( ), _mm256_extractf128_ps( rmm2, 1 ) );
+        Simd result;
+        result[ 0 ] = _mm256_castps256_ps128( rmm1 );
+        result[ 1 ] = _mm256_extractf128_ps( rmm1, 1 );
+        result[ 2 ] = _mm256_castps256_ps128( rmm2 );
+        result[ 3 ] = _mm256_extractf128_ps( rmm2, 1 );
         return result;
+    }
+
+    inline typename SquareMatrix<float, 3>::Simd Multiply( const typename SquareMatrix<float, 3>::Simd& matrix1, const typename SquareMatrix<float, 3>::Simd& matrix2 )
+    {
+        using Traits = typename SquareMatrix<float, 3>::Traits;
+        using Simd = typename SquareMatrix<float, 3>::Simd;
+
+        auto m10 = matrix1[ 0 ];
+        auto m11 = matrix1[ 1 ];
+        auto m12 = matrix1[ 2 ];
+
+        auto c0 = Traits::At<0>( m10 );
+        auto c1 = Traits::At<0>( m11 );
+        auto c2 = Traits::At<0>( m12 );
+
+        auto m2v = matrix2[ 0 ];
+
+        c0 = Traits::Mul( c0, m2v );
+        c1 = Traits::Mul( c1, m2v );
+        c2 = Traits::Mul( c2, m2v );
+
+        auto c0_1 = Traits::At<1>( m10 );
+        auto c1_1 = Traits::At<1>( m11 );
+        auto c2_1 = Traits::At<1>( m12 );
+
+        m2v = matrix2[ 1 ];
+
+        c0 = Traits::FMAdd( c0_1, m2v, c0 );
+        c1 = Traits::FMAdd( c1_1, m2v, c1 );
+        c2 = Traits::FMAdd( c2_1, m2v, c2 );
+
+        m10 = Traits::At<2>( m10 );
+        m11 = Traits::At<2>( m11 );
+        m12 = Traits::At<2>( m12 );
+
+        m2v = matrix2[ 2 ];
+
+        Simd result;
+        result[ 0 ] = Traits::FMAdd( m10, m2v, c0 );
+        result[ 1 ] = Traits::FMAdd( m11, m2v, c1 );
+        result[ 2 ] = Traits::FMAdd( m12, m2v, c2 );
+        return result;
+
+    }
+
+
+    template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixSimdType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    inline T2 operator*( const T1& m1, const T2& m2 ) noexcept
+    {
+        return Math::Multiply( m1, m2 );
+    }
+
+    template<Internal::SquareMatrixType T1, Internal::SquareMatrixSimdType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    inline T2 operator*( const T1& m1, const T2& m2 ) noexcept
+    {
+        return Math::Multiply( m1.ToSimd( ), m2 );
+    }
+
+    template<Internal::SquareMatrixSimdType T1, Internal::SquareMatrixType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    inline T1 operator*( const T1& m1, const T2& m2 ) noexcept
+    {
+        return Math::Multiply( m1, m2.ToSimd( ) );
+    }
+
+    template<Internal::SquareMatrixType T1, Internal::SquareMatrixType T2>
+        requires Internal::IsCompatibleMatrix<T1, T2>
+    inline auto operator*( const T1& m1, const T2& m2 ) noexcept
+    {
+        return Math::Multiply( m1.ToSimd( ), m2.ToSimd( ) );
     }
 
     // Division
@@ -4687,14 +7715,7 @@ namespace Harlinn::Common::Core::Math
 
 
 
-    template <typename FloatT, size_t N>
-    Vector<FloatT,N>::Simd Determinant( const SquareMatrix<FloatT,N>& matrix );
-
-    template <typename FloatT, size_t N>
-    FloatT ScalarDeterminant( const SquareMatrix<FloatT, N>& matrix );
-
-    template <>
-    inline Vector<float,4>::Simd Determinant<float, 4>( const SquareMatrix<float, 4>& matrix )
+    inline typename Vector<float,4>::Simd Determinant( const typename SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
@@ -4702,8 +7723,8 @@ namespace Harlinn::Common::Core::Math
         using Select = typename Traits::Select;
         Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, -1.0f } } );
         
-        auto matrix2 = Traits::Load( matrix[ 2 ] );
-        auto matrix3 = Traits::Load( matrix[ 3 ] );
+        auto matrix2 = matrix[ 2 ];
+        auto matrix3 = matrix[ 3 ];
 
         auto rmm0 = Traits::Swizzle<Select::X, Select::X, Select::X, Select::Y>( matrix2 );
         auto rmm1 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix3 );
@@ -4722,7 +7743,7 @@ namespace Harlinn::Common::Core::Math
         rmm5 = Traits::FNMAdd( rmm2, rmm1, rmm5 );
         rmm6 = Traits::FNMAdd( rmm2, rmm3, rmm6 );
 
-        rmm3 = Traits::Load( matrix[ 1 ] );
+        rmm3 = matrix[ 1 ];
 
         rmm0 = Traits::Swizzle<Select::Z, Select::W, Select::W, Select::W>( rmm3 );
         rmm1 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( rmm3 );
@@ -4732,17 +7753,107 @@ namespace Harlinn::Common::Core::Math
         rmm7 = Traits::FNMAdd( rmm1, rmm5, rmm7 );
         rmm7 = Traits::FMAdd( rmm2, rmm6, rmm7 );
 
-        rmm3 = Traits::Load( matrix[ 0 ] );
+        rmm3 = matrix[ 0 ];
         rmm3 = Traits::Mul( rmm3, sign );
 
         return Traits::Dot( rmm3, rmm7 );
     }
 
-    template <>
-    inline float ScalarDeterminant<float, 4>( const SquareMatrix<float, 4>& matrix )
+    inline typename Vector<float, 4>::Simd Determinant( const typename SquareMatrix<float, 4>& matrix )
+    {
+        return Math::Determinant( matrix.ToSimd( ) );
+    }
+
+    inline float ScalarDeterminant( const SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
-        return Traits::First( Determinant( matrix ).simd );
+        return Traits::First( Math::Determinant( matrix ).simd );
+    }
+
+    inline float ScalarDeterminant( const SquareMatrix<float, 4>& matrix )
+    {
+        using Traits = typename SquareMatrix<float, 4>::Traits;
+        return Traits::First( Math::Determinant( matrix.ToSimd() ).simd );
+    }
+
+
+    inline typename Vector<float, 3>::Simd Determinant( const typename SquareMatrix<float, 3>::Simd& matrix )
+    {
+        using Traits = typename SquareMatrix<float, 3>::Traits;
+        using Simd = typename SquareMatrix<float, 3>::Simd;
+
+        auto v1 = matrix[ 1 ];
+        auto v2 = matrix[ 2 ];
+
+        auto edd = Traits::Swizzle<3, 0, 0, 1>( v1 );
+        auto iih = Traits::Swizzle<3, 1, 2, 2>( v2 );
+        auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
+        auto ffe = Traits::Swizzle<3, 1, 2, 2>( v1 );
+
+        auto det = Traits::Sub( Traits::Mul( edd, iih ), Traits::Mul( hgg, ffe ) );
+
+        Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, 0.0f } } );
+        auto v0 = Traits::Mul( matrix[ 0 ], sign );
+
+        return Traits::Dot( v0, det );
+
+        /*
+        Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, 0.0f } } );
+        auto v0 = matrix[ 0 ];
+        auto v1 = matrix[ 1 ];
+        auto v2 = matrix[ 2 ];
+
+        auto edd = Traits::Swizzle<3, 0, 0, 1>( v1 );
+        auto iih = Traits::Swizzle<3, 1, 2, 2>( v2 );
+        auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
+        auto ffe = Traits::Swizzle<3, 1, 2, 2>( v1 );
+
+        auto det = Traits::Sub( Traits::Mul( edd, iih ), Traits::Mul( hgg, ffe ) );
+
+        v0 = Traits::Mul( v0, sign );
+
+        return Traits::Dot( v0, det );
+        */
+    }
+
+    inline typename Vector<float, 3>::Simd Determinant( const typename SquareMatrix<float, 3>& matrix )
+    {
+        return Math::Determinant( matrix.ToSimd( ) );
+    }
+    inline float ScalarDeterminant( const SquareMatrix<float, 3>::Simd& matrix )
+    {
+        using Traits = typename SquareMatrix<float, 3>::Traits;
+        return Traits::First( Math::Determinant( matrix ).simd );
+    }
+
+    inline float ScalarDeterminant( const SquareMatrix<float, 3>& matrix )
+    {
+        using Traits = typename SquareMatrix<float, 3>::Traits;
+        return Traits::First( Math::Determinant( matrix.ToSimd( ) ).simd );
+    }
+
+    
+
+    inline SquareMatrix<float, 3>::Simd Transpose( const SquareMatrix<float, 3>::Simd& matrix )
+    {
+        using Traits = typename SquareMatrix<float, 3>::Traits;
+        using MatrixSimd = SquareMatrix<float, 3>::Simd;
+        
+        auto rmm4 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 0 ], matrix[ 1 ] );
+        auto rmm5 = Traits::Shuffle<2, 2, 2, 2>( matrix[ 0 ], matrix[ 1 ] );
+
+        MatrixSimd result;
+
+        result[ 0 ] = Traits::Shuffle<3, 0, 2, 0>( rmm4, matrix[ 2 ] );
+        result[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( rmm4, matrix[ 2 ] );
+        result[ 2 ] = Traits::Shuffle<3, 2, 2, 0>( rmm5, matrix[ 2 ] );
+
+        return result;
+    }
+
+    inline SquareMatrix<float, 3>::Simd Transpose( const SquareMatrix<float, 3>& matrix )
+    {
+        return Transpose( matrix.ToSimd( ) );
     }
 
     inline SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>::Simd& matrix )

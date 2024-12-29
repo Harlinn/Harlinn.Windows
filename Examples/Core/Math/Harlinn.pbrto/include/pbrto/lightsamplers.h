@@ -148,7 +148,11 @@ class CompactLightBounds
         // Return importance for light bounds at reference point
         // Compute clamped squared distance to reference point
         Point3f pc = (bounds.pMin + bounds.pMax) / 2;
+#ifdef PBRT_USES_HCCMATH
+        Float d2 = ScalarDistanceSquared( p, pc );
+#else
         Float d2 = DistanceSquared(p, pc);
+#endif
         d2 = std::max(d2, Length(bounds.Diagonal()) / 2);
 
         // Define cosine and sine clamped subtraction lambdas

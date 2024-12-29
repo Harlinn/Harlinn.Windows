@@ -104,11 +104,16 @@ PBRT_CPU_GPU Transform LookAt(Point3f pos, Point3f look, Vector3f up) {
 
     // Initialize first three columns of viewing matrix
     Vector3f dir = Normalize(look - pos);
-    if (Length(Cross(Normalize(up), dir)) == 0)
+#ifdef PBRT_USES_HCCMATH
+    if ( ScalarLength(Cross(Normalize(up), dir)) == 0)
+#else
+    if ( Length( Cross( Normalize( up ), dir ) ) == 0 )
+#endif
         LOG_FATAL("LookAt: \"up\" vector (%f, %f, %f) and viewing direction "
                   "(%f, %f, %f) "
                   "passed to LookAt are pointing in the same direction.",
                   up.x, up.y, up.z, dir.x, dir.y, dir.z);
+
     Vector3f right = Normalize(Cross(Normalize(up), dir));
     Vector3f newUp = Cross(dir, right);
     worldFromCamera[0][0] = right.x;

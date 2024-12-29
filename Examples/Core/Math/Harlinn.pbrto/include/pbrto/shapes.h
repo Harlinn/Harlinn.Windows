@@ -62,7 +62,11 @@ struct ShapeSampleContext {
 // ShapeSampleContext Inline Methods
 PBRT_CPU_GPU inline Point3f ShapeSampleContext::OffsetRayOrigin(Vector3f w) const {
     // Find vector _offset_ to corner of error bounds and compute initial _po_
+#ifdef PBRT_USES_HCCMATH
+    Float d = ScalarDot( Abs( n ), pi.Error( ) );
+#else
     Float d = Dot(Abs(n), pi.Error());
+#endif
     Vector3f offset = d * Vector3f(n);
     if (Dot(w, n) < 0)
         offset = -offset;
@@ -80,7 +84,7 @@ PBRT_CPU_GPU inline Point3f ShapeSampleContext::OffsetRayOrigin(Vector3f w) cons
 }
 
 PBRT_CPU_GPU inline Point3f ShapeSampleContext::OffsetRayOrigin(Point3f pt) const {
-    return OffsetRayOrigin(pt - p());
+    return OffsetRayOrigin( Vector3f(pt - p()));
 }
 
 PBRT_CPU_GPU inline Ray ShapeSampleContext::SpawnRay(Vector3f w) const {
@@ -155,14 +159,14 @@ class Sphere {
         Interval t0, t1;
         // Compute sphere quadratic coefficients
         Interval a = Sqr(di.x) + Sqr(di.y) + Sqr(di.z);
-        Interval b = 2 * (di.x * oi.x + di.y * oi.y + di.z * oi.z);
+        Interval b = static_cast<Float>(2) * (di.x * oi.x + di.y * oi.y + di.z * oi.z);
         Interval c = Sqr(oi.x) + Sqr(oi.y) + Sqr(oi.z) - Sqr(Interval(radius));
 
         // Compute sphere quadratic discriminant _discrim_
-        Vector3fi v(oi - b / (2 * a) * di);
+        Vector3fi v(oi - b / ( static_cast< Float >( 2 ) * a) * di);
         Interval length = Length(v);
         Interval discrim =
-            4 * a * (Interval(radius) + length) * (Interval(radius) - length);
+            static_cast< Float >( 4 ) * a * (Interval(radius) + length) * (Interval(radius) - length);
         if (discrim.LowerBound() < 0)
             return {};
 
@@ -298,7 +302,14 @@ class Sphere {
         // Sample uniformly on sphere if $\pt{}$ is inside it
         Point3f pCenter = (*renderFromObject)(Point3f(0, 0, 0));
         Point3f pOrigin = ctx.OffsetRayOrigin(pCenter);
-        if (DistanceSquared(pOrigin, pCenter) <= Sqr(radius)) {
+
+#ifdef PBRT_USES_HCCMATH
+        if ( ScalarDistanceSquared( pOrigin, pCenter ) <= Sqr( radius ) )
+        {
+#else
+        if (DistanceSquared(pOrigin, pCenter) <= Sqr(radius)) 
+        {
+#endif
             // Sample shape by area and compute incident direction _wi_
             pstd::optional<ShapeSample> ss = Sample(u);
             DCHECK(ss.has_value());
@@ -309,7 +320,11 @@ class Sphere {
             wi = Normalize(wi);
 
             // Convert area sampling PDF in _ss_ to solid angle measure
+#ifdef PBRT_USES_HCCMATH
+            ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctx.p( ), ss->intr.p( ) );
+#else
             ss->pdf /= AbsDot(ss->intr.n, -wi) / DistanceSquared(ctx.p(), ss->intr.p());
+#endif
             if (IsInf(ss->pdf))
                 return {};
 
@@ -318,7 +333,11 @@ class Sphere {
 
         // Sample sphere uniformly inside subtended cone
         // Compute quantities related to the $\theta_\roman{max}$ for cone
+#ifdef PBRT_USES_HCCMATH
+        Float sinThetaMax = radius / ScalarDistance( ctx.p( ), pCenter );
+#else
         Float sinThetaMax = radius / Distance(ctx.p(), pCenter);
+#endif
         Float sin2ThetaMax = Sqr(sinThetaMax);
         Float cosThetaMax = SafeSqrt(1 - sin2ThetaMax);
         Float oneMinusCosThetaMax = 1 - cosThetaMax;
@@ -372,7 +391,13 @@ class Sphere {
     Float PDF(const ShapeSampleContext &ctx, Vector3f wi) const {
         Point3f pCenter = (*renderFromObject)(Point3f(0, 0, 0));
         Point3f pOrigin = ctx.OffsetRayOrigin(pCenter);
-        if (DistanceSquared(pOrigin, pCenter) <= Sqr(radius)) {
+#ifdef PBRT_USES_HCCMATH
+        if ( ScalarDistanceSquared( pOrigin, pCenter ) <= Sqr( radius ) )
+        {
+#else
+        if (DistanceSquared(pOrigin, pCenter) <= Sqr(radius)) 
+        {
+#endif
             // Return solid angle PDF for point inside sphere
             // Intersect sample ray with shape geometry
             Ray ray = ctx.SpawnRay(wi);
@@ -381,15 +406,24 @@ class Sphere {
                 return 0;
 
             // Compute PDF in solid angle measure from shape intersection point
+#ifdef PBRT_USES_HCCMATH
+            Float pdf = ( 1 / Area( ) ) / ( ScalarAbsDot( isect->intr.n, -wi ) /
+                                        ScalarDistanceSquared( ctx.p( ), isect->intr.p( ) ) );
+#else
             Float pdf = (1 / Area()) / (AbsDot(isect->intr.n, -wi) /
                                         DistanceSquared(ctx.p(), isect->intr.p()));
+#endif
             if (IsInf(pdf))
                 pdf = 0;
 
             return pdf;
         }
         // Compute general solid angle sphere PDF
+#ifdef PBRT_USES_HCCMATH
+        Float sin2ThetaMax = radius * radius / ScalarDistanceSquared( ctx.p( ), pCenter );
+#else
         Float sin2ThetaMax = radius * radius / DistanceSquared(ctx.p(), pCenter);
+#endif
         Float cosThetaMax = SafeSqrt(1 - sin2ThetaMax);
         Float oneMinusCosThetaMax = 1 - cosThetaMax;
         // Compute more accurate _oneMinusCosThetaMax_ for small solid angle
@@ -555,7 +589,11 @@ class Disk {
         wi = Normalize(wi);
 
         // Convert area sampling PDF in _ss_ to solid angle measure
+#ifdef PBRT_USES_HCCMATH
+        ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctx.p( ), ss->intr.p( ) );
+#else
         ss->pdf /= AbsDot(ss->intr.n, -wi) / DistanceSquared(ctx.p(), ss->intr.p());
+#endif
         if (IsInf(ss->pdf))
             return {};
 
@@ -571,8 +609,13 @@ class Disk {
             return 0;
 
         // Compute PDF in solid angle measure from shape intersection point
+#ifdef PBRT_USES_HCCMATH
+        Float pdf = ( 1 / Area( ) ) / ( ScalarAbsDot( isect->intr.n, -wi ) /
+                                    ScalarDistanceSquared( ctx.p( ), isect->intr.p( ) ) );
+#else
         Float pdf = (1 / Area()) / (AbsDot(isect->intr.n, -wi) /
                                     DistanceSquared(ctx.p(), isect->intr.p()));
+#endif
         if (IsInf(pdf))
             pdf = 0;
 
@@ -631,15 +674,15 @@ class Cylinder {
         Interval t0, t1;
         // Compute cylinder quadratic coefficients
         Interval a = Sqr(di.x) + Sqr(di.y);
-        Interval b = 2 * (di.x * oi.x + di.y * oi.y);
+        Interval b = static_cast< Float >( 2 ) * (di.x * oi.x + di.y * oi.y);
         Interval c = Sqr(oi.x) + Sqr(oi.y) - Sqr(Interval(radius));
 
         // Compute cylinder quadratic discriminant _discrim_
-        Interval f = b / (2 * a);
+        Interval f = b / ( static_cast< Float >( 2 ) * a);
         Interval vx = oi.x - f * di.x, vy = oi.y - f * di.y;
         Interval length = Sqrt(Sqr(vx) + Sqr(vy));
         Interval discrim =
-            4 * a * (Interval(radius) + length) * (Interval(radius) - length);
+            static_cast< Float >( 4 ) * a * (Interval(radius) + length) * (Interval(radius) - length);
         if (discrim.LowerBound() < 0)
             return {};
 
@@ -799,7 +842,11 @@ class Cylinder {
         wi = Normalize(wi);
 
         // Convert area sampling PDF in _ss_ to solid angle measure
+#ifdef PBRT_USES_HCCMATH
+        ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctx.p( ), ss->intr.p( ) );
+#else
         ss->pdf /= AbsDot(ss->intr.n, -wi) / DistanceSquared(ctx.p(), ss->intr.p());
+#endif
         if (IsInf(ss->pdf))
             return {};
 
@@ -815,8 +862,13 @@ class Cylinder {
             return 0;
 
         // Compute PDF in solid angle measure from shape intersection point
+#ifdef PBRT_USES_HCCMATH
+        Float pdf = ( 1 / Area( ) ) / ( ScalarAbsDot( isect->intr.n, -wi ) /
+                                    ScalarDistanceSquared( ctx.p( ), isect->intr.p( ) ) );
+#else
         Float pdf = (1 / Area()) / (AbsDot(isect->intr.n, -wi) /
                                     DistanceSquared(ctx.p(), isect->intr.p()));
+#endif
         if (IsInf(pdf))
             pdf = 0;
 
@@ -887,8 +939,11 @@ class Triangle {
         const TriangleMesh *mesh = GetMesh();
         const int *v = &mesh->vertexIndices[3 * triIndex];
         Point3f p0 = mesh->p[v[0]], p1 = mesh->p[v[1]], p2 = mesh->p[v[2]];
-
+#ifdef PBRT_USES_HCCMATH
+        return 0.5f * ScalarLength( Math::Cross( p1 - p0, p2 - p0 ) );
+#else
         return 0.5f * Length(Cross(p1 - p0, p2 - p0));
+#endif
     }
 
     PBRT_CPU_GPU
@@ -934,20 +989,34 @@ class Triangle {
 
         Vector3f dpdu, dpdv;
         bool degenerateUV = std::abs(determinant) < 1e-9f;
-        if (!degenerateUV) {
+        if (!degenerateUV) 
+        {
             // Compute triangle $\dpdu$ and $\dpdv$ via matrix inversion
             Float invdet = 1 / determinant;
             dpdu = DifferenceOfProducts(duv12[1], dp02, duv02[1], dp12) * invdet;
             dpdv = DifferenceOfProducts(duv02[0], dp12, duv12[0], dp02) * invdet;
         }
         // Handle degenerate triangle $(u,v)$ parameterization or partial derivatives
-        if (degenerateUV || LengthSquared(Cross(dpdu, dpdv)) == 0) {
+        if (degenerateUV || LengthSquared(Cross(dpdu, dpdv)) == 0) 
+        {
             Vector3f ng = Cross(p2 - p0, p1 - p0);
-            if (LengthSquared(ng) == 0) {
+            if (LengthSquared(ng) == 0) 
+            {
+#ifdef PBRT_USES_HCCMATH
+                Vector3<Float> toP2( p2 - p0 );
+                Vector3<Float> toP1( p1 - p0 );
+                ng = Vector3f( Cross( Vector3<double>( toP2 ), Vector3<double>( toP1 ) ) );
+#else
                 ng = Vector3f(Cross(Vector3<double>(p2 - p0), Vector3<double>(p1 - p0)));
+#endif
                 CHECK_NE(LengthSquared(ng), 0);
             }
+#ifdef PBRT_USES_HCCMATH
+            Normal3<Float> normalizedNg = Normalize( ng );
+            CoordinateSystem( normalizedNg, &dpdu, &dpdv );
+#else
             CoordinateSystem(Normalize(ng), &dpdu, &dpdv);
+#endif
         }
 
         // Interpolate $(u,v)$ parametric coordinates and hit point
@@ -976,7 +1045,11 @@ class Triangle {
             if (mesh->n) {
                 ns =
                     ti.b0 * mesh->n[v[0]] + ti.b1 * mesh->n[v[1]] + ti.b2 * mesh->n[v[2]];
+#ifdef PBRT_USES_HCCMATH
+                ns = LengthSquared( ns ) > 0 ? Normal3f(Normalize( ns )) : isect.n;
+#else
                 ns = LengthSquared(ns) > 0 ? Normalize(ns) : isect.n;
+#endif
             } else
                 ns = isect.n;
 
@@ -1101,7 +1174,11 @@ class Triangle {
             wi = Normalize(wi);
 
             // Convert area sampling PDF in _ss_ to solid angle measure
+#ifdef PBRT_USES_HCCMATH
+            ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctx.p( ), ss->intr.p( ) );
+#else
             ss->pdf /= AbsDot(ss->intr.n, -wi) / DistanceSquared(ctx.p(), ss->intr.p());
+#endif
             if (IsInf(ss->pdf))
                 return {};
 
@@ -1173,8 +1250,13 @@ class Triangle {
                 return 0;
 
             // Compute PDF in solid angle measure from shape intersection point
+#ifdef PBRT_USES_HCCMATH
+            Float pdf = ( 1 / Area( ) ) / ( ScalarAbsDot( isect->intr.n, -wi ) /
+                                        ScalarDistanceSquared( ctx.p( ), isect->intr.p( ) ) );
+#else
             Float pdf = (1 / Area()) / (AbsDot(isect->intr.n, -wi) /
                                         DistanceSquared(ctx.p(), isect->intr.p()));
+#endif
             if (IsInf(pdf))
                 pdf = 0;
 
@@ -1311,10 +1393,15 @@ struct BilinearIntersection {
 PBRT_CPU_GPU inline pstd::optional<BilinearIntersection> IntersectBilinearPatch(
     const Ray &ray, Float tMax, Point3f p00, Point3f p10, Point3f p01, Point3f p11) {
     // Find quadratic coefficients for distance from ray to $u$ iso-lines
+#ifdef PBRT_USES_HCCMATH
+    Float a = ScalarDot( Cross( p10 - p00, p01 - p11 ), ray.d );
+    Float c = ScalarDot( Cross( p00 - ray.o, ray.d ), p01 - p00 );
+    Float b = ScalarDot( Cross( p10 - ray.o, ray.d ), p11 - p10 ) - ( a + c );
+#else
     Float a = Dot(Cross(p10 - p00, p01 - p11), ray.d);
     Float c = Dot(Cross(p00 - ray.o, ray.d), p01 - p00);
     Float b = Dot(Cross(p10 - ray.o, ray.d), p11 - p10) - (a + c);
-
+#endif
     // Solve quadratic for bilinear patch $u$ intersection
     Float u1, u2;
     if (!Quadratic(a, b, c, &u1, &u2))
@@ -1550,13 +1637,23 @@ class BilinearPatch {
             return false;
         // Check if bilinear patch vertices are coplanar
         Normal3f n(Normalize(Cross(p10 - p00, p01 - p00)));
+#ifdef PBRT_USES_HCCMATH
+        if ( ScalarAbsDot( Normalize( p11 - p00 ), n ) > 1e-5f )
+            return false;
+#else
         if (AbsDot(Normalize(p11 - p00), n) > 1e-5f)
             return false;
+#endif
 
         // Check if planar vertices form a rectangle
         Point3f pCenter = (p00 + p01 + p10 + p11) / 4;
+#ifdef PBRT_USES_HCCMATH
+        Float d2[ 4 ] = { ScalarDistanceSquared( p00, pCenter ), ScalarDistanceSquared( p01, pCenter ),
+                       ScalarDistanceSquared( p10, pCenter ), ScalarDistanceSquared( p11, pCenter ) };
+#else
         Float d2[4] = {DistanceSquared(p00, pCenter), DistanceSquared(p01, pCenter),
                        DistanceSquared(p10, pCenter), DistanceSquared(p11, pCenter)};
+#endif
         for (int i = 1; i < 4; ++i)
             if (std::abs(d2[i] - d2[0]) / d2[0] > 1e-4f)
                 return false;

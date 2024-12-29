@@ -115,7 +115,7 @@ PBRT_CPU_GPU inline uint32_t EncodeMorton3(float x, float y, float z) {
     DCHECK_GE(x, 0);
     DCHECK_GE(y, 0);
     DCHECK_GE(z, 0);
-    return (LeftShift3(z) << 2) | (LeftShift3(y) << 1) | LeftShift3(x);
+    return (LeftShift3(std::bit_cast< uint32_t >(z)) << 2) | (LeftShift3( std::bit_cast< uint32_t >( y ) ) << 1) | LeftShift3( std::bit_cast< uint32_t >( x ) );
 }
 
 PBRT_CPU_GPU
@@ -134,7 +134,7 @@ inline uint32_t Compact1By1(uint64_t x) {
     x = (x ^ (x >> 8)) & 0x0000ffff0000ffff;
     // ...
     x = (x ^ (x >> 16)) & 0xffffffff;
-    return x;
+    return static_cast< uint32_t >( x );
 }
 
 PBRT_CPU_GPU
@@ -267,10 +267,10 @@ PBRT_CPU_GPU inline Float Degrees(Float rad) {
 
 PBRT_CPU_GPU inline Float SmoothStep(Float x, Float a, Float b) {
     if (a == b)
-        return (x < a) ? 0 : 1;
+        return (x < a) ? static_cast< Float >(0) : static_cast< Float >( 1 );
     DCHECK_LT(a, b);
-    Float t = Clamp((x - a) / (b - a), 0, 1);
-    return t * t * (3 - 2 * t);
+    Float t = Clamp((x - a) / (b - a), static_cast< Float >( 0 ), static_cast< Float >( 1 ));
+    return t * t * ( static_cast< Float >( 3 ) - static_cast< Float >( 2 ) * t);
 }
 
 PBRT_CPU_GPU inline float SafeSqrt(float x) {
@@ -301,8 +301,8 @@ PBRT_CPU_GPU inline constexpr T Sqr(T v) {
 // https://stackoverflow.com/questions/5101516/why-function-template-cannot-be-partially-specialized
 template <int n>
 PBRT_CPU_GPU inline constexpr float Pow(float v) {
-    if constexpr (n < 0)
-        return 1 / Pow<-n>(v);
+    if constexpr (n < static_cast< float >( 0 ) )
+        return static_cast< float >( 1 ) / Pow<-n>(v);
     float n2 = Pow<n / 2>(v);
     return n2 * n2 * Pow<n & 1>(v);
 }
@@ -313,13 +313,13 @@ PBRT_CPU_GPU inline constexpr float Pow<1>(float v) {
 }
 template <>
 PBRT_CPU_GPU inline constexpr float Pow<0>(float v) {
-    return 1;
+    return static_cast< float >( 1 );
 }
 
 template <int n>
 PBRT_CPU_GPU inline constexpr double Pow(double v) {
     if constexpr (n < 0)
-        return 1 / Pow<-n>(v);
+        return static_cast< double >( 1 ) / Pow<-n>(v);
     double n2 = Pow<n / 2>(v);
     return n2 * n2 * Pow<n & 1>(v);
 }
@@ -331,7 +331,7 @@ PBRT_CPU_GPU inline constexpr double Pow<1>(double v) {
 
 template <>
 PBRT_CPU_GPU inline constexpr double Pow<0>(double v) {
-    return 1;
+    return static_cast< double >( 1 );
 }
 
 template <typename Float, typename C>
@@ -346,8 +346,8 @@ PBRT_CPU_GPU inline constexpr Float EvaluatePolynomial(Float t, C c, Args... cRe
 
 // http://www.plunk.org/~hatch/rightway.html
 PBRT_CPU_GPU inline Float SinXOverX(Float x) {
-    if (1 - x * x == 1)
-        return 1;
+    if ( static_cast<Float>( 1 ) - x * x == static_cast< Float >( 1 ) )
+        return static_cast< Float >( 1 );
 #ifdef PBRT_USES_HCCMATH_SINCOS
     return Math::Sin( x ) / x;
 #else
@@ -393,7 +393,7 @@ inline double SafeACos(double x) {
 }
 
 PBRT_CPU_GPU inline Float Log2(Float x) {
-    const Float invLog2 = 1.442695040888963387004650940071;
+    const Float invLog2 = static_cast< Float >(1.442695040888963387004650940071);
 #ifdef PBRT_USES_HCCMATH_LOG
     return Math::Log( x ) * invLog2;
 #else
@@ -403,7 +403,7 @@ PBRT_CPU_GPU inline Float Log2(Float x) {
 
 PBRT_CPU_GPU inline int Log2Int(float v) {
     DCHECK_GT(v, 0);
-    if (v < 1)
+    if (v < static_cast< Float >( 1 ))
         return -Log2Int(1 / v);
     // https://graphics.stanford.edu/~seander/bithacks.html#IntegerLog
     // (With an additional check of the significant to get round-to-nearest
@@ -875,6 +875,55 @@ inline Float LogI0(Float x) {
     }
 }
 
+#ifdef PBRT_USES_HCCMATH_INTERVAL
+
+class Interval : public Math::Interval<Float>
+{
+public:
+    static const Interval Pi;
+    using Base = Math::Interval<Float>;
+
+    constexpr Interval( ) = default;
+    constexpr explicit Interval( Float v )
+        : Base(v,v)
+    { }
+    constexpr Interval( Float a, Float b )
+        : Base( a, b )
+    {
+    }
+
+    constexpr Interval( const Base& other )
+        : Base( other )
+    { }
+
+    constexpr Interval& operator = ( const Base& other )
+    {
+        Base::operator = ( other );
+        return *this;
+    }
+
+    constexpr Interval& operator = ( const Float& value )
+    {
+        Base::operator = ( Interval( value ) );
+        return *this;
+    }
+
+
+    std::string ToString( ) const;
+};
+
+
+
+
+using Math::InRange;
+
+inline Interval Sqr( const Interval& i )
+{
+    return std::bit_cast< Interval >( Math::Sqr( i ) );
+}
+
+#else
+
 // Interval Definition
 class Interval 
 {
@@ -1327,6 +1376,8 @@ PBRT_CPU_GPU inline Interval SumSquares(Interval i, Args... args) {
     Interval ss = FMA(i, i, SumSquares(args...));
     return Interval(std::max<Float>(0, ss.LowerBound()), ss.UpperBound());
 }
+#endif
+
 
 PBRT_CPU_GPU
 Vector3f EqualAreaSquareToSphere(Point2f p);
@@ -1374,6 +1425,19 @@ PBRT_CPU_GPU inline void initDiag(Float m[N][N], int i, Float v, Args... args) {
 
 }  // namespace
 
+#ifdef PBRT_USES_HCCMATH
+
+template <int N>
+class SquareMatrix : public Math::SquareMatrix<Float, N>
+{
+public:
+    using Base = Math::SquareMatrix<Float, N>;
+    using Base::Base;
+
+
+};
+
+#else
 // SquareMatrix Definition
 template <int N>
 class SquareMatrix {
@@ -1392,7 +1456,7 @@ class SquareMatrix {
     SquareMatrix() {
         for (int i = 0; i < N; ++i)
             for (int j = 0; j < N; ++j)
-                m[i][j] = (i == j) ? 1 : 0;
+                m[i][j] = (i == j) ? static_cast<Float>(1) : static_cast< Float >( 0 );
     }
     PBRT_CPU_GPU
     SquareMatrix(const Float mat[N][N]) {
@@ -1733,6 +1797,8 @@ PBRT_CPU_GPU inline pstd::optional<SquareMatrix<4>> Inverse(const SquareMatrix<4
 extern template class SquareMatrix<2>;
 extern template class SquareMatrix<3>;
 extern template class SquareMatrix<4>;
+
+#endif
 
 }  // namespace pbrt
 

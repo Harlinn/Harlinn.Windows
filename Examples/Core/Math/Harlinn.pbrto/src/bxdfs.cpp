@@ -184,7 +184,11 @@ PBRT_CPU_GPU SampledSpectrum DielectricBxDF::f(Vector3f wo, Vector3f wi, Transpo
     CHECK_RARE(1e-5f, LengthSquared(wm) == 0);
     if (cosTheta_i == 0 || cosTheta_o == 0 || LengthSquared(wm) == 0)
         return {};
+#ifdef PBRT_USES_HCCMATH
+    wm = FaceForward( Normal3f(Normalize( wm )), Normal3f( 0, 0, 1 ) );
+#else
     wm = FaceForward(Normalize(wm), Normal3f(0, 0, 1));
+#endif
 
     // Discard backfacing microfacets
     if (Dot(wm, wi) * cosTheta_i < 0 || Dot(wm, wo) * cosTheta_o < 0)
@@ -224,8 +228,11 @@ PBRT_CPU_GPU Float DielectricBxDF::PDF(Vector3f wo, Vector3f wi, TransportMode m
     CHECK_RARE(1e-5f, LengthSquared(wm) == 0);
     if (cosTheta_i == 0 || cosTheta_o == 0 || LengthSquared(wm) == 0)
         return {};
+#ifdef PBRT_USES_HCCMATH
+    wm = FaceForward( Normal3f( Normalize( wm ) ), Normal3f( 0, 0, 1 ) );
+#else
     wm = FaceForward(Normalize(wm), Normal3f(0, 0, 1));
-
+#endif
     // Discard backfacing microfacets
     if (Dot(wm, wi) * cosTheta_i < 0 || Dot(wm, wo) * cosTheta_o < 0)
         return {};

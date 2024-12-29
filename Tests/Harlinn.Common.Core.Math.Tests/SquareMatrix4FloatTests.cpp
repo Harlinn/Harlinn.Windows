@@ -67,6 +67,24 @@ namespace
         return true;
     }
 
+    inline bool Equal( const pbrt::SquareMatrix<4>& m1, const pbrt::SquareMatrix<4>& m2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 4; i++ )
+        {
+            for ( size_t j = 0; j < 4; j++ )
+            {
+                auto v1 = m1[ i ][ j ];
+                float v2 = m2[ i ][ j ];
+                auto delta = v1 - v2;
+                if ( std::abs( delta ) > epsilon )
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
 
 BOOST_FIXTURE_TEST_SUITE( SquareMatrix4FloatTests, LocalFixture )
@@ -91,6 +109,31 @@ BOOST_AUTO_TEST_CASE( InverseTest1 )
 
     BOOST_CHECK( equal );
 }
+
+// --run_test=SquareMatrix4FloatTests/PbrtInverseTest1
+BOOST_AUTO_TEST_CASE( PbrtInverseTest1 )
+{
+    pbrt::SquareMatrix<4> matrix( 0.285714f, 0.857143f, -0.428571f, 0.0f,
+        -0.857143f, 0.428571f, 0.285714f, 0.0f,
+        0.428571f, 0.285714f, 0.857143f, 0.0f,
+        1.0f, 2.0f, 3.0f, 1.0f );
+
+    pbrt::SquareMatrix<4> expected( 0.285714f, -0.857143f, 0.428571f, 0.0f,
+        0.857143f, 0.428571f, 0.285714f, 0.0f,
+        -0.428571f, 0.285714f, 0.857143f, 0.0f,
+        -0.714286f, -0.857143f, -3.57143f, 1.0f );
+
+    auto inverse = pbrt::Inverse( matrix );
+
+    BOOST_CHECK( inverse.has_value( ) );
+
+    pbrt::SquareMatrix<4> inverseMatrix = inverse.value( );
+
+    bool equal = Equal( inverseMatrix, expected );
+
+    BOOST_CHECK( equal );
+}
+
 
 // --run_test=SquareMatrix4FloatTests/DeterminantTest1
 BOOST_AUTO_TEST_CASE( DeterminantTest1 )

@@ -17,143 +17,441 @@
    limitations under the License.
 */
 
-#include "HCCLib.h"
+#include "HCCInteger.h"
 
 namespace Harlinn::Common::Core::Math
 {
-    template <typename T>
-    struct FractionWidth;
+    namespace Internal
+    {
+        template <typename T>
+        struct FractionWidth;
 
-    template <>
-    struct FractionWidth<float>
-    {
-        static constexpr UInt32 value = 23;
-    };
-    template <>
-    struct FractionWidth<double>
-    {
-        static constexpr UInt32 value = 52;
-    };
-
-
-    template <typename T>
-    struct ExponentWidth;
-    template <>
-    struct ExponentWidth<float>
-    {
-        static constexpr UInt32 value = 8;
-    };
-    template <>
-    struct ExponentWidth<double>
-    {
-        static constexpr UInt32 value = 11;
-    };
-
-    template <typename T>
-    struct ExponentBias;
-    template <>
-    struct ExponentBias<float>
-    {
-        static constexpr UInt32 value = _FBIAS;
-    };
-    template <>
-    struct ExponentBias<double>
-    {
-        static constexpr UInt32 value = _DBIAS;
-    };
-
-    template <typename T>
-    struct InfinityUnsignedValue;
-    template <>
-    struct InfinityUnsignedValue<float>
-    {
-        static constexpr UInt32 value = 0X7F800000UL;
-    };
-    template <>
-    struct InfinityUnsignedValue<double>
-    {
-        static constexpr UInt64 value = 0x7FF0000000000000ULL;
-    };
-
-    template <typename T>
-    struct NegativeInfinityUnsignedValue;
-    template <>
-    struct NegativeInfinityUnsignedValue<float>
-    {
-        static constexpr UInt32 value = 0xFF800000UL;
-    };
-    template <>
-    struct NegativeInfinityUnsignedValue<double>
-    {
-        static constexpr UInt64 value = 0xFFF0000000000000ULL;
-    };
-    template <typename T>
-    struct QuietNaNUnsignedValue;
-    template <>
-    struct QuietNaNUnsignedValue<float>
-    {
-        static constexpr UInt32 value = 0XFFC00001UL;
-    };
-    template <>
-    struct QuietNaNUnsignedValue<double>
-    {
-        static constexpr UInt64 value = 0x7FF0000000000001ULL;
-    };
+        template <>
+        struct FractionWidth<float>
+        {
+            static constexpr UInt32 value = 23;
+        };
+        template <>
+        struct FractionWidth<double>
+        {
+            static constexpr UInt32 value = 52;
+        };
 
 
+        template <typename T>
+        struct ExponentWidth;
+        template <>
+        struct ExponentWidth<float>
+        {
+            static constexpr UInt32 value = 8;
+        };
+        template <>
+        struct ExponentWidth<double>
+        {
+            static constexpr UInt32 value = 11;
+        };
+
+        template <typename T>
+        struct ExponentBias;
+        template <>
+        struct ExponentBias<float>
+        {
+            static constexpr UInt32 value = _FBIAS;
+        };
+        template <>
+        struct ExponentBias<double>
+        {
+            static constexpr UInt32 value = _DBIAS;
+        };
+
+        template <typename T>
+        struct InfinityUnsignedValue;
+        template <>
+        struct InfinityUnsignedValue<float>
+        {
+            static constexpr UInt32 value = 0X7F800000UL;
+        };
+        template <>
+        struct InfinityUnsignedValue<double>
+        {
+            static constexpr UInt64 value = 0x7FF0000000000000ULL;
+        };
+
+        template <typename T>
+        struct NegativeInfinityUnsignedValue;
+        template <>
+        struct NegativeInfinityUnsignedValue<float>
+        {
+            static constexpr UInt32 value = 0xFF800000UL;
+        };
+        template <>
+        struct NegativeInfinityUnsignedValue<double>
+        {
+            static constexpr UInt64 value = 0xFFF0000000000000ULL;
+        };
+        template <typename T>
+        struct QuietNaNUnsignedValue;
+        template <>
+        struct QuietNaNUnsignedValue<float>
+        {
+            static constexpr UInt32 value = 0XFFC00001UL;
+        };
+        template <>
+        struct QuietNaNUnsignedValue<double>
+        {
+            static constexpr UInt64 value = 0x7FF0000000000001ULL;
+        };
+
+
+        template <typename T>
+        struct StorageType;
+        template <>
+        struct StorageType<float>
+        {
+            using type = UInt32;
+        };
+        template <>
+        struct StorageType<double>
+        {
+            using type = UInt64;
+        };
+
+        template <typename T>
+            requires( sizeof( T ) > sizeof( void* ) )
+        inline constexpr T MultiplyAdd( const T& x, const T& y, const T& z )
+        {
+            if ( std::is_constant_evaluated( ) )
+            {
+                return x * y + z;
+            }
+            else
+            {
+                return std::fma( x, y, z );
+            }
+        }
+
+        template <typename T>
+            requires ( sizeof( T ) <= sizeof( void* ) )
+        inline constexpr T MultiplyAdd( T x, T y, T z )
+        {
+            if ( std::is_constant_evaluated( ) )
+            {
+                return x * y + z;
+            }
+            else
+            {
+                return std::fma( x, y, z );
+            }
+        }
+
+        template <typename T>
+            requires ( sizeof( T ) > sizeof( void* ) )
+        inline constexpr T PolyEval( const T&, const T& a0 )
+        {
+            return a0;
+        }
+
+        template <typename T>
+            requires ( sizeof( T ) <= sizeof( void* ) )
+        inline constexpr T PolyEval( T, T a0 )
+        {
+            return a0;
+        }
+
+        template <typename T, typename... Ts>
+            requires ( sizeof( T ) > sizeof( void* ) )
+        inline constexpr T PolyEval( const T& x, const T& a0, const Ts &...a )
+        {
+            return MultiplyAdd( x, PolyEval( x, a... ), a0 );
+        }
+
+        template <typename T, typename... Ts>
+            requires ( sizeof( T ) <= sizeof( void* ) )
+        inline constexpr T PolyEval( T x, T a0, Ts... a )
+        {
+            return MultiplyAdd( x, PolyEval( x, a... ), a0 );
+        }
+
+
+    }
+
+    /// <summary>
+    /// Holds the value of the exponent part of a floating point value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Floating point type
+    /// </typeparam>
+    template<typename T>
+    class Exponent : public Integer<Int32>
+    {
+    public:
+        using FloatType = T;
+        using Base = Integer<Int32>;
+        static constexpr Int32 Bias = static_cast< Int32 >(Internal::ExponentBias<FloatType>::value);
+
+        using Base::Base;
+
+        static constexpr Exponent SubNormal( ) noexcept
+        {
+            return Exponent( -Bias );
+        }
+        static constexpr Exponent Min( )
+        { 
+            return Exponent( 1 - Bias );
+        }
+        static constexpr Exponent Zero( )
+        { 
+            return Exponent( 0 ); 
+        }
+        static constexpr Exponent Max( )
+        { 
+            return Exponent( Bias );
+        }
+        static constexpr Exponent Inf( )
+        { 
+            return Exponent( Bias + 1 );
+        }
+    };
+
+    /// <summary>
+    /// Holds the value of the biased exponent part of a floating point value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Floating point type
+    /// </typeparam>
+    template<typename T>
+    class BiasedExponent : public Integer<Int32>
+    {
+    public:
+        using FloatType = T;
+        using Base = Integer<Int32>;
+        static constexpr Int32 Bias = static_cast< Int32 >( Internal::ExponentBias<FloatType>::value );
+
+        using Base::Base;
+
+        constexpr BiasedExponent( Exponent<FloatType> exp ) noexcept
+            : Base( static_cast< Int32 >( exp ) + Bias )
+        {
+        }
+
+        // Cast operator to get convert from BiasedExponent to Exponent.
+        constexpr operator Exponent<FloatType>( ) const noexcept
+        {
+            return Exponent<FloatType>( Base::value_ - Bias );
+        }
+
+        constexpr BiasedExponent& operator++( ) noexcept
+        {
+            assert( *this != BiasedExponent( Exponent::inf( ) ) );
+            ++Base::value_;
+            return *this;
+        }
+
+        constexpr BiasedExponent operator++( int ) noexcept
+        {
+            assert( *this != BiasedExponent( Exponent::inf( ) ) );
+            BiasedExponent result = *this;
+            ++Base::value_;
+            return result;
+        }
+
+        constexpr BiasedExponent& operator--( ) noexcept
+        {
+            assert( *this != BiasedExponent( Exponent::subnormal( ) ) );
+            --Base::value_;
+            return *this;
+        }
+
+        constexpr BiasedExponent operator--( int ) noexcept
+        {
+            assert( *this != BiasedExponent( Exponent::subnormal( ) ) );
+            BiasedExponent result = *this;
+            --Base::value_;
+            return result;
+        }
+    };
+
+    /// <summary>
+    /// Holds the value of the significand part of a floating point value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Floating point type
+    /// </typeparam>
+    template<typename T>
+    class Significand : public Integer<typename Internal::StorageType<T>::type>
+    {
+    public:
+        using Base = Integer<typename Internal::StorageType<T>::type>;
+        using FloatType = T;
+        using StorageType = typename Internal::StorageType<T>::type;
+        using Base::Base;
+
+        static constexpr StorageType BitMask = FractionMask<FloatType, StorageType>;
+        static constexpr Int32 BitWidth = static_cast< Int32 >( Internal::FractionWidth<FloatType>::value );
+
+        static constexpr Significand Zero( )
+        {
+            return Significand( static_cast<StorageType>( 0 ) );
+        }
+        static constexpr Significand LSB( )
+        {
+            return Significand( static_cast< StorageType >( 1 ) );
+        }
+        static constexpr Significand MSB( )
+        {
+            return Significand( static_cast< StorageType >( 1 ) << ( BitWidth - 1 ) );
+        }
+        static constexpr Significand Mask( )
+        {
+            return Significand( BitMask );
+        }
+
+    };
+
+
+    /// <summary>
+    /// A template for encoding and decoding 
+    /// floating point values.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Floating point type
+    /// </typeparam>
     template<typename T>
     struct FloatingPoint
     {
-        using ValueType = std::remove_cvref_t<T>;
+        using value_type = std::remove_cvref_t<T>;
+        using ValueType = value_type;
+
+        using ExponentType = Math::Exponent<ValueType>;
+        using BiasedExponentType = Math::BiasedExponent<ValueType>;
+        using SignificandType = Math::Significand<ValueType>;
+
+        using StorageType = typename Internal::StorageType<value_type>::type;
+        
         using UIntType = MakeUnsigned<ValueType>;
         using IntType = std::make_signed_t<UIntType>;
 
-        static constexpr Int32 FractionWidth = static_cast< Int32 >( FractionWidth<ValueType>::value );
-        static constexpr Int32 ExponentWidth = static_cast< Int32 >( ExponentWidth<ValueType>::value );
+        static constexpr Int32 SignWidth = 1;
+        static constexpr Int32 FractionWidth = static_cast< Int32 >( Internal::FractionWidth<ValueType>::value );
+        static constexpr Int32 SignificandWidth = FractionWidth;
+        static constexpr Int32 ExponentWidth = static_cast< Int32 >( Internal::ExponentWidth<ValueType>::value );
+        static constexpr Int32 TotalWidth = SignWidth + ExponentWidth + FractionWidth;
+        static constexpr Int32 StorageWidth = sizeof( StorageType ) * CHAR_BIT;
 
         static constexpr Int32 ExponentBias = ( 1 << ( ExponentWidth - 1 ) ) - 1;
 
         static constexpr Int32 MaxExponentValue = ( 1 << ExponentWidth ) - 1;
 
-        static constexpr UIntType MaxExponent = static_cast< UIntType >( MaxExponentValue ) << FractionWidth;
+        static constexpr StorageType MaxExponent = static_cast< UIntType >( MaxExponentValue ) << FractionWidth;
 
-        static constexpr UIntType MinSubnormal = UIntType( 1 );
-        static constexpr UIntType MaxSubnormal = ( UIntType( 1 ) << FractionWidth ) - 1;
-        static constexpr UIntType MinNormal = ( UIntType( 1 ) << FractionWidth );
-        static constexpr UIntType MaxNormal = ( ( UIntType( MaxExponentValue ) - 1 ) << FractionWidth ) | MaxSubnormal;
+        static constexpr StorageType FractionMask = FractionMask<ValueType, UIntType>;
+        static constexpr StorageType SignificandMask = FractionMask;
+        static constexpr StorageType ExponentMask = ExponentMask<ValueType, UIntType>;
+        static constexpr StorageType ExponentFractionMask = FractionMask | ExponentMask;
+        static constexpr StorageType SignMask = ~( FractionMask | ExponentMask );
+        static constexpr StorageType ExponentSignMask = ExponentMask | SignMask;
 
-        static constexpr UIntType FractionMask = FractionMask<ValueType, UIntType>;
-        static constexpr UIntType ExponentMask = ExponentMask<ValueType, UIntType>;
-        static constexpr UIntType SignMask = ~( FractionMask | ExponentMask );
+        static constexpr StorageType InfinityValue = Internal::InfinityUnsignedValue<ValueType>::value;
+        static constexpr StorageType NegativeInfinityValue = Internal::NegativeInfinityUnsignedValue<ValueType>::value;
+        static constexpr StorageType QuietNaNValue = Internal::QuietNaNUnsignedValue<ValueType>::value;
+        static constexpr StorageType ZeroValue = static_cast< UIntType >( 0 );
+        static constexpr StorageType NegativeZeroValue = SignMask;
 
-        static constexpr UIntType InfinityValue = InfinityUnsignedValue<ValueType>::value;
-        static constexpr UIntType NegativeInfinityValue = NegativeInfinityUnsignedValue<ValueType>::value;
-        static constexpr UIntType QuietNaNValue = QuietNaNUnsignedValue<ValueType>::value;
-        static constexpr UIntType ZeroValue = static_cast< UIntType >( 0 );
-        static constexpr UIntType NegativeZeroValue = SignMask;
-
-        UIntType value_;
+        StorageType value_;
 
         constexpr FloatingPoint( ) noexcept
-            : value_( std::bit_cast< UIntType >( static_cast< ValueType >( 0.0 ) ) )
+            : value_( std::bit_cast< StorageType >( static_cast< ValueType >( 0.0 ) ) )
         {
         }
 
         constexpr explicit FloatingPoint( ValueType value ) noexcept
-            : value_( std::bit_cast< UIntType >( value ) )
+            : value_( std::bit_cast< StorageType >( value ) )
         {
         }
 
-        constexpr explicit FloatingPoint( UIntType value, bool ) noexcept
+        constexpr explicit FloatingPoint( StorageType value ) noexcept
             : value_( value )
         {
         }
 
-        constexpr explicit FloatingPoint( UIntType fraction, Int32 exponent, bool sign ) noexcept
-            : value_( ( fraction& FractionMask ) |
+        constexpr explicit FloatingPoint( StorageType fraction, Int32 exponent, bool sign ) noexcept
+            : value_( ( fraction & FractionMask ) |
                 ( ( static_cast< UIntType >( exponent ) << FractionWidth ) & ExponentMask ) |
                 ( sign ? SignMask : 0 ) )
         {
+        }
+
+        /// Merges bits from 'first' and 'second' values according to 'mask'.
+        /// Use 'first' bits when corresponding 'mask' bits are clear and 'second' bits when
+        /// corresponding bits are set.
+        static constexpr StorageType MaskedMerge( StorageType first, StorageType second, StorageType mask )
+        {
+            // https://graphics.stanford.edu/~seander/bithacks.html#MaskedMerge
+            return first ^ ( ( first ^ second ) & mask );
+        }
+
+
+
+
+        static constexpr StorageType Encode( BiasedExponent<value_type> exp )
+        {
+            return ( static_cast< StorageType >( exp.Value( )) << SignificandWidth ) & ExponentMask;
+        }
+
+        static constexpr StorageType Encode( Significand<value_type> value )
+        {
+            return static_cast< StorageType >( value.Value( ) ) & SignificandMask;
+        }
+
+        static constexpr StorageType Encode( BiasedExponent<value_type> exp, Significand<value_type> sig )
+        {
+            return Encode( exp ) | Encode( sig );
+        }
+
+        static constexpr StorageType Encode( Sign sign, BiasedExponent<value_type> exp, Significand<value_type> sig )
+        {
+            if ( sign.IsNegative( ) )
+            {
+                return SignMask | Encode( exp, sig );
+            }
+            return Encode( exp, sig );
+        }
+
+        static constexpr FloatingPoint CreateValue( Core::Sign sign, StorageType biasedExp, StorageType mantissa )
+        {
+            return FloatingPoint( Encode( sign, BiasedExponentType( static_cast< uint32_t >( biasedExp ) ), SignificandType( mantissa ) ) );
+        }
+
+        // The function converts integer number and unbiased exponent to proper
+        // float T type:
+        //   Result = number * 2^(ep+1 - exponent_bias)
+        // Be careful!
+        //   1) "ep" is the raw exponent value.
+        //   2) The function adds +1 to ep for seamless normalized to denormalized
+        //      transition.
+        //   3) The function does not check exponent high limit.
+        //   4) "number" zero value is not processed correctly.
+        //   5) Number is unsigned, so the result can be only positive.
+        static constexpr FloatingPoint MakeValue( StorageType number, int ep )
+        {
+            FloatingPoint result( 0 );
+            int lz = FractionWidth + 1 - ( StorageWidth - std::countl_zero( number ) );
+
+            number <<= lz;
+            ep -= lz;
+
+            
+            if ( ep >= 0 ) [[likely]]
+            {
+                // Implicit number bit will be removed by mask
+                result.SetSignificand( number );
+                result.setBiasedExponent( static_cast< StorageType >( ep + 1 ) );
+            }
+            else
+            {
+                result.SetSignificand( number >> -ep );
+            }
+            return result;
         }
 
 
@@ -163,7 +461,11 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        constexpr bool Sign( ) const noexcept
+        constexpr Core::Sign Sign( ) const noexcept
+        {
+            return Core::Sign( value_ & SignMask );
+        }
+        constexpr bool Signed( ) const noexcept
         {
             return value_ & SignMask;
         }
@@ -178,38 +480,107 @@ namespace Harlinn::Common::Core::Math
                 value_ &= ~SignMask;
             }
         }
+        constexpr void SetSign( Core::Sign sign ) noexcept
+        {
+            SetSign( sign.IsSigned( ) );
+        }
 
-        constexpr Int32 Exponent( ) const noexcept
+
+        constexpr Int32 ExponentValue( ) const noexcept
         {
             return static_cast< Int32 >( ( value_ & ExponentMask ) >> FractionWidth ) - ExponentBias;
         }
-    private:
-        constexpr void SetExponent( UIntType value ) noexcept
+
+        constexpr Math::Exponent<value_type> Exponent( ) const noexcept
         {
-            value_ = ( value << FractionWidth ) & ExponentMask;
+            return Math::Exponent( ExponentValue( ) );
         }
-    public:
-        constexpr UIntType Fraction( ) const noexcept
+    
+        constexpr void SetExponent( Int32 value ) noexcept
+        {
+            value_ = (  static_cast<StorageType>(std::bit_cast<UInt32>(value)) << FractionWidth ) & ExponentMask;
+        }
+        constexpr void SetExponent( Math::Exponent<value_type> value ) noexcept
+        {
+            value_ = ( static_cast< StorageType >( std::bit_cast< UInt32 >( value.Value() ) ) << FractionWidth ) & ExponentMask;
+        }
+
+
+        constexpr Math::BiasedExponent<value_type> BiasedExponent( ) const
+        {
+            return BiasedExponent( static_cast< uint32_t >( ExponentValue( ) >> SignificandWidth ) );
+        }
+        constexpr void SetBiasedExponent( Math::BiasedExponent<value_type> biased )
+        {
+            value_ = MaskedMerge( value_, Encode( biased ), ExponentMask );
+        }
+
+    
+        constexpr StorageType FractionValue( ) const noexcept
         {
             return value_ & FractionMask;
         }
-    private:
-        constexpr void SetFraction( UIntType value ) noexcept
+        constexpr StorageType SignificandValue( ) const noexcept
+        {
+            return value_ & FractionMask;
+        }
+        constexpr StorageType MantissaValue( ) const noexcept
+        {
+            return value_ & FractionMask;
+        }
+        constexpr Math::Significand<value_type> Fraction( ) const noexcept
+        {
+            return Math::Significand<value_type>( value_ & FractionMask );
+        }
+        constexpr Math::Significand<value_type> Significand( ) const noexcept
+        {
+            return Math::Significand<value_type>( value_ & FractionMask );
+        }
+        constexpr Math::Significand<value_type> Mantissa( ) const noexcept
+        {
+            return Math::Significand<value_type>( value_ & FractionMask );
+        }
+
+    
+        constexpr void SetFraction( StorageType value ) noexcept
         {
             value_ = value & FractionMask;
         }
-    public:
+        constexpr void SetFraction( Math::Significand<value_type> value ) noexcept
+        {
+            value_ = value.value() & FractionMask;
+        }
+        constexpr void SetSignificand( StorageType value ) noexcept
+        {
+            value_ = value & FractionMask;
+        }
+        constexpr void SetSignificand( Math::Significand<value_type> value ) noexcept
+        {
+            value_ = value.value( ) & FractionMask;
+        }
+        constexpr void SetMantissa( StorageType value ) noexcept
+        {
+            value_ = value & FractionMask;
+        }
+        constexpr void SetMantissa( Math::Significand<value_type> value ) noexcept
+        {
+            value_ = value.value( ) & FractionMask;
+        }
+    
+
+        constexpr StorageType ExponentFractionValue( ) const noexcept
+        {
+            return value_ & ExponentFractionMask;
+        }
+        constexpr StorageType ExponentSignificandValue( ) const noexcept
+        {
+            return value_ & ExponentFractionMask;
+        }
 
         // returns true for +/- 0
         constexpr bool IsZero( ) const noexcept
         {
             return ( value_ & ( ExponentMask | FractionMask ) ) == 0;
-        }
-
-        // returns true for +/- Inf
-        constexpr bool IsInf( ) const noexcept
-        {
-            return ( value_ & FractionMask ) == 0 && ( ( value_ & ExponentMask ) == MaxExponent );
         }
 
         // returns true for +/- NaN
@@ -218,17 +589,44 @@ namespace Harlinn::Common::Core::Math
             return ( ( value_ & ExponentMask ) == MaxExponent ) && ( ( value_ & FractionMask ) != 0 );
         }
 
+        constexpr bool IsQuietNaN( ) const
+        {
+            return ExponentSignificandValue( ) >= Encode( ExponentType::Inf( ), SignificandType::MSB( ) );
+        }
+
+        constexpr bool IsSignalingNaN( ) const
+        {
+            return IsNaN( ) && IsQuietNaN( ) == false;
+        }
+        constexpr bool IsInf( ) const
+        {
+            return ExponentSignificandValue( ) == Encode( ExponentType::Inf( ), SignificandType::Zero( ) );
+        }
+        constexpr bool IsFinite( ) const
+        {
+            return ExponentValue( ) != Encode( ExponentType::Inf( ) );
+        }
+        constexpr bool IsSubNormal( ) const
+        {
+            return ExponentValue( ) == Encode( ExponentType::SubNormal( ) );
+        }
+        constexpr bool IsNormal( ) const
+        {
+            return IsFinite( ) && IsSubNormal( ) == false;
+        }
+        constexpr FloatingPoint NextTowardInf( ) const
+        {
+            if ( IsFinite( ) )
+            {
+                return FloatingPoint( value_ + static_cast<StorageType>( 1 ) );
+            }
+            return FloatingPoint( value_ );
+        }
+
         // returns true for +/- NaN or +/- Inf
         constexpr bool IsInfOrNaN( ) const noexcept
         {
             return ( value_ & ExponentMask ) == MaxExponent;
-        }
-
-        static constexpr ValueType MakeNaN( UIntType value ) noexcept
-        {
-            UIntType result;
-            result = MaxExponent | ( value & FractionMask );
-            return std::bit_cast< ValueType >( result );
         }
 
         constexpr ValueType AsFloatingPoint( ) const noexcept
@@ -241,39 +639,157 @@ namespace Harlinn::Common::Core::Math
             return value_;
         }
 
-        static constexpr FloatingPoint Zero( ) noexcept
+        static constexpr FloatingPoint Zero( Core::Sign sign = Core::Sign::Positive ) noexcept
         {
-            return FloatingPoint( );
+            return FloatingPoint( Encode( sign, ExponentType::SubNormal( ), SignificandType::Zero( ) ) );
         }
 
-        static constexpr FloatingPoint NegZero( ) noexcept
+        static constexpr FloatingPoint One( Core::Sign sign = Core::Sign::Positive ) noexcept
         {
-            FloatingPoint result;
-            result.value_ = SignMask;
-            return result;
+            return FloatingPoint( Encode( sign, ExponentType::Zero( ), SignificandType::Zero( ) ) );
         }
 
-        static constexpr FloatingPoint Inf( ) noexcept
+        static constexpr FloatingPoint MinSubNormal( Core::Sign sign = Core::Sign::Positive ) noexcept
         {
-            FloatingPoint result;
-            result.value_ = MaxExponent;
-            return result;
+            return FloatingPoint( Encode( sign, ExponentType::SubNormal( ), SignificandType::LSB( ) ) );
+        }
+        static constexpr FloatingPoint MaxSubNormal( Core::Sign sign = Core::Sign::Positive ) noexcept
+        {
+            return FloatingPoint( Encode( sign, ExponentType::SubNormal( ), SignificandType::Mask( ) ) );
+        }
+        static constexpr FloatingPoint MinNormal( Core::Sign sign = Core::Sign::Positive ) noexcept
+        {
+            return FloatingPoint( Encode( sign, ExponentType::Min( ), SignificandType::Zero( ) ) );
+        }
+        static constexpr FloatingPoint MaxNormal( Core::Sign sign = Core::Sign::Positive ) noexcept
+        {
+            return FloatingPoint( Encode( sign, ExponentType::Max( ), SignificandType::Mask( ) ) );
         }
 
-        static constexpr FloatingPoint NegInf( ) noexcept
+        static constexpr FloatingPoint Inf( Core::Sign sign = Core::Sign::Positive ) noexcept
         {
-            FloatingPoint result;
-            result.value_ = MaxExponent | SignMask;
-            return result;
+            return FloatingPoint( Encode( sign, ExponentType::Inf( ), SignificandType::zero( ) ) );
         }
+        static constexpr FloatingPoint SignalingNaN( Core::Sign sign = Core::Sign::Positive, StorageType v = 0 ) noexcept
+        {
+            return FloatingPoint( Encode( sign, ExponentType::Inf( ), ( v ? SignificandType( v ) : ( SignificandType::MSB( ) >> 1 ) ) ) );
+        }
+        static constexpr FloatingPoint QuietNaN( Core::Sign sign = Core::Sign::Positive, StorageType v = 0 ) noexcept
+        {
+            return FloatingPoint( Encode( sign, ExponentType::Inf( ), SignificandType::MSB( ) | SignificandType( v ) ) );
+        }
+
+
+        constexpr StorageType ExtractExplicitMantissa( ) const
+        {
+            if ( IsSubNormal( ) )
+            {
+                return SignificandValue( );
+            }
+            return ( StorageType( 1 ) << SignificandWidth ) | SignificandValue( );
+        }
+
+        // If the number is subnormal, the exponent is treated as if it were the
+        // minimum exponent for a normal number. This is to keep continuity between
+        // the normal and subnormal ranges, but it causes problems for functions where
+        // values are calculated from the exponent, since just subtracting the bias
+        // will give a slightly incorrect result. Additionally, zero has an exponent
+        // of zero, and that should actually be treated as zero.
+        constexpr int ExtractExplicitExponent( ) const
+        {
+            ExponentType exponent( BiasedExponent( ) );
+            if ( IsZero( ) )
+            {
+                exponent = ExponentType::zero( );
+            }
+            if ( exponent == ExponentType::SubNormal( ) )
+            {
+                exponent = ExponentType::Min( );
+            }
+            return static_cast< Int32 >( exponent );
+        }
+
+
+        constexpr ValueType Abs( ) const noexcept
+        {
+            return std::bit_cast< ValueType >( value_ & ExponentFractionMask );
+        }
+
+        static constexpr ValueType Abs( ValueType value )
+        {
+            FloatingPoint fp( value );
+            return fp.Abs( );
+        }
+
+        constexpr FloatingPoint Min( FloatingPoint other ) const noexcept
+        {
+            if ( IsNaN( ) )
+            {
+                return other;
+            }
+            if ( other.IsNaN( ) )
+            {
+                return FloatingPoint(value_);
+            }
+            if ( Signed( ) != other.Signed( ) )
+            {
+                return Signed( ) ? FloatingPoint( value_ ) : other;
+            }
+            return std::bit_cast<value_type>( value_ ) < std::bit_cast< value_type >( other ) ? FloatingPoint( value_ ) : other;
+        }
+        constexpr ValueType Min( ValueType other ) const noexcept
+        {
+            FloatingPoint fp( other );
+            std::bit_cast< ValueType >( Min( fp ) );
+        }
+
+        static constexpr ValueType Min( ValueType first, ValueType second ) noexcept
+        {
+            FloatingPoint fpFirst( first );
+            FloatingPoint fpSecond( second );
+            return fpFirst.Min( second );
+        }
+
+        constexpr FloatingPoint Max( FloatingPoint other ) const noexcept
+        {
+            if ( IsNaN( ) )
+            {
+                return other;
+            }
+            if ( other.IsNaN( ) )
+            {
+                return FloatingPoint( value_ );
+            }
+            if ( Signed( ) != other.Signed( ) )
+            {
+                return Signed( ) ? other : FloatingPoint( value_ );
+            }
+            return std::bit_cast< value_type >( value_ ) > std::bit_cast< value_type >( other ) ? FloatingPoint( value_ ) : other;
+        }
+        constexpr ValueType Max( ValueType other ) const noexcept
+        {
+            FloatingPoint fp( other );
+            std::bit_cast< ValueType >( Max( fp ) );
+        }
+
+        static constexpr ValueType Max( ValueType first, ValueType second ) noexcept
+        {
+            FloatingPoint fpFirst( first );
+            FloatingPoint fpSecond( second );
+            return fpFirst.Max( second );
+        }
+
+
+
+
 
         constexpr ValueType Trunc( ) const noexcept
         {
-            if ( !IsInfOrNaN( ) )
+            if ( !IsInfOrNaN( ) ) [[likely]]
             {
-                Int32 exponent = Exponent( );
+                Int32 exponent = ExponentValue( );
 
-                if ( exponent < static_cast< Int32 >( FractionWidth ) )
+                if ( exponent < FractionWidth )
                 {
                     if ( exponent > -1 )
                     {
@@ -286,7 +802,7 @@ namespace Harlinn::Common::Core::Math
                     else
                     {
                         // abs(x) is less than 1, then return 0.
-                        return Sign( ) ? static_cast< ValueType >( -0.0 ) : static_cast< ValueType >( 0.0 );
+                        return Signed( ) ? static_cast< ValueType >( -0.0 ) : static_cast< ValueType >( 0.0 );
                     }
                 }
                 else
@@ -302,81 +818,11 @@ namespace Harlinn::Common::Core::Math
             }
         }
 
-    private:
-        constexpr ValueType FastTrunc( ) const noexcept
+        static constexpr ValueType Trunc( ValueType value )
         {
-            Int32 exponent = Exponent( );
-
-            if ( exponent < static_cast< Int32 >( FractionWidth ) )
-            {
-                if ( exponent > -1 )
-                {
-                    // abs(x) is greater or equal to 1
-                    Int32 trimSize = FractionWidth - exponent;
-
-                    UIntType result = ( value_ & ( SignMask | ExponentMask ) ) | ( ( ( value_ & FractionMask ) >> trimSize ) << trimSize );
-                    return std::bit_cast< ValueType >( result );
-                }
-                else
-                {
-                    // abs(x) is less than 1, then return 0.
-                    return Sign( ) ? static_cast< ValueType >( -0.0 ) : static_cast< ValueType >( 0.0 );
-                }
-            }
-            else
-            {
-                // already an integer
-                return std::bit_cast< ValueType >( value_ );
-            }
+            FloatingPoint<ValueType> fp( value );
+            return fp.Trunc( );
         }
-    public:
-        constexpr ValueType ModF( ValueType& intPart ) noexcept
-        {
-            if ( IsInfOrNaN( ) == false )
-            {
-                Int32 exponent = Exponent( );
-
-                if ( exponent < static_cast< Int32 >( FractionWidth ) )
-                {
-                    if ( exponent > -1 )
-                    {
-                        // abs(x) is greater or equal to 1
-                        Int32 trimSize = FractionWidth - exponent;
-                        UIntType result = ( value_ & ( SignMask | ExponentMask ) ) | ( ( ( value_ & FractionMask ) >> trimSize ) << trimSize );
-                        intPart = std::bit_cast< ValueType >( result );
-                        return std::bit_cast< ValueType >( value_ ) - intPart;
-                    }
-                    else
-                    {
-                        // abs(x) is less than 1, then return 0.
-                        intPart = Sign( ) ? std::bit_cast< ValueType >( NegativeZeroValue ) : std::bit_cast< ValueType >( ZeroValue );
-
-                        return std::bit_cast< ValueType >( value_ );
-                    }
-                }
-                else
-                {
-                    // already an integer
-                    intPart = std::bit_cast< ValueType >( value_ );
-                    return Sign( ) ? std::bit_cast< ValueType >( NegativeZeroValue ) : std::bit_cast< ValueType >( ZeroValue );
-                }
-            }
-            else
-            {
-                intPart = std::bit_cast< ValueType >( value_ );
-                if ( IsInf( ) )
-                {
-                    return Sign( ) ? std::bit_cast< ValueType >( NegativeZeroValue ) : std::bit_cast< ValueType >( ZeroValue );
-                }
-                else
-                {
-                    return intPart;
-                }
-            }
-        }
-
-
-
 
         constexpr ValueType Ceil( ) const noexcept
         {
@@ -385,7 +831,7 @@ namespace Harlinn::Common::Core::Math
                 return std::bit_cast< ValueType >( value_ );
             }
 
-            Int32 exponent = Exponent( );
+            Int32 exponent = ExponentValue( );
 
             // is this already an integer?
             if ( exponent >= static_cast< Int32 >( FractionWidth ) )
@@ -396,7 +842,7 @@ namespace Harlinn::Common::Core::Math
             // If abs(x) is less than 1
             if ( exponent <= -1 )
             {
-                return Sign( ) ? ValueType( -0.0 ) : ValueType( 1.0 );
+                return Signed( ) ? ValueType( -0.0 ) : ValueType( 1.0 );
             }
 
             Int32 trimSize = FractionWidth - exponent;
@@ -408,14 +854,20 @@ namespace Harlinn::Common::Core::Math
                 return std::bit_cast< ValueType >( value_ );
             }
             // If negative, the ceil operation is equivalent to the trunc operation.
-            return Sign( ) ? std::bit_cast< ValueType >( result ) : std::bit_cast< ValueType >( result ) + static_cast< ValueType >( 1.0 );
+            return Signed( ) ? std::bit_cast< ValueType >( result ) : std::bit_cast< ValueType >( result ) + static_cast< ValueType >( 1.0 );
+        }
+
+        static constexpr ValueType Ceil( ValueType value )
+        {
+            FloatingPoint<ValueType> fp( value );
+            return fp.Ceil( );
         }
 
         constexpr ValueType Floor( ) const noexcept
         {
-            if ( Sign( ) )
+            if ( Signed( ) )
             {
-                FloatingPoint tmp( value_ & ( ExponentMask | FractionMask ), true );
+                FloatingPoint tmp( value_ & ( ExponentMask | FractionMask ) );
                 return -tmp.Ceil( );
             }
             else
@@ -424,6 +876,11 @@ namespace Harlinn::Common::Core::Math
             }
         }
 
+        static constexpr ValueType Floor( ValueType value )
+        {
+            FloatingPoint<ValueType> fp( value );
+            return fp.Floor( );
+        }
 
         constexpr ValueType Round( ) const noexcept
         {
@@ -433,18 +890,18 @@ namespace Harlinn::Common::Core::Math
                 return std::bit_cast< ValueType >( value_ );
             }
 
-            int exponent = Exponent( );
+            int exponent = ExponentValue( );
 
             // If the exponent is greater than the most negative 
             // exponent, then this is already an integer.
-            if ( exponent >= static_cast< int >( FractionWidth ) )
+            if ( exponent >= FractionWidth )
             {
                 return std::bit_cast< ValueType >( value_ );
             }
 
             if ( exponent == -1 )
             {
-                bool isNegative = Sign( );
+                bool isNegative = Signed( );
                 // Absolute value is greater than equal to 0.5 but less than 1.
                 if ( isNegative )
                 {
@@ -458,7 +915,7 @@ namespace Harlinn::Common::Core::Math
 
             if ( exponent <= -2 )
             {
-                bool isNegative = Sign( );
+                bool isNegative = Signed( );
                 // Absolute value is less than 0.5.
                 if ( isNegative )
                 {
@@ -490,11 +947,69 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
-                bool isNegative = Sign( );
+                bool isNegative = Signed( );
                 return isNegative ?
                     std::bit_cast< ValueType >( result ) - static_cast< ValueType >( 1.0 ) :
                     std::bit_cast< ValueType >( result ) + static_cast< ValueType >( 1.0 );
             }
+        }
+
+        static constexpr ValueType Round( ValueType value )
+        {
+            FloatingPoint<ValueType> fp( value );
+            return fp.Round( );
+        }
+
+        constexpr ValueType ModF( ValueType& intPart ) noexcept
+        {
+            if ( IsInfOrNaN( ) == false )
+            {
+                Int32 exponent = ExponentValue( );
+
+                if ( exponent < static_cast< Int32 >( FractionWidth ) )
+                {
+                    if ( exponent > -1 )
+                    {
+                        // abs(x) is greater or equal to 1
+                        Int32 trimSize = FractionWidth - exponent;
+                        UIntType result = ( value_ & ( SignMask | ExponentMask ) ) | ( ( ( value_ & FractionMask ) >> trimSize ) << trimSize );
+                        intPart = std::bit_cast< ValueType >( result );
+                        return std::bit_cast< ValueType >( value_ ) - intPart;
+                    }
+                    else
+                    {
+                        // abs(x) is less than 1, then return 0.
+                        intPart = Signed( ) ? std::bit_cast< ValueType >( NegativeZeroValue ) : std::bit_cast< ValueType >( ZeroValue );
+
+                        return std::bit_cast< ValueType >( value_ );
+                    }
+                }
+                else
+                {
+                    // already an integer
+                    intPart = std::bit_cast< ValueType >( value_ );
+                    return Signed( ) ? std::bit_cast< ValueType >( NegativeZeroValue ) : std::bit_cast< ValueType >( ZeroValue );
+                }
+            }
+            else
+            {
+                intPart = std::bit_cast< ValueType >( value_ );
+                if ( IsInf( ) )
+                {
+                    return Signed( ) ? std::bit_cast< ValueType >( NegativeZeroValue ) : std::bit_cast< ValueType >( ZeroValue );
+                }
+                else
+                {
+                    return intPart;
+                }
+            }
+        }
+
+
+        constexpr static ValueType ModF( ValueType value, ValueType& intPart ) noexcept
+        {
+            FloatingPoint fp( value );
+            return fp.ModF( intPart );
         }
     };
 
@@ -553,22 +1068,22 @@ namespace Harlinn::Common::Core::Math
         }
 
         constexpr explicit NormalizedFloat( FloatingPoint floatingPoint ) noexcept
-            : exponent_( 0 ), fraction_( 0 ), sign_( floatingPoint.Sign( ) )
+            : exponent_( 0 ), fraction_( 0 ), sign_( floatingPoint.Signed( ) )
         {
             if ( floatingPoint.IsInfOrNaN( ) == false && floatingPoint.IsZero( ) == false )
             {
                 if ( ( floatingPoint.value_ & ExponentMask ) == 0 )
                 {
                     // Normalize subnormal numbers.
-                    fraction_ = floatingPoint.Fraction( );
+                    fraction_ = floatingPoint.FractionValue( );
                     auto normalizationShift = NormalizationShift( fraction_ );
                     fraction_ <<= normalizationShift;
                     exponent_ = 1 - ExponentBias - normalizationShift;
                 }
                 else
                 {
-                    exponent_ = floatingPoint.Exponent( );
-                    fraction_ = floatingPoint.Fraction( );
+                    exponent_ = floatingPoint.ExponentValue( );
+                    fraction_ = floatingPoint.FractionValue( );
                 }
             }
         }

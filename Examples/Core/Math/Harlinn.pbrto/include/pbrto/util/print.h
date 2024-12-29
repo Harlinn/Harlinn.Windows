@@ -35,6 +35,9 @@ namespace pbrt {
 
 // helpers, fwiw
 template <typename T>
+#ifdef PBRT_USES_HCCMATH
+    requires (Math::Internal::TupleType<T> == false)
+#endif
 static auto operator<<(std::ostream &os, const T &v) -> decltype(v.ToString(), os) {
     return os << v.ToString();
 }

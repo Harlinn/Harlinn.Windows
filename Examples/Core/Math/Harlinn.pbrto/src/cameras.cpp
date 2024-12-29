@@ -172,10 +172,18 @@ void CameraBase::FindMinimumDifferentials(Camera camera) {
             continue;
 
         RayDifferential &ray = crd->ray;
+#ifdef PBRT_USES_HCCMATH
+        Vector3f dox = CameraFromRender(Point3f( ray.rxOrigin - ray.o ), ray.time );
+#else
         Vector3f dox = CameraFromRender(ray.rxOrigin - ray.o, ray.time);
+#endif
         if (Length(dox) < Length(minPosDifferentialX))
             minPosDifferentialX = dox;
+#ifdef PBRT_USES_HCCMATH
+        Vector3f doy = CameraFromRender( Point3f( ray.ryOrigin - ray.o ), ray.time );
+#else
         Vector3f doy = CameraFromRender(ray.ryOrigin - ray.o, ray.time);
+#endif
         if (Length(doy) < Length(minPosDifferentialY))
             minPosDifferentialY = doy;
 
@@ -187,11 +195,17 @@ void CameraBase::FindMinimumDifferentials(Camera camera) {
         Vector3f df = f.ToLocal(ray.d);  // should be (0, 0, 1);
         Vector3f dxf = Normalize(f.ToLocal(ray.rxDirection));
         Vector3f dyf = Normalize(f.ToLocal(ray.ryDirection));
-
+#ifdef PBRT_USES_HCCMATH
+        if ( ScalarLength( dxf - df ) < ScalarLength( minDirDifferentialX ) )
+            minDirDifferentialX = dxf - df;
+        if ( ScalarLength( dyf - df ) < ScalarLength( minDirDifferentialY ) )
+            minDirDifferentialY = dyf - df;
+#else
         if (Length(dxf - df) < Length(minDirDifferentialX))
             minDirDifferentialX = dxf - df;
         if (Length(dyf - df) < Length(minDirDifferentialY))
             minDirDifferentialY = dyf - df;
+#endif
     }
 
     LOG_VERBOSE("Camera min pos differentials: %s, %s", minPosDifferentialX,
@@ -964,7 +978,11 @@ PBRT_CPU_GPU pstd::optional<CameraRay> RealisticCamera::GenerateRay(CameraSample
     ray.d = Normalize(ray.d);
 
     // Compute weighting for _RealisticCamera_ ray
+#ifdef PBRT_USES_HCCMATH
+    Float cosTheta = Normal3f(Normalize( rFilm.d )).z;
+#else
     Float cosTheta = Normalize(rFilm.d).z;
+#endif
     weight *= Pow<4>(cosTheta) / (eps->pdf * Sqr(LensRearZ()));
 
     return CameraRay{ray, SampledSpectrum(weight)};

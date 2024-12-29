@@ -205,6 +205,9 @@ inline double BitsToFloat(uint64_t ui)
 PBRT_CPU_GPU
 inline float NextFloatUp(float v) 
 {
+#ifdef PBRT_USES_HCCMATH
+    return Math::NextUp( v );
+#else
     // Handle infinity and negative zero for _NextFloatUp()_
     if (IsInf(v) && v > 0.f)
         return v;
@@ -218,11 +221,15 @@ inline float NextFloatUp(float v)
     else
         --ui;
     return BitsToFloat(ui);
+#endif
 }
 
 PBRT_CPU_GPU
 inline float NextFloatDown(float v) 
 {
+#ifdef PBRT_USES_HCCMATH
+    return Math::NextDown( v );
+#else
     // Handle infinity and positive zero for _NextFloatDown()_
     if (IsInf(v) && v < 0.)
         return v;
@@ -234,6 +241,7 @@ inline float NextFloatDown(float v)
     else
         ++ui;
     return BitsToFloat(ui);
+#endif
 }
 
 inline constexpr Float gamma(int n) 
@@ -390,6 +398,9 @@ inline PBRT_CPU_GPU Float FMARoundDown(Float a, Float b, Float c)
 PBRT_CPU_GPU
 inline double NextFloatUp(double v) 
 {
+#ifdef PBRT_USES_HCCMATH
+    return Math::NextUp( v );
+#else
     if (IsInf(v) && v > 0.)
         return v;
     if (v == -0.f)
@@ -400,11 +411,15 @@ inline double NextFloatUp(double v)
     else
         --ui;
     return BitsToFloat(ui);
+#endif
 }
 
 PBRT_CPU_GPU
 inline double NextFloatDown(double v) 
 {
+#ifdef PBRT_USES_HCCMATH
+    return Math::NextDown( v );
+#else
     if (IsInf(v) && v < 0.)
         return v;
     if (v == 0.f)
@@ -415,6 +430,7 @@ inline double NextFloatDown(double v)
     else
         ++ui;
     return BitsToFloat(ui);
+#endif
 }
 
 PBRT_CPU_GPU

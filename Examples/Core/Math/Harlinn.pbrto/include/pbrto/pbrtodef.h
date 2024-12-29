@@ -74,24 +74,30 @@
 #endif
 
 //#define PBRT_USES_HCCMATH 1
-//#define PBRT_USES_HCCMATH_SINCOS 1
-//#define PBRT_USES_HCCMATH_SQRT 1
-//#define PBRT_USES_HCCMATH_HYPOT 1
-//#define PBRT_USES_HCCMATH_COPYSIGN 1
-//#define PBRT_USES_HCCMATH_ATAN 1
-//#define PBRT_USES_HCCMATH_ATAN2 1
-//#define PBRT_USES_HCCMATH_EXP 1
-//#define PBRT_USES_HCCMATH_LOG 1
-//#define PBRT_USES_HCCMATH_LOG2 1
-//#define PBRT_USES_HCCMATH_LOG10 1
-//#define PBRT_USES_HCCMATH_FMOD 1
-//#define PBRT_USES_HCCSIMD 1
+#ifdef PBRT_USES_HCCMATH
+#define PBRT_USES_HCCMATH_SINCOS 1
+#define PBRT_USES_HCCMATH_SQRT 1
+#define PBRT_USES_HCCMATH_HYPOT 1
+#define PBRT_USES_HCCMATH_COPYSIGN 1
+#define PBRT_USES_HCCMATH_ATAN 1
+#define PBRT_USES_HCCMATH_ATAN2 1
+#define PBRT_USES_HCCMATH_EXP 1
+#define PBRT_USES_HCCMATH_LOG 1
+#define PBRT_USES_HCCMATH_LOG2 1
+#define PBRT_USES_HCCMATH_LOG10 1
+#define PBRT_USES_HCCMATH_FMOD 1
+#define PBRT_USES_HCCSIMD 1
+#define PBRT_USES_STD 1
+
+#define PBRT_USES_HCCMATH_INTERVAL 1
+#endif
 
 #define PBRT_CONSTEXPR //constexpr
 
 #ifdef PBRT_USES_HCCMATH
-#include <HCCMath.h>
+#include <HCCVectorMath.h>
 using namespace Harlinn::Common::Core;
+using namespace Harlinn::Common::Core::Math;
 #endif
 
 

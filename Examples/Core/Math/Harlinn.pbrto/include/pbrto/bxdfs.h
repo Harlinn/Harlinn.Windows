@@ -363,7 +363,11 @@ class ConductorBxDF {
         CHECK_RARE(1e-5f, LengthSquared(wm) == 0);
         if (LengthSquared(wm) == 0)
             return 0;
+#ifdef PBRT_USES_HCCMATH
+        wm = FaceForward( Normal3f(Normalize( wm )), Normal3f( 0, 0, 1 ) );
+#else
         wm = FaceForward(Normalize(wm), Normal3f(0, 0, 1));
+#endif
         return mfDistrib.PDF(wo, wm) / (4 * AbsDot(wo, wm));
     }
 

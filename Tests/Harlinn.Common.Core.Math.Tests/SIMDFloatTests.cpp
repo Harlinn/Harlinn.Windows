@@ -3267,4 +3267,49 @@ BOOST_AUTO_TEST_CASE( Extract8Test1 )
 }
 
 
+// --run_test=SIMDFloatTests/Shuffle2x4Test1
+BOOST_AUTO_TEST_CASE( ShuffleTest1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+
+    ArrayType arg1( { 1.f, 2.f, 3.f } );
+    ArrayType arg2( { 4.f, 5.f, 6.f } );
+    ArrayType arg3( { 7.f, 8.f, 9.f } );
+
+    auto rmm1 = Traits::Load( arg1 );
+    auto rmm2 = Traits::Load( arg2 );
+    auto rmm3 = Traits::Load( arg3 );
+
+    auto rmm4 = Traits::Shuffle<1, 0, 1, 0>( rmm1, rmm2 );
+    auto rmm5 = Traits::Shuffle<2, 2, 2, 2>( rmm1, rmm2 );
+
+    auto rmm6 = Traits::Shuffle<3, 0, 2, 0>( rmm4, rmm3 );
+    auto rmm7 = Traits::Shuffle<3, 1, 3, 1>( rmm4, rmm3 );
+    auto rmm8 = Traits::Shuffle<3, 2, 2, 0>( rmm5, rmm3 );
+
+    auto result1 = Traits::ToArray( rmm6 );
+    auto result2 = Traits::ToArray( rmm7 );
+    auto result3 = Traits::ToArray( rmm8 );
+    
+    ArrayType expected1( { 1.f, 4.f, 7.f } );
+    ArrayType expected2( { 2.f, 5.f, 8.f } );
+    ArrayType expected3( { 3.f, 6.f, 9.f } );
+
+    bool equal = result1 == expected1;
+    BOOST_CHECK( equal );
+
+    equal = result2 == expected2;
+    BOOST_CHECK( equal );
+
+    equal = result3 == expected3;
+    BOOST_CHECK( equal );
+
+
+
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END( )

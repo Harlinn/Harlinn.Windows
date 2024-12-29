@@ -34,7 +34,7 @@ namespace
     RandomGenerator<float, SampleCount> FloatMinusOneToOneGenerator( -1.0f, 1.0f );
 }
 
-static void BenchmarkPbrtSquareMatrixAdd( benchmark::State& state )
+static void BenchmarkPbrtSquareMatrix4x4Add( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
     FloatGenerator.Reset( );
@@ -56,9 +56,9 @@ static void BenchmarkPbrtSquareMatrixAdd( benchmark::State& state )
         benchmark::DoNotOptimize( matrix1 + matrix2 );
     }
 }
-BENCHMARK( BenchmarkPbrtSquareMatrixAdd );
+BENCHMARK( BenchmarkPbrtSquareMatrix4x4Add );
 
-static void BenchmarkSquareMatrixAdd( benchmark::State& state )
+static void BenchmarkSquareMatrix4x4Add( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
@@ -81,9 +81,55 @@ static void BenchmarkSquareMatrixAdd( benchmark::State& state )
         benchmark::DoNotOptimize( matrix1 + matrix2 );
     }
 }
-BENCHMARK( BenchmarkSquareMatrixAdd );
+BENCHMARK( BenchmarkSquareMatrix4x4Add );
 
-static void BenchmarkSquareMatrixSub( benchmark::State& state )
+static void BenchmarkPbrtSquareMatrix3x3Add( benchmark::State& state )
+{
+    using Matrix = pbrt::SquareMatrix<3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), 
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    Matrix matrix2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), 
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+        matrix2[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( matrix1 + matrix2 );
+    }
+}
+BENCHMARK( BenchmarkPbrtSquareMatrix3x3Add );
+
+static void BenchmarkSquareMatrix3x3Add( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Matrix = Math::SquareMatrix<float, 3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    Matrix matrix2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+        matrix2[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( matrix1 + matrix2 );
+    }
+}
+BENCHMARK( BenchmarkSquareMatrix3x3Add );
+
+
+static void BenchmarkSquareMatrix4x4Sub( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
@@ -106,9 +152,112 @@ static void BenchmarkSquareMatrixSub( benchmark::State& state )
         benchmark::DoNotOptimize( matrix1 - matrix2 );
     }
 }
-BENCHMARK( BenchmarkSquareMatrixSub );
+BENCHMARK( BenchmarkSquareMatrix4x4Sub );
 
-static void BenchmarkPbrtSquareMatrixScalarMultiply( benchmark::State& state )
+static void BenchmarkSquareMatrix3x3Sub( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Matrix = Math::SquareMatrix<float, 3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    Matrix matrix2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+        matrix2[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( matrix1 - matrix2 );
+    }
+}
+BENCHMARK( BenchmarkSquareMatrix3x3Sub );
+
+
+static void BenchmarkPbrtSquareMatrix4x4Transpose( benchmark::State& state )
+{
+    using Matrix = pbrt::SquareMatrix<4>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( pbrt::Transpose( matrix1 ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtSquareMatrix4x4Transpose );
+
+static void BenchmarkSquareMatrix4x4Transpose( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Matrix = Math::SquareMatrix<float, 4>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( Transpose( matrix1 ) );
+    }
+}
+BENCHMARK( BenchmarkSquareMatrix4x4Transpose );
+
+
+static void BenchmarkPbrtSquareMatrix3x3Transpose( benchmark::State& state )
+{
+    using Matrix = pbrt::SquareMatrix<3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( pbrt::Transpose( matrix1 ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtSquareMatrix3x3Transpose );
+
+static void BenchmarkSquareMatrix3x3Transpose( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Matrix = Math::SquareMatrix<float, 3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), 
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), 
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( Transpose( matrix1 ) );
+    }
+}
+BENCHMARK( BenchmarkSquareMatrix3x3Transpose );
+
+
+
+static void BenchmarkPbrtSquareMatrix4x4ScalarMultiply( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
     FloatGenerator.Reset( );
@@ -125,9 +274,10 @@ static void BenchmarkPbrtSquareMatrixScalarMultiply( benchmark::State& state )
         benchmark::DoNotOptimize( matrix1 * value );
     }
 }
-BENCHMARK( BenchmarkPbrtSquareMatrixScalarMultiply );
+BENCHMARK( BenchmarkPbrtSquareMatrix4x4ScalarMultiply );
 
-static void BenchmarkSquareMatrixScalarMultiply( benchmark::State& state )
+
+static void BenchmarkSquareMatrix4x4ScalarMultiply( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
@@ -145,9 +295,9 @@ static void BenchmarkSquareMatrixScalarMultiply( benchmark::State& state )
         benchmark::DoNotOptimize( matrix1 * value );
     }
 }
-BENCHMARK( BenchmarkSquareMatrixScalarMultiply );
+BENCHMARK( BenchmarkSquareMatrix4x4ScalarMultiply );
 
-static void BenchmarkPbrtSquareMatrixMultiply( benchmark::State& state )
+static void BenchmarkPbrtSquareMatrix4x4Multiply( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
     FloatGenerator.Reset( );
@@ -169,9 +319,9 @@ static void BenchmarkPbrtSquareMatrixMultiply( benchmark::State& state )
         benchmark::DoNotOptimize( (matrix1 * matrix2) );
     }
 }
-BENCHMARK( BenchmarkPbrtSquareMatrixMultiply );
+BENCHMARK( BenchmarkPbrtSquareMatrix4x4Multiply );
 
-static void BenchmarkSquareMatrixMultiply( benchmark::State& state )
+static void BenchmarkSquareMatrix4x4Multiply( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
@@ -194,9 +344,58 @@ static void BenchmarkSquareMatrixMultiply( benchmark::State& state )
         benchmark::DoNotOptimize( ( matrix1 * matrix2 ) );
     }
 }
-BENCHMARK( BenchmarkSquareMatrixMultiply );
+BENCHMARK( BenchmarkSquareMatrix4x4Multiply );
 
-static void BenchmarkPbrtSquareMatrixDeterminant( benchmark::State& state )
+static void BenchmarkPbrtSquareMatrix3x3Multiply( benchmark::State& state )
+{
+    using Matrix = pbrt::SquareMatrix<3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), 
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    Matrix matrix2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+        matrix2[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( ( matrix1 * matrix2 ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtSquareMatrix3x3Multiply );
+
+
+static void BenchmarkSquareMatrix3x3Multiply( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Matrix = Math::SquareMatrix<float, 3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+    Matrix matrix2( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+        matrix2[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( ( matrix1 * matrix2 ) );
+    }
+}
+BENCHMARK( BenchmarkSquareMatrix3x3Multiply );
+
+
+
+
+static void BenchmarkPbrtSquareMatrix4x4Determinant( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
     FloatGenerator.Reset( );
@@ -213,9 +412,9 @@ static void BenchmarkPbrtSquareMatrixDeterminant( benchmark::State& state )
         benchmark::DoNotOptimize( pbrt::Determinant( matrix1 ) );
     }
 }
-BENCHMARK( BenchmarkPbrtSquareMatrixDeterminant );
+BENCHMARK( BenchmarkPbrtSquareMatrix4x4Determinant );
 
-static void BenchmarkXMMatrixDeterminant( benchmark::State& state )
+static void BenchmarkXMMatrix4x4Determinant( benchmark::State& state )
 {
     using namespace DirectX;
     FloatGenerator.Reset( );
@@ -234,9 +433,9 @@ static void BenchmarkXMMatrixDeterminant( benchmark::State& state )
         benchmark::DoNotOptimize( XMMatrixDeterminant( loadedMatrix ) );
     }
 }
-BENCHMARK( BenchmarkXMMatrixDeterminant );
+BENCHMARK( BenchmarkXMMatrix4x4Determinant );
 
-static void BenchmarkSquareMatrixDeterminant( benchmark::State& state )
+static void BenchmarkSquareMatrix4x4Determinant( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
@@ -254,9 +453,47 @@ static void BenchmarkSquareMatrixDeterminant( benchmark::State& state )
         benchmark::DoNotOptimize( Determinant( matrix1 ) );
     }
 }
-BENCHMARK( BenchmarkSquareMatrixDeterminant );
+BENCHMARK( BenchmarkSquareMatrix4x4Determinant );
 
-static void BenchmarkPbrtSquareMatrixInverse( benchmark::State& state )
+static void BenchmarkPbrtSquareMatrix3x3Determinant( benchmark::State& state )
+{
+    using Matrix = pbrt::SquareMatrix<3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), 
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ), 
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( pbrt::Determinant( matrix1 ) );
+    }
+}
+BENCHMARK( BenchmarkPbrtSquareMatrix3x3Determinant );
+
+static void BenchmarkSquareMatrix3x3Determinant( benchmark::State& state )
+{
+    using namespace Harlinn::Common::Core::Math;
+    using Matrix = Math::SquareMatrix<float, 3>;
+    FloatGenerator.Reset( );
+
+    Matrix matrix1( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ),
+        FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) );
+
+    for ( auto _ : state )
+    {
+        matrix1[ 0 ][ 0 ] = FloatGenerator( );
+
+        benchmark::DoNotOptimize( Determinant( matrix1 ) );
+    }
+}
+BENCHMARK( BenchmarkSquareMatrix3x3Determinant );
+
+
+static void BenchmarkPbrtSquareMatrix4x4Inverse( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
     FloatGenerator.Reset( );
@@ -273,9 +510,9 @@ static void BenchmarkPbrtSquareMatrixInverse( benchmark::State& state )
         benchmark::DoNotOptimize( pbrt::Inverse( matrix1 ) );
     }
 }
-BENCHMARK( BenchmarkPbrtSquareMatrixInverse ); 
+BENCHMARK( BenchmarkPbrtSquareMatrix4x4Inverse );
 
-static void BenchmarkXMMatrixInverse( benchmark::State& state )
+static void BenchmarkXMMatrix4x4Inverse( benchmark::State& state )
 {
     using namespace DirectX;
     FloatGenerator.Reset( );
@@ -293,10 +530,10 @@ static void BenchmarkXMMatrixInverse( benchmark::State& state )
         benchmark::DoNotOptimize( XMMatrixInverse( nullptr, loadedMatrix ) );
     }
 }
-BENCHMARK( BenchmarkXMMatrixInverse );
+BENCHMARK( BenchmarkXMMatrix4x4Inverse );
 
 
-static void BenchmarkSquareMatrixInverse( benchmark::State& state )
+static void BenchmarkSquareMatrix4x4Inverse( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
     using Matrix = Math::SquareMatrix<float, 4>;
@@ -314,7 +551,7 @@ static void BenchmarkSquareMatrixInverse( benchmark::State& state )
         benchmark::DoNotOptimize( Inverse( matrix1.ToSimd() ) );
     }
 }
-BENCHMARK( BenchmarkSquareMatrixInverse );
+BENCHMARK( BenchmarkSquareMatrix4x4Inverse );
 
 
 #endif

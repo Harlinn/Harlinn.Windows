@@ -731,9 +731,6 @@ static void BenchmarkMathVector3ATan( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathVector3ATan );
 
-
-#endif
-
 static void BenchmarkMathVector3ATan2( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -790,4 +787,8 @@ static void BenchmarkMathVector3TanH( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkMathVector3TanH );
+
+
+#endif
+
 

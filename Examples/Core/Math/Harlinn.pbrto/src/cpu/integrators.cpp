@@ -546,9 +546,15 @@ void LightPathIntegrator::EvaluatePixelSample(Point2i pPixel, int sampleIndex,
                     light.L(les->intr->p(), les->intr->n, les->intr->uv, cs->wi, lambda);
                 if (Le && Unoccluded(cs->pRef, cs->pLens)) {
                     // Compute visible light's path contribution and add to film
+#ifdef PBRT_USES_HCCMATH
+                    SampledSpectrum L = Le *
+                                        ScalarDistanceSquared( cs->pRef.p( ), cs->pLens.p( ) ) *
+                                        cs->Wi / ( p_l * pdf * cs->pdf );
+#else
                     SampledSpectrum L = Le *
                                         DistanceSquared(cs->pRef.p(), cs->pLens.p()) *
                                         cs->Wi / (p_l * pdf * cs->pdf);
+#endif
                     camera.GetFilm().AddSplat(cs->pRaster, L, lambda);
                 }
             }
@@ -776,8 +782,14 @@ SampledSpectrum PathIntegrator::SampleLd(const SurfaceInteraction &intr, const B
     BxDFFlags flags = bsdf->Flags();
     if (IsReflective(flags) && !IsTransmissive(flags))
         ctx.pi = intr.OffsetRayOrigin(intr.wo);
-    else if (IsTransmissive(flags) && !IsReflective(flags))
-        ctx.pi = intr.OffsetRayOrigin(-intr.wo);
+    else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
+    {
+#ifdef PBRT_USES_HCCMATH
+        ctx.pi = intr.OffsetRayOrigin( Vector3f( -intr.wo ) );
+#else
+        ctx.pi = intr.OffsetRayOrigin( -intr.wo );
+#endif
+    }
 
     // Choose a light source for the direct lighting calculation
     Float u = sampler.Get1D();
@@ -1289,8 +1301,14 @@ SampledSpectrum VolPathIntegrator::SampleLd(const Interaction &intr, const BSDF 
         BxDFFlags flags = bsdf->Flags();
         if (IsReflective(flags) && !IsTransmissive(flags))
             ctx.pi = intr.OffsetRayOrigin(intr.wo);
-        else if (IsTransmissive(flags) && !IsReflective(flags))
-            ctx.pi = intr.OffsetRayOrigin(-intr.wo);
+        else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
+        {
+#ifdef PBRT_USES_HCCMATH
+            ctx.pi = intr.OffsetRayOrigin( Vector3f( -intr.wo ) );
+#else
+            ctx.pi = intr.OffsetRayOrigin( -intr.wo );
+#endif
+        }
 
     } else
         ctx = LightSampleContext(intr);
@@ -1438,7 +1456,11 @@ retry:
 
         // Compute coordinate frame based on true geometry, not shading
         // geometry.
+#ifdef PBRT_USES_HCCMATH
+        Normal3f n = FaceForward( isect.n, Vector3f( -ray.d ) );
+#else
         Normal3f n = FaceForward(isect.n, -ray.d);
+#endif
 
         Vector3f wi;
         Float pdf;
@@ -1746,7 +1768,11 @@ struct Vertex {
         if ( next.IsOnSurface( ) )
         {
 #ifdef PBRT_USES_HCCMATH_SQRT
+#ifdef PBRT_USES_HCCMATH
+            pdf *= ScalarAbsDot( next.ng( ), w * Math::Sqrt( invDist2 ) );
+#else
             pdf *= AbsDot( next.ng( ), w * Math::Sqrt( invDist2 ) );
+#endif
 #else
             pdf *= AbsDot( next.ng( ), w * std::sqrt( invDist2 ) );
 #endif
@@ -2404,8 +2430,14 @@ SampledSpectrum ConnectBDPT(const Integrator &integrator, SampledWavelengths &la
                     BxDFFlags flags = pt.bsdf.Flags();
                     if (IsReflective(flags) && !IsTransmissive(flags))
                         ctx.pi = si.OffsetRayOrigin(si.wo);
-                    else if (IsTransmissive(flags) && !IsReflective(flags))
-                        ctx.pi = si.OffsetRayOrigin(-si.wo);
+                    else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
+                    {
+#ifdef PBRT_USES_HCCMATH
+                        ctx.pi = si.OffsetRayOrigin( Vector3f( -si.wo ) );
+#else
+                        ctx.pi = si.OffsetRayOrigin( -si.wo );
+#endif
+                    }
                 } else
                     ctx = LightSampleContext(pt.GetInteraction());
                 pstd::optional<LightLiSample> lightWeight =
@@ -3162,9 +3194,15 @@ void SPPMIntegrator::Render() {
                                  node; node = node->next) {
                                 ++visiblePointsChecked;
                                 SPPMPixel &pixel = *node->pixel;
+#ifdef PBRT_USES_HCCMATH
+                                if ( ScalarDistanceSquared( pixel.vp.p, isect.p( ) ) >
+                                    Sqr( pixel.radius ) )
+                                    continue;
+#else
                                 if (DistanceSquared(pixel.vp.p, isect.p()) >
                                     Sqr(pixel.radius))
                                     continue;
+#endif
                                 // Update _pixel_ $\Phi$ and $m$ for nearby photon
                                 Vector3f wi = -photonRay.d;
                                 SampledSpectrum Phi =
@@ -3319,8 +3357,14 @@ SampledSpectrum SPPMIntegrator::SampleLd(const SurfaceInteraction &intr, const B
     BxDFFlags flags = bsdf->Flags();
     if (IsReflective(flags) && !IsTransmissive(flags))
         ctx.pi = intr.OffsetRayOrigin(intr.wo);
-    else if (IsTransmissive(flags) && !IsReflective(flags))
-        ctx.pi = intr.OffsetRayOrigin(-intr.wo);
+    else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
+    {
+#ifdef PBRT_USES_HCCMATH
+        ctx.pi = intr.OffsetRayOrigin( Vector3f( -intr.wo ) );
+#else
+        ctx.pi = intr.OffsetRayOrigin( -intr.wo );
+#endif
+    }
 
     // Choose a light source for the direct lighting calculation
     Float u = sampler.Get1D();
@@ -3399,7 +3443,11 @@ static double disk(Point2f p) {
 }
 static double checkerboard(Point2f p) {
     int freq = 10;
+#ifdef PBRT_USES_HCCMATH
+    Point2i pi( ToPoint2i( p * freq ) );
+#else
     Point2i pi(p * freq);
+#endif
     return ((pi.x & 1) ^ (pi.y & 1)) ? 2 : 0;
 }
 static double rotatedCheckerboard(Point2f p) {

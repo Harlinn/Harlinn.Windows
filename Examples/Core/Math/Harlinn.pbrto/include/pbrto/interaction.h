@@ -32,8 +32,13 @@ class Interaction {
     Interaction(Point3fi pi, Normal3f n, Point2f uv, Vector3f wo, Float time)
         : pi(pi), n(n), uv(uv), wo(Normalize(wo)), time(time) {}
 
+#ifdef PBRT_USES_HCCMATH
+    PBRT_CPU_GPU
+    Point3f p( ) const { return Point3f( static_cast< float >( pi.x ), static_cast< float >( pi.y ), static_cast< float >( pi.z ) ); }
+#else
     PBRT_CPU_GPU
     Point3f p() const { return Point3f(pi); }
+#endif
 
     PBRT_CPU_GPU
     bool IsSurfaceInteraction() const { return n != Normal3f(0, 0, 0); }
@@ -89,10 +94,17 @@ class Interaction {
     std::string ToString() const;
 
     PBRT_CPU_GPU
-    Point3f OffsetRayOrigin(Vector3f w) const { return pbrt::OffsetRayOrigin(pi, n, w); }
+    Point3f OffsetRayOrigin(Vector3f w) const 
+    { 
+        return pbrt::OffsetRayOrigin(pi, n, w); 
+    }
 
     PBRT_CPU_GPU
-    Point3f OffsetRayOrigin(Point3f pt) const { return OffsetRayOrigin(pt - p()); }
+    Point3f OffsetRayOrigin(Point3f pt) const 
+    { 
+        Vector3f v = pt - p( );
+        return OffsetRayOrigin( v );
+    }
 
     PBRT_CPU_GPU
     RayDifferential SpawnRay(Vector3f d) const {
@@ -176,8 +188,9 @@ class SurfaceInteraction : public Interaction {
         shading.dndv = dndv;
 
         // Adjust normal based on orientation and handedness
-        if (flipNormal) {
-            n *= -1;
+        if (flipNormal) 
+        {
+            n *= static_cast<Float>( -1 );
             shading.n *= -1;
         }
     }

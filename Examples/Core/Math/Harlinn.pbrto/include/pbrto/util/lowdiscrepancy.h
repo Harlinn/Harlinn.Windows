@@ -43,7 +43,7 @@ class DigitPermutation {
             uint64_t dseed = Hash(base, digitIndex, seed);
             for (int digitValue = 0; digitValue < base; ++digitValue) {
                 int index = digitIndex * base + digitValue;
-                permutations[index] = PermutationElement(digitValue, base, dseed);
+                permutations[index] = PermutationElement(digitValue, base, static_cast<uint32_t>( dseed ));
             }
         }
     }
@@ -124,7 +124,7 @@ PBRT_CPU_GPU inline Float ScrambledRadicalInverse(int baseIndex, uint64_t a,
     while (1 - (base - 1) * invBaseM < 1 && reversedDigits < limit) {
         // Permute least significant digit from _a_ and update _reversedDigits_
         uint64_t next = a / base;
-        int digitValue = a - next * base;
+        int digitValue = static_cast< int >( a - next * base );
         reversedDigits = reversedDigits * base + perm.Permute(digitIndex, digitValue);
         invBaseM *= invBase;
         ++digitIndex;
@@ -145,8 +145,8 @@ PBRT_CPU_GPU inline Float OwenScrambledRadicalInverse(int baseIndex, uint64_t a,
     while (1 - invBaseM < 1 && reversedDigits < limit) {
         // Compute Owen-scrambled digit for _digitIndex_
         uint64_t next = a / base;
-        int digitValue = a - next * base;
-        uint32_t digitHash = MixBits(hash ^ reversedDigits);
+        int digitValue = static_cast< int >( a - next * base );
+        uint32_t digitHash = static_cast< uint32_t >( MixBits(hash ^ reversedDigits) );
         digitValue = PermutationElement(digitValue, base, digitHash);
         reversedDigits = reversedDigits * base + digitValue;
         invBaseM *= invBase;

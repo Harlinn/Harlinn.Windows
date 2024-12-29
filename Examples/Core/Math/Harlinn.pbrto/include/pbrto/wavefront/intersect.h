@@ -193,10 +193,15 @@ inline PBRT_CPU_GPU void TraceTransmittance(ShadowRayWorkItem sr,
 
         if (ray.medium) {
             PBRT_DBG("Ray medium %p. Will sample tmaj...\n", ray.medium.ptr());
-
+#ifdef PBRT_USES_HCCMATH
+            Float tEnd = !result.hit
+                ? tMax
+                : ( ScalarDistance( ray.o, Point3f( result.pHit ) ) / ScalarLength( ray.d ) );
+#else
             Float tEnd = !result.hit
                              ? tMax
                              : (Distance(ray.o, Point3f(result.pHit)) / Length(ray.d));
+#endif
             SampledSpectrum T_maj = SampleT_maj(
                 ray, tEnd, rng.Uniform<Float>(), rng, lambda,
                 [&](Point3f p, MediumProperties mp, SampledSpectrum sigma_maj,

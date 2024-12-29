@@ -289,6 +289,8 @@ inline std::ostream &operator<<(std::ostream &os, const optional<T> &opt) {
                   << "> set: false value: n/a ]";
 }
 
+
+
 namespace span_internal {
 
 // Wrappers for access to container data pointers.
@@ -1197,7 +1199,11 @@ PBRT_CPU_GPU inline float fmod(float x, float y) {
 #ifdef PBRT_IS_GPU_CODE
     return ::fmodf(x, y);
 #else
+#ifdef PBRT_USES_HCCMATH_FMOD
+    return Math::FMod( x, y );
+#else
     return std::fmod(x, y);
+#endif
 #endif
 }
 
@@ -1205,7 +1211,11 @@ PBRT_CPU_GPU inline double fmod(double x, double y) {
 #ifdef PBRT_IS_GPU_CODE
     return ::fmod(x, y);
 #else
-    return std::fmod(x, y);
+#ifdef PBRT_USES_HCCMATH_FMOD
+    return Math::FMod( x, y );
+#else
+    return std::fmod( x, y );
+#endif
 #endif
 }
 

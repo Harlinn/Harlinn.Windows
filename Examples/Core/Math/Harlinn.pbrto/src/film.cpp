@@ -510,13 +510,22 @@ PBRT_CPU_GPU void RGBFilm::AddSplat(Point2f p, SampledSpectrum L, const SampledW
     // Compute bounds of affected pixels for splat, _splatBounds_
     Point2f pDiscrete = p + Vector2f(0.5, 0.5);
     Vector2f radius = filter.Radius();
+#ifdef PBRT_USES_HCCMATH
+    Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - radius ) ),
+                        ToPoint2i( Floor( pDiscrete + radius ) ) + Vector2i( 1, 1 ) );
+#else
     Bounds2i splatBounds(Point2i(Floor(pDiscrete - radius)),
                          Point2i(Floor(pDiscrete + radius)) + Vector2i(1, 1));
+#endif
     splatBounds = Intersect(splatBounds, pixelBounds);
 
     for (Point2i pi : splatBounds) {
         // Evaluate filter at _pi_ and add splat contribution
+#ifdef PBRT_USES_HCCMATH
+        Float wt = filter.Evaluate( Point2f( p - Point2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
+#else
         Float wt = filter.Evaluate(Point2f(p - pi - Vector2f(0.5, 0.5)));
+#endif
         if (wt != 0) {
             Pixel &pixel = pixels[pi];
             for (int i = 0; i < 3; ++i)
@@ -667,11 +676,20 @@ PBRT_CPU_GPU void GBufferFilm::AddSplat(Point2f p, SampledSpectrum v,
         rgb *= maxComponentValue / m;
 
     Point2f pDiscrete = p + Vector2f(0.5, 0.5);
+#ifdef PBRT_USES_HCCMATH
+    Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - filter.Radius( ) ) ),
+                        ToPoint2i( Floor( pDiscrete + filter.Radius( ) ) ) + Vector2i( 1, 1 ) );
+#else
     Bounds2i splatBounds(Point2i(Floor(pDiscrete - filter.Radius())),
                          Point2i(Floor(pDiscrete + filter.Radius())) + Vector2i(1, 1));
+#endif
     splatBounds = Intersect(splatBounds, pixelBounds);
     for (Point2i pi : splatBounds) {
+#ifdef PBRT_USES_HCCMATH
+        Float wt = filter.Evaluate( Point2f( p - Point2f(pi) - Vector2f( 0.5, 0.5 ) ) );
+#else
         Float wt = filter.Evaluate(Point2f(p - pi - Vector2f(0.5, 0.5)));
+#endif
         if (wt != 0) {
             Pixel &pixel = pixels[pi];
             for (int i = 0; i < 3; ++i)
@@ -774,10 +792,17 @@ Image GBufferFilm::GetImage(ImageMetadata *metadata, Float splatScale) {
         image.SetChannels(pOffset, albedoRgbDesc,
                           {albedoRgb[0], albedoRgb[1], albedoRgb[2]});
 
+#ifdef PBRT_USES_HCCMATH
+        Normal3f n =
+            LengthSquared( pixel.nSum ) > 0 ? Normal3f(Normalize( pixel.nSum )) : Normal3f( 0, 0, 0 );
+        Normal3f ns =
+            LengthSquared( pixel.nsSum ) > 0 ? Normal3f(Normalize( pixel.nsSum )) : Normal3f( 0, 0, 0 );
+#else
         Normal3f n =
             LengthSquared(pixel.nSum) > 0 ? Normalize(pixel.nSum) : Normal3f(0, 0, 0);
         Normal3f ns =
             LengthSquared(pixel.nsSum) > 0 ? Normalize(pixel.nsSum) : Normal3f(0, 0, 0);
+#endif
         image.SetChannels(pOffset, pDesc, {pt.x, pt.y, pt.z});
         image.SetChannels(pOffset, dzDesc, {std::abs(dzdx), std::abs(dzdy)});
         image.SetChannels(pOffset, nDesc, {n.x, n.y, n.z});
@@ -931,14 +956,23 @@ PBRT_CPU_GPU void SpectralFilm::AddSplat(Point2f p, SampledSpectrum L,
     // Compute bounds of affected pixels for splat, _splatBounds_
     Point2f pDiscrete = p + Vector2f(0.5, 0.5);
     Vector2f radius = filter.Radius();
+#ifdef PBRT_USES_HCCMATH
+    Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - radius ) ),
+                        ToPoint2i( Floor( pDiscrete + radius ) ) + Vector2i( 1, 1 ) );
+#else
     Bounds2i splatBounds(Point2i(Floor(pDiscrete - radius)),
                          Point2i(Floor(pDiscrete + radius)) + Vector2i(1, 1));
+#endif
     splatBounds = Intersect(splatBounds, pixelBounds);
 
     // Splat both RGB and spectral bucket contributions.
     for (Point2i pi : splatBounds) {
         // Evaluate filter at _pi_ and add splat contribution
+#ifdef PBRT_USES_HCCMATH
+        Float wt = filter.Evaluate( Point2f( p - Point2f(pi) - Vector2f( 0.5, 0.5 ) ) );
+#else
         Float wt = filter.Evaluate(Point2f(p - pi - Vector2f(0.5, 0.5)));
+#endif
         if (wt != 0) {
             Pixel &pixel = pixels[pi];
 

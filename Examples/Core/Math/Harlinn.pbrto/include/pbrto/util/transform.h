@@ -42,7 +42,12 @@ class Transform {
 
     PBRT_CPU_GPU
     Transform(const SquareMatrix<4> &m) : m(m) {
-        pstd::optional<SquareMatrix<4>> inv = Inverse(m);
+#ifdef PBRT_USES_HCCMATH
+        pstd::optional<SquareMatrix<4>> inv = SquareMatrix<4>(Inverse( m ));
+#else
+        pstd::optional<SquareMatrix<4>> inv = Inverse( m );
+#endif
+        
         if (inv)
             mInv = *inv;
         else {
@@ -57,7 +62,9 @@ class Transform {
     }
 
     PBRT_CPU_GPU
-    Transform(const Float mat[4][4]) : Transform(SquareMatrix<4>(mat)) {}
+    Transform(const Float mat[4][4]) 
+        : Transform(SquareMatrix<4>(mat)) 
+    {}
 
     PBRT_CPU_GPU
     Transform(const SquareMatrix<4> &m, const SquareMatrix<4> &mInv) : m(m), mInv(mInv) {}
@@ -172,7 +179,10 @@ class Transform {
         if (wp == 1)
             return Point3fi(Point3f(xp, yp, zp), pError);
         else
-            return Point3fi(Point3f(xp, yp, zp), pError) / wp;
+        {
+            Point3fi result( Point3f( xp, yp, zp ), pError );
+            return result / wp;
+        }
     }
 
     PBRT_CPU_GPU
@@ -343,7 +353,12 @@ PBRT_CPU_GPU inline Ray Transform::operator()(const Ray &r, Float *tMax) const {
     Vector3f d = (*this)(r.d);
     // Offset ray origin to edge of error bounds and compute _tMax_
     if (Float lengthSquared = LengthSquared(d); lengthSquared > 0) {
+#ifdef PBRT_USES_HCCMATH
+        Float dt = ScalarDot( Abs( d ), o.Error( ) ) / lengthSquared;
+#else
         Float dt = Dot(Abs(d), o.Error()) / lengthSquared;
+#endif
+
         o += d * dt;
         if (tMax)
             *tMax -= dt;
@@ -425,7 +440,11 @@ PBRT_CPU_GPU inline Ray Transform::ApplyInverse(const Ray &r, Float *tMax) const
     Float lengthSquared = LengthSquared(d);
     if (lengthSquared > 0) {
         Vector3f oError(o.x.Width() / 2, o.y.Width() / 2, o.z.Width() / 2);
+#ifdef PBRT_USES_HCCMATH
+        Float dt = ScalarDot( Abs( d ), oError ) / lengthSquared;
+#else
         Float dt = Dot(Abs(d), oError) / lengthSquared;
+#endif
         o += d * dt;
         if (tMax)
             *tMax -= dt;

@@ -174,8 +174,13 @@ class TrowbridgeReitzDistribution {
             wh = -wh;
 
         // Find orthonormal basis for visible normal sampling
+#ifdef PBRT_USES_HCCMATH
+        Vector3f T1 = ( wh.z < 0.99999f ) ? Vector3f(Normalize( Cross( Vector3f( 0, 0, 1 ), wh ) ))
+            : Vector3f( 1, 0, 0 );
+#else
         Vector3f T1 = (wh.z < 0.99999f) ? Normalize(Cross(Vector3f(0, 0, 1), wh))
                                         : Vector3f(1, 0, 0);
+#endif
         Vector3f T2 = Cross(wh, T1);
 
         // Generate uniformly distributed points on the unit disk

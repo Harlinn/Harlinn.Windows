@@ -18,7 +18,6 @@
 
 #include <HCCVectorMath.h>
 
-
 using namespace Harlinn::Common::Core;
 
 namespace
@@ -31,97 +30,262 @@ namespace
     };
 }
 
-BOOST_FIXTURE_TEST_SUITE( MathMatixTests, LocalFixture )
+BOOST_FIXTURE_TEST_SUITE( MathMatrixTests, LocalFixture )
 
-// --run_test=MathMatixTests/ConstexprVector1DTest1
-BOOST_AUTO_TEST_CASE( ConstexprVector1DTest1 )
+// --run_test=MathMatrixTests/TransposeMatrix3x3Test1
+BOOST_AUTO_TEST_CASE( TransposeMatrix3x3Test1 )
 {
-    using VectorType = Math::Vector<double, 1>;
-    constexpr VectorType v1( 1.0 );
-    constexpr VectorType v2( 100.0 );
-    constexpr VectorType v3( 10000.0 );
-    constexpr VectorType v4( 1000000.0 );
-    constexpr auto v5 = v1 + v2;
-    constexpr auto v5Size = v5.size( );
-    BOOST_CHECK( v5Size == 1 );
-    constexpr auto v5Capacity = v5.capacity( );
-    BOOST_CHECK( v5Capacity == 2 );
-    constexpr auto v5_0 = v5[0];
+    Math::SquareMatrix<float, 3> matrix
+    ( 1.f, 2.f, 3.f, 
+        4.f, 5.f, 6.f,
+        7.f, 8.f, 9.f );
 
-    BOOST_CHECK( v5_0 == 101.0);
-    constexpr auto v6 = v3 * 2.0;
-    constexpr auto v6_0 = v6[0];
-    BOOST_CHECK( v6_0 == 20000.0 );
-    constexpr auto v7 = v3 / 2;
-    constexpr auto v7_0 = v7[0];
-    BOOST_CHECK( v7_0 == 5000.0 );
+    Math::SquareMatrix<float, 3> expectedMatrix
+    ( 1.f, 4.f, 7.f,
+        2.f, 5.f, 8.f,
+        3.f, 6.f, 9.f );
 
-    constexpr auto v8 = v4 + 1.0;
-    constexpr auto v8_0 = v8[0];
-    BOOST_CHECK( v8_0 == 1000001.0 );
-    constexpr auto v9 = v4 - 1.0;
-    constexpr auto v9_0 = v9[0];
-    BOOST_CHECK( v9_0 == 999999.0 );
+    Math::SquareMatrix<float, 3> transposed = Math::Transpose( matrix );
+
+    auto equal = transposed == expectedMatrix;
+
+    BOOST_CHECK( equal );
+
 }
 
-// --run_test=MathMatixTests/ConstexprVector1DTest2
-BOOST_AUTO_TEST_CASE( ConstexprVector1DTest2 )
+
+// --run_test=MathMatrixTests/TransposeMatrix4x4Test1
+BOOST_AUTO_TEST_CASE( TransposeMatrix4x4Test1 )
 {
-    /*
-    using VectorType = Math::Vector<double, 2>;
-    constexpr VectorType v1( 1.0 );
-    constexpr VectorType v2( 100.0 );
-    constexpr VectorType v3( 10000.0 );
-    constexpr VectorType v4( 1000000.0 );
-    constexpr auto v5 = v1 + v2;
-    constexpr auto v5Size = v5.size( );
-    BOOST_CHECK( v5Size == 2 );
-    constexpr auto v5Capacity = v5.capacity( );
-    BOOST_CHECK( v5Capacity == 2 );
+    Math::SquareMatrix<float, 4> matrix
+    (  1.f,  2.f,  3.f,  4.f,
+       5.f,  6.f,  7.f,  8.f,
+       9.f, 10.f, 11.f, 12.f,
+      13.f, 14.f, 15.f, 16.f );
 
-    constexpr auto v5_0 = v5[0];
-    BOOST_CHECK( v5_0 == 101.0 );
+    Math::SquareMatrix<float, 4> expectedMatrix
+    ( 1.f, 5.f, 9.f,  13.f,
+      2.f, 6.f, 10.f, 14.f,
+      3.f, 7.f, 11.f, 15.f,
+      4.f, 8.f, 12.f, 16.f );
 
-    constexpr auto v5_1 = v5[1];
-    BOOST_CHECK( v5_1 == 101.0 );
+    Math::SquareMatrix<float, 4> transposed = Math::Transpose( matrix );
 
-    constexpr auto v6 = v3 * 2.0;
-    constexpr auto v6_0 = v6[0];
-    BOOST_CHECK( v6_0 == 20000.0 );
-    constexpr auto v6_1 = v6[1];
-    BOOST_CHECK( v6_1 == 20000.0 );
+    auto equal = transposed == expectedMatrix;
 
-    constexpr auto v7 = v3 / 2;
-    constexpr auto v7_0 = v7[0];
-    BOOST_CHECK( v7_0 == 5000.0 );
+    BOOST_CHECK( equal );
 
-    constexpr auto v7_1 = v7[1];
-    BOOST_CHECK( v7_1 == 5000.0 );
-
-
-    constexpr auto v8 = v4 + 1.0;
-    constexpr auto v8_0 = v8[0];
-    BOOST_CHECK( v8_0 == 1000001.0 );
-    constexpr auto v8_1 = v8[1];
-    BOOST_CHECK( v8_1 == 1000001.0 );
-
-
-    constexpr auto v9 = v4 - 1.0;
-    constexpr auto v9_0 = v9[0];
-    BOOST_CHECK( v9_0 == 999999.0 );
-
-    constexpr auto v9_1 = v9[1];
-    BOOST_CHECK( v9_1 == 999999.0 );
-
-    constexpr auto v10 = v4 + v3 + v2 + v1;
-    constexpr auto v10_0 = v10[0];
-    BOOST_CHECK( v10_0 == 1010101.0 );
-
-    constexpr auto v11 = v4 - v3 - v2 - v1;
-    constexpr auto v11_0 = v11[0];
-    BOOST_CHECK( v11_0 == ( 1000000.0 - 10000.0 - 100.0 - 1.0 ) );
-    */
 }
+
+
+// --run_test=MathMatrixTests/MultiplyMatrix3x3Test1
+BOOST_AUTO_TEST_CASE( MultiplyMatrix3x3Test1 )
+{
+    Math::SquareMatrix<float, 3> matrix1
+    ( 1.f, 2.f, 3.f,
+        4.f, 5.f, 6.f,
+        7.f, 8.f, 9.f );
+
+    Math::SquareMatrix<float, 3> matrix2
+    ( 2.f, 3.f, 4.f,
+        5.f, 6.f, 7.f,
+        8.f, 9.f, 10.f );
+
+    Math::SquareMatrix<float, 3> expectedResult
+    ( 
+        36.f, 42.f, 48.f,
+        81.f, 96.f, 111.f,
+        126.f, 150.f, 174.f
+    );
+
+    Math::SquareMatrix<float, 3> result = matrix1 * matrix2;
+
+    auto equal = result == expectedResult;
+
+    BOOST_CHECK( equal );
+}
+
+// --run_test=MathMatrixTests/MultiplyMatrix4x4Test1
+BOOST_AUTO_TEST_CASE( MultiplyMatrix4x4Test1 )
+{
+    Math::SquareMatrix<float, 4> matrix1
+    ( 1.f, 2.f, 3.f, 4.f,
+        5.f, 6.f, 7.f, 8.f,
+        9.f, 10.f, 11.f, 12.f,
+        13.f, 14.f, 15.f, 16.f );
+
+    Math::SquareMatrix<float, 4> matrix2
+    ( 2.f, 3.f, 4.f, 5.f,
+        6.f, 7.f, 8.f, 9.f,
+        10.f, 11.f, 12.f, 13.f,
+        14.f, 15.f, 16.f, 17.f );
+
+    Math::SquareMatrix<float, 4> expectedResult
+    (
+        100.f, 110.f, 120.f, 130.f,
+        228.f, 254.f, 280.f, 306.f,
+        356.f, 398.f, 440.f, 482.f,
+        484.f, 542.f, 600.f, 658.f );
+
+    Math::SquareMatrix<float, 4> result = matrix1 * matrix2;
+
+    auto equal = result == expectedResult;
+
+    BOOST_CHECK( equal );
+}
+
+// --run_test=MathMatrixTests/MultiplyScalarMatrix4x4Test1
+BOOST_AUTO_TEST_CASE( MultiplyScalarMatrix4x4Test1 )
+{
+    Math::SquareMatrix<float, 4> matrix1
+    ( 1.f, 2.f, 3.f, 4.f,
+        5.f, 6.f, 7.f, 8.f,
+        9.f, 10.f, 11.f, 12.f,
+        13.f, 14.f, 15.f, 16.f );
+
+    
+
+    Math::SquareMatrix<float, 4> expectedResult
+    ( 2.f * 1.f, 2.f * 2.f, 2.f * 3.f, 2.f * 4.f,
+        2.f * 5.f, 2.f * 6.f, 2.f * 7.f, 2.f * 8.f,
+        2.f * 9.f, 2.f * 10.f, 2.f * 11.f, 2.f * 12.f,
+        2.f * 13.f, 2.f * 14.f, 2.f * 15.f, 2.f * 16.f );
+
+    Math::SquareMatrix<float, 4> result = 2.f * matrix1;
+
+    auto equal = result == expectedResult;
+
+    BOOST_CHECK( equal );
+}
+
+// --run_test=MathMatrixTests/MultiplyScalarMatrix3x3Test1
+BOOST_AUTO_TEST_CASE( MultiplyScalarMatrix3x3Test1 )
+{
+    Math::SquareMatrix<float, 3> matrix1
+    ( 1.f, 2.f, 3.f,
+        4.f, 5.f, 6.f,
+        7.f, 8.f, 9.f );
+
+    Math::SquareMatrix<float, 3> expectedResult
+    (
+        2.f * 1.f, 2.f * 2.f, 2.f * 3.f,
+        2.f * 4.f, 2.f * 5.f, 2.f * 6.f,
+        2.f * 7.f, 2.f * 8.f, 2.f * 9.f
+    );
+
+    Math::SquareMatrix<float, 3> result = 2.f * matrix1;
+
+    auto equal = result == expectedResult;
+
+    BOOST_CHECK( equal );
+}
+
+// --run_test=MathMatrixTests/AddMatrix3x3Test1
+BOOST_AUTO_TEST_CASE( AddMatrix3x3Test1 )
+{
+    Math::SquareMatrix<float, 3> matrix1
+    ( 1.f, 2.f, 3.f,
+        4.f, 5.f, 6.f,
+        7.f, 8.f, 9.f );
+
+    Math::SquareMatrix<float, 3> matrix2
+    ( 2.f, 3.f, 4.f,
+        5.f, 6.f, 7.f,
+        8.f, 9.f, 10.f );
+
+    Math::SquareMatrix<float, 3> expectedResult
+    (
+        3.f, 5.f, 7.f,
+        9.f, 11.f, 13.f,
+        15.f, 17.f, 19.f
+    );
+
+    Math::SquareMatrix<float, 3> result = matrix1 + matrix2;
+
+    auto equal = result == expectedResult;
+
+    BOOST_CHECK( equal );
+}
+
+// --run_test=MathMatrixTests/AddMatrix4x4Test1
+BOOST_AUTO_TEST_CASE( AddMatrix4x4Test1 )
+{
+    Math::SquareMatrix<float, 4> matrix1
+    ( 1.f, 2.f, 3.f, 4.f,
+        5.f, 6.f, 7.f, 8.f,
+        9.f, 10.f, 11.f, 12.f,
+        13.f, 14.f, 15.f, 16.f );
+
+    Math::SquareMatrix<float, 4> matrix2
+    ( 2.f, 3.f, 4.f, 5.f,
+        6.f, 7.f, 8.f, 9.f,
+        10.f, 11.f, 12.f, 13.f,
+        14.f, 15.f, 16.f, 17.f );
+
+    Math::SquareMatrix<float, 4> expectedResult
+    (
+        3.f, 5.f, 7.f, 9.f,
+        11.f, 13.f, 15.f, 17.f,
+        19.f, 21.f, 23.f, 25.f,
+        27.f, 29.f, 31.f, 33.f );
+
+    Math::SquareMatrix<float, 4> result = matrix1 + matrix2;
+
+    auto equal = result == expectedResult;
+
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=MathMatrixTests/DeterminantMatrix4x4Test1
+BOOST_AUTO_TEST_CASE( DeterminantMatrix4x4Test1 )
+{
+    Math::SquareMatrix<float, 4> matrix1
+    ( 1.5f, -2.f, 3.4f, 4.f,
+        5.4f, 6.f, 7.6f, 8.f,
+        -9.f, 10.f, 11.f, 12.f,
+        13.f, 14.f, 15.f, 16.f );
+
+    float expectedResult = 282.720703f;
+    Math::Vector<float, 4> result = Math::Determinant( matrix1 );
+    auto nearlyEqual = AreNearlyEqual( result.x, expectedResult,1e-2f);
+    BOOST_CHECK( nearlyEqual );
+}
+
+// --run_test=MathMatrixTests/DeterminantMatrix3x3Test1
+BOOST_AUTO_TEST_CASE( DeterminantMatrix3x3Test1 )
+{
+    Math::SquareMatrix<float, 3> matrix1
+      ( 1.5f, -2.f, 3.4f,
+        5.4f,  6.f, 7.6f,
+       -9.f,  10.f, 11.f );
+
+    float expectedResult = 607.799988f;
+    Math::Vector<float, 3> result = Math::Determinant( matrix1 );
+    auto nearlyEqual = AreNearlyEqual( result.x, expectedResult, 1e-2f );
+    BOOST_CHECK( nearlyEqual );
+}
+
+
+// --run_test=MathMatrixTests/PbrtTest1
+BOOST_AUTO_TEST_CASE( PbrtTest1 )
+{
+    pbrt::SquareMatrix<3> matrix1
+    ( 1.5f, -2.f, 3.4f,
+        5.4f, 6.f, 7.6f,
+        -9.f, 10.f, 11.f );
+
+    auto result = pbrt::Determinant( matrix1 );
+
+    if ( result )
+    {
+        BOOST_CHECK( result != 0 );
+    }
+
+}
+
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END( )

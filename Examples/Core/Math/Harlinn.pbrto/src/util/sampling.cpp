@@ -48,10 +48,15 @@ PBRT_CPU_GPU pstd::array<Float, 3> SampleSphericalTriangle(const pstd::array<Poi
     n_ca = Normalize(n_ca);
 
     // Find angles $\alpha$, $\beta$, and $\gamma$ at spherical triangle vertices
+#ifdef PBRT_USES_HCCMATH
+    Float alpha = AngleBetween( n_ab, Vector3f( -n_ca ) );
+    Float beta = AngleBetween( n_bc, Vector3f( -n_ab ) );
+    Float gamma = AngleBetween( n_ca, Vector3f( -n_bc ) );
+#else
     Float alpha = AngleBetween(n_ab, -n_ca);
     Float beta = AngleBetween(n_bc, -n_ab);
     Float gamma = AngleBetween(n_ca, -n_bc);
-
+#endif
     // Uniformly sample triangle area $A$ to compute $A'$
     Float A_pi = alpha + beta + gamma;
     Float Ap_pi = Lerp(u[0], Pi, A_pi);
@@ -134,15 +139,25 @@ PBRT_CPU_GPU Point2f InvertSphericalTriangleSample(const pstd::array<Point3f, 3>
     n_ca = Normalize(n_ca);
 
     // Find angles $\alpha$, $\beta$, and $\gamma$ at spherical triangle vertices
+#ifdef PBRT_USES_HCCMATH
+    Float alpha = AngleBetween( n_ab, Vector3f( -n_ca ) );
+    Float beta = AngleBetween( n_bc, Vector3f( -n_ab ) );
+    Float gamma = AngleBetween( n_ca, Vector3f( -n_bc ) );
+#else
     Float alpha = AngleBetween(n_ab, -n_ca);
     Float beta = AngleBetween(n_bc, -n_ab);
     Float gamma = AngleBetween(n_ca, -n_bc);
+#endif
 
     // Find vertex $\VEC{c'}$ along $\VEC{a}\VEC{c}$ arc for $\w{}$
     Vector3f cp = Normalize(Cross(Cross(b, w), Cross(c, a)));
+#ifdef PBRT_USES_HCCMATH
+    if ( ScalarDot( cp, a + c ) < 0 )
+        cp = -cp;
+#else
     if (Dot(cp, a + c) < 0)
         cp = -cp;
-
+#endif
     // Invert uniform area sampling to find _u0_
     Float u0;
     if (Dot(a, cp) > 0.99999847691f /* 0.1 degrees */)
@@ -155,7 +170,11 @@ PBRT_CPU_GPU Point2f InvertSphericalTriangleSample(const pstd::array<Point3f, 3>
             return Point2f(0.5, 0.5);
         n_cpb = Normalize(n_cpb);
         n_acp = Normalize(n_acp);
+#ifdef PBRT_USES_HCCMATH
+        Float Ap = alpha + AngleBetween( n_ab, n_cpb ) + AngleBetween( n_acp, Vector3f( -n_cpb ) ) - Pi;
+#else
         Float Ap = alpha + AngleBetween(n_ab, n_cpb) + AngleBetween(n_acp, -n_cpb) - Pi;
+#endif
 
         // Compute sample _u0_ that gives the area $A'$
         Float A = alpha + beta + gamma - Pi;
@@ -172,7 +191,11 @@ PBRT_CPU_GPU Point3f SampleSphericalRectangle(Point3f pRef, Point3f s, Vector3f 
     // Compute local reference frame and transform rectangle coordinates
     Float exl = Length(ex), eyl = Length(ey);
     Frame R = Frame::FromXY(ex / exl, ey / eyl);
+#ifdef PBRT_USES_HCCMATH
+    Vector3f dLocal = R.ToLocal( Vector3f( s - pRef ) );
+#else
     Vector3f dLocal = R.ToLocal(s - pRef);
+#endif
     Float z0 = dLocal.z;
 
     // flip 'z' to make it point against 'Q'
@@ -188,8 +211,13 @@ PBRT_CPU_GPU Point3f SampleSphericalRectangle(Point3f pRef, Point3f s, Vector3f 
     Vector3f v10(x1, y0, z0), v11(x1, y1, z0);
     Vector3f n0 = Normalize(Cross(v00, v10)), n1 = Normalize(Cross(v10, v11));
     Vector3f n2 = Normalize(Cross(v11, v01)), n3 = Normalize(Cross(v01, v00));
+#ifdef PBRT_USES_HCCMATH
+    Float g0 = AngleBetween( Vector3f( -n0 ), n1 ), g1 = AngleBetween( Vector3f( -n1 ), n2 );
+    Float g2 = AngleBetween( Vector3f( -n2 ), n3 ), g3 = AngleBetween( Vector3f( -n3 ), n0 );
+#else
     Float g0 = AngleBetween(-n0, n1), g1 = AngleBetween(-n1, n2);
     Float g2 = AngleBetween(-n2, n3), g3 = AngleBetween(-n3, n0);
+#endif
 
     // Compute spherical rectangle solid angle and PDF
     Float solidAngle = g0 + g1 + g2 + g3 - 2 * Pi;
@@ -323,11 +351,17 @@ PBRT_CPU_GPU Point2f InvertSphericalRectangleSample(Point3f pRef, Point3f s, Vec
     Vector3f n3 = Normalize(Cross(v01, v00));
 
     // compute internal angles (gamma_i)
+#ifdef PBRT_USES_HCCMATH
+    Float g0 = AngleBetween( Vector3f( -n0 ), n1 );
+    Float g1 = AngleBetween( Vector3f( -n1 ), n2 );
+    Float g2 = AngleBetween( Vector3f( -n2 ), n3 );
+    Float g3 = AngleBetween( Vector3f( -n3 ), n0 );
+#else
     Float g0 = AngleBetween(-n0, n1);
     Float g1 = AngleBetween(-n1, n2);
     Float g2 = AngleBetween(-n2, n3);
     Float g3 = AngleBetween(-n3, n0);
-
+#endif
     // compute predefined constants
     Float b0 = n0.z, b1 = n2.z, b0sq = Sqr(b0), b1sq = Sqr(b1);
 
@@ -339,8 +373,11 @@ PBRT_CPU_GPU Point2f InvertSphericalRectangleSample(Point3f pRef, Point3f s, Vec
         Vector3f pq = pRect - s;
         return Point2f(Dot(pq, ex) / LengthSquared(ex), Dot(pq, ey) / LengthSquared(ey));
     }
-
+#ifdef PBRT_USES_HCCMATH
+    Vector3f v = R.ToLocal( Vector3f(pRect - pRef) );
+#else
     Vector3f v = R.ToLocal(pRect - pRef);
+#endif
     Float xu = v.x, yv = v.y;
 
     xu = Clamp(xu, x0, x1);  // avoid Infs

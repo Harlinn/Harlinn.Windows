@@ -119,7 +119,14 @@ class TabulatedBSSRDF {
     }
 
     PBRT_CPU_GPU
-    SampledSpectrum Sp(Point3f pi) const { return Sr(Distance(po, pi)); }
+    SampledSpectrum Sp(Point3f pi) const 
+    { 
+#ifdef PBRT_USES_HCCMATH
+        return Sr( ScalarDistance( po, pi ) );
+#else
+        return Sr(Distance(po, pi)); 
+#endif
+    }
 
     PBRT_CPU_GPU
     SampledSpectrum Sr(Float r) const {
