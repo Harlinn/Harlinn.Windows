@@ -660,6 +660,32 @@ namespace Harlinn::Common::Core::Math
         constexpr bool IsCompatible =
             std::is_same_v<typename T1::Traits, typename T2::Traits>;
 
+        template<typename T>
+        struct DistanceType
+        {
+            using type = float;
+        };
+
+        template<>
+        struct DistanceType<double>
+        {
+            using type = double;
+        };
+
+        template<>
+        struct DistanceType<Int64>
+        {
+            using type = double;
+        };
+
+        template<>
+        struct DistanceType<UInt64>
+        {
+            using type = double;
+        };
+
+
+
     }
 
     /// <summary>
@@ -725,22 +751,22 @@ namespace Harlinn::Common::Core::Math
 
         bool operator == ( const TupleSimd& other ) const noexcept
         {
-            return Traits::Equal( simd, other.simd );
+            return Traits::AllEqual( simd, other.simd );
         }
 
         bool operator != ( const TupleSimd& other ) const noexcept
         {
-            return Traits::Equal( simd, other.simd ) == false;
+            return Traits::AllEqual( simd, other.simd ) == false;
         }
 
         bool operator == ( const value_type& value ) const noexcept
         {
-            return Traits::Equal( simd, Traits::Fill( value ) );
+            return Traits::AllEqual( simd, Traits::Fill( value ) );
         }
 
         bool operator != ( const value_type& value ) const noexcept
         {
-            return Traits::Equal( simd, Traits::Fill( value ) ) == false;
+            return Traits::AllEqual( simd, Traits::Fill( value ) ) == false;
         }
 
 
@@ -748,14 +774,14 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename T::Traits>
         bool operator == ( const T& other ) const noexcept
         {
-            return Traits::Equal( simd, Traits::Load( other.values.data() ) );
+            return Traits::AllEqual( simd, Traits::Load( other.values.data() ) );
         }
 
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
         bool operator != ( const T& other ) const noexcept
         {
-            return Traits::Equal( simd, Traits::Load( other.values.data() ) ) == false;
+            return Traits::AllEqual( simd, Traits::Load( other.values.data() ) ) == false;
         }
 
         template<Internal::TupleType T>
@@ -936,14 +962,14 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator == ( const U& other ) const noexcept
         {
-            return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
+            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd );
         }
 
         template<Internal::SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator != ( const U& other ) const noexcept
         {
-            return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
+            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd ) == false;
         }
 
         Simd operator-( ) const noexcept
@@ -1249,14 +1275,14 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator == ( const U& other ) const noexcept
         {
-            return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
+            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd );
         }
 
         template<Internal::SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator != ( const U& other ) const noexcept
         {
-            return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
+            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd ) == false;
         }
 
         Simd operator-( ) const noexcept
@@ -1568,14 +1594,14 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator == ( const U& other ) const noexcept
         {
-            return Traits::Equal( Traits::Load( values.data( ) ), other.simd );
+            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd );
         }
 
         template<Internal::SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         bool operator != ( const U& other ) const noexcept
         {
-            return Traits::Equal( Traits::Load( values.data( ) ), other.simd ) == false;
+            return Traits::AllEqual( Traits::Load( values.data( ) ), other.simd ) == false;
         }
 
         Simd operator-( ) const noexcept
@@ -4337,7 +4363,7 @@ namespace Harlinn::Common::Core::Math
         // Adjust the angles
         auto result = Traits::Add( v1.simd, v2.simd );
         // Less than Pi?
-        auto offset = Traits::LessThan( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
+        auto offset = Traits::Less( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
         offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
         // Add 2Pi to all entries less than -Pi
         result = Traits::Add( result, offset );
@@ -4405,7 +4431,7 @@ namespace Harlinn::Common::Core::Math
         // Adjust the angles
         auto result = Traits::Sub( v1.simd, v2.simd );
         // Less than Pi?
-        auto offset = Traits::LessThan( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
+        auto offset = Traits::Less( result, Traits::Fill( Constants<FloatT>::NegativePi ) );
         offset = Traits::And( offset, Traits::Fill( Constants<FloatT>::PiTimes2 ) );
         // Add 2Pi to all entries less than -Pi
         result = Traits::Add( result, offset );
@@ -7720,7 +7746,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
         using Union = typename Traits::Union;
-        using Select = typename Traits::Select;
+        using Select = typename Traits::SelectType;
         Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, -1.0f } } );
         
         auto matrix2 = matrix[ 2 ];

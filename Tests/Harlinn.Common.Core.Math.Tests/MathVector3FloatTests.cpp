@@ -2233,6 +2233,136 @@ BOOST_AUTO_TEST_CASE( ExpM1Test1 )
 }
 
 
+// --run_test=MathVector3FloatTests/PowTest1
+BOOST_AUTO_TEST_CASE( PowTest1 )
+{
+    constexpr float MaxDeviation = 1e-6f;
+#ifdef _DEBUG
+    constexpr size_t Iterations = 20000;
+    RandomGenerator<float, 20000> generator1( -2.f, 2.f );
+    RandomGenerator<float, 20000> generator2( -120.f, 127.f );
+#else
+    Test::Generators::RangeGenerator<float> generator1( -2.f, 2.f );
+    RandomGenerator<float, 20000> generator2( -120.f, 127.f );
+#endif
+    using Vector = Math::Vector<float, 3>;
+    Vector maxDeviation;
+
+#ifdef _DEBUG
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        auto value1 = generator1( );
+        auto value2 = generator2( );
+#else
+    while ( generator1.InRange( ) )
+    {
+        auto value1 = generator1( );
+        auto value2 = generator2( );
+#endif
+        Vector v1( value1, value1, value1 );
+        Vector v2( value1, value1, value1 );
+
+        Vector result = Math::Pow( v1, v2 );
+        Vector expected(
+            std::pow( v1.x, v2.x ),
+            std::pow( v1.y, v2.y ),
+            std::pow( v1.z, v2.z ) );
+
+        Vector deviation(
+            static_cast< float >( Test::Deviation( expected.x, result.x ) ),
+            static_cast< float >( Test::Deviation( expected.y, result.y ) ),
+            static_cast< float >( Test::Deviation( expected.z, result.z ) ) );
+
+
+        if ( deviation.x > MaxDeviation || deviation.y > MaxDeviation || deviation.z > MaxDeviation )
+        {
+            maxDeviation = Max( maxDeviation, deviation );
+        }
+
+    }
+
+    if ( maxDeviation.x > MaxDeviation || maxDeviation.y > MaxDeviation || maxDeviation.z > MaxDeviation )
+    {
+        BOOST_CHECK( false );
+    }
+}
+
+
+// --run_test=MathVector3FloatTests/DotTest1
+BOOST_AUTO_TEST_CASE( DotTest1 )
+{
+    constexpr float MaxDeviation = 1e-5f;
+    constexpr size_t Iterations = 20000;
+    RandomGenerator<float, 20000> generator( -1e10, 1e10 );
+    using Vector = Math::Vector<float, 3>;
+    double maxDeviation = 0.;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        Vector v1( generator( ), generator( ), generator( ) );
+        Vector v2( generator( ), generator( ), generator( ) );
+
+        auto result = Math::ScalarDot( v1, v2 );
+        auto expected = std::inner_product( v1.begin( ), v1.end( ), v2.begin( ), 0.f );
+
+        auto deviation = Test::Deviation( expected, result );
+
+        if ( deviation > maxDeviation )
+        {
+            maxDeviation = Math::Max( maxDeviation, deviation );
+        }
+
+    }
+
+    if ( maxDeviation > MaxDeviation )
+    {
+        BOOST_CHECK( false );
+    }
+}
+
+// --run_test=MathVector3FloatTests/CrossTest1
+BOOST_AUTO_TEST_CASE( CrossTest1 )
+{
+    constexpr float MaxDeviation = 1e-5f;
+    constexpr size_t Iterations = 20000;
+    RandomGenerator<float, 20000> generator( -1e10, 1e10 );
+    using Vector = Math::Vector<float, 3>;
+    Vector maxDeviation;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        Vector v1( generator( ), generator( ), generator( ) );
+        Vector v2( generator( ), generator( ), generator( ) );
+
+        Vector result = Math::Cross( v1, v2 );
+
+        auto CrossProduct = []( const Vector& v1, const Vector& v2 )
+            {
+                Vector result;
+                result[ 0 ] = v1[ 1 ] * v2[ 2 ] - v1[ 2 ] * v2[ 1 ];
+                result[ 1 ] = v1[ 2 ] * v2[ 0 ] - v1[ 0 ] * v2[ 2 ];
+                result[ 2 ] = v1[ 0 ] * v2[ 1 ] - v1[ 1 ] * v2[ 0 ];
+                return result;
+            };
+        Vector expected = CrossProduct( v1, v2 );
+
+        Vector deviation(
+            static_cast< float >( Test::Deviation( expected.x, result.x ) ),
+            static_cast< float >( Test::Deviation( expected.y, result.y ) ),
+            static_cast< float >( Test::Deviation( expected.z, result.z ) ) );
+
+
+        if ( deviation.x > MaxDeviation || deviation.y > MaxDeviation || deviation.z > MaxDeviation )
+        {
+            maxDeviation = Max( maxDeviation, deviation );
+        }
+
+    }
+
+    if ( maxDeviation.x > MaxDeviation || maxDeviation.y > MaxDeviation || maxDeviation.z > MaxDeviation )
+    {
+        BOOST_CHECK( false );
+    }
+}
+
 
 
 

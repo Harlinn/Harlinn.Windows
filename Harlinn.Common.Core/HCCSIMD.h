@@ -1711,7 +1711,7 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr UInt32 V7 = 7;
         };
     public:
-        using Select = std::conditional_t<UseShortSIMDType, m128Select, m256Select>;
+        using SelectType = std::conditional_t<UseShortSIMDType, m128Select, m256Select>;
 
         static SIMDType Zero( ) noexcept
         {
@@ -2546,12 +2546,12 @@ namespace Harlinn::Common::Core::SIMD
 
 
         /// <summary>
-        /// Devides one float32 vector by another.
+        /// Divides one float32 vector by another.
         /// </summary>
         /// <param name="lhs">float32 vector used for the left-hand side of the operation</param>
         /// <param name="rhs">float32 vector used for the right-hand side of the operation</param>
         /// <remarks>
-        /// Devides the packed single-precision floating-point elements (float32 elements) 
+        /// Divides the packed single-precision floating-point elements (float32 elements) 
         /// in the first source vector, lhs, by the corresponding float32 elements in the second source vector, rhs.
         /// </remarks>
         /// <returns>Result of the division operation</returns>
@@ -2613,6 +2613,143 @@ namespace Harlinn::Common::Core::SIMD
         {
             return _mm_shuffle_ps( v1, v2, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
         }
+
+        /// <summary>
+        /// Defines a control vector for use with Select.
+        /// </summary>
+        /// <param name="index0">
+        /// Determines the source of the first element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index1">
+        /// Determines the source of the second element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index2">
+        /// Determines the source of the third element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index3">
+        /// Determines the source of the fourth element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        static SIMDType SelectControl( UInt32 index0 = 0, UInt32 index1 = 0, UInt32 index2 = 0, UInt32 index3 = 0 ) noexcept 
+            requires( UseShortSIMDType )
+        {
+            auto tmp = _mm_set_epi32( static_cast< int >( index3 ), static_cast< int >( index2 ), static_cast< int >( index1 ), static_cast< int >( index0 ) );
+            tmp = _mm_cmpgt_epi32( tmp, { {0,0,0,0} } );
+            return _mm_castsi128_ps( tmp );
+        }
+
+        /// <summary>
+        /// Defines a control vector for use with Select.
+        /// </summary>
+        /// <param name="index0">
+        /// Determines the source of the first element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index1">
+        /// Determines the source of the second element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index2">
+        /// Determines the source of the third element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index3">
+        /// Determines the source of the fourth element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index4">
+        /// Determines the source of the fifth element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index5">
+        /// Determines the source of the sixth element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index6">
+        /// Determines the source of the seventh element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        /// <param name="index7">
+        /// Determines the source of the eight element of the
+        /// result of the Select. If 0 the select will choose the 
+        /// corresponding element from the first vector, otherwise 
+        /// the corresponding element from the second vector will 
+        /// be selected.
+        /// </param>
+        static SIMDType SelectControl( UInt32 index0 = 0, UInt32 index1 = 0, UInt32 index2 = 0, UInt32 index3 = 0, UInt32 index4 = 0, UInt32 index5 = 0, UInt32 index6 = 0, UInt32 index7 = 0 ) noexcept
+            requires( UseShortSIMDType == false )
+        {
+            auto tmp = _mm256_set_epi32( static_cast< int >( index7 ), static_cast< int >( index6 ), static_cast< int >( index5 ), static_cast< int >( index4 ), static_cast< int >( index3 ), static_cast< int >( index2 ), static_cast< int >( index1 ), static_cast< int >( index0 ) );
+            tmp = _mm256_cmpgt_epi32( tmp, { {0,0,0,0,0,0,0,0} } );
+            return _mm256_castsi256_ps( tmp );
+        }
+
+        /// <summary>
+        /// Performs a per-component selection between two input vectors and returns the resulting vector.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source to select elements from.
+        /// </param>
+        /// <param name="v2">
+        /// The second source to select elements from.
+        /// </param>
+        /// <param name="control">
+        /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+        /// the returned SIMDType corresponding element will be from v1, if an element control is 
+        /// 0xFFFFFFFF, the returned SIMDType corresponding element will be from v2.
+        /// </param>
+        static SIMDType Select( SIMDType v1, SIMDType v2, SIMDType control ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                auto rmm1 = _mm_andnot_ps( control, v1 );
+                auto rmm2 = _mm_and_ps( v2, control );
+                return _mm_or_ps( rmm1, rmm2 );
+            }
+            else
+            {
+                auto rmm1 = _mm256_andnot_ps( control, v1 );
+                auto rmm2 = _mm256_and_ps( v2, control );
+                return _mm256_or_ps( rmm1, rmm2 );
+            }
+        }
+
 
         /// <summary>
         /// Unpack and interleave single-precision (32-bit) floating-point elements 
@@ -3215,7 +3352,22 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType LessThan( SIMDType v1, SIMDType v2 ) noexcept
+        /// <summary>
+        /// Determines whether the elements of v1 are less than 
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is less than the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType Less( SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -3228,6 +3380,78 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Determines whether the elements of v1 are less than or equal to
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is less than or equal to the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType LessOrEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmple_ps( v1, v2 );
+            }
+            else
+            {
+                // _CMP_LE_OQ => 18
+                return _mm256_cmp_ps( v1, v2, 18 );
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the elements of v1 are equal to
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is equal to the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType Equal( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_ps( v1, v2 );
+            }
+            else
+            {
+                // _CMP_EQ_UQ => 8
+                return _mm256_cmp_ps( v1, v2, 8 );
+            }
+        }
+
+
+        /// <summary>
+        /// Determines whether the elements of v1 are greater than
+        /// or equal to the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is greater than or equal to the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
         static SIMDType GreaterOrEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3241,8 +3465,49 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Determines whether the elements of v1 are greater than
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is greater than the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType Greater( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpgt_ps( v1, v2 );
+            }
+            else
+            {
+                // _CMP_GT_OQ => 30
+                return _mm256_cmp_ps( v1, v2, 30 );
+            }
+        }
 
-        static bool Equal( SIMDType v1, SIMDType v2 ) noexcept
+        /// <summary>
+        /// Compares <c>Size</c> elements of v1 and v2,
+        /// returning true if all are equal.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// Returns <c>true</c> if the lower <c>Size</c> elements of v1 and v2
+        /// are equal.
+        /// </returns>
+        static bool AllEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
@@ -4857,7 +5122,7 @@ namespace Harlinn::Common::Core::SIMD
 
         
 
-        static bool Equal( SIMDType v1, SIMDType v2 ) noexcept
+        static bool AllEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {

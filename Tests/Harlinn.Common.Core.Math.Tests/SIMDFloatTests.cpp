@@ -2765,7 +2765,7 @@ BOOST_AUTO_TEST_CASE( At1Test1 )
     auto expected = Traits::Fill( 1.f );
     auto rmm1 = Traits::Load( arg1 );
     auto rmmAt = Traits::At<0>( rmm1 );
-    auto equal = Traits::Equal( rmmAt, expected );
+    auto equal = Traits::AllEqual( rmmAt, expected );
     BOOST_CHECK( equal );
 }
 
@@ -2780,11 +2780,11 @@ BOOST_AUTO_TEST_CASE( At2Test1 )
     auto expected2 = SIMD::Traits<float, 4>::Fill( 2.f );
     auto rmm1 = Traits::Load( arg1 );
     auto rmmAt = Traits::At<0>( rmm1 );
-    auto equal = Traits::Equal( rmmAt, expected1 );
+    auto equal = Traits::AllEqual( rmmAt, expected1 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<1>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected2 );
+    equal = Traits::AllEqual( rmmAt, expected2 );
     BOOST_CHECK( equal );
 }
 
@@ -2800,15 +2800,15 @@ BOOST_AUTO_TEST_CASE( At3Test1 )
     auto expected3 = SIMD::Traits<float, 4>::Fill( 3.f );
     auto rmm1 = Traits::Load( arg1 );
     auto rmmAt = Traits::At<0>( rmm1 );
-    auto equal = Traits::Equal( rmmAt, expected1 );
+    auto equal = Traits::AllEqual( rmmAt, expected1 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<1>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected2 );
+    equal = Traits::AllEqual( rmmAt, expected2 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<2>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected3 );
+    equal = Traits::AllEqual( rmmAt, expected3 );
     BOOST_CHECK( equal );
 }
 
@@ -2825,19 +2825,19 @@ BOOST_AUTO_TEST_CASE( At4Test1 )
     auto expected4 = SIMD::Traits<float, 4>::Fill( 4.f );
     auto rmm1 = Traits::Load( arg1 );
     auto rmmAt = Traits::At<0>( rmm1 );
-    auto equal = Traits::Equal( rmmAt, expected1 );
+    auto equal = Traits::AllEqual( rmmAt, expected1 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<1>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected2 );
+    equal = Traits::AllEqual( rmmAt, expected2 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<2>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected3 );
+    equal = Traits::AllEqual( rmmAt, expected3 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<3>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected4 );
+    equal = Traits::AllEqual( rmmAt, expected4 );
     BOOST_CHECK( equal );
 }
 
@@ -2855,23 +2855,23 @@ BOOST_AUTO_TEST_CASE( At5Test1 )
     auto expected5 = SIMD::Traits<float, 8>::Fill( 5.f );
     auto rmm1 = Traits::Load( arg1 );
     auto rmmAt = Traits::At<0>( rmm1 );
-    auto equal = Traits::Equal( rmmAt, expected1 );
+    auto equal = Traits::AllEqual( rmmAt, expected1 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<1>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected2 );
+    equal = Traits::AllEqual( rmmAt, expected2 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<2>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected3 );
+    equal = Traits::AllEqual( rmmAt, expected3 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<3>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected4 );
+    equal = Traits::AllEqual( rmmAt, expected4 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<4>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected5 );
+    equal = Traits::AllEqual( rmmAt, expected5 );
     BOOST_CHECK( equal );
 }
 
@@ -2890,27 +2890,27 @@ BOOST_AUTO_TEST_CASE( At6Test1 )
     auto expected6 = SIMD::Traits<float, 8>::Fill( 6.f );
     auto rmm1 = Traits::Load( arg1 );
     auto rmmAt = Traits::At<0>( rmm1 );
-    auto equal = Traits::Equal( rmmAt, expected1 );
+    auto equal = Traits::AllEqual( rmmAt, expected1 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<1>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected2 );
+    equal = Traits::AllEqual( rmmAt, expected2 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<2>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected3 );
+    equal = Traits::AllEqual( rmmAt, expected3 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<3>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected4 );
+    equal = Traits::AllEqual( rmmAt, expected4 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<4>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected5 );
+    equal = Traits::AllEqual( rmmAt, expected5 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<5>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected6 );
+    equal = Traits::AllEqual( rmmAt, expected6 );
     BOOST_CHECK( equal );
 }
 
@@ -2930,31 +2930,31 @@ BOOST_AUTO_TEST_CASE( At7Test1 )
     auto expected7 = SIMD::Traits<float, 8>::Fill( 7.f );
     auto rmm1 = Traits::Load( arg1 );
     auto rmmAt = Traits::At<0>( rmm1 );
-    auto equal = Traits::Equal( rmmAt, expected1 );
+    auto equal = Traits::AllEqual( rmmAt, expected1 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<1>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected2 );
+    equal = Traits::AllEqual( rmmAt, expected2 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<2>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected3 );
+    equal = Traits::AllEqual( rmmAt, expected3 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<3>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected4 );
+    equal = Traits::AllEqual( rmmAt, expected4 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<4>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected5 );
+    equal = Traits::AllEqual( rmmAt, expected5 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<5>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected6 );
+    equal = Traits::AllEqual( rmmAt, expected6 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<6>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected7 );
+    equal = Traits::AllEqual( rmmAt, expected7 );
     BOOST_CHECK( equal );
 }
 
@@ -2976,35 +2976,35 @@ BOOST_AUTO_TEST_CASE( At8Test1 )
     auto expected8 = SIMD::Traits<float, 8>::Fill( 8.f );
     auto rmm1 = Traits::Load( arg1 );
     auto rmmAt = Traits::At<0>( rmm1 );
-    auto equal = Traits::Equal( rmmAt, expected1 );
+    auto equal = Traits::AllEqual( rmmAt, expected1 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<1>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected2 );
+    equal = Traits::AllEqual( rmmAt, expected2 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<2>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected3 );
+    equal = Traits::AllEqual( rmmAt, expected3 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<3>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected4 );
+    equal = Traits::AllEqual( rmmAt, expected4 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<4>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected5 );
+    equal = Traits::AllEqual( rmmAt, expected5 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<5>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected6 );
+    equal = Traits::AllEqual( rmmAt, expected6 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<6>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected7 );
+    equal = Traits::AllEqual( rmmAt, expected7 );
     BOOST_CHECK( equal );
 
     rmmAt = Traits::At<7>( rmm1 );
-    equal = Traits::Equal( rmmAt, expected8 );
+    equal = Traits::AllEqual( rmmAt, expected8 );
     BOOST_CHECK( equal );
 
 }
