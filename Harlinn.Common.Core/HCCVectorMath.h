@@ -5656,6 +5656,10 @@ namespace Harlinn::Common::Core::Math
 
     // DifferenceOfProducts
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U> && Internal::IsCompatible<S, V>
     inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5670,6 +5674,10 @@ namespace Harlinn::Common::Core::Math
         */
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5679,6 +5687,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( v1, v2, v3, Simd( Traits::Load( v4.values) ) );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5688,6 +5700,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), v4  );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5697,6 +5713,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5705,6 +5725,11 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename T::Simd;
         return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, v4 );
     }
+    
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5714,6 +5739,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5723,6 +5752,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5732,6 +5765,11 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
     //
+    
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5741,6 +5779,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, v3, Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5750,6 +5792,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), v4 );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5759,6 +5805,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline U DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5767,6 +5817,11 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename S::Simd;
         return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, v4 );
     }
+    
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline U DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5776,6 +5831,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline V DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5785,6 +5844,10 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline typename S::Simd DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5796,6 +5859,11 @@ namespace Harlinn::Common::Core::Math
 
     // SumOfProducts
 
+    
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V >
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
     inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5810,6 +5878,10 @@ namespace Harlinn::Common::Core::Math
         */
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5819,6 +5891,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( v1, v2, v3, Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5828,6 +5904,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), v4 );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5837,6 +5917,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( v1, v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5845,6 +5929,11 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename T::Simd;
         return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, v4 );
     }
+    
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5854,6 +5943,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5863,6 +5956,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline S SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5872,6 +5969,11 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( v1, Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
     //
+    
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5881,6 +5983,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, v3, Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5890,6 +5996,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), v4 );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline T SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5899,6 +6009,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( Simd( Traits::Load( v1.values ) ), v2, Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline U SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5907,6 +6021,11 @@ namespace Harlinn::Common::Core::Math
         using Simd = typename S::Simd;
         return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, v4 );
     }
+    
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline U SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5916,6 +6035,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), v3, Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline V SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -5925,6 +6048,10 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), v4 );
     }
 
+    /// <summary>
+    /// Calculates the sum of the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>
     inline typename S::Simd SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
@@ -7745,7 +7872,6 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
-        using Union = typename Traits::Union;
         using Select = typename Traits::SelectType;
         Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, -1.0f } } );
         

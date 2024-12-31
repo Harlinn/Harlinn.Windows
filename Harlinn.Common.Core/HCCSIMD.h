@@ -151,6 +151,56 @@ namespace Harlinn::Common::Core::SIMD
         using Type = __m512d;
     };
 
+    template<typename T>
+    struct TraitLimits : public std::false_type
+    { };
+
+    namespace Internal
+    {
+        template<typename ElementT, typename SIMDT>
+        struct TraitLimitsImpl : public std::true_type
+        {
+            using ElementType = ElementT;
+            using SIMDType = SIMDT;
+            static constexpr size_t Size = sizeof( SIMDType ) / sizeof( ElementType );
+        };
+
+        struct TraitsBase : public std::true_type
+        { };
+    }
+    template<>
+    struct TraitLimits<char> : public Internal::TraitLimitsImpl<char,__m256i>
+    { };
+    template<>
+    struct TraitLimits<Byte> : public Internal::TraitLimitsImpl<Byte, __m256i>
+    { };
+    template<>
+    struct TraitLimits<SByte> : public Internal::TraitLimitsImpl<SByte, __m256i>
+    { };
+    template<>
+    struct TraitLimits<Int16> : public Internal::TraitLimitsImpl<Int16, __m256i>
+    { };
+    template<>
+    struct TraitLimits<UInt16> : public Internal::TraitLimitsImpl<UInt16, __m256i>
+    { };
+    template<>
+    struct TraitLimits<Int32> : public Internal::TraitLimitsImpl<Int32, __m256i>
+    { };
+    template<>
+    struct TraitLimits<UInt32> : public Internal::TraitLimitsImpl<UInt32, __m256i>
+    { };
+    template<>
+    struct TraitLimits<Int64> : public Internal::TraitLimitsImpl<Int64, __m256i>
+    { };
+    template<>
+    struct TraitLimits<UInt64> : public Internal::TraitLimitsImpl<UInt64, __m256i>
+    { };
+    template<>
+    struct TraitLimits<float> : public Internal::TraitLimitsImpl<float, __m256>
+    { };
+    template<>
+    struct TraitLimits<double> : public Internal::TraitLimitsImpl<double, __m256>
+    { };
 
 
     template<typename T, size_t N>
@@ -160,10 +210,11 @@ namespace Harlinn::Common::Core::SIMD
     };
 
 
-    template<size_t N>
-    struct Traits<char, N> : public std::true_type
+    template<typename T, size_t N>
+    struct Traits8Bit : public Internal::TraitsBase
     {
-        using Type = char;
+        using Type = T;
+        using UIntType = Byte;
         static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 16;
@@ -177,12 +228,6 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
         static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
-
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -208,10 +253,967 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static SIMDType Mask( UIntType value ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Size == 1 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, value );
+                }
+                else if constexpr ( Size == 2 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, value, value );
+                }
+                else if constexpr ( Size == 3 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, value, value, value );
+                }
+                else if constexpr ( Size == 4 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 5 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 6 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 7 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 8 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 9 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 10 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 11 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 12 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 13 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, 0x00, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 14 )
+                {
+                    return _mm_set_epi8( 0x00, 0x00, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 15 )
+                {
+                    return _mm_set_epi8( 0x00, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else
+                {
+                    return _mm_set_epi8( value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+            }
+            else
+            {
+                if constexpr ( Size == 17 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 18 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 19 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 20 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 21 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 22 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 23 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        0x00, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 24 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, 0x00,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 25 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, 0x00, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 26 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x00, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 27 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        0x00, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 28 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 29 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, 0x00, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 30 )
+                {
+                    return _mm256_set_epi8( 0x00, 0x00, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else if constexpr ( Size == 31 )
+                {
+                    return _mm256_set_epi8( 0x00, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                else
+                {
+                    return _mm256_set_epi8( value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value,
+                                        value, value, value, value );
+                }
+                
+            }
+        }
+
+
+        static SIMDType Set( Type value1 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value2, Type value1 ) noexcept
+            requires (Size > 1)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 2)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 3)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 4)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 5)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value7, Type value6, Type value5, Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 6)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value8, Type value7, Type value6, Type value5, 
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 7)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value9, Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 8)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+
+        static SIMDType Set( Type value10, Type value9, Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 9)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+        static SIMDType Set( Type value11, Type value10, Type value9, Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 10)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    0x00, std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+        static SIMDType Set( Type value12, Type value11, Type value10, Type value9, 
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 11)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, 0x00,
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+        static SIMDType Set( Type value13, Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 12)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, 0x00, std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+        static SIMDType Set( Type value14, Type value13, Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 13)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, 0x00, std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+        static SIMDType Set( Type value15, Type value14, Type value13, Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 14)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( 0x00, std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+        static SIMDType Set( Type value16, Type value15, Type value14, Type value13, 
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 15)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_set_epi8( std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast<char>( value1 ) );
+            }
+            else
+            {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+            }
+        }
+        static SIMDType Set( Type value17, Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 16)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value18, Type value17, Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 17)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value19, Type value18, Type value17, Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 18)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value20, Type value19, Type value18, Type value17, 
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 19)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value21, Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 20)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value22, Type value21, Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 21)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value23, Type value22, Type value21, Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 22)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value24, Type value23, Type value22, Type value21, 
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 23)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value25, Type value24, Type value23, Type value22, Type value21,
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 24)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, 0x00, std::bit_cast< char >( value25 ),
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value26, Type value25, Type value24, Type value23, Type value22, Type value21,
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 25)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, 0x00, std::bit_cast< char >( value26 ), std::bit_cast< char >( value25 ),
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value27, Type value26, Type value25, Type value24, Type value23, Type value22, Type value21,
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 26)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    0x00, std::bit_cast< char >( value27 ), std::bit_cast< char >( value26 ), std::bit_cast< char >( value25 ),
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value28, Type value27, Type value26, Type value25, 
+                                Type value24, Type value23, Type value22, Type value21,
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 27)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, 0x00, 
+                                    std::bit_cast< char >( value28 ), std::bit_cast< char >( value27 ), std::bit_cast< char >( value26 ), std::bit_cast< char >( value25 ),
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value29, Type value28, Type value27, Type value26, Type value25,
+                                Type value24, Type value23, Type value22, Type value21,
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 28)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, 0x00, std::bit_cast< char >( value29 ),
+                                    std::bit_cast< char >( value28 ), std::bit_cast< char >( value27 ), std::bit_cast< char >( value26 ), std::bit_cast< char >( value25 ),
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value30, Type value29, Type value28, Type value27, Type value26, Type value25,
+                                Type value24, Type value23, Type value22, Type value21,
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 29)
+        {
+                return _mm256_set_epi8( 0x00, 0x00, std::bit_cast< char >( value30 ), std::bit_cast< char >( value29 ),
+                                    std::bit_cast< char >( value28 ), std::bit_cast< char >( value27 ), std::bit_cast< char >( value26 ), std::bit_cast< char >( value25 ),
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value31, Type value30, Type value29, Type value28, Type value27, Type value26, Type value25,
+                                Type value24, Type value23, Type value22, Type value21,
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 30)
+        {
+                return _mm256_set_epi8( 0x00, std::bit_cast< char >( value31 ), std::bit_cast< char >( value30 ), std::bit_cast< char >( value29 ),
+                                    std::bit_cast< char >( value28 ), std::bit_cast< char >( value27 ), std::bit_cast< char >( value26 ), std::bit_cast< char >( value25 ),
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+        static SIMDType Set( Type value32, Type value31, Type value30, Type value29, 
+                                Type value28, Type value27, Type value26, Type value25,
+                                Type value24, Type value23, Type value22, Type value21,
+                                Type value20, Type value19, Type value18, Type value17,
+                                Type value16, Type value15, Type value14, Type value13,
+                                Type value12, Type value11, Type value10, Type value9,
+                                Type value8, Type value7, Type value6, Type value5,
+                                Type value4, Type value3, Type value2, Type value1 ) noexcept
+            requires (Size > 31)
+        {
+                return _mm256_set_epi8( std::bit_cast< char >( value32 ), std::bit_cast< char >( value31 ), std::bit_cast< char >( value30 ), std::bit_cast< char >( value29 ),
+                                    std::bit_cast< char >( value28 ), std::bit_cast< char >( value27 ), std::bit_cast< char >( value26 ), std::bit_cast< char >( value25 ),
+                                    std::bit_cast< char >( value24 ), std::bit_cast< char >( value23 ), std::bit_cast< char >( value22 ), std::bit_cast< char >( value21 ),
+                                    std::bit_cast< char >( value20 ), std::bit_cast< char >( value19 ), std::bit_cast< char >( value18 ), std::bit_cast< char >( value17 ),
+                                    std::bit_cast< char >( value16 ), std::bit_cast< char >( value15 ), std::bit_cast< char >( value14 ), std::bit_cast< char >( value13 ),
+                                    std::bit_cast< char >( value12 ), std::bit_cast< char >( value11 ), std::bit_cast< char >( value10 ), std::bit_cast< char >( value9 ),
+                                    std::bit_cast< char >( value8 ), std::bit_cast< char >( value7 ), std::bit_cast< char >( value6 ), std::bit_cast< char >( value5 ),
+                                    std::bit_cast< char >( value4 ), std::bit_cast< char >( value3 ), std::bit_cast< char >( value2 ), std::bit_cast< char >( value1 ) );
+        }
+
+
+
+
+
+
+
+
         static SIMDType Load( const Type* src ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
+                /*
+                if constexpr ( Size == 1 )
+                {
+                    _mm_cvtsi32_si128( )
+                }
+                */
                 return _mm_load_si128( reinterpret_cast<const __m128i*>( src ) );
             }
             else
@@ -317,320 +1319,26 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_sub_epi8( lhs, rhs );
             }
         }
-
-
     };
+
+
     template<size_t N>
-    struct Traits<SByte, N> : public std::true_type
-    {
-        using Type = SByte;
-        static constexpr size_t Size = N;
-    private:
-        static constexpr bool UseShortSIMDType = N <= 16;
-        using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
-    public:
-        static constexpr DataType Id = DataTypeTraits::Id;
-        static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
-        using SIMDType = typename DataTypeTraits::Type;
-        using ArrayType = std::array<Type, N>;
-        static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
-        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
-        static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
-        static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+    struct Traits<char, N> : public Traits8Bit<char, N>
+    { };
 
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
-
-        static SIMDType Zero( ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_setzero_si128( );
-            }
-            else
-            {
-                return _mm256_setzero_si256( );
-            }
-        }
-
-        static SIMDType Fill( Type value ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_set1_epi8( std::bit_cast<char>( value ) );
-            }
-            else
-            {
-                return _mm256_set1_epi8( std::bit_cast<char>( value ) );
-            }
-        }
-
-        static SIMDType Load( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_load_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_load_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static SIMDType UnalignedLoad( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_loadu_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static void Store( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_store_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_store_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_storeu_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_storeu_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        /// <summary>
-        /// Adds two int8 vectors.
-        /// </summary>
-        /// <param name="lhs">int8 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">int8 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// Adds packed signed 8-bit integers from source vector lhs and corresponding bits of source 
-        /// vector rhs and stores the packed integer result in the destination vector. When an individual 
-        /// result is too large to be represented in 8 bits (overflow), the result is wrapped around and 
-        /// the low 8 bits are written to the destination vector (that is, the carry is ignored).
-        /// You must control the range of values operated upon to prevent undetected overflow conditions.
-        /// </remarks>
-        /// <returns>Result of the addition operation.</returns>
-        static SIMDType Add( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_add_epi8( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_add_epi8( lhs, rhs );
-            }
-        }
-
-        /// <summary>
-        /// Subtracts int8 vectors.
-        /// </summary>
-        /// <param name="lhs">int8 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">int8 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// <p>
-        /// Subtracts packed signed 8-bit integers of the second source vector rhs from 
-        /// corresponding bits of the first source vector lhs. When an individual result 
-        /// is too large to be represented in 8 bits (overflow), the result is wrapped around 
-        /// and the low 8 bits are written to the destination vector (that is, the carry 
-        /// is ignored).
-        /// </p>
-        /// <p>
-        /// You must control the range of values operated upon to prevent undetected 
-        /// overflow conditions.
-        /// </p>
-        /// </remarks>
-        /// <returns>Returns the result of the subtraction operation.</returns>
-        static SIMDType Sub( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_sub_epi8( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_sub_epi8( lhs, rhs );
-            }
-        }
-
-    };
     template<size_t N>
-    struct Traits<Byte, N> : public std::true_type
-    {
-        using Type = Byte;
-        static constexpr size_t Size = N;
-    private:
-        static constexpr bool UseShortSIMDType = N <= 16;
-        using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
-    public:
-        static constexpr DataType Id = DataTypeTraits::Id;
-        static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
-        using SIMDType = typename DataTypeTraits::Type;
-        using ArrayType = std::array<Type, N>;
-        static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
-        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 16 : 32;
-        static constexpr size_t Capacity = UseShortSIMDType ? 16 : ( ( N + 31 ) & static_cast<Int64>( -32 ) );
-        static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+    struct Traits<SByte, N> : public Traits8Bit<SByte, N>
+    { };
 
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
-
-        static SIMDType Zero( ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_setzero_si128( );
-            }
-            else
-            {
-                return _mm256_setzero_si256( );
-            }
-        }
-
-        static SIMDType Fill( Type value ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_set1_epi8( std::bit_cast<char>( value ) );
-            }
-            else
-            {
-                return _mm256_set1_epi8( std::bit_cast<char>( value ) );
-            }
-        }
-
-        static SIMDType Load( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_load_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_load_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static SIMDType UnalignedLoad( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_loadu_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static void Store( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_store_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_store_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_storeu_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_storeu_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        /// <summary>
-        /// Adds two uint8 vectors.
-        /// </summary>
-        /// <param name="lhs">uint8 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">uint8 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// Adds packed unsigned 8-bit integers from source vector lhs and corresponding bits of source 
-        /// vector rhs and stores the packed integer result in the destination vector. When an individual 
-        /// result is too large to be represented in 8 bits (overflow), the result is wrapped around and 
-        /// the low 8 bits are written to the destination vector (that is, the carry is ignored).
-        /// You must control the range of values operated upon to prevent undetected overflow conditions.
-        /// </remarks>
-        /// <returns>Result of the addition operation.</returns>
-        static SIMDType Add( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_add_epi8( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_add_epi8( lhs, rhs );
-            }
-        }
-
-        /// <summary>
-        /// Subtracts uint8 vectors.
-        /// </summary>
-        /// <param name="lhs">uint8 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">uint8 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// <p>
-        /// Subtracts packed unsigned 8-bit integers of the second source vector rhs from 
-        /// corresponding bits of the first source vector lhs. When an individual result 
-        /// is too large to be represented in 8 bits (overflow), the result is wrapped around 
-        /// and the low 8 bits are written to the destination vector (that is, the carry 
-        /// is ignored).
-        /// </p>
-        /// <p>
-        /// You must control the range of values operated upon to prevent undetected 
-        /// overflow conditions.
-        /// </p>
-        /// </remarks>
-        /// <returns>Returns the result of the subtraction operation.</returns>
-        static SIMDType Sub( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_sub_epi8( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_sub_epi8( lhs, rhs );
-            }
-        }
-
-
-    };
     template<size_t N>
-    struct Traits<Int16, N> : public std::true_type
+    struct Traits<Byte, N> : public Traits8Bit<Byte, N>
+    { };
+
+
+    template<typename T, size_t N>
+    struct Traits16Bit : public Internal::TraitsBase
     {
-        using Type = Int16;
+        using Type = T;
         static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 8;
@@ -644,12 +1352,6 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 8 : 16;
         static constexpr size_t Capacity = UseShortSIMDType ? 8 : ( ( N + 15 ) & static_cast<Int64>( -16 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
-
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -778,178 +1480,19 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_sub_epi16( lhs, rhs );
             }
         }
-
-
     };
+
     template<size_t N>
-    struct Traits<UInt16, N> : public std::true_type
-    {
-        using Type = UInt16;
-        static constexpr size_t Size = N;
-    private:
-        static constexpr bool UseShortSIMDType = N <= 8;
-        using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
-    public:
-        static constexpr DataType Id = DataTypeTraits::Id;
-        static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
-        using SIMDType = typename DataTypeTraits::Type;
-        using ArrayType = std::array<Type, N>;
-        static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
-        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 8 : 16;
-        static constexpr size_t Capacity = UseShortSIMDType ? 8 : ( ( N + 15 ) & static_cast<Int64>( -16 ) );
-        static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+    struct Traits<Int16, N> : public Traits16Bit<Int16, N>
+    { };
 
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
-
-        static SIMDType Zero( ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_setzero_si128( );
-            }
-            else
-            {
-                return _mm256_setzero_si256( );
-            }
-        }
-
-        static SIMDType Fill( Type value ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_set1_epi16( std::bit_cast<short>( value ) );
-            }
-            else
-            {
-                return _mm256_set1_epi16( std::bit_cast<short>( value ) );
-            }
-        }
-
-        static SIMDType Load( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_load_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_load_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static SIMDType UnalignedLoad( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_loadu_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static void Store( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_store_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_store_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_storeu_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_storeu_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        /// <summary>
-        /// Adds two uint16 vectors.
-        /// </summary>
-        /// <param name="lhs">uint16 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">uint16 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// Adds packed unsigned 16-bit integers from source vector lhs and corresponding bits of source 
-        /// vector rhs and stores the packed integer result in the destination vector. When an individual 
-        /// result is too large to be represented in 16 bits (overflow), the result is wrapped around and 
-        /// the low 16 bits are written to the destination vector (that is, the carry is ignored).
-        /// You must control the range of values operated upon to prevent undetected overflow conditions.
-        /// </remarks>
-        /// <returns>Result of the addition operation.</returns>
-        static SIMDType Add( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_add_epi16( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_add_epi16( lhs, rhs );
-            }
-        }
-
-        /// <summary>
-        /// Subtracts uint16 vectors.
-        /// </summary>
-        /// <param name="lhs">uint16 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">uint16 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// <p>
-        /// Subtracts packed unsigned 16-bit integers of the second source vector rhs from 
-        /// corresponding bits of the first source vector lhs. When an individual result 
-        /// is too large to be represented in 16 bits (overflow), the result is wrapped around 
-        /// and the low 16 bits are written to the destination vector (that is, the carry 
-        /// is ignored).
-        /// </p>
-        /// <p>
-        /// You must control the range of values operated upon to prevent undetected 
-        /// overflow conditions.
-        /// </p>
-        /// </remarks>
-        /// <returns>Returns the result of the subtraction operation.</returns>
-        static SIMDType Sub( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_sub_epi16( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_sub_epi16( lhs, rhs );
-            }
-        }
-
-
-        static SIMDType Mul( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_mulhrs_epi16( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_mulhrs_epi16( lhs, rhs );
-            }
-        }
-
-
-    };
     template<size_t N>
-    struct Traits<Int32, N> : public std::true_type
+    struct Traits<UInt16, N> : public Traits16Bit<UInt16, N>
+    { };
+
+
+    template<typename T,size_t N>
+    struct Traits32Bit : public Internal::TraitsBase
     {
         using Type = Int32;
         static constexpr size_t Size = N;
@@ -965,12 +1508,6 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
-
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -1111,182 +1648,21 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_mul_epi32( lhs, rhs );
             }
         }
-
-
     };
+
     template<size_t N>
-    struct Traits<UInt32, N> : public std::true_type
-    {
-        using Type = UInt32;
-        static constexpr size_t Size = N;
-    private:
-        static constexpr bool UseShortSIMDType = N <= 4;
-        using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
-    public:
-        static constexpr DataType Id = DataTypeTraits::Id;
-        static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
-        using SIMDType = typename DataTypeTraits::Type;
-        using ArrayType = std::array<Type, N>;
-        static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
-        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
-        static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
-        static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+    struct Traits<Int32, N> : public Traits32Bit<Int32, N>
+    { };
 
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
-
-        static SIMDType Zero( ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_setzero_si128( );
-            }
-            else
-            {
-                return _mm256_setzero_si256( );
-            }
-        }
-
-        static SIMDType Fill( Type value ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_set1_epi32( std::bit_cast<int>( value ) );
-            }
-            else
-            {
-                return _mm256_set1_epi32( std::bit_cast<int>( value ) );
-            }
-        }
-
-
-        static SIMDType Load( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_load_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_load_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static SIMDType UnalignedLoad( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_loadu_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static void Store( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_store_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_store_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_storeu_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_storeu_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        /// <summary>
-        /// Adds two uint32 vectors.
-        /// </summary>
-        /// <param name="lhs">uint32 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">uint32 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// Adds packed unsigned 32-bit integers from source vector lhs and corresponding bits of source 
-        /// vector rhs and stores the packed integer result in the destination vector. When an individual 
-        /// result is too large to be represented in 32 bits (overflow), the result is wrapped around and 
-        /// the low 32 bits are written to the destination vector (that is, the carry is ignored).
-        /// You must control the range of values operated upon to prevent undetected overflow conditions.
-        /// </remarks>
-        /// <returns>Result of the addition operation.</returns>
-        static SIMDType Add( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_add_epi32( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_add_epi32( lhs, rhs );
-            }
-        }
-
-        /// <summary>
-        /// Subtracts uint32 vectors.
-        /// </summary>
-        /// <param name="lhs">uint32 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">uint32 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// <p>
-        /// Subtracts packed unsigned 32-bit integers of the second source vector rhs from 
-        /// corresponding bits of the first source vector lhs. When an individual result 
-        /// is too large to be represented in 32 bits (overflow), the result is wrapped around 
-        /// and the low 32 bits are written to the destination vector (that is, the carry 
-        /// is ignored).
-        /// </p>
-        /// <p>
-        /// You must control the range of values operated upon to prevent undetected 
-        /// overflow conditions.
-        /// </p>
-        /// </remarks>
-        /// <returns>Returns the result of the subtraction operation.</returns>
-        static SIMDType Sub( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_sub_epi32( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_sub_epi32( lhs, rhs );
-            }
-        }
-
-
-        static SIMDType Mul( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_mul_epu32( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_mul_epu32( lhs, rhs );
-            }
-        }
-
-
-
-    };
     template<size_t N>
-    struct Traits<Int64, N> : public std::true_type
+    struct Traits<UInt32, N> : public Traits32Bit<UInt32, N>
+    { };
+
+
+    template<typename T, size_t N>
+    struct Traits64Bit : public Internal::TraitsBase
     {
-        using Type = Int64;
+        using Type = T;
         static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 2;
@@ -1300,12 +1676,6 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 2 : 4;
         static constexpr size_t Capacity = UseShortSIMDType ? 2 : ( ( N + 3 ) & static_cast<Int64>( -4 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
-
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
 
         static SIMDType Zero( ) noexcept
         {
@@ -1464,196 +1834,19 @@ namespace Harlinn::Common::Core::SIMD
                 return  prod;
             }
         }
-
     };
+
+
     template<size_t N>
-    struct Traits<UInt64, N> : public std::true_type
-    {
-        using Type = UInt64;
-        static constexpr size_t Size = N;
-    private:
-        static constexpr bool UseShortSIMDType = N <= 2;
-        using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128i>, SIMD::DataTypeTraits<DataType::m256i> >;
-    public:
-        static constexpr DataType Id = DataTypeTraits::Id;
-        static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
-        using SIMDType = typename DataTypeTraits::Type;
-        using ArrayType = std::array<Type, N>;
-        static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
-        static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 2 : 4;
-        static constexpr size_t Capacity = UseShortSIMDType ? 2 : ( ( N + 3 ) & static_cast<Int64>( -4 ) );
-        static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
+    struct Traits<Int64, N> : public Traits64Bit<Int64, N>
+    { };
 
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
-
-        static SIMDType Zero( ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_setzero_si128( );
-            }
-            else
-            {
-                return _mm256_setzero_si256( );
-            }
-        }
-
-        static SIMDType Fill( Type value ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_set1_epi64x( std::bit_cast<long long>( value ) );
-            }
-            else
-            {
-                return _mm256_set1_epi64x( std::bit_cast<long long>( value ) );
-            }
-        }
-
-        static SIMDType Load( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_load_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_load_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static SIMDType UnalignedLoad( const Type* src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_loadu_si128( reinterpret_cast<const __m128i*>( src ) );
-            }
-            else
-            {
-                return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( src ) );
-            }
-        }
-
-        static void Store( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_store_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_store_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        static void UnalignedStore( Type* dest, SIMDType src ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                _mm_storeu_si128( reinterpret_cast<__m128i*>( dest ), src );
-            }
-            else
-            {
-                _mm256_storeu_si256( reinterpret_cast<__m128i*>( dest ), src );
-            }
-        }
-
-        /// <summary>
-        /// Adds two uint64 vectors.
-        /// </summary>
-        /// <param name="lhs">uint64 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">uint64 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// Adds packed unsigned 64-bit integers from source vector lhs and corresponding bits of source 
-        /// vector rhs and stores the packed integer result in the destination vector. When an individual 
-        /// result is too large to be represented in 64 bits (overflow), the result is wrapped around and 
-        /// the low 64 bits are written to the destination vector (that is, the carry is ignored).
-        /// You must control the range of values operated upon to prevent undetected overflow conditions.
-        /// </remarks>
-        /// <returns>Result of the addition operation.</returns>
-        static SIMDType Add( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_add_epi64( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_add_epi64( lhs, rhs );
-            }
-        }
-
-        /// <summary>
-        /// Subtracts uint64 vectors.
-        /// </summary>
-        /// <param name="lhs">uint64 vector used for the left-hand side of the operation</param>
-        /// <param name="rhs">uint64 vector used for the right-hand side of the operation</param>
-        /// <remarks>
-        /// <p>
-        /// Subtracts packed unsigned 64-bit integers of the second source vector rhs from 
-        /// corresponding bits of the first source vector lhs. When an individual result 
-        /// is too large to be represented in 64 bits (overflow), the result is wrapped around 
-        /// and the low 64 bits are written to the destination vector (that is, the carry 
-        /// is ignored).
-        /// </p>
-        /// <p>
-        /// You must control the range of values operated upon to prevent undetected 
-        /// overflow conditions.
-        /// </p>
-        /// </remarks>
-        /// <returns>Returns the result of the subtraction operation.</returns>
-        static SIMDType Sub( SIMDType lhs, SIMDType rhs ) noexcept
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_sub_epi64( lhs, rhs );
-            }
-            else
-            {
-                return _mm256_sub_epi64( lhs, rhs );
-            }
-        }
-
-
-        SIMDType Mul( SIMDType a, SIMDType b )
-        {
-            if constexpr ( UseShortSIMDType )
-            {
-                SIMDType bswap = _mm_shuffle_epi32( b, 0xB1 );
-                SIMDType prodlh = _mm_mullo_epi32( a, bswap );
-
-                SIMDType prodlh2 = _mm_srli_epi64( prodlh, 32 );
-                SIMDType prodlh3 = _mm_add_epi32( prodlh2, prodlh );
-                SIMDType prodlh4 = _mm_and_si128( prodlh3, _mm_set1_epi64x( 0x00000000FFFFFFFF ) );
-
-                SIMDType prodll = _mm_mul_epu32( a, b );
-                SIMDType prod = _mm_add_epi64( prodll, prodlh4 );
-                return  prod;
-            }
-            else
-            {
-                SIMDType bswap = _mm256_shuffle_epi32( b, 0xB1 );
-                SIMDType prodlh = _mm256_mullo_epi32( a, bswap );
-
-                SIMDType prodlh2 = _mm256_srli_epi64( prodlh, 32 );
-                SIMDType prodlh3 = _mm256_add_epi32( prodlh2, prodlh );
-                SIMDType prodlh4 = _mm256_and_si256( prodlh3, _mm256_set1_epi64x( 0x00000000FFFFFFFF ) );
-
-                SIMDType prodll = _mm256_mul_epu32( a, b );
-                SIMDType prod = _mm256_add_epi64( prodll, prodlh4 );
-                return  prod;
-            }
-        }
-
-
-
-    };
     template<size_t N>
-    struct Traits<float, N> : public std::true_type
+    struct Traits<UInt64, N> : public Traits64Bit<UInt64, N>
+    { };
+
+    template<size_t N>
+    struct Traits<float, N> : public Internal::TraitsBase
     {
         using Type = float;
         using UIntType = UInt32;
@@ -1671,11 +1864,6 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t Capacity = UseShortSIMDType ? 4 : ( ( N + 7 ) & static_cast<Int64>( -8 ) );
         static constexpr size_t SIMDIterations = ( Capacity * sizeof( Type ) ) / SIMDTypeSize;
 
-        struct Union
-        {
-            SIMDType simd;
-            ArrayType values;
-        };
     private:
         struct m128Select
         {
@@ -3902,12 +4090,12 @@ namespace Harlinn::Common::Core::SIMD
             }
 
         }
-
-
-
     };
+
+
+
     template<size_t N>
-    struct Traits<double, N> : public std::true_type
+    struct Traits<double, N> : public Internal::TraitsBase
     {
         using Type = double;
         static constexpr size_t Size = N;
@@ -4558,12 +4746,6 @@ namespace Harlinn::Common::Core::SIMD
                     auto r2 = _mm_mul_pd( _mm_mul_pd( low, _mm_permute_pd( low, 1 ) ), _mm_mul_pd( high, _mm_permute_pd( high, 1 ) ) );
                     return _mm256_broadcastsd_pd( r2 );
                 }
-                /*
-                auto rmm1 = _mm256_add_pd( v, _mm256_permute_pd( v, 0b0101 ) );
-                auto low = _mm256_castpd256_pd128( rmm1 );
-                auto high = _mm256_extractf128_pd( rmm1, 1 );
-                return _mm256_broadcastsd_pd( _mm_add_pd( low, high ) );
-                */
             }
         }
 

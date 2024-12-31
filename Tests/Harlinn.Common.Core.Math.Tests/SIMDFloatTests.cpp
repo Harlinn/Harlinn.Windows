@@ -29,6 +29,55 @@ namespace
         ~LocalFixture( ) {}
     };
 
+    template<typename ValueT>
+        requires std::is_same_v<ValueT,char> || std::is_same_v<ValueT, Byte> || 
+                    std::is_same_v<ValueT, SByte> || std::is_same_v<ValueT, Int16> || 
+                    std::is_same_v<ValueT, UInt16> || std::is_same_v<ValueT, Int32> || 
+                    std::is_same_v<ValueT, UInt32> || std::is_same_v<ValueT, Int64> || 
+                    std::is_same_v<ValueT, UInt64> || std::is_same_v<ValueT, float> || 
+                    std::is_same_v<ValueT, double>
+    std::vector<ValueT> Add( const std::vector<ValueT>& v1, 
+                        const std::vector<ValueT>& v2 )
+    {
+        using Limits = SIMD::TraitLimits<ValueT>;
+        using Traits = SIMD::Traits<ValueT, Limits::Size>;
+
+        size_t resultSize = std::max( v1.size( ), v2.size( ) );
+        size_t operationCount = std::min( v1.size( ), v2.size( ) );
+        size_t iterationCount = operationCount / Limits::Size;
+        size_t remainingCount = operationCount % Limits::Size;
+
+        std::vector result;
+        result.resize( resultSize );
+
+        const auto* p1 = v1.data( );
+        const auto* p2 = v2.data( );
+        auto* pR = result.data( );
+        for ( size_t i = 0; i < iterationCount; ++i )
+        {
+            Traits::Store( pR, Traits::Add( Traits::Load( p1 ), Traits::Load( p2 ) ) );
+            p1 += Limits::Size;
+            p2 += Limits::Size;
+            pR += Limits::Size;
+        }
+        for ( size_t i = 0; i < remainingCount; ++i )
+        {
+            *pR = *p1 + *p2;
+            p1++;
+            p2++;
+            pR++;
+        }
+        if ( v1.size( ) > v2.size( ) )
+        {
+            std::copy( p1, p1 + ( resultSize - operationCount ), pR );
+        }
+        else if ( v1.size( ) < v2.size( ) )
+        {
+            std::copy( p2, p2 + ( resultSize - operationCount ), pR );
+        }
+        return result;
+    }
+
 }
 BOOST_FIXTURE_TEST_SUITE( SIMDFloatTests, LocalFixture )
 
