@@ -22,17 +22,7 @@
 
 namespace Harlinn::Common::Core::Math
 {
-    namespace Internal
-    {
-        namespace SIMD
-        {
-            template<typename ValueT, size_t N>
-            struct Traits : public Core::SIMD::Traits<ValueT, N>
-            {
-
-            };
-        }
-    }
+    
 
     template<typename T>
     constexpr bool IsLoadedType = T::Loaded;
@@ -69,14 +59,14 @@ namespace Harlinn::Common::Core::Math
     /// The size of the Vector
     /// </typeparam>
     template<typename ValueT, size_t N>
-    class alignas( Math::Internal::SIMD::Traits<ValueT,N>::AlignAs ) Vector
+    class alignas( Core::SIMD::Traits<ValueT,N>::AlignAs ) Vector
     {
     public:
         using Indices = std::make_index_sequence<N>;
         static constexpr size_t Size = N;
         using ValueType = std::remove_cvref_t<ValueT>;
         using UIntType = MakeUnsigned<ValueType>;
-        using Traits = Math::Internal::SIMD::Traits<ValueType, N>;
+        using Traits = Core::SIMD::Traits<ValueType, N>;
     protected:
         static constexpr size_t Capacity = Traits::Capacity;
         static constexpr size_t SIMDIterations = Traits::SIMDIterations;
@@ -2656,7 +2646,6 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Clamp( Traits::Fill( v ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
     }
-
 
     // Saturate
 
@@ -6562,6 +6551,29 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
+
+    namespace Internal
+    {
+        struct QuaternionSimdBase
+        { };
+        struct QuaternionBase
+        { };
+
+        template<typename T>
+        concept QuaternionSimdType = std::is_base_of_v<QuaternionSimdBase, T>;
+
+        template<typename T>
+        concept QuaternionType = std::is_base_of_v<QuaternionBase, T>;
+
+        template<typename T1, typename T2>
+        constexpr bool IsCompatibleQuaternion =
+            std::is_same_v<typename T1::Traits, typename T2::Traits>;
+
+        template<QuaternionSimdType T, QuaternionSimdType U>
+            requires IsCompatibleQuaternion<T,U>
+        inline T Multiply( const T& q1, const U& q2 );
+    }
+
     template<typename T>
         requires IsFloatingPoint<T>
     class Quaternion;
@@ -6569,7 +6581,7 @@ namespace Harlinn::Common::Core::Math
     
     template<typename T>
         requires IsFloatingPoint<T>
-    class QuaternionSimd
+    class QuaternionSimd : public Internal::QuaternionSimdBase
     {
     public:
         using ValueType = T;
@@ -6601,7 +6613,38 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
-        QuaternionSimd( const Quaternion& quaternion ) noexcept;
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd,U>
+        QuaternionSimd( const U& quaternion ) noexcept
+            : simd( Traits::Load( quaternion.values ) )
+        { }
+
+        
+
+        static QuaternionSimd Multiply( const QuaternionSimd& q1, const QuaternionSimd& q2 )
+        {
+            return Internal::Multiply<Traits>( q1.simd, q2.simd );
+        }
+
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        static QuaternionSimd Multiply( const QuaternionSimd& q1, const U& q2 )
+        {
+            return Internal::Multiply( q1.simd, QuaternionSimd(Traits::Load( q2.values )) );
+        }
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        static QuaternionSimd Multiply( const U& q1, const QuaternionSimd& q2 )
+        {
+            return Internal::Multiply( QuaternionSimd(Traits::Load( q1.values )), q2.simd );
+        }
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        static QuaternionSimd Multiply( const U& q1, const U& q2 )
+        {
+            return Internal::Multiply( QuaternionSimd(Traits::Load( q1.values )), QuaternionSimd(Traits::Load( q2.values )) );
+        }
+
 
         QuaternionSimd& operator = ( const QuaternionSimd& other ) noexcept
         {
@@ -6615,20 +6658,36 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        QuaternionSimd& operator = ( const Quaternion& quaternion ) noexcept;
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        QuaternionSimd& operator = ( const Quaternion& quaternion ) noexcept
+        {
+            simd = Traits::Load( quaternion.values );
+            return *this;
+        }
 
         bool operator == ( const QuaternionSimd& other ) const noexcept
         {
-            return Traits::Equals( simd, other.simd );
+            return Traits::AllEqual( simd, other.simd );
         }
 
         bool operator != ( const QuaternionSimd& other ) const noexcept
         {
-            return Traits::Equals( simd, other.simd ) == false;
+            return Traits::AllEqual( simd, other.simd ) == false;
         }
 
-        bool operator == ( const Quaternion& other ) const noexcept;
-        bool operator != ( const Quaternion& other ) const noexcept;
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        bool operator == ( const U& other ) const noexcept
+        {
+            return Traits::AllEqual( simd, Traits::Load( other.values ) );
+        }
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        bool operator != ( const U& other ) const noexcept
+        {
+            return Traits::AllEqual( simd, Traits::Load( other.values ) ) == false;
+        }
 
 
         QuaternionSimd& operator += ( const QuaternionSimd& other ) noexcept
@@ -6637,7 +6696,13 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        QuaternionSimd& operator += ( const Quaternion& quaternion ) noexcept;
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        QuaternionSimd& operator += ( const U& quaternion ) noexcept
+        {
+            simd = Traits::Add( simd, Traits::Load( quaternion.values ) );
+            return *this;
+        }
 
         QuaternionSimd& operator -= ( const QuaternionSimd& other ) noexcept
         {
@@ -6645,7 +6710,13 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        QuaternionSimd& operator -= ( const Quaternion& quaternion ) noexcept;
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        QuaternionSimd& operator -= ( const U& quaternion ) noexcept
+        {
+            simd = Traits::Sub( simd, Traits::Load( quaternion.values ) );
+            return *this;
+        }
 
         QuaternionSimd& operator *= ( const QuaternionSimd& other ) noexcept
         {
@@ -6659,7 +6730,13 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        QuaternionSimd& operator *= ( const Quaternion& quaternion ) noexcept;
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        QuaternionSimd& operator *= ( const U& quaternion ) noexcept
+        {
+            simd = Multiply( simd, Simd( Traits::Load( quaternion.values ) ) );
+            return *this;
+        }
 
         QuaternionSimd& operator /= ( const QuaternionSimd& other ) noexcept
         {
@@ -6673,15 +6750,26 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        QuaternionSimd& operator /= ( const Quaternion& quaternion ) noexcept;
+        template<Internal::QuaternionType U>
+            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
+        QuaternionSimd& operator /= ( const U& quaternion ) noexcept
+        {
+            simd = Traits::Div( simd, Traits::Load( quaternion.values ) );
+            return *this;
+        }
 
 
 
     };
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T">
+    /// </typeparam>
     template<typename T>
         requires IsFloatingPoint<T>
-    class Quaternion 
+    class Quaternion : public Internal::QuaternionBase
     {
     public:
         using value_type = T;
@@ -6692,7 +6780,7 @@ namespace Harlinn::Common::Core::Math
         static constexpr bool Loaded = false;
         static constexpr bool Unloaded = true;
 
-        using Traits = SIMD::Traits<ValueType, Size>;
+        using Traits = Core::SIMD::Traits<ValueType, Size>;
         using SIMDType = typename Traits::SIMDType;
 
         static constexpr size_type Capacity = Size;
@@ -6872,260 +6960,175 @@ namespace Harlinn::Common::Core::Math
 
     static_assert( sizeof( Quaternion<float> ) == sizeof(std::array<float,4>));
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T>::QuaternionSimd( const Quaternion& quaternion ) noexcept
-        : simd( Traits::Load( quaternion.values.data() ) )
-    { }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T>& QuaternionSimd<T>::operator = ( const Quaternion& quaternion ) noexcept
+    // Addition
+
+    template<Internal::QuaternionSimdType T, Internal::QuaternionSimdType U>
+        requires Internal::IsCompatibleQuaternion<T,U>
+    T operator + ( const T& q1, const U& q2 ) noexcept
     {
-        simd = Traits::Load( quaternion.values.data( ) );
-        return *this;
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    bool QuaternionSimd<T>::operator == ( const Quaternion& other ) const noexcept
-    {
-        return Traits::Equals( simd, Traits::Load( other.values.data( ) ) );
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    bool QuaternionSimd<T>::operator != ( const Quaternion& other ) const noexcept
-    {
-        return Traits::Equals( simd, Traits::Load( other.values.data() ) ) == false;
-    }
-
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T>& QuaternionSimd<T>::operator += ( const Quaternion& quaternion ) noexcept
-    {
-        simd = Traits::Add( simd, Traits::Load( quaternion.values.data( ) ) );
-        return *this;
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T>& QuaternionSimd<T>::operator -= ( const Quaternion& quaternion ) noexcept
-    {
-        simd = Traits::Sub( simd, Traits::Load( quaternion.values.data( ) ) );
-        return *this;
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T>& QuaternionSimd<T>::operator *= ( const Quaternion& quaternion ) noexcept
-    {
-        simd = Traits::Mul( simd, Traits::Load( quaternion.values.data( ) ) );
-        return *this;
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T>& QuaternionSimd<T>::operator /= ( const Quaternion& quaternion ) noexcept
-    {
-        simd = Traits::Div( simd, Traits::Load( quaternion.values.data( ) ) );
-        return *this;
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator + ( const QuaternionSimd<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
-    {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Add( q1.simd, q2.simd );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator + ( const Quaternion<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
+    template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    U operator + ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Add( Traits::Load( q1.values.data()), q2.simd );
+        using Traits = typename T::Traits;
+        return Traits::Add( Traits::Load( q1.values ), q2.simd );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator + ( const QuaternionSimd<T>& q1, const Quaternion<T>& q2 ) noexcept
+    template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    T operator + ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Add( q1.simd, Traits::Load( q2.values.data( ) ) );
+        using Traits = typename T::Traits;
+        return Traits::Add( q1.simd, Traits::Load( q2.values ) );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator + ( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
+    template<Internal::QuaternionType T, Internal::QuaternionType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    typename T::Simd operator + ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Add( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator - ( const QuaternionSimd<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
+    // Subtraction
+
+    template<Internal::QuaternionSimdType T, Internal::QuaternionSimdType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    T operator - ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Sub( q1.simd, q2.simd );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator - ( const Quaternion<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
+    template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    U operator - ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Sub( Traits::Load( q1.values.data( ) ), q2.simd );
+        using Traits = typename T::Traits;
+        return Traits::Sub( Traits::Load( q1.values ), q2.simd );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator - ( const QuaternionSimd<T>& q1, const Quaternion<T>& q2 ) noexcept
+    template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    T operator - ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Sub( q1.simd, Traits::Load( q2.values.data( ) ) );
+        using Traits = typename T::Traits;
+        return Traits::Sub( q1.simd, Traits::Load( q2.values ) );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator - ( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
+    template<Internal::QuaternionType T, Internal::QuaternionType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    typename T::Simd operator - ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Sub( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( const QuaternionSimd<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
+    // Multiplication
+
+    template<Internal::QuaternionSimdType T, Internal::QuaternionSimdType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    T operator * ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( q1.simd, q2.simd );
+        return T::Multiply( q1, q2 );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( const Quaternion<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
+    template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    U operator *( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( Traits::Load( q1.values.data( ) ), q2.simd );
+        return U::Multiply( q1, q2 );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( const QuaternionSimd<T>& q1, const Quaternion<T>& q2 ) noexcept
+    template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    T operator * ( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( q1.simd, Traits::Load( q2.values.data( ) ) );
+        return T::Multiply( q1, q2 );
+    }
+    template<Internal::QuaternionType T, Internal::QuaternionType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    typename T::Simd operator * ( const T& q1, const U& q2 ) noexcept
+    {
+        return T::Simd::Multiply( q1, q2 );
     }
 
-    template<typename T>
+
+    // Scalar Multiplication
+
+    template<typename T, Internal::QuaternionSimdType U>
         requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( T value, const QuaternionSimd<T>& q2 ) noexcept
+    QuaternionSimd<T> operator * ( T value, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename U::Traits;
         return Traits::Mul( Traits::Fill( value ), q2.simd );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( const QuaternionSimd<T>& q1, T value ) noexcept
+    template<Internal::QuaternionSimdType T, typename U>
+        requires IsFloatingPoint<U>
+    QuaternionSimd<T> operator * ( const T& q1, U value ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Mul( q1.simd, Traits::Fill( value ) );
     }
 
-    template<typename T>
+    template<typename T, Internal::QuaternionType U>
         requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( const Quaternion<T>& q1, T value ) noexcept
+    QuaternionSimd<T> operator * ( T value, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( Traits::Load( q1.values.data( ) ), Traits::Fill( value ) );
+        using Traits = typename U::Traits;
+        return Traits::Mul( Traits::Fill( value ), q2.simd );
     }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( T value, const Quaternion<T>& q2 ) noexcept
+    template<Internal::QuaternionType T, typename U>
+        requires IsFloatingPoint<U>
+    QuaternionSimd<T> operator * ( const T& q1, U value ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( Traits::Fill( value ), Traits::Load( q2.values.data( ) ) );
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
-    {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) );
-    }
-
-    
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator / ( const QuaternionSimd<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
-    {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( q1.simd, q2.simd );
-    }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator / ( const Quaternion<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
-    {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( Traits::Load( q1.values.data( ) ), q2.simd );
-    }
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator / ( const QuaternionSimd<T>& q1, const Quaternion<T>& q2 ) noexcept
-    {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( q1.simd, Traits::Load( q2.values.data( ) ) );
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator / ( const QuaternionSimd<T>& q1, T value ) noexcept
-    {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Mul( q1.simd, Traits::Fill( value ) );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator / ( const Quaternion<T>& q1, T value ) noexcept
+    // Scalar Division
+
+
+    template<Internal::QuaternionSimdType T, typename U>
+        requires IsFloatingPoint<U>
+    QuaternionSimd<T> operator / ( const T& q1, U value ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( Traits::Load( q1.values.data( ) ), Traits::Fill( value ) );
+        using Traits = typename T::Traits;
+        return Traits::Mul( q1.simd, Traits::Fill( value ) );
+    }
+    template<Internal::QuaternionType T, typename U>
+        requires IsFloatingPoint<U>
+    QuaternionSimd<T> operator / ( const T& q1, U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Mul( Traits::Load( q1.values ), Traits::Fill( value ) );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator / ( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
+    /*
+    template<Internal::QuaternionSimdType T, Internal::QuaternionSimdType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    typename Vector<T,4>::Simd Dot( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
-        return Traits::Mul( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) );
-    }
-
-    template<typename T>
-        requires IsFloatingPoint<T>
-    typename Vector<T,4>::Simd Dot( const QuaternionSimd<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
-    {
-        using Traits = typename QuaternionSimd<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Dot( q1.simd, q2.simd );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    typename Vector<T, 4>::Simd Dot( const Quaternion<T>& q1, const QuaternionSimd<T>& q2 ) noexcept
+    template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    typename Vector<T, 4>::Simd Dot( const T& q1, const U& q2 ) noexcept
     {
-        using Traits = typename QuaternionSimd<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Dot( Traits::Load( q1.values ), q2.simd );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    typename Vector<T, 4>::Simd Dot( const QuaternionSimd<T>& q1, const Quaternion<T>& q2 ) noexcept
+    template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    typename Vector<T, 4>::Simd Dot( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename QuaternionSimd<T>::Traits;
         return Traits::Dot( q1.simd, Traits::Load( q2.values ) );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    typename Vector<T, 4>::Simd Dot( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
+    template<Internal::QuaternionType T, Internal::QuaternionType U>
+        requires Internal::IsCompatibleQuaternion<T, U>
+    typename Vector<T, 4>::Simd Dot( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename Quaternion<T>::Traits;
         return Traits::Dot( Traits::Load( q1.values ), Traits::Load( q2.values ) );
@@ -7133,70 +7136,78 @@ namespace Harlinn::Common::Core::Math
 
     // Length
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    typename Vector<T, 4>::Simd Length( const QuaternionSimd<T>& q1 ) noexcept
+    template<Internal::QuaternionSimdType T>
+    typename Vector<T, 4>::Simd Length( const T& q1 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::Sqrt( Traits::HSum( Traits::Mul( q1.simd, q1.simd ) ) );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    typename Vector<T, 4>::Simd Length( const Quaternion<T>& q1 ) noexcept
+    template<Internal::QuaternionType T>
+    typename Vector<T, 4>::Simd Length( T& q1 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         auto simd = Traits::Load( q1.values );
         return Traits::Sqrt( Traits::HSum( Traits::Mul( simd, simd ) ) );
     }
 
     // ScalarLength
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    typename T ScalarLength( const QuaternionSimd<T>& q1 ) noexcept
+    template<Internal::QuaternionSimdType T>
+    typename T ScalarLength( const T& q1 ) noexcept
     {
-        using Traits = typename QuaternionSimd<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::First( Length( q1 ).simd );
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    typename T ScalarLength( const Quaternion<T>& q1 ) noexcept
+    template<Internal::QuaternionType T>
+    typename T ScalarLength( const T& q1 ) noexcept
     {
-        using Traits = typename Quaternion<T>::Traits;
+        using Traits = typename T::Traits;
         return Traits::First( Length( q1 ).simd );
-    }
-
-    
-
-    /*
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Cross( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Cross( Traits::Load( v1.values.data() ), Traits::Load( v2.values.data( ) ) );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Cross( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v1, const Tuple3<DerivedT, FloatT>& v2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Cross( v1.simd, Traits::Load( v2.values.data( ) ) );
-    }
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Cross( const Tuple3<DerivedT, FloatT>& v1, const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Cross( Traits::Load( v1.values.data( ) ), v2.simd );
-    }
-
-    template<typename DerivedT, typename FloatT>
-    inline Tuple3Simd<Tuple3<DerivedT, FloatT>> Cross( const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v1, const Tuple3Simd<Tuple3<DerivedT, FloatT>>& v2 ) noexcept
-    {
-        using Traits = typename Tuple3<DerivedT, FloatT>::Traits;
-        return Traits::Cross( v1.simd, v2.simd );
     }
     */
+    namespace Internal
+    {
+        template<QuaternionSimdType T, QuaternionSimdType U>
+            requires IsCompatibleQuaternion<T, U>
+        inline T Multiply( const T& q1, const U& q2 )
+        {
+            using Traits = SIMD::Traits<float, 4>; //typename T::Traits;
+            using SIMDType = typename Traits::SIMDType;
+            using FloatT = typename Traits::Type;
+            using Constants = Constants<FloatT>;
+            constexpr Traits::SIMDType controlWZYX = { { Constants::One, Constants::MinusOne, Constants::One, Constants::MinusOne } };
+            constexpr Traits::SIMDType controlZWXY = { { Constants::One, Constants::One, Constants::MinusOne, Constants::MinusOne } };
+            constexpr Traits::SIMDType controlYXWZ = { { Constants::MinusOne, Constants::One, Constants::One, Constants::MinusOne } };
+
+            auto q2X = Traits::At<0>( q2.simd );
+            auto q2Y = Traits::At<1>( q2.simd );
+            auto q2Z = Traits::At<2>( q2.simd );
+            auto result = Traits::At<3>( q2.simd );
+
+            result = Traits::Mul( result, q1.simd );
+
+            auto q1Swizzle = Traits::Swizzle<0U, 1U, 2U, 3U>( q1.simd );
+
+            q2X = Traits::Mul( q2X, q1Swizzle );
+            q1Swizzle = Traits::Swizzle<2, 3, 0, 1>( q1Swizzle );
+
+            result = Traits::FMAdd( q2X, controlWZYX, result );
+
+            q2Y = Traits::Mul( q2Y, q1Swizzle );
+            q1Swizzle = Traits::Swizzle<0, 1, 2, 3>( q1Swizzle );
+
+            q2Y = Traits::Mul( q2Y, controlZWXY );
+
+            q2Z = Traits::Mul( q2Z, q1Swizzle );
+
+            q2Y = Traits::FMAdd( q2Z, controlYXWZ, q2Y );
+            result = Traits::Add( result, q2Y );
+            return result;
+        }
+    }
+
 
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
@@ -7293,6 +7304,25 @@ namespace Harlinn::Common::Core::Math
         struct MatrixBase
         { };
 
+
+        template<typename MatrixT, typename TraitsT = typename MatrixT::Traits>
+        struct alignas( TraitsT::AlignAs ) SquareMatrix2x2Simd : public MatrixSimdBase
+        {
+            using MatrixType = MatrixT;
+            using Traits = typename MatrixType::Traits;
+            using SIMDType = typename Traits::SIMDType;
+            using value_type = typename MatrixType::value_type;
+            static constexpr size_t Size = Traits::Size;
+            static constexpr bool Loaded = true;
+            static constexpr bool Unloaded = false;
+            static constexpr bool IsSquareMatrix = true;
+            SIMDType simd;
+
+            SquareMatrix2x2Simd( SIMDType v )
+                : simd( v )
+            { }
+        };
+
         template<typename MatrixT, typename TraitsT = typename MatrixT::Traits>
         struct alignas( TraitsT::AlignAs ) SquareMatrixSimd : public std::array<typename TraitsT::SIMDType, TraitsT::Size>, public MatrixSimdBase
         {
@@ -7318,26 +7348,21 @@ namespace Harlinn::Common::Core::Math
 
     }
 
-    //template <typename FloatT, size_t N>
-    //class SquareMatrix;
-    //template <typename FloatT, size_t N>
-    //SquareMatrix<FloatT, N> operator*( const SquareMatrix<FloatT, N>& matrix1, const SquareMatrix<FloatT, N>& matrix2 );
 
 
     // SquareMatrix Definition
     template <typename FloatT, size_t N>
     class SquareMatrix : public Internal::MatrixBase
     {
-        //template <typename FloatT, size_t N>
-        //friend SquareMatrix<FloatT, N> operator*( const SquareMatrix<FloatT, N>& matrix1, const SquareMatrix<FloatT, N>& matrix2 );
+        static constexpr bool TinyMatrixOptimization = N <= 2;
     public:
         using value_type = FloatT;
         static constexpr size_t Size = N;
-        using Traits = SIMD::Traits<FloatT, Size>;
-        using ArrayType = typename Traits::ArrayType;
+        using Traits = std::conditional_t<TinyMatrixOptimization, SIMD::Traits<FloatT, (Size*2)>, SIMD::Traits<FloatT, Size> >;
+        using ArrayType = std::conditional_t<TinyMatrixOptimization, std::array<FloatT, Size>, typename Traits::ArrayType>;
 
         using Data = std::array<ArrayType, N>;
-        using Simd = Internal::SquareMatrixSimd<SquareMatrix>;
+        using Simd = std::conditional_t<TinyMatrixOptimization, Internal::SquareMatrix2x2Simd<SquareMatrix>, Internal::SquareMatrixSimd<SquareMatrix> >;
 
         static constexpr bool Loaded = false;
         static constexpr bool Unloaded = true;
@@ -7380,9 +7405,16 @@ namespace Harlinn::Common::Core::Math
 
         SquareMatrix( const Simd& simd ) noexcept
         {
-            for ( size_t i = 0; i < N; i++ )
+            if constexpr ( TinyMatrixOptimization )
             {
-                data_[ i ] = Traits::ToArray( simd[i] );
+                reinterpret_cast< Traits::ArrayType& >(data_) = Traits::ToArray( simd.simd );
+            }
+            else
+            {
+                for ( size_t i = 0; i < N; i++ )
+                {
+                    data_[ i ] = Traits::ToArray( simd[ i ] );
+                }
             }
         }
 
@@ -7393,9 +7425,16 @@ namespace Harlinn::Common::Core::Math
 
         SquareMatrix& operator = ( const Simd& simd ) noexcept
         {
-            for ( size_t i = 0; i < N; i++ )
+            if constexpr ( TinyMatrixOptimization )
             {
-                data_[ i ] = Traits::ToArray( simd[ i ] );
+                reinterpret_cast< Traits::ArrayType& >( data_ ) = Traits::ToArray( simd.simd );
+            }
+            else
+            {
+                for ( size_t i = 0; i < N; i++ )
+                {
+                    data_[ i ] = Traits::ToArray( simd[ i ] );
+                }
             }
             return *this;
         }
@@ -7405,12 +7444,6 @@ namespace Harlinn::Common::Core::Math
             data_ = data;
             return *this;
         }
-
-        /*
-        template<SimpleSpanLike T>
-            requires std::is_same_v<typename T::value_type, value_type>
-        SquareMatrix( const T& t );
-        */
 
         template<typename...Args>
             requires ( sizeof...( Args ) == ( ( N * N ) - 1 ) ) 
@@ -7447,9 +7480,7 @@ namespace Harlinn::Common::Core::Math
         {
             if constexpr ( N == 2 )
             {
-                Simd result;
-                result[ 0 ] = Traits::Load( data_[ 0 ] );
-                result[ 1 ] = Traits::Load( data_[ 1 ] );
+                Simd result( Traits::Load( data_[ 0 ].data( ) ) );
                 return result;
             }
             else if constexpr ( N == 3 )
@@ -7499,6 +7530,8 @@ namespace Harlinn::Common::Core::Math
         std::string ToString( ) const;
 
     };
+
+    constexpr size_t SizeOfSquareMatrix2Float = sizeof( SquareMatrix<float, 2> );
 
 
     // Addition
@@ -8173,6 +8206,120 @@ namespace Harlinn::Common::Core::Math
     {
         return Inverse( matrix.ToSimd( ), determinant );
     }
+
+    inline SquareMatrix<float, 2>::Simd Transpose( const typename SquareMatrix<float, 2>::Simd& matrix )
+    {
+        using Traits = SquareMatrix<float, 2>::Traits;
+        return Traits::Swizzle<3, 1, 2, 0>( matrix.simd );
+    }
+
+    inline SquareMatrix<float, 2>::Simd Transpose( const SquareMatrix<float, 2>& matrix )
+    {
+        return Transpose( matrix.ToSimd( ) );
+    }
+
+
+    inline Vector<float, 2>::Simd Determinant( const typename SquareMatrix<float, 2>::Simd& matrix )
+    {
+        using Traits = SquareMatrix<float, 2>::Traits;
+        auto rmm1 = Traits::Swizzle<2, 1, 3, 0>( matrix.simd );
+        auto rmm2 = Traits::Swizzle<2, 3, 0, 1>( rmm1 );
+        rmm1 = Traits::Mul( rmm1, rmm2 );
+        rmm1 = Traits::Mul( rmm1, { {1.f,1.f,-1.f,-1.f} } );
+        rmm2 = Traits::Swizzle<1, 0, 3, 2>( rmm1 );
+        return Traits::Add( rmm1, rmm2 );
+    }
+
+    inline Vector<float, 2>::Simd Determinant( const SquareMatrix<float, 2>& matrix )
+    {
+        return Determinant( matrix.ToSimd( ) );
+    }
+
+
+    inline SquareMatrix<float, 2>::Simd Inverse( const typename SquareMatrix<float, 2>::Simd& matrix, typename SquareMatrix<float, 2>::Simd* determinant = nullptr )
+    {
+        using Traits = SquareMatrix<float, 2>::Traits;
+        auto rmm1 = Traits::Swizzle<2, 1, 3, 0>( matrix.simd );
+        auto rmm2 = Traits::Swizzle<2, 3, 0, 1>( rmm1 );
+        rmm1 = Traits::Mul( rmm1, rmm2 );
+        rmm1 = Traits::Mul( rmm1, { {1.f,1.f,-1.f,-1.f} });
+        rmm2 = Traits::Swizzle<1, 0, 3, 2>( rmm1 );
+        rmm1 = Traits::Add( rmm1, rmm2 );
+        if ( determinant )
+        {
+            determinant->simd = rmm1;
+        }
+        rmm1 = Traits::Div( { {1.f,1.f,1.f,1.f} }, rmm1 );
+        rmm2 = Traits::Swizzle<0, 2, 1, 3>( matrix.simd );
+        rmm2 = Traits::Mul( rmm2, { {1.f,-1.f,-1.f,1.f} } );
+        return Traits::Mul( rmm1, rmm2 );
+    }
+
+    inline SquareMatrix<float, 2>::Simd Inverse( const SquareMatrix<float, 2>& matrix )
+    {
+        return Inverse( matrix.ToSimd( ) );
+    }
+
+
+    template<typename T>
+    class Transform
+    {
+    public:
+        using MatrixType = SquareMatrix<T, 4>;
+        using value_type = typename MatrixType::value_type;
+    private:
+        MatrixType matrix_;
+        MatrixType inverseMatrix_;
+    public:
+        Transform( ) = default;
+        Transform(const MatrixType& matrix, typename Vector<value_type,4>::Simd determinant )
+            : matrix_( matrix ), inverseMatrix_(Inverse( matrix, &determinant ))
+        {
+            if ( !determinant.x )
+            {
+                for ( size_t j = 0; j < 4; j++ )
+                {
+                    determinant[j] = std::numeric_limits<float>::quiet_nan( );
+                }
+                for ( size_t i = 0; i < 4; i++ )
+                {
+                    inverseMatrix_[ i ] = determinant;
+                }
+            }
+        }
+
+        Transform( const value_type mat[ 4 ][ 4 ] )
+            : Transform( MatrixType( mat ) )
+        { }
+
+        Transform( const MatrixType& matrix, const MatrixType& inverseMatrix )
+            : matrix_( matrix ), inverseMatrix_( inverseMatrix ) 
+        { }
+
+        const MatrixType& Matrix( ) const
+        {
+            return matrix_;
+        }
+        const MatrixType& InverseMatrix( ) const
+        {
+            return inverseMatrix_;
+        }
+        bool operator==( const Transform& t ) const 
+        { 
+            return t.matrix_ == matrix_;
+        }
+        
+        bool operator!=( const Transform& t ) const 
+        { 
+            return t.matrix_ != matrix_;
+        }
+        
+        bool IsIdentity( ) const 
+        { 
+            return matrix_.IsIdentity( );
+        }
+
+    };
 
 
 }

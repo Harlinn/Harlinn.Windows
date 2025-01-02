@@ -26,29 +26,6 @@ namespace
         LocalFixture( ) {}
         ~LocalFixture( ) {}
     };
-    /*
-    inline bool Equal( const pbrt::SquareMatrix<4>& m1, const Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
-    {
-        for ( size_t i = 0; i < 4; i++ )
-        {
-            for ( size_t j = 0; j < 4; j++ )
-            {
-                auto v1 = m1[ i ][ j ];
-                float v2 = m2[ i ][ j ];
-                auto delta = v1 - v2;
-                if ( std::abs( delta ) > epsilon )
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    inline bool Equal( const Math::SquareMatrix<float, 4>& m1, const pbrt::SquareMatrix<4>& m2, float epsilon = 0.0001f )
-    {
-        return Equal( m2, m1 );
-    }
-    */
     inline bool Equal( const Math::SquareMatrix<float, 4>& m1, const Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
@@ -69,9 +46,9 @@ namespace
 
     inline bool Equal( const pbrt::SquareMatrix<4>& m1, const pbrt::SquareMatrix<4>& m2, float epsilon = 0.0001f )
     {
-        for ( size_t i = 0; i < 4; i++ )
+        for ( int i = 0; i < 4; i++ )
         {
-            for ( size_t j = 0; j < 4; j++ )
+            for ( int j = 0; j < 4; j++ )
             {
                 auto v1 = m1[ i ][ j ];
                 float v2 = m2[ i ][ j ];

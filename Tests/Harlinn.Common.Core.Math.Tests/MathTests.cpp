@@ -1268,7 +1268,7 @@ BOOST_AUTO_TEST_CASE( SinImplFloatTest1 )
     using namespace Test;
     using namespace Test::Generators;
     using FloatT = float;
-    Generators::RangeGenerator<FloatT> generator( -2.0 * M_PI, 2.0 * M_PI );
+    Generators::RangeGenerator<FloatT> generator( static_cast<float>( -2.0 * M_PI ), static_cast < float >(2.0 * M_PI) );
     
     //Generators::RangeGenerator<FloatT> generator( -42781604.0, 42781604.0 );
     NumericTest test( "Math::Internal::SinImplFloatTest1" );

@@ -1208,18 +1208,86 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                /*
+                
                 if constexpr ( Size == 1 )
                 {
-                    _mm_cvtsi32_si128( )
+                    return _mm_cvtsi32_si128( static_cast< int >( src[ 0 ] ) );
                 }
-                */
-                return _mm_load_si128( reinterpret_cast<const __m128i*>( src ) );
+                else if constexpr ( Size == 2 )
+                {
+                    return _mm_cvtsi32_si128( static_cast< int >( reinterpret_cast<const UInt16*>(src)[ 0 ] ) );
+                }
+                else if constexpr ( Size == 3 )
+                {
+                    return _mm_cvtsi32_si128( static_cast< int >( reinterpret_cast< const UInt16* >( src )[ 0 ] ) | (static_cast< int >( src[ 2 ] )<<16) );
+                }
+                else if constexpr ( Size == 4 )
+                {
+                    return _mm_cvtsi32_si128( *reinterpret_cast< const Int32* >( src ) );
+                }
+                else if constexpr ( Size == 5 )
+                {
+                    UInt64 tmp = static_cast< UInt64 >( *reinterpret_cast< const UInt32* >( src ) ) | 
+                                    ( static_cast< UInt64 >( src[ 4 ] ) << 32 );
+                    return _mm_castpd_si128( _mm_load_sd( reinterpret_cast<const double*>( &tmp ) ) );
+                }
+                else if constexpr ( Size == 6 )
+                {
+                    UInt64 tmp = static_cast< UInt64 >( *reinterpret_cast< const UInt32* >( src ) ) | 
+                                    ( static_cast< UInt64 >( reinterpret_cast<const UInt16*>(src)[ 2 ] ) << 32 );
+                    return _mm_castpd_si128( _mm_load_sd( reinterpret_cast< const double* >( &tmp ) ) );
+                }
+                else if constexpr ( Size == 7 )
+                {
+                    UInt64 tmp = static_cast< UInt64 >( *reinterpret_cast< const UInt32* >( src ) ) | 
+                            ( static_cast< UInt64 >( reinterpret_cast< const UInt16* >( src )[ 2 ] ) << 32 ) |
+                            ( static_cast< UInt64 >( src [ 6 ] ) << 48 );
+                    return _mm_castpd_si128( _mm_load_sd( reinterpret_cast< const double* >( &tmp ) ) );
+                }
+                else if constexpr ( Size == 8 )
+                {
+                    return _mm_castpd_si128( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
+                }
+                else if constexpr ( Size == 16 )
+                {
+                    return _mm_load_si128( reinterpret_cast< const __m128i* >( src ) );
+                }
+                else
+                {
+                    alignas( AlignAs ) std::array<Type, 16> values;
+                    [&values,src] <std::size_t... I>
+                        ( std::index_sequence<I...> )
+                    {
+                        ( ( values[ I ] = src[ I ] ), ... );
+                    }( std::make_index_sequence<Size>( ) );
+                    [&values] <std::size_t... I>
+                        ( std::index_sequence<I...> )
+                    {
+                        ( ( values[ Size+I ] = static_cast< Type >( 0 ) ), ... );
+                    }( std::make_index_sequence<16-Size>( ) );
+                    return _mm_load_si128( reinterpret_cast< const __m128i* >( values.data() ) );
+                }
             }
             else
             {
-                return _mm256_load_si256( reinterpret_cast<const __m256i*>( src ) );
+                alignas( AlignAs ) std::array<Type, 32> values;
+                [&values, src] <std::size_t... I>
+                    ( std::index_sequence<I...> )
+                {
+                    ( ( values[ I ] = src[ I ] ), ... );
+                }( std::make_index_sequence<Size>( ) );
+                [&values] <std::size_t... I>
+                    ( std::index_sequence<I...> )
+                {
+                    ( ( values[ Size + I ] = static_cast<Type>( 0 ) ), ... );
+                }( std::make_index_sequence<32 - Size>( ) );
+                return _mm256_load_si256( reinterpret_cast<const __m256i*>( values.data( ) ) );
             }
+        }
+
+        static SIMDType Load( const ArrayType& src )
+        {
+            return Load( src.data( ) );
         }
 
         static SIMDType UnalignedLoad( const Type* src ) noexcept
@@ -1238,13 +1306,83 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                _mm_store_si128( reinterpret_cast<__m128i*>( dest ), src );
+                if constexpr ( Size == 1 )
+                {
+                    *dest = static_cast< Type >( std::bit_cast< UInt32 >( _mm_cvtsi128_si32( src ) ) );
+                }
+                else if constexpr ( Size == 2 )
+                {
+                    *reinterpret_cast< UInt16* >( dest ) = static_cast< UInt16 >( std::bit_cast< UInt32 >( _mm_cvtsi128_si32( src ) ) );
+                }
+                else if constexpr ( Size == 3 )
+                {
+                    auto tmp = std::bit_cast< UInt32 >( _mm_cvtsi128_si32( src ) );
+                    *reinterpret_cast< UInt16* >( dest ) = static_cast< UInt16 >( tmp );
+                    dest[2] = static_cast< Type >( tmp >> 16 );
+                }
+                else if constexpr ( Size == 4 )
+                {
+                    *reinterpret_cast< UInt32* >( dest ) = std::bit_cast< UInt32 >( _mm_cvtsi128_si32( src ) );
+                }
+                else if constexpr ( Size == 5 )
+                {
+                     auto tmp = std::bit_cast< UInt64 >( _mm_cvtsi128_si64( src ) );
+                     *reinterpret_cast< UInt32* >( dest ) = static_cast< UInt32 >( tmp );
+                     dest[ 4 ] = static_cast< Type >( tmp >> 32 );
+                }
+                else if constexpr ( Size == 6 )
+                {
+                    auto tmp = std::bit_cast< UInt64 >( _mm_cvtsi128_si64( src ) );
+                    *reinterpret_cast< UInt32* >( dest ) = static_cast< UInt32 >( tmp );
+                    reinterpret_cast<UInt16*>(dest)[ 2 ] = static_cast< UInt16 >( tmp >> 32 );
+                }
+                else if constexpr ( Size == 7 )
+                {
+                    auto tmp = std::bit_cast< UInt64 >( _mm_cvtsi128_si64( src ) );
+                    *reinterpret_cast< UInt32* >( dest ) = static_cast< UInt32 >( tmp );
+                    reinterpret_cast< UInt16* >( dest )[ 2 ] = static_cast< UInt16 >( tmp >> 32 );
+                    dest[ 6 ] = static_cast< Type >( tmp >> 48 );
+                }
+                else if constexpr ( Size == 8 )
+                {
+                    *reinterpret_cast< UInt64* >( dest ) = std::bit_cast< UInt64 >( _mm_cvtsi128_si64( src ) );
+                }
+                else if constexpr ( Size == 16 )
+                {
+                    _mm_store_si128( reinterpret_cast< __m128i* >( dest ), src );
+                }
+                else
+                {
+                    alignas( AlignAs ) std::array<Type, 16> values;
+                    _mm_store_si128( reinterpret_cast< __m128i* >( values.data() ), src );
+                    [&values, dest] <std::size_t... I>
+                        ( std::index_sequence<I...> )
+                    {
+                        ( ( dest[ I ] = values[ I ] ), ... );
+                    }( std::make_index_sequence<Size>( ) );
+                }
             }
             else
             {
-                _mm256_store_si256( reinterpret_cast<__m128i*>( dest ), src );
+                if constexpr ( Size == 32 )
+                {
+                    _mm256_store_si256( reinterpret_cast< __m256i* >( dest ), src );
+                }
+                else
+                {
+                    alignas( AlignAs ) std::array<Type, 32> values;
+                    _mm256_store_si256( reinterpret_cast< __m256i* >( values.data( ) ), src );
+                    [&values, dest] <std::size_t... I>
+                        ( std::index_sequence<I...> )
+                    {
+                        ( ( dest[ I ] = values[ I ] ), ... );
+                    }( std::make_index_sequence<Size>( ) );
+                }
             }
         }
+
+        
+
 
         static void UnalignedStore( Type* dest, SIMDType src ) noexcept
         {
@@ -1258,6 +1396,13 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+
+        static ArrayType ToArray( SIMDType src )
+        {
+            ArrayType result;
+            Store( result.data( ) );
+            return result;
+        }
 
         /// <summary>
         /// Adds two int8 vectors.
@@ -2197,6 +2342,18 @@ namespace Harlinn::Common::Core::SIMD
                 alignas( AlignAs ) ArrayType result;
                 _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castps_pd( src ) );
                 result[2] = std::bit_cast<Type>(_mm_extract_ps( src, 2 ));
+                return result;
+            }
+            else if constexpr ( N == 4 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castps_pd( src ) );
+                return result;
+            }
+            else if constexpr ( N == 8 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                Store( result.data( ), src );
                 return result;
             }
             else
