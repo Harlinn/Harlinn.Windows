@@ -16,6 +16,7 @@
 
 #include "pch.h"
 
+
 using namespace Harlinn::Common::Core;
 
 namespace
@@ -66,6 +67,89 @@ namespace
 }
 
 BOOST_FIXTURE_TEST_SUITE( SquareMatrix2FloatTests, LocalFixture )
+
+
+// --run_test=SquareMatrix2FloatTests/AddTest1
+BOOST_AUTO_TEST_CASE( AddTest1 )
+{
+    using namespace Harlinn::Common::Core::Math;
+    SquareMatrix<float, 2> matrix1( 1.f, 2.f, 3.f, 4.f );
+    SquareMatrix<float, 2> matrix2( 2.f, 3.f, 4.f, 5.f );
+
+    SquareMatrix<float, 2> expected( 3.f, 5.f, 7.f, 9.f );
+
+    SquareMatrix<float, 2> result = matrix1 + matrix2;
+
+    bool equal = Equal( result, expected );
+
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=SquareMatrix2FloatTests/SubTest1
+BOOST_AUTO_TEST_CASE( SubTest1 )
+{
+    using namespace Harlinn::Common::Core::Math;
+    SquareMatrix<float, 2> matrix1( 2.f, 3.f, 4.f, 5.f );
+    SquareMatrix<float, 2> matrix2( 1.f, 2.f, 2.f, 2.f );
+    
+
+    SquareMatrix<float, 2> expected( 1.f, 1.f, 2.f, 3.f );
+
+    SquareMatrix<float, 2> result = matrix1 - matrix2;
+
+    bool equal = Equal( result, expected );
+
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SquareMatrix2FloatTests/MulTest1
+BOOST_AUTO_TEST_CASE( MulTest1 )
+{
+    using namespace Harlinn::Common::Core::Math;
+    SquareMatrix<float, 2> matrix1( 2.f, 3.f, 4.f, 5.f );
+    SquareMatrix<float, 2> matrix2( 1.f, 2.f, 2.f, 2.f );
+
+
+    SquareMatrix<float, 2> expected( 8.f, 10.f, 14.f, 18.f );
+
+    SquareMatrix<float, 2> result = matrix1 * matrix2;
+
+    bool equal = Equal( result, expected );
+
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=SquareMatrix2FloatTests/TransposeTest1
+BOOST_AUTO_TEST_CASE( TransposeTest1 )
+{
+    using namespace Harlinn::Common::Core::Math;
+    SquareMatrix<float, 2> matrix1( 1.f, 2.f, 3.f, 4.f );
+
+    SquareMatrix<float, 2> expected( 1.f, 3.f, 2.f, 4.f );
+
+    SquareMatrix<float, 2> result = Transpose( matrix1 );
+
+    bool equal = Equal( result, expected );
+
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SquareMatrix2FloatTests/DeterminantTest1
+BOOST_AUTO_TEST_CASE( DeterminantTest1 )
+{
+    using namespace Harlinn::Common::Core::Math;
+    SquareMatrix<float, 2> matrix1( 1.f, 2.f, 3.f, 4.f );
+
+    Math::Vector<float, 2> result = Determinant( matrix1 );
+
+    bool equal = result.x == -2.f;
+
+    BOOST_CHECK( equal );
+}
+
+
 
 // --run_test=SquareMatrix2FloatTests/InverseTest1
 BOOST_AUTO_TEST_CASE( InverseTest1 )

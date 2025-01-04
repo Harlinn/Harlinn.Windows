@@ -2829,6 +2829,43 @@ namespace Harlinn::Common::Core::SIMD
             return Mul( lhs, Fill( rhs ) );
         }
 
+
+        inline static SIMDType QuaternionMultiply( SIMDType q1, SIMDType q2 ) noexcept
+            requires (Size == 4)
+        {
+            constexpr Type One = 1.f;
+            constexpr Type MinusOne = -1.f;
+            
+            constexpr SIMDType controlWZYX = { { One, MinusOne, One, MinusOne } };
+            constexpr SIMDType controlZWXY = { { One, One, MinusOne, MinusOne } };
+            constexpr SIMDType controlYXWZ = { { MinusOne, One, One, MinusOne } };
+
+            auto q2X = At<0>( q2 );
+            auto q2Y = At<1>( q2 );
+            auto q2Z = At<2>( q2 );
+            auto result = At<3>( q2 );
+
+            result = Mul( result, q1 );
+
+            auto q1Swizzle = Swizzle<0, 1, 2, 3>( q1 );
+
+            q2X = Mul( q2X, q1Swizzle );
+            q1Swizzle = Swizzle<2, 3, 0, 1>( q1Swizzle );
+
+            result = FMAdd( q2X, controlWZYX, result );
+
+            q2Y = Mul( q2Y, q1Swizzle );
+            q1Swizzle = Swizzle<0, 1, 2, 3>( q1Swizzle );
+
+            q2Y = Mul( q2Y, controlZWXY );
+
+            q2Z = Mul( q2Z, q1Swizzle );
+
+            q2Y = FMAdd( q2Z, controlYXWZ, q2Y );
+            result = Add( result, q2Y );
+            return result;
+        }
+
         static SIMDType HProd( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -4873,6 +4910,42 @@ namespace Harlinn::Common::Core::SIMD
         static SIMDType Mul( SIMDType lhs, Type rhs ) noexcept
         {
             return Mul( lhs, Fill( rhs ) );
+        }
+
+        inline static SIMDType QuaternionMultiply( SIMDType q1, SIMDType q2 ) noexcept
+            requires ( Size == 4 )
+        {
+            constexpr Type One = 1.;
+            constexpr Type MinusOne = -1.;
+
+            constexpr SIMDType controlWZYX = { { One, MinusOne, One, MinusOne } };
+            constexpr SIMDType controlZWXY = { { One, One, MinusOne, MinusOne } };
+            constexpr SIMDType controlYXWZ = { { MinusOne, One, One, MinusOne } };
+
+            auto q2X = At<0>( q2 );
+            auto q2Y = At<1>( q2 );
+            auto q2Z = At<2>( q2 );
+            auto result = At<3>( q2 );
+
+            result = Mul( result, q1 );
+
+            auto q1Swizzle = Swizzle<0, 1, 2, 3>( q1 );
+
+            q2X = Mul( q2X, q1Swizzle );
+            q1Swizzle = Swizzle<2, 3, 0, 1>( q1Swizzle );
+
+            result = FMAdd( q2X, controlWZYX, result );
+
+            q2Y = Mul( q2Y, q1Swizzle );
+            q1Swizzle = Swizzle<0, 1, 2, 3>( q1Swizzle );
+
+            q2Y = Mul( q2Y, controlZWXY );
+
+            q2Z = Mul( q2Z, q1Swizzle );
+
+            q2Y = FMAdd( q2Z, controlYXWZ, q2Y );
+            result = Add( result, q2Y );
+            return result;
         }
 
         static SIMDType HProd( SIMDType v ) noexcept

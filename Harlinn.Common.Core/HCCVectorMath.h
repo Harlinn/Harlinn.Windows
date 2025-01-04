@@ -6050,6 +6050,2377 @@ namespace Harlinn::Common::Core::Math
         return SumOfProducts( Simd( Traits::Load( v1.values ) ), Simd( Traits::Load( v2.values ) ), Simd( Traits::Load( v3.values ) ), Simd( Traits::Load( v4.values ) ) );
     }
 
+    // BaryCentric
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+
+        auto rmm1 = Traits::Sub( p2.simd, p1.simd );
+        auto rmm2 = Traits::Sub( p3.simd, p1.simd );
+        rmm1 = Traits::FMAdd( rmm1.simd, f.simd, p1.simd );
+        return Simd(Traits::FMAdd( rmm2.simd, g.simd, rmm1.simd ));
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, p2, p3, f, Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, p2, p3, Simd( f ), g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, p2, p3, Simd( f ), Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, p2, Simd( p3 ), f, g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, p2, Simd( p3 ), f, Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, p2, Simd( p3 ), Simd( f ), g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, p2, Simd( p3 ), Simd( f ), Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, Simd( p2 ), p3, f, g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, Simd( p2 ), p3, f, Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, Simd( p2 ), p3, Simd( f ), g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, Simd( p2 ), p3, Simd( f ), Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), f, g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), f, Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), Simd( f ), g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), Simd( f ), Simd( g ) );
+    }
+
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), p2, p3, f, g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), p2, p3, f, Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), p2, p3, Simd( f ), g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), p2, p3, Simd( f ), Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), f, g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), f, Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), Simd( f ), g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), Simd( f ), Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, f, g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, f, Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, Simd( f ), g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, Simd( f ), Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), f, g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), f, Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( f ), g );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( f ), Simd( g ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, typename V, typename W>
+        requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U> && IsFloatingPoint<V> && IsFloatingPoint<W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return BaryCentric( p1, p2, p3, Simd(Traits::Fill( f )), Simd(Traits::Fill( g )) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, typename V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return BaryCentric( p1, p2, Simd( p3 ), Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, typename V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return BaryCentric( p1, Simd( p2 ), p3, Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, typename V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return BaryCentric( p1, Simd( p2 ), Simd( p3 ), Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, typename V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return BaryCentric( Simd( p1 ), p2, p3, Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, typename V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return BaryCentric( Simd( p1 ), p2, Simd( p3 ), Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, typename V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return BaryCentric( Simd( p1 ), Simd( p2 ), p3, Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+    }
+
+    /// <summary>
+    /// Calculates a point in Barycentric coordinates, using the specified triangle.
+    /// https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="f">
+    /// Weighting factor.
+    /// </param>
+    /// <param name="g">
+    /// Weighting factor.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return BaryCentric( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( Traits::Fill( f ) ), Simd( Traits::Fill( g ) ) );
+    }
+
+
+    // CatmullRom
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = S;
+
+        static constexpr Traits::SIMDType catmul2 = { { static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ), static_cast< FloatT >( 2.0 ) } };
+        static constexpr Traits::SIMDType catmul3 = { { static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ), static_cast< FloatT >( 3.0 ) } };
+        static constexpr Traits::SIMDType catmul4 = { { static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ), static_cast< FloatT >( 4.0 ) } };
+        static constexpr Traits::SIMDType catmul5 = { { static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ), static_cast< FloatT >( 5.0 ) } };
+        static constexpr Traits::SIMDType oneHalf = { { static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ), static_cast< FloatT >( 0.5 ) } };
+        
+        auto t2 = Traits::Mul( t.simd, t.simd );
+        auto t3 = Traits::Mul( t.simd, t2 );
+        // For p1:
+        auto result = Traits::Add( t2, t2 );
+        result = Traits::Sub( result, t.simd );
+        result = Traits::Sub( result, t3 );
+        result = Traits::Mul( result, p1.simd );
+        // For p2:
+        auto temp = Traits::Mul( t3, catmul3 );
+        temp = Traits::FNMAdd( t2, catmul5, temp );
+        temp = Traits::Add( temp, catmul2 );
+        result = Traits::FMAdd( temp, p2.simd, result );
+        // For p3:
+        temp = Traits::Mul( t2, catmul4 );
+        temp = Traits::FNMAdd( t3, catmul3, temp );
+        temp = Traits::Add( temp, t.simd );
+        result = Traits::FMAdd( temp, p3.simd, result );
+        // For p4:
+        t3 = Traits::Sub( t3, t2 );
+        result = Traits::FMAdd( t3, p4.simd, result );
+        // Divide by 2 
+        return Simd( Traits::Mul( result, oneHalf ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, p3, p4, Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, p3, Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, p3, Simd( p4 ), Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, Simd( p3 ), p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, Simd( p3 ), p4, Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, Simd( p3 ), Simd( p4 ), Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), p3, p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), p3, p4, Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), p3, Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), p3, Simd( p4 ), Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), p4, Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), Simd( p4 ), Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, p3, p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, p3, p4, Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, p3, Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, p3, Simd( p4 ), Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), p4, Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), Simd( p4 ), Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, p4, Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, Simd( p4 ), Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), p4, Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( p4 ), Simd( t ) );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = S;
+
+        FloatT t2 = t * t;
+        FloatT t3 = t * t2;
+
+        auto P1 = Traits::Fill( ( -t3 + static_cast<FloatT>(2.0) * t2 - t ) * static_cast< FloatT >( 0.5 ) );
+        auto P2 = Traits::Fill( ( static_cast< FloatT >( 3.0 ) * t3 - static_cast< FloatT >( 5.0 ) * t2 + static_cast< FloatT >( 2.0 ) ) * static_cast< FloatT >( 0.5 ) );
+        auto P3 = Traits::Fill( ( static_cast< FloatT >( -3.0 ) * t3 + static_cast< FloatT >( 4.0 ) * t2 + t ) * static_cast< FloatT >( 0.5 ) );
+        auto P4 = Traits::Fill( ( t3 - t2 ) * static_cast< FloatT >( 0.5 ) );
+
+        P2 = Traits::Mul( p2.simd, P2 );
+        P1 = Traits::FMAdd( p1.simd, P1, P2 );
+        P4 = Traits::Mul( p4.simd, P4 );
+        P3 = Traits::FMAdd( p3.simd, P3, P4 );
+        return Simd(Traits::Add( P1, P3 ));
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, p3, Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, Simd( p3 ), p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, p2, Simd( p3 ), Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), p3, p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), p3, Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return CatmullRom( p1, Simd( p2 ), Simd( p3 ), Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, p3, p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, p3, Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), p2, Simd( p3 ), Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), p3, Simd( p4 ), t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), p4, t );
+    }
+
+    /// <summary>
+    /// Calculates the Catmull-Rom interpolation, using the specified positions.
+    /// </summary>
+    /// <param name="p1">
+    /// The first position.
+    /// </param>
+    /// <param name="p2">
+    /// The second position.
+    /// </param>
+    /// <param name="p3">
+    /// The third position.
+    /// </param>
+    /// <param name="p4">
+    /// The fourth position.
+    /// </param>
+    /// <param name="t">
+    /// The interpolation control factors.
+    /// </param>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, typename W>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& IsFloatingPoint<W>
+    inline typename S::Simd CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return CatmullRom( Simd( p1 ), Simd( p2 ), Simd( p3 ), Simd( p4 ), t );
+    }
+
+
+
 
     template<Internal::SimdType T, typename ResultT = typename T::value_type >
     inline ResultT MinComponentValue( const T& v ) noexcept
@@ -6560,43 +8931,75 @@ namespace Harlinn::Common::Core::Math
         { };
 
         template<typename T>
-        concept QuaternionSimdType = std::is_base_of_v<QuaternionSimdBase, T>;
+        concept QuaternionSimdType = std::is_base_of_v<QuaternionSimdBase, T> && IsFloatingPoint<typename T::value_type>;
 
         template<typename T>
-        concept QuaternionType = std::is_base_of_v<QuaternionBase, T>;
+        concept QuaternionType = std::is_base_of_v<QuaternionBase, T> && IsFloatingPoint<typename T::value_type>;
 
         template<typename T1, typename T2>
         constexpr bool IsCompatibleQuaternion =
             std::is_same_v<typename T1::Traits, typename T2::Traits>;
 
-        template<QuaternionSimdType T, QuaternionSimdType U>
-            requires IsCompatibleQuaternion<T,U>
-        inline T Multiply( const T& q1, const U& q2 );
+        /*
+        template<typename TraitsT>
+        inline typename TraitsT::SIMDType QuaternionMultiply( typename TraitsT::SIMDType q1, typename TraitsT::SIMDType q2 )
+        {
+            using Traits = TraitsT;
+            using SIMDType = typename Traits::SIMDType;
+            using FloatT = typename Traits::Type;
+            using Constants = Constants<FloatT>;
+            constexpr Traits::SIMDType controlWZYX = { { Constants::One, Constants::MinusOne, Constants::One, Constants::MinusOne } };
+            constexpr Traits::SIMDType controlZWXY = { { Constants::One, Constants::One, Constants::MinusOne, Constants::MinusOne } };
+            constexpr Traits::SIMDType controlYXWZ = { { Constants::MinusOne, Constants::One, Constants::One, Constants::MinusOne } };
+
+            auto q2X = Traits::At<0>( q2 );
+            auto q2Y = Traits::At<1>( q2 );
+            auto q2Z = Traits::At<2>( q2 );
+            auto result = Traits::At<3>( q2 );
+
+            result = Traits::Mul( result, q1 );
+
+            auto q1Swizzle = Traits::Swizzle<0,1,2,3>( q1 );
+
+            q2X = Traits::Mul( q2X, q1Swizzle );
+            q1Swizzle = Traits::Swizzle<2,3,0,1>( q1Swizzle );
+
+            result = Traits::FMAdd( q2X, controlWZYX, result );
+
+            q2Y = Traits::Mul( q2Y, q1Swizzle );
+            q1Swizzle = Traits::Swizzle<0, 1, 2, 3>( q1Swizzle );
+
+            q2Y = Traits::Mul( q2Y, controlZWXY );
+
+            q2Z = Traits::Mul( q2Z, q1Swizzle );
+
+            q2Y = Traits::FMAdd( q2Z, controlYXWZ, q2Y );
+            result = Traits::Add( result, q2Y );
+            return result;
+        }
+        */
     }
 
-    template<typename T>
-        requires IsFloatingPoint<T>
-    class Quaternion;
 
     
-    template<typename T>
-        requires IsFloatingPoint<T>
+    template<typename QuaternionT>
     class QuaternionSimd : public Internal::QuaternionSimdBase
     {
     public:
-        using ValueType = T;
+        using QuaternionType = QuaternionT;
+
+        using ValueType = typename QuaternionType::ValueType;
         using size_type = size_t;
         using value_type = ValueType;
+
         static constexpr size_type Size = 4;
         static constexpr bool Loaded = true;
         static constexpr bool Unloaded = false;
 
-        using Traits = SIMD::Traits<ValueType, Size>;
-
+        using Traits = typename QuaternionType::Traits;
         using SIMDType = typename Traits::SIMDType;
 
         static constexpr size_type Capacity = Traits::SIMDTypeCapacity;
-        using Quaternion = Quaternion<ValueType>;
 
         SIMDType simd;
 
@@ -6608,43 +9011,12 @@ namespace Harlinn::Common::Core::Math
             : simd( other.simd )
         { }
 
-        QuaternionSimd( SIMDType other ) noexcept
+        explicit QuaternionSimd( SIMDType other ) noexcept
             : simd( other )
         {
         }
 
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd,U>
-        QuaternionSimd( const U& quaternion ) noexcept
-            : simd( Traits::Load( quaternion.values ) )
-        { }
-
-        
-
-        static QuaternionSimd Multiply( const QuaternionSimd& q1, const QuaternionSimd& q2 )
-        {
-            return Internal::Multiply<Traits>( q1.simd, q2.simd );
-        }
-
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        static QuaternionSimd Multiply( const QuaternionSimd& q1, const U& q2 )
-        {
-            return Internal::Multiply( q1.simd, QuaternionSimd(Traits::Load( q2.values )) );
-        }
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        static QuaternionSimd Multiply( const U& q1, const QuaternionSimd& q2 )
-        {
-            return Internal::Multiply( QuaternionSimd(Traits::Load( q1.values )), q2.simd );
-        }
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        static QuaternionSimd Multiply( const U& q1, const U& q2 )
-        {
-            return Internal::Multiply( QuaternionSimd(Traits::Load( q1.values )), QuaternionSimd(Traits::Load( q2.values )) );
-        }
-
+        explicit QuaternionSimd( const QuaternionType& quaternion ) noexcept;
 
         QuaternionSimd& operator = ( const QuaternionSimd& other ) noexcept
         {
@@ -6658,13 +9030,7 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        QuaternionSimd& operator = ( const Quaternion& quaternion ) noexcept
-        {
-            simd = Traits::Load( quaternion.values );
-            return *this;
-        }
+        QuaternionSimd& operator = ( const QuaternionType& quaternion ) noexcept;
 
         bool operator == ( const QuaternionSimd& other ) const noexcept
         {
@@ -6676,18 +9042,8 @@ namespace Harlinn::Common::Core::Math
             return Traits::AllEqual( simd, other.simd ) == false;
         }
 
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        bool operator == ( const U& other ) const noexcept
-        {
-            return Traits::AllEqual( simd, Traits::Load( other.values ) );
-        }
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        bool operator != ( const U& other ) const noexcept
-        {
-            return Traits::AllEqual( simd, Traits::Load( other.values ) ) == false;
-        }
+        bool operator == ( const QuaternionType& other ) const noexcept;
+        bool operator != ( const QuaternionType& other ) const noexcept;
 
 
         QuaternionSimd& operator += ( const QuaternionSimd& other ) noexcept
@@ -6696,23 +9052,11 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        QuaternionSimd& operator += ( const U& quaternion ) noexcept
-        {
-            simd = Traits::Add( simd, Traits::Load( quaternion.values ) );
-            return *this;
-        }
+        QuaternionSimd& operator += ( const QuaternionType& quaternion ) noexcept;
 
-        QuaternionSimd& operator -= ( const QuaternionSimd& other ) noexcept
-        {
-            simd = Traits::Sub( simd, other.simd );
-            return *this;
-        }
+        QuaternionSimd& operator -= ( const QuaternionSimd& other ) noexcept;
 
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        QuaternionSimd& operator -= ( const U& quaternion ) noexcept
+        QuaternionSimd& operator -= ( const QuaternionType& quaternion ) noexcept
         {
             simd = Traits::Sub( simd, Traits::Load( quaternion.values ) );
             return *this;
@@ -6720,7 +9064,7 @@ namespace Harlinn::Common::Core::Math
 
         QuaternionSimd& operator *= ( const QuaternionSimd& other ) noexcept
         {
-            simd = Traits::Mul( simd, other.simd );
+            simd = Traits::QuaternionMultiply( simd, other.simd );
             return *this;
         }
 
@@ -6730,35 +9074,13 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        QuaternionSimd& operator *= ( const U& quaternion ) noexcept
-        {
-            simd = Multiply( simd, Simd( Traits::Load( quaternion.values ) ) );
-            return *this;
-        }
-
-        QuaternionSimd& operator /= ( const QuaternionSimd& other ) noexcept
-        {
-            simd = Traits::Div( simd, other.simd );
-            return *this;
-        }
+        QuaternionSimd& operator *= ( const QuaternionType& quaternion ) noexcept;
 
         QuaternionSimd& operator /= ( ValueType value ) noexcept
         {
             simd = Traits::Div( simd, Traits::Fill( value ) );
             return *this;
         }
-
-        template<Internal::QuaternionType U>
-            requires Internal::IsCompatibleQuaternion<QuaternionSimd, U>
-        QuaternionSimd& operator /= ( const U& quaternion ) noexcept
-        {
-            simd = Traits::Div( simd, Traits::Load( quaternion.values ) );
-            return *this;
-        }
-
-
 
     };
 
@@ -6795,7 +9117,7 @@ namespace Harlinn::Common::Core::Math
         using reverse_iterator = typename ArrayType::reverse_iterator;
         using const_reverse_iterator = typename ArrayType::const_reverse_iterator;
 
-        using Simd = QuaternionSimd<ValueType>;
+        using Simd = QuaternionSimd<Quaternion>;
 
         union
         {
@@ -6821,8 +9143,7 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
-        template<typename U>
-        Quaternion( const QuaternionSimd<U>& qsimd ) noexcept
+        Quaternion( const Simd& qsimd ) noexcept
             : values( Traits::ToArray( qsimd.simd ) )
         {
         }
@@ -6833,8 +9154,7 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
-        template<typename U>
-        Quaternion& operator = ( const QuaternionSimd<U>& qsimd ) noexcept
+        Quaternion& operator = ( const Simd& qsimd ) noexcept
         {
             values = Traits::ToArray( qsimd.simd );
             return *this;
@@ -6846,14 +9166,12 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
-        template<typename U>
-        bool operator == ( const QuaternionSimd<U>& other ) const noexcept
+        bool operator == ( const Simd& other ) const noexcept
         {
             return Traits::Equals(Traits::Load( values.data( ) ), other.simd );
         }
 
-        template<typename U>
-        bool operator != ( const QuaternionSimd<U>& other ) const noexcept
+        bool operator != ( const Simd& other ) const noexcept
         {
             return Traits::Equals( Traits::Load( values.data( ) ), other.simd ) == false;
         }
@@ -6958,7 +9276,52 @@ namespace Harlinn::Common::Core::Math
 
     };
 
-    static_assert( sizeof( Quaternion<float> ) == sizeof(std::array<float,4>));
+    //static_assert( sizeof( Quaternion<float> ) == sizeof(std::array<float,4>));
+
+    template<typename QuaternionT>
+    inline QuaternionSimd<QuaternionT>::QuaternionSimd( const QuaternionType& quaternion ) noexcept
+        : simd( Traits::Load( quaternion.values ) )
+    {
+    }
+
+    template<typename QuaternionT>
+    inline QuaternionSimd<QuaternionT>& QuaternionSimd<QuaternionT>::operator = ( const QuaternionType& quaternion ) noexcept
+    {
+        simd = Traits::Load( quaternion.values );
+        return *this;
+    }
+
+    template<typename QuaternionT>
+    inline bool QuaternionSimd<QuaternionT>::operator == ( const QuaternionType& other ) const noexcept
+    {
+        return Traits::AllEqual( simd, Traits::Load( other.values ) );
+    }
+    template<typename QuaternionT>
+    inline bool QuaternionSimd<QuaternionT>::operator != ( const QuaternionType& other ) const noexcept
+    {
+        return Traits::AllEqual( simd, Traits::Load( other.values ) ) == false;
+    }
+
+    template<typename QuaternionT>
+    inline QuaternionSimd<QuaternionT>& QuaternionSimd<QuaternionT>::operator += ( const QuaternionType& quaternion ) noexcept
+    {
+        simd = Traits::Add( simd, Traits::Load( quaternion.values ) );
+        return *this;
+    }
+
+    template<typename QuaternionT>
+    inline QuaternionSimd<QuaternionT>& QuaternionSimd<QuaternionT>::operator -= ( const QuaternionSimd& other ) noexcept
+    {
+        simd = Traits::Sub( simd, other.simd );
+        return *this;
+    }
+
+    template<typename QuaternionT>
+    inline QuaternionSimd<QuaternionT>& QuaternionSimd<QuaternionT>::operator *= ( const QuaternionType& quaternion ) noexcept
+    {
+        simd = Traits::QuaternionMultiply( simd, Traits::Load( quaternion.values ) );
+        return *this;
+    }
 
 
     // Addition
@@ -6968,28 +9331,28 @@ namespace Harlinn::Common::Core::Math
     T operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Add( q1.simd, q2.simd );
+        return T(Traits::Add( q1.simd, q2.simd ));
     }
     template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     U operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Add( Traits::Load( q1.values ), q2.simd );
+        return U(Traits::Add( Traits::Load( q1.values ), q2.simd ));
     }
     template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     T operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Add( q1.simd, Traits::Load( q2.values ) );
+        return T(Traits::Add( q1.simd, Traits::Load( q2.values ) ));
     }
     template<Internal::QuaternionType T, Internal::QuaternionType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     typename T::Simd operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Add( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) );
+        return typename T::Simd(Traits::Add( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) ));
     }
 
     // Subtraction
@@ -6999,28 +9362,28 @@ namespace Harlinn::Common::Core::Math
     T operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sub( q1.simd, q2.simd );
+        return T(Traits::Sub( q1.simd, q2.simd ));
     }
     template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     U operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sub( Traits::Load( q1.values ), q2.simd );
+        return U(Traits::Sub( Traits::Load( q1.values ), q2.simd ));
     }
     template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     T operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sub( q1.simd, Traits::Load( q2.values ) );
+        return T(Traits::Sub( q1.simd, Traits::Load( q2.values ) ));
     }
     template<Internal::QuaternionType T, Internal::QuaternionType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     typename T::Simd operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sub( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) );
+        return typename T::Simd(Traits::Sub( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) ));
     }
 
     // Multiplication
@@ -7029,25 +9392,30 @@ namespace Harlinn::Common::Core::Math
         requires Internal::IsCompatibleQuaternion<T, U>
     T operator * ( const T& q1, const U& q2 ) noexcept
     {
-        return T::Multiply( q1, q2 );
+        using Traits = typename T::Traits;
+        return T( Traits::QuaternionMultiply( q1.simd, q2.simd ));
     }
     template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     U operator *( const T& q1, const U& q2 ) noexcept
     {
-        return U::Multiply( q1, q2 );
+        using Traits = typename T::Traits;
+        return U( Traits::QuaternionMultiply( Traits::Load( q1.values )), q2.simd );
     }
     template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     T operator * ( const T& q1, const U& q2 ) noexcept
     {
-        return T::Multiply( q1, q2 );
+        using Traits = typename U::Traits;
+        return T( Traits::QuaternionMultiply( q1.simd, Traits::Load( q2.values ) ));
     }
     template<Internal::QuaternionType T, Internal::QuaternionType U>
         requires Internal::IsCompatibleQuaternion<T, U>
     typename T::Simd operator * ( const T& q1, const U& q2 ) noexcept
     {
-        return T::Simd::Multiply( q1, q2 );
+        using Traits = typename T::Traits;
+        using Simd = typename T::Simd;
+        return Simd( Traits::QuaternionMultiply( Traits::Load( q1.values ), Traits::Load( q2.values ) ));
     }
 
 
@@ -7055,32 +9423,32 @@ namespace Harlinn::Common::Core::Math
 
     template<typename T, Internal::QuaternionSimdType U>
         requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( T value, const U& q2 ) noexcept
+    U operator * ( T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
-        return Traits::Mul( Traits::Fill( value ), q2.simd );
+        return U(Traits::Mul( Traits::Fill( value ), q2.simd ));
     }
     template<Internal::QuaternionSimdType T, typename U>
         requires IsFloatingPoint<U>
-    QuaternionSimd<T> operator * ( const T& q1, U value ) noexcept
+    T operator * ( const T& q1, U value ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Mul( q1.simd, Traits::Fill( value ) );
+        return T(Traits::Mul( q1.simd, Traits::Fill( value ) ));
     }
 
     template<typename T, Internal::QuaternionType U>
         requires IsFloatingPoint<T>
-    QuaternionSimd<T> operator * ( T value, const U& q2 ) noexcept
+    typename U::Simd operator * ( T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
-        return Traits::Mul( Traits::Fill( value ), q2.simd );
+        return typename U::Simd(Traits::Mul( Traits::Fill( value ), q2.simd ));
     }
     template<Internal::QuaternionType T, typename U>
         requires IsFloatingPoint<U>
-    QuaternionSimd<T> operator * ( const T& q1, U value ) noexcept
+    typename T::Simd operator * ( const T& q1, U value ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Mul( q1.simd, Traits::Fill( value ) );
+        return typename T::Simd(Traits::Mul( q1.simd, Traits::Fill( value ) ));
     }
 
     // Scalar Division
@@ -7088,124 +9456,93 @@ namespace Harlinn::Common::Core::Math
 
     template<Internal::QuaternionSimdType T, typename U>
         requires IsFloatingPoint<U>
-    QuaternionSimd<T> operator / ( const T& q1, U value ) noexcept
+    T operator / ( const T& q1, U value ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Mul( q1.simd, Traits::Fill( value ) );
+        return T( Traits::Div( q1.simd, Traits::Fill( value ) ) );
     }
     template<Internal::QuaternionType T, typename U>
         requires IsFloatingPoint<U>
-    QuaternionSimd<T> operator / ( const T& q1, U value ) noexcept
+    typename T::Simd operator / ( const T& q1, U value ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Mul( Traits::Load( q1.values ), Traits::Fill( value ) );
+        return typename T::Simd(Traits::Mul( Traits::Load( q1.values ), Traits::Fill( value ) ));
     }
 
-    /*
-    template<Internal::QuaternionSimdType T, Internal::QuaternionSimdType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
-    typename Vector<T,4>::Simd Dot( const T& q1, const U& q2 ) noexcept
+    
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T,4>::Simd Dot( const QuaternionSimd<Quaternion<T>>& q1, const QuaternionSimd<Quaternion<T>>& q2 ) noexcept
     {
-        using Traits = typename T::Traits;
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
         return Traits::Dot( q1.simd, q2.simd );
     }
 
-    template<Internal::QuaternionType T, Internal::QuaternionSimdType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
-    typename Vector<T, 4>::Simd Dot( const T& q1, const U& q2 ) noexcept
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Dot( const Quaternion<T>& q1, const QuaternionSimd<Quaternion<T>>& q2 ) noexcept
     {
-        using Traits = typename T::Traits;
+        using Traits = typename Quaternion<T>::Traits;
         return Traits::Dot( Traits::Load( q1.values ), q2.simd );
     }
 
-    template<Internal::QuaternionSimdType T, Internal::QuaternionType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
-    typename Vector<T, 4>::Simd Dot( const T& q1, const U& q2 ) noexcept
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Dot( const QuaternionSimd<Quaternion<T>>& q1, const Quaternion<T>& q2 ) noexcept
     {
-        using Traits = typename QuaternionSimd<T>::Traits;
+        using Traits = typename Quaternion<T>::Traits;
         return Traits::Dot( q1.simd, Traits::Load( q2.values ) );
     }
 
-    template<Internal::QuaternionType T, Internal::QuaternionType U>
-        requires Internal::IsCompatibleQuaternion<T, U>
-    typename Vector<T, 4>::Simd Dot( const T& q1, const U& q2 ) noexcept
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Dot( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
     {
         using Traits = typename Quaternion<T>::Traits;
         return Traits::Dot( Traits::Load( q1.values ), Traits::Load( q2.values ) );
     }
+    
 
     // Length
 
-    template<Internal::QuaternionSimdType T>
-    typename Vector<T, 4>::Simd Length( const T& q1 ) noexcept
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Length( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
     {
-        using Traits = typename T::Traits;
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
         return Traits::Sqrt( Traits::HSum( Traits::Mul( q1.simd, q1.simd ) ) );
     }
 
-    template<Internal::QuaternionType T>
-    typename Vector<T, 4>::Simd Length( T& q1 ) noexcept
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd Length( const Quaternion<T>& q1 ) noexcept
     {
-        using Traits = typename T::Traits;
+        using Traits = typename Quaternion<T>::Traits;
         auto simd = Traits::Load( q1.values );
         return Traits::Sqrt( Traits::HSum( Traits::Mul( simd, simd ) ) );
     }
 
     // ScalarLength
 
-    template<Internal::QuaternionSimdType T>
-    typename T ScalarLength( const T& q1 ) noexcept
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarLength( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
     {
-        using Traits = typename T::Traits;
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
         return Traits::First( Length( q1 ).simd );
     }
 
-    template<Internal::QuaternionType T>
-    typename T ScalarLength( const T& q1 ) noexcept
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarLength( const Quaternion<T>& q1 ) noexcept
     {
-        using Traits = typename T::Traits;
+        using Traits = typename Quaternion<T>::Traits;
         return Traits::First( Length( q1 ).simd );
     }
-    */
+    
     namespace Internal
     {
-        template<QuaternionSimdType T, QuaternionSimdType U>
-            requires IsCompatibleQuaternion<T, U>
-        inline T Multiply( const T& q1, const U& q2 )
-        {
-            using Traits = SIMD::Traits<float, 4>; //typename T::Traits;
-            using SIMDType = typename Traits::SIMDType;
-            using FloatT = typename Traits::Type;
-            using Constants = Constants<FloatT>;
-            constexpr Traits::SIMDType controlWZYX = { { Constants::One, Constants::MinusOne, Constants::One, Constants::MinusOne } };
-            constexpr Traits::SIMDType controlZWXY = { { Constants::One, Constants::One, Constants::MinusOne, Constants::MinusOne } };
-            constexpr Traits::SIMDType controlYXWZ = { { Constants::MinusOne, Constants::One, Constants::One, Constants::MinusOne } };
-
-            auto q2X = Traits::At<0>( q2.simd );
-            auto q2Y = Traits::At<1>( q2.simd );
-            auto q2Z = Traits::At<2>( q2.simd );
-            auto result = Traits::At<3>( q2.simd );
-
-            result = Traits::Mul( result, q1.simd );
-
-            auto q1Swizzle = Traits::Swizzle<0U, 1U, 2U, 3U>( q1.simd );
-
-            q2X = Traits::Mul( q2X, q1Swizzle );
-            q1Swizzle = Traits::Swizzle<2, 3, 0, 1>( q1Swizzle );
-
-            result = Traits::FMAdd( q2X, controlWZYX, result );
-
-            q2Y = Traits::Mul( q2Y, q1Swizzle );
-            q1Swizzle = Traits::Swizzle<0, 1, 2, 3>( q1Swizzle );
-
-            q2Y = Traits::Mul( q2Y, controlZWXY );
-
-            q2Z = Traits::Mul( q2Z, q1Swizzle );
-
-            q2Y = Traits::FMAdd( q2Z, controlYXWZ, q2Y );
-            result = Traits::Add( result, q2Y );
-            return result;
-        }
+        
     }
 
 
@@ -7304,73 +9641,227 @@ namespace Harlinn::Common::Core::Math
         struct MatrixBase
         { };
 
-
-        template<typename MatrixT, typename TraitsT = typename MatrixT::Traits>
-        struct alignas( TraitsT::AlignAs ) SquareMatrix2x2Simd : public MatrixSimdBase
-        {
-            using MatrixType = MatrixT;
-            using Traits = typename MatrixType::Traits;
-            using SIMDType = typename Traits::SIMDType;
-            using value_type = typename MatrixType::value_type;
-            static constexpr size_t Size = Traits::Size;
-            static constexpr bool Loaded = true;
-            static constexpr bool Unloaded = false;
-            static constexpr bool IsSquareMatrix = true;
-            SIMDType simd;
-
-            SquareMatrix2x2Simd( SIMDType v )
-                : simd( v )
-            { }
-        };
-
-        template<typename MatrixT, typename TraitsT = typename MatrixT::Traits>
-        struct alignas( TraitsT::AlignAs ) SquareMatrixSimd : public std::array<typename TraitsT::SIMDType, TraitsT::Size>, public MatrixSimdBase
-        {
-            using MatrixType = MatrixT;
-            using Traits = typename MatrixType::Traits;
-            using SIMDType = typename Traits::SIMDType;
-            using value_type = typename MatrixType::value_type;
-            static constexpr size_t Size = Traits::Size;
-            static constexpr bool Loaded = true;
-            static constexpr bool Unloaded = false;
-            static constexpr bool IsSquareMatrix = true;
-        };
-
         template<typename T>
-        concept SquareMatrixSimdType = std::is_base_of_v<MatrixSimdBase,T>;
+        concept SquareMatrixSimdType = std::is_base_of_v<MatrixSimdBase, T>;
 
         template<typename T>
         concept SquareMatrixType = std::is_base_of_v<MatrixBase, T>;
 
         template<typename T1, typename T2>
-        constexpr bool IsCompatibleMatrix =
-            std::is_same_v<typename T1::Traits, typename T2::Traits> && T1::Size == T2::Size;
+        constexpr bool IsCompatibleMatrix = std::is_same_v<typename T1::Traits, typename T2::Traits> && ( T1::Size == T2::Size );
 
     }
 
+    
+    template<typename MatrixT, typename size_t N>
+    struct SquareMatrixSimd
+    {
+    };
+
+
+    template<typename MatrixT>
+    struct alignas( Core::SIMD::Traits<typename MatrixT::value_type, 1>::AlignAs )
+        SquareMatrixSimd<MatrixT, 1> : public Internal::MatrixSimdBase
+    {
+        using MatrixType = MatrixT;
+        using value_type = typename MatrixT::value_type;
+        using Traits = Core::SIMD::Traits<value_type, 1>;
+        using SIMDType = typename Traits::SIMDType;
+        using ArrayType = std::array<std::array<value_type, 1>, 1>;
+        static constexpr size_t Size = 1;
+
+        SIMDType simd;
+
+        static SIMDType ToSimd( const ArrayType& matrix )
+        {
+            return Traits::Load( matrix[ 0 ].data( ) );
+        }
+        static ArrayType ToMatrix( const SquareMatrixSimd& simd )
+        {
+            ArrayType result;
+            Traits::Store( result[ 0 ].data( ), simd.simd );
+            return result;
+        }
+
+        SquareMatrixSimd( )
+        {
+        }
+        explicit SquareMatrixSimd( SIMDType other )
+            : simd( other )
+        {
+        }
+        SquareMatrixSimd( const SquareMatrixSimd& other )
+            : simd( other.simd )
+        {
+        }
+        explicit SquareMatrixSimd( const ArrayType& matrix )
+            : simd( ToSimd( matrix ) )
+        {
+        }
+
+    };
+    template<typename MatrixT>
+    struct alignas( Core::SIMD::Traits<typename MatrixT::value_type, 4>::AlignAs )
+        SquareMatrixSimd<MatrixT, 2> : public Internal::MatrixSimdBase
+    {
+        using MatrixType = MatrixT;
+        using value_type = typename MatrixT::value_type;
+        using Traits = Core::SIMD::Traits<value_type, 4>;
+        using SIMDType = typename Traits::SIMDType;
+        using ArrayType = std::array<std::array<value_type, 2>, 2>;
+        static constexpr size_t Size = 2;
+
+        SIMDType simd;
+
+        static SIMDType ToSimd( const ArrayType& matrix )
+        {
+            return Traits::Load( matrix[ 0 ].data( ) );
+        }
+        static ArrayType ToMatrix( const SquareMatrixSimd& simd )
+        {
+            ArrayType result;
+            Traits::Store( result[ 0 ].data( ), simd.simd );
+            return result;
+        }
+
+        SquareMatrixSimd( )
+        {
+        }
+        explicit SquareMatrixSimd( SIMDType other )
+            : simd( other )
+        {
+        }
+        SquareMatrixSimd( const SquareMatrixSimd& other )
+            : simd( other.simd )
+        {
+        }
+        explicit SquareMatrixSimd( const ArrayType& matrix )
+            : simd( ToSimd( matrix ) )
+        {
+        }
+    };
+
+
+    template<typename MatrixT>
+    struct alignas( Core::SIMD::Traits<typename MatrixT::value_type, 3>::AlignAs )
+        SquareMatrixSimd<MatrixT, 3> : public Internal::MatrixSimdBase
+    {
+        using MatrixType = MatrixT;
+        using value_type = typename MatrixT::value_type;
+        using Traits = Core::SIMD::Traits<value_type, 3>;
+        using SIMDType = typename Traits::SIMDType;
+        using ArrayType = std::array<std::array<value_type, 3>, 3>;
+        static constexpr size_t Size = 3;
+
+        std::array<SIMDType, 3> simd;
+
+        static std::array<SIMDType, 3> ToSimd( const ArrayType& matrix )
+        {
+            std::array<SIMDType, 3> result;
+            result[ 0 ] = Traits::Load( matrix[ 0 ].data( ) );
+            result[ 1 ] = Traits::Load( matrix[ 1 ].data( ) );
+            result[ 2 ] = Traits::Load( matrix[ 2 ].data( ) );
+            return result;
+        }
+        static ArrayType ToMatrix( const SquareMatrixSimd& simd )
+        {
+            ArrayType result;
+            Traits::Store( result[ 0 ].data( ), simd.simd[ 0 ] );
+            Traits::Store( result[ 1 ].data( ), simd.simd[ 1 ] );
+            Traits::Store( result[ 2 ].data( ), simd.simd[ 2 ] );
+            return result;
+        }
+
+        SquareMatrixSimd( )
+        {
+        }
+        explicit SquareMatrixSimd( const std::array<SIMDType, 3>& other )
+            : simd( other )
+        {
+        }
+        SquareMatrixSimd( const SquareMatrixSimd& other )
+            : simd( other.simd )
+        {
+        }
+        explicit SquareMatrixSimd( const ArrayType& matrix )
+            : simd( ToSimd( matrix ) )
+        {
+        }
+    };
+
+
+    template<typename MatrixT>
+    struct alignas( Core::SIMD::Traits<typename MatrixT::value_type, 4>::AlignAs )
+        SquareMatrixSimd<MatrixT, 4> : public Internal::MatrixSimdBase
+    {
+        using MatrixType = MatrixT;
+        using value_type = typename MatrixT::value_type;
+        using Traits = Core::SIMD::Traits<value_type, 4>;
+        using SIMDType = typename Traits::SIMDType;
+        using ArrayType = std::array<std::array<value_type, 4>, 4>;
+        static constexpr size_t Size = 4;
+
+        std::array<SIMDType, 4> simd;
+
+        static std::array<SIMDType, 4> ToSimd( const ArrayType& matrix )
+        {
+            std::array<SIMDType, 4> result;
+            result[ 0 ] = Traits::Load( matrix[ 0 ].data( ) );
+            result[ 1 ] = Traits::Load( matrix[ 1 ].data( ) );
+            result[ 2 ] = Traits::Load( matrix[ 2 ].data( ) );
+            result[ 3 ] = Traits::Load( matrix[ 3 ].data( ) );
+            return result;
+        }
+        static ArrayType ToMatrix( const SquareMatrixSimd& simd )
+        {
+            ArrayType result;
+            Traits::Store( result[ 0 ].data( ), simd.simd[ 0 ] );
+            Traits::Store( result[ 1 ].data( ), simd.simd[ 1 ] );
+            Traits::Store( result[ 2 ].data( ), simd.simd[ 2 ] );
+            Traits::Store( result[ 3 ].data( ), simd.simd[ 3 ] );
+            return result;
+        }
+
+        SquareMatrixSimd( )
+        {
+        }
+        explicit SquareMatrixSimd( const std::array<SIMDType,4>& other )
+            : simd( other )
+        {
+        }
+        SquareMatrixSimd( const SquareMatrixSimd& other )
+            : simd( other.simd )
+        {
+        }
+        explicit SquareMatrixSimd( const ArrayType& matrix )
+            : simd( ToSimd( matrix ) )
+        {
+        }
+    };
+    
 
 
     // SquareMatrix Definition
-    template <typename FloatT, size_t N>
+    template<typename T, size_t N>
     class SquareMatrix : public Internal::MatrixBase
     {
-        static constexpr bool TinyMatrixOptimization = N <= 2;
     public:
-        using value_type = FloatT;
+        using Base = Internal::MatrixBase;
+
+        using ValueType = T;
         static constexpr size_t Size = N;
-        using Traits = std::conditional_t<TinyMatrixOptimization, SIMD::Traits<FloatT, (Size*2)>, SIMD::Traits<FloatT, Size> >;
-        using ArrayType = std::conditional_t<TinyMatrixOptimization, std::array<FloatT, Size>, typename Traits::ArrayType>;
+        using value_type = ValueType;
+        using Simd = SquareMatrixSimd<SquareMatrix,N>;
 
-        using Data = std::array<ArrayType, N>;
-        using Simd = std::conditional_t<TinyMatrixOptimization, Internal::SquareMatrix2x2Simd<SquareMatrix>, Internal::SquareMatrixSimd<SquareMatrix> >;
+        using Traits = typename Simd::Traits;
 
-        static constexpr bool Loaded = false;
-        static constexpr bool Unloaded = true;
-        static constexpr bool IsSquareMatrix = true;
+        using MatrixData = typename Simd::ArrayType;
+        using ArrayType = typename MatrixData::value_type;
+
     private:
-        static constexpr Data MakeDefaultValue( ) noexcept
+        static constexpr MatrixData MakeDefaultValue( ) noexcept
         {
-            Data m;
+            MatrixData m;
             for ( int i = 0; i < N; ++i )
             {
                 for ( int j = 0; j < N; ++j )
@@ -7380,66 +9871,41 @@ namespace Harlinn::Common::Core::Math
             }
             return m;
         }
-        static constexpr Data DefaultValue = MakeDefaultValue( );
-        Data data_ = DefaultValue;
+        static constexpr MatrixData ZeroValue{};
+        static constexpr MatrixData DefaultValue = MakeDefaultValue( );
+        MatrixData data_ = DefaultValue;
 
     public:
         // SquareMatrix Public Methods
         constexpr static SquareMatrix Zero( ) noexcept
         {
-            SquareMatrix m{};
-            return m;
+            SquareMatrix zeroMatrix( ZeroValue );
+            return zeroMatrix;
         }
 
         constexpr SquareMatrix( ) noexcept = default;
 
-        SquareMatrix( const value_type (&mat)[ N ][ N ] )
-            : data_( mat )
-        {
-        }
-
-        SquareMatrix( const value_type mat[ N ][ N ] )
-            : data_( mat )
+        SquareMatrix( const value_type mat[ Size ][ Size ] )
+            : data_( MatrixData( mat ) )
         {
         }
 
         SquareMatrix( const Simd& simd ) noexcept
+            : data_( Simd::ToMatrix( simd ) )
         {
-            if constexpr ( TinyMatrixOptimization )
-            {
-                reinterpret_cast< Traits::ArrayType& >(data_) = Traits::ToArray( simd.simd );
-            }
-            else
-            {
-                for ( size_t i = 0; i < N; i++ )
-                {
-                    data_[ i ] = Traits::ToArray( simd[ i ] );
-                }
-            }
         }
 
-        SquareMatrix( const Data& data ) noexcept
+        SquareMatrix( const MatrixData& data ) noexcept
             : data_( data )
         {
         }
 
         SquareMatrix& operator = ( const Simd& simd ) noexcept
         {
-            if constexpr ( TinyMatrixOptimization )
-            {
-                reinterpret_cast< Traits::ArrayType& >( data_ ) = Traits::ToArray( simd.simd );
-            }
-            else
-            {
-                for ( size_t i = 0; i < N; i++ )
-                {
-                    data_[ i ] = Traits::ToArray( simd[ i ] );
-                }
-            }
-            return *this;
+            data_ = Simd::ToMatrix( simd );
         }
 
-        SquareMatrix& operator = ( const Data& data ) noexcept
+        SquareMatrix& operator = ( const MatrixData& data ) noexcept
         {
             data_ = data;
             return *this;
@@ -7467,43 +9933,10 @@ namespace Harlinn::Common::Core::Math
         {
             return data_[ index ];
         }
-        const value_type& operator[]( size_t row, size_t column ) const
-        {
-            return data_[ row ][ column ];
-        }
-        value_type& operator[]( size_t row, size_t column )
-        {
-            return data_[ row ][ column ];
-        }
 
         Simd ToSimd( ) const noexcept
         {
-            if constexpr ( N == 2 )
-            {
-                Simd result( Traits::Load( data_[ 0 ].data( ) ) );
-                return result;
-            }
-            else if constexpr ( N == 3 )
-            {
-                Simd result;
-                result[ 0 ] = Traits::Load( data_[ 0 ] );
-                result[ 1 ] = Traits::Load( data_[ 1 ] );
-                result[ 2 ] = Traits::Load( data_[ 2 ] );
-                return result;
-            }
-            else if constexpr ( N == 4 )
-            {
-                Simd result;
-                result[ 0 ] = Traits::Load( data_[ 0 ] );
-                result[ 1 ] = Traits::Load( data_[ 1 ] );
-                result[ 2 ] = Traits::Load( data_[ 2 ] );
-                result[ 3 ] = Traits::Load( data_[ 3 ] );
-                return result;
-            }
-            else
-            {
-                static_assert( false, "Unsupported matrix dimensions." );
-            }
+            return Simd( Simd::ToSimd( data_ ) );
         }
         
 
@@ -7531,7 +9964,7 @@ namespace Harlinn::Common::Core::Math
 
     };
 
-    constexpr size_t SizeOfSquareMatrix2Float = sizeof( SquareMatrix<float, 2> );
+    
 
 
     // Addition
@@ -7542,31 +9975,29 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T1::Traits;
         using Simd = T1;
-        constexpr auto N = Traits::Size;
+        constexpr auto N = T1::Size;
         if constexpr ( N == 2 )
         {
-            Simd result;
-            result[ 0 ] = Traits::Add( m1[ 0 ], m2[ 0 ] );
-            result[ 1 ] = Traits::Add( m1[ 1 ], m2[ 1 ] );
+            Simd result( Traits::Add( m1.simd, m2.simd ) );
             return result;
 
         }
         else if constexpr ( N == 3 )
         {
             Simd result;
-            result[ 0 ] = Traits::Add( m1[ 0 ], m2[ 0 ] );
-            result[ 1 ] = Traits::Add( m1[ 1 ], m2[ 1 ] );
-            result[ 2 ] = Traits::Add( m1[ 2 ], m2[ 2 ] );
+            result.simd[ 0 ] = Traits::Add( m1.simd[ 0 ], m2.simd[ 0 ] );
+            result.simd[ 1 ] = Traits::Add( m1.simd[ 1 ], m2.simd[ 1 ] );
+            result.simd[ 2 ] = Traits::Add( m1.simd[ 2 ], m2.simd[ 2 ] );
             return result;
 
         }
         else if constexpr ( N == 4 )
         {
             Simd result;
-            result[ 0 ] = Traits::Add( m1[ 0 ], m2[ 0 ] );
-            result[ 1 ] = Traits::Add( m1[ 1 ], m2[ 1 ] );
-            result[ 2 ] = Traits::Add( m1[ 2 ], m2[ 2 ] );
-            result[ 3 ] = Traits::Add( m1[ 3 ], m2[ 3 ] );
+            result.simd[ 0 ] = Traits::Add( m1.simd[ 0 ], m2.simd[ 0 ] );
+            result.simd[ 1 ] = Traits::Add( m1.simd[ 1 ], m2.simd[ 1 ] );
+            result.simd[ 2 ] = Traits::Add( m1.simd[ 2 ], m2.simd[ 2 ] );
+            result.simd[ 3 ] = Traits::Add( m1.simd[ 3 ], m2.simd[ 3 ] );
             return result;
         }
         else
@@ -7605,31 +10036,29 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T1::Traits;
         using Simd = T1;
-        constexpr auto N = Traits::Size;
+        constexpr auto N = T1::Size;
         if constexpr ( N == 2 )
         {
-            Simd result;
-            result[ 0 ] = Traits::Sub( m1[ 0 ], m2[ 0 ] );
-            result[ 1 ] = Traits::Sub( m1[ 1 ], m2[ 1 ] );
+            Simd result( Traits::Sub( m1.simd, m2.simd ) );
             return result;
 
         }
         else if constexpr ( N == 3 )
         {
             Simd result;
-            result[ 0 ] = Traits::Sub( m1[ 0 ], m2[ 0 ] );
-            result[ 1 ] = Traits::Sub( m1[ 1 ], m2[ 1 ] );
-            result[ 2 ] = Traits::Sub( m1[ 2 ], m2[ 2 ] );
+            result.simd[ 0 ] = Traits::Sub( m1.simd[ 0 ], m2.simd[ 0 ] );
+            result.simd[ 1 ] = Traits::Sub( m1.simd[ 1 ], m2.simd[ 1 ] );
+            result.simd[ 2 ] = Traits::Sub( m1.simd[ 2 ], m2.simd[ 2 ] );
             return result;
 
         }
         else if constexpr ( N == 4 )
         {
             Simd result;
-            result[ 0 ] = Traits::Sub( m1[ 0 ], m2[ 0 ] );
-            result[ 1 ] = Traits::Sub( m1[ 1 ], m2[ 1 ] );
-            result[ 2 ] = Traits::Sub( m1[ 2 ], m2[ 2 ] );
-            result[ 3 ] = Traits::Sub( m1[ 3 ], m2[ 3 ] );
+            result.simd[ 0 ] = Traits::Sub( m1.simd[ 0 ], m2.simd[ 0 ] );
+            result.simd[ 1 ] = Traits::Sub( m1.simd[ 1 ], m2.simd[ 1 ] );
+            result.simd[ 2 ] = Traits::Sub( m1.simd[ 2 ], m2.simd[ 2 ] );
+            result.simd[ 3 ] = Traits::Sub( m1.simd[ 3 ], m2.simd[ 3 ] );
             return result;
         }
         else
@@ -7660,7 +10089,7 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-    // Multiplication
+    // Scalar Multiplication
 
     template<Internal::SquareMatrixSimdType T1, typename T2>
         requires std::is_arithmetic_v<T2>
@@ -7669,33 +10098,31 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T1::Traits;
         using Simd = T1;
         using ValueType = typename Traits::Type;
-        constexpr auto N = Traits::Size;
+        constexpr auto N = T1::Size;
         auto v = Traits::Fill( static_cast< ValueType >( value ) );
         
         if constexpr ( N == 2 )
         {
-            Simd result;
-            result[ 0 ] = Traits::Mul( m[ 0 ], v );
-            result[ 1 ] = Traits::Mul( m[ 1 ], v );
+            Simd result( Traits::Mul( m.simd, v ) );
             return result;
 
         }
         else if constexpr ( N == 3 )
         {
             Simd result;
-            result[ 0 ] = Traits::Mul( m[ 0 ], v );
-            result[ 1 ] = Traits::Mul( m[ 1 ], v );
-            result[ 2 ] = Traits::Mul( m[ 2 ], v );
+            result.simd[ 0 ] = Traits::Mul( m.simd[ 0 ], v );
+            result.simd[ 1 ] = Traits::Mul( m.simd[ 1 ], v );
+            result.simd[ 2 ] = Traits::Mul( m.simd[ 2 ], v );
             return result;
 
         }
         else if constexpr ( N == 4 )
         {
             Simd result;
-            result[ 0 ] = Traits::Mul( m[ 0 ], v );
-            result[ 1 ] = Traits::Mul( m[ 1 ], v );
-            result[ 2 ] = Traits::Mul( m[ 2 ], v );
-            result[ 3 ] = Traits::Mul( m[ 3 ], v );
+            result.simd[ 0 ] = Traits::Mul( m.simd[ 0 ], v );
+            result.simd[ 1 ] = Traits::Mul( m.simd[ 1 ], v );
+            result.simd[ 2 ] = Traits::Mul( m.simd[ 2 ], v );
+            result.simd[ 3 ] = Traits::Mul( m.simd[ 3 ], v );
             return result;
         }
         else
@@ -7730,15 +10157,15 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using Simd = typename SquareMatrix<float, 4>::Simd;
 
-        auto rmm1 = _mm256_castps128_ps256( matrix1[ 0 ] );
-        rmm1 = _mm256_insertf128_ps( rmm1, matrix1[ 1 ], 1 );
-        auto rmm2 = _mm256_castps128_ps256( matrix1[ 2 ] );
-        rmm2 = _mm256_insertf128_ps( rmm2, matrix1[ 3 ], 1 );
+        auto rmm1 = _mm256_castps128_ps256( matrix1.simd[ 0 ] );
+        rmm1 = _mm256_insertf128_ps( rmm1, matrix1.simd[ 1 ], 1 );
+        auto rmm2 = _mm256_castps128_ps256( matrix1.simd[ 2 ] );
+        rmm2 = _mm256_insertf128_ps( rmm2, matrix1.simd[ 3 ], 1 );
 
-        auto rmm3 = _mm256_castps128_ps256( matrix2[ 0 ] );
-        rmm3 = _mm256_insertf128_ps( rmm3, matrix2[ 1 ], 1 );
-        auto rmm4 = _mm256_castps128_ps256( matrix2[ 2 ] );
-        rmm4 = _mm256_insertf128_ps( rmm4, matrix2[ 3 ], 1 );
+        auto rmm3 = _mm256_castps128_ps256( matrix2.simd[ 0 ] );
+        rmm3 = _mm256_insertf128_ps( rmm3, matrix2.simd[ 1 ], 1 );
+        auto rmm4 = _mm256_castps128_ps256( matrix2.simd[ 2 ] );
+        rmm4 = _mm256_insertf128_ps( rmm4, matrix2.simd[ 3 ], 1 );
 
         auto rmm5 = _mm256_shuffle_ps( rmm1, rmm1, _MM_SHUFFLE( 0, 0, 0, 0 ) );
         auto rmm6 = _mm256_shuffle_ps( rmm2, rmm2, _MM_SHUFFLE( 0, 0, 0, 0 ) );
@@ -7768,10 +10195,10 @@ namespace Harlinn::Common::Core::Math
         rmm2 = _mm256_add_ps( rmm11, rmm16 );
 
         Simd result;
-        result[ 0 ] = _mm256_castps256_ps128( rmm1 );
-        result[ 1 ] = _mm256_extractf128_ps( rmm1, 1 );
-        result[ 2 ] = _mm256_castps256_ps128( rmm2 );
-        result[ 3 ] = _mm256_extractf128_ps( rmm2, 1 );
+        result.simd[ 0 ] = _mm256_castps256_ps128( rmm1 );
+        result.simd[ 1 ] = _mm256_extractf128_ps( rmm1, 1 );
+        result.simd[ 2 ] = _mm256_castps256_ps128( rmm2 );
+        result.simd[ 3 ] = _mm256_extractf128_ps( rmm2, 1 );
         return result;
     }
 
@@ -7780,15 +10207,15 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename SquareMatrix<float, 3>::Traits;
         using Simd = typename SquareMatrix<float, 3>::Simd;
 
-        auto m10 = matrix1[ 0 ];
-        auto m11 = matrix1[ 1 ];
-        auto m12 = matrix1[ 2 ];
+        auto m10 = matrix1.simd[ 0 ];
+        auto m11 = matrix1.simd[ 1 ];
+        auto m12 = matrix1.simd[ 2 ];
 
         auto c0 = Traits::At<0>( m10 );
         auto c1 = Traits::At<0>( m11 );
         auto c2 = Traits::At<0>( m12 );
 
-        auto m2v = matrix2[ 0 ];
+        auto m2v = matrix2.simd[ 0 ];
 
         c0 = Traits::Mul( c0, m2v );
         c1 = Traits::Mul( c1, m2v );
@@ -7798,7 +10225,7 @@ namespace Harlinn::Common::Core::Math
         auto c1_1 = Traits::At<1>( m11 );
         auto c2_1 = Traits::At<1>( m12 );
 
-        m2v = matrix2[ 1 ];
+        m2v = matrix2.simd[ 1 ];
 
         c0 = Traits::FMAdd( c0_1, m2v, c0 );
         c1 = Traits::FMAdd( c1_1, m2v, c1 );
@@ -7808,14 +10235,38 @@ namespace Harlinn::Common::Core::Math
         m11 = Traits::At<2>( m11 );
         m12 = Traits::At<2>( m12 );
 
-        m2v = matrix2[ 2 ];
+        m2v = matrix2.simd[ 2 ];
 
         Simd result;
-        result[ 0 ] = Traits::FMAdd( m10, m2v, c0 );
-        result[ 1 ] = Traits::FMAdd( m11, m2v, c1 );
-        result[ 2 ] = Traits::FMAdd( m12, m2v, c2 );
+        result.simd[ 0 ] = Traits::FMAdd( m10, m2v, c0 );
+        result.simd[ 1 ] = Traits::FMAdd( m11, m2v, c1 );
+        result.simd[ 2 ] = Traits::FMAdd( m12, m2v, c2 );
         return result;
 
+    }
+
+    inline typename SquareMatrix<float, 2>::Simd Multiply( const typename SquareMatrix<float, 2>::Simd& matrix1, const typename SquareMatrix<float, 2>::Simd& matrix2 )
+    {
+        using Traits = typename SquareMatrix<float, 2>::Traits;
+        using Simd = typename SquareMatrix<float, 2>::Simd;
+
+        //
+        // a1 * a2 + b1 * c2      a1 * b2 + b1 * d2
+        //
+        // c1 * a2 + d1 * c2      c1 * b2 + d1 * d2
+        //
+
+        // a1 * a2 + b1 * c2
+        // a1 * b2 + b1 * d2
+        // c1 * a2 + d1 * c2
+        // c1 * b2 + d1 * d2
+
+        auto rmm1 = Traits::Swizzle<2, 2, 0, 0>( matrix1.simd );
+        auto rmm2 = Traits::Swizzle<1, 0, 1, 0>( matrix2.simd );
+        auto rmm3 = Traits::Mul( rmm1, rmm2 );
+        rmm1 = Traits::Swizzle<3, 3, 1, 1>( matrix1.simd );
+        rmm2 = Traits::Swizzle<3, 2, 3, 2>( matrix2.simd );
+        return Simd(Traits::FMAdd( rmm1, rmm2, rmm3 ));
     }
 
 
@@ -7861,28 +10312,26 @@ namespace Harlinn::Common::Core::Math
 
         if constexpr ( N == 2 )
         {
-            Simd result;
-            result[ 0 ] = Traits::Div( m[ 0 ], v );
-            result[ 1 ] = Traits::Div( m[ 1 ], v );
+            Simd result( Traits::Div( m.simd, v ) );
             return result;
 
         }
         else if constexpr ( N == 3 )
         {
             Simd result;
-            result[ 0 ] = Traits::Div( m[ 0 ], v );
-            result[ 1 ] = Traits::Div( m[ 1 ], v );
-            result[ 2 ] = Traits::Div( m[ 2 ], v );
+            result.simd[ 0 ] = Traits::Div( m.simd[ 0 ], v );
+            result.simd[ 1 ] = Traits::Div( m.simd[ 1 ], v );
+            result.simd[ 2 ] = Traits::Div( m.simd[ 2 ], v );
             return result;
 
         }
         else if constexpr ( N == 4 )
         {
             Simd result;
-            result[ 0 ] = Traits::Div( m[ 0 ], v );
-            result[ 1 ] = Traits::Div( m[ 1 ], v );
-            result[ 2 ] = Traits::Div( m[ 2 ], v );
-            result[ 3 ] = Traits::Div( m[ 3 ], v );
+            result.simd[ 0 ] = Traits::Div( m.simd[ 0 ], v );
+            result.simd[ 1 ] = Traits::Div( m.simd[ 1 ], v );
+            result.simd[ 2 ] = Traits::Div( m.simd[ 2 ], v );
+            result.simd[ 3 ] = Traits::Div( m.simd[ 3 ], v );
             return result;
         }
         else
@@ -7895,7 +10344,8 @@ namespace Harlinn::Common::Core::Math
         requires std::is_arithmetic_v<T2>
     T1 operator/( const T1& m, const T2 value ) noexcept
     {
-        return m.ToSimd( ) * value;
+        using FloatT = typename T1::value_type;
+        return m.ToSimd( ) / static_cast< FloatT >( value );
     }
 
 
@@ -7904,12 +10354,13 @@ namespace Harlinn::Common::Core::Math
     inline typename Vector<float,4>::Simd Determinant( const typename SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
-        using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
+        using ResultType = typename Vector<float, 4>::Simd;
+        //using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
         using Select = typename Traits::SelectType;
         Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, -1.0f } } );
         
-        auto matrix2 = matrix[ 2 ];
-        auto matrix3 = matrix[ 3 ];
+        auto matrix2 = matrix.simd[ 2 ];
+        auto matrix3 = matrix.simd[ 3 ];
 
         auto rmm0 = Traits::Swizzle<Select::X, Select::X, Select::X, Select::Y>( matrix2 );
         auto rmm1 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( matrix3 );
@@ -7928,7 +10379,7 @@ namespace Harlinn::Common::Core::Math
         rmm5 = Traits::FNMAdd( rmm2, rmm1, rmm5 );
         rmm6 = Traits::FNMAdd( rmm2, rmm3, rmm6 );
 
-        rmm3 = matrix[ 1 ];
+        rmm3 = matrix.simd[ 1 ];
 
         rmm0 = Traits::Swizzle<Select::Z, Select::W, Select::W, Select::W>( rmm3 );
         rmm1 = Traits::Swizzle<Select::Y, Select::Y, Select::Z, Select::Z>( rmm3 );
@@ -7938,13 +10389,13 @@ namespace Harlinn::Common::Core::Math
         rmm7 = Traits::FNMAdd( rmm1, rmm5, rmm7 );
         rmm7 = Traits::FMAdd( rmm2, rmm6, rmm7 );
 
-        rmm3 = matrix[ 0 ];
+        rmm3 = matrix.simd[ 0 ];
         rmm3 = Traits::Mul( rmm3, sign );
 
-        return Traits::Dot( rmm3, rmm7 );
+        return ResultType( Traits::Dot( rmm3, rmm7 ) );
     }
 
-    inline typename Vector<float, 4>::Simd Determinant( const typename SquareMatrix<float, 4>& matrix )
+    inline typename Vector<float, 4>::Simd Determinant( const SquareMatrix<float, 4ULL>& matrix )
     {
         return Math::Determinant( matrix.ToSimd( ) );
     }
@@ -7965,45 +10416,28 @@ namespace Harlinn::Common::Core::Math
     inline typename Vector<float, 3>::Simd Determinant( const typename SquareMatrix<float, 3>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 3>::Traits;
-        using Simd = typename SquareMatrix<float, 3>::Simd;
+        using Simd = typename Vector<float, 3>::Simd;
 
-        auto v1 = matrix[ 1 ];
-        auto v2 = matrix[ 2 ];
-
-        auto edd = Traits::Swizzle<3, 0, 0, 1>( v1 );
-        auto iih = Traits::Swizzle<3, 1, 2, 2>( v2 );
-        auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
-        auto ffe = Traits::Swizzle<3, 1, 2, 2>( v1 );
-
-        auto det = Traits::Sub( Traits::Mul( edd, iih ), Traits::Mul( hgg, ffe ) );
-
-        Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, 0.0f } } );
-        auto v0 = Traits::Mul( matrix[ 0 ], sign );
-
-        return Traits::Dot( v0, det );
-
-        /*
-        Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, 0.0f } } );
-        auto v0 = matrix[ 0 ];
-        auto v1 = matrix[ 1 ];
-        auto v2 = matrix[ 2 ];
+        auto v1 = matrix.simd[ 1 ];
+        auto v2 = matrix.simd[ 2 ];
 
         auto edd = Traits::Swizzle<3, 0, 0, 1>( v1 );
         auto iih = Traits::Swizzle<3, 1, 2, 2>( v2 );
         auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
         auto ffe = Traits::Swizzle<3, 1, 2, 2>( v1 );
 
-        auto det = Traits::Sub( Traits::Mul( edd, iih ), Traits::Mul( hgg, ffe ) );
+        auto det = Traits::FMSub( edd, iih, Traits::Mul( hgg, ffe ) );
 
-        v0 = Traits::Mul( v0, sign );
+        Traits::SIMDType sign( { { 1.0f, -1.0f, 1.0f, 0.0f } } );
+        auto v0 = Traits::Mul( matrix.simd[ 0 ], sign );
 
-        return Traits::Dot( v0, det );
-        */
+        return Simd(Traits::Dot( v0, det ));
     }
 
     inline typename Vector<float, 3>::Simd Determinant( const typename SquareMatrix<float, 3>& matrix )
     {
-        return Math::Determinant( matrix.ToSimd( ) );
+        typename SquareMatrix<float, 3>::Simd simd = matrix.ToSimd( );
+        return Math::Determinant( simd );
     }
     inline float ScalarDeterminant( const SquareMatrix<float, 3>::Simd& matrix )
     {
@@ -8018,20 +10452,22 @@ namespace Harlinn::Common::Core::Math
     }
 
     
+    
+
 
     inline SquareMatrix<float, 3>::Simd Transpose( const SquareMatrix<float, 3>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 3>::Traits;
         using MatrixSimd = SquareMatrix<float, 3>::Simd;
         
-        auto rmm4 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 0 ], matrix[ 1 ] );
-        auto rmm5 = Traits::Shuffle<2, 2, 2, 2>( matrix[ 0 ], matrix[ 1 ] );
+        auto rmm4 = Traits::Shuffle<1, 0, 1, 0>( matrix.simd[ 0 ], matrix.simd[ 1 ] );
+        auto rmm5 = Traits::Shuffle<2, 2, 2, 2>( matrix.simd[ 0 ], matrix.simd[ 1 ] );
 
         MatrixSimd result;
 
-        result[ 0 ] = Traits::Shuffle<3, 0, 2, 0>( rmm4, matrix[ 2 ] );
-        result[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( rmm4, matrix[ 2 ] );
-        result[ 2 ] = Traits::Shuffle<3, 2, 2, 0>( rmm5, matrix[ 2 ] );
+        result.simd[ 0 ] = Traits::Shuffle<3, 0, 2, 0>( rmm4, matrix.simd[ 2 ] );
+        result.simd[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( rmm4, matrix.simd[ 2 ] );
+        result.simd[ 2 ] = Traits::Shuffle<3, 2, 2, 0>( rmm5, matrix.simd[ 2 ] );
 
         return result;
     }
@@ -8046,17 +10482,17 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using MatrixSimd = SquareMatrix<float, 4>::Simd;
 
-        auto rmm1 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 0 ], matrix[ 1 ] );
-        auto rmm3 = Traits::Shuffle<3, 2, 3, 2>( matrix[ 0 ], matrix[ 1 ] );
-        auto rmm2 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 2 ], matrix[ 3 ] );
-        auto rmm4 = Traits::Shuffle<3, 2, 3, 2>( matrix[ 2 ], matrix[ 3 ] );
+        auto rmm1 = Traits::Shuffle<1, 0, 1, 0>( matrix.simd[ 0 ], matrix.simd[ 1 ] );
+        auto rmm3 = Traits::Shuffle<3, 2, 3, 2>( matrix.simd[ 0 ], matrix.simd[ 1 ] );
+        auto rmm2 = Traits::Shuffle<1, 0, 1, 0>( matrix.simd[ 2 ], matrix.simd[ 3 ] );
+        auto rmm4 = Traits::Shuffle<3, 2, 3, 2>( matrix.simd[ 2 ], matrix.simd[ 3 ] );
 
         MatrixSimd result;
 
-        result[ 0 ] = Traits::Shuffle<2, 0, 2, 0>( rmm1, rmm2 );
-        result[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( rmm1, rmm2 );
-        result[ 2 ] = Traits::Shuffle<2, 0, 2, 0>( rmm3, rmm4 );
-        result[ 3 ] = Traits::Shuffle<3, 1, 3, 1>( rmm3, rmm4 );
+        result.simd[ 0 ] = Traits::Shuffle<2, 0, 2, 0>( rmm1, rmm2 );
+        result.simd[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( rmm1, rmm2 );
+        result.simd[ 2 ] = Traits::Shuffle<2, 0, 2, 0>( rmm3, rmm4 );
+        result.simd[ 3 ] = Traits::Shuffle<3, 1, 3, 1>( rmm3, rmm4 );
 
         return result;
     }
@@ -8072,38 +10508,38 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using MatrixSimd = SquareMatrix<float, 4>::Simd;
 
-        auto vTemp1 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 0 ], matrix[ 1 ] );
-        auto vTemp3 = Traits::Shuffle<3, 2, 3, 2>( matrix[ 0 ], matrix[ 1 ] );
-        auto vTemp2 = Traits::Shuffle<1, 0, 1, 0>( matrix[ 2 ], matrix[ 3 ] );
-        auto vTemp4 = Traits::Shuffle<3, 2, 3, 2>( matrix[ 2 ], matrix[ 3 ] );
+        auto vTemp1 = Traits::Shuffle<1, 0, 1, 0>( matrix.simd[ 0 ], matrix.simd[ 1 ] );
+        auto vTemp3 = Traits::Shuffle<3, 2, 3, 2>( matrix.simd[ 0 ], matrix.simd[ 1 ] );
+        auto vTemp2 = Traits::Shuffle<1, 0, 1, 0>( matrix.simd[ 2 ], matrix.simd[ 3 ] );
+        auto vTemp4 = Traits::Shuffle<3, 2, 3, 2>( matrix.simd[ 2 ], matrix.simd[ 3 ] );
 
         MatrixSimd transposed;
 
-        transposed[ 0 ] = Traits::Shuffle<2, 0, 2, 0>( vTemp1, vTemp2 );
-        transposed[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( vTemp1, vTemp2 );
-        transposed[ 2 ] = Traits::Shuffle<2, 0, 2, 0>( vTemp3, vTemp4 );
-        transposed[ 3 ] = Traits::Shuffle<3, 1, 3, 1>( vTemp3, vTemp4 );
+        transposed.simd[ 0 ] = Traits::Shuffle<2, 0, 2, 0>( vTemp1, vTemp2 );
+        transposed.simd[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( vTemp1, vTemp2 );
+        transposed.simd[ 2 ] = Traits::Shuffle<2, 0, 2, 0>( vTemp3, vTemp4 );
+        transposed.simd[ 3 ] = Traits::Shuffle<3, 1, 3, 1>( vTemp3, vTemp4 );
         
-        auto V00 = Traits::Swizzle<1, 1, 0, 0>( transposed[ 2 ] );
-        auto V10 = Traits::Swizzle<3, 2, 3, 2>( transposed[ 3 ] );
-        auto V01 = Traits::Swizzle<1, 1, 0, 0>( transposed[ 0 ] );
-        auto V11 = Traits::Swizzle<3, 2, 3, 2>( transposed[ 1 ] );
+        auto V00 = Traits::Swizzle<1, 1, 0, 0>( transposed.simd[ 2 ] );
+        auto V10 = Traits::Swizzle<3, 2, 3, 2>( transposed.simd[ 3 ] );
+        auto V01 = Traits::Swizzle<1, 1, 0, 0>( transposed.simd[ 0 ] );
+        auto V11 = Traits::Swizzle<3, 2, 3, 2>( transposed.simd[ 1 ] );
 
-        auto V02 = Traits::Shuffle<2, 0, 2, 0>( transposed[ 2 ], transposed[ 0 ] );
-        auto V12 = Traits::Shuffle<3, 1, 3, 1>( transposed[ 3 ], transposed[ 1 ] );
+        auto V02 = Traits::Shuffle<2, 0, 2, 0>( transposed.simd[ 2 ], transposed.simd[ 0 ] );
+        auto V12 = Traits::Shuffle<3, 1, 3, 1>( transposed.simd[ 3 ], transposed.simd[ 1 ] );
 
         auto D0 = Traits::Mul( V00, V10 );
         auto D1 = Traits::Mul( V01, V11 );
         auto D2 = Traits::Mul( V02, V12 );
 
 
-        V00 = Traits::Swizzle<3, 2, 3, 2>( transposed[ 2 ]);
-        V10 = Traits::Swizzle<1, 1, 0, 0>( transposed[ 3 ]);
-        V01 = Traits::Swizzle<3, 2, 3, 2>( transposed[ 0 ]);
-        V11 = Traits::Swizzle<1, 1, 0, 0>( transposed[ 1 ]);
+        V00 = Traits::Swizzle<3, 2, 3, 2>( transposed.simd[ 2 ]);
+        V10 = Traits::Swizzle<1, 1, 0, 0>( transposed.simd[ 3 ]);
+        V01 = Traits::Swizzle<3, 2, 3, 2>( transposed.simd[ 0 ]);
+        V11 = Traits::Swizzle<1, 1, 0, 0>( transposed.simd[ 1 ]);
 
-        V02 = Traits::Shuffle<3, 1, 3, 1>( transposed[ 2 ], transposed[ 0 ] );
-        V12 = Traits::Shuffle<2, 0, 2, 0>( transposed[ 3 ], transposed[ 1 ] );
+        V02 = Traits::Shuffle<3, 1, 3, 1>( transposed.simd[ 2 ], transposed.simd[ 0 ] );
+        V12 = Traits::Shuffle<2, 0, 2, 0>( transposed.simd[ 3 ], transposed.simd[ 1 ] );
 
 
         D0 = Traits::FNMAdd( V00, V10, D0 );
@@ -8112,16 +10548,16 @@ namespace Harlinn::Common::Core::Math
 
         // V11 = D0Y,D0W,D2Y,D2Y
         V11 = Traits::Shuffle<1, 1, 3, 1>( D0, D2 );
-        V00 = Traits::Swizzle<1, 0, 2, 1>( transposed[ 1 ] );
+        V00 = Traits::Swizzle<1, 0, 2, 1>( transposed.simd[ 1 ] );
         V10 = Traits::Shuffle<0, 3, 0, 2>( V11, D0 );
-        V01 = Traits::Swizzle<0, 1, 0, 2>( transposed[ 0 ] );
+        V01 = Traits::Swizzle<0, 1, 0, 2>( transposed.simd[ 0 ] );
         V11 = Traits::Shuffle<2, 1, 2, 1>( V11, D0 );
 
         // V13 = D1Y,D1W,D2W,D2W
         auto V13 = Traits::Shuffle<3, 3, 3, 1>( D1, D2 );
-        V02 = Traits::Swizzle<1, 0, 2, 1>( transposed[ 3 ] );
+        V02 = Traits::Swizzle<1, 0, 2, 1>( transposed.simd[ 3 ] );
         V12 = Traits::Shuffle<0, 3, 0, 2>( V13, D1 );
-        auto V03 = Traits::Swizzle<0, 1, 0, 2>( transposed[ 2 ] );
+        auto V03 = Traits::Swizzle<0, 1, 0, 2>( transposed.simd[ 2 ] );
         V13 = Traits::Shuffle<2, 1, 2, 1>( V13, D1 );
 
         auto C0 = Traits::Mul( V00, V10 );
@@ -8132,15 +10568,15 @@ namespace Harlinn::Common::Core::Math
 
         // V11 = D0X,D0Y,D2X,D2X
         V11 = Traits::Shuffle<0, 0, 1, 0>( D0, D2 );
-        V00 = Traits::Swizzle<2, 1, 3, 2>( transposed[ 1 ] );
+        V00 = Traits::Swizzle<2, 1, 3, 2>( transposed.simd[ 1 ] );
         V10 = Traits::Shuffle<2, 1, 0, 3>( D0, V11 );
-        V01 = Traits::Swizzle<1, 3, 2, 3>( transposed[ 0 ] );
+        V01 = Traits::Swizzle<1, 3, 2, 3>( transposed.simd[ 0 ] );
         V11 = Traits::Shuffle<0, 2, 1, 2>( D0, V11 );
         // V13 = D1X,D1Y,D2Z,D2Z
         V13 = Traits::Shuffle<2, 2, 1, 0>( D1, D2 );
-        V02 = Traits::Swizzle<2, 1, 3, 2>( transposed[ 3 ] );
+        V02 = Traits::Swizzle<2, 1, 3, 2>( transposed.simd[ 3 ] );
         V12 = Traits::Shuffle<2, 1, 0, 3>( D1, V13 );
-        V03 = Traits::Swizzle<1, 3, 2, 3>( transposed[ 2 ] );
+        V03 = Traits::Swizzle<1, 3, 2, 3>( transposed.simd[ 2 ] );
         V13 = Traits::Shuffle<0, 2, 1, 2>( D1, V13 );
 
         C0 = Traits::FNMAdd( V00, V10, C0 );
@@ -8148,19 +10584,19 @@ namespace Harlinn::Common::Core::Math
         C4 = Traits::FNMAdd( V02, V12, C4 );
         C6 = Traits::FNMAdd( V03, V13, C6 );
 
-        V00 = Traits::Swizzle<0, 3, 0, 3>( transposed[ 1 ] );
+        V00 = Traits::Swizzle<0, 3, 0, 3>( transposed.simd[ 1 ] );
         // V10 = D0Z,D0Z,D2X,D2Y
         V10 = Traits::Shuffle<1, 0, 2, 2>( D0, D2 );
         V10 = Traits::Swizzle<0, 2, 3, 0>( V10 );
-        V01 = Traits::Swizzle<2, 0, 3, 1>( transposed[ 0 ] );
+        V01 = Traits::Swizzle<2, 0, 3, 1>( transposed.simd[ 0 ] );
         // V11 = D0X,D0W,D2X,D2Y
         V11 = Traits::Shuffle<1, 0, 3, 0>( D0, D2 );
         V11 = Traits::Swizzle<2, 1, 0, 3>( V11 );
-        V02 = Traits::Swizzle<0, 3, 0, 3>( transposed[ 3 ] );
+        V02 = Traits::Swizzle<0, 3, 0, 3>( transposed.simd[ 3 ] );
         // V12 = D1Z,D1Z,D2Z,D2W
         V12 = Traits::Shuffle<3, 2, 2, 2>( D1, D2 );
         V12 = Traits::Swizzle<0, 2, 3, 0>( V12 );
-        V03 = Traits::Swizzle<2, 0, 3, 1>( transposed[ 2 ] );
+        V03 = Traits::Swizzle<2, 0, 3, 1>( transposed.simd[ 2 ] );
         // V13 = D1X,D1W,D2Z,D2W
         V13 = Traits::Shuffle<3, 2, 3, 0>( D1, D2 );
         V13 = Traits::Swizzle<2, 1, 0, 3>( V13 );
@@ -8188,29 +10624,115 @@ namespace Harlinn::Common::Core::Math
         C4 = Traits::Swizzle<3, 1, 2, 0>( C4 );
         C6 = Traits::Swizzle<3, 1, 2, 0>( C6 );
         // Get the determinant
-        auto vTemp = Traits::Dot( C0, transposed[ 0 ] );
+        auto vTemp = Traits::Dot( C0, transposed.simd[ 0 ] );
         if ( determinant != nullptr )
         {
             *determinant = vTemp;
         }
         vTemp = Traits::Div( Traits::Fill(1.f), vTemp );
         MatrixSimd result;
-        result[ 0 ] = Traits::Mul( C0, vTemp );
-        result[ 1 ] = Traits::Mul( C2, vTemp );
-        result[ 2 ] = Traits::Mul( C4, vTemp );
-        result[ 3 ] = Traits::Mul( C6, vTemp );
+        result.simd[ 0 ] = Traits::Mul( C0, vTemp );
+        result.simd[ 1 ] = Traits::Mul( C2, vTemp );
+        result.simd[ 2 ] = Traits::Mul( C4, vTemp );
+        result.simd[ 3 ] = Traits::Mul( C6, vTemp );
         return result;
     }
 
-    inline SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
+    inline typename SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
     {
         return Inverse( matrix.ToSimd( ), determinant );
     }
 
-    inline SquareMatrix<float, 2>::Simd Transpose( const typename SquareMatrix<float, 2>::Simd& matrix )
+    inline typename SquareMatrix<float, 3>::Simd Inverse( const typename SquareMatrix<float, 3>::Simd& matrix, typename Vector<float, 3>::Simd* determinant = nullptr )
+    {
+        using Traits = typename SquareMatrix<float, 3>::Traits;
+        using Simd = typename SquareMatrix<float, 3>::Simd;
+
+        auto v0 = matrix.simd[ 0 ];
+        auto v1 = matrix.simd[ 1 ];
+        auto v2 = matrix.simd[ 2 ];
+
+        auto edd = Traits::Swizzle<3, 0, 0, 1>( v1 );
+        auto iih = Traits::Swizzle<3, 1, 2, 2>( v2 );
+        auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
+        auto ffe = Traits::Swizzle<3, 1, 2, 2>( v1 );
+
+        auto det = Traits::FMSub( edd, iih, Traits::Mul( hgg, ffe ) );
+
+        Traits::SIMDType sign0( { { 1.0f, -1.0f, 1.0f, 0.0f } } );
+        auto v0s = Traits::Mul( matrix.simd[ 0 ], sign0 );
+
+        det = Traits::Dot( v0s, det );
+
+        if ( determinant )
+        {
+            *determinant = det;
+        }
+
+        // 
+        // a b c
+        // d e f
+        // g h i
+        // 
+        // Transpose
+        // 
+        // a d g
+        // b e h
+        // c f i
+        //
+        // Adjugate
+        // 
+        //  (e * i - f * h)    -(b * i - c * h)     (b * f - c * e)
+        // -(d * i - f * g)     (a * i - c * g)    -(a * f - c * d)
+        //  (d * h - e * g)    -(a * h - b * g)     (a * e - b * d)
+        // 
+
+        //auto hgg = Traits::Swizzle<3, 0, 0, 1>( v2 );
+        auto c0 = Traits::FMSub( edd, iih, Traits::Mul( ffe, hgg ) );
+        auto baa = Traits::Swizzle<3, 0, 0, 1>( v0 );
+        auto ccb = Traits::Swizzle<3, 1, 2, 2>( v0 );
+        
+        auto c1 = Traits::FMSub( baa, iih, Traits::Mul( ccb, hgg ) );
+        auto c2 = Traits::FMSub( baa, ffe, Traits::Mul( ccb, edd ) );
+
+        Traits::SIMDType sign1( { { -1.0f, 1.0f, -1.0f, 0.0f } } );
+        c0 = Traits::Mul( c0, sign0 );
+        c1 = Traits::Mul( c1, sign1 );
+        c2 = Traits::Mul( c2, sign0 );
+
+        auto rDet = Traits::Div( { { 1.0f, 1.0f, 1.0f, 0.0f } }, det );
+        c0 = Traits::Mul( c0, rDet );
+        c1 = Traits::Mul( c1, rDet );
+        c2 = Traits::Mul( c2, rDet );
+
+        //
+        // a d g
+        // b e h
+        // c f i
+
+        auto rmm4 = Traits::Shuffle<1, 0, 1, 0>( c0, c1 );
+        auto rmm5 = Traits::Shuffle<2, 2, 2, 2>( c0, c1 );
+
+        Simd result;
+
+        result.simd[ 0 ] = Traits::Shuffle<3, 0, 2, 0>( rmm4, c2 );
+        result.simd[ 1 ] = Traits::Shuffle<3, 1, 3, 1>( rmm4, c2 );
+        result.simd[ 2 ] = Traits::Shuffle<3, 2, 2, 0>( rmm5, c2 );
+
+        return result;
+    }
+
+    inline typename SquareMatrix<float, 3>::Simd Inverse( const SquareMatrix<float, 3>& matrix, typename Vector<float, 3>::Simd* determinant = nullptr )
+    {
+        return Inverse( matrix.ToSimd( ), determinant );
+    }
+
+
+    inline typename SquareMatrix<float, 2>::Simd Transpose( const typename SquareMatrix<float, 2>::Simd& matrix )
     {
         using Traits = SquareMatrix<float, 2>::Traits;
-        return Traits::Swizzle<3, 1, 2, 0>( matrix.simd );
+        using Simd = typename SquareMatrix<float, 2>::Simd;
+        return Simd( Traits::Swizzle<3, 1, 2, 0>( matrix.simd ));
     }
 
     inline SquareMatrix<float, 2>::Simd Transpose( const SquareMatrix<float, 2>& matrix )
@@ -8219,26 +10741,29 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-    inline Vector<float, 2>::Simd Determinant( const typename SquareMatrix<float, 2>::Simd& matrix )
+    inline typename Vector<float, 2>::Simd Determinant( const typename SquareMatrix<float, 2>::Simd& matrix )
     {
         using Traits = SquareMatrix<float, 2>::Traits;
+        using Simd = typename Vector<float, 2>::Simd;
+
         auto rmm1 = Traits::Swizzle<2, 1, 3, 0>( matrix.simd );
         auto rmm2 = Traits::Swizzle<2, 3, 0, 1>( rmm1 );
         rmm1 = Traits::Mul( rmm1, rmm2 );
         rmm1 = Traits::Mul( rmm1, { {1.f,1.f,-1.f,-1.f} } );
         rmm2 = Traits::Swizzle<1, 0, 3, 2>( rmm1 );
-        return Traits::Add( rmm1, rmm2 );
+        return Simd( Traits::Add( rmm1, rmm2 ) );
     }
 
-    inline Vector<float, 2>::Simd Determinant( const SquareMatrix<float, 2>& matrix )
+    inline typename Vector<float, 2>::Simd Determinant( const SquareMatrix<float, 2>& matrix )
     {
         return Determinant( matrix.ToSimd( ) );
     }
 
 
-    inline SquareMatrix<float, 2>::Simd Inverse( const typename SquareMatrix<float, 2>::Simd& matrix, typename SquareMatrix<float, 2>::Simd* determinant = nullptr )
+    inline typename SquareMatrix<float, 2>::Simd Inverse( const typename SquareMatrix<float, 2>::Simd& matrix, typename SquareMatrix<float, 2>::Simd* determinant = nullptr )
     {
         using Traits = SquareMatrix<float, 2>::Traits;
+        using Simd = typename SquareMatrix<float, 2>::Simd;
         auto rmm1 = Traits::Swizzle<2, 1, 3, 0>( matrix.simd );
         auto rmm2 = Traits::Swizzle<2, 3, 0, 1>( rmm1 );
         rmm1 = Traits::Mul( rmm1, rmm2 );
@@ -8247,12 +10772,12 @@ namespace Harlinn::Common::Core::Math
         rmm1 = Traits::Add( rmm1, rmm2 );
         if ( determinant )
         {
-            determinant->simd = rmm1;
+            (*determinant).simd = rmm1;
         }
         rmm1 = Traits::Div( { {1.f,1.f,1.f,1.f} }, rmm1 );
         rmm2 = Traits::Swizzle<0, 2, 1, 3>( matrix.simd );
         rmm2 = Traits::Mul( rmm2, { {1.f,-1.f,-1.f,1.f} } );
-        return Traits::Mul( rmm1, rmm2 );
+        return Simd( Traits::Mul( rmm1, rmm2 ) );
     }
 
     inline SquareMatrix<float, 2>::Simd Inverse( const SquareMatrix<float, 2>& matrix )

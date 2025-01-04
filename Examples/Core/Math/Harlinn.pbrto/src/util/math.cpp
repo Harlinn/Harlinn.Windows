@@ -44,7 +44,7 @@ std::string SquareMatrix<N>::ToString() const {
 
 // General case
 template <int N>
-PBRT_CPU_GPU pstd::optional<SquareMatrix<N>> Inverse(const SquareMatrix<N> &m) {
+PBRT_CPU_GPU PBRTO_EXPORT pstd::optional<SquareMatrix<N>> Inverse(const SquareMatrix<N> &m) {
     int indxc[N], indxr[N];
     int ipiv[N] = {0};
     Float minv[N][N];
@@ -106,12 +106,12 @@ PBRT_CPU_GPU pstd::optional<SquareMatrix<N>> Inverse(const SquareMatrix<N> &m) {
     return SquareMatrix<N>(minv);
 }
 
-template class SquareMatrix<2>;
-template PBRT_CPU_GPU pstd::optional<SquareMatrix<2>> Inverse(const SquareMatrix<2> &);
-template PBRT_CPU_GPU SquareMatrix<2> operator*(const SquareMatrix<2> &m1, const SquareMatrix<2> &m2);
+template PBRTO_TEMPLATE_EXPORT class SquareMatrix<2>;
+template PBRT_CPU_GPU PBRTO_TEMPLATE_EXPORT pstd::optional<SquareMatrix<2>> Inverse(const SquareMatrix<2> &);
+template PBRT_CPU_GPU PBRTO_TEMPLATE_EXPORT SquareMatrix<2> operator*(const SquareMatrix<2> &m1, const SquareMatrix<2> &m2);
 
-template class SquareMatrix<3>;
-template class SquareMatrix<4>;
+template PBRTO_TEMPLATE_EXPORT class SquareMatrix<3>;
+template PBRTO_TEMPLATE_EXPORT class SquareMatrix<4>;
 
 int NextPrime(int x) {
     if (x == 2)

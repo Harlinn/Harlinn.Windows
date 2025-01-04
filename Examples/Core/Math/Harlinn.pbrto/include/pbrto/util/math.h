@@ -1598,7 +1598,7 @@ PBRT_CPU_GPU inline Float Determinant(const SquareMatrix<3> &m) {
 template <int N>
 PBRT_CPU_GPU inline SquareMatrix<N> Transpose(const SquareMatrix<N> &m);
 template <int N>
-PBRT_CPU_GPU pstd::optional<SquareMatrix<N>> Inverse(const SquareMatrix<N> &);
+PBRT_CPU_GPU PBRTO_EXPORT pstd::optional<SquareMatrix<N>> Inverse(const SquareMatrix<N> &);
 
 template <int N>
 PBRT_CPU_GPU SquareMatrix<N> InvertOrExit(const SquareMatrix<N> &m) {
@@ -1794,9 +1794,9 @@ PBRT_CPU_GPU inline pstd::optional<SquareMatrix<4>> Inverse(const SquareMatrix<4
     return SquareMatrix<4>(inv);
 }
 
-extern template class SquareMatrix<2>;
-extern template class SquareMatrix<3>;
-extern template class SquareMatrix<4>;
+extern template PBRTO_TEMPLATE_EXPORT_DECL class SquareMatrix<2>;
+extern template PBRTO_TEMPLATE_EXPORT_DECL class SquareMatrix<3>;
+extern template PBRTO_TEMPLATE_EXPORT_DECL class SquareMatrix<4>;
 
 #endif
 
