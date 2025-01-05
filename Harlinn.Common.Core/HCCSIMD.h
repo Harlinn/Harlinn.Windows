@@ -84,6 +84,7 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t AlignAs = 16;
         static constexpr size_t Size = 16;
         using Type = __m128;
+        using IntegerType = __m128i;
     };
     template<>
     struct DataTypeTraits<DataType::m128i> : public std::true_type
@@ -100,6 +101,7 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t AlignAs = 16;
         static constexpr size_t Size = 16;
         using Type = __m128d;
+        using IntegerType = __m128i;
     };
 
     template<>
@@ -109,6 +111,7 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t AlignAs = 32;
         static constexpr size_t Size = 32;
         using Type = __m256;
+        using IntegerType = __m256i;
     };
     template<>
     struct DataTypeTraits<DataType::m256i> : public std::true_type
@@ -125,6 +128,7 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t AlignAs = 32;
         static constexpr size_t Size = 32;
         using Type = __m256d;
+        using IntegerType = __m256i;
     };
     template<>
     struct DataTypeTraits<DataType::m512> : public std::true_type
@@ -133,6 +137,7 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t AlignAs = 64;
         static constexpr size_t Size = 64;
         using Type = __m512;
+        using IntegerType = __m512i;
     };
     template<>
     struct DataTypeTraits<DataType::m512i> : public std::true_type
@@ -149,6 +154,7 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr size_t AlignAs = 64;
         static constexpr size_t Size = 64;
         using Type = __m512d;
+        using IntegerType = __m512i;
     };
 
     template<typename T>
@@ -2003,6 +2009,7 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using SIMDIntegerType = typename DataTypeTraits::IntegerType;
         using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 4 : 8;
@@ -3132,6 +3139,36 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        /// <summary>
+        /// Performs a per-component selection between two input vectors and returns the resulting vector.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source to select elements from.
+        /// </param>
+        /// <param name="v2">
+        /// The second source to select elements from.
+        /// </param>
+        /// <param name="control">
+        /// Mask used to select an element from either v1 or v2. If an element in control is zero, 
+        /// the returned SIMDType corresponding element will be from v1, if an element control is 
+        /// 0xFFFFFFFF, the returned SIMDType corresponding element will be from v2.
+        /// </param>
+        static SIMDType Select( SIMDType v1, SIMDType v2, SIMDIntegerType control ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                auto rmm1 = _mm_andnot_ps( _mm_castsi128_ps( control ), v1 );
+                auto rmm2 = _mm_and_ps( v2, _mm_castsi128_ps( control ) );
+                return _mm_or_ps( rmm1, rmm2 );
+            }
+            else
+            {
+                auto rmm1 = _mm256_andnot_ps( _mm256_castsi256_ps( control ), v1 );
+                auto rmm2 = _mm256_and_ps( v2, _mm256_castsi256_ps( control ) );
+                return _mm256_or_ps( rmm1, rmm2 );
+            }
+        }
+
 
         /// <summary>
         /// Unpack and interleave single-precision (32-bit) floating-point elements 
@@ -3758,7 +3795,7 @@ namespace Harlinn::Common::Core::SIMD
             else
             {
                 // LT_OQ => 0x11
-                return _mm256_cmp_ps( v1, v2, 0x11 );
+                return _mm256_cmp_ps( v1, v2, _CMP_LT_OQ );
             }
         }
 
@@ -3786,7 +3823,7 @@ namespace Harlinn::Common::Core::SIMD
             else
             {
                 // _CMP_LE_OQ => 18
-                return _mm256_cmp_ps( v1, v2, 18 );
+                return _mm256_cmp_ps( v1, v2, _CMP_LE_OQ );
             }
         }
 
@@ -3813,8 +3850,7 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                // _CMP_EQ_UQ => 8
-                return _mm256_cmp_ps( v1, v2, 8 );
+                return _mm256_cmp_ps( v1, v2, _CMP_EQ_OQ );
             }
         }
 
@@ -3842,8 +3878,7 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                // GE_OQ => 0x1D
-                return _mm256_cmp_ps( v1, v2, 0x1D );
+                return _mm256_cmp_ps( v1, v2, _CMP_GE_OQ );
             }
         }
 
@@ -3870,8 +3905,7 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                // _CMP_GT_OQ => 30
-                return _mm256_cmp_ps( v1, v2, 30 );
+                return _mm256_cmp_ps( v1, v2, _CMP_GT_OQ );
             }
         }
 
@@ -3938,6 +3972,95 @@ namespace Harlinn::Common::Core::SIMD
                 }
             }
         }
+
+        /// <summary>
+        /// Performs binary, element wise comparision of v1 and v2. 
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <returns>
+        /// The results of the element wise comparision. An element is
+        /// set to 0xFFFFFFFF if the corresponding elements in v1 and v2
+        /// have the same binary value, otherwise the element is 0.
+        /// </returns>
+        static SIMDIntegerType SameValue( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_epi32( _mm_castps_si128( v1 ), _mm_castps_si128( v2 ) );
+            }
+            else
+            {
+                return _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
+            }
+        }
+
+        /// <summary>
+        /// Performs binary, element wise comparision of v1 and v2. 
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <returns>
+        /// The results of the element wise comparision. An element is
+        /// set to 0xFFFFFFFF if the corresponding elements in v1 and v2
+        /// have the same binary value, otherwise the element is 0.
+        /// </returns>
+        static SIMDIntegerType SameValue( SIMDType v1, SIMDIntegerType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_epi32( _mm_castps_si128( v1 ), v2 );
+            }
+            else
+            {
+                return _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), v2 );
+            }
+        }
+
+        /// <summary>
+        /// Performs binary, element wise comparision of v1 and v2. 
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <returns>
+        /// The results of the element wise comparision. An element is
+        /// set to 0xFFFFFFFF if the corresponding elements in v1 and v2
+        /// have the same binary value, otherwise the element is 0.
+        /// </returns>
+        static SIMDIntegerType SameValue( SIMDIntegerType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_epi32( v1, _mm_castps_si128( v2 ) );
+            }
+            else
+            {
+                return _mm256_cmpeq_epi32( v1, _mm256_castps_si256( v2 ) );
+            }
+        }
+
+        /// <summary>
+        /// Performs binary, element wise comparision of v1 and v2. 
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <returns>
+        /// The results of the element wise comparision. An element is
+        /// set to 0xFFFFFFFF if the corresponding elements in v1 and v2
+        /// have the same binary value, otherwise the element is 0.
+        /// </returns>
+        static SIMDIntegerType SameValue( SIMDIntegerType v1, SIMDIntegerType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_epi32( v1, v2 );
+            }
+            else
+            {
+                return _mm256_cmpeq_epi32( v1, v2 );
+            }
+        }
+
 
 
         /// <summary>
@@ -4270,16 +4393,6 @@ namespace Harlinn::Common::Core::SIMD
                     rmm2 = _mm_mul_ps( rmm2, rmm3 );
 
                     return _mm_sub_ps( rmm1, rmm2 );
-
-                    /*
-                    auto rmm1 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 0, 2, 1 ) );
-                    auto rmm2 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 3, 1, 0, 2 ) );
-                    auto rmm3 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 0, 2, 1 ) );
-                    auto rmm4 = _mm_shuffle_ps( b, b, _MM_SHUFFLE( 3, 1, 0, 2 ) );
-                    auto rmm1 = _mm_mul_ps( rmm1, rmm4 );
-                    auto rmm2 = _mm_mul_ps( rmm2, rmm3 );
-                    return _mm_sub_ps( rmm1, rmm2 );
-                    */
                 }
             }
 
@@ -4300,6 +4413,7 @@ namespace Harlinn::Common::Core::SIMD
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
+        using SIMDIntegerType = typename DataTypeTraits::IntegerType;
         using ArrayType = std::array<Type, N>;
         static constexpr size_t SIMDTypeSize = DataTypeTraits::Size;
         static constexpr size_t SIMDTypeCapacity = UseShortSIMDType ? 2 : 4;
@@ -5532,7 +5646,145 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        
+        /// <summary>
+        /// Determines whether the elements of v1 are less than 
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is less than the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType Less( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmplt_pd( v1, v2 );
+            }
+            else
+            {
+                // LT_OQ => 0x11
+                return _mm256_cmp_pd( v1, v2, _CMP_LT_OQ );
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the elements of v1 are less than or equal to
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is less than or equal to the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType LessOrEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmple_pd( v1, v2 );
+            }
+            else
+            {
+                // _CMP_LE_OQ => 18
+                return _mm256_cmp_pd( v1, v2, _CMP_LE_OQ );
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the elements of v1 are equal to
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is equal to the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType Equal( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_pd( v1, v2 );
+            }
+            else
+            {
+                return _mm256_cmp_pd( v1, v2, _CMP_EQ_OQ );
+            }
+        }
+
+
+        /// <summary>
+        /// Determines whether the elements of v1 are greater than
+        /// or equal to the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is greater than or equal to the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType GreaterOrEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpge_pd( v1, v2 );
+            }
+            else
+            {
+                return _mm256_cmp_pd( v1, v2, _CMP_GE_OQ );
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the elements of v1 are greater than
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is greater than the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType Greater( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpgt_pd( v1, v2 );
+            }
+            else
+            {
+                return _mm256_cmp_pd( v1, v2, _CMP_GT_OQ );
+            }
+        }
+
+
 
         static bool AllEqual( SIMDType v1, SIMDType v2 ) noexcept
         {
@@ -5561,6 +5813,95 @@ namespace Harlinn::Common::Core::SIMD
                     auto rmm1 = _mm256_cmpeq_epi64( _mm256_castpd_si256( v1 ), _mm256_castpd_si256( v2 ) );
                     return ( _mm256_movemask_epi8( rmm1 ) & 15 ) == 15;
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// Performs binary, element wise comparision of v1 and v2. 
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <returns>
+        /// The results of the element wise comparision. An element is
+        /// set to 0xFFFFFFFFFFFFFFFF if the corresponding elements in v1 and v2
+        /// have the same binary value, otherwise the element is 0.
+        /// </returns>
+        static SIMDIntegerType SameValue( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_epi64( _mm_castpd_si128( v1 ), _mm_castpd_si128( v2 ) );
+            }
+            else
+            {
+                return _mm256_cmpeq_epi64( _mm256_castpd_si256( v1 ), _mm256_castpd_si256( v2 ) );
+            }
+        }
+
+        /// <summary>
+        /// Performs binary, element wise comparision of v1 and v2. 
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <returns>
+        /// The results of the element wise comparision. An element is
+        /// set to 0xFFFFFFFFFFFFFFFF if the corresponding elements in v1 and v2
+        /// have the same binary value, otherwise the element is 0.
+        /// </returns>
+        static SIMDIntegerType SameValue( SIMDType v1, SIMDIntegerType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_epi64( _mm_castpd_si128( v1 ), v2 );
+            }
+            else
+            {
+                return _mm256_cmpeq_epi64( _mm256_castpd_si256( v1 ), v2 );
+            }
+        }
+
+        /// <summary>
+        /// Performs binary, element wise comparision of v1 and v2. 
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <returns>
+        /// The results of the element wise comparision. An element is
+        /// set to 0xFFFFFFFFFFFFFFFF if the corresponding elements in v1 and v2
+        /// have the same binary value, otherwise the element is 0.
+        /// </returns>
+        static SIMDIntegerType SameValue( SIMDIntegerType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_epi64( v1, _mm_castpd_si128( v2 ) );
+            }
+            else
+            {
+                return _mm256_cmpeq_epi64( v1, _mm256_castpd_si256( v2 ) );
+            }
+        }
+
+        /// <summary>
+        /// Performs binary, element wise comparision of v1 and v2. 
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <returns>
+        /// The results of the element wise comparision. An element is
+        /// set to 0xFFFFFFFFFFFFFFFF if the corresponding elements in v1 and v2
+        /// have the same binary value, otherwise the element is 0.
+        /// </returns>
+        static SIMDIntegerType SameValue( SIMDIntegerType v1, SIMDIntegerType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpeq_epi64( v1, v2 );
+            }
+            else
+            {
+                return _mm256_cmpeq_epi64( v1, v2 );
             }
         }
 

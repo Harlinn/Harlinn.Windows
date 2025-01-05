@@ -2647,6 +2647,320 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( Traits::Fill( v ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
     }
 
+    // ClampLength
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U>
+    inline S ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+
+        auto lengthSquared = LengthSquared( v );
+
+        const auto zero = Traits::Zero( );
+        typename Traits::SIMDIntegerType infinity = { { 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000 } };
+
+        auto reciprocalLength = ReciprocalSqrt( lengthSquared );
+
+        auto infiniteLength = Traits::SameValue( lengthSquared.simd, infinity );
+        auto zeroLength = Traits::Equal( lengthSquared.simd, zero );
+
+        auto normal = Traits::Mul( v.simd, reciprocalLength.simd );
+
+        auto length = Traits::Mul( lengthSquared.simd, reciprocalLength.simd );
+
+        auto select = Traits::SameValue( infiniteLength, zeroLength );
+        length = Traits::Select( lengthSquared.simd, length, select );
+        normal = Traits::Select( lengthSquared.simd, normal, select );
+
+        auto controlMax = Traits::Greater( length, lengthMax.simd );
+        auto controlMin = Traits::Less( length, lengthMin.simd );
+
+        auto clampLength = Traits::Select( length, lengthMax.simd, controlMax );
+        clampLength = Traits::Select( clampLength, lengthMin.simd, controlMin );
+
+        auto result = Traits::Mul( normal, clampLength );
+
+        
+        select = Traits::SameValue( controlMax, controlMin );
+        return Simd( Traits::Select( result, v.simd, select ) );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+
+        return ClampLength( v, lengthMin, Simd( lengthMax ) );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+
+        return ClampLength( v, Simd( lengthMin ), lengthMax );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+
+        return ClampLength( v, Simd( lengthMin ), Simd( lengthMax ) );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return ClampLength( Simd( v ), lengthMin, lengthMax );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return ClampLength( Simd( v ), lengthMin, Simd( lengthMax ) );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return ClampLength( Simd( v ), Simd( lengthMin ), lengthMax );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+
+        return ClampLength( Simd( v ), Simd( lengthMin ), Simd( lengthMax ) );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::SimdType S, typename T, typename U>
+        requires IsFloatingPoint<T> && IsFloatingPoint<U>
+    inline S ClampLength( const S& v, const T lengthMin, const U lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = S;
+
+        return ClampLength( v, Simd( Traits::Fill( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill( static_cast< FloatT >( lengthMax ) ) ) );
+    }
+
+    /// <summary>
+    /// Clamps the length of a vector to a given range.
+    /// </summary>
+    /// <param name="v">
+    /// vector to clamp.
+    /// </param>
+    /// <param name="lengthMin">
+    /// A vector whose elements are equal to the minimum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <param name="lengthMax">
+    /// A vector whose elements are equal to the maximum clamp length. 
+    /// The elements must be greater-than-or-equal to zero.
+    /// </param>
+    /// <returns>
+    /// Returns a vector whose length is clamped to the specified 
+    /// minimum and maximum.
+    /// </returns>
+    template<Internal::TupleType S, typename T, typename U>
+        requires IsFloatingPoint<T>&& IsFloatingPoint<U>
+    inline S ClampLength( const S& v, const T lengthMin, const U lengthMax ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = S;
+
+        return ClampLength( Simd( v ), Simd( Traits::Fill( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill( static_cast< FloatT >( lengthMax ) ) ) );
+    }
+
+
+
     // Saturate
 
     /// <summary>

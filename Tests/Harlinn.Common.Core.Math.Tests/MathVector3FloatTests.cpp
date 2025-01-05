@@ -656,6 +656,57 @@ BOOST_AUTO_TEST_CASE( ClampTest1 )
 }
 
 
+// --run_test=MathVector3FloatTests/ClampLengthTest1
+BOOST_AUTO_TEST_CASE( ClampLengthTest1 )
+{
+    constexpr float MaxDeviation = 1e-6f; // 1e-3f;
+    constexpr size_t Iterations = 20000;
+    RandomGenerator<float, 20000> generator( -1e10, 1e10 );
+    using Vector = Math::Vector<float, 3>;
+    Vector maxDeviation;
+    for ( size_t i = 0; i < Iterations; i++ )
+    {
+        Vector v1( generator( ), generator( ), generator( ) );
+        Vector v2( 10.f, 10.f, 10.f );
+        Vector v3( 100.f, 100.f, 100.f );
+
+        Vector result = Math::ClampLength( v1, v2, v3 );
+
+        DirectX::XMFLOAT3 dv1( v1.x, v1.y, v1.z );
+        DirectX::XMFLOAT3 dv2( v2.x, v2.y, v2.z );
+        DirectX::XMFLOAT3 dv3( v3.x, v3.y, v3.z );
+
+        auto ldv1 = DirectX::XMLoadFloat3( &dv1 );
+        auto ldv2 = DirectX::XMLoadFloat3( &dv2 );
+        auto ldv3 = DirectX::XMLoadFloat3( &dv3 );
+
+        auto clampLengthV = DirectX::XMVector3ClampLengthV( ldv1, ldv2, ldv3 );
+
+        DirectX::XMFLOAT3 clampLength;
+        DirectX::XMStoreFloat3( &clampLength, clampLengthV );
+
+        Vector expected( clampLength.x, clampLength.y, clampLength.z );
+
+        Vector deviation(
+            static_cast< float >( Test::Deviation( expected.x, result.x ) ),
+            static_cast< float >( Test::Deviation( expected.y, result.y ) ),
+            static_cast< float >( Test::Deviation( expected.z, result.z ) ) );
+
+
+        if ( deviation.x > MaxDeviation || deviation.y > MaxDeviation || deviation.z > MaxDeviation )
+        {
+            maxDeviation = Max( maxDeviation, deviation );
+        }
+
+    }
+
+    if ( maxDeviation.x > MaxDeviation || maxDeviation.y > MaxDeviation || maxDeviation.z > MaxDeviation )
+    {
+        BOOST_CHECK( false );
+    }
+}
+
+
 // --run_test=MathVector3FloatTests/SaturateTest1
 BOOST_AUTO_TEST_CASE( SaturateTest1 )
 {
