@@ -10138,7 +10138,7 @@ namespace Harlinn::Common::Core::Math
                 auto halfPitchYawRoll = Traits::Mul( pitchYawRoll.simd, oneHalf );
 
                 SIMDType cosines;
-                auto sines = Traits::SinCos( &cosAngles, halfPitchYawRoll );
+                auto sines = Traits::SinCos( &cosines, halfPitchYawRoll );
                 using P = typename Traits::PermuteType;
 
                 auto p0 = Traits::Permute<P::X1, P::X2, P::X2, P::X2>( sines, cosines );

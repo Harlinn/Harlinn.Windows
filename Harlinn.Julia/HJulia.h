@@ -698,14 +698,9 @@ namespace Harlinn::Julia
         {
             return jl_array_len( InternalValue( ) );
         }
-        size_t ElementSize( ) const
-        {
-            auto a = (jl_array_t*)InternalValue( );
-            return a->elsize;
-        }
         void* data( ) const
         {
-            return jl_array_data( InternalValue( ) );
+            return jl_array_data_( InternalValue( ) );
         }
         size_t Rank( ) const
         {
@@ -714,16 +709,6 @@ namespace Harlinn::Julia
         size_t RowCount( ) const
         {
             return jl_array_nrows( InternalValue( ) );
-        }
-        size_t ColumnCount( ) const
-        {
-            auto a = (jl_array_t*)InternalValue( );
-            return a->ncols;
-        }
-        size_t DimensionCount( ) const
-        {
-            auto a = (jl_array_t*)InternalValue( );
-            return a->flags.ndims;
         }
         size_t Dimension( size_t index ) const
         {

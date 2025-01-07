@@ -9,7 +9,6 @@ To build the solution you need:
 - [boost c++ libraries](https://www.boost.org/)
 - [nasm](https://www.nasm.us/) 
 - [yasm](https://yasm.tortall.net/)
-- [ICU4C](https://icu.unicode.org/)
 - [julia](https://julialang.org/) version 1.10 - Only needed to build `Harlinn.Julia` and related projects.
 - [Oracle OCI](https://www.oracle.com/downloads/) - Only needed to build `Harlinn.OCI` and related projects.
 - [Intel® oneAPI Base Toolkit](https://software.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit/download.html)
@@ -18,8 +17,6 @@ To build the solution you need:
 - [perl](https://www.perl.org/)
 - [OpenSSL](https://www.openssl.org/)
 - [nVidia CUDA toolkit](https://developer.nvidia.com/cuda-toolkit)
-- [VLC media player source code](https://www.videolan.org/vlc/download-sources.html) - Only needed to build `Harlinn.Media` and related projects.
-- [GStreamer](https://gstreamer.freedesktop.org/download/) - Only needed to build `Harlinn.Media` and related projects.
 - [XDP and XDP devkit](https://github.com/microsoft/xdp-for-windows)
 
 Make sure you install 64-bit binaries, libraries and headers.
@@ -32,14 +29,12 @@ Before building you need to set a few environment variables:
   and example programs for the LMDB and ESE databases. 
   Make sure you have about 40GB of available free space 
   for the databases. 
-- **ICU4C_HOME** must point to the root of your ICU4C installation
 - **JULIA_HOME** must point to the root of your Julia installation.
 - **ORACLE_HOME** must point to the root of your Oracle installation.
 - **HCC_HOME** must point to the directory containing Harlinn.Windows.sln.
 - **PROJ_LIB** must point to ***%HCC_HOME%**\\Share\\proj*
 - **GDAL_DATA** must point to ***%HCC_HOME%**\\Share\\gdal*
 - **OPENSSL_HOME** must point to the root of your openssl 3.x installation, which is the directory containing the bin, include and lib directories.
-- **VLC_SOURCE** must point to the directory that contains the source code for the VLC media player.
 - **INTEL_MKL_INCLUDE** must point to the directory containing the Intel Math Kernel Library include files
 - **INTEL_MKL_LIB** must point to the directory containing the Intel Math Kernel Library *.lib files
 - **PYTHON_HOME** must point to the root folder of your python installation.
@@ -84,8 +79,8 @@ in Visual Studio, and if you plan to test the code on a system that does not sup
 AVX2, you need to change the **Enable Enhanced Instruction Set** setting under 
 **C/C++ ⇒ Code Generation** to a value suitable for your system.
  
-## .Net 8.0 support
-The [.Net 8.0](https://dotnet.microsoft.com/download/dotnet/8.0) SDK, or newer, is 
+## .Net 9.0 support
+The [.Net 9.0](https://dotnet.microsoft.com/download/dotnet/9.0) SDK, or newer, is 
 required to build the C# code.
 
 ## Julia support
@@ -108,29 +103,6 @@ environment variable to point to the root of your oracle installation.
 
 Before running the unit tests in Harlinn.OCI.Tests you need to create the tables
 defined in *$(SolutionDir)Tests\Harlinn.OCI.Tests\SQL\TestTables.sql* 
-
-
-## Harlinn.Media and the VLC media player source code
-
-The `Harlinn.Media` project creates a dll that locates the installation of the 64-bit 
-version of the VLC media player from the registry. `Harlinn.Media.dll` exports most of the
-entry points exported by the `libvlc.dll` and forwards the calls to the dynamically
-located `libvlc.dll`.
-
-Make sure that the `$(VLC_SOURCE)\include\vlc` contains a valid `libvlc_version.h`. If you don't want to build
-VLC media player from the source code, you will need to make the appropriate changes to `libvlc_version.h.in`
-and save it as `libvlc_version.h`. 
-
-```C++
-/** LibVLC major version number */
-# define LIBVLC_VERSION_MAJOR    3
-
-/** LibVLC minor version number */
-# define LIBVLC_VERSION_MINOR    0
-
-/** LibVLC revision */
-# define LIBVLC_VERSION_REVISION 20
-```
 
  
 

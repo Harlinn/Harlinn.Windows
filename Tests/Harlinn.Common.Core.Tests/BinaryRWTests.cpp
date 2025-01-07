@@ -494,8 +494,8 @@ BOOST_AUTO_TEST_CASE( GuidTest1 )
     BOOST_CHECK( v5.value( ) == value2 );
 }
 
-// --run_test=BinaryRWTests/StringTest1
-BOOST_AUTO_TEST_CASE( StringTest1 )
+// --run_test=BinaryRWTests/AnsiStringTest1
+BOOST_AUTO_TEST_CASE( AnsiStringTest1 )
 {
     AnsiString value1( "s1" );
     AnsiString value2( "s2" );
@@ -512,6 +512,66 @@ BOOST_AUTO_TEST_CASE( StringTest1 )
     BOOST_CHECK( value1 == v1 );
     BOOST_CHECK( value2 == v2 );
 }
+
+// --run_test=BinaryRWTests/WideStringTest1
+BOOST_AUTO_TEST_CASE( WideStringTest1 )
+{
+    WideString value1( L"s1" );
+    WideString value2( L"s2" );
+
+    IO::MemoryStream stream;
+    IO::BinaryWriter writer( stream );
+    writer.Write( value1 );
+    writer.Write( value2 );
+    stream.SetPosition( 0 );
+    IO::BinaryReader reader( stream );
+
+    auto v1 = reader.Read<WideString>( );
+    auto v2 = reader.Read<WideString>( );
+    BOOST_CHECK( value1 == v1 );
+    BOOST_CHECK( value2 == v2 );
+}
+
+// --run_test=BinaryRWTests/StringTest1
+BOOST_AUTO_TEST_CASE( StringTest1 )
+{
+    std::string value1( "s1" );
+    std::string value2( "s2" );
+
+    IO::MemoryStream stream;
+    IO::BinaryWriter writer( stream );
+    writer.Write( value1 );
+    writer.Write( value2 );
+    stream.SetPosition( 0 );
+    IO::BinaryReader reader( stream );
+
+    auto v1 = reader.Read<std::string>( );
+    auto v2 = reader.Read<std::string>( );
+    BOOST_CHECK( value1 == v1 );
+    BOOST_CHECK( value2 == v2 );
+}
+
+// --run_test=BinaryRWTests/WStringTest1
+BOOST_AUTO_TEST_CASE( WStringTest1 )
+{
+    std::wstring value1( L"s1" );
+    std::wstring value2( L"s2" );
+
+    IO::MemoryStream stream;
+    IO::BinaryWriter writer( stream );
+    writer.Write( value1 );
+    writer.Write( value2 );
+    stream.SetPosition( 0 );
+    IO::BinaryReader reader( stream );
+
+    auto v1 = reader.Read<std::wstring>( );
+    auto v2 = reader.Read<std::wstring>( );
+    BOOST_CHECK( value1 == v1 );
+    BOOST_CHECK( value2 == v2 );
+}
+
+
+
 
 
 // --run_test=BinaryRWTests/BoolTest2
