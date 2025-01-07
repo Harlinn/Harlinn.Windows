@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Harlinn.Common.Net;
+using Harlinn.Common.Core.Net;
 
 namespace MathPerformance
 {
@@ -216,7 +216,7 @@ namespace MathPerformance
 
         static void SignBitTest(long outerIterationCount)
         {
-            RunTest(outerIterationCount, (x) => { return x.SignBit() ? 1.0 : 0.0; });
+            RunTest(outerIterationCount, (x) => { return Math.Sign(x) < 0 ? 1.0 : 0.0; });
         }
 
 
