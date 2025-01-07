@@ -825,7 +825,7 @@ BOOST_AUTO_TEST_CASE( ReciprocalTest1 )
 {
     constexpr float MaxDeviation = 0; // 1e-3f;
     constexpr size_t Iterations = 20000;
-    RandomGenerator<float, 20000> generator( 1e-18, 1e10 );
+    RandomGenerator<float, 20000> generator( 1e-18f, 1e10f );
     using Vector = Math::Vector<float, 3>;
     Vector maxDeviation;
     for ( size_t i = 0; i < Iterations; i++ )

@@ -30,6 +30,18 @@ namespace Harlinn::Common::Core::Math
     template<typename T>
     constexpr bool IsUnloadedType = T::Unloaded;
 
+    namespace Internal
+    {
+        struct VectorBase
+        { };
+    }
+
+    template<typename T>
+    concept VectorType = std::is_base_of_v<Internal::VectorBase, T>;
+
+    template<typename T>
+    concept VectorSimdType = std::is_base_of_v<Internal::VectorBase, typename T::TupleType>;
+
 
 
     /// <summary>
@@ -59,7 +71,7 @@ namespace Harlinn::Common::Core::Math
     /// The size of the Vector
     /// </typeparam>
     template<typename ValueT, size_t N>
-    class alignas( Core::SIMD::Traits<ValueT,N>::AlignAs ) Vector
+    class alignas( Core::SIMD::Traits<ValueT, N>::AlignAs ) Vector : public Internal::VectorBase
     {
     public:
         using Indices = std::make_index_sequence<N>;
@@ -929,6 +941,11 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        Simd ToSimd( ) const noexcept
+        {
+            return Simd( Traits::Load( values ) );
+        }
+
         constexpr bool operator == ( const Tuple2& other ) const noexcept
         {
             return IsSameValue( x, other.x ) && IsSameValue( y, other.y );
@@ -1241,6 +1258,11 @@ namespace Harlinn::Common::Core::Math
         {
             values = Traits::ToArray( other.simd );
             return static_cast< DerivedType& >( *this );
+        }
+
+        Simd ToSimd( ) const noexcept
+        {
+            return Simd( Traits::Load( values ) );
         }
 
         constexpr bool operator == ( const Tuple3& other ) const noexcept
@@ -1560,6 +1582,11 @@ namespace Harlinn::Common::Core::Math
         {
             values = Traits::ToArray( other.simd );
             return static_cast< DerivedType& >( *this );
+        }
+
+        Simd ToSimd( ) const noexcept
+        {
+            return Simd( Traits::Load( values ) );
         }
 
         constexpr bool operator == ( const Tuple4& other ) const noexcept
@@ -2647,6 +2674,104 @@ namespace Harlinn::Common::Core::Math
         return Traits::Clamp( Traits::Fill( v ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
     }
 
+    /// <summary>
+    /// Detects if the elements of a vector are within bounds.
+    /// </summary>
+    /// <param name="v">
+    /// The elements to test against the bounds.
+    /// </param>
+    /// <param name="bounds">
+    /// The bounds
+    /// </param>
+    /// <returns>
+    /// An element in the result will have all bits set if
+    /// the corresponding element of v are greater or
+    /// equal to the corresponding negated value from bounds,
+    /// and less or equal to the corresponding value from bounds,
+    /// otherwise the element will be set to 0.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T>
+        requires Internal::IsCompatible<S, T>
+    inline S InBounds( const S& v, const T& bounds ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return S( Traits::InBounds( v.simd, bounds.simd ) );
+    }
+
+    /// <summary>
+    /// Detects if the elements of a vector are within bounds.
+    /// </summary>
+    /// <param name="v">
+    /// The elements to test against the bounds.
+    /// </param>
+    /// <param name="bounds">
+    /// The bounds
+    /// </param>
+    /// <returns>
+    /// An element in the result will have all bits set if
+    /// the corresponding element of v are greater or
+    /// equal to the corresponding negated value from bounds,
+    /// and less or equal to the corresponding value from bounds,
+    /// otherwise the element will be set to 0.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T>
+        requires Internal::IsCompatible<S, T>
+    inline S InBounds( const S& v, const T& bounds ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return S( Traits::InBounds( v.simd, Traits::Load( bounds.values ) ) );
+    }
+
+    /// <summary>
+    /// Detects if the elements of a vector are within bounds.
+    /// </summary>
+    /// <param name="v">
+    /// The elements to test against the bounds.
+    /// </param>
+    /// <param name="bounds">
+    /// The bounds
+    /// </param>
+    /// <returns>
+    /// An element in the result will have all bits set if
+    /// the corresponding element of v are greater or
+    /// equal to the corresponding negated value from bounds,
+    /// and less or equal to the corresponding value from bounds,
+    /// otherwise the element will be set to 0.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T>
+        requires Internal::IsCompatible<S, T>
+    inline T InBounds( const S& v, const T& bounds ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return T( Traits::InBounds( Traits::Load( v.values ), bounds.simd ) );
+    }
+
+    /// <summary>
+    /// Detects if the elements of a vector are within bounds.
+    /// </summary>
+    /// <param name="v">
+    /// The elements to test against the bounds.
+    /// </param>
+    /// <param name="bounds">
+    /// The bounds
+    /// </param>
+    /// <returns>
+    /// An element in the result will have all bits set if
+    /// the corresponding element of v are greater or
+    /// equal to the corresponding negated value from bounds,
+    /// and less or equal to the corresponding value from bounds,
+    /// otherwise the element will be set to 0.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T>
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd InBounds( const S& v, const T& bounds ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Simd = typename S::Simd;
+        return Simd( Traits::InBounds( Traits::Load( v.values ), Traits::Load( v.bounds ) ) );
+    }
+
+
     // ClampLength
 
     /// <summary>
@@ -2677,7 +2802,7 @@ namespace Harlinn::Common::Core::Math
         auto lengthSquared = LengthSquared( v );
 
         const auto zero = Traits::Zero( );
-        typename Traits::SIMDIntegerType infinity = { { 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000 } };
+        typename Traits::SIMDType infinity = { { 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000 } };
 
         auto reciprocalLength = ReciprocalSqrt( lengthSquared );
 
@@ -2959,6 +3084,469 @@ namespace Harlinn::Common::Core::Math
         return ClampLength( Simd( v ), Simd( Traits::Fill( static_cast< FloatT >( lengthMin ) ) ), Simd( Traits::Fill( static_cast< FloatT >( lengthMax ) ) ) );
     }
 
+    /// <summary>
+    /// Reflects an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// Incident vector to reflect.
+    /// </param>
+    /// <param name="normal">
+    /// Normal vector to reflect the incident vector across.
+    /// </param>
+    /// <returns>
+    /// The reflected incident angle.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T>
+        requires Internal::IsCompatible<S, T>
+    inline S Reflect( const S& incident, const T& normal ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+
+        auto result = Traits::Dot( incident, normal );
+        result = Traits::Add( result, result );
+        return Simd( FNMSub( result, normal, incident ) );
+    }
+
+    /// <summary>
+    /// Reflects an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// Incident vector to reflect.
+    /// </param>
+    /// <param name="normal">
+    /// Normal vector to reflect the incident vector across.
+    /// </param>
+    /// <returns>
+    /// The reflected incident angle.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T>
+        requires Internal::IsCompatible<S, T>
+    inline S Reflect( const S& incident, const T& normal ) noexcept
+    {
+        using Simd = S;
+
+        return Reflect( incident, Simd( normal ) );
+    }
+
+    /// <summary>
+    /// Reflects an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// Incident vector to reflect.
+    /// </param>
+    /// <param name="normal">
+    /// Normal vector to reflect the incident vector across.
+    /// </param>
+    /// <returns>
+    /// The reflected incident angle.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T>
+        requires Internal::IsCompatible<S, T>
+    inline T Reflect( const S& incident, const T& normal ) noexcept
+    {
+        using Simd = T;
+
+        return Reflect( Simd( incident ), normal );
+    }
+
+    /// <summary>
+    /// Reflects an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// Incident vector to reflect.
+    /// </param>
+    /// <param name="normal">
+    /// Normal vector to reflect the incident vector across.
+    /// </param>
+    /// <returns>
+    /// The reflected incident angle.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T>
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd Reflect( const S& incident, const T& normal ) noexcept
+    {
+        using Simd = typename S::Simd;
+
+        return Reflect( Simd( incident ), Simd( normal ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U>
+    inline S Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using FloatT = typename Traits::Type;
+        using SIMDType = typename Traits::SIMDType;
+        using Simd = S;
+
+        constexpr SIMDType zero = { {static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. )} };
+        constexpr SIMDType one = { {static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. ),static_cast< FloatT >( 1. )} };
+
+        auto rmm1 = Traits::Dot( incident.simd, normal.simd );
+        
+        auto rmm2 = Traits::FNMAdd( rmm1, rmm1, one );
+        auto rmm3 = Traits::Mul( refractionIndex.simd, refractionIndex.simd );
+        rmm2 = Traits::FNMAdd( rmm2, rmm3, one );
+
+        auto zeroSelect = Traits::LessOrEqual( rmm2, zero );
+
+        rmm2 = Traits::Sqrt( rmm2 );
+        rmm2 = Traits::FMAdd( refractionIndex.simd, rmm1, rmm2 );
+        
+        auto result = Traits::Mul( refractionIndex.simd, incident.simd );
+        result = Traits::FNMAdd( rmm2, normal.simd, result );
+        return Simd( Traits::Select( result, zero, zeroSelect ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return Refract( incident, normal, Simd( refractionIndex ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return Refract( incident, Simd( normal ), refractionIndex );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline S Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return Refract( incident, Simd( normal ), Simd( refractionIndex ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return Refract( Simd( incident ), normal, refractionIndex );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return Refract( Simd( incident ), normal, Simd( refractionIndex ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return Refract( Simd( incident ), Simd( normal ), refractionIndex );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline typename S::Simd Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return Refract( Simd( incident ), Simd( normal ), Simd( refractionIndex ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsFloatingPoint<U>
+    inline S Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return Refract( incident, normal, Simd( Traits::Fill( refractionIndex ) ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsFloatingPoint<U>
+    inline S Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+        return Refract( incident, Simd( normal ), Simd( Traits::Fill( refractionIndex ) ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsFloatingPoint<U>
+    inline typename S::Simd Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return Refract( Simd( incident ), normal, Simd( Traits::Fill( refractionIndex ) ) );
+    }
+
+    /// <summary>
+    /// Refracts an incident vector across a normal vector.
+    /// </summary>
+    /// <param name="incident">
+    /// The incident vector to refract.
+    /// </param>
+    /// <param name="normal">
+    /// The normal vector to refract the incident vector through.
+    /// </param>
+    /// <param name="refractionIndex">
+    /// A vector whose elements are equal to the index of refraction.
+    /// </param>
+    /// <returns>
+    /// Returns the refracted incident vector. If the refraction index 
+    /// and the angle between the incident vector and the normal are such 
+    /// that the result is a total internal reflection, the function will 
+    /// return a vector with all elements set to zero.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsFloatingPoint<U>
+    inline typename S::Simd Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = typename S::Simd;
+        return Refract( Simd( incident ), Simd( normal ), Simd( Traits::Fill( refractionIndex ) ) );
+    }
+
+    /// <summary>
+    /// Computes a vector perpendicular to the argument vector.
+    /// </summary>
+    /// <param name="v">
+    /// The argument vector.
+    /// </param>
+    /// <returns>
+    /// The vector orthogonal to <c>v</c>.
+    /// </returns>
+    template<Internal::SimdType S>
+    inline S Orthogonal( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Simd = S;
+
+        return Simd( Traits::Orthogonal( v.simd ) );
+    }
+
+    /// <summary>
+    /// Computes a vector perpendicular to the argument vector.
+    /// </summary>
+    /// <param name="v">
+    /// The argument vector.
+    /// </param>
+    /// <returns>
+    /// The vector orthogonal to <c>v</c>.
+    /// </returns>
+    template<Internal::TupleType S>
+    inline typename S::Simd Orthogonal( const S& v ) noexcept
+    {
+        using Simd = typename S::Simd;
+        return Orthogonal( Simd( v ) );
+    }
 
 
     // Saturate
@@ -5737,7 +6325,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
         auto length = Length( v );
-        return Traits::Div( Traits::Fill( static_cast< Type >(1.) ), length.simd );
+        return T( Traits::Div( Traits::Fill( static_cast< Type >(1.) ), length.simd ) );
     }
     /// <summary>
     /// Calculates the reciprocal length of v.
@@ -6387,7 +6975,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6419,7 +7007,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6447,7 +7035,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6475,7 +7063,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6503,7 +7091,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6531,7 +7119,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6559,7 +7147,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6587,7 +7175,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6615,7 +7203,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6643,7 +7231,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6671,7 +7259,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6699,7 +7287,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6727,7 +7315,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6755,7 +7343,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6783,7 +7371,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6811,7 +7399,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline S BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = S;
@@ -6840,7 +7428,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -6868,7 +7456,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -6896,7 +7484,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -6924,7 +7512,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -6952,7 +7540,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -6980,7 +7568,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7008,7 +7596,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7036,7 +7624,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7064,7 +7652,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7092,7 +7680,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::SimdType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7120,7 +7708,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7148,7 +7736,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, Internal::TupleType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept   
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7176,7 +7764,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7204,7 +7792,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::SimdType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7232,7 +7820,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::SimdType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7260,7 +7848,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, Internal::TupleType V, Internal::TupleType W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& Internal::IsCompatible<S, V>&& Internal::IsCompatible<S, W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7288,7 +7876,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U, typename V, typename W>
         requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U> && IsFloatingPoint<V> && IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7317,7 +7905,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U, typename V, typename W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7346,7 +7934,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U, typename V, typename W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7375,7 +7963,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U, typename V, typename W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7404,7 +7992,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U, typename V, typename W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7433,7 +8021,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U, typename V, typename W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7462,7 +8050,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U, typename V, typename W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -7491,7 +8079,7 @@ namespace Harlinn::Common::Core::Math
     /// </param>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename V, typename W>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>&& IsFloatingPoint<V>&& IsFloatingPoint<W>
-    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g )
+    inline typename S::Simd BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Simd = typename S::Simd;
@@ -8735,13 +9323,32 @@ namespace Harlinn::Common::Core::Math
 
 
 
-
+    /// <summary>
+    /// Retrieves the lowest value held by the 
+    /// argument.
+    /// </summary>
+    /// <param name="v">
+    /// The argument.
+    /// </param>
+    /// <returns>
+    /// The lowest value held by the argument.
+    /// </returns>
     template<Internal::SimdType T, typename ResultT = typename T::value_type >
     inline ResultT MinComponentValue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::HorizontalMin( v.simd );
     }
+    /// <summary>
+    /// Retrieves the lowest value held by the 
+    /// argument.
+    /// </summary>
+    /// <param name="v">
+    /// The argument.
+    /// </param>
+    /// <returns>
+    /// The lowest value held by the argument.
+    /// </returns>
     template<Internal::TupleType T, typename ResultT = typename T::value_type>
     constexpr inline ResultT MinComponentValue( const T& v ) noexcept
     {
@@ -8759,12 +9366,33 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Retrieves the highest value held by the 
+    /// argument.
+    /// </summary>
+    /// <param name="v">
+    /// The argument.
+    /// </param>
+    /// <returns>
+    /// The highest value held by the argument.
+    /// </returns>
     template<Internal::SimdType T, typename ResultT = typename T::value_type >
     inline ResultT MaxComponentValue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::HorizontalMax( v.simd );
     }
+
+    /// <summary>
+    /// Retrieves the highest value held by the 
+    /// argument.
+    /// </summary>
+    /// <param name="v">
+    /// The argument.
+    /// </param>
+    /// <returns>
+    /// The highest value held by the argument.
+    /// </returns>
     template<Internal::TupleType T, typename ResultT = typename T::value_type>
     constexpr inline ResultT MaxComponentValue( const T& v ) noexcept
     {
@@ -8796,6 +9424,16 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+
+    /// <summary>
+    /// Retrieves the offset of the highest value held by the argument.
+    /// </summary>
+    /// <param name="v">
+    /// The argument.
+    /// </param>
+    /// <returns>
+    /// The offset of the highest value held by the argument.
+    /// </returns>
     template<Internal::TupleType T>
     constexpr inline size_t MaxComponentIndex( const T& v ) noexcept
     {
@@ -8813,6 +9451,15 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Retrieves the offset of the highest value held by the argument.
+    /// </summary>
+    /// <param name="v">
+    /// The argument.
+    /// </param>
+    /// <returns>
+    /// The offset of the highest value held by the argument.
+    /// </returns>
     template<Internal::SimdType T, typename ResultT = typename T::value_type >
     constexpr inline size_t MaxComponentIndex( const T& v ) noexcept
     {
@@ -8821,6 +9468,15 @@ namespace Harlinn::Common::Core::Math
         return MaxComponentIndex( tmp );
     }
 
+    /// <summary>
+    /// Retrieves the offset of the lowest value held by the argument.
+    /// </summary>
+    /// <param name="v">
+    /// The argument.
+    /// </param>
+    /// <returns>
+    /// The offset of the lowest value held by the argument.
+    /// </returns>
     template<Internal::TupleType T>
     constexpr inline size_t MinComponentIndex( const T& v ) noexcept
     {
@@ -8838,6 +9494,15 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Retrieves the offset of the lowest value held by the argument.
+    /// </summary>
+    /// <param name="v">
+    /// The argument.
+    /// </param>
+    /// <returns>
+    /// The offset of the lowest value held by the argument.
+    /// </returns>
     template<Internal::SimdType T, typename ResultT = typename T::value_type >
     constexpr inline size_t MinComponentIndex( const T& v ) noexcept
     {
@@ -8849,7 +9514,7 @@ namespace Harlinn::Common::Core::Math
     
     
     template<>
-    class Vector<float, 2> : public Tuple2<Vector<float, 2>, float>
+    class Vector<float, 2> : public Tuple2<Vector<float, 2>, float>, public Internal::VectorBase
     {
     public:
         using Base = Tuple2<Vector<float, 2>, float>;
@@ -8877,7 +9542,7 @@ namespace Harlinn::Common::Core::Math
 
     
     template<>
-    class Vector<double, 2> : public Tuple2<Vector<double, 2>, double>
+    class Vector<double, 2> : public Tuple2<Vector<double, 2>, double>, public Internal::VectorBase
     {
     public:
         using Base = Tuple2<Vector<double, 2>, double>;
@@ -8902,7 +9567,7 @@ namespace Harlinn::Common::Core::Math
     };
 
     template<>
-    class Vector<float, 3> : public Tuple3<Vector<float, 3>,float>
+    class Vector<float, 3> : public Tuple3<Vector<float, 3>,float>, public Internal::VectorBase
     {
     public:
         using Base = Tuple3<Vector<float, 3>, float>;
@@ -8927,7 +9592,7 @@ namespace Harlinn::Common::Core::Math
     };
 
     template<>
-    class Vector<double, 3> : public Tuple3<Vector<double, 3>, double>
+    class Vector<double, 3> : public Tuple3<Vector<double, 3>, double>, public Internal::VectorBase
     {
     public:
         using Base = Tuple3<Vector<double, 3>, double>;
@@ -8952,7 +9617,7 @@ namespace Harlinn::Common::Core::Math
     };
 
     template<>
-    class Vector<float, 4> : public Tuple4<Vector<float, 4>,float>
+    class Vector<float, 4> : public Tuple4<Vector<float, 4>,float>, public Internal::VectorBase
     {
     public:
         using Base = Tuple4<Vector<float, 4>, float>;
@@ -8982,7 +9647,7 @@ namespace Harlinn::Common::Core::Math
 
 
     template<>
-    class Vector<double, 4> : public Tuple4<Vector<double, 4>, double>
+    class Vector<double, 4> : public Tuple4<Vector<double, 4>, double>, public Internal::VectorBase
     {
     public:
         using Base = Tuple4<Vector<double, 4>, double>;
@@ -9009,7 +9674,7 @@ namespace Harlinn::Common::Core::Math
 
 
     template<>
-    class Vector<Int32, 2> : public Tuple2<Vector<Int32, 2>, Int32>
+    class Vector<Int32, 2> : public Tuple2<Vector<Int32, 2>, Int32>, public Internal::VectorBase
     {
     public:
         using Base = Tuple2<Vector<Int32, 2>, Int32>;
@@ -9031,7 +9696,7 @@ namespace Harlinn::Common::Core::Math
     };
 
     template<>
-    class Vector<Int32, 3> : public Tuple3<Vector<Int32, 3>, Int32>
+    class Vector<Int32, 3> : public Tuple3<Vector<Int32, 3>, Int32>, public Internal::VectorBase
     {
     public:
         using Base = Tuple3<Vector<Int32, 3>, Int32>;
@@ -9053,7 +9718,7 @@ namespace Harlinn::Common::Core::Math
     };
 
     template<>
-    class Vector<Int32, 4> : public Tuple4<Vector<Int32, 4>, Int32>
+    class Vector<Int32, 4> : public Tuple4<Vector<Int32, 4>, Int32>, public Internal::VectorBase
     {
     public:
         using Base = Tuple4<Vector<Int32, 4>, Int32>;
@@ -9074,6 +9739,71 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
+    /// <summary>
+    /// Calculates the angle in radians between two vectors.
+    /// </summary>
+    /// <param name="v1">
+    /// The first vector.
+    /// </param>
+    /// <param name="v2">
+    /// The second vector.
+    /// </param>
+    /// <returns>
+    /// A vector where with each element set to the 
+    /// angle between the two argument vectors.
+    /// </returns>
+    template<VectorSimdType S, VectorSimdType T>
+        requires Internal::IsCompatible<S, T>
+    inline S AngleBetween(const S& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using SIMDType = typename Traits::SIMDType;
+        using Simd = S;
+
+        constexpr SIMDType minusOne = { {-1.f,-1.f,-1.f,-1.f} };
+        constexpr SIMDType one = { {1.f,1.f,1.f,1.f} };
+
+        auto l1 = ReciprocalLength( v1 );
+        auto l2 = ReciprocalLength( v2 );
+
+        auto dot = Dot( v1, v2 );
+
+        l1 = l1 * l2;
+
+        auto cosine = dot * l1;
+        cosine.simd = Traits::Clamp( cosine.simd, minusOne, one );
+
+        return ACos( cosine );
+    }
+
+    /// <summary>
+    /// Calculates the angle in radians between two normalized vectors.
+    /// </summary>
+    /// <param name="v1">
+    /// The first normalized vector.
+    /// </param>
+    /// <param name="v2"></param>
+    /// The second normalized vector.
+    /// <returns>
+    /// A vector where with each element set to the 
+    /// angle between the two argument vectors.
+    /// </returns>
+    template<VectorSimdType S, VectorSimdType T>
+        requires Internal::IsCompatible<S, T>
+    inline S AngleBetweenNormals( const S& v1, const T& v2 ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using SIMDType = typename Traits::SIMDType;
+        using Simd = typename S::Simd;
+
+        constexpr SIMDType minusOne = { {-1.f,-1.f,-1.f,-1.f} };
+        constexpr SIMDType one = { {1.f,1.f,1.f,1.f} };
+
+        auto result = Traits::Dot( v1.simd, v2.simd );
+        result = Traits::Clamp( result, minusOne, one );
+        return Simd( Traits::ACos( result ) );
+    }
+
 
     // Vector2* Definitions
     using Vector2f = Vector<float,2>;
@@ -9083,8 +9813,29 @@ namespace Harlinn::Common::Core::Math
     using Vector3f = Vector<float,3>;
     using Vector3i = Vector<int, 3>;
 
+    namespace Internal
+    {
+        struct PointBase
+        { };
 
-    class Point2i : public Tuple2<Point2i, Int32>
+        struct NormalBase
+        { };
+    }
+
+    template<typename T>
+    concept PointType = std::is_base_of_v<Internal::PointBase, T>;
+
+    template<typename T>
+    concept PointSimdType = std::is_base_of_v<Internal::PointBase, typename T::TupleType>;
+
+    template<typename T>
+    concept NormalType = std::is_base_of_v<Internal::NormalBase, T>;
+
+    template<typename T>
+    concept NormalSimdType = std::is_base_of_v<Internal::NormalBase, typename T::TupleType>;
+
+
+    class Point2i : public Tuple2<Point2i, Int32>, public Internal::PointBase
     {
     public:
         using Base = Tuple2<Point2i, Int32>;
@@ -9105,7 +9856,7 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
-    class Point3i : public Tuple3<Point3i, Int32>
+    class Point3i : public Tuple3<Point3i, Int32>, public Internal::PointBase
     {
     public:
         using Base = Tuple3<Point3i, Int32>;
@@ -9126,7 +9877,7 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
-    class Point2f : public Tuple2<Point2f, float>
+    class Point2f : public Tuple2<Point2f, float>, public Internal::PointBase
     {
     public:
         using Base = Tuple2<Point2f, float>;
@@ -9196,7 +9947,7 @@ namespace Harlinn::Common::Core::Math
 
 
 
-    class Point3f : public Tuple3<Point3f, float>
+    class Point3f : public Tuple3<Point3f, float>, public Internal::PointBase
     {
     public:
         using Base = Tuple3<Point3f, float>;
@@ -9216,7 +9967,42 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
-    class Normal3f : public Tuple3<Normal3f, float>
+    /// <summary>
+    /// Calculates the minimum distance between a line and a point.
+    /// </summary>
+    /// <param name="linePoint1">
+    /// First point on the line.
+    /// </param>
+    /// <param name="linePoint2">
+    /// Second point on the line.
+    /// </param>
+    /// <param name="point">
+    /// The reference point.
+    /// </param>
+    /// <returns>
+    /// The minimum distance between a line and a point.
+    /// </returns>
+    template<PointSimdType S, PointSimdType T, PointSimdType U>
+        requires Internal::IsCompatible<S,T> && Internal::IsCompatible<S, U>
+    inline S LinePointDistance(const S& linePoint1, const T& linePoint2, const U& point ) noexcept
+    {
+        auto pointVector = point - linePoint1;
+        auto lineVector = linePoint2 - linePoint1;
+
+        auto lengthSquared = LengthSquared( lineVector );
+
+        auto pointProjectionScale = Dot( pointVector, lineVector );
+        pointProjectionScale = pointProjectionScale / lengthSquared;
+
+        auto distanceVector = lineVector * pointProjectionScale;
+        distanceVector = pointVector - distanceVector;
+
+        return Length( distanceVector );
+    }
+
+
+
+    class Normal3f : public Tuple3<Normal3f, float>, public Internal::NormalBase
     {
     public:
         using Base = Tuple3<Normal3f, float>;
@@ -9235,6 +10021,10 @@ namespace Harlinn::Common::Core::Math
         {
         }
     };
+
+
+    
+
 
 
     namespace Internal
@@ -9329,6 +10119,58 @@ namespace Harlinn::Common::Core::Math
             : simd( other )
         {
         }
+
+        /// <summary>
+        /// Creates a quaternion based on the pitch, yaw, and roll (Euler angles).
+        /// </summary>
+        /// <param name="pitchYawRoll">
+        /// A vector containing the Euler angles in the order pitch 
+        /// (around x-axis), then yaw (around y-axis), and then roll 
+        /// (around z-axis).
+        /// </param>
+        QuaternionSimd( const Vector<ValueType,3>::Simd& pitchYawRoll )
+        {
+            if constexpr ( std::is_same_v<value_type, float> )
+            {
+                using Traits = SIMD::Traits<float, 4>;
+                constexpr SIMDType sign = { { static_cast< value_type >( 1.0 ), static_cast< value_type >( -1.0 ), static_cast< value_type >( -1.0 ), static_cast< value_type >( 1.0 ) } };
+                constexpr SIMDType oneHalf = { {static_cast< value_type >( 0.5 ),static_cast< value_type >( 0.5 ),static_cast< value_type >( 0.5 ),static_cast< value_type >( 0.5 )} };
+                auto halfPitchYawRoll = Traits::Mul( pitchYawRoll.simd, oneHalf );
+
+                SIMDType cosines;
+                auto sines = Traits::SinCos( &cosAngles, halfPitchYawRoll );
+                using P = typename Traits::PermuteType;
+
+                auto p0 = Traits::Permute<P::X1, P::X2, P::X2, P::X2>( sines, cosines );
+                auto y0 = Traits::Permute<P::Y2, P::Y1, P::Y2, P::Y2>( sines, cosines );
+                auto r0 = Traits::Permute<P::Z2, P::Z2, P::Z1, P::Z2>( sines, cosines );
+                auto p1 = Traits::Permute<P::X1, P::X2, P::X2, P::X2>( cosines, sines );
+                auto y1 = Traits::Permute<P::Y2, P::Y1, P::Y2, P::Y2>( cosines, sines );
+                auto r1 = Traits::Permute<P::Z2, P::Z2, P::Z1, P::Z2>( cosines, sines );
+
+                auto q1 = Traits::Mul( p1, sign );
+                auto q0 = Traits::Mul( p0, y0 );
+                q1 = Traits::Mul( q1, y1 );
+                q0 = Traits::Mul( q0, r0 );
+                simd = Traits::FMAdd( q1, r1, q0 );
+            }
+        }
+
+        /// <summary>
+        /// Creates a quaternion based on the pitch, yaw, and roll (Euler angles).
+        /// </summary>
+        /// <param name="pitch">
+        /// Angle of rotation around the x-axis, in radians.
+        /// </param>
+        /// <param name="yaw">
+        /// Angle of rotation around the y-axis, in radians.
+        /// </param>
+        /// <param name="roll">
+        /// Angle of rotation around the z-axis, in radians.
+        /// </param>
+        QuaternionSimd( ValueType pitch, ValueType yaw, ValueType roll )
+            : QuaternionSimd( Vector<ValueType, 3>::Simd( Vector<ValueType, 3>( pitch, yaw, roll ) ) )
+        { }
 
         explicit QuaternionSimd( const QuaternionType& quaternion ) noexcept;
 
@@ -9444,15 +10286,15 @@ namespace Harlinn::Common::Core::Math
         };
 
 
-        Quaternion( ) noexcept
+        constexpr Quaternion( ) noexcept
             : values{}
         { }
-        Quaternion( ValueType xv, ValueType yv, ValueType zv, ValueType wv ) noexcept
+        constexpr Quaternion( ValueType xv, ValueType yv, ValueType zv, ValueType wv ) noexcept
             : values( { xv, yv, zv, wv } )
         {
         }
 
-        Quaternion( const Vector<ValueType,3>& vv, ValueType wv ) noexcept
+        constexpr Quaternion( const Vector<ValueType,3>& vv, ValueType wv ) noexcept
             : v( vv ), w( wv )
         {
         }
@@ -9462,11 +10304,95 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        /// <summary>
+        /// Creates a quaternion based on the pitch, yaw, and roll (Euler angles).
+        /// </summary>
+        /// <param name="pitch">
+        /// Angle of rotation around the x-axis, in radians.
+        /// </param>
+        /// <param name="yaw">
+        /// Angle of rotation around the y-axis, in radians.
+        /// </param>
+        /// <param name="roll">
+        /// Angle of rotation around the z-axis, in radians.
+        /// </param>
+        Quaternion( ValueType pitch, ValueType yaw, ValueType roll ) noexcept
+        {
+            const float halfPitch = pitch * static_cast< ValueType >( 0.5 );
+            float cp = Cos( halfPitch );
+            float sp = Sin( halfPitch );
+
+            const float halfYaw = yaw * static_cast< ValueType >( 0.5 );
+            float cy = Cos( halfYaw );
+            float sy = Sin( halfYaw );
+
+            const float halfRoll = roll * static_cast< ValueType >( 0.5 );
+            float cr = Cos( halfRoll );
+            float sr = Sin( halfRoll );
+
+            
+            values[ 0 ] = cr * sp * cy + sr * cp * sy;
+            values[ 1 ] = cr * cp * sy - sr * sp * cy;
+            values[ 2 ] = sr * cp * cy - cr * sp * sy;
+            values[ 3 ] = cr * cp * cy + sr * sp * sy;
+        }
+
+        /// <summary>
+        /// Creates a quaternion about a normal vector.
+        /// </summary>
+        /// <param name="normalAxis">
+        /// Normal vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angleOfRotation">
+        /// Angle of rotation in radians. Angles are measured clockwise 
+        /// when looking along the rotation axis toward the origin.
+        /// </param>
+        Quaternion( const Normal3f& normalAxis, ValueType angleOfRotation ) noexcept
+        {
+            auto halfAngleOfRotation = static_cast< ValueType >( 0.5 ) * angleOfRotation;
+            auto cosine = Cos( halfAngleOfRotation );
+            auto sine = Sin( halfAngleOfRotation );
+
+            values[ 0 ] = normalAxis.x * sine;
+            values[ 1 ] = normalAxis.y * sine;
+            values[ 2 ] = normalAxis.z * sine;
+            values[ 3 ] = cosine;
+        }
+
+
         
         Quaternion( const Quaternion& other ) noexcept
             : values( other.values )
         {
         }
+
+        /// <summary>
+        /// Returns the identity quaternion.
+        /// </summary>
+        /// <returns>
+        /// The identity quaternion.
+        /// </returns>
+        static constexpr Quaternion Identity( ) noexcept
+        {
+            return Quaternion( static_cast< ValueType >( 0. ), static_cast< ValueType >( 0. ), static_cast< ValueType >( 0. ), static_cast< ValueType >( 1. ) );
+        }
+
+        struct AxisAngle
+        {
+            Vector<ValueType, 3> Axis;
+            value_type Angle;
+        };
+
+        /// <summary>
+        /// Returns the axis and angle of rotation about 
+        /// that axis for the quaternion.
+        /// </summary>
+        /// <returns></returns>
+        AxisAngle ToAxisAngle( ) const noexcept
+        {
+            return AxisAngle{ .Axis = v, .Angle = static_cast< ValueType >( 2. ) * ACos( w ) };
+        }
+
 
         Quaternion& operator = ( const Simd& qsimd ) noexcept
         {
@@ -9478,6 +10404,11 @@ namespace Harlinn::Common::Core::Math
         {
             values = other.values;
             return *this;
+        }
+
+        Simd ToSimd( ) const noexcept
+        {
+            return Simd( Traits::Load( values ) );
         }
 
         bool operator == ( const Simd& other ) const noexcept
@@ -9783,7 +10714,18 @@ namespace Harlinn::Common::Core::Math
         return typename T::Simd(Traits::Mul( Traits::Load( q1.values ), Traits::Fill( value ) ));
     }
 
-    
+    /// <summary>
+    /// Calculates the dot product of two quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The first quaternion.
+    /// </param>
+    /// <param name="q2">
+    /// The second quaternion.
+    /// </param>
+    /// <returns>
+    /// The dot product between q1 and q2.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     typename Vector<T,4>::Simd Dot( const QuaternionSimd<Quaternion<T>>& q1, const QuaternionSimd<Quaternion<T>>& q2 ) noexcept
@@ -9792,6 +10734,18 @@ namespace Harlinn::Common::Core::Math
         return Traits::Dot( q1.simd, q2.simd );
     }
 
+    /// <summary>
+    /// Calculates the dot product of two quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The first quaternion.
+    /// </param>
+    /// <param name="q2">
+    /// The second quaternion.
+    /// </param>
+    /// <returns>
+    /// The dot product between q1 and q2.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     typename Vector<T, 4>::Simd Dot( const Quaternion<T>& q1, const QuaternionSimd<Quaternion<T>>& q2 ) noexcept
@@ -9800,6 +10754,18 @@ namespace Harlinn::Common::Core::Math
         return Traits::Dot( Traits::Load( q1.values ), q2.simd );
     }
 
+    /// <summary>
+    /// Calculates the dot product of two quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The first quaternion.
+    /// </param>
+    /// <param name="q2">
+    /// The second quaternion.
+    /// </param>
+    /// <returns>
+    /// The dot product between q1 and q2.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     typename Vector<T, 4>::Simd Dot( const QuaternionSimd<Quaternion<T>>& q1, const Quaternion<T>& q2 ) noexcept
@@ -9808,6 +10774,18 @@ namespace Harlinn::Common::Core::Math
         return Traits::Dot( q1.simd, Traits::Load( q2.values ) );
     }
 
+    /// <summary>
+    /// Calculates the dot product of two quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The first quaternion.
+    /// </param>
+    /// <param name="q2">
+    /// The second quaternion.
+    /// </param>
+    /// <returns>
+    /// The dot product between q1 and q2.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     typename Vector<T, 4>::Simd Dot( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
@@ -9819,6 +10797,15 @@ namespace Harlinn::Common::Core::Math
 
     // Length
 
+    /// <summary>
+    /// Calculates the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The magnitude of the quaternion.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     typename Vector<T, 4>::Simd Length( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
@@ -9827,6 +10814,15 @@ namespace Harlinn::Common::Core::Math
         return Traits::Sqrt( Traits::HSum( Traits::Mul( q1.simd, q1.simd ) ) );
     }
 
+    /// <summary>
+    /// Calculates the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The magnitude of the quaternion.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     typename Vector<T, 4>::Simd Length( const Quaternion<T>& q1 ) noexcept
@@ -9838,6 +10834,15 @@ namespace Harlinn::Common::Core::Math
 
     // ScalarLength
 
+    /// <summary>
+    /// Calculates the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The magnitude of the quaternion.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     typename T ScalarLength( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
@@ -9846,6 +10851,15 @@ namespace Harlinn::Common::Core::Math
         return Traits::First( Length( q1 ).simd );
     }
 
+    /// <summary>
+    /// Calculates the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The magnitude of the quaternion.
+    /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
     typename T ScalarLength( const Quaternion<T>& q1 ) noexcept
@@ -9853,11 +10867,512 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename Quaternion<T>::Traits;
         return Traits::First( Length( q1 ).simd );
     }
-    
-    namespace Internal
+
+    // LengthSquared
+
+    /// <summary>
+    /// Calculates the square of the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The square of the magnitude of the quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd LengthSquared( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
     {
-        
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
+        return Vector<T, 4>::Simd( Traits::HSum( Traits::Mul( q1.simd, q1.simd ) ) );
     }
+
+    /// <summary>
+    /// Calculates the square of the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The square of the magnitude of the quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd LengthSquared( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
+        auto simd = Traits::Load( q1.values );
+        return Vector<T, 4>::Simd( Traits::HSum( Traits::Mul( simd, simd ) ) );
+    }
+
+    // ScalarLengthSquared
+
+    /// <summary>
+    /// Calculates the square of the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The square of the magnitude of the quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarLengthSquared( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
+        return Traits::First( Traits::HSum( Traits::Mul( q1.simd, q1.simd ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the square of the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The square of the magnitude of the quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarLengthSquared( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
+        auto simd = Traits::Load( q1.values );
+        return Traits::First( Traits::HSum( Traits::Mul( simd, simd ) ) );
+    }
+
+    
+    // ReciprocalLength
+
+    /// <summary>
+    /// Calculates the reciprocal of the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The reciprocal of the magnitude of the quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd ReciprocalLength( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
+        using Type = typename Traits::Type;
+        auto length = Length( q1 );
+        return Vector<T, 4>::Simd( Traits::Div( Traits::Fill( static_cast< Type >( 1. ) ), length.simd ) );
+    }
+
+    /// <summary>
+    /// Calculates the reciprocal of the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The reciprocal of the magnitude of the quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename Vector<T, 4>::Simd ReciprocalLength( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using Type = typename Traits::Type;
+        auto length = Length( q1 );
+        return Vector<T, 4>::Simd( Traits::Div( Traits::Fill( static_cast< Type >( 1. ) ), length.simd ) );
+    }
+
+    // ScalarReciprocalLength
+
+    /// <summary>
+    /// Calculates the reciprocal of the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The reciprocal of the magnitude of the quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarReciprocalLength( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
+    {
+        using Traits = typename QuaternionSimd<Quaternion<T>>::Traits;
+        using Type = typename Traits::Type;
+        auto length = ScalarLength( q1 );
+        return static_cast< Type >( 1. ) / length;
+    }
+
+    /// <summary>
+    /// Calculates the reciprocal of the magnitude of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The reciprocal of the magnitude of the quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarReciprocalLength( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using Type = typename Traits::Type;
+        auto length = ScalarLength( q1 );
+        return static_cast< Type >( 1. ) / length;
+    }
+
+
+    // Conjugate
+
+    /// <summary>
+    /// Calculates the conjugate of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The conjugate of the quaternion
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Conjugate( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using SIMDType = typename Traits::SIMDType;
+        constexpr SIMDType flipXYZ = { { -1.0f, -1.0f, -1.0f, 1.0f } };
+        return QuaternionSimd<Quaternion<T>>( Traits::Mul( q1.simd, flipXYZ ) );
+    }
+
+    /// <summary>
+    /// Calculates the conjugate of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The conjugate of the quaternion
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Conjugate( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using SIMDType = typename Traits::SIMDType;
+        constexpr SIMDType flipXYZ = { { -1.0f, -1.0f, -1.0f, 1.0f } };
+        return QuaternionSimd<Quaternion<T>>( Traits::Mul( Traits::Load( q1.values ), flipXYZ ) );
+    }
+
+    // Normalize
+
+    /// <summary>
+    /// Normalizes a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The normalized quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Normalize( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        auto v = Length( q1 );
+        return QuaternionSimd<Quaternion<T>>(Traits::Div( q1.simd, v.simd ));
+    }
+
+    /// <summary>
+    /// Normalizes a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The normalized quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Normalize( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using Simd = QuaternionSimd<Quaternion<T>>;
+        auto simd = Simd( Traits::Load( q1.values ) );
+        return Normalize( simd );
+    }
+
+
+    /// <summary>
+    /// Calculates the inverse of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The inverse quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Inverse( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using FloatT = typename Traits::Type;
+        using SIMDType = typename Traits::SIMDType;
+        using Simd = QuaternionSimd<Quaternion<T>>;
+        constexpr SIMDType epsilon = { {static_cast< FloatT >( 1.192092896e-7 ),static_cast< FloatT >( 1.192092896e-7 ),static_cast< FloatT >( 1.192092896e-7 ),static_cast< FloatT >( 1.192092896e-7 )} };
+        constexpr SIMDType zero = { {static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. )} };
+
+        auto l = LengthSquared( q1 );
+        auto conjugate = Conjugate( q1 );
+
+        auto selectZero = Traits::LessOrEqual( l.simd, epsilon );
+
+        auto result = Traits::Divide( conjugate.simd, l.simd );
+
+        return Simd( Traits::Select( result, zero, selectZero ) );
+    }
+
+    /// <summary>
+    /// Calculates the inverse of a quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The quaternion.
+    /// </param>
+    /// <returns>
+    /// The inverse quaternion.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Inverse( const Quaternion<T>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using Simd = QuaternionSimd<Quaternion<T>>;
+        return Inverse( Simd( q1 ) );
+    }
+
+    /// <summary>
+    /// Calculates the natural logarithm of a unit quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion.
+    /// </param>
+    /// <returns>
+    /// The natural logarithm of q1.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Log( const QuaternionSimd<Quaternion<T>>& q1 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using FloatT = typename Traits::Type;
+        using SIMDType = typename Traits::SIMDType;
+        using Simd = QuaternionSimd<Quaternion<T>>;
+        constexpr SIMDType oneMinusEpsilon = { { static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ) } };
+        constexpr SIMDType select1110 = { { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0 } };
+
+        auto qw = Traits::At<3>( q1.simd );
+        auto qv = Traits::Select( select1110, q1.simd, select1110 );
+
+        auto controlW = Traits::InBounds( qw, oneMinusEpsilon );
+
+        auto theta = Traits::ACos( qw );
+        auto sinTheta = Traits::Sin( theta );
+
+        auto s = Traits::Div( theta, sinTheta );
+
+        auto result = Traits::Mul( qv, s );
+        return Simd( Traits::Select( qv, result, controlW ) );
+    }
+
+    /// <summary>
+    /// Calculates the natural logarithm of a unit quaternion.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion.
+    /// </param>
+    /// <returns>
+    /// The natural logarithm of q1.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Log( const Quaternion<T>& q1 ) noexcept
+    {
+        using Simd = QuaternionSimd<Quaternion<T>>;
+        return Log( Simd( q1 ) );
+    }
+
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. Every element of this vector must be set to the same value.
+    /// When the elements of t is 0.0, the function returns q1, and when the elements of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const QuaternionSimd<Quaternion<T>>& q1, const QuaternionSimd<Quaternion<T>>& q2, const typename Vector<T, 4>::Simd& t ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using Simd = QuaternionSimd<Quaternion<T>>;
+        return Simd( Traits::Slerp( q1.simd, q2.simd, t.simd ) );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. Every element of this vector must be set to the same value.
+    /// When the elements of t is 0.0, the function returns q1, and when the elements of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const QuaternionSimd<Quaternion<T>>& q1, const QuaternionSimd<Quaternion<T>>& q2, const Vector<T, 4>& t ) noexcept
+    {
+        return Math::Slerp( q1, q2, t.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. Every element of this vector must be set to the same value.
+    /// When the elements of t is 0.0, the function returns q1, and when the elements of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const QuaternionSimd<Quaternion<T>>& q1, const Quaternion<T>& q2, const typename Vector<T, 4>::Simd& t ) noexcept
+    {
+        return Math::Slerp( q1, q2.ToSimd( ), t );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. Every element of this vector must be set to the same value.
+    /// When the elements of t is 0.0, the function returns q1, and when the elements of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const QuaternionSimd<Quaternion<T>>& q1, const Quaternion<T>& q2, const Vector<T, 4>& t ) noexcept
+    {
+        return Math::Slerp( q1, q2.ToSimd( ), t.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. Every element of this vector must be set to the same value.
+    /// When the elements of t is 0.0, the function returns q1, and when the elements of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const Quaternion<T>& q1, const QuaternionSimd<Quaternion<T>>& q2, const typename Vector<T, 4>::Simd& t ) noexcept
+    {
+        return Math::Slerp( q1.ToSimd( ), q2, t );
+    }
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. Every element of this vector must be set to the same value.
+    /// When the elements of t is 0.0, the function returns q1, and when the elements of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const Quaternion<T>& q1, const QuaternionSimd<Quaternion<T>>& q2, const Vector<T, 4>& t ) noexcept
+    {
+        return Math::Slerp( q1.ToSimd( ), q2, t.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. Every element of this vector must be set to the same value.
+    /// When the elements of t is 0.0, the function returns q1, and when the elements of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const Quaternion<T>& q1, const Quaternion<T>& q2, const typename Vector<T, 4>::Simd& t ) noexcept
+    {
+        return Math::Slerp( q1.ToSimd( ), q2.ToSimd( ), t );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. Every element of this vector must be set to the same value.
+    /// When the elements of t is 0.0, the function returns q1, and when the elements of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const Quaternion<T>& q1, const Quaternion<T>& q2, const Vector<T, 4>& t ) noexcept
+    {
+        return Math::Slerp( q1.ToSimd( ), q2.ToSimd( ), t.ToSimd( ) );
+    }
+
 
 
     template<Internal::SimdType T, Internal::SimdType U>
@@ -9865,20 +11380,20 @@ namespace Harlinn::Common::Core::Math
     constexpr inline auto ScalarAngleBetween( const T& v1, const U& v2 )
     {
         using Traits = typename T::Traits;
-        using TypleType = typename T::TupleType;
-        using FloatT = typename TypleType::value_type;
+        using TupleType = typename T::TupleType;
+        using FloatT = typename TupleType::value_type;
 
         auto dotProduct = Dot( v1, v2);
 
         if ( Traits::First( dotProduct.simd ) < 0 )
         {
-            TypleType s = Sqr( v1 + v2 );
+            TupleType s = Sqr( v1 + v2 );
             auto halfLength = Sqrt( s.x + s.y + s.z ) / static_cast< FloatT >( 2. );
             return Constants<FloatT>::Pi - static_cast< FloatT >( 2. ) * SafeASin( halfLength );
         }
         else
         {
-            TypleType s = Sqr( v2 - v1 );
+            TupleType s = Sqr( v2 - v1 );
             auto halfLength = Sqrt( s.x + s.y + s.z ) / static_cast< FloatT >( 2. );
             return static_cast< FloatT >( 2. ) * SafeASin( halfLength );
         }

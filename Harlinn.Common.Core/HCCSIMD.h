@@ -2050,8 +2050,33 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr UInt32 V6 = 6;
             static constexpr UInt32 V7 = 7;
         };
+
+        struct m128Permute
+        {
+            static constexpr UInt32 X1 = 0;
+            static constexpr UInt32 Y1 = 1;
+            static constexpr UInt32 Z1 = 2;
+            static constexpr UInt32 W1 = 3;
+            static constexpr UInt32 X2 = 4;
+            static constexpr UInt32 Y2 = 5;
+            static constexpr UInt32 Z2 = 6;
+            static constexpr UInt32 W2 = 7;
+
+            static constexpr UInt32 V11 = 0;
+            static constexpr UInt32 V12 = 1;
+            static constexpr UInt32 V13 = 2;
+            static constexpr UInt32 V14 = 3;
+            static constexpr UInt32 V21 = 4;
+            static constexpr UInt32 V22 = 5;
+            static constexpr UInt32 V23 = 6;
+            static constexpr UInt32 V24 = 7;
+        };
+
     public:
         using SelectType = std::conditional_t<UseShortSIMDType, m128Select, m256Select>;
+        using PermuteType = m128Permute;
+
+
 
         static SIMDType Zero( ) noexcept
         {
@@ -3004,6 +3029,240 @@ namespace Harlinn::Common::Core::SIMD
         }
 
         /// <summary>
+        /// Set each bit of the result based on the most significant bit of 
+        /// the corresponding packed single-precision (32-bit) floating-point 
+        /// element in v.
+        /// </summary>
+        /// <param name="v">Elements to test</param>
+        /// <returns>
+        /// Bit mask based on the most significant bit of 
+        /// the corresponding packed single-precision (32-bit) floating-point 
+        /// element in v.
+        /// </returns>
+        static int MoveMask( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_movemask_ps( v );
+            }
+            else
+            {
+                return _mm256_movemask_ps( v );
+            }
+        }
+
+        /// <summary>
+        /// Set each bit of the result based on the most significant bit of 
+        /// the corresponding packed single-precision (32-bit) floating-point 
+        /// element in v.
+        /// </summary>
+        /// <param name="v">Elements to test</param>
+        /// <returns>
+        /// Bit mask based on the most significant bit of 
+        /// the corresponding packed single-precision (32-bit) floating-point 
+        /// element in v.
+        /// </returns>
+        static int MoveMask( SIMDIntegerType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_movemask_ps( _mm_castsi128_ps( v ) );
+            }
+            else
+            {
+                return _mm256_movemask_ps( _mm256_castsi256_ps( v ) );
+            }
+        }
+
+        private:
+            // Handles permutes that cannot be performed using a single _mm_shuffle_ps.
+            template<UInt32 shuffle, bool v2x, bool v2y, bool v2z, bool v2w> 
+            struct PermuteImpl
+            {
+                static SIMDType Permute( SIMDType v1, SIMDType v2 ) noexcept
+                {
+                    constexpr SIMDType selectMask =
+                    { {
+                            v2x ? 0xFFFFFFFF : 0,
+                            v2y ? 0xFFFFFFFF : 0,
+                            v2z ? 0xFFFFFFFF : 0,
+                            v2w ? 0xFFFFFFFF : 0,
+                    } };
+
+                    auto shuffled1 = _mm_shuffle_ps( v1, v1, shuffle );
+                    auto shuffled2 = _mm_shuffle_ps( v2, v2, shuffle );
+
+                    auto masked1 = _mm_andnot_ps( selectMask, shuffled1 );
+                    auto masked2 = _mm_and_ps( selectMask, shuffled2 );
+
+                    return _mm_or_ps( masked1, masked2 );
+                }
+            };
+
+            // Handles permutes that only read from the first vector.
+            template<UInt32 shuffle>
+            struct PermuteImpl<shuffle, false, false, false, false>
+            {
+                static SIMDType Permute( SIMDType v1, SIMDType ) noexcept
+                { 
+                    return _mm_shuffle_ps( v1, v1, shuffle );
+                }
+            };
+
+            // Handles permutes that only read from the second vector.
+            template<UInt32 shuffle>
+            struct PermuteImpl<shuffle, true, true, true, true>
+            {
+                static SIMDType Permute( SIMDType, SIMDType  v2 ) noexcept
+                { 
+                    return _mm_shuffle_ps( v2, v2, shuffle );
+                }
+            };
+
+            // Handles permutes that read XY from the first vector, ZW from the second.
+            template<UInt32 shuffle>
+            struct PermuteImpl<shuffle, false, false, true, true>
+            {
+                static SIMDType Permute( SIMDType v1, SIMDType v2 ) noexcept
+                { 
+                    return _mm_shuffle_ps( v1, v2, shuffle );
+                }
+            };
+
+            // Handles permutes that read XY from the second vector, ZW from the first.
+            template<UInt32 shuffle>
+            struct PermuteImpl<shuffle, true, true, false, false>
+            {
+                static SIMDType Permute( SIMDType v1, SIMDType v2 ) noexcept
+                { 
+                    return _mm_shuffle_ps( v2, v1, shuffle );
+                }
+            };
+        public:
+            template<UInt32 X, UInt32 Y, UInt32 Z, UInt32 W>
+            inline SIMDType Permute( SIMDType v1, SIMDType v2 ) noexcept
+            {
+                constexpr UInt32 shuffle = _MM_SHUFFLE( W & 3, Z & 3, Y & 3, X & 3 );
+
+                constexpr bool v2x = X > 3;
+                constexpr bool v2y = Y > 3;
+                constexpr bool v2z = Z > 3;
+                constexpr bool v2w = W > 3;
+
+                return PermuteImpl<shuffle, v2x, v2y, v2z, v2w>::Permute( v1, v2 );
+            }
+
+            // Special-case permute templates
+            template<> 
+            inline constexpr SIMDType Permute<0, 1, 2, 3>( SIMDType v1, SIMDType ) noexcept 
+            { 
+                return v1; 
+            }
+            template<> 
+            inline constexpr SIMDType Permute<4, 5, 6, 7>( SIMDType, SIMDType v2 ) noexcept 
+            { 
+                return v2; 
+            }
+
+
+            template<> 
+            inline SIMDType Permute<0, 1, 4, 5>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_movelh_ps( v1, v2 ); 
+            }
+            template<> 
+            inline SIMDType Permute<6, 7, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_movehl_ps( v1, v2 ); 
+            }
+            template<> 
+            inline SIMDType Permute<0, 4, 1, 5>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_unpacklo_ps( v1, v2 ); 
+            }
+            template<> 
+            inline SIMDType Permute<2, 6, 3, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_unpackhi_ps( v1, v2 ); 
+            }
+            template<> 
+            inline SIMDType Permute<2, 3, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_castpd_ps( _mm_unpackhi_pd( _mm_castps_pd( v1 ), _mm_castps_pd( v2 ) ) ); 
+            }
+
+            template<> 
+            inline SIMDType Permute<4, 1, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x1 ); 
+            }
+            template<> 
+            inline SIMDType Permute<0, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x2 ); 
+            }
+            template<> 
+            inline SIMDType Permute<4, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x3 ); 
+            }
+            template<> 
+            inline SIMDType Permute<0, 1, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x4 ); 
+            }
+            template<> 
+            inline SIMDType Permute<4, 1, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x5 ); 
+            }
+            template<> 
+            inline SIMDType Permute<0, 5, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x6 ); 
+            }
+            template<> 
+            inline SIMDType Permute<4, 5, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x7 ); 
+            }
+            template<> 
+            inline SIMDType Permute<0, 1, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x8 ); 
+            }
+            template<> 
+            inline SIMDType Permute<4, 1, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0x9 ); 
+            }
+            template<> 
+            inline SIMDType Permute<0, 5, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0xA ); 
+            }
+            template<> 
+            inline SIMDType Permute<4, 5, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0xB ); 
+            }
+            template<> 
+            inline SIMDType Permute<0, 1, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0xC ); 
+            }
+            template<> 
+            inline SIMDType Permute<4, 1, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0xD ); 
+            }
+            template<> 
+            inline SIMDType Permute<0, 5, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            { 
+                return _mm_blend_ps( v1, v2, 0xE ); 
+            }
+
+        /// <summary>
         /// Defines a control vector for use with Select.
         /// </summary>
         /// <param name="index0">
@@ -3432,6 +3691,26 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static SIMDType InBounds( SIMDType v, SIMDType bounds ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                SIMDType minusOne = { { -1.f},{ -1.f},{ -1.f},{ -1.f} };
+                auto temp1 = LessOrEqual( v, bounds );
+                auto temp2 = Mul( bounds, minusOne );
+                temp2 = LessOrEqual( temp2, v );
+                return And( temp1, temp2 );
+            }
+            else
+            {
+                SIMDType minusOne = { { -1.f},{ -1.f},{ -1.f},{ -1.f}, { -1.f},{ -1.f},{ -1.f},{ -1.f} };
+                auto temp1 = LessOrEqual( v, bounds );
+                auto temp2 = Mul( bounds, minusOne );
+                temp2 = LessOrEqual( temp2, v );
+                return And( temp1, temp2 );
+            }
+        }
+
         static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -3506,6 +3785,19 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_cos_ps( v );
             }
         }
+
+        static SIMDType SinCos( SIMDType v, SIMDType* cosines ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sincos_ps( cosines, v );
+            }
+            else
+            {
+                return _mm256_sincos_ps( cosines, v );
+            }
+        }
+
 
         static SIMDType Tan( SIMDType v ) noexcept
         {
@@ -3852,6 +4144,30 @@ namespace Harlinn::Common::Core::SIMD
             {
                 return _mm256_cmp_ps( v1, v2, _CMP_EQ_OQ );
             }
+        }
+
+        /// <summary>
+        /// Determines whether the elements of v1 are nearly equal to
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is nearly equal to the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType NearEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
+        {
+            auto delta = Sub( v1, v2 );
+            auto temp = Zero( );
+            temp = Sub( temp, delta );
+            temp = Max( temp, delta );
+            return LessOrEqual( temp, epsilon );
         }
 
 
@@ -4395,8 +4711,104 @@ namespace Harlinn::Common::Core::SIMD
                     return _mm_sub_ps( rmm1, rmm2 );
                 }
             }
-
         }
+
+        /// <summary>
+        /// Computes a vector perpendicular to the argument vector.
+        /// </summary>
+        /// <param name="v">
+        /// The argument vector.
+        /// </param>
+        /// <returns>
+        /// The vector orthogonal to <c>v</c>.
+        /// </returns>
+        inline SIMDType Orthogonal( const SIMDType v ) noexcept
+        {
+            using FloatT = Type;
+
+            if constexpr ( Size == 2 )
+            {
+                constexpr SIMDType flipX = { { static_cast< FloatT >( -1.0 ), static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ) } };
+                auto result = Shuffle<3, 2, 0, 1>( v, v );
+                return Mul( result, flipX );
+            }
+            else if constexpr ( Size == 3 )
+            {
+                constexpr SIMDType zero = { { static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. ),static_cast< FloatT >( 0. )} };
+
+                auto z = At<2>( v );
+                auto yzyy = Swizzle<SelectType::Y, SelectType::Z, SelectType::Y, SelectType::Y>( v );
+
+                auto negativeV = Sub( zero, v );
+
+                auto zIsNegative = Less( z, zero );
+                auto yzyyIsNegative = Less( yzyy, zero );
+
+                auto s = Add( yzyy, z );
+                auto d = Sub( yzyy, z );
+
+                auto select = SameValue( zIsNegative, yzyyIsNegative );
+
+                auto r0 = Permute<PermuteType::X1, PermuteType::X0, PermuteType::X0, PermuteType::X0>( negativeV, s );
+                auto r1 = Permute<PermuteType::X1, PermuteType::X0, PermuteType::X0, PermuteType::X0>( v, d );
+
+                return Select( r1, r0, select );
+            }
+            else if constexpr ( Size == 4 )
+            {
+                constexpr SIMDType flipZW = { { { static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ), static_cast< FloatT >( -1.0 ), static_cast< FloatT >( -1.0 ) } } };
+                auto result = Shuffle<1, 0, 3, 2>( v, v );
+                return Simd( Mul( result, flipZW ) );
+            }
+        }
+
+        SIMDType Slerp( SIMDType q1, SIMDType q2, SIMDType t ) noexcept
+        {
+            using FloatT = Type;
+            constexpr SIMDType One = { { static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ) } };
+            constexpr SIMDType OneX = { { static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 0.0 ), static_cast< FloatT >( 0.0 ), static_cast< FloatT >( 0.0 ) } };
+            constexpr SIMDType MinusOne = { { static_cast< FloatT >( -1.0 ), static_cast< FloatT >( -1.0 ), static_cast< FloatT >( -1.0 ), static_cast< FloatT >( -1.0 ) } };
+            constexpr SIMDType OneMinusEpsilon = { { static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ) } };
+            constexpr SIMDType SignMask2 = { { 0x80000000, 0x00000000, 0x00000000, 0x00000000 } };
+            constexpr SIMDType Zero = { { 0x00000000, 0x00000000, 0x00000000, 0x00000000 } };
+            constexpr SIMDType MaskXY = { { 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000 } };
+
+            auto CosOmega = Dot( q1, q2 );
+
+            auto Control = Less( CosOmega, Zero );
+            auto Sign = Select( One, MinusOne, Control );
+
+            CosOmega = Mul( CosOmega, Sign );
+
+            Control = Less( CosOmega, OneMinusEpsilon );
+
+            auto SinOmega = Mul( CosOmega, CosOmega );
+            SinOmega = Sub( One, SinOmega );
+            SinOmega = Sqrt( SinOmega );
+
+            auto Omega = ATan2( SinOmega, CosOmega );
+
+            auto V01 = Shuffle<2, 3, 0, 1>( t, t );
+            V01 = And( V01, MaskXY );
+            V01 = Xor( V01, SignMask2 );
+            V01 = Add( OneX, V01 );
+
+            auto S0 = Mul( V01, Omega );
+            S0 = Sin( S0 );
+            S0 = Div( S0, SinOmega );
+
+            S0 = Select( V01, S0, Control );
+
+            auto S1 = At<1>( S0 );
+            S0 = At<0>( S0 );
+
+            S1 = Mul( S1, Sign );
+            auto Result = Mul( q1, S0 );
+            S1 = Mul( S1, q1 );
+            Result = Add( Result, S1 );
+            return Result;
+        }
+
     };
 
 
@@ -5379,6 +5791,18 @@ namespace Harlinn::Common::Core::SIMD
             else
             {
                 return _mm256_cos_pd( v );
+            }
+        }
+
+        static SIMDType SinCos( SIMDType v, SIMDType* cosines ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_sincos_pd( cosines, v );
+            }
+            else
+            {
+                return _mm256_sincos_pd( cosines, v );
             }
         }
 
