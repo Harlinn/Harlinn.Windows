@@ -3083,10 +3083,10 @@ namespace Harlinn::Common::Core::SIMD
                 {
                     constexpr SIMDType selectMask =
                     { {
-                            v2x ? 0xFFFFFFFF : 0,
-                            v2y ? 0xFFFFFFFF : 0,
-                            v2z ? 0xFFFFFFFF : 0,
-                            v2w ? 0xFFFFFFFF : 0,
+                            v2x ? std::bit_cast<Type>( 0xFFFFFFFF ) : static_cast<Type>( 0 ),
+                            v2y ? std::bit_cast<Type>( 0xFFFFFFFF ) : static_cast<Type>( 0 ),
+                            v2z ? std::bit_cast<Type>( 0xFFFFFFFF ) : static_cast<Type>( 0 ),
+                            v2w ? std::bit_cast<Type>( 0xFFFFFFFF ) : static_cast<Type>( 0 )
                     } };
 
                     auto shuffled1 = _mm_shuffle_ps( v1, v1, shuffle );
@@ -3140,7 +3140,7 @@ namespace Harlinn::Common::Core::SIMD
             };
         public:
             template<UInt32 X, UInt32 Y, UInt32 Z, UInt32 W>
-            inline SIMDType Permute( SIMDType v1, SIMDType v2 ) noexcept
+            static inline SIMDType Permute( SIMDType v1, SIMDType v2 ) noexcept
             {
                 constexpr UInt32 shuffle = _MM_SHUFFLE( W & 3, Z & 3, Y & 3, X & 3 );
 
@@ -3154,110 +3154,110 @@ namespace Harlinn::Common::Core::SIMD
 
             // Special-case permute templates
             template<> 
-            inline constexpr SIMDType Permute<0, 1, 2, 3>( SIMDType v1, SIMDType ) noexcept 
+            static inline constexpr SIMDType Permute<0, 1, 2, 3>( SIMDType v1, SIMDType ) noexcept
             { 
                 return v1; 
             }
             template<> 
-            inline constexpr SIMDType Permute<4, 5, 6, 7>( SIMDType, SIMDType v2 ) noexcept 
+            static inline constexpr SIMDType Permute<4, 5, 6, 7>( SIMDType, SIMDType v2 ) noexcept
             { 
                 return v2; 
             }
 
 
             template<> 
-            inline SIMDType Permute<0, 1, 4, 5>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 1, 4, 5>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_movelh_ps( v1, v2 ); 
             }
             template<> 
-            inline SIMDType Permute<6, 7, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<6, 7, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_movehl_ps( v1, v2 ); 
             }
             template<> 
-            inline SIMDType Permute<0, 4, 1, 5>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 4, 1, 5>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_unpacklo_ps( v1, v2 ); 
             }
             template<> 
-            inline SIMDType Permute<2, 6, 3, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<2, 6, 3, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_unpackhi_ps( v1, v2 ); 
             }
             template<> 
-            inline SIMDType Permute<2, 3, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<2, 3, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_castpd_ps( _mm_unpackhi_pd( _mm_castps_pd( v1 ), _mm_castps_pd( v2 ) ) ); 
             }
 
             template<> 
-            inline SIMDType Permute<4, 1, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<4, 1, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x1 ); 
             }
             template<> 
-            inline SIMDType Permute<0, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x2 ); 
             }
             template<> 
-            inline SIMDType Permute<4, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<4, 5, 2, 3>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x3 ); 
             }
             template<> 
-            inline SIMDType Permute<0, 1, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 1, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x4 ); 
             }
             template<> 
-            inline SIMDType Permute<4, 1, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<4, 1, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x5 ); 
             }
             template<> 
-            inline SIMDType Permute<0, 5, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 5, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x6 ); 
             }
             template<> 
-            inline SIMDType Permute<4, 5, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<4, 5, 6, 3>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x7 ); 
             }
             template<> 
-            inline SIMDType Permute<0, 1, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 1, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x8 ); 
             }
             template<> 
-            inline SIMDType Permute<4, 1, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<4, 1, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0x9 ); 
             }
             template<> 
-            inline SIMDType Permute<0, 5, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 5, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0xA ); 
             }
             template<> 
-            inline SIMDType Permute<4, 5, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<4, 5, 2, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0xB ); 
             }
             template<> 
-            inline SIMDType Permute<0, 1, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 1, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0xC ); 
             }
             template<> 
-            inline SIMDType Permute<4, 1, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<4, 1, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0xD ); 
             }
             template<> 
-            inline SIMDType Permute<0, 5, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept 
+            static inline SIMDType Permute<0, 5, 6, 7>( SIMDType v1, SIMDType v2 ) noexcept
             { 
                 return _mm_blend_ps( v1, v2, 0xE ); 
             }
@@ -4722,7 +4722,7 @@ namespace Harlinn::Common::Core::SIMD
         /// <returns>
         /// The vector orthogonal to <c>v</c>.
         /// </returns>
-        inline SIMDType Orthogonal( const SIMDType v ) noexcept
+        static inline SIMDType Orthogonal( const SIMDType v ) noexcept
         {
             using FloatT = Type;
 
@@ -4762,7 +4762,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        SIMDType Slerp( SIMDType q1, SIMDType q2, SIMDType t ) noexcept
+        static SIMDType Slerp( SIMDType q1, SIMDType q2, SIMDType t ) noexcept
         {
             using FloatT = Type;
             constexpr SIMDType One = { { static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 1.0 ) } };
@@ -4808,6 +4808,109 @@ namespace Harlinn::Common::Core::SIMD
             Result = Add( Result, S1 );
             return Result;
         }
+
+        static SIMDType TransformVector( SIMDType v, SIMDType mr1, SIMDType mr2, SIMDType mr3 )
+        {
+            if constexpr ( Size == 2 )
+            {
+                auto result = At<1>( v ); 
+                result = FMAdd( result, mr2, mr3 );
+                auto temp = At<0>( v );
+                return FMAdd( temp, mr1, result );
+            }
+        }
+
+        static SIMDType TransformVector( SIMDType v, SIMDType mr1, SIMDType mr2, SIMDType mr3, SIMDType mr4 )
+        {
+            if constexpr ( Size == 3 )
+            {
+                // Z
+                auto result = At<2>( v );
+                result = FMAdd( result, mr3, mr4 );
+                // Y
+                auto temp = At<1>( v );
+                result = FMAdd( temp, mr2, result );
+                // X
+                temp = At<0>( v );
+                return FMAdd( temp, mr1, result );
+            }
+            else if constexpr ( Size == 4 )
+            {
+                // W
+                auto result = At<3>( v ); 
+                result = _mm_mul_ps( result, mr4 );
+                // Z
+                auto temp = At<2>( v );
+                result = FMAdd( temp, mr3, result );
+                // Y
+                temp = At<1>( v );
+                result = FMAdd( temp, mr2, result );
+                // X
+                temp = At<0>( v );
+                result = FMAdd( temp, mr1, result );
+                return result;
+            }
+        }
+
+        // 2D
+        static SIMDType TransformPoint( SIMDType p, SIMDType mr1, SIMDType mr2, SIMDType mr3 )
+        {
+            auto y = At<1>( p );
+            auto result = FMAdd( y, mr2, mr3 );
+
+            auto x = At<0>( p );
+            result = FMAdd( x, mr1, result );
+
+            auto w = At<2>( result );
+            return Div( result, w );
+        }
+
+        static SIMDType TransformPoint( SIMDType p, SIMDType mr1, SIMDType mr2, SIMDType mr3, SIMDType mr4 )
+        {
+            auto z = At<2>( p );
+            auto result = FMAdd( z, mr3, mr4 );
+
+            auto y = At<1>( p );
+            result = FMAdd( y, mr2, result );
+
+            auto x = At<0>( p );
+            result = FMAdd( x, mr1, result );
+
+            auto w = At<3>( result );
+            return Div( result, w );
+        }
+
+
+        static SIMDType TransformNormal( SIMDType n, SIMDType matrix )
+        {
+            // Y
+            auto result = At<1>( n );
+            result = Mul( result, Swizzle<3, 2, 3, 2>( matrix ) );
+            // X
+            auto temp = At<0>( n );
+            return FMAdd( temp, Swizzle<1, 0, 1, 0>( matrix ), result );
+        }
+
+        static SIMDType TransformNormal( SIMDType n, SIMDType mr1, SIMDType mr2 )
+        {
+            // Y
+            auto result = At<1>( n ); 
+            result = Mul( result, mr2 );
+            // X
+            auto temp = At<0>( n ); 
+            return FMAdd( temp, mr1, result );
+        }
+
+        static SIMDType TransformNormal( SIMDType n, SIMDType mr1, SIMDType mr2, SIMDType mr3 )
+        {
+            auto z = At<2>( n );
+            auto result = Mul( z, mr3 );
+            auto y = At<1>( n );
+            result = FMAdd( y, mr2, result );
+            auto x = At<0>( n ); 
+            return FMAdd( x, mr1, result );
+        }
+
 
     };
 

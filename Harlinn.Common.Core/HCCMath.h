@@ -23,6 +23,8 @@
 #include "Internal/Math/sqrt.h"
 #include "Internal/Math/trigonometry.h"
 
+#include "Internal/Math/constexpr_math.h"
+
 namespace Harlinn::Common::Core::Math
 {
     template<typename ArthmeticT>

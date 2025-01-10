@@ -344,6 +344,16 @@ static void BenchmarkDoubleInternalSqrt( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleInternalSqrt );
 
+static void BenchmarkDoubleInternalOpenLibMSqrt( benchmark::State& state )
+{
+    DoubleGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::OpenLibM::sqrt( DoubleGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleInternalOpenLibMSqrt );
+
 static void BenchmarkDoubleSqrt( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -384,6 +394,16 @@ static void BenchmarkFloatInternalSqrt( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatInternalSqrt );
+
+static void BenchmarkFloatInternalOpenLibMSqrt( benchmark::State& state )
+{
+    FloatGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::OpenLibM::sqrtf( FloatGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatInternalOpenLibMSqrt );
 
 static void BenchmarkFloatSqrt( benchmark::State& state )
 {
@@ -1757,6 +1777,16 @@ static void BenchmarkDoubleInternalSin( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleInternalSin );
 
+static void BenchmarkDoubleInternalOpenLibMSin( benchmark::State& state )
+{
+    DoubleAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::OpenLibM::sin( DoubleAngleInRadiansGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleInternalOpenLibMSin );
+
 static void BenchmarkDoubleSin( benchmark::State& state )
 {
     DoubleAngleInRadiansGenerator.Reset( );
@@ -1786,6 +1816,16 @@ static void BenchmarkFloatInternalSin( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatInternalSin );
+
+static void BenchmarkFloatInternalOpenLibMSin( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::OpenLibM::sinf( FloatAngleInRadiansGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatInternalOpenLibMSin );
 
 static void BenchmarkFloatSin( benchmark::State& state )
 {
@@ -1817,6 +1857,16 @@ static void BenchmarkDoubleInternalCos( benchmark::State& state )
 }
 BENCHMARK( BenchmarkDoubleInternalCos );
 
+static void BenchmarkDoubleInternalOpenLibMCos( benchmark::State& state )
+{
+    DoubleAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::OpenLibM::cos( DoubleAngleInRadiansGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleInternalOpenLibMCos );
+
 static void BenchmarkDoubleCos( benchmark::State& state )
 {
     DoubleAngleInRadiansGenerator.Reset( );
@@ -1846,6 +1896,16 @@ static void BenchmarkFloatInternalCos( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkFloatInternalCos );
+
+static void BenchmarkFloatInternalOpenLibMCos( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::Internal::OpenLibM::cosf( FloatAngleInRadiansGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatInternalOpenLibMCos );
 
 static void BenchmarkFloatCos( benchmark::State& state )
 {

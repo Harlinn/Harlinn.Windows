@@ -9813,6 +9813,10 @@ namespace Harlinn::Common::Core::Math
     using Vector3f = Vector<float,3>;
     using Vector3i = Vector<int, 3>;
 
+    
+
+
+
     namespace Internal
     {
         struct PointBase
@@ -10044,44 +10048,6 @@ namespace Harlinn::Common::Core::Math
         constexpr bool IsCompatibleQuaternion =
             std::is_same_v<typename T1::Traits, typename T2::Traits>;
 
-        /*
-        template<typename TraitsT>
-        inline typename TraitsT::SIMDType QuaternionMultiply( typename TraitsT::SIMDType q1, typename TraitsT::SIMDType q2 )
-        {
-            using Traits = TraitsT;
-            using SIMDType = typename Traits::SIMDType;
-            using FloatT = typename Traits::Type;
-            using Constants = Constants<FloatT>;
-            constexpr Traits::SIMDType controlWZYX = { { Constants::One, Constants::MinusOne, Constants::One, Constants::MinusOne } };
-            constexpr Traits::SIMDType controlZWXY = { { Constants::One, Constants::One, Constants::MinusOne, Constants::MinusOne } };
-            constexpr Traits::SIMDType controlYXWZ = { { Constants::MinusOne, Constants::One, Constants::One, Constants::MinusOne } };
-
-            auto q2X = Traits::At<0>( q2 );
-            auto q2Y = Traits::At<1>( q2 );
-            auto q2Z = Traits::At<2>( q2 );
-            auto result = Traits::At<3>( q2 );
-
-            result = Traits::Mul( result, q1 );
-
-            auto q1Swizzle = Traits::Swizzle<0,1,2,3>( q1 );
-
-            q2X = Traits::Mul( q2X, q1Swizzle );
-            q1Swizzle = Traits::Swizzle<2,3,0,1>( q1Swizzle );
-
-            result = Traits::FMAdd( q2X, controlWZYX, result );
-
-            q2Y = Traits::Mul( q2Y, q1Swizzle );
-            q1Swizzle = Traits::Swizzle<0, 1, 2, 3>( q1Swizzle );
-
-            q2Y = Traits::Mul( q2Y, controlZWXY );
-
-            q2Z = Traits::Mul( q2Z, q1Swizzle );
-
-            q2Y = Traits::FMAdd( q2Z, controlYXWZ, q2Y );
-            result = Traits::Add( result, q2Y );
-            return result;
-        }
-        */
     }
 
 
@@ -12615,8 +12581,238 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    inline SquareMatrix<float, 4>::Simd Translation( float offsetX, float offsetY, float offsetZ )
+    {
+        using Simd = SquareMatrix<float, 4>::Simd;
+        using Traits = Simd::Traits;
+        using SIMDType = Traits::SIMDType;
+        constexpr SIMDType r1 = { { 1.0f, 0.0f, 0.0f, 0.0f } };
+        constexpr SIMDType r2 = { { 0.0f, 1.0f, 0.0f, 0.0f } };
+        constexpr SIMDType r3 = { { 0.0f, 0.0f, 1.0f, 0.0f } };
+
+        Simd result;
+        result.simd[ 0 ] = r1;
+        result.simd[ 1 ] = r2;
+        result.simd[ 2 ] = r3;
+        result.simd[ 3 ] = Traits::Set( 1.f, offsetZ, offsetY, offsetX );
+        return result;
+    }
+
+    inline SquareMatrix<float, 3>::Simd Translation( float offsetX, float offsetY )
+    {
+        using Simd = SquareMatrix<float, 3>::Simd;
+        using Traits = Simd::Traits;
+        using SIMDType = Traits::SIMDType;
+        constexpr SIMDType r1 = { { 1.0f, 0.0f, 0.0f, 0.0f } };
+        constexpr SIMDType r2 = { { 0.0f, 1.0f, 0.0f, 0.0f } };
+
+        Simd result;
+        result.simd[ 0 ] = r1;
+        result.simd[ 1 ] = r2;
+        result.simd[ 2 ] = Traits::Set( 1.f, offsetY, offsetX );
+        return result;
+    }
+
+
+    inline SquareMatrix<float, 4>::Simd Scaling( float scaleX, float scaleY, float scaleZ )
+    {
+        using Simd = SquareMatrix<float, 4>::Simd;
+        using Traits = Simd::Traits;
+        using SIMDType = Traits::SIMDType;
+
+        constexpr SIMDType r4 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+
+        Simd result;
+
+        result.simd[ 0 ] = Traits::Set( scaleX );
+        result.simd[ 1 ] = Traits::Set( scaleY, 0 );
+        result.simd[ 2 ] = Traits::Set( scaleZ, 0, 0 );
+        result.simd[ 3 ] = r4;
+        return result;
+    }
+
+    template<Internal::SimdType S>
+        requires ( S::Size > 2 )
+    inline SquareMatrix<float, 4>::Simd Scaling( const S& v ) noexcept
+    {
+        using SourceTraits = typename S::Traits;
+        using MatrixSimd = SquareMatrix<float, 4>::Simd;
+        using SIMDType = typename SourceTraits::SIMDType;
+
+        constexpr SIMDType xMask = { {0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000} };
+        constexpr SIMDType yMask = { {0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000} };
+        constexpr SIMDType zMask = { {0x00000000, 0x00000000, 0xFFFFFFFF, 0x00000000} };
+        constexpr SIMDType r4 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+
+        MatrixSimd result;
+
+        result.simd[ 0 ] = SourceTraits::And( v, xMask );
+        result.simd[ 1 ] = SourceTraits::And( v, yMask );
+        result.simd[ 2 ] = SourceTraits::And( v, zMask );
+        result.simd[ 3 ] = r4;
+        return result;
+    }
+
+    template<Internal::TupleType S>
+        requires ( S::Size > 2 )
+    inline SquareMatrix<float, 4>::Simd Scaling( const S& v ) noexcept
+    {
+        using SourceTraits = typename S::Traits;
+        using MatrixSimd = SquareMatrix<float, 4>::Simd;
+        using SIMDType = typename SourceTraits::SIMDType;
+
+        constexpr SIMDType r4 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+
+        MatrixSimd result;
+
+        result.simd[ 0 ] = SourceTraits::Set( v.x );
+        result.simd[ 1 ] = SourceTraits::Set( v.y, 0 );
+        result.simd[ 2 ] = SourceTraits::Set( v.z, 0, 0 );
+        result.simd[ 3 ] = r4;
+        return result;
+
+    }
+
+    inline SquareMatrix<float, 3>::Simd Scaling( float scaleX, float scaleY )
+    {
+        using Simd = SquareMatrix<float, 3>::Simd;
+        using Traits = Simd::Traits;
+        using SIMDType = Traits::SIMDType;
+
+        constexpr SIMDType r3 = { { 0.0f, 0.0f, 1.0f, 0.0f } };
+
+        Simd result;
+
+        result.simd[ 0 ] = Traits::Set( scaleX );
+        result.simd[ 1 ] = Traits::Set( scaleY, 0 );
+        result.simd[ 3 ] = r3;
+        return result;
+    }
+
+    /// <summary>
+    /// Rotates about y-axis, then x-axis, then z-axis
+    /// </summary>
+    /// <typeparam name="S"></typeparam>
+    /// <param name="v"></param>
+    /// <returns></returns>
+    template<Internal::SimdType S>
+        requires (S::Size > 2)
+    inline SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
+    {
+        using Simd = SquareMatrix<float, 4>::Simd;
+        using Traits = Simd::Traits;
+        using SIMDType = Traits::SIMDType;
+        using P = Traits::PermuteType;
+
+        constexpr SIMDType sign = { { 1.0f, -1.0f, -1.0f, 1.0f } };
+        constexpr SIMDType r4 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+        constexpr SIMDType zero = { { 0.0f, 0.0f, 0.0f, 0.0f } };
+        constexpr SIMDType columnSelect = { { std::bit_cast<float>( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), 0 } };
+
+        SIMDType cosines;
+        auto sines = Traits::SinCos( v.simd, &cosines );
+
+        auto p0 = Traits::Permute<P::X2, P::Z1, P::Z2, P::X2>( sines, cosines );
+        auto p1 = Traits::Permute<P::Z2, P::Z1, P::Z2, P::Z1>( sines, cosines );
+        auto p2 = Traits::Permute<P::Z1, P::Z2, P::Z1, P::Z2>( sines, cosines );
+        auto p3 = Traits::Permute<P::Y1, P::Y1, P::Y2, P::Y2>( sines, cosines );
+
+        auto y0 = Traits::Permute<P::Y1, P::X2, P::X2, P::Y2>( sines, cosines );
+        auto y1 = Traits::Permute<P::Y2, P::Y2, P::Y1, P::Y1>( sines, cosines );
+        auto y2 = Traits::At<0>( sines );
+
+        auto ns = Traits::Negate( sines );
+
+        
+        auto q1 = Traits::Mul( p1, sign );
+        q1 = Traits::Mul( q1, y1 );
+        auto q2 = Traits::Mul( p2, y2 );
+        q2 = Traits::FMAdd( q2, p3, q1 );
+
+        auto q0 = Traits::Mul( p0, y0 );
+
+        auto v0 = Traits::Permute<P::X2, P::Y1, P::Z2, P::W1>( q0, q2 );
+        auto v1 = Traits::Permute<P::Y2, P::Z1, P::W2, P::W1>( q0, q2 );
+        auto v2 = Traits::Permute<P::X1, P::X2, P::W1, P::W1>( q0, ns );
+
+        Simd result;
+        result.simd[ 0 ] = Traits::Select( zero, v0, columnSelect );
+        result.simd[ 1 ] = Traits::Select( zero, v1, columnSelect );
+        result.simd[ 2 ] = Traits::Select( zero, v2, columnSelect );
+        result.simd[ 3 ] = r4;
+        return result;
+    }
+
+    template<Internal::TupleType S>
+        requires ( S::Size > 2 )
+    inline SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
+    {
+        return Rotation( v.ToSimd( ) );
+    }
+
+    inline SquareMatrix<float, 4>::Simd Rotation( float xAxisRotation, float yAxisRotation, float zAxisRotation ) noexcept
+    {
+        using Simd = Vector<float, 3>::Simd;
+        using Traits = Simd::Traits;
+        return Rotation( Simd( Traits::Set( zAxisRotation, yAxisRotation, xAxisRotation ) ) );
+    }
+
+
+
+
+    /// <summary>
+    /// Transforms a 2D vector by a matrix
+    /// </summary>
+    /// <param name="v">
+    /// </param>
+    /// <param name="matrix">
+    /// </param>
+    /// <returns></returns>
+    inline Vector<float, 2>::Simd Transform( const Vector<float, 2>::Simd& v, const SquareMatrix<float, 3>::Simd& matrix )
+    {
+        using Traits = Vector<float, 2>::Traits;
+        using Simd = Vector<float, 2>::Simd;
+        return Simd( Traits::TransformVector( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
+    }
+
+    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        using Traits = Vector<float, 3>::Traits;
+        using Simd = Vector<float, 3>::Simd;
+        return Simd( Traits::TransformVector( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) );
+    }
+    inline Vector<float, 4>::Simd Transform( const Vector<float, 4>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        using Traits = Vector<float, 4>::Traits;
+        using Simd = Vector<float, 4>::Simd;
+        return Simd( Traits::TransformVector( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) );
+    }
+
+
+    inline Point2f::Simd Transform( const Point2f::Simd& v, const SquareMatrix<float, 3>::Simd& matrix )
+    {
+        using Traits = SquareMatrix<float, 3>::Traits;
+        using Simd = Point2f::Simd;
+        return Simd( Traits::TransformPoint( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
+    }
+    inline Point3f::Simd Transform( const Point3f::Simd& v, const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        using Traits = SquareMatrix<float, 4>::Traits;
+        using Simd = Point3f::Simd;
+        return Simd( Traits::TransformPoint( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) );
+    }
+
+    inline Normal3f::Simd Transform( const Normal3f::Simd& v, const SquareMatrix<float, 3>::Simd& matrix )
+    {
+        using Traits = SquareMatrix<float, 3>::Traits;
+        using Simd = Normal3f::Simd;
+        return Simd( Traits::TransformNormal( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
+    }
+
+
+
     template<typename T>
-    class Transform
+    class Transformation
     {
     public:
         using MatrixType = SquareMatrix<T, 4>;
@@ -12625,8 +12821,8 @@ namespace Harlinn::Common::Core::Math
         MatrixType matrix_;
         MatrixType inverseMatrix_;
     public:
-        Transform( ) = default;
-        Transform(const MatrixType& matrix, typename Vector<value_type,4>::Simd determinant )
+        Transformation( ) = default;
+        Transformation(const MatrixType& matrix, typename Vector<value_type,4>::Simd determinant )
             : matrix_( matrix ), inverseMatrix_(Inverse( matrix, &determinant ))
         {
             if ( !determinant.x )
@@ -12642,11 +12838,11 @@ namespace Harlinn::Common::Core::Math
             }
         }
 
-        Transform( const value_type mat[ 4 ][ 4 ] )
-            : Transform( MatrixType( mat ) )
+        Transformation( const value_type mat[ 4 ][ 4 ] )
+            : Transformation( MatrixType( mat ) )
         { }
 
-        Transform( const MatrixType& matrix, const MatrixType& inverseMatrix )
+        Transformation( const MatrixType& matrix, const MatrixType& inverseMatrix )
             : matrix_( matrix ), inverseMatrix_( inverseMatrix ) 
         { }
 
@@ -12658,12 +12854,12 @@ namespace Harlinn::Common::Core::Math
         {
             return inverseMatrix_;
         }
-        bool operator==( const Transform& t ) const 
+        bool operator==( const Transformation& t ) const
         { 
             return t.matrix_ == matrix_;
         }
         
-        bool operator!=( const Transform& t ) const 
+        bool operator!=( const Transformation& t ) const
         { 
             return t.matrix_ != matrix_;
         }

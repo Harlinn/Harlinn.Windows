@@ -426,6 +426,45 @@
     <ClInclude Include="Internal\Math\trigonometry.h">
       <Filter>Header Files\Internal\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\Math\openlibm.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\openlibm_complex.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\openlibm_defs.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\openlibm_math.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\math_private.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\math_private_openbsd.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\cdefs-compat.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\constexpr_math.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\fpmath.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\amd64_fpmath.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\aarch64_fpmath.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\k_log.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Math\k_logf.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -568,6 +607,546 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Internal\Math\RangeReduction.h">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\Readme.md">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_acos.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_acosf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_acosh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_acoshf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_asin.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_asinf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_atan2.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_atan2f.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_atanh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_atanhf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_cosh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_coshf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_exp.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_expf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_fmod.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_fmodf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_hypot.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_hypotf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_j0.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_j0f.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_j1.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_j1f.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_jn.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_jnf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_lgamma.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_lgamma_r.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_lgammaf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_lgammaf_r.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_log.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_log2.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_log2f.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_log10.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_log10f.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_logf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_pow.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_powf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_rem_pio2.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_rem_pio2f.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_remainder.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_remainderf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_sinh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_sinhf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_sqrt.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\e_sqrtf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_cos.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_cosf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_exp.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_expf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_rem_pio2.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_sin.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_sinf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_tan.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\k_tanf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_asinh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_asinhf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_atan.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_atanf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cabs.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cabsf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cacos.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cacosf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cacosh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cacoshf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_carg.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cargf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_casin.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_casinf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_casinh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_casinhf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_catan.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_catanf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_catanh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_catanhf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cbrt.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cbrtf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ccos.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ccosf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ccosh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ccoshf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ceil.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ceilf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cexp.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cexpf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cimag.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cimagf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_clog.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_clogf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_conj.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_conjf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_copysign.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_copysignf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cos.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cosf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cpow.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cpowf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cproj.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_cprojf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_creal.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_crealf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_csin.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_csinf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_csinh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_csinhf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_csqrt.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_csqrtf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ctan.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ctanf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ctanh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ctanhf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_erf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_erff.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_exp2.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_exp2f.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_expm1.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_expm1f.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fabs.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fabsf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fdim.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_floor.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_floorf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fma.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fmaf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fmax.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fmaxf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fmin.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fminf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_fpclassify.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_frexp.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_frexpf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ilogb.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_ilogbf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_isfinite.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_isinf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_isnan.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_isnormal.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_llrint.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_llrintf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_llround.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_llroundf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_log1p.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_log1pf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_logb.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_logbf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_lrint.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_lrintf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_lround.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_lroundf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_modf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_modff.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_nan.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_nearbyint.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_nextafter.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_nextafterf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_nexttoward.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_nexttowardf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_remquo.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_remquof.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_rint.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_rintf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_round.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_roundf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_scalbln.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_scalbn.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_scalbnf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_signbit.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_signgam.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_sin.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_sincos.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_sincosf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_sinf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_tan.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_tanf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_tanh.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_tanhf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_tgammaf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_trunc.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\s_truncf.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\w_cabs.inl">
+      <Filter>Header Files\Internal\Math</Filter>
+    </None>
+    <None Include="Internal\Math\w_cabsf.inl">
       <Filter>Header Files\Internal\Math</Filter>
     </None>
   </ItemGroup>

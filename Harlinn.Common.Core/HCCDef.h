@@ -271,6 +271,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fenv.h>
 
 
 #include <concurrent_priority_queue.h>

@@ -458,11 +458,11 @@ BOOST_AUTO_TEST_CASE( SingleSignumTest1 )
 // --run_test=MathTests/DoubleSignumTest1
 BOOST_AUTO_TEST_CASE( DoubleSignumTest1 )
 {
-    constexpr auto negativeValue = signum( static_cast<Double>( -2 ) );
+    constexpr auto negativeValue = signum( static_cast<double>( -2 ) );
     BOOST_CHECK( negativeValue == -1 );
-    constexpr auto zeroValue = signum( static_cast<Double>( 0 ) );
+    constexpr auto zeroValue = signum( static_cast<double>( 0 ) );
     BOOST_CHECK( zeroValue == 0 );
-    constexpr auto positiveValue = signum( static_cast<Double>( 2 ) );
+    constexpr auto positiveValue = signum( static_cast<double>( 2 ) );
     BOOST_CHECK( positiveValue == 1 );
 }
 
@@ -1398,6 +1398,157 @@ BOOST_AUTO_TEST_CASE( SIMDTraitsSinDoubleTest1 )
 
         
 }
+
+// --run_test=MathTests/OpenLibMSinFloatTest1
+BOOST_AUTO_TEST_CASE( OpenLibMSinFloatTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = float;
+    Generators::RangeGenerator<FloatT> generator( static_cast< float >( -2.0 * M_PI ), static_cast < float >( 2.0 * M_PI ) );
+
+    //Generators::RangeGenerator<FloatT> generator( -42781604.0, 42781604.0 );
+    NumericTest test( "Math::Internal::OpenLibM::sinf" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            return std::sin( x );
+        },
+        []( auto x )
+        {
+            return Math::Internal::OpenLibM::sinf( x );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            -1e5,
+            -1e10,
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            1e5,
+            1e10,
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0,
+            std::bit_cast< float >( 0x3f06'0a92U ), // x = pi/6
+            std::bit_cast< float >( 0x3f3a'dc51U ), // x = 0x1.75b8a2p-1f
+            std::bit_cast< float >( 0x3f49'0fdbU ), // x = pi/4
+            std::bit_cast< float >( 0x3f86'0a92U ), // x = pi/3
+            std::bit_cast< float >( 0x3fa7'832aU ), // x = 0x1.4f0654p+0f
+            std::bit_cast< float >( 0x3fc9'0fdbU ), // x = pi/2
+            std::bit_cast< float >( 0x4017'1973U ), // x = 0x1.2e32e6p+1f
+            std::bit_cast< float >( 0x4049'0fdbU ), // x = pi
+            std::bit_cast< float >( 0x4096'cbe4U ), // x = 0x1.2d97c8p+2f
+            std::bit_cast< float >( 0x40c9'0fdbU ), // x = 2*pi
+            std::bit_cast< float >( 0x433b'7490U ), // x = 0x1.76e92p+7f
+            std::bit_cast< float >( 0x437c'e5f1U ), // x = 0x1.f9cbe2p+7f
+            std::bit_cast< float >( 0x4619'9998U ), // x = 0x1.33333p+13f
+            std::bit_cast< float >( 0x474d'246fU ), // x = 0x1.9a48dep+15f
+            std::bit_cast< float >( 0x4afd'ece4U ), // x = 0x1.fbd9c8p+22f
+            std::bit_cast< float >( 0x4c23'32e9U ), // x = 0x1.4665d2p+25f
+            std::bit_cast<float>(0x50a3'e87fU), // x = 0x1.47d0fep+34f
+            std::bit_cast<float>(0x5239'47f6U), // x = 0x1.728fecp+37f
+            std::bit_cast<float>(0x53b1'46a6U), // x = 0x1.628d4cp+40f
+            std::bit_cast<float>(0x55ca'fb2aU), // x = 0x1.95f654p+44f
+            std::bit_cast<float>(0x588e'f060U), // x = 0x1.1de0cp+50f
+            std::bit_cast<float>(0x5c07'bcd0U), // x = 0x1.0f79ap+57f
+            std::bit_cast<float>(0x5ebc'fddeU), // x = 0x1.79fbbcp+62f
+            std::bit_cast<float>(0x5fa6'eba7U), // x = 0x1.4dd74ep+64f
+            std::bit_cast<float>(0x61a4'0b40U), // x = 0x1.48168p+68f
+            std::bit_cast<float>(0x6386'134eU), // x = 0x1.0c269cp+72f
+            std::bit_cast<float>(0x6589'8498U), // x = 0x1.13093p+76f
+            std::bit_cast<float>(0x6600'0001U), // x = 0x1.000002p+77f
+            std::bit_cast<float>(0x664e'46e4U), // x = 0x1.9c8dc8p+77f
+            std::bit_cast<float>(0x66b0'14aaU), // x = 0x1.602954p+78f
+            std::bit_cast<float>(0x67a9'242bU), // x = 0x1.524856p+80f
+            std::bit_cast<float>(0x6a19'76f1U), // x = 0x1.32ede2p+85f
+            std::bit_cast<float>(0x6c55'da58U), // x = 0x1.abb4bp+89f
+            std::bit_cast<float>(0x6f79'be45U), // x = 0x1.f37c8ap+95f
+            std::bit_cast<float>(0x7276'69d4U), // x = 0x1.ecd3a8p+101f
+            std::bit_cast<float>(0x7758'4625U), // x = 0x1.b08c4ap+111f
+        } );
+        BOOST_CHECK( success );
+}
+
+// --run_test=MathTests/OpenLibMSinCosFloatTest1
+BOOST_AUTO_TEST_CASE( OpenLibMSinCosFloatTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = float;
+    Generators::RangeGenerator<FloatT> generator( static_cast< float >( -2.0 * M_PI ), static_cast < float >( 2.0 * M_PI ) );
+
+    //Generators::RangeGenerator<FloatT> generator( -42781604.0, 42781604.0 );
+    NumericTest test( "Math::Internal::OpenLibM::sincosf" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            return std::sin( x );
+        },
+        []( auto x )
+        {
+            float sine, cosine;
+            Math::Internal::OpenLibM::sincosf( x, &sine, &cosine );
+            return sine;
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            -1e5,
+            -1e10,
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            1e5,
+            1e10,
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0,
+            std::bit_cast< float >( 0x3f06'0a92U ), // x = pi/6
+            std::bit_cast< float >( 0x3f3a'dc51U ), // x = 0x1.75b8a2p-1f
+            std::bit_cast< float >( 0x3f49'0fdbU ), // x = pi/4
+            std::bit_cast< float >( 0x3f86'0a92U ), // x = pi/3
+            std::bit_cast< float >( 0x3fa7'832aU ), // x = 0x1.4f0654p+0f
+            std::bit_cast< float >( 0x3fc9'0fdbU ), // x = pi/2
+            std::bit_cast< float >( 0x4017'1973U ), // x = 0x1.2e32e6p+1f
+            std::bit_cast< float >( 0x4049'0fdbU ), // x = pi
+            std::bit_cast< float >( 0x4096'cbe4U ), // x = 0x1.2d97c8p+2f
+            std::bit_cast< float >( 0x40c9'0fdbU ), // x = 2*pi
+            std::bit_cast< float >( 0x433b'7490U ), // x = 0x1.76e92p+7f
+            std::bit_cast< float >( 0x437c'e5f1U ), // x = 0x1.f9cbe2p+7f
+            std::bit_cast< float >( 0x4619'9998U ), // x = 0x1.33333p+13f
+            std::bit_cast< float >( 0x474d'246fU ), // x = 0x1.9a48dep+15f
+            std::bit_cast< float >( 0x4afd'ece4U ), // x = 0x1.fbd9c8p+22f
+            std::bit_cast< float >( 0x4c23'32e9U ), // x = 0x1.4665d2p+25f
+            std::bit_cast< float >( 0x50a3'e87fU ), // x = 0x1.47d0fep+34f
+            std::bit_cast< float >( 0x5239'47f6U ), // x = 0x1.728fecp+37f
+            std::bit_cast< float >( 0x53b1'46a6U ), // x = 0x1.628d4cp+40f
+            std::bit_cast< float >( 0x55ca'fb2aU ), // x = 0x1.95f654p+44f
+            std::bit_cast< float >( 0x588e'f060U ), // x = 0x1.1de0cp+50f
+            std::bit_cast< float >( 0x5c07'bcd0U ), // x = 0x1.0f79ap+57f
+            std::bit_cast< float >( 0x5ebc'fddeU ), // x = 0x1.79fbbcp+62f
+            std::bit_cast< float >( 0x5fa6'eba7U ), // x = 0x1.4dd74ep+64f
+            std::bit_cast< float >( 0x61a4'0b40U ), // x = 0x1.48168p+68f
+            std::bit_cast< float >( 0x6386'134eU ), // x = 0x1.0c269cp+72f
+            std::bit_cast< float >( 0x6589'8498U ), // x = 0x1.13093p+76f
+            std::bit_cast< float >( 0x6600'0001U ), // x = 0x1.000002p+77f
+            std::bit_cast< float >( 0x664e'46e4U ), // x = 0x1.9c8dc8p+77f
+            std::bit_cast< float >( 0x66b0'14aaU ), // x = 0x1.602954p+78f
+            std::bit_cast< float >( 0x67a9'242bU ), // x = 0x1.524856p+80f
+            std::bit_cast< float >( 0x6a19'76f1U ), // x = 0x1.32ede2p+85f
+            std::bit_cast< float >( 0x6c55'da58U ), // x = 0x1.abb4bp+89f
+            std::bit_cast< float >( 0x6f79'be45U ), // x = 0x1.f37c8ap+95f
+            std::bit_cast< float >( 0x7276'69d4U ), // x = 0x1.ecd3a8p+101f
+            std::bit_cast< float >( 0x7758'4625U ), // x = 0x1.b08c4ap+111f
+        } );
+        BOOST_CHECK( success );
+}
+
 
 // --run_test=MathTests/SinFloatTest1
 BOOST_AUTO_TEST_CASE( SinFloatTest1 )
