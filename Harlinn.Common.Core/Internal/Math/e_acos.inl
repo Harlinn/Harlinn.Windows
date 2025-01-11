@@ -119,4 +119,60 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 	}
 
+	inline constexpr double
+		FastACos( double x )
+	{
+		using namespace acos_internal;
+		double z, p, q, r, w, s, c, df;
+		int32_t hx, ix;
+		//GET_HIGH_WORD( hx, x );
+		hx = GetHigh32Bits<int32_t>( x );
+		ix = hx & 0x7fffffff;
+		if ( ix >= 0x3ff00000 )
+		{	/* |x| >= 1 */
+			uint32_t lx;
+			//GET_LOW_WORD( lx, x );
+			lx = GetLow32Bits<int32_t>( x );
+			if ( ( ( ix - 0x3ff00000 ) | lx ) == 0 )
+			{	/* |x|==1 */
+				if ( hx > 0 ) return 0.0;		/* acos(1) = 0  */
+				else return pi + 2.0 * pio2_lo;	/* acos(-1)= pi */
+			}
+			return ( x - x ) / ( x - x );		/* acos(|x|>1) is NaN */
+		}
+		if ( ix < 0x3fe00000 )
+		{	/* |x| < 0.5 */
+			if ( ix <= 0x3c600000 ) return pio2_hi + pio2_lo;/*if|x|<2**-57*/
+			z = x * x;
+			p = z * ( pS0 + z * ( pS1 + z * ( pS2 + z * ( pS3 + z * ( pS4 + z * pS5 ) ) ) ) );
+			q = one + z * ( qS1 + z * ( qS2 + z * ( qS3 + z * qS4 ) ) );
+			r = p / q;
+			return pio2_hi - ( x - ( pio2_lo - x * r ) );
+		}
+		else  if ( hx < 0 )
+		{		/* x < -0.5 */
+			z = ( one + x ) * 0.5;
+			p = z * ( pS0 + z * ( pS1 + z * ( pS2 + z * ( pS3 + z * ( pS4 + z * pS5 ) ) ) ) );
+			q = one + z * ( qS1 + z * ( qS2 + z * ( qS3 + z * qS4 ) ) );
+			s = Sqrt( z );
+			r = p / q;
+			w = r * s - pio2_lo;
+			return pi - 2.0 * ( s + w );
+		}
+		else
+		{			/* x > 0.5 */
+			z = ( one - x ) * 0.5;
+			s = Sqrt( z );
+			df = s;
+			//SET_LOW_WORD( df, 0 );
+			SetLow32Bits( df, 0U );
+			c = ( z - df * df ) / ( s + df );
+			p = z * ( pS0 + z * ( pS1 + z * ( pS2 + z * ( pS3 + z * ( pS4 + z * pS5 ) ) ) ) );
+			q = one + z * ( qS1 + z * ( qS2 + z * ( qS3 + z * qS4 ) ) );
+			r = p / q;
+			w = r * s + c;
+			return 2.0 * ( df + w );
+		}
+	}
+
 }

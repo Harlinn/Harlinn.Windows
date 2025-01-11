@@ -80,4 +80,49 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		t = static_cast<float>(pio2 - 2.0 * ( s + s * w ));
 		if ( hx > 0 ) return t; else return -t;
 	}
+
+	constexpr inline float
+		FastASin( float x )
+	{
+		using namespace asinf_internal;
+		float s;
+		float t, w, p, q;
+		//int32_t hx, ix;
+		//int32_t hx;
+		//GET_FLOAT_WORD( hx, x );
+		Int32 hx = std::bit_cast< Int32 >( x );
+		Int32 ix = hx & 0x7fffffff;
+		if ( ix >= 0x3f800000 )
+		{		/* |x| >= 1 */
+			if ( ix == 0x3f800000 )		/* |x| == 1 */
+			{
+				return x * pio2f;		/* asin(+-1) = +-pi/2 with inexact */
+			}
+			return std::numeric_limits<float>::quiet_NaN( );
+			//return ( x - x ) / ( x - x );		/* asin(|x|>1) is NaN */
+		}
+		else if ( ix < 0x3f000000 )
+		{	/* |x|<0.5 */
+			if ( ix < 0x39800000 )
+			{		/* |x| < 2**-12 */
+				if ( huge + x > one ) return x;/* return x with inexact if x!=0*/
+			}
+			t = x * x;
+			p = t * ( pS0 + t * ( pS1 + t * pS2 ) );
+			q = one + t * qS1;
+			w = p / q;
+			return x + x * w;
+		}
+		/* 1> |x|>= 0.5 */
+		//w = one - fabsf( x );
+		w = one - Abs( x );
+		t = w * 0.5f;
+		p = t * ( pS0 + t * ( pS1 + t * pS2 ) );
+		q = one + t * qS1;
+		//s = sqrtf( t );
+		s = Sqrt( t );
+		w = p / q;
+		t = static_cast< float >( pio2f - 2.0f * ( s + s * w ) );
+		if ( hx > 0 ) return t; else return -t;
+	}
 }

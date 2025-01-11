@@ -29,9 +29,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline float
 		fabsf( float x )
 	{
-		uint32_t ix;
-		GET_FLOAT_WORD( ix, x );
-		SET_FLOAT_WORD( x, ix & 0x7fffffff );
-		return x;
+		//uint32_t ix;
+		//GET_FLOAT_WORD( ix, x );
+		//SET_FLOAT_WORD( x, ix & 0x7fffffff );
+		//return x;
+		return std::bit_cast< float >( std::bit_cast< UInt32 >( x ) & 0x7fffffff );
 	}
 }

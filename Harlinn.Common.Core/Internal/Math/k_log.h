@@ -88,7 +88,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	 * We always inline k_log1p(), since doing so produces a
 	 * substantial performance improvement (~40% on amd64).
 	 */
-	static inline double
+	constexpr inline double
 		k_log1p( double f )
 	{
 		using namespace k_log1p_internal;

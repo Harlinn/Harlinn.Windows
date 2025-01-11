@@ -21,6 +21,7 @@
 
 using namespace Harlinn::Common::Core;
 using namespace Harlinn::Common::Core::Math;
+namespace OpenLibM = Harlinn::Common::Core::Math::Internal::OpenLibM;
 namespace
 {
     class LocalFixture
@@ -336,6 +337,8 @@ BOOST_AUTO_TEST_CASE( ConstexprMathTest1 )
 {
     constexpr double absResult = Abs( -1.0 );
     BOOST_CHECK( absResult == 1.0 );
+    constexpr double absResult2 = Math::Internal::OpenLibM::fabs( -1.0 );
+    BOOST_CHECK( absResult2 == 1.0 );
 }
 
 
@@ -509,6 +512,7 @@ BOOST_AUTO_TEST_CASE( FloatingPointDoubleExponentTest1 )
 
 }
 
+/*
 inline double DeviationTest( double first, double second )
 {
     using std::abs;
@@ -561,6 +565,7 @@ BOOST_AUTO_TEST_CASE( DeviationTest1 )
 
 
 }
+*/
 
 // --run_test=MathTests/IsNaNDoubleTest1
 BOOST_AUTO_TEST_CASE( IsNaNDoubleTest1 )
@@ -571,6 +576,33 @@ BOOST_AUTO_TEST_CASE( IsNaNDoubleTest1 )
     Generators::RandomGenerator<FloatT, 20000> generator;
     NumericTest test( "IsNaNDoubleTest1" );
     auto success = test.Run( generator, std::isnan<FloatT>, IsNaN<FloatT>,
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
+}
+
+
+// --run_test=MathTests/OpenLibMIsNaNDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMIsNaNDoubleTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "OpenLibMIsNaNDoubleTest1" );
+    auto success = test.Run( generator, std::isnan<FloatT>, []( auto x ) { return OpenLibM::isnan( x ) != 0; },
         {
             std::numeric_limits<FloatT>::quiet_NaN( ),
             -std::numeric_limits<FloatT>::infinity( ),
@@ -615,6 +647,34 @@ BOOST_AUTO_TEST_CASE( IsInfDoubleTest1 )
     BOOST_CHECK( success );
 
 }
+
+// --run_test=MathTests/OpenLibMIsInfDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMIsInfDoubleTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "OpenLibMIsInfDoubleTest1" );
+    auto success = test.Run( generator, std::isinf<FloatT>, []( auto x ) { return OpenLibM::isinf( x ) != 0; },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+    BOOST_CHECK( success );
+
+}
+
 
 // --run_test=MathTests/AbsDoubleTest1
 BOOST_AUTO_TEST_CASE( AbsDoubleTest1 )
@@ -668,6 +728,33 @@ BOOST_AUTO_TEST_CASE( AbsImplDoubleTest1 )
     BOOST_CHECK( success );
 }
 
+// --run_test=MathTests/OpenLibMAbsImplDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMAbsImplDoubleTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "OpenLibMAbsImplDoubleTest1" );
+    auto success = test.Run( generator, []( auto x ) { return std::abs( x ); }, []( auto x ) { return OpenLibM::fabs( x ); },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+        BOOST_CHECK( success );
+}
+
+
 
 // --run_test=MathTests/SignBitDoubleTest1
 BOOST_AUTO_TEST_CASE( SignBitDoubleTest1 )
@@ -695,6 +782,34 @@ BOOST_AUTO_TEST_CASE( SignBitDoubleTest1 )
     BOOST_CHECK( success );
 
 }
+
+// --run_test=MathTests/OpenLibMSignBitDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMSignBitDoubleTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "OpenLibMSignBitDoubleTest1" );
+    auto success = test.Run( generator, []( auto x ) { return std::signbit( x ); }, []( auto x ) { return OpenLibM::signbit( x ) != 0; },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+        BOOST_CHECK( success );
+
+}
+
 
 // --run_test=MathTests/FRExpDoubleTest1
 BOOST_AUTO_TEST_CASE( FRExpDoubleTest1 )
@@ -735,6 +850,47 @@ BOOST_AUTO_TEST_CASE( FRExpDoubleTest1 )
 
 }
 
+
+// --run_test=MathTests/OpenLibMFRExpDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMFRExpDoubleTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "OpenLibMFRExpDoubleTest1" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            int exp = 0;
+            auto fraction = std::frexp( x, &exp );
+            return std::make_pair( fraction, static_cast< double >( exp ) );
+        },
+        []( auto x )
+        {
+            int exp = 0;
+            auto fraction = OpenLibM::frexp( x, &exp );
+            return std::make_pair( fraction, static_cast< double >( exp ) );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+        BOOST_CHECK( success );
+
+}
+
+
 // --run_test=MathTests/ModFDoubleTest1
 BOOST_AUTO_TEST_CASE( ModFDoubleTest1 )
 {
@@ -774,6 +930,48 @@ BOOST_AUTO_TEST_CASE( ModFDoubleTest1 )
         } );
     BOOST_CHECK( success );
 }
+
+
+// --run_test=MathTests/OpenLibMModFDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMModFDoubleTest1 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    Generators::RandomGenerator<FloatT, 20000> generator;
+    NumericTest test( "OpenLibMModFDoubleTest1" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            using FloatT = std::remove_cvref_t<decltype( x )>;
+            FloatT exp = 0;
+            auto fraction = std::modf( x, &exp );
+            return std::make_pair( fraction, exp );
+        },
+        []( auto x )
+        {
+            using FloatT = std::remove_cvref_t<decltype( x )>;
+            FloatT exp = 0;
+            auto fraction = OpenLibM::modf( x, &exp );
+            return std::make_pair( fraction, exp );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+        BOOST_CHECK( success );
+}
+
 
 // --run_test=MathTests/InternalMinImplFloatTest1
 BOOST_AUTO_TEST_CASE( InternalMinImplFloatTest1 )
@@ -857,13 +1055,44 @@ BOOST_AUTO_TEST_CASE( FloorDoubleTest1 )
     constexpr double value6 = 1.5;
 
     constexpr double result1 = Floor( value1 );
+    BOOST_CHECK( result1 == -2. );
     constexpr double result2 = Floor( value2 );
+    BOOST_CHECK( result2 == -1. );
     constexpr double result3 = Floor( value3 );
+    BOOST_CHECK( result3 == -0. );
     constexpr double result4 = Floor( value4 );
+    BOOST_CHECK( result4 == 0. );
     constexpr double result5 = Floor( value5 );
+    BOOST_CHECK( result5 == 0. );
     constexpr double result6 = Floor( value6 );
+    BOOST_CHECK( result6 == 1. );
 
 }
+
+// --run_test=MathTests/OpenLibMFloorDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMFloorDoubleTest1 )
+{
+    constexpr double value1 = -1.5;
+    constexpr double value2 = -0.5;
+    constexpr double value3 = -0.0;
+    constexpr double value4 = 0.0;
+    constexpr double value5 = 0.5;
+    constexpr double value6 = 1.5;
+
+    constexpr double result1 = OpenLibM::floor( value1 );
+    BOOST_CHECK( result1 == -2. );
+    constexpr double result2 = OpenLibM::floor( value2 );
+    BOOST_CHECK( result2 == -1. );
+    constexpr double result3 = OpenLibM::floor( value3 );
+    BOOST_CHECK( result3 == -0. );
+    constexpr double result4 = OpenLibM::floor( value4 );
+    BOOST_CHECK( result4 == 0. );
+    constexpr double result5 = OpenLibM::floor( value5 );
+    BOOST_CHECK( result5 == 0. );
+    constexpr double result6 = OpenLibM::floor( value6 );
+    BOOST_CHECK( result6 == 1. );
+}
+
 
 // --run_test=MathTests/FloorDoubleTest2
 BOOST_AUTO_TEST_CASE( FloorDoubleTest2 )
@@ -953,6 +1182,94 @@ BOOST_AUTO_TEST_CASE( FloorDoubleTest2 )
     BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
 }
 
+// --run_test=MathTests/OpenLibMFloorDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMFloorDoubleTest2 )
+{
+    double value = std::numeric_limits<double>::quiet_NaN( );
+    double result = OpenLibM::floor( value );
+    double stdResult = std::floor( value );
+    UInt64 uiResult = std::bit_cast< UInt64 >( result );
+    UInt64 stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::isinf( result ) == std::isinf( stdResult ) );
+
+    value = -std::numeric_limits<double>::infinity( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::infinity( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::lowest( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::min( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -std::numeric_limits<double>::min( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::max( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::epsilon( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::denorm_min( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -std::numeric_limits<double>::denorm_min( );
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -0.0;
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = 0.0;
+    result = OpenLibM::floor( value );
+    stdResult = std::floor( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+}
+
 
 // --run_test=MathTests/CeilDoubleTest1
 BOOST_AUTO_TEST_CASE( CeilDoubleTest1 )
@@ -965,13 +1282,45 @@ BOOST_AUTO_TEST_CASE( CeilDoubleTest1 )
     constexpr double value6 = 1.5;
 
     constexpr double result1 = Ceil( value1 );
+    BOOST_CHECK( result1 == -1. );
     constexpr double result2 = Ceil( value2 );
+    BOOST_CHECK( result2 == -0. );
     constexpr double result3 = Ceil( value3 );
+    BOOST_CHECK( result3 == -0. );
     constexpr double result4 = Ceil( value4 );
+    BOOST_CHECK( result4 == 0. );
     constexpr double result5 = Ceil( value5 );
+    BOOST_CHECK( result5 == 1. );
     constexpr double result6 = Ceil( value6 );
+    BOOST_CHECK( result6 == 2. );
 
 }
+
+// --run_test=MathTests/OpenLibMCeilDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMCeilDoubleTest1 )
+{
+    constexpr double value1 = -1.5;
+    constexpr double value2 = -0.5;
+    constexpr double value3 = -0.0;
+    constexpr double value4 = 0.0;
+    constexpr double value5 = 0.5;
+    constexpr double value6 = 1.5;
+
+    constexpr double result1 = OpenLibM::ceil( value1 );
+    BOOST_CHECK( result1 == -1. );
+    constexpr double result2 = OpenLibM::ceil( value2 );
+    BOOST_CHECK( result2 == -0. );
+    constexpr double result3 = OpenLibM::ceil( value3 );
+    BOOST_CHECK( result3 == -0. );
+    constexpr double result4 = OpenLibM::ceil( value4 );
+    BOOST_CHECK( result4 == 0. );
+    constexpr double result5 = OpenLibM::ceil( value5 );
+    BOOST_CHECK( result5 == 1. );
+    constexpr double result6 = OpenLibM::ceil( value6 );
+    BOOST_CHECK( result6 == 2. );
+
+}
+
 
 // --run_test=MathTests/CeilDoubleTest2
 BOOST_AUTO_TEST_CASE( CeilDoubleTest2 )
@@ -1062,6 +1411,94 @@ BOOST_AUTO_TEST_CASE( CeilDoubleTest2 )
 
 }
 
+// --run_test=MathTests/OpenLibMCeilDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMCeilDoubleTest2 )
+{
+    double value = std::numeric_limits<double>::quiet_NaN( );
+    double result = OpenLibM::ceil( value );
+    double stdResult = std::ceil( value );
+    UInt64 uiResult = std::bit_cast< UInt64 >( result );
+    UInt64 stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::isinf( result ) == std::isinf( stdResult ) );
+
+    value = -std::numeric_limits<double>::infinity( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::infinity( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::lowest( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::min( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -std::numeric_limits<double>::min( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::max( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::epsilon( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::denorm_min( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -std::numeric_limits<double>::denorm_min( );
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -0.0;
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = 0.0;
+    result = OpenLibM::ceil( value );
+    stdResult = std::ceil( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+}
 
 
 
@@ -1153,6 +1590,95 @@ BOOST_AUTO_TEST_CASE( TruncDoubleTest2 )
     BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
 }
 
+// --run_test=MathTests/OpenLibMTruncDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMTruncDoubleTest2 )
+{
+    double value = std::numeric_limits<double>::quiet_NaN( );
+    double result = OpenLibM::trunc( value );
+    double stdResult = std::trunc( value );
+    UInt64 uiResult = std::bit_cast< UInt64 >( result );
+    UInt64 stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::isinf( result ) == std::isinf( stdResult ) );
+
+    value = -std::numeric_limits<double>::infinity( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::infinity( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::lowest( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::min( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -std::numeric_limits<double>::min( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::max( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::epsilon( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::denorm_min( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -std::numeric_limits<double>::denorm_min( );
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -0.0;
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = 0.0;
+    result = OpenLibM::trunc( value );
+    stdResult = std::trunc( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+}
+
+
 // --run_test=MathTests/RoundDoubleTest2
 BOOST_AUTO_TEST_CASE( RoundDoubleTest2 )
 {
@@ -1241,6 +1767,96 @@ BOOST_AUTO_TEST_CASE( RoundDoubleTest2 )
     BOOST_CHECK( std::bit_cast<UInt64>( result ) == std::bit_cast<UInt64>( stdResult ) );
 }
 
+
+// --run_test=MathTests/OpenLibMRoundDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMRoundDoubleTest2 )
+{
+    double value = std::numeric_limits<double>::quiet_NaN( );
+    double result = OpenLibM::round( value );
+    double stdResult = std::round( value );
+    UInt64 uiResult = std::bit_cast< UInt64 >( result );
+    UInt64 stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::isinf( result ) == std::isinf( stdResult ) );
+
+    value = -std::numeric_limits<double>::infinity( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::infinity( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::lowest( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::min( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -std::numeric_limits<double>::min( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::max( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::epsilon( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = std::numeric_limits<double>::denorm_min( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -std::numeric_limits<double>::denorm_min( );
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = -0.0;
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+
+    value = 0.0;
+    result = OpenLibM::round( value );
+    stdResult = std::round( value );
+    uiResult = std::bit_cast< UInt64 >( result );
+    stdUInt64Result = std::bit_cast< UInt64 >( stdResult );
+    BOOST_CHECK( std::bit_cast< UInt64 >( result ) == std::bit_cast< UInt64 >( stdResult ) );
+}
+
+
 // --run_test=MathTests/Deg2RadDoubleTest1
 BOOST_AUTO_TEST_CASE( Deg2RadDoubleTest1 )
 {
@@ -1261,80 +1877,20 @@ BOOST_AUTO_TEST_CASE( SinDoubleTest1 )
     BOOST_CHECK( result1b == 1.7453292519057202e-5 );
 }
 
-
-// --run_test=MathTests/SinImplFloatTest1
-BOOST_AUTO_TEST_CASE( SinImplFloatTest1 )
+// --run_test=MathTests/OpenLibMSinDoubleTest1
+BOOST_AUTO_TEST_CASE( OpenLibMSinDoubleTest1 )
 {
-    using namespace Test;
-    using namespace Test::Generators;
-    using FloatT = float;
-    Generators::RangeGenerator<FloatT> generator( static_cast<float>( -2.0 * M_PI ), static_cast < float >(2.0 * M_PI) );
-    
-    //Generators::RangeGenerator<FloatT> generator( -42781604.0, 42781604.0 );
-    NumericTest test( "Math::Internal::SinImplFloatTest1" );
-    auto success = test.Run( generator, 
-        []( auto x ) 
-        { 
-            return std::sin( x ); 
-        }, 
-        []( auto x ) 
-        { 
-            return Math::Internal::SinImpl( x ); 
-        },
-        {
-            std::numeric_limits<FloatT>::quiet_NaN( ),
-            -std::numeric_limits<FloatT>::infinity( ),
-            std::numeric_limits<FloatT>::infinity( ),
-            -1e5,
-            -1e10,
-            std::numeric_limits<FloatT>::min( ),
-            -std::numeric_limits<FloatT>::min( ),
-            1e5,
-            1e10,
-            std::numeric_limits<FloatT>::epsilon( ),
-            -std::numeric_limits<FloatT>::epsilon( ),
-            std::numeric_limits<FloatT>::denorm_min( ),
-            -std::numeric_limits<FloatT>::denorm_min( ),
-            -0.0,0.0,
-            std::bit_cast<float>(0x3f06'0a92U), // x = pi/6
-            std::bit_cast<float>(0x3f3a'dc51U), // x = 0x1.75b8a2p-1f
-            std::bit_cast<float>(0x3f49'0fdbU), // x = pi/4
-            std::bit_cast<float>(0x3f86'0a92U), // x = pi/3
-            std::bit_cast<float>(0x3fa7'832aU), // x = 0x1.4f0654p+0f
-            std::bit_cast<float>(0x3fc9'0fdbU), // x = pi/2
-            std::bit_cast<float>(0x4017'1973U), // x = 0x1.2e32e6p+1f
-            std::bit_cast<float>(0x4049'0fdbU), // x = pi
-            std::bit_cast<float>(0x4096'cbe4U), // x = 0x1.2d97c8p+2f
-            std::bit_cast<float>(0x40c9'0fdbU), // x = 2*pi
-            std::bit_cast<float>(0x433b'7490U), // x = 0x1.76e92p+7f
-            std::bit_cast<float>(0x437c'e5f1U), // x = 0x1.f9cbe2p+7f
-            std::bit_cast<float>(0x4619'9998U), // x = 0x1.33333p+13f
-            std::bit_cast<float>(0x474d'246fU), // x = 0x1.9a48dep+15f
-            std::bit_cast<float>(0x4afd'ece4U), // x = 0x1.fbd9c8p+22f
-            std::bit_cast<float>(0x4c23'32e9U), // x = 0x1.4665d2p+25f
-            //std::bit_cast<float>(0x50a3'e87fU), // x = 0x1.47d0fep+34f
-            //std::bit_cast<float>(0x5239'47f6U), // x = 0x1.728fecp+37f
-            //std::bit_cast<float>(0x53b1'46a6U), // x = 0x1.628d4cp+40f
-            //std::bit_cast<float>(0x55ca'fb2aU), // x = 0x1.95f654p+44f
-            //std::bit_cast<float>(0x588e'f060U), // x = 0x1.1de0cp+50f
-            //std::bit_cast<float>(0x5c07'bcd0U), // x = 0x1.0f79ap+57f
-            //std::bit_cast<float>(0x5ebc'fddeU), // x = 0x1.79fbbcp+62f
-            //std::bit_cast<float>(0x5fa6'eba7U), // x = 0x1.4dd74ep+64f
-            //std::bit_cast<float>(0x61a4'0b40U), // x = 0x1.48168p+68f
-            //std::bit_cast<float>(0x6386'134eU), // x = 0x1.0c269cp+72f
-            //std::bit_cast<float>(0x6589'8498U), // x = 0x1.13093p+76f
-            //std::bit_cast<float>(0x6600'0001U), // x = 0x1.000002p+77f
-            //std::bit_cast<float>(0x664e'46e4U), // x = 0x1.9c8dc8p+77f
-            //std::bit_cast<float>(0x66b0'14aaU), // x = 0x1.602954p+78f
-            //std::bit_cast<float>(0x67a9'242bU), // x = 0x1.524856p+80f
-            //std::bit_cast<float>(0x6a19'76f1U), // x = 0x1.32ede2p+85f
-            //std::bit_cast<float>(0x6c55'da58U), // x = 0x1.abb4bp+89f
-            //std::bit_cast<float>(0x6f79'be45U), // x = 0x1.f37c8ap+95f
-            //std::bit_cast<float>(0x7276'69d4U), // x = 0x1.ecd3a8p+101f
-            //std::bit_cast<float>(0x7758'4625U), // x = 0x1.b08c4ap+111f
-        } );
-    BOOST_CHECK( success );
+    constexpr auto radians = Deg2Rad( 0.001 );
+    constexpr auto result1a = OpenLibM::sin( radians );
+    auto result1b = std::sin( radians );
+    auto result1Diff = result1a - result1b;
+    BOOST_CHECK( result1a == result1b );
+    BOOST_CHECK( result1a == 1.7453292519057202e-5 );
+    BOOST_CHECK( result1b == 1.7453292519057202e-5 );
 }
+
+
+
 
 
 // --run_test=MathTests/SIMDTraitsSinDoubleTest1
@@ -1344,7 +1900,7 @@ BOOST_AUTO_TEST_CASE( SIMDTraitsSinDoubleTest1 )
     using namespace Test::Generators;
     using FloatT = double;
     Generators::RangeGenerator<FloatT> generator( -M_PI * 2, M_PI * 2 );
-    NumericTest test( "Math::Internal::SinImplDoubleTest1" );
+    NumericTest test( "SIMDTraitsSinDoubleTest1" );
     auto success = test.Run( generator,
         []( auto x )
         {
@@ -1473,6 +2029,9 @@ BOOST_AUTO_TEST_CASE( OpenLibMSinFloatTest1 )
         BOOST_CHECK( success );
 }
 
+
+
+
 // --run_test=MathTests/OpenLibMSinCosFloatTest1
 BOOST_AUTO_TEST_CASE( OpenLibMSinCosFloatTest1 )
 {
@@ -1550,96 +2109,95 @@ BOOST_AUTO_TEST_CASE( OpenLibMSinCosFloatTest1 )
 }
 
 
-// --run_test=MathTests/SinFloatTest1
-BOOST_AUTO_TEST_CASE( SinFloatTest1 )
+// --run_test=MathTests/OpenLibMSinFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMSinFloatTest2 )
 {
-    TrigonometricRangeTest<float>( "SinFloatTest2", []( float value ) { return std::sin( value ); }, []( float value ) { return Math::Internal::SinImpl( value ); } );
-}
-
-// --run_test=MathTests/SinDoubleTest2
-BOOST_AUTO_TEST_CASE( SinDoubleTest2 )
-{
-    TrigonometricRangeTest<double>( "SinDoubleTest2", []( double value ) { return std::sin( value ); }, []( double value ) { return Math::Internal::SinImpl( value ); } );
-}
-
-// --run_test=MathTests/CosFloatTest2
-BOOST_AUTO_TEST_CASE( CosFloatTest2 )
-{
-    TrigonometricRangeTest<float>( "CosFloatTest2", []( float value ) { return std::cos( value ); }, []( float value ) { return Math::Internal::CosImpl( value ); } );
-}
-
-// --run_test=MathTests/CosDoubleTest2
-BOOST_AUTO_TEST_CASE( CosDoubleTest2 )
-{
-    TrigonometricRangeTest<double>( "CosDoubleTest2", []( double value ) { return std::cos( value ); }, []( double value ) { return Math::Internal::CosImpl( value ); } );
-}
-
-// --run_test=MathTests/TanFloatTest2
-BOOST_AUTO_TEST_CASE( TanFloatTest2 )
-{
-    TrigonometricRangeTest<float>( "TanFloatTest2", []( float value ) { return std::tan( value ); }, []( float value ) { return Math::Internal::TanImpl( value ); } );
+    TrigonometricRangeTest<float>( "OpenLibMSinFloatTest2", []( float value ) { return std::sin( value ); }, []( float value ) { return OpenLibM::sinf( value ); } );
 }
 
 
-// --run_test=MathTests/TanDoubleTest2
-BOOST_AUTO_TEST_CASE( TanDoubleTest2 )
+// --run_test=MathTests/OpenLibMSinDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMSinDoubleTest2 )
 {
-    TrigonometricRangeTest<double>( "TanFloatTest2", []( double value ) { return std::tan( value ); }, []( double value ) { return Math::Internal::TanImpl( value ); } );
+    TrigonometricRangeTest<double>( "OpenLibMSinDoubleTest2", []( double value ) { return std::sin( value ); }, []( double value ) { return OpenLibM::sin( value ); } );
 }
 
-
-
-// --run_test=MathTests/ASinFloatTest2
-BOOST_AUTO_TEST_CASE( ASinFloatTest2 )
+// --run_test=MathTests/OpenLibMCosFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMCosFloatTest2 )
 {
-    ReverseTrigonometricRangeTest<float>( "ASinFloatTest2", []( float value ) { return std::asin( value ); }, []( float value ) { return Math::Internal::ASinImpl( value ); } );
+    TrigonometricRangeTest<float>( "OpenLibMCosFloatTest2", []( float value ) { return std::cos( value ); }, []( float value ) { return OpenLibM::cosf( value ); } );
 }
 
-// --run_test=MathTests/ASinDoubleTest2
-BOOST_AUTO_TEST_CASE( ASinDoubleTest2 )
+// --run_test=MathTests/OpenLibMCosDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMCosDoubleTest2 )
 {
-    ReverseTrigonometricRangeTest<double>( "ASinDoubleTest2", []( double value ) { return std::asin( value ); }, []( double value ) { return Math::Internal::ASinImpl( value ); } );
+    TrigonometricRangeTest<double>( "OpenLibMCosDoubleTest2", []( double value ) { return std::cos( value ); }, []( double value ) { return OpenLibM::cos( value ); } );
 }
 
-
-// --run_test=MathTests/ACosFloatTest2
-BOOST_AUTO_TEST_CASE( ACosFloatTest2 )
+// --run_test=MathTests/OpenLibMTanFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMTanFloatTest2 )
 {
-    ReverseTrigonometricRangeTest<float>( "ACosFloatTest2", []( float value ) { return std::acos( value ); }, []( float value ) { return Math::Internal::ACosImpl( value ); } );
+    TrigonometricRangeTest<float>( "TanFloatTest2", []( float value ) { return std::tan( value ); }, []( float value ) { return OpenLibM::tanf( value ); } );
 }
 
-
-
-// --run_test=MathTests/ACosDoubleTest2
-BOOST_AUTO_TEST_CASE( ACosDoubleTest2 )
+// --run_test=MathTests/OpenLibMTanDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMTanDoubleTest2 )
 {
-    ReverseTrigonometricRangeTest<double>( "ACosDoubleTest2", []( double value ) { return std::acos( value ); }, []( double value ) { return Math::Internal::ACosImpl( value ); } );
+    TrigonometricRangeTest<double>( "OpenLibMTanFloatTest2", []( double value ) { return std::tan( value ); }, []( double value ) { return OpenLibM::tan( value ); } );
 }
 
-
-// --run_test=MathTests/ATanFloatTest2
-BOOST_AUTO_TEST_CASE( ATanFloatTest2 )
+// --run_test=MathTests/OpenLibMASinFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMASinFloatTest2 )
 {
-    RandomValueTest<float, 10000>( "ATanFloatTest2", []( float value ) { return std::atan( value ); }, []( float value ) { return Math::Internal::ATanImpl( value ); } );
+    ReverseTrigonometricRangeTest<float>( "OpenLibMASinFloatTest2", []( float value ) { return std::asin( value ); }, []( float value ) { return OpenLibM::asinf( value ); } );
 }
 
-// --run_test=MathTests/ATanDoubleTest2
-BOOST_AUTO_TEST_CASE( ATanDoubleTest2 )
+// --run_test=MathTests/OpenLibMFastASinFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMFastASinFloatTest2 )
 {
-    RandomValueTest<double, 10000>( "ATanDoubleTest2", []( double value ) { return std::atan( value ); }, []( double value ) { return Math::Internal::ATanImpl( value ); } );
+    ReverseTrigonometricRangeTest<float>( "OpenLibMFastASinFloatTest2", []( float value ) { return std::asin( value ); }, []( float value ) { return OpenLibM::FastASin( value ); } );
 }
 
-
-// --run_test=MathTests/ATan2FloatTest2
-BOOST_AUTO_TEST_CASE( ATan2FloatTest2 )
+// --run_test=MathTests/OpenLibMASinDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMASinDoubleTest2 )
 {
-    RandomValueTest2<float, 10000>( "ATan2FloatTest2", []( float x, float y ) { return std::atan2( x, y ); }, []( float x, float y ) { return Math::Internal::ATan2Impl( x, y ); } );
+    ReverseTrigonometricRangeTest<double>( "OpenLibMASinDoubleTest2", []( double value ) { return std::asin( value ); }, []( double value ) { return OpenLibM::asin( value ); } );
 }
 
-// --run_test=MathTests/ATan2DoubleTest2
-BOOST_AUTO_TEST_CASE( ATan2DoubleTest2 )
+// --run_test=MathTests/OpenLibMACosFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMACosFloatTest2 )
 {
-    RandomValueTest2<double, 10000>( "ATan2DoubleTest2", []( double x, double y ) { return std::atan2( x, y ); }, []( double x, double y ) { return Math::Internal::ATan2Impl( x, y ); } );
+    ReverseTrigonometricRangeTest<float>( "OpenLibMACosFloatTest2", []( float value ) { return std::acos( value ); }, []( float value ) { return OpenLibM::acosf( value ); } );
+}
+
+// --run_test=MathTests/OpenLibMACosDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMACosDoubleTest2 )
+{
+    ReverseTrigonometricRangeTest<double>( "OpenLibMACosDoubleTest2", []( double value ) { return std::acos( value ); }, []( double value ) { return OpenLibM::acos( value ); } );
+}
+
+// --run_test=MathTests/OpenLibMATanFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMATanFloatTest2 )
+{
+    RandomValueTest<float, 10000>( "OpenLibMATanFloatTest2", []( float value ) { return std::atan( value ); }, []( float value ) { return OpenLibM::atanf( value ); } );
+}
+
+// --run_test=MathTests/OpenLibMATanDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMATanDoubleTest2 )
+{
+    RandomValueTest<double, 10000>( "OpenLibMATanDoubleTest2", []( double value ) { return std::atan( value ); }, []( double value ) { return OpenLibM::atan( value ); } );
+}
+
+// --run_test=MathTests/OpenLibMATan2FloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMATan2FloatTest2 )
+{
+    RandomValueTest2<float, 10000>( "OpenLibMATan2FloatTest2", []( float x, float y ) { return std::atan2( x, y ); }, []( float x, float y ) { return OpenLibM::atan2f( x, y ); } );
+}
+
+// --run_test=MathTests/OpenLibMATan2DoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMATan2DoubleTest2 )
+{
+    RandomValueTest2<double, 10000>( "OpenLibMATan2DoubleTest2", []( double x, double y ) { return std::atan2( x, y ); }, []( double x, double y ) { return OpenLibM::atan2( x, y ); } );
 }
 
 // --run_test=MathTests/FModFloatTest2
@@ -1648,11 +2206,22 @@ BOOST_AUTO_TEST_CASE( FModFloatTest2 )
     RandomValueTest2<float, 10000>( "FModFloatTest2", []( float x, float y ) { return std::fmod( x, y ); }, []( float x, float y ) { return Math::FMod( x, y ); } );
 }
 
+// --run_test=MathTests/OpenLibMFModFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMFModFloatTest2 )
+{
+    RandomValueTest2<float, 10000>( "OpenLibMFModFloatTest2", []( float x, float y ) { return std::fmod( x, y ); }, []( float x, float y ) { return OpenLibM::fmodf( x, y ); } );
+}
 
 // --run_test=MathTests/FModDoubleTest2
 BOOST_AUTO_TEST_CASE( FModDoubleTest2 )
 {
     RandomValueTest2<double, 10000>( "FModDoubleTest2", []( double x, double y ) { return std::fmod( x, y ); }, []( double x, double y ) { return Math::FMod( x, y ); } );
+}
+
+// --run_test=MathTests/OpenLibMFModDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMFModDoubleTest2 )
+{
+    RandomValueTest2<double, 10000>( "OpenLibMFModDoubleTest2", []( double x, double y ) { return std::fmod( x, y ); }, []( double x, double y ) { return OpenLibM::fmod( x, y ); } );
 }
 
 // --run_test=MathTests/ExpFloatTest2
@@ -1690,6 +2259,43 @@ BOOST_AUTO_TEST_CASE( ExpFloatTest2 )
     BOOST_CHECK( success );
     //RandomValueTest<float, 10000>( "ExpFloatTest2", []( float value ) { return std::exp( value ); }, []( float value ) { return Math::Exp( value ); }, -9, 10 );
 }
+
+// --run_test=MathTests/OpenLibMExpFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMExpFloatTest2 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = float;
+    //Generators::RandomGenerator<FloatT, 200000> generator( -9, 10 );
+    Generators::RangeGenerator<FloatT> generator( -89, 89 );
+    NumericTest test( "OpenLibMExpFloatTest2" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            return std::exp( x );
+        },
+        []( auto x )
+        {
+            return OpenLibM::expf( x );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+        BOOST_CHECK( success );
+        //RandomValueTest<float, 10000>( "ExpFloatTest2", []( float value ) { return std::exp( value ); }, []( float value ) { return Math::Exp( value ); }, -9, 10 );
+}
+
 
 
 /*
@@ -1765,10 +2371,53 @@ BOOST_AUTO_TEST_CASE( ExpDoubleTest2 )
     //RandomValueTest<double, 10000>( "ExpDoubleTest2", []( double value ) { return std::exp( value ); }, []( double value ) { return Math::Exp( value ); }, -9, 10 );
 }
 
+// --run_test=MathTests/OpenLibMExpDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMExpDoubleTest2 )
+{
+    using namespace Test;
+    using namespace Test::Generators;
+    using FloatT = double;
+    //auto generator = std::make_unique<Generators::RandomGenerator<FloatT, 200000>>( -9, 10 );
+    Generators::RangeGenerator<FloatT> generator( -744, 710 );
+    NumericTest test( "OpenLibMExpDoubleTest2" );
+    auto success = test.Run( generator,
+        []( auto x )
+        {
+            return std::exp( x );
+        },
+        []( auto x )
+        {
+            return OpenLibM::exp( x );
+        },
+        {
+            std::numeric_limits<FloatT>::quiet_NaN( ),
+            -std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::infinity( ),
+            std::numeric_limits<FloatT>::lowest( ),
+            std::numeric_limits<FloatT>::min( ),
+            -std::numeric_limits<FloatT>::min( ),
+            std::numeric_limits<FloatT>::max( ),
+            std::numeric_limits<FloatT>::epsilon( ),
+            -std::numeric_limits<FloatT>::epsilon( ),
+            std::numeric_limits<FloatT>::denorm_min( ),
+            -std::numeric_limits<FloatT>::denorm_min( ),
+            -0.0,0.0
+        } );
+        BOOST_CHECK( success );
+        //RandomValueTest<double, 10000>( "ExpDoubleTest2", []( double value ) { return std::exp( value ); }, []( double value ) { return Math::Exp( value ); }, -9, 10 );
+}
+
+
 // --run_test=MathTests/LogFloatTest2
 BOOST_AUTO_TEST_CASE( LogFloatTest2 )
 {
     RandomValueTest<float, 10000>( "LogFloatTest2", []( float value ) { return std::log( value ); }, []( float value ) { return Math::Log( value ); }, 0, 100000 );
+}
+
+// --run_test=MathTests/OpenLibMLogFloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMLogFloatTest2 )
+{
+    RandomValueTest<float, 10000>( "OpenLibMLogFloatTest2", []( float value ) { return std::log( value ); }, []( float value ) { return OpenLibM::logf( value ); }, 0, 100000 );
 }
 
 // --run_test=MathTests/LogDoubleTest2
@@ -1777,10 +2426,22 @@ BOOST_AUTO_TEST_CASE( LogDoubleTest2 )
     RandomValueTest<double, 10000>( "LogDoubleTest2", []( double value ) { return std::log( value ); }, []( double value ) { return Math::Log( value ); }, 0, 100000 );
 }
 
+// --run_test=MathTests/OpenLibMLogDoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMLogDoubleTest2 )
+{
+    RandomValueTest<double, 10000>( "OpenLibMLogDoubleTest2", []( double value ) { return std::log( value ); }, []( double value ) { return OpenLibM::log( value ); }, 0, 100000 );
+}
+
 // --run_test=MathTests/Log2FloatTest2
 BOOST_AUTO_TEST_CASE( Log2FloatTest2 )
 {
     RandomValueTest<float, 10000>( "Log2FloatTest2", []( float value ) { return std::log2( value ); }, []( float value ) { return Math::Log2( value ); }, 0, 100000 );
+}
+
+// --run_test=MathTests/OpenLibMLog2FloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMLog2FloatTest2 )
+{
+    RandomValueTest<float, 10000>( "OpenLibMLog2FloatTest2", []( float value ) { return std::log2( value ); }, []( float value ) { return OpenLibM::log2f( value ); }, 0, 100000 );
 }
 
 // --run_test=MathTests/Log2DoubleTest2
@@ -1789,16 +2450,34 @@ BOOST_AUTO_TEST_CASE( Log2DoubleTest2 )
     RandomValueTest<double, 10000>( "Log2DoubleTest2", []( double value ) { return std::log2( value ); }, []( double value ) { return Math::Log2( value ); }, 0, 100000 );
 }
 
+// --run_test=MathTests/OpenLibMLog2DoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMLog2DoubleTest2 )
+{
+    RandomValueTest<double, 10000>( "OpenLibMLog2DoubleTest2", []( double value ) { return std::log2( value ); }, []( double value ) { return OpenLibM::log2( value ); }, 0, 100000 );
+}
+
 // --run_test=MathTests/Log10FloatTest2
 BOOST_AUTO_TEST_CASE( Log10FloatTest2 )
 {
     RandomValueTest<float, 10000>( "Log10FloatTest2", []( float value ) { return std::log10( value ); }, []( float value ) { return Math::Log10( value ); }, 0, 100000 );
 }
 
+// --run_test=MathTests/OpenLibMLog10FloatTest2
+BOOST_AUTO_TEST_CASE( OpenLibMLog10FloatTest2 )
+{
+    RandomValueTest<float, 10000>( "OpenLibMLog10FloatTest2", []( float value ) { return std::log10( value ); }, []( float value ) { return OpenLibM::log10f( value ); }, 0, 100000 );
+}
+
 // --run_test=MathTests/Log10DoubleTest2
 BOOST_AUTO_TEST_CASE( Log10DoubleTest2 )
 {
     RandomValueTest<double, 10000>( "Log10DoubleTest2", []( double value ) { return std::log10( value ); }, []( double value ) { return Math::Log10( value ); }, 0, 100000 );
+}
+
+// --run_test=MathTests/OpenLibMLog10DoubleTest2
+BOOST_AUTO_TEST_CASE( OpenLibMLog10DoubleTest2 )
+{
+    RandomValueTest<double, 10000>( "OpenLibMLog10DoubleTest2", []( double value ) { return std::log10( value ); }, []( double value ) { return OpenLibM::log10( value ); }, 0, 100000 );
 }
 
 
@@ -1814,6 +2493,23 @@ BOOST_AUTO_TEST_CASE( Log2DoubleTest3 )
     BOOST_CHECK( result1a == result1b );
 
     double result2a = Log2( argValue2 );
+    double result2b = std::log2( argValue2 );
+    BOOST_CHECK( result2a == result2b );
+
+}
+
+// --run_test=MathTests/OpenLibMLog2DoubleTest3
+BOOST_AUTO_TEST_CASE( OpenLibMLog2DoubleTest3 )
+{
+    constexpr double increment = 1.0000000000000001e-09;
+    constexpr double argValue2 = 1.4142112734437984;
+    constexpr double argValue1 = argValue2 - increment;
+
+    constexpr double result1a = OpenLibM::log2( argValue1 );
+    double result1b = std::log2( argValue1 );
+    BOOST_CHECK( result1a == result1b );
+
+    constexpr double result2a = OpenLibM::log2( argValue2 );
     double result2b = std::log2( argValue2 );
     BOOST_CHECK( result2a == result2b );
 
@@ -2029,13 +2725,32 @@ BOOST_AUTO_TEST_CASE( HypotDoubleTest1 )
 
 }
 
-// --run_test=MathTests/HypotFloatTest1 )
+// --run_test=MathTests/HypotFloatTest1
 BOOST_AUTO_TEST_CASE( HypotFloatTest1 )
 {
     constexpr float val1 = 2.0;
     constexpr float val2 = 3.0;
 
     constexpr float result1 = Hypot( val1, val2 );
+    static_assert( result1 > val2 );
+
+    float result2 = Hypot( val1, val2 );
+    float result3 = std::hypot( val1, val2 );
+
+    bool equal = IsSameValue( result3, result1 );
+    BOOST_CHECK( equal );
+    equal = IsSameValue( result3, result2 );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=MathTests/OpenLibMHypotFloatTest1 
+BOOST_AUTO_TEST_CASE( OpenLibMHypotFloatTest1 )
+{
+    constexpr float val1 = 2.0;
+    constexpr float val2 = 3.0;
+
+    constexpr float result1 = OpenLibM::hypotf( val1, val2 );
     static_assert( result1 > val2 );
 
     float result2 = Hypot( val1, val2 );

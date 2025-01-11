@@ -89,4 +89,59 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			return ( float )2.0 * ( df + w );
 		}
 	}
+
+	constexpr inline float
+		FastACos( float x )
+	{
+		using namespace acosf_internal;
+		float z, p, q, r, w, s, c, df;
+		int32_t hx, ix;
+		//GET_FLOAT_WORD( hx, x );
+		hx = std::bit_cast< int32_t >( x );
+		ix = hx & 0x7fffffff;
+		if ( ix >= 0x3f800000 )
+		{		/* |x| >= 1 */
+			if ( ix == 0x3f800000 )
+			{	/* |x| == 1 */
+				if ( hx > 0 ) return 0.0;	/* acos(1) = 0 */
+				else return pi + 2.0f * pio2_lo;	/* acos(-1)= pi */
+			}
+			return ( x - x ) / ( x - x );		/* acos(|x|>1) is NaN */
+		}
+		if ( ix < 0x3f000000 )
+		{	/* |x| < 0.5 */
+			if ( ix <= 0x32800000 ) return pio2_hi + pio2_lo;/*if|x|<2**-26*/
+			z = x * x;
+			p = z * ( pS0 + z * ( pS1 + z * pS2 ) );
+			q = one + z * qS1;
+			r = p / q;
+			return pio2_hi - ( x - ( pio2_lo - x * r ) );
+		}
+		else  if ( hx < 0 )
+		{		/* x < -0.5 */
+			z = ( one + x ) * 0.5f;
+			p = z * ( pS0 + z * ( pS1 + z * pS2 ) );
+			q = one + z * qS1;
+			s = Sqrt( z );
+			r = p / q;
+			w = r * s - pio2_lo;
+			return pi - 2.0f * ( s + w );
+		}
+		else
+		{			/* x > 0.5 */
+			//int32_t idf;
+			z = ( one - x ) * 0.5f;
+			s = Sqrt( z );
+			df = s;
+			//GET_FLOAT_WORD( idf, df );
+			//SET_FLOAT_WORD( df, idf & 0xfffff000 );
+			df = std::bit_cast< float >( std::bit_cast< int32_t >( df ) & 0xfffff000 );
+			c = ( z - df * df ) / ( s + df );
+			p = z * ( pS0 + z * ( pS1 + z * pS2 ) );
+			q = one + z * qS1;
+			r = p / q;
+			w = r * s + c;
+			return 2.0f * ( df + w );
+		}
+	}
 }

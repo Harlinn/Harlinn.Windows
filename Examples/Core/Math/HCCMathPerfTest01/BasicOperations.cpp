@@ -592,35 +592,6 @@ void ScaleByNFloatTest( Int64 outerIterationCount )
 }
 
 
-void ConstexprSinDoubleTest( Int64 outerIterationCount )
-{
-    constexpr double innerIterationCount = 1'000'000'000.0;
-    constexpr double baseValue = 0.000001;
-    constexpr double maxValue = M_PI_4 - ( 2 * baseValue );
-    constexpr double increment = maxValue / innerIterationCount;
-
-    RunTest1<double>( outerIterationCount, __FUNCTION__, []( auto arg ) { return Math::Internal::SinCore( arg ); }, []( auto arg ) { return std::sin( arg ); }, baseValue, increment );
-}
-
-void ConstexprCosDoubleTest( Int64 outerIterationCount )
-{
-    constexpr double innerIterationCount = 1'000'000'000.0;
-    constexpr double baseValue = 0.000001;
-    constexpr double maxValue = M_PI_4 - ( 2 * baseValue );
-    constexpr double increment = maxValue / innerIterationCount;
-
-    RunTest1<double>( outerIterationCount, __FUNCTION__, []( auto arg ) { return Math::Internal::CosCore( arg ); }, []( auto arg ) { return std::cos( arg ); }, baseValue, increment );
-}
-
-void ConstexprTanDoubleTest( Int64 outerIterationCount )
-{
-    constexpr double innerIterationCount = 1'000'000'000.0;
-    constexpr double baseValue = 0.000001;
-    constexpr double maxValue = M_PI_4 - ( 2 * baseValue );
-    constexpr double increment = maxValue / innerIterationCount;
-
-    RunTest1<double>( outerIterationCount, __FUNCTION__, []( auto arg ) { return Math::Internal::TanCore( arg ); }, []( auto arg ) { return std::tan( arg ); }, baseValue, increment );
-}
 
 
 void SinDoubleTest( Int64 outerIterationCount )
@@ -1107,11 +1078,6 @@ void RunBasicOperations( )
 
     ScaleByNDoubleTest( OuterIterationCount );
     ScaleByNFloatTest( OuterIterationCount );
-
-
-    ConstexprSinDoubleTest( OuterIterationCount );
-    ConstexprCosDoubleTest( OuterIterationCount );
-    ConstexprTanDoubleTest( OuterIterationCount );
 
 
     SinDoubleTest( OuterIterationCount );

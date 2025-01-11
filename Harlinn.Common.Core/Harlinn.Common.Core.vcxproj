@@ -339,8 +339,6 @@
     <ClInclude Include="Internal\Math\openlibm_complex.h" />
     <ClInclude Include="Internal\Math\openlibm_defs.h" />
     <ClInclude Include="Internal\Math\openlibm_math.h" />
-    <ClInclude Include="Internal\Math\sqrt.h" />
-    <ClInclude Include="Internal\Math\trigonometry.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="xxh3.h" />
     <ClInclude Include="xxhash.h" />

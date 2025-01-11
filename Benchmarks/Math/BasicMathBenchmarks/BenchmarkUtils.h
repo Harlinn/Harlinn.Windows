@@ -30,6 +30,7 @@
 #define RUN_SQUAREMATRIX_BENCHMARKS 1
 
 using namespace Harlinn::Common::Core;
+namespace OpenLibM = Harlinn::Common::Core::Math::Internal::OpenLibM;
 
 template<typename ValueT, size_t N >
 using RandomGenerator = Test::Generators::RandomGenerator<ValueT, N>;

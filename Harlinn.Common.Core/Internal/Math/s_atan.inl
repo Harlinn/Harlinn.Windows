@@ -81,7 +81,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		double w, s1, s2, z;
 		int32_t ix, hx, id;
 
-		GET_HIGH_WORD( hx, x );
+		//GET_HIGH_WORD( hx, x );
+		hx = GetHigh32Bits<int32_t>( x );
 		ix = hx & 0x7fffffff;
 		if ( ix >= 0x44100000 )
 		{	/* if |x| >= 2^66 */
@@ -139,5 +140,6 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			return ( hx < 0 ) ? -z : z;
 		}
 	}
+
 
 }

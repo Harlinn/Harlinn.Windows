@@ -23,9 +23,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline double
 		fabs( double x )
 	{
-		uint32_t high = 0;
-		GET_HIGH_WORD( high, x );
-		SET_HIGH_WORD( x, high & 0x7fffffff );
-		return x;
+		//uint32_t high = 0;
+		//GET_HIGH_WORD( high, x );
+		//SET_HIGH_WORD( x, high & 0x7fffffff );
+		//return x;
+		return std::bit_cast< double >( std::bit_cast<UInt64>( x ) & 0x7fffffffffffffffULL );
 	}
 }

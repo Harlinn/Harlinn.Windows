@@ -83,6 +83,23 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 
 	/* Get two 32 bit ints from a double.  */
 
+	constexpr inline void EXTRACT_WORDS( Int32& ix0, UInt32& ix1, double src )
+	{
+		ix0 = GetHigh32Bits<Int32>( src );
+		ix1 = GetLow32Bits<UInt32>( src );
+	}
+	constexpr inline void EXTRACT_WORDS( Int32& ix0, Int32& ix1, double src )
+	{
+		ix0 = GetHigh32Bits<Int32>( src );
+		ix1 = GetLow32Bits<Int32>( src );
+	}
+	constexpr inline void EXTRACT_WORDS( UInt32& ix0, UInt32& ix1, double src )
+	{
+		ix0 = GetHigh32Bits<UInt32>( src );
+		ix1 = GetLow32Bits<UInt32>( src );
+	}
+
+/*
 #define EXTRACT_WORDS(ix0,ix1,d)				\
 do {								\
   ieee_double_shape_type ew_u;					\
@@ -90,35 +107,73 @@ do {								\
   (ix0) = ew_u.parts.msw;					\
   (ix1) = ew_u.parts.lsw;					\
 } while (0)
-
+*/
 /* Get a 64-bit int from a double. */
+
+	constexpr inline void EXTRACT_WORD64( UInt64& ix, double src )
+	{
+		ix = std::bit_cast< UInt64 >( src );
+	}
+	constexpr inline void EXTRACT_WORD64( Int64& ix, double src )
+	{
+		ix = std::bit_cast< Int64 >( src );
+	}
+
+/*
 #define EXTRACT_WORD64(ix,d)					\
 do {								\
   ieee_double_shape_type ew_u;					\
   ew_u.value = (d);						\
   (ix) = ew_u.xparts.w;						\
 } while (0)
+*/
 
 /* Get the more significant 32 bit int from a double.  */
 
+	constexpr inline void GET_HIGH_WORD( Int32& dest, double src )
+	{
+		dest = GetHigh32Bits<Int32>( src );
+	}
+	constexpr inline void GET_HIGH_WORD( UInt32& dest, double src )
+	{
+		dest = GetHigh32Bits<UInt32>( src );
+	}
+/*
 #define GET_HIGH_WORD(i,d)					\
 do {								\
   ieee_double_shape_type gh_u;					\
   gh_u.value = (d);						\
   (i) = gh_u.parts.msw;						\
 } while (0)
-
+*/
 /* Get the less significant 32 bit int from a double.  */
 
+	constexpr inline void GET_LOW_WORD( UInt32& dest, double src )
+	{
+		dest = GetLow32Bits<UInt32>( src );
+	}
+	constexpr inline void GET_LOW_WORD( Int32& dest, double src )
+	{
+		dest = GetLow32Bits<Int32>( src );
+	}
+
+/*
 #define GET_LOW_WORD(i,d)					\
 do {								\
   ieee_double_shape_type gl_u;					\
   gl_u.value = (d);						\
   (i) = gl_u.parts.lsw;						\
 } while (0)
-
+*/
 /* Set a double from two 32 bit ints.  */
 
+	template<typename T, typename U>
+	constexpr inline void INSERT_WORDS( double& dest, T srcHigh, U srcLow )
+	{
+		dest = std::bit_cast<double>(( static_cast< UInt64 >( std::bit_cast< UInt32 >( srcHigh ) ) << 32 ) + static_cast< Int64 >( std::bit_cast< UInt32 >( srcLow ) ));
+	}
+
+/*
 #define INSERT_WORDS(d,ix0,ix1)					\
 do {								\
   ieee_double_shape_type iw_u;					\
@@ -126,17 +181,38 @@ do {								\
   iw_u.parts.lsw = (ix1);					\
   (d) = iw_u.value;						\
 } while (0)
-
+*/
 /* Set a double from a 64-bit int. */
+
+	constexpr inline void INSERT_WORD64( double& dest, UInt64 src)
+	{
+		dest = std::bit_cast< double >( src );
+	}
+	constexpr inline void INSERT_WORD64( double& dest, Int64 src )
+	{
+		dest = std::bit_cast< double >( src );
+	}
+
+/*
 #define INSERT_WORD64(d,ix)					\
 do {								\
   ieee_double_shape_type iw_u;					\
   iw_u.xparts.w = (ix);						\
   (d) = iw_u.value;						\
 } while (0)
-
+*/
 /* Set the more significant 32 bits of a double from an int.  */
 
+
+	constexpr inline void SET_HIGH_WORD( double& dest, UInt32 src )
+	{
+		dest = SetHigh32Bits( dest, src );
+	}
+	constexpr inline void SET_HIGH_WORD( double& dest, Int32 src )
+	{
+		dest = SetHigh32Bits( dest, src );
+	}
+/*
 #define SET_HIGH_WORD(d,v)					\
 do {								\
   ieee_double_shape_type sh_u;					\
@@ -144,9 +220,19 @@ do {								\
   sh_u.parts.msw = (v);						\
   (d) = sh_u.value;						\
 } while (0)
-
+*/
 /* Set the less significant 32 bits of a double from an int.  */
 
+	constexpr inline void SET_LOW_WORD( double& dest, UInt32 src )
+	{
+		dest = SetLow32Bits( dest, src );
+	}
+	constexpr inline void SET_LOW_WORD( double& dest, Int32 src )
+	{
+		dest = SetLow32Bits( dest, src );
+	}
+
+/*
 #define SET_LOW_WORD(d,v)					\
 do {								\
   ieee_double_shape_type sl_u;					\
@@ -154,6 +240,7 @@ do {								\
   sl_u.parts.lsw = (v);						\
   (d) = sl_u.value;						\
 } while (0)
+*/
 
 /*
  * A union which permits us to convert between a float and a 32 bit
@@ -169,21 +256,43 @@ do {								\
 
 	/* Get a 32 bit int from a float.  */
 
+	constexpr inline void GET_FLOAT_WORD( UInt32& ix, float src )
+	{
+		ix = std::bit_cast< UInt32 >( src );
+	}
+	constexpr inline void GET_FLOAT_WORD( Int32& ix, float src )
+	{
+		ix = std::bit_cast< Int32 >( src );
+	}
+
+/*
 #define GET_FLOAT_WORD(i,d)					\
 do {								\
   ieee_float_shape_type gf_u;					\
   gf_u.value = (d);						\
   (i) = gf_u.word;						\
 } while (0)
+*/
 
 /* Set a float from a 32 bit int.  */
 
+	constexpr inline void SET_FLOAT_WORD( float& dest, UInt32 src )
+	{
+		dest = std::bit_cast< float >( src );
+	}
+	constexpr inline void SET_FLOAT_WORD( float& dest, Int32 src )
+	{
+		dest = std::bit_cast< float >( src );
+	}
+
+/*
 #define SET_FLOAT_WORD(d,i)					\
 do {								\
   ieee_float_shape_type sf_u;					\
   sf_u.word = (i);						\
   (d) = sf_u.value;						\
 } while (0)
+*/
 
 /* Get expsign as a 16 bit int from a long double.  */
 

@@ -668,7 +668,7 @@ namespace Harlinn::Common::Core
     inline constexpr T1 GetHigh32Bits( T2 val ) noexcept
     {
         auto value = std::bit_cast<UInt64>( val );
-        return static_cast<T1>( value >> 32 );
+        return std::bit_cast<T1>( static_cast<UInt32>(value >> 32) );
     }
 
 
@@ -690,7 +690,7 @@ namespace Harlinn::Common::Core
     inline constexpr T1 GetLow32Bits( T2 val ) noexcept
     {
         auto value = std::bit_cast<UInt64>( val );
-        return static_cast<T1>( value );
+        return std::bit_cast<T1>( static_cast<UInt32>( value ) );
     }
 
 

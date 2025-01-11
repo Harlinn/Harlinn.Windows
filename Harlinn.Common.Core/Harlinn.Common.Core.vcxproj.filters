@@ -420,12 +420,6 @@
     <ClInclude Include="Internal\Math\NearestInteger.h">
       <Filter>Header Files\Internal\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Internal\Math\sqrt.h">
-      <Filter>Header Files\Internal\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Internal\Math\trigonometry.h">
-      <Filter>Header Files\Internal\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Internal\Math\openlibm.h">
       <Filter>Header Files\Internal\Math</Filter>
     </ClInclude>

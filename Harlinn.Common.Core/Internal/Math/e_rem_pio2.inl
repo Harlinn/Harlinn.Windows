@@ -52,9 +52,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			pio2_3 = 2.02226624871116645580e-21, /* 0x3BA3198A, 0x2E000000 */
 			pio2_3t = 8.47842766036889956997e-32; /* 0x397B839A, 0x252049C1 */
 
-		constexpr inline int __ieee754_rem_pio2_medium( double x, double fn,  int32_t ix, double* y )
+		constexpr inline int __ieee754_rem_pio2_medium( double x, int32_t ix, double* y )
 		{
 			/* Use a specialized rint() to get fn.  Assume round-to-nearest. */
+			double fn;
 			STRICT_ASSIGN( double, fn, x * invpio2 + 0x1.8p52 );
 			fn = fn - 0x1.8p52;
 #ifdef HAVE_EFFICIENT_IRINT
@@ -98,7 +99,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	{
 		using namespace __ieee754_rem_pio2_internal;
 		//double z, w, t, r, fn;
-		double z, fn;
+		double z;
 		double tx[ 3 ], ty[ 2 ];
 		//int32_t e0, i, j, nx, n, ix, hx;
 		int32_t e0, i, nx, n, ix, hx;
@@ -116,7 +117,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		{		/* |x| ~<= 5pi/4 */
 			if ( ( ix & 0xfffff ) == 0x921fb )  /* |x| ~= pi/2 or 2pi/2 */
 			{
-				return __ieee754_rem_pio2_medium( x, fn, ix, y );
+				return __ieee754_rem_pio2_medium( x, ix, y );
 				//goto medium;		/* cancellation -- use medium case */
 			}
 			if ( ix <= 0x4002d97c )
@@ -160,7 +161,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			{	/* |x| ~<= 7pi/4 */
 				if ( ix == 0x4012d97c )	/* |x| ~= 3pi/2 */
 				{
-					return __ieee754_rem_pio2_medium( x, fn, ix, y );
+					return __ieee754_rem_pio2_medium( x, ix, y );
 					//goto medium;
 				}
 				if ( hx > 0 )
@@ -182,7 +183,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			{
 				if ( ix == 0x401921fb )	/* |x| ~= 4pi/2 */
 				{
-					return __ieee754_rem_pio2_medium( x, fn, ix, y );
+					return __ieee754_rem_pio2_medium( x, ix, y );
 					//goto medium;
 				}
 				if ( hx > 0 )
@@ -203,7 +204,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		if ( ix < 0x413921fb )
 		{	/* |x| ~< 2^20*(pi/2), medium size */
-			return __ieee754_rem_pio2_medium( x, fn, ix, y );
+			return __ieee754_rem_pio2_medium( x, ix, y );
 //medium:
 //			/* Use a specialized rint() to get fn.  Assume round-to-nearest. */
 //			STRICT_ASSIGN( double, fn, x * invpio2 + 0x1.8p52 );

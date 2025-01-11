@@ -167,4 +167,6 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		return x;		/* exact output */
 	}
+
+
 }

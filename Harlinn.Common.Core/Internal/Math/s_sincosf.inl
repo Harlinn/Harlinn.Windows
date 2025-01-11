@@ -90,7 +90,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		float k_c, k_s;
 		int32_t n, hx, ix;
 
-		GET_FLOAT_WORD( hx, x );
+		//GET_FLOAT_WORD( hx, x );
+		hx = std::bit_cast< int32_t >( x );
 		ix = hx & 0x7fffffff;
 
 		if ( ix <= 0x3f490fda )
