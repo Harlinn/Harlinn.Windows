@@ -185,6 +185,7 @@
     <ClCompile Include="SquareMatrix2FloatTests.cpp" />
     <ClCompile Include="SquareMatrix3Tests.cpp" />
     <ClCompile Include="SquareMatrix4FloatTests.cpp" />
+    <ClCompile Include="Transform3DTests.cpp" />
     <ClCompile Include="TruncTests.cpp" />
   </ItemGroup>
   <ItemGroup>

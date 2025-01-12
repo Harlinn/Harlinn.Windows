@@ -5227,6 +5227,7 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
+
         auto result = Traits::Round( Traits::Mul( angles.simd, Traits::Fill( Constants<FloatT>::Inv2Pi ) ) );
         return Traits::FNMAdd( result, Traits::Fill( Constants<FloatT>::PiTimes2 ), angles.simd );
     }
@@ -10104,7 +10105,7 @@ namespace Harlinn::Common::Core::Math
                 auto halfPitchYawRoll = Traits::Mul( pitchYawRoll.simd, oneHalf );
 
                 SIMDType cosines;
-                auto sines = Traits::SinCos( &cosines, halfPitchYawRoll );
+                auto sines = Traits::FastSinCos( halfPitchYawRoll, &cosines );
                 using P = typename Traits::PermuteType;
 
                 auto p0 = Traits::Permute<P::X1, P::X2, P::X2, P::X2>( sines, cosines );
@@ -10285,18 +10286,24 @@ namespace Harlinn::Common::Core::Math
         Quaternion( ValueType pitch, ValueType yaw, ValueType roll ) noexcept
         {
             const float halfPitch = pitch * static_cast< ValueType >( 0.5 );
-            float cp = Cos( halfPitch );
-            float sp = Sin( halfPitch );
+            //float cp = Cos( halfPitch );
+            //float sp = Sin( halfPitch );
+            float cp, sp;
+            SinCos( halfPitch, &sp, &cp );
 
             const float halfYaw = yaw * static_cast< ValueType >( 0.5 );
-            float cy = Cos( halfYaw );
-            float sy = Sin( halfYaw );
+            //float cy = Cos( halfYaw );
+            //float sy = Sin( halfYaw );
+            float cy, sy;
+            SinCos( halfYaw, &sy, &cy );
 
             const float halfRoll = roll * static_cast< ValueType >( 0.5 );
-            float cr = Cos( halfRoll );
-            float sr = Sin( halfRoll );
+            //float cr = Cos( halfRoll );
+            //float sr = Sin( halfRoll );
 
-            
+            float cr, sr;
+            SinCos( halfRoll, &sr, &cr );
+
             values[ 0 ] = cr * sp * cy + sr * cp * sy;
             values[ 1 ] = cr * cp * sy - sr * sp * cy;
             values[ 2 ] = sr * cp * cy - cr * sp * sy;
@@ -12598,6 +12605,35 @@ namespace Harlinn::Common::Core::Math
         return result;
     }
 
+    template<Internal::SimdType S>
+        requires (S::Size > 2) && std::is_same_v<typename S::value_type, float>
+    inline SquareMatrix<float, 4>::Simd Translation( const S& offset )
+    {
+        using Simd = SquareMatrix<float, 4>::Simd;
+        using Traits = Simd::Traits;
+        using SIMDType = Traits::SIMDType;
+        constexpr SIMDType r1 = { { 1.0f, 0.0f, 0.0f, 0.0f } };
+        constexpr SIMDType r2 = { { 0.0f, 1.0f, 0.0f, 0.0f } };
+        constexpr SIMDType r3 = { { 0.0f, 0.0f, 1.0f, 0.0f } };
+        constexpr SIMDType r4 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+        constexpr SIMDType columnSelect = { { std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), 0 } };
+
+        Simd result;
+        result.simd[ 0 ] = r1;
+        result.simd[ 1 ] = r2;
+        result.simd[ 2 ] = r3;
+        result.simd[ 3 ] = Traits::Select( r4, offset.simd, columnSelect );
+        return result;
+    }
+
+    template<Internal::TupleType S>
+        requires ( S::Size > 2 ) && std::is_same_v<typename S::value_type, float>
+    inline SquareMatrix<float, 4>::Simd Translation( const S& offset )
+    {
+        return Translation( offset.x, offset.y, offset.z );
+    }
+
+
     inline SquareMatrix<float, 3>::Simd Translation( float offsetX, float offsetY )
     {
         using Simd = SquareMatrix<float, 3>::Simd;
@@ -12639,16 +12675,18 @@ namespace Harlinn::Common::Core::Math
         using MatrixSimd = SquareMatrix<float, 4>::Simd;
         using SIMDType = typename SourceTraits::SIMDType;
 
-        constexpr SIMDType xMask = { {0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000} };
-        constexpr SIMDType yMask = { {0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000} };
-        constexpr SIMDType zMask = { {0x00000000, 0x00000000, 0xFFFFFFFF, 0x00000000} };
+        constexpr auto bitsSet = std::bit_cast< float >( 0xFFFFFFFF );
+        constexpr auto bitsClear = std::bit_cast< float >( 0x00000000 );
+        constexpr SIMDType xMask = { {bitsSet, bitsClear, bitsClear, bitsClear} };
+        constexpr SIMDType yMask = { {bitsClear, bitsSet, bitsClear, bitsClear} };
+        constexpr SIMDType zMask = { {bitsClear, bitsClear, bitsSet, bitsClear} };
         constexpr SIMDType r4 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
 
         MatrixSimd result;
 
-        result.simd[ 0 ] = SourceTraits::And( v, xMask );
-        result.simd[ 1 ] = SourceTraits::And( v, yMask );
-        result.simd[ 2 ] = SourceTraits::And( v, zMask );
+        result.simd[ 0 ] = SourceTraits::And( v.simd, xMask );
+        result.simd[ 1 ] = SourceTraits::And( v.simd, yMask );
+        result.simd[ 2 ] = SourceTraits::And( v.simd, zMask );
         result.simd[ 3 ] = r4;
         return result;
     }
@@ -12710,7 +12748,7 @@ namespace Harlinn::Common::Core::Math
         constexpr SIMDType columnSelect = { { std::bit_cast<float>( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), 0 } };
 
         SIMDType cosines;
-        auto sines = Traits::SinCos( v.simd, &cosines );
+        auto sines = Traits::FastSinCos( v.simd, &cosines );
 
         auto p0 = Traits::Permute<P::X2, P::Z1, P::Z2, P::X2>( sines, cosines );
         auto p1 = Traits::Permute<P::Z2, P::Z1, P::Z2, P::Z1>( sines, cosines );
@@ -12758,6 +12796,241 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    /// <summary>
+    /// Creates a matrix that rotates around a normalized vector.
+    /// </summary>
+    /// <param name="normalizedAxis">
+    /// Normalized vector defining the axis of rotation.
+    /// </param>
+    /// <param name="angle">
+    /// The angle of rotation in radians, measured clockwise when 
+    /// looking along the rotation axis toward the origin.
+    /// </param>
+    /// <returns>
+    /// The rotation matrix
+    /// </returns>
+    template<Internal::SimdType S>
+        requires ( S::Size > 2 ) 
+    inline SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept
+    {
+        using Traits = SIMD::Traits<float, 4>;
+        using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
+        using SIMDType = typename Traits::SIMDType;
+        constexpr SIMDType maskXYZ{ { std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), 0x00000000 } };
+        float sine;
+        float cosine;
+        
+        SinCos( angle, &sine, &cosine );
+
+        auto C0 = Traits::Fill( sine );
+        auto C1 = Traits::Fill( cosine );
+        auto C2 = Traits::Fill( 1.0f - cosine );
+
+        auto N0 = Traits::Shuffle<3, 0, 2, 1>( normalizedAxis.simd, normalizedAxis.simd );
+        auto N1 = Traits::Shuffle<3, 1, 0, 2>( normalizedAxis.simd, normalizedAxis.simd );
+
+        auto V0 = Traits::Mul( C2, N0 );
+        V0 = Traits::Mul( V0, N1 );
+
+        auto R0 = Traits::Mul( C2, normalizedAxis.simd );
+        R0 = Traits::FMAdd( R0, normalizedAxis.simd, C1 );
+
+        auto R1 = Traits::FMAdd( C0, normalizedAxis.simd, V0 );
+        auto R2 = Traits::Mul( C0, normalizedAxis.simd );
+        R2 = Traits::Sub( V0, R2 );
+
+        V0 = Traits::And( R0, maskXYZ );
+        auto V1 = Traits::Shuffle<2, 1, 2, 0>( R1, R2 );
+        V1 = Traits::Shuffle<0, 3, 2, 1>( V1, V1 );
+        auto V2 = Traits::Shuffle<0, 0, 1, 1>( R1, R2 );
+        V2 = Traits::Shuffle<2, 0, 2, 0>( V2, V2 );
+
+        R2 = Traits::Shuffle<1, 0, 3, 0>( V0, V1 );
+        R2 = Traits::Shuffle<1, 3, 2, 0>( R2, R2 );
+
+        MatrixSimd result;
+        result.simd[ 0 ] = R2;
+
+        R2 = Traits::Shuffle<3, 2, 3, 1>( V0, V1 );
+        R2 = Traits::Shuffle<1, 3, 0, 2>( R2, R2 );
+        result.simd[ 1 ] = R2;
+
+        V2 = Traits::Shuffle<3, 2, 1, 0>( V2, V0 );
+        result.simd[ 2 ] = V2;
+        result.simd[ 3 ] = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+        return result;
+    }
+
+    /// <summary>
+    /// Creates a matrix that rotates around a normalized vector.
+    /// </summary>
+    /// <param name="normalizedAxis">
+    /// Normalized vector defining the axis of rotation.
+    /// </param>
+    /// <param name="angle">
+    /// The angle of rotation in radians, measured clockwise when 
+    /// looking along the rotation axis toward the origin.
+    /// </param>
+    /// <returns>
+    /// The rotation matrix.
+    /// </returns>
+    template<Internal::TupleType S>
+        requires ( S::Size > 2 )
+    inline SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept
+    {
+        using Simd = typename S::Simd;
+        return RotationNormal( Simd( normalizedAxis ), angle );
+    }
+
+    /// <summary>
+    /// Creates a matrix that rotates around an arbitrary axis.
+    /// </summary>
+    /// <param name="axis">
+    /// The axis of rotation.
+    /// </param>
+    /// <param name="angle">
+    /// The angle of rotation in radians, measured clockwise when 
+    /// looking along the rotation axis toward the origin.
+    /// </param>
+    /// <returns>
+    /// The rotation matrix.
+    /// </returns>
+    template<Internal::SimdType S>
+        requires ( S::Size > 2 )
+    inline SquareMatrix<float, 4>::Simd RotationAxis( const S& axis, float angle ) noexcept
+    {
+        return RotationNormal( Normalize( axis ), angle );
+    }
+
+    /// <summary>
+    /// Creates a matrix that rotates around an arbitrary axis.
+    /// </summary>
+    /// <param name="axis">
+    /// The axis of rotation.
+    /// </param>
+    /// <param name="angle">
+    /// The angle of rotation in radians, measured clockwise when 
+    /// looking along the rotation axis toward the origin.
+    /// </param>
+    /// <returns>
+    /// The rotation matrix.
+    /// </returns>
+    template<Internal::TupleType S>
+        requires ( S::Size > 2 )
+    inline SquareMatrix<float, 4>::Simd RotationAxis( const S& axis, float angle ) noexcept
+    {
+        return RotationNormal( Normalize( axis ), angle );
+    }
+
+    /// <summary>
+    /// Creates a rotation matrix from a quaternion.
+    /// </summary>
+    /// <param name="q">
+    /// The quaternion that defines the rotation.
+    /// </param>
+    /// <returns>
+    /// The rotation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const QuaternionSimd<Quaternion<float>>& q )
+    {
+        using Traits = SIMD::Traits<float, 4>;
+        using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
+        using SIMDType = typename Traits::SIMDType;
+        constexpr SIMDType maskXYZ{ { std::bit_cast<float>( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), 0x00000000 } };
+
+        auto Q0 = Traits::Add( q.simd, q.simd );
+        auto Q1 = Traits::Mul( q.simd, Q0 );
+
+        auto V0 = Traits::Shuffle<3, 0, 0, 1>( Q1 );
+        V0 = Traits::And( V0, maskXYZ );
+        auto V1 = Traits::Shuffle<3, 1, 2, 2>( Q1);
+        V1 = Traits::And( V1, maskXYZ );
+        auto R0 = Traits::Sub( { { 1.0f, 1.0f, 1.0f, 0.0f } }, V0 );
+        R0 = Traits::Sub( R0, V1 );
+
+        V0 = Traits::Shuffle<3, 1, 0, 0>( q.simd );
+        V1 = Traits::Shuffle<3, 2, 1, 2>( Q0 );
+        V0 = Traits::Mul( V0, V1 );
+
+        V1 = Traits::Shuffle<3, 3, 3, 3>( q.simd );
+        auto V2 = Traits::Shuffle<3, 0, 2, 1>( Q0 );
+        V1 = Traits::Mul( V1, V2 );
+
+        auto R1 = Traits::Add( V0, V1 );
+        auto R2 = Traits::Sub( V0, V1 );
+
+        V0 = Traits::Shuffle<1, 0, 2, 1>( R1, R2 );
+        V0 = Traits::Shuffle<1, 3, 2, 0>( V0 );
+        V1 = Traits::Shuffle<2, 2, 0, 0>( R1, R2 );
+        V1 = Traits::Shuffle<2, 0, 2, 0>( V1 );
+
+        Q1 = Traits::Shuffle<1, 0, 3, 0>( R0, V0 );
+        Q1 = Traits::Shuffle<1, 3, 2, 0>( Q1 );
+
+        MatrixSimd result;
+        result.simd[ 0 ] = Q1;
+
+        Q1 = Traits::Shuffle<3, 2, 3, 1>( R0, V0 );
+        Q1 = Traits::Shuffle<1, 3, 0, 2>( Q1 );
+        result.simd[ 1 ] = Q1;
+
+        Q1 = Traits::Shuffle<3, 2, 1, 0>( V1, R0 );
+        result.simd[ 2 ] = Q1;
+        result.simd[ 3 ] = { { 0.0f, 0.0f, 0.0f, 1.0f } };;
+        return result;
+    }
+
+    /// <summary>
+    /// Creates a rotation matrix from a quaternion.
+    /// </summary>
+    /// <param name="q">
+    /// The quaternion that defines the rotation.
+    /// </param>
+    /// <returns>
+    /// The rotation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>& q )
+    {
+        return RotationQuaternion( q.ToSimd( ) );
+    }
+
+
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, const Vector<float,3>::Simd& scaling,
+        const Point3f::Simd& rotationOrigin, const QuaternionSimd<Quaternion<float>>& rotationQuaternion, const Vector<float, 3>::Simd& translation )
+    {
+        using Traits = SIMD::Traits<float, 4>;
+        using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
+        using SIMDType = typename Traits::SIMDType;
+        constexpr SIMDType columnSelect = { { std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), 0 } };
+
+        auto filteredScalingOrigin = Traits::Select( columnSelect, scalingOrigin.simd, columnSelect );
+        auto negScalingOrigin = -scalingOrigin;
+
+        auto scalingOriginI = Translation( negScalingOrigin );
+        auto scalingOrientation = RotationQuaternion( scalingOrientationQuaternion );
+        auto scalingOrientationT = Transpose( scalingOrientation );
+        auto scalingMatrix = Scaling( scaling );
+        auto filteredRotationOrigin = Traits::Select( columnSelect, rotationOrigin.simd, columnSelect );
+        auto rotationMatrix = RotationQuaternion( rotationQuaternion );
+        auto filteredTranslation = Traits::Select( columnSelect, translation.simd, columnSelect );
+
+        
+        auto result = scalingOriginI * scalingOrientationT;
+        result = result * scalingMatrix;
+        result = result * scalingOrientation;
+        result.simd[ 3 ] = Traits::Add( result.simd[ 3 ], filteredScalingOrigin );
+        result.simd[ 3 ] = Traits::Sub( result.simd[ 3 ], filteredRotationOrigin );
+        result = result * rotationMatrix;
+        result.simd[ 3 ] = Traits::Add( result.simd[ 3 ], filteredRotationOrigin );
+        result.simd[ 3 ] = Traits::Add( result.simd[ 3 ], filteredTranslation );
+        return result;
+    }
+
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, const Quaternion<float>& scalingOrientationQuaternion, const Vector<float, 3>& scaling,
+        const Point3f& rotationOrigin, const Quaternion<float>& rotationQuaternion, const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
 
 
     /// <summary>
@@ -12781,6 +13054,22 @@ namespace Harlinn::Common::Core::Math
         using Simd = Vector<float, 3>::Simd;
         return Simd( Traits::TransformVector( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) );
     }
+    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        return Transform( v.ToSimd(), matrix );
+    }
+
+    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>& matrix )
+    {
+        return Transform( v, matrix.ToSimd( ) );
+    }
+
+    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>& matrix )
+    {
+        return Transform( v.ToSimd( ), matrix.ToSimd( ) );
+    }
+
+
     inline Vector<float, 4>::Simd Transform( const Vector<float, 4>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = Vector<float, 4>::Traits;
@@ -12800,6 +13089,21 @@ namespace Harlinn::Common::Core::Math
         using Traits = SquareMatrix<float, 4>::Traits;
         using Simd = Point3f::Simd;
         return Simd( Traits::TransformPoint( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) );
+    }
+
+    inline Point3f::Simd Transform( const Point3f& v, const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        return Transform( v.ToSimd( ), matrix );
+    }
+
+    inline Point3f::Simd Transform( const Point3f::Simd& v, const SquareMatrix<float, 4>& matrix )
+    {
+        return Transform( v, matrix.ToSimd( ) );
+    }
+
+    inline Point3f::Simd Transform( const Point3f& v, const SquareMatrix<float, 4>& matrix )
+    {
+        return Transform( v.ToSimd( ), matrix.ToSimd( ) );
     }
 
     inline Normal3f::Simd Transform( const Normal3f::Simd& v, const SquareMatrix<float, 3>::Simd& matrix )

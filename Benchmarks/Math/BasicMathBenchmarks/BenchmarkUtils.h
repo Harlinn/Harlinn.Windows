@@ -25,9 +25,10 @@
 #include <HCCTestUtils.h>
 #include <DirectXMath.h>
 
-#define RUN_BASIC_MATH_BENCHMARKS 1
-#define RUN_VECTOR2FLOAT_BENCHMARKS 1
-#define RUN_SQUAREMATRIX_BENCHMARKS 1
+//#define RUN_BASIC_MATH_BENCHMARKS 1
+//#define RUN_VECTOR2FLOAT_BENCHMARKS 1
+//#define RUN_SQUAREMATRIX_BENCHMARKS 1
+#define RUN_TRANSFORM_BENCHMARKS 1
 
 using namespace Harlinn::Common::Core;
 namespace OpenLibM = Harlinn::Common::Core::Math::Internal::OpenLibM;
