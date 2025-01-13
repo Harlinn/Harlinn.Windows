@@ -42,7 +42,7 @@ namespace
 }
 #ifdef RUN_TRANSFORM_BENCHMARKS
 
-static void BenchmarkRotationAxis( benchmark::State& state )
+static void BenchmarkPointRotationAxis( benchmark::State& state )
 {
     Math::Vector3f axis( 0.f, 1.f, 0.f );
     FloatAngleInRadiansGenerator.Reset( );
@@ -54,9 +54,9 @@ static void BenchmarkRotationAxis( benchmark::State& state )
         benchmark::DoNotOptimize( p1Rotated.z );
     }
 }
-BENCHMARK( BenchmarkRotationAxis );
+BENCHMARK( BenchmarkPointRotationAxis );
 
-static void BenchmarkXMMatrixRotationAxis( benchmark::State& state )
+static void BenchmarkPointXMMatrixRotationAxis( benchmark::State& state )
 {
     using namespace DirectX;
     XMFLOAT3A axis( 0.f, 1.f, 0.f );
@@ -74,9 +74,80 @@ static void BenchmarkXMMatrixRotationAxis( benchmark::State& state )
         benchmark::DoNotOptimize( p1Stored.z );
     }
 }
-BENCHMARK( BenchmarkXMMatrixRotationAxis );
+BENCHMARK( BenchmarkPointXMMatrixRotationAxis );
 
-static void BenchmarkTranslation( benchmark::State& state )
+static void BenchmarkVectorRotationAxis( benchmark::State& state )
+{
+    Math::Vector3f axis( 0.f, 1.f, 0.f );
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        auto transformation = Math::RotationAxis( axis, FloatAngleInRadiansGenerator( ) );
+        Math::Vector3f v1( 2.f, 2.f, 2.f );
+        Math::Vector3f v1Rotated = Math::Transform( v1, transformation );
+        benchmark::DoNotOptimize( v1Rotated.z );
+    }
+}
+BENCHMARK( BenchmarkVectorRotationAxis );
+
+static void BenchmarkVectorXMMatrixRotationAxis( benchmark::State& state )
+{
+    using namespace DirectX;
+    XMFLOAT3A axis( 0.f, 1.f, 0.f );
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        auto axisLoaded = XMLoadFloat3A( &axis );
+        auto transformation = XMMatrixRotationAxis( axisLoaded, FloatAngleInRadiansGenerator( ) );
+        XMFLOAT3A p1( 2.f, 2.f, 2.f );
+        auto p1Loaded = XMLoadFloat3A( &p1 );
+        auto p1Transformed = XMVector3Transform( p1Loaded, transformation );
+        XMFLOAT3A p1Stored;
+        XMStoreFloat3A( &p1Stored, p1Transformed );
+
+        benchmark::DoNotOptimize( p1Stored.z );
+    }
+}
+BENCHMARK( BenchmarkVectorXMMatrixRotationAxis );
+
+static void BenchmarkNormalRotationAxis( benchmark::State& state )
+{
+    Math::Vector3f axis( 0.f, 1.f, 0.f );
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        auto transformation = Math::RotationAxis( axis, FloatAngleInRadiansGenerator( ) );
+        Math::Normal3f n1( 2.f, 2.f, 2.f );
+        Math::Normal3f n1Rotated = Math::Transform( n1, transformation );
+        benchmark::DoNotOptimize( n1Rotated.z );
+    }
+}
+BENCHMARK( BenchmarkNormalRotationAxis );
+
+static void BenchmarkNormalXMMatrixRotationAxis( benchmark::State& state )
+{
+    using namespace DirectX;
+    XMFLOAT3A axis( 0.f, 1.f, 0.f );
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        auto axisLoaded = XMLoadFloat3A( &axis );
+        auto transformation = XMMatrixRotationAxis( axisLoaded, FloatAngleInRadiansGenerator( ) );
+        XMFLOAT3A p1( 2.f, 2.f, 2.f );
+        auto p1Loaded = XMLoadFloat3A( &p1 );
+        auto p1Transformed = XMVector3TransformNormal( p1Loaded, transformation );
+        XMFLOAT3A p1Stored;
+        XMStoreFloat3A( &p1Stored, p1Transformed );
+
+        benchmark::DoNotOptimize( p1Stored.z );
+    }
+}
+BENCHMARK( BenchmarkNormalXMMatrixRotationAxis );
+
+
+
+
+static void BenchmarkPointTranslation( benchmark::State& state )
 {
     FloatAngleInRadiansGenerator.Reset( );
     for ( auto _ : state )
@@ -90,9 +161,9 @@ static void BenchmarkTranslation( benchmark::State& state )
         benchmark::DoNotOptimize( result.z );
     }
 }
-BENCHMARK( BenchmarkTranslation );
+BENCHMARK( BenchmarkPointTranslation );
 
-static void BenchmarkXMMatrixTranslation( benchmark::State& state )
+static void BenchmarkPointXMMatrixTranslation( benchmark::State& state )
 {
     using namespace DirectX;
     FloatAngleInRadiansGenerator.Reset( );
@@ -111,10 +182,85 @@ static void BenchmarkXMMatrixTranslation( benchmark::State& state )
         benchmark::DoNotOptimize( resultStored.z );
     }
 }
-BENCHMARK( BenchmarkXMMatrixTranslation );
+BENCHMARK( BenchmarkPointXMMatrixTranslation );
+
+static void BenchmarkVectorTranslation( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        float offsetX = FloatAngleInRadiansGenerator( );
+        float offsetY = FloatAngleInRadiansGenerator( );
+        float offsetZ = FloatAngleInRadiansGenerator( );
+        auto transformation = Math::Translation( offsetX, offsetY, offsetZ );
+        Math::Vector3f p1( 2.f, 2.f, 2.f );
+        Math::Vector3f result = Math::Transform( p1, transformation );
+        benchmark::DoNotOptimize( result.z );
+    }
+}
+BENCHMARK( BenchmarkVectorTranslation );
+
+static void BenchmarkVectorXMMatrixTranslation( benchmark::State& state )
+{
+    using namespace DirectX;
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        float offsetX = FloatAngleInRadiansGenerator( );
+        float offsetY = FloatAngleInRadiansGenerator( );
+        float offsetZ = FloatAngleInRadiansGenerator( );
+        auto transformation = XMMatrixTranslation( offsetX, offsetY, offsetZ );
+        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        auto p1Loaded = XMLoadFloat3( &p1 );
+        auto result = XMVector3Transform( p1Loaded, transformation );
+        XMFLOAT3 resultStored;
+        XMStoreFloat3( &resultStored, result );
+
+        benchmark::DoNotOptimize( resultStored.z );
+    }
+}
+BENCHMARK( BenchmarkVectorXMMatrixTranslation );
+
+static void BenchmarkNormalTranslation( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        float offsetX = FloatAngleInRadiansGenerator( );
+        float offsetY = FloatAngleInRadiansGenerator( );
+        float offsetZ = FloatAngleInRadiansGenerator( );
+        auto transformation = Math::Translation( offsetX, offsetY, offsetZ );
+        Math::Normal3f p1( 2.f, 2.f, 2.f );
+        Math::Normal3f result = Math::Transform( p1, transformation );
+        benchmark::DoNotOptimize( result.z );
+    }
+}
+BENCHMARK( BenchmarkNormalTranslation );
+
+static void BenchmarkNormalXMMatrixTranslation( benchmark::State& state )
+{
+    using namespace DirectX;
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        float offsetX = FloatAngleInRadiansGenerator( );
+        float offsetY = FloatAngleInRadiansGenerator( );
+        float offsetZ = FloatAngleInRadiansGenerator( );
+        auto transformation = XMMatrixTranslation( offsetX, offsetY, offsetZ );
+        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        auto p1Loaded = XMLoadFloat3( &p1 );
+        auto result = XMVector3TransformNormal( p1Loaded, transformation );
+        XMFLOAT3 resultStored;
+        XMStoreFloat3( &resultStored, result );
+
+        benchmark::DoNotOptimize( resultStored.z );
+    }
+}
+BENCHMARK( BenchmarkNormalXMMatrixTranslation );
 
 
-static void BenchmarkScaling( benchmark::State& state )
+
+static void BenchmarkPointScaling( benchmark::State& state )
 {
     FloatAngleInRadiansGenerator.Reset( );
     for ( auto _ : state )
@@ -128,10 +274,10 @@ static void BenchmarkScaling( benchmark::State& state )
         benchmark::DoNotOptimize( result.z );
     }
 }
-BENCHMARK( BenchmarkScaling );
+BENCHMARK( BenchmarkPointScaling );
 
 
-static void BenchmarkXMMatrixScaling( benchmark::State& state )
+static void BenchmarkPointXMMatrixScaling( benchmark::State& state )
 {
     using namespace DirectX;
     FloatAngleInRadiansGenerator.Reset( );
@@ -150,10 +296,88 @@ static void BenchmarkXMMatrixScaling( benchmark::State& state )
         benchmark::DoNotOptimize( resultStored.z );
     }
 }
-BENCHMARK( BenchmarkXMMatrixTranslation );
+BENCHMARK( BenchmarkPointXMMatrixScaling );
+
+static void BenchmarkVectorScaling( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        float scalingX = FloatAngleInRadiansGenerator( );
+        float scalingY = FloatAngleInRadiansGenerator( );
+        float scalingZ = FloatAngleInRadiansGenerator( );
+        auto transformation = Math::Scaling( scalingX, scalingY, scalingZ );
+        Math::Vector3f p1( 2.f, 2.f, 2.f );
+        Math::Vector3f result = Math::Transform( p1, transformation );
+        benchmark::DoNotOptimize( result.z );
+    }
+}
+BENCHMARK( BenchmarkVectorScaling );
 
 
-static void BenchmarkTransformationMatrix( benchmark::State& state )
+static void BenchmarkVectorXMMatrixScaling( benchmark::State& state )
+{
+    using namespace DirectX;
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        float scalingX = FloatAngleInRadiansGenerator( );
+        float scalingY = FloatAngleInRadiansGenerator( );
+        float scalingZ = FloatAngleInRadiansGenerator( );
+        auto transformation = XMMatrixScaling( scalingX, scalingY, scalingZ );
+        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        auto p1Loaded = XMLoadFloat3( &p1 );
+        auto result = XMVector3Transform( p1Loaded, transformation );
+        XMFLOAT3 resultStored;
+        XMStoreFloat3( &resultStored, result );
+
+        benchmark::DoNotOptimize( resultStored.z );
+    }
+}
+BENCHMARK( BenchmarkVectorXMMatrixScaling );
+
+
+static void BenchmarkNormalScaling( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        float scalingX = FloatAngleInRadiansGenerator( );
+        float scalingY = FloatAngleInRadiansGenerator( );
+        float scalingZ = FloatAngleInRadiansGenerator( );
+        auto transformation = Math::Scaling( scalingX, scalingY, scalingZ );
+        Math::Normal3f p1( 2.f, 2.f, 2.f );
+        Math::Normal3f result = Math::Transform( p1, transformation );
+        benchmark::DoNotOptimize( result.z );
+    }
+}
+BENCHMARK( BenchmarkNormalScaling );
+
+static void BenchmarkNormalXMMatrixScaling( benchmark::State& state )
+{
+    using namespace DirectX;
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        float scalingX = FloatAngleInRadiansGenerator( );
+        float scalingY = FloatAngleInRadiansGenerator( );
+        float scalingZ = FloatAngleInRadiansGenerator( );
+        auto transformation = XMMatrixScaling( scalingX, scalingY, scalingZ );
+        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        auto p1Loaded = XMLoadFloat3( &p1 );
+        auto result = XMVector3TransformNormal( p1Loaded, transformation );
+        XMFLOAT3 resultStored;
+        XMStoreFloat3( &resultStored, result );
+
+        benchmark::DoNotOptimize( resultStored.z );
+    }
+}
+BENCHMARK( BenchmarkNormalXMMatrixScaling );
+
+
+
+
+static void BenchmarkPointTransformationMatrix( benchmark::State& state )
 {
     using namespace Math;
     using Constants = Math::Constants<float>;
@@ -176,9 +400,9 @@ static void BenchmarkTransformationMatrix( benchmark::State& state )
         benchmark::DoNotOptimize( result.z );
     }
 }
-BENCHMARK( BenchmarkTransformationMatrix );
+BENCHMARK( BenchmarkPointTransformationMatrix );
 
-static void BenchmarkXMMatrixTransformation( benchmark::State& state )
+static void BenchmarkPointXMMatrixTransformation( benchmark::State& state )
 {
     using namespace DirectX;
     using Constants = Math::Constants<float>;
@@ -209,7 +433,178 @@ static void BenchmarkXMMatrixTransformation( benchmark::State& state )
         benchmark::DoNotOptimize( p1TransformedStored.z );
     }
 }
-BENCHMARK( BenchmarkXMMatrixTransformation );
+BENCHMARK( BenchmarkPointXMMatrixTransformation );
+
+
+static void BenchmarkVectorTransformationMatrix( benchmark::State& state )
+{
+    using namespace Math;
+    using Constants = Math::Constants<float>;
+
+    FloatAngleInRadiansGenerator.Reset( );
+
+    const Point3f scalingOrigin( 10.f, 10.f, 10.f );
+    const Quaternion<float> scalingOrientationQuaternion( Constants::Pi * 0.6f, Constants::Pi * 0.6f, Constants::Pi * 0.6f );
+    const Math::Vector<float, 3> scaling( .8f, .8f, .8f );
+    const Math::Point3f rotationOrigin( 5.f, 5.f, 5.f );
+    const Quaternion<float> rotationQuaternion( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const Math::Vector<float, 3> translation( 4.f, 4.f, 4.f );
+
+    auto transformation = Math::TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+
+    for ( auto _ : state )
+    {
+        Math::Vector3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        Math::Vector3f result = Math::Transform( p1, transformation );
+        benchmark::DoNotOptimize( result.z );
+    }
+}
+BENCHMARK( BenchmarkVectorTransformationMatrix );
+
+static void BenchmarkVectorXMMatrixTransformation( benchmark::State& state )
+{
+    using namespace DirectX;
+    using Constants = Math::Constants<float>;
+    FloatAngleInRadiansGenerator.Reset( );
+
+    const XMFLOAT3A scalingOriginUnloaded( 10.f, 10.f, 10.f );
+    auto scalingOrigin = XMLoadFloat3A( &scalingOriginUnloaded );
+    const auto scalingOrientationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.6f, Constants::Pi * 0.6f, Constants::Pi * 0.6f );
+    const XMFLOAT3A scalingUnloaded( .8f, .8f, .8f );
+    auto scaling = XMLoadFloat3A( &scalingUnloaded );
+    const XMFLOAT3A rotationOriginUnloaded( 5.f, 5.f, 5.f );
+    auto rotationOrigin = XMLoadFloat3A( &rotationOriginUnloaded );
+    const auto rotationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const XMFLOAT3A translationUnloaded( 4.f, 4.f, 4.f );
+    auto translation = XMLoadFloat3A( &translationUnloaded );
+
+    auto transformation = XMMatrixTransformation( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+
+
+    for ( auto _ : state )
+    {
+        XMFLOAT3A p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        auto p1Loaded = XMLoadFloat3A( &p1 );
+        auto p1Transformed = XMVector3Transform( p1Loaded, transformation );
+        XMFLOAT3A p1TransformedStored;
+        XMStoreFloat3A( &p1TransformedStored, p1Transformed );
+
+        benchmark::DoNotOptimize( p1TransformedStored.z );
+    }
+}
+BENCHMARK( BenchmarkVectorXMMatrixTransformation );
+
+
+static void BenchmarkNormalTransformationMatrix( benchmark::State& state )
+{
+    using namespace Math;
+    using Constants = Math::Constants<float>;
+
+    FloatAngleInRadiansGenerator.Reset( );
+
+    
+    const Point3f scalingOrigin( 10.f, 10.f, 10.f );
+    const Quaternion<float> scalingOrientationQuaternion( Constants::Pi * 0.6f, Constants::Pi * 0.6f, Constants::Pi * 0.6f );
+    const Math::Vector<float, 3> scaling( .8f, .8f, .8f );
+    const Math::Point3f rotationOrigin( 5.f, 5.f, 5.f );
+    const Quaternion<float> rotationQuaternion( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const Math::Vector<float, 3> translation( 4.f, 4.f, 4.f );
+
+    auto transformation = Math::TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+
+    for ( auto _ : state )
+    {
+        Math::Normal3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        Math::Normal3f result = Math::Transform( p1, transformation );
+        benchmark::DoNotOptimize( result.z );
+    }
+}
+BENCHMARK( BenchmarkNormalTransformationMatrix );
+
+static void BenchmarkNormalXMMatrixTransformation( benchmark::State& state )
+{
+    using namespace DirectX;
+    using Constants = Math::Constants<float>;
+    FloatAngleInRadiansGenerator.Reset( );
+
+    const XMFLOAT3A scalingOriginUnloaded( 10.f, 10.f, 10.f );
+    auto scalingOrigin = XMLoadFloat3A( &scalingOriginUnloaded );
+    const auto scalingOrientationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.6f, Constants::Pi * 0.6f, Constants::Pi * 0.6f );
+    const XMFLOAT3A scalingUnloaded( .8f, .8f, .8f );
+    auto scaling = XMLoadFloat3A( &scalingUnloaded );
+    const XMFLOAT3A rotationOriginUnloaded( 5.f, 5.f, 5.f );
+    auto rotationOrigin = XMLoadFloat3A( &rotationOriginUnloaded );
+    const auto rotationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const XMFLOAT3A translationUnloaded( 4.f, 4.f, 4.f );
+    auto translation = XMLoadFloat3A( &translationUnloaded );
+
+    auto transformation = XMMatrixTransformation( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+
+    for ( auto _ : state )
+    {
+
+        XMFLOAT3A p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        auto p1Loaded = XMLoadFloat3A( &p1 );
+        auto p1Transformed = XMVector3TransformNormal( p1Loaded, transformation );
+        XMFLOAT3A p1TransformedStored;
+        XMStoreFloat3A( &p1TransformedStored, p1Transformed );
+
+        benchmark::DoNotOptimize( p1TransformedStored.z );
+    }
+}
+BENCHMARK( BenchmarkNormalXMMatrixTransformation );
+
+
+static void BenchmarkPointAffineTransformationMatrix( benchmark::State& state )
+{
+    using namespace Math;
+    using Constants = Math::Constants<float>;
+
+    FloatAngleInRadiansGenerator.Reset( );
+
+    for ( auto _ : state )
+    {
+        const Math::Vector3f scaling( 1.5f, 2.5f, 1.f );
+        const Math::Point3f rotationOrigin( 5.f, 5.f, 5.f );
+        const QuaternionSimd<Quaternion<float>> rotationQuaternion( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+        const Math::Vector3f translation( 4.f, 4.f, 4.f );
+
+        auto transformation = Math::AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion, translation );
+        Math::Point3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        Math::Point3f result = Math::Transform( p1, transformation );
+
+        benchmark::DoNotOptimize( result.z );
+    }
+}
+BENCHMARK( BenchmarkPointAffineTransformationMatrix );
+
+static void BenchmarkPointXMMatrixAffineTransformation( benchmark::State& state )
+{
+    using namespace DirectX;
+    using Constants = Math::Constants<float>;
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        const XMFLOAT3A scalingUnloaded( 1.5f, 2.5f, 1.f );
+        auto scaling = XMLoadFloat3A( &scalingUnloaded );
+        const XMFLOAT3A rotationOriginUnloaded( 5.f, 5.f, 5.f );
+        auto rotationOrigin = XMLoadFloat3A( &rotationOriginUnloaded );
+        const auto rotationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+        const XMFLOAT3A translationUnloaded( 4.f, 4.f, 4.f );
+        auto translation = XMLoadFloat3A( &translationUnloaded );
+
+        auto transformation = XMMatrixAffineTransformation( scaling, rotationOrigin, rotationQuaternion, translation );
+        XMFLOAT3 p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        auto p1Loaded = XMLoadFloat3( &p1 );
+        auto p1Transformed = XMVector3TransformCoord( p1Loaded, transformation );
+        XMFLOAT3 p1Stored;
+        XMStoreFloat3( &p1Stored, p1Transformed );
+
+        benchmark::DoNotOptimize( p1Stored.z );
+    }
+}
+BENCHMARK( BenchmarkPointXMMatrixAffineTransformation );
+
 
 
 #endif

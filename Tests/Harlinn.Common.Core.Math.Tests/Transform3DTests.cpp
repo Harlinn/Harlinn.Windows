@@ -113,8 +113,8 @@ namespace
 
 BOOST_FIXTURE_TEST_SUITE( Transform3DTests, LocalFixture )
 
-// --run_test=Transform3DTests/RotateTest1
-BOOST_AUTO_TEST_CASE( RotateTest1 )
+// --run_test=Transform3DTests/PointRotationAxisTest1
+BOOST_AUTO_TEST_CASE( PointRotationAxisTest1 )
 {
     using Constants = Math::Constants<float>;
     Math::Vector3f axis( 0.f, 1.f, 0.f );
@@ -125,11 +125,80 @@ BOOST_AUTO_TEST_CASE( RotateTest1 )
     Math::Point3f result = Math::Transform( p1, transformation );
     auto equal = Equal( expected, result );
     BOOST_CHECK( equal );
-
 }
 
-// --run_test=Transform3DTests/TranslationTest1
-BOOST_AUTO_TEST_CASE( TranslationTest1 )
+// --run_test=Transform3DTests/VectorRotationAxisTest1
+BOOST_AUTO_TEST_CASE( VectorRotationAxisTest1 )
+{
+    using Constants = Math::Constants<float>;
+    Math::Vector3f axis( 0.f, 1.f, 0.f );
+    float angle = Constants::PiOver2;
+    auto transformation = Math::RotationAxis( axis, angle );
+    Math::Vector<float,3> v1( 2.f, 2.f, 2.f );
+    Math::Vector<float, 3> expected( 2.f, 2.f, -2.f );
+    Math::Vector<float, 3> result = Math::Transform( v1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/VectorXMMatrixRotationAxisTest1
+BOOST_AUTO_TEST_CASE( VectorXMMatrixRotationAxisTest1 )
+{
+    using namespace DirectX;
+    using Constants = Math::Constants<float>;
+    const XMFLOAT3A axisUnloaded( 0.f, 1.f, 0.f );
+    auto axis = XMLoadFloat3A( &axisUnloaded );
+    float angle = Constants::PiOver2;
+    auto transformation = XMMatrixRotationAxis( axis, angle );
+    XMFLOAT3A v1Unloaded( 2.f, 2.f, 2.f );
+    auto v1 = XMLoadFloat3A( &v1Unloaded );
+    XMFLOAT3A expected( 2.f, 2.f, -2.f );
+    auto resultLoaded = XMVector3Transform( v1, transformation );
+    XMFLOAT3A result;
+    XMStoreFloat3( &result, resultLoaded );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+
+
+// --run_test=Transform3DTests/NormalRotationAxisTest1
+BOOST_AUTO_TEST_CASE( NormalRotationAxisTest1 )
+{
+    using Constants = Math::Constants<float>;
+    Math::Vector3f axis( 0.f, 1.f, 0.f );
+    float angle = Constants::PiOver2;
+    auto transformation = Math::RotationAxis( axis, angle );
+    Math::Normal3f n1( 2.f, 2.f, 2.f );
+    Math::Normal3f expected( 2.f, 2.f, -2.f );
+    Math::Normal3f result = Math::Transform( n1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=Transform3DTests/NormalXMMatrixRotationAxisTest1
+BOOST_AUTO_TEST_CASE( NormalXMMatrixRotationAxisTest1 )
+{
+    using namespace DirectX;
+    using Constants = Math::Constants<float>;
+    const XMFLOAT3A axisUnloaded( 0.f, 1.f, 0.f );
+    auto axis = XMLoadFloat3A( &axisUnloaded );
+    float angle = Constants::PiOver2;
+    auto transformation = XMMatrixRotationAxis( axis, angle );
+    XMFLOAT3A v1Unloaded( 2.f, 2.f, 2.f );
+    auto v1 = XMLoadFloat3A( &v1Unloaded );
+    XMFLOAT3A expected( 2.f, 2.f, -2.f );
+    auto resultLoaded = XMVector3TransformNormal( v1, transformation );
+    XMFLOAT3A result;
+    XMStoreFloat3( &result, resultLoaded );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=Transform3DTests/PointTranslationTest1
+BOOST_AUTO_TEST_CASE( PointTranslationTest1 )
 {
     using Constants = Math::Constants<float>;
     
@@ -144,8 +213,80 @@ BOOST_AUTO_TEST_CASE( TranslationTest1 )
     BOOST_CHECK( equal );
 }
 
-// --run_test=Transform3DTests/ScalingTest1
-BOOST_AUTO_TEST_CASE( ScalingTest1 )
+// --run_test=Transform3DTests/VectorTranslationTest1
+BOOST_AUTO_TEST_CASE( VectorTranslationTest1 )
+{
+    using Constants = Math::Constants<float>;
+
+    float offsetX = 3.f;
+    float offsetY = 2.f;
+    float offsetZ = 1.f;
+    auto transformation = Math::Translation( offsetX, offsetY, offsetZ );
+    Math::Vector3f v1( 2.f, 2.f, 2.f );
+    Math::Vector3f expected( 5.f, 4.f, 3.f );
+    Math::Vector3f result = Math::Transform( v1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/VectorXMMatrixTranslationTest1
+BOOST_AUTO_TEST_CASE( VectorXMMatrixTranslationTest1 )
+{
+    using namespace DirectX;
+    float offsetX = 3.f;
+    float offsetY = 2.f;
+    float offsetZ = 1.f;
+    auto transformation = XMMatrixTranslation( offsetX, offsetY, offsetZ );
+    XMFLOAT3A v1Unloaded( 2.f, 2.f, 2.f );
+    auto v1 = XMLoadFloat3A( &v1Unloaded );
+    XMFLOAT3A expected( 5.f, 4.f, 3.f );
+    auto resultLoaded = XMVector3Transform( v1, transformation );
+    XMFLOAT3A result;
+    XMStoreFloat3( &result, resultLoaded );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/NormalTranslationTest1
+BOOST_AUTO_TEST_CASE( NormalTranslationTest1 )
+{
+    using Constants = Math::Constants<float>;
+
+    float offsetX = 3.f;
+    float offsetY = 2.f;
+    float offsetZ = 1.f;
+    auto transformation = Math::Translation( offsetX, offsetY, offsetZ );
+    Math::Normal3f n1( 2.f, 2.f, 2.f );
+    Math::Normal3f expected( 2.f, 2.f, 2.f );
+    Math::Normal3f result = Math::Transform( n1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=Transform3DTests/NormalXMMatrixTranslationTest1
+BOOST_AUTO_TEST_CASE( NormalXMMatrixTranslationTest1 )
+{
+    using namespace DirectX;
+    float offsetX = 3.f;
+    float offsetY = 2.f;
+    float offsetZ = 1.f;
+    auto transformation = XMMatrixTranslation( offsetX, offsetY, offsetZ );
+    XMFLOAT3A n1Unloaded( 2.f, 2.f, 2.f );
+    auto n1 = XMLoadFloat3A( &n1Unloaded );
+    XMFLOAT3A expected( 2.f, 2.f, 2.f );
+    auto resultLoaded = XMVector3TransformNormal( n1, transformation );
+    XMFLOAT3A result;
+    XMStoreFloat3( &result, resultLoaded );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+
+
+
+// --run_test=Transform3DTests/PointScalingTest1
+BOOST_AUTO_TEST_CASE( PointScalingTest1 )
 {
     using Constants = Math::Constants<float>;
 
@@ -160,8 +301,79 @@ BOOST_AUTO_TEST_CASE( ScalingTest1 )
     BOOST_CHECK( equal );
 }
 
-// --run_test=Transform3DTests/TransformationMatrixTest1
-BOOST_AUTO_TEST_CASE( TransformationMatrixTest1 )
+// --run_test=Transform3DTests/VectorScalingTest1
+BOOST_AUTO_TEST_CASE( VectorScalingTest1 )
+{
+    using Constants = Math::Constants<float>;
+
+    float scalingX = 3.f;
+    float scalingY = 2.f;
+    float scalingZ = 1.f;
+    auto transformation = Math::Scaling( scalingX, scalingY, scalingZ );
+    Math::Vector3f v1( 2.f, 2.f, 2.f );
+    Math::Vector3f expected( 6.f, 4.f, 2.f );
+    Math::Vector3f result = Math::Transform( v1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/VectorXMMatrixScalingTest1
+BOOST_AUTO_TEST_CASE( VectorXMMatrixScalingTest1 )
+{
+    using namespace DirectX;
+    float scalingX = 3.f;
+    float scalingY = 2.f;
+    float scalingZ = 1.f;
+    auto transformation = XMMatrixScaling( scalingX, scalingY, scalingZ );
+    XMFLOAT3A v1Unloaded( 2.f, 2.f, 2.f );
+    auto v1 = XMLoadFloat3A( &v1Unloaded );
+    XMFLOAT3A expected( 6.f, 4.f, 2.f );
+    auto resultLoaded = XMVector3Transform( v1, transformation );
+    XMFLOAT3A result;
+    XMStoreFloat3( &result, resultLoaded );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=Transform3DTests/NormalScalingTest1
+BOOST_AUTO_TEST_CASE( NormalScalingTest1 )
+{
+    using Constants = Math::Constants<float>;
+
+    float scalingX = 3.f;
+    float scalingY = 2.f;
+    float scalingZ = 1.f;
+    auto transformation = Math::Scaling( scalingX, scalingY, scalingZ );
+    Math::Normal3f n1( 2.f, 2.f, 2.f );
+    Math::Normal3f expected( 6.f, 4.f, 2.f );
+    Math::Normal3f result = Math::Transform( n1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/NormalXMMatrixScalingTest1
+BOOST_AUTO_TEST_CASE( NormalXMMatrixScalingTest1 )
+{
+    using namespace DirectX;
+    float scalingX = 3.f;
+    float scalingY = 2.f;
+    float scalingZ = 1.f;
+    auto transformation = XMMatrixScaling( scalingX, scalingY, scalingZ );
+    XMFLOAT3A v1Unloaded( 2.f, 2.f, 2.f );
+    auto v1 = XMLoadFloat3A( &v1Unloaded );
+    XMFLOAT3A expected( 6.f, 4.f, 2.f );
+    auto resultLoaded = XMVector3TransformNormal( v1, transformation );
+    XMFLOAT3A result;
+    XMStoreFloat3( &result, resultLoaded );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+
+
+// --run_test=Transform3DTests/PointTransformationMatrixTest1
+BOOST_AUTO_TEST_CASE( PointTransformationMatrixTest1 )
 {
     using namespace Math;
     using Constants = Math::Constants<float>;
@@ -181,11 +393,8 @@ BOOST_AUTO_TEST_CASE( TransformationMatrixTest1 )
     BOOST_CHECK( equal );
 }
 
-
-
-
-// --run_test=Transform3DTests/RotateTest2
-BOOST_AUTO_TEST_CASE( RotateTest2 )
+// --run_test=Transform3DTests/PointXMMatrixTransformationTest2
+BOOST_AUTO_TEST_CASE( PointXMMatrixTransformationTest2 )
 {
     using Constants = Math::Constants<float>;
     using namespace DirectX;
@@ -212,6 +421,250 @@ BOOST_AUTO_TEST_CASE( RotateTest2 )
     BOOST_CHECK( equal );
 
 }
+
+
+
+// --run_test=Transform3DTests/VectorTransformationMatrixTest1
+BOOST_AUTO_TEST_CASE( VectorTransformationMatrixTest1 )
+{
+    using namespace Math;
+    using Constants = Math::Constants<float>;
+
+    const Point3f scalingOrigin( 10.f, 10.f, 10.f );
+    const Quaternion<float> scalingOrientationQuaternion( Constants::Pi * 0.6f, Constants::Pi * 0.6f, Constants::Pi * 0.6f );
+    const Math::Vector<float, 3> scaling( .8f, .8f, .8f );
+    const Math::Point3f rotationOrigin( 5.f, 5.f, 5.f );
+    const Quaternion<float> rotationQuaternion( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const Math::Vector<float, 3> translation( 4.f, 4.f, 4.f );
+
+    auto transformation = Math::TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+    Math::Vector3f v1( 2.f, 2.f, 2.f );
+    Math::Vector3f expected( 7.23640394f, 8.98319530f, 7.33583355f );
+    Math::Vector3f result = Math::Transform( v1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/VectorXMMatrixTransformationTest2
+BOOST_AUTO_TEST_CASE( VectorXMMatrixTransformationTest2 )
+{
+    using Constants = Math::Constants<float>;
+    using namespace DirectX;
+
+    const XMFLOAT3A scalingOriginUnloaded( 10.f, 10.f, 10.f );
+    auto scalingOrigin = XMLoadFloat3A( &scalingOriginUnloaded );
+    const auto scalingOrientationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.6f, Constants::Pi * 0.6f, Constants::Pi * 0.6f );
+    const XMFLOAT3A scalingUnloaded( .8f, .8f, .8f );
+    auto scaling = XMLoadFloat3A( &scalingUnloaded );
+    const XMFLOAT3A rotationOriginUnloaded( 5.f, 5.f, 5.f );
+    auto rotationOrigin = XMLoadFloat3A( &rotationOriginUnloaded );
+    const auto rotationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const XMFLOAT3A translationUnloaded( 4.f, 4.f, 4.f );
+    auto translation = XMLoadFloat3A( &translationUnloaded );
+
+    auto transformation = XMMatrixTransformation( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+    XMFLOAT3 p1( 2.f, 2.f, 2.f );
+    auto p1Loaded = XMLoadFloat3( &p1 );
+    auto p1Transformed = XMVector3Transform( p1Loaded, transformation );
+    XMFLOAT3 p1Stored;
+    XMStoreFloat3( &p1Stored, p1Transformed );
+    XMFLOAT3 expected( 7.23640394f, 8.98319530f, 7.33583355f );
+    auto equal = Equal( expected, p1Stored );
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=Transform3DTests/NormalTransformationMatrixTest1
+BOOST_AUTO_TEST_CASE( NormalTransformationMatrixTest1 )
+{
+    using namespace Math;
+    using Constants = Math::Constants<float>;
+
+    const Point3f scalingOrigin( 10.f, 10.f, 10.f );
+    const Quaternion<float> scalingOrientationQuaternion( Constants::Pi * 0.6f, Constants::Pi * 0.6f, Constants::Pi * 0.6f );
+    const Math::Vector<float, 3> scaling( .8f, .8f, .8f );
+    const Math::Point3f rotationOrigin( 5.f, 5.f, 5.f );
+    const Quaternion<float> rotationQuaternion( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const Math::Vector<float, 3> translation( 4.f, 4.f, 4.f );
+
+    auto transformation = Math::TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+    Math::Normal3f n1( 2.f, 2.f, 2.f );
+    Math::Normal3f expected( 2.01553679f, 0.0192041993f, 1.90190506f );
+    Math::Normal3f result = Math::Transform( n1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/NormalXMMatrixTransformationTest2
+BOOST_AUTO_TEST_CASE( NormalXMMatrixTransformationTest2 )
+{
+    using Constants = Math::Constants<float>;
+    using namespace DirectX;
+
+    const XMFLOAT3A scalingOriginUnloaded( 10.f, 10.f, 10.f );
+    auto scalingOrigin = XMLoadFloat3A( &scalingOriginUnloaded );
+    const auto scalingOrientationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.6f, Constants::Pi * 0.6f, Constants::Pi * 0.6f );
+    const XMFLOAT3A scalingUnloaded( .8f, .8f, .8f );
+    auto scaling = XMLoadFloat3A( &scalingUnloaded );
+    const XMFLOAT3A rotationOriginUnloaded( 5.f, 5.f, 5.f );
+    auto rotationOrigin = XMLoadFloat3A( &rotationOriginUnloaded );
+    const auto rotationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const XMFLOAT3A translationUnloaded( 4.f, 4.f, 4.f );
+    auto translation = XMLoadFloat3A( &translationUnloaded );
+
+    auto transformation = XMMatrixTransformation( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+    XMFLOAT3 p1( 2.f, 2.f, 2.f );
+    auto p1Loaded = XMLoadFloat3( &p1 );
+    auto p1Transformed = XMVector3TransformNormal( p1Loaded, transformation );
+    XMFLOAT3 p1Stored;
+    XMStoreFloat3( &p1Stored, p1Transformed );
+    XMFLOAT3 expected( 2.01553679f, 0.0192041993f, 1.90190506f );
+    auto equal = Equal( expected, p1Stored );
+    BOOST_CHECK( equal );
+
+}
+
+
+// --run_test=Transform3DTests/PointAffineTransformationMatrixTest1
+BOOST_AUTO_TEST_CASE( PointAffineTransformationMatrixTest1 )
+{
+    using namespace Math;
+    using Constants = Math::Constants<float>;
+
+
+    const Math::Vector3f scaling( 1.5f, 2.5f, 1.f );
+    const Math::Point3f rotationOrigin( 5.f, 5.f, 5.f );
+    const Quaternion<float> rotationQuaternion( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const Math::Vector3f translation( 4.f, 4.f, 4.f );
+
+    auto transformation = Math::AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion, translation );
+    Math::Point3f p1( 2.f, 2.f, 2.f );
+    Math::Point3f expected( 5.82341528f, 10.4759951f, 8.14516068f );
+    Math::Point3f result = Math::Transform( p1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/PointXMMatrixAffineTransformationTest1
+BOOST_AUTO_TEST_CASE( PointXMMatrixAffineTransformationTest1 )
+{
+    using Constants = Math::Constants<float>;
+    using namespace DirectX;
+
+    
+    const XMFLOAT3A scalingUnloaded( 1.5f, 2.5f, 1.f );
+    auto scaling = XMLoadFloat3A( &scalingUnloaded );
+    const XMFLOAT3A rotationOriginUnloaded( 5.f, 5.f, 5.f );
+    auto rotationOrigin = XMLoadFloat3A( &rotationOriginUnloaded );
+    const auto rotationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const XMFLOAT3A translationUnloaded( 4.f, 4.f, 4.f );
+    auto translation = XMLoadFloat3A( &translationUnloaded );
+
+    auto transformation = XMMatrixAffineTransformation( scaling, rotationOrigin, rotationQuaternion, translation );
+    XMFLOAT3 p1( 2.f, 2.f, 2.f );
+    auto p1Loaded = XMLoadFloat3( &p1 );
+    auto p1Transformed = XMVector3TransformCoord( p1Loaded, transformation );
+    XMFLOAT3 p1Stored;
+    XMStoreFloat3( &p1Stored, p1Transformed );
+    XMFLOAT3 expected( 5.82341528f, 10.4759951f, 8.14516068f );
+    auto equal = Equal( expected, p1Stored );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/VectorAffineTransformationMatrixTest1
+BOOST_AUTO_TEST_CASE( VectorAffineTransformationMatrixTest1 )
+{
+    using namespace Math;
+    using Constants = Math::Constants<float>;
+
+
+    const Math::Vector3f scaling( 1.5f, 2.5f, 1.f );
+    const Math::Point3f rotationOrigin( 5.f, 5.f, 5.f );
+    const Quaternion<float> rotationQuaternion( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const Math::Vector3f translation( 4.f, 4.f, 4.f );
+
+    auto transformation = Math::AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion, translation );
+    Math::Vector3f p1( 2.f, 2.f, 2.f );
+    Math::Vector3f expected( 5.82341528f, 10.4759951f, 8.14516068f );
+    Math::Vector3f result = Math::Transform( p1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=Transform3DTests/VectorXMMatrixAffineTransformationTest1
+BOOST_AUTO_TEST_CASE( VectorXMMatrixAffineTransformationTest1 )
+{
+    using Constants = Math::Constants<float>;
+    using namespace DirectX;
+
+
+    const XMFLOAT3A scalingUnloaded( 1.5f, 2.5f, 1.f );
+    auto scaling = XMLoadFloat3A( &scalingUnloaded );
+    const XMFLOAT3A rotationOriginUnloaded( 5.f, 5.f, 5.f );
+    auto rotationOrigin = XMLoadFloat3A( &rotationOriginUnloaded );
+    const auto rotationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const XMFLOAT3A translationUnloaded( 4.f, 4.f, 4.f );
+    auto translation = XMLoadFloat3A( &translationUnloaded );
+
+    auto transformation = XMMatrixAffineTransformation( scaling, rotationOrigin, rotationQuaternion, translation );
+    XMFLOAT3 p1( 2.f, 2.f, 2.f );
+    auto p1Loaded = XMLoadFloat3( &p1 );
+    auto p1Transformed = XMVector3Transform( p1Loaded, transformation );
+    XMFLOAT3 p1Stored;
+    XMStoreFloat3( &p1Stored, p1Transformed );
+    XMFLOAT3 expected( 5.82341528f, 10.4759951f, 8.14516068f );
+    auto equal = Equal( expected, p1Stored );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/NormalAffineTransformationMatrixTest1
+BOOST_AUTO_TEST_CASE( NormalAffineTransformationMatrixTest1 )
+{
+    using namespace Math;
+    using Constants = Math::Constants<float>;
+
+
+    const Math::Vector3f scaling( 1.5f, 2.5f, 1.f );
+    const Math::Point3f rotationOrigin( 5.f, 5.f, 5.f );
+    const Quaternion<float> rotationQuaternion( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const Math::Vector3f translation( 4.f, 4.f, 4.f );
+
+    auto transformation = Math::AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion, translation );
+    Math::Normal3f p1( 2.f, 2.f, 2.f );
+    Math::Normal3f expected( 3.12196779f, 1.53600752f, 5.08861494f );
+    Math::Normal3f result = Math::Transform( p1, transformation );
+    auto equal = Equal( expected, result );
+    BOOST_CHECK( equal );
+}
+
+// --run_test=Transform3DTests/NormalXMMatrixAffineTransformationTest1
+BOOST_AUTO_TEST_CASE( NormalXMMatrixAffineTransformationTest1 )
+{
+    using Constants = Math::Constants<float>;
+    using namespace DirectX;
+
+    const XMFLOAT3A scalingUnloaded( 1.5f, 2.5f, 1.f );
+    auto scaling = XMLoadFloat3A( &scalingUnloaded );
+    const XMFLOAT3A rotationOriginUnloaded( 5.f, 5.f, 5.f );
+    auto rotationOrigin = XMLoadFloat3A( &rotationOriginUnloaded );
+    const auto rotationQuaternion = XMQuaternionRotationRollPitchYaw( Constants::Pi * 0.3f, Constants::Pi * 0.3f, Constants::Pi * 0.3f );
+    const XMFLOAT3A translationUnloaded( 4.f, 4.f, 4.f );
+    auto translation = XMLoadFloat3A( &translationUnloaded );
+
+    auto transformation = XMMatrixAffineTransformation( scaling, rotationOrigin, rotationQuaternion, translation );
+    XMFLOAT3 p1( 2.f, 2.f, 2.f );
+    auto p1Loaded = XMLoadFloat3( &p1 );
+    auto p1Transformed = XMVector3TransformNormal( p1Loaded, transformation );
+    XMFLOAT3 p1Stored;
+    XMStoreFloat3( &p1Stored, p1Transformed );
+    XMFLOAT3 expected( 3.12196779f, 1.53600752f, 5.08861494f );
+    auto equal = Equal( expected, p1Stored );
+    BOOST_CHECK( equal );
+}
+
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END( )

@@ -10135,8 +10135,8 @@ namespace Harlinn::Common::Core::Math
         /// <param name="roll">
         /// Angle of rotation around the z-axis, in radians.
         /// </param>
-        QuaternionSimd( ValueType pitch, ValueType yaw, ValueType roll )
-            : QuaternionSimd( Vector<ValueType, 3>::Simd( Vector<ValueType, 3>( pitch, yaw, roll ) ) )
+        QuaternionSimd( ValueType pitch, ValueType yaw, ValueType roll ) noexcept
+            : QuaternionSimd( Vector<ValueType, 3>::Simd( Vector<ValueType, 3>::Traits::Set( roll, yaw, pitch ) ) )
         { }
 
         explicit QuaternionSimd( const QuaternionType& quaternion ) noexcept;
@@ -10285,6 +10285,35 @@ namespace Harlinn::Common::Core::Math
         /// </param>
         Quaternion( ValueType pitch, ValueType yaw, ValueType roll ) noexcept
         {
+            if constexpr ( std::is_same_v<value_type, float> )
+            {
+                using Traits = SIMD::Traits<float, 4>;
+                constexpr SIMDType sign = { { static_cast< value_type >( 1.0 ), static_cast< value_type >( -1.0 ), static_cast< value_type >( -1.0 ), static_cast< value_type >( 1.0 ) } };
+                constexpr SIMDType oneHalf = { {static_cast< value_type >( 0.5 ),static_cast< value_type >( 0.5 ),static_cast< value_type >( 0.5 ),static_cast< value_type >( 0.5 )} };
+
+                auto pitchYawRoll = Traits::Set( roll, yaw, pitch );
+
+                auto halfPitchYawRoll = Traits::Mul( pitchYawRoll, oneHalf );
+
+                SIMDType cosines;
+                auto sines = Traits::FastSinCos( halfPitchYawRoll, &cosines );
+                using P = typename Traits::PermuteType;
+
+                auto p0 = Traits::Permute<P::X1, P::X2, P::X2, P::X2>( sines, cosines );
+                auto y0 = Traits::Permute<P::Y2, P::Y1, P::Y2, P::Y2>( sines, cosines );
+                auto r0 = Traits::Permute<P::Z2, P::Z2, P::Z1, P::Z2>( sines, cosines );
+                auto p1 = Traits::Permute<P::X1, P::X2, P::X2, P::X2>( cosines, sines );
+                auto y1 = Traits::Permute<P::Y2, P::Y1, P::Y2, P::Y2>( cosines, sines );
+                auto r1 = Traits::Permute<P::Z2, P::Z2, P::Z1, P::Z2>( cosines, sines );
+
+                auto q1 = Traits::Mul( p1, sign );
+                auto q0 = Traits::Mul( p0, y0 );
+                q1 = Traits::Mul( q1, y1 );
+                q0 = Traits::Mul( q0, r0 );
+                auto simd = Traits::FMAdd( q1, r1, q0 );
+                values = Traits::ToArray( simd );
+            }
+            /*
             const float halfPitch = pitch * static_cast< ValueType >( 0.5 );
             //float cp = Cos( halfPitch );
             //float sp = Sin( halfPitch );
@@ -10308,6 +10337,7 @@ namespace Harlinn::Common::Core::Math
             values[ 1 ] = cr * cp * sy - sr * sp * cy;
             values[ 2 ] = sr * cp * cy - cr * sp * sy;
             values[ 3 ] = cr * cp * cy + sr * sp * sy;
+            */
         }
 
         /// <summary>
@@ -12152,7 +12182,16 @@ namespace Harlinn::Common::Core::Math
 
 
 
-
+    /// <summary>
+    /// Calculates the determinant of a matrix.
+    /// </summary>
+    /// <param name="matrix">
+    /// The matrix that the determinant will be calculated for.
+    /// </param>
+    /// <returns>
+    /// Returns a Vector&lt;float,4&gt;::Simd with all the
+    /// elements set to the determinant of the matrix.
+    /// </returns>
     inline typename Vector<float,4>::Simd Determinant( const typename SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
@@ -12197,17 +12236,45 @@ namespace Harlinn::Common::Core::Math
         return ResultType( Traits::Dot( rmm3, rmm7 ) );
     }
 
+    /// <summary>
+    /// Calculates the determinant of a matrix.
+    /// </summary>
+    /// <param name="matrix">
+    /// The matrix that the determinant will be calculated for.
+    /// </param>
+    /// <returns>
+    /// Returns a Vector&lt;float,4&gt;::Simd with all the
+    /// elements set to the determinant of the matrix.
+    /// </returns>
     inline typename Vector<float, 4>::Simd Determinant( const SquareMatrix<float, 4ULL>& matrix )
     {
         return Math::Determinant( matrix.ToSimd( ) );
     }
 
+    /// <summary>
+    /// Calculates the determinant of a matrix.
+    /// </summary>
+    /// <param name="matrix">
+    /// The matrix that the determinant will be calculated for.
+    /// </param>
+    /// <returns>
+    /// The determinant of the matrix.
+    /// </returns>
     inline float ScalarDeterminant( const SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         return Traits::First( Math::Determinant( matrix ).simd );
     }
 
+    /// <summary>
+    /// Calculates the determinant of a matrix.
+    /// </summary>
+    /// <param name="matrix">
+    /// The matrix that the determinant will be calculated for.
+    /// </param>
+    /// <returns>
+    /// The determinant of the matrix.
+    /// </returns>
     inline float ScalarDeterminant( const SquareMatrix<float, 4>& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
@@ -12279,6 +12346,15 @@ namespace Harlinn::Common::Core::Math
         return Transpose( matrix.ToSimd( ) );
     }
 
+    /// <summary>
+    /// Calculates the transpose of the matrix.
+    /// </summary>
+    /// <param name="matrix">
+    /// The matrix to transpose.
+    /// </param>
+    /// <returns>
+    /// The transposed matrix.
+    /// </returns>
     inline SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
@@ -12299,12 +12375,35 @@ namespace Harlinn::Common::Core::Math
         return result;
     }
 
+    /// <summary>
+    /// Calculates the transpose of the matrix.
+    /// </summary>
+    /// <param name="matrix">
+    /// The matrix to transpose.
+    /// </param>
+    /// <returns>
+    /// The transposed matrix.
+    /// </returns>
     inline SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>& matrix )
     {
         return Transpose( matrix.ToSimd( ) );
     }
 
-
+    /// <summary>
+    /// Calculates the inverse of the matrix.
+    /// </summary>
+    /// <param name="matrix">
+    /// The matrix to invert.
+    /// </param>
+    /// <param name="determinant">
+    /// Address of a Vector<float, 4>::Simd object where each element will
+    /// be assigned the determinant of the matrix.
+    /// </param>
+    /// <returns>
+    /// Returns the matrix inverse of <c>matrix</c>. If the 
+    /// provided matrix is singular with a determinant equal to 0, 
+    /// Inverse returns an infinite matrix.
+    /// </returns>
     inline SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>::Simd& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
@@ -12440,6 +12539,21 @@ namespace Harlinn::Common::Core::Math
         return result;
     }
 
+    /// <summary>
+    /// Calculates the inverse of the matrix.
+    /// </summary>
+    /// <param name="matrix">
+    /// The matrix to invert.
+    /// </param>
+    /// <param name="determinant">
+    /// Address of a Vector<float, 4>::Simd object where each element will
+    /// be assigned the determinant of the matrix.
+    /// </param>
+    /// <returns>
+    /// Returns the matrix inverse of <c>matrix</c>. If the 
+    /// provided matrix is singular with a determinant equal to 0, 
+    /// Inverse returns an infinite matrix.
+    /// </returns>
     inline typename SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
     {
         return Inverse( matrix.ToSimd( ), determinant );
@@ -12588,6 +12702,21 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    /// <summary>
+    /// Creates a translation matrix using the provided offsets.
+    /// </summary>
+    /// <param name="offsetX">
+    /// Translation along the x-axis.
+    /// </param>
+    /// <param name="offsetY">
+    /// Translation along the y-axis.
+    /// </param>
+    /// <param name="offsetZ">
+    /// Translation along the z-axis.
+    /// </param>
+    /// <returns>
+    /// The translation matrix.
+    /// </returns>
     inline SquareMatrix<float, 4>::Simd Translation( float offsetX, float offsetY, float offsetZ )
     {
         using Simd = SquareMatrix<float, 4>::Simd;
@@ -12605,9 +12734,18 @@ namespace Harlinn::Common::Core::Math
         return result;
     }
 
+    /// <summary>
+    /// Creates a translation matrix using the provided offsets.
+    /// </summary>
+    /// <param name="offsets">
+    /// Translations along the x, y and z axis.
+    /// </param>
+    /// <returns>
+    /// The translation matrix.
+    /// </returns>
     template<Internal::SimdType S>
         requires (S::Size > 2) && std::is_same_v<typename S::value_type, float>
-    inline SquareMatrix<float, 4>::Simd Translation( const S& offset )
+    inline SquareMatrix<float, 4>::Simd Translation( const S& offsets )
     {
         using Simd = SquareMatrix<float, 4>::Simd;
         using Traits = Simd::Traits;
@@ -12622,15 +12760,24 @@ namespace Harlinn::Common::Core::Math
         result.simd[ 0 ] = r1;
         result.simd[ 1 ] = r2;
         result.simd[ 2 ] = r3;
-        result.simd[ 3 ] = Traits::Select( r4, offset.simd, columnSelect );
+        result.simd[ 3 ] = Traits::Select( r4, offsets.simd, columnSelect );
         return result;
     }
 
+    /// <summary>
+    /// Creates a translation matrix using the provided offsets.
+    /// </summary>
+    /// <param name="offsets">
+    /// Translations along the x, y and z axis.
+    /// </param>
+    /// <returns>
+    /// The translation matrix.
+    /// </returns>
     template<Internal::TupleType S>
         requires ( S::Size > 2 ) && std::is_same_v<typename S::value_type, float>
-    inline SquareMatrix<float, 4>::Simd Translation( const S& offset )
+    inline SquareMatrix<float, 4>::Simd Translation( const S& offsets )
     {
-        return Translation( offset.x, offset.y, offset.z );
+        return Translation( offsets.x, offsets.y, offsets.z );
     }
 
 
@@ -12650,6 +12797,22 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    /// <summary>
+    /// Creates a transformation matrix for scaling along 
+    /// the x-axis, y-axis, and z-axis.
+    /// </summary>
+    /// <param name="scaleX">
+    /// Scaling factor along the x-axis.
+    /// </param>
+    /// <param name="scaleY">
+    /// Scaling factor along the y-axis.
+    /// </param>
+    /// <param name="scaleZ">
+    /// Scaling factor along the z-axis.
+    /// </param>
+    /// <returns>
+    /// The scaling matrix.
+    /// </returns>
     inline SquareMatrix<float, 4>::Simd Scaling( float scaleX, float scaleY, float scaleZ )
     {
         using Simd = SquareMatrix<float, 4>::Simd;
@@ -12667,6 +12830,16 @@ namespace Harlinn::Common::Core::Math
         return result;
     }
 
+    /// <summary>
+    /// Creates a transformation matrix for scaling along 
+    /// the x-axis, y-axis, and z-axis.
+    /// </summary>
+    /// <param name="v">
+    /// Scaling factors along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The scaling matrix.
+    /// </returns>
     template<Internal::SimdType S>
         requires ( S::Size > 2 )
     inline SquareMatrix<float, 4>::Simd Scaling( const S& v ) noexcept
@@ -12691,6 +12864,16 @@ namespace Harlinn::Common::Core::Math
         return result;
     }
 
+    /// <summary>
+    /// Creates a transformation matrix for scaling along 
+    /// the x-axis, y-axis, and z-axis.
+    /// </summary>
+    /// <param name="v">
+    /// Scaling factors along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The scaling matrix.
+    /// </returns>
     template<Internal::TupleType S>
         requires ( S::Size > 2 )
     inline SquareMatrix<float, 4>::Simd Scaling( const S& v ) noexcept
@@ -12728,11 +12911,15 @@ namespace Harlinn::Common::Core::Math
     }
 
     /// <summary>
-    /// Rotates about y-axis, then x-axis, then z-axis
+    /// Creates a transformation matrix that rotates about the y-axis, 
+    /// then the x-axis, and finally the z-axis
     /// </summary>
-    /// <typeparam name="S"></typeparam>
-    /// <param name="v"></param>
-    /// <returns></returns>
+    /// <param name="v">
+    /// The angles of rotation around the x-axis, y-axis and z-axis, in radians.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
     template<Internal::SimdType S>
         requires (S::Size > 2)
     inline SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
@@ -12781,6 +12968,16 @@ namespace Harlinn::Common::Core::Math
         return result;
     }
 
+    /// <summary>
+    /// Creates a transformation matrix that rotates about the y-axis, 
+    /// then the x-axis, and finally the z-axis.
+    /// </summary>
+    /// <param name="v">
+    /// The angles of rotation around the x-axis, y-axis and z-axis, in radians.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
     template<Internal::TupleType S>
         requires ( S::Size > 2 )
     inline SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
@@ -12788,6 +12985,22 @@ namespace Harlinn::Common::Core::Math
         return Rotation( v.ToSimd( ) );
     }
 
+    /// <summary>
+    /// Creates a transformation matrix that rotates about the y-axis, 
+    /// then the x-axis, and finally the z-axis.
+    /// </summary>
+    /// <param name="xAxisRotation">
+    /// The angle of rotation around the x-axis, in radians.
+    /// </param>
+    /// <param name="yAxisRotation">
+    /// The angle of rotation around the y-axis, in radians.
+    /// </param>
+    /// <param name="zAxisRotation">
+    /// The angle of rotation around the z-axis, in radians.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
     inline SquareMatrix<float, 4>::Simd Rotation( float xAxisRotation, float yAxisRotation, float zAxisRotation ) noexcept
     {
         using Simd = Vector<float, 3>::Simd;
@@ -12826,8 +13039,8 @@ namespace Harlinn::Common::Core::Math
         auto C1 = Traits::Fill( cosine );
         auto C2 = Traits::Fill( 1.0f - cosine );
 
-        auto N0 = Traits::Shuffle<3, 0, 2, 1>( normalizedAxis.simd, normalizedAxis.simd );
-        auto N1 = Traits::Shuffle<3, 1, 0, 2>( normalizedAxis.simd, normalizedAxis.simd );
+        auto N0 = Traits::Shuffle<3, 0, 2, 1>( normalizedAxis.simd );
+        auto N1 = Traits::Shuffle<3, 1, 0, 2>( normalizedAxis.simd );
 
         auto V0 = Traits::Mul( C2, N0 );
         V0 = Traits::Mul( V0, N1 );
@@ -12994,9 +13207,36 @@ namespace Harlinn::Common::Core::Math
         return RotationQuaternion( q.ToSimd( ) );
     }
 
-
-    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, const Vector<float,3>::Simd& scaling,
-        const Point3f::Simd& rotationOrigin, const QuaternionSimd<Quaternion<float>>& rotationQuaternion, const Vector<float, 3>::Simd& translation )
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
     {
         using Traits = SIMD::Traits<float, 4>;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
@@ -13026,10 +13266,2628 @@ namespace Harlinn::Common::Core::Math
         return result;
     }
 
-    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, const Quaternion<float>& scalingOrientationQuaternion, const Vector<float, 3>& scaling,
-        const Point3f& rotationOrigin, const Quaternion<float>& rotationQuaternion, const Vector<float, 3>& translation )
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f::Simd& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion,
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion,
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>::Simd& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f::Simd& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>::Simd& translation )
+    {
+        return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix.
+    /// </summary>
+    /// <param name="scalingOrigin">
+    /// The center of the scaling.
+    /// </param>
+    /// <param name="scalingOrientationQuaternion">
+    /// The orientation of the scaling.
+    /// </param>
+    /// <param name="scaling">
+    /// The scaling factors for the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of the rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// The rotation around the origin provided by rotationOrigin parameter.
+    /// </param>
+    /// <param name="translation">
+    /// The translations along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The transformation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd TransformationMatrix( const Point3f& scalingOrigin, 
+                                                            const Quaternion<float>& scalingOrientationQuaternion, 
+                                                            const Vector<float,3>& scaling,
+                                                            const Point3f& rotationOrigin, 
+                                                            const Quaternion<float>& rotationQuaternion, 
+                                                            const Vector<float, 3>& translation )
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::SimdType S, Internal::SimdType T, typename U, Internal::SimdType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        using Traits = SIMD::Traits<U, 4>;
+        using Constants = typename Traits::Constants;
+
+        auto result = Scaling( scaling );
+        auto rotationOriginXYZ = Traits::Select( Constants::Select2221, rotationOrigin.simd, Constants::Select2221 );
+        auto rotationMatrix = RotationQuaternion( rotationQuaternion );
+        auto translationXYZ = Traits::Select( Constants::Select2221, translation.simd, Constants::Select2221 );
+
+        result.simd[ 3 ] = Traits::Sub( result.simd[ 3 ], rotationOriginXYZ );
+        result = result * rotationMatrix;
+        result.simd[ 3 ] = Traits::Add( result.simd[ 3 ], rotationOriginXYZ );
+        result.simd[ 3 ] = Traits::Add( result.simd[ 3 ], translationXYZ );
+        return result;
+    }
+
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::SimdType S, Internal::SimdType T, typename U, Internal::TupleType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::SimdType S, Internal::SimdType T, typename U, Internal::SimdType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const Quaternion<U>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::SimdType S, Internal::SimdType T, typename U, Internal::TupleType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const Quaternion<U>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::SimdType S, Internal::TupleType T, typename U, Internal::SimdType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::SimdType S, Internal::TupleType T, typename U, Internal::TupleType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::SimdType S, Internal::TupleType T, typename U, Internal::SimdType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const Quaternion<U>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::SimdType S, Internal::TupleType T, typename U, Internal::TupleType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const Quaternion<U>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::TupleType S, Internal::SimdType T, typename U, Internal::SimdType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::TupleType S, Internal::SimdType T, typename U, Internal::TupleType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::TupleType S, Internal::SimdType T, typename U, Internal::SimdType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const Quaternion<U>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::TupleType S, Internal::SimdType T, typename U, Internal::TupleType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const Quaternion<U>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::TupleType S, Internal::TupleType T, typename U, Internal::SimdType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::TupleType S, Internal::TupleType T, typename U, Internal::TupleType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling.ToSimd(), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::TupleType S, Internal::TupleType T, typename U, Internal::SimdType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const Quaternion<U>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
+    }
+
+
+    /// <summary>
+    /// Creates an affine transformation matrix.
+    /// </summary>
+    /// <param name="scaling">
+    /// The scaling factors for each dimension.
+    /// </param>
+    /// <param name="rotationOrigin">
+    /// The center of rotation.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Rotation factors as a quaternion.
+    /// </param>
+    /// <param name="translation">
+    /// The translation offsets.
+    /// </param>
+    /// <returns></returns>
+    template<Internal::TupleType S, Internal::TupleType T, typename U, Internal::TupleType W>
+        requires (S::Size > 2) && (T::Size > 2) && (W::Size > 2) && IsFloatingPoint<U> &&
+            std::is_same_v<typename S::value_type,U> && std::is_same_v<typename T::value_type, U> && 
+                std::is_same_v<typename W::value_type, U>
+    inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
+                                                                const T& rotationOrigin,
+                                                                const Quaternion<U>& rotationQuaternion,
+                                                                const W& translation )
+    {
+        return AffineTransformationMatrix( scaling.ToSimd(), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
 
 
@@ -13048,22 +15906,70 @@ namespace Harlinn::Common::Core::Math
         return Simd( Traits::TransformVector( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
     }
 
+    /// <summary>
+    /// Applies a transformation matrix to a 3D vector.
+    /// </summary>
+    /// <param name="v">
+    /// The vector.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
     inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = Vector<float, 3>::Traits;
         using Simd = Vector<float, 3>::Simd;
         return Simd( Traits::TransformVector( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) );
     }
+    /// <summary>
+    /// Applies a transformation matrix to a 3D vector.
+    /// </summary>
+    /// <param name="v">
+    /// The vector.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
     inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>::Simd& matrix )
     {
         return Transform( v.ToSimd(), matrix );
     }
 
+    /// <summary>
+    /// Applies a transformation matrix to a 3D vector.
+    /// </summary>
+    /// <param name="v">
+    /// The vector.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
     inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>& matrix )
     {
         return Transform( v, matrix.ToSimd( ) );
     }
 
+    /// <summary>
+    /// Applies a transformation matrix to a 3D vector.
+    /// </summary>
+    /// <param name="v">
+    /// The vector.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
     inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>& matrix )
     {
         return Transform( v.ToSimd( ), matrix.ToSimd( ) );
@@ -13078,39 +15984,233 @@ namespace Harlinn::Common::Core::Math
     }
 
 
-    inline Point2f::Simd Transform( const Point2f::Simd& v, const SquareMatrix<float, 3>::Simd& matrix )
+    /// <summary>
+    /// Applies a transformation matrix to a 2D coordinate.
+    /// </summary>
+    /// <param name="p">
+    /// The 2D coordinate.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Point2f::Simd Transform( const Point2f::Simd& p, const SquareMatrix<float, 3>::Simd& matrix )
     {
         using Traits = SquareMatrix<float, 3>::Traits;
         using Simd = Point2f::Simd;
-        return Simd( Traits::TransformPoint( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
+        return Simd( Traits::TransformPoint( p.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
     }
-    inline Point3f::Simd Transform( const Point3f::Simd& v, const SquareMatrix<float, 4>::Simd& matrix )
+
+    /// <summary>
+    /// Applies a transformation matrix to a 3D coordinate.
+    /// </summary>
+    /// <param name="p">
+    /// The 3D coordinate.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = SquareMatrix<float, 4>::Traits;
         using Simd = Point3f::Simd;
-        return Simd( Traits::TransformPoint( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) );
+        return Simd( Traits::TransformPoint( p.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) );
     }
 
-    inline Point3f::Simd Transform( const Point3f& v, const SquareMatrix<float, 4>::Simd& matrix )
+    /// <summary>
+    /// Applies a transformation matrix to a 3D coordinate.
+    /// </summary>
+    /// <param name="p">
+    /// The 3D coordinate.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>::Simd& matrix )
     {
-        return Transform( v.ToSimd( ), matrix );
+        return Transform( p.ToSimd( ), matrix );
     }
 
-    inline Point3f::Simd Transform( const Point3f::Simd& v, const SquareMatrix<float, 4>& matrix )
+    /// <summary>
+    /// Applies a transformation matrix to a 3D coordinate.
+    /// </summary>
+    /// <param name="p">
+    /// The 3D coordinate.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>& matrix )
     {
-        return Transform( v, matrix.ToSimd( ) );
+        return Transform( p, matrix.ToSimd( ) );
     }
 
-    inline Point3f::Simd Transform( const Point3f& v, const SquareMatrix<float, 4>& matrix )
+    /// <summary>
+    /// Applies a transformation matrix to a 3D coordinate.
+    /// </summary>
+    /// <param name="p">
+    /// The 3D coordinate.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>& matrix )
     {
-        return Transform( v.ToSimd( ), matrix.ToSimd( ) );
+        return Transform( p.ToSimd( ), matrix.ToSimd( ) );
     }
 
-    inline Normal3f::Simd Transform( const Normal3f::Simd& v, const SquareMatrix<float, 3>::Simd& matrix )
+    /// <summary>
+    /// Applies a transformation matrix to a normal.
+    /// </summary>
+    /// <param name="p">
+    /// The normal.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>::Simd& matrix )
     {
         using Traits = SquareMatrix<float, 3>::Traits;
         using Simd = Normal3f::Simd;
-        return Simd( Traits::TransformNormal( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
+        return Simd( Traits::TransformNormal( n.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
+    }
+
+    /// <summary>
+    /// Applies a transformation matrix to a normal.
+    /// </summary>
+    /// <param name="p">
+    /// The normal.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        using Traits = SquareMatrix<float, 3>::Traits;
+        using Simd = Normal3f::Simd;
+        return Simd( Traits::TransformNormal( n.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) );
+    }
+
+    /// <summary>
+    /// Applies a transformation matrix to a normal.
+    /// </summary>
+    /// <param name="p">
+    /// The normal.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>::Simd& matrix )
+    {
+        return Transform( n.ToSimd( ), matrix );
+    }
+
+    /// <summary>
+    /// Applies a transformation matrix to a normal.
+    /// </summary>
+    /// <param name="p">
+    /// The normal.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        return Transform( n.ToSimd( ), matrix );
+    }
+
+    /// <summary>
+    /// Applies a transformation matrix to a normal.
+    /// </summary>
+    /// <param name="p">
+    /// The normal.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>& matrix )
+    {
+        return Transform( n, matrix.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Applies a transformation matrix to a normal.
+    /// </summary>
+    /// <param name="p">
+    /// The normal.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>& matrix )
+    {
+        return Transform( n, matrix.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Applies a transformation matrix to a normal.
+    /// </summary>
+    /// <param name="p">
+    /// The normal.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>& matrix )
+    {
+        return Transform( n.ToSimd( ), matrix.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Applies a transformation matrix to a normal.
+    /// </summary>
+    /// <param name="p">
+    /// The normal.
+    /// </param>
+    /// <param name="matrix">
+    /// The transformation matrix.
+    /// </param>
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>& matrix )
+    {
+        return Transform( n.ToSimd( ), matrix.ToSimd( ) );
     }
 
 

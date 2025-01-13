@@ -2104,6 +2104,27 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr SIMDType FltMin = { { FltMinValue, FltMinValue, FltMinValue, FltMinValue } };
             static constexpr SIMDType FltMax = { { FltMaxValue, FltMaxValue, FltMaxValue, FltMaxValue } };
             static constexpr SIMDType NegOneMask = { { NegOneMaskValue, NegOneMaskValue, NegOneMaskValue, NegOneMaskValue } };
+
+            //static constexpr SIMDType Select1111 = { { BitsClear, BitsClear, BitsClear, BitsClear } };
+
+            static constexpr SIMDType Select2111 = { { BitsSet, BitsClear, BitsClear, BitsClear } };
+            static constexpr SIMDType Select1211 = { { BitsClear, BitsSet, BitsClear, BitsClear } };
+            static constexpr SIMDType Select2211 = { { BitsSet, BitsSet, BitsClear, BitsClear } };
+            static constexpr SIMDType Select1121 = { { BitsClear, BitsClear, BitsSet, BitsClear } };
+            static constexpr SIMDType Select2121 = { { BitsSet, BitsClear, BitsSet, BitsClear } };
+            static constexpr SIMDType Select1221 = { { BitsClear, BitsSet, BitsSet, BitsClear } };
+            static constexpr SIMDType Select2221 = { { BitsSet, BitsSet, BitsSet, BitsClear } };
+            static constexpr SIMDType Select1112 = { { BitsClear, BitsClear, BitsClear, BitsSet } };
+
+            static constexpr SIMDType Select2112 = { { BitsSet, BitsClear, BitsClear, BitsSet } };
+            static constexpr SIMDType Select1212 = { { BitsClear, BitsSet, BitsClear, BitsSet } };
+            static constexpr SIMDType Select2212 = { { BitsSet, BitsSet, BitsClear, BitsSet } };
+            static constexpr SIMDType Select1122 = { { BitsClear, BitsClear, BitsSet, BitsSet } };
+            static constexpr SIMDType Select2122 = { { BitsSet, BitsClear, BitsSet, BitsSet } };
+            static constexpr SIMDType Select1222 = { { BitsClear, BitsSet, BitsSet, BitsSet } };
+
+            //static constexpr SIMDType Select2222 = { { BitsSet, BitsSet, BitsSet, BitsSet } };
+
         };
         struct m256Constants : Constants
         {
@@ -2121,8 +2142,8 @@ namespace Harlinn::Common::Core::SIMD
     private:
         static constexpr bool UseShortSIMDType = N <= 4;
         using DataTypeTraits = std::conditional_t<UseShortSIMDType, SIMD::DataTypeTraits<DataType::m128>, SIMD::DataTypeTraits<DataType::m256> >;
-        using Constants = std::conditional_t<UseShortSIMDType, Internal::m128Constants, Internal::m256Constants>;
     public:
+        using Constants = std::conditional_t<UseShortSIMDType, Internal::m128Constants, Internal::m256Constants>;
         static constexpr DataType Id = DataTypeTraits::Id;
         static constexpr size_t AlignAs = DataTypeTraits::AlignAs;
         using SIMDType = typename DataTypeTraits::Type;
