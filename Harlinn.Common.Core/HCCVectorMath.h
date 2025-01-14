@@ -788,54 +788,54 @@ namespace Harlinn::Common::Core::Math
 
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
-        DerivedType& operator += ( const T& other ) noexcept
+        TupleSimd& operator += ( const T& other ) noexcept
         {
             simd = Traits::Add( simd, Traits::Load( other.values.data( ) ) );
-            return static_cast< DerivedType& >(*this);
+            return *this;
         }
-        DerivedType& operator += ( const TupleSimd& other ) noexcept
+        TupleSimd& operator += ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Add( simd, other.simd );
-            return static_cast< DerivedType& >( *this );
+            return *this;
         }
 
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
-        DerivedType& operator -= ( const T& other ) noexcept
+        TupleSimd& operator -= ( const T& other ) noexcept
         {
             simd = Traits::Sub( simd, Traits::Load( other.values.data( ) ) );
-            return static_cast< DerivedType& >( *this );
+            return *this;
         }
-        DerivedType& operator -= ( const TupleSimd& other ) noexcept
+        TupleSimd& operator -= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Sub( simd, other.simd );
-            return static_cast< DerivedType& >( *this );
+            return *this;
         }
 
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
-        DerivedType& operator *= ( const T& other ) noexcept
+        TupleSimd& operator *= ( const T& other ) noexcept
         {
             simd = Traits::Mul( simd, Traits::Load( other.values.data( ) ) );
-            return static_cast< DerivedType& >( *this );
+            return *this;
         }
-        DerivedType& operator *= ( const TupleSimd& other ) noexcept
+        TupleSimd& operator *= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Mul( simd, other.simd );
-            return static_cast< DerivedType& >( *this );
+            return *this;
         }
 
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
-        DerivedType& operator /= ( const T& other ) noexcept
+        TupleSimd& operator /= ( const T& other ) noexcept
         {
             simd = Traits::Div( simd, Traits::Load( other.values.data( ) ) );
-            return static_cast< DerivedType& >( *this );
+            return *this;
         }
-        DerivedType& operator /= ( const TupleSimd& other ) noexcept
+        TupleSimd& operator /= ( const TupleSimd& other ) noexcept
         {
             simd = Traits::Div( simd, other.simd );
-            return static_cast< DerivedType& >( *this );
+            return *this;
         }
 
         template<Internal::TupleType T>
@@ -853,6 +853,23 @@ namespace Harlinn::Common::Core::Math
         bool HasNaN( ) const noexcept
         {
             return Traits::HasNaN( simd );
+        }
+
+        TupleSimd X( ) const
+        {
+            return Traits::At<0>( simd );
+        }
+        TupleSimd Y( ) const
+        {
+            return Traits::At<1>( simd );
+        }
+        TupleSimd Z( ) const requires (Size > 2)
+        {
+            return Traits::At<2>( simd );
+        }
+        TupleSimd W( ) const requires ( Size > 3 )
+        {
+            return Traits::At<3>( simd );
         }
 
 
@@ -919,12 +936,15 @@ namespace Harlinn::Common::Core::Math
             : x( xv ), y(yv)
         { }
 
+        Tuple2( const ArrayType& a ) noexcept
+            : values(a)
+        { }
+
         template<Internal::SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple2( const U& other ) noexcept
             : values( Traits::ToArray( other.simd ) )
-        {
-        }
+        { }
 
         template<Internal::TupleType U>
             requires std::is_same_v<Traits, typename U::Traits>
@@ -944,6 +964,11 @@ namespace Harlinn::Common::Core::Math
         Simd ToSimd( ) const noexcept
         {
             return Simd( Traits::Load( values ) );
+        }
+
+        operator Simd( ) const noexcept
+        {
+            return ToSimd( );
         }
 
         constexpr bool operator == ( const Tuple2& other ) const noexcept
@@ -1240,6 +1265,10 @@ namespace Harlinn::Common::Core::Math
             : x( xv ), y( yv ), z( zv )
         { }
 
+        Tuple3( const ArrayType& a ) noexcept
+            : values( a )
+        { }
+
         template<Internal::SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple3( const U& other ) noexcept
@@ -1263,6 +1292,11 @@ namespace Harlinn::Common::Core::Math
         Simd ToSimd( ) const noexcept
         {
             return Simd( Traits::Load( values ) );
+        }
+
+        operator Simd( ) const noexcept
+        {
+            return ToSimd( );
         }
 
         constexpr bool operator == ( const Tuple3& other ) const noexcept
@@ -1562,6 +1596,10 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        Tuple4( const ArrayType& a ) noexcept
+            : values( a )
+        { }
+
         template<Internal::SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple4( const U& other ) noexcept
@@ -1587,6 +1625,11 @@ namespace Harlinn::Common::Core::Math
         Simd ToSimd( ) const noexcept
         {
             return Simd( Traits::Load( values ) );
+        }
+
+        operator Simd( ) const noexcept
+        {
+            return ToSimd( );
         }
 
         constexpr bool operator == ( const Tuple4& other ) const noexcept
@@ -9531,6 +9574,10 @@ namespace Harlinn::Common::Core::Math
             : Base( xv, yv )
         { }
 
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
+
         template<typename T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
@@ -9559,6 +9606,10 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
+
         template<typename T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
@@ -9584,6 +9635,10 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
+
         template<typename T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
@@ -9608,6 +9663,10 @@ namespace Harlinn::Common::Core::Math
             : Base( xv, yv, zv )
         {
         }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
 
         template<typename T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
@@ -9637,6 +9696,10 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
+
         template<typename T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
@@ -9664,6 +9727,10 @@ namespace Harlinn::Common::Core::Math
             : Base( xv, yv, zv, wv )
         {
         }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
 
         template<typename T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
@@ -10169,6 +10236,11 @@ namespace Harlinn::Common::Core::Math
         bool operator != ( const QuaternionType& other ) const noexcept;
 
 
+        QuaternionSimd operator - ( ) const noexcept
+        {
+            return QuaternionSimd(Traits::Negate( simd ));
+        }
+
         QuaternionSimd& operator += ( const QuaternionSimd& other ) noexcept
         {
             simd = Traits::Add( simd, other.simd );
@@ -10409,9 +10481,15 @@ namespace Harlinn::Common::Core::Math
             return *this;
         }
 
+
         Simd ToSimd( ) const noexcept
         {
             return Simd( Traits::Load( values ) );
+        }
+
+        operator Simd( ) const noexcept
+        {
+            return ToSimd( );
         }
 
         bool operator == ( const Simd& other ) const noexcept
@@ -10433,7 +10511,7 @@ namespace Harlinn::Common::Core::Math
             return values != other.values;
         }
 
-        Simd operator - ( ) const
+        Simd operator - ( ) const noexcept
         {
             return Traits::Negate( Traits::Load( values ) );
         }
@@ -10600,8 +10678,59 @@ namespace Harlinn::Common::Core::Math
     typename T::Simd operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return typename T::Simd(Traits::Add( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) ));
+        return typename T::Simd(Traits::Add( Traits::Load( q1.values ), Traits::Load( q2.values ) ));
     }
+
+
+    // Scalar Addition
+
+    template<Internal::QuaternionSimdType T, typename U>
+        requires std::is_arithmetic_v<U>
+    T operator + ( const T& q1, const U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        auto v = static_cast< FloatT >( value );
+        auto zero = static_cast< FloatT >( 0. );
+        return T( Traits::Add( q1.simd, Traits::Set( v, zero, zero, zero ) ) );
+    }
+
+    template<typename T, Internal::QuaternionSimdType U>
+        requires std::is_arithmetic_v<T>
+    U operator + ( const T& value, const U& q2 ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using FloatT = typename Traits::Type;
+        auto v = static_cast< FloatT >( value );
+        auto zero = static_cast< FloatT >( 0. );
+        return U( Traits::Add( Traits::Set( v, zero, zero, zero ), q2.simd ) );
+    }
+
+    template<Internal::QuaternionType T, typename U>
+        requires std::is_arithmetic_v<U>
+    typename T::Simd operator + ( const T& q1, const U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = typename T::Simd;
+        auto v = static_cast< FloatT >( value );
+        auto zero = static_cast< FloatT >( 0. );
+
+        return Simd( Traits::Add( Traits::Load( q1.values ), Traits::Set( v, zero, zero, zero ) ) );
+    }
+    template<typename T, Internal::QuaternionType U>
+        requires std::is_arithmetic_v<T>
+    typename U::Simd operator + ( const T value, const U& q2 ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = typename U::Simd;
+        auto v = static_cast< FloatT >( value );
+        auto zero = static_cast< FloatT >( 0. );
+
+        return Simd( Traits::Add( Traits::Set( v, zero, zero, zero ), Traits::Load( q2.values ) ) );
+    }
+
 
     // Subtraction
 
@@ -10631,8 +10760,62 @@ namespace Harlinn::Common::Core::Math
     typename T::Simd operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return typename T::Simd(Traits::Sub( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values.data( ) ) ));
+        return typename T::Simd(Traits::Sub( Traits::Load( q1.values.data( ) ), Traits::Load( q2.values ) ));
     }
+
+
+    // Scalar Subtraction
+
+    template<Internal::QuaternionSimdType T, typename U>
+        requires std::is_arithmetic_v<U>
+    T operator - ( const T& q1, const U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        auto v = static_cast< FloatT >( value );
+        auto zero = static_cast< FloatT >( 0. );
+        return T( Traits::Sub( q1.simd, Traits::Set( v, zero, zero, zero ) ) );
+    }
+
+    template<typename T, Internal::QuaternionSimdType U>
+        requires std::is_arithmetic_v<T>
+    U operator - ( const T value, const U& q2 ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using FloatT = typename Traits::Type;
+        auto v = static_cast< FloatT >( value );
+        auto zero = static_cast< FloatT >( 0. );
+        auto tmp = Traits::Sub( Traits::Set( v, zero, zero, zero ), q2.simd );
+        return U( Traits::Permute<4, 5, 6, 3>( tmp, q2.simd ) );
+    }
+
+    template<Internal::QuaternionType T, typename U>
+        requires std::is_arithmetic_v<U>
+    typename T::Simd operator - ( const T& q1, const U value ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = typename T::Simd;
+        auto v = static_cast< FloatT >( value );
+        auto zero = static_cast< FloatT >( 0. );
+
+        return Simd( Traits::Sub( Traits::Load( q1.values ), Traits::Set( v, zero, zero, zero ) ) );
+    }
+    template<typename T, Internal::QuaternionType U>
+        requires std::is_arithmetic_v<T>
+    typename U::Simd operator - ( const T value, const U& q2 ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = typename U::Simd;
+        auto v = static_cast< FloatT >( value );
+        auto zero = static_cast< FloatT >( 0. );
+        auto vals = Traits::Load( q2.values );
+        auto tmp = Traits::Sub( Traits::Set( v, zero, zero, zero ), vals );
+
+        return Simd( Traits::Permute<4, 5, 6, 3>( tmp, vals ) );
+    }
+
 
     // Multiplication
 
@@ -10689,14 +10872,14 @@ namespace Harlinn::Common::Core::Math
     typename U::Simd operator * ( T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
-        return typename U::Simd(Traits::Mul( Traits::Fill( value ), q2.simd ));
+        return typename U::Simd(Traits::Mul( Traits::Fill( value ), Traits::Load( q2.values ) ));
     }
     template<Internal::QuaternionType T, typename U>
         requires IsFloatingPoint<U>
     typename T::Simd operator * ( const T& q1, U value ) noexcept
     {
         using Traits = typename T::Traits;
-        return typename T::Simd(Traits::Mul( q1.simd, Traits::Fill( value ) ));
+        return typename T::Simd(Traits::Mul( Traits::Load( q1.values ), Traits::Fill( value ) ));
     }
 
     // Scalar Division
@@ -10709,12 +10892,31 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return T( Traits::Div( q1.simd, Traits::Fill( value ) ) );
     }
+
+    template<typename T, Internal::QuaternionSimdType U>
+        requires IsFloatingPoint<T>
+    U operator / ( const T value, const U& q2 ) noexcept
+    {
+        using Traits = typename U::Traits;
+        return U( Traits::Div( Traits::Fill( value ), q2.simd ) );
+    }
+
     template<Internal::QuaternionType T, typename U>
         requires IsFloatingPoint<U>
     typename T::Simd operator / ( const T& q1, U value ) noexcept
     {
         using Traits = typename T::Traits;
-        return typename T::Simd(Traits::Mul( Traits::Load( q1.values ), Traits::Fill( value ) ));
+        using Simd = typename T::Simd;
+        return Simd(Traits::Div( Traits::Load( q1.values ), Traits::Fill( value ) ));
+    }
+
+    template<typename T, Internal::QuaternionType U>
+        requires IsFloatingPoint<T>
+    typename U::Simd operator / ( const T value, const U& q2 ) noexcept
+    {
+        using Traits = typename U::Traits;
+        using Simd = typename U::Simd;
+        return Simd( Traits::Div( Traits::Fill( value ), Traits::Load( q2.values ) ) );
     }
 
     /// <summary>
@@ -11132,7 +11334,7 @@ namespace Harlinn::Common::Core::Math
 
         auto selectZero = Traits::LessOrEqual( l.simd, epsilon );
 
-        auto result = Traits::Divide( conjugate.simd, l.simd );
+        auto result = Traits::Div( conjugate.simd, l.simd );
 
         return Simd( Traits::Select( result, zero, selectZero ) );
     }
@@ -11228,6 +11430,29 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename Quaternion<T>::Traits;
         using Simd = QuaternionSimd<Quaternion<T>>;
         return Simd( Traits::Slerp( q1.simd, q2.simd, t.simd ) );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. When the value of t is 0.0, the function returns q1, 
+    /// and when the value of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const QuaternionSimd<Quaternion<T>>& q1, const QuaternionSimd<Quaternion<T>>& q2, const T t ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        using Simd = QuaternionSimd<Quaternion<T>>;
+        return Simd( Traits::Slerp( q1.simd, q2.simd, Traits::Fill( t ) ) );
     }
 
     /// <summary>
@@ -11374,6 +11599,69 @@ namespace Harlinn::Common::Core::Math
     QuaternionSimd<Quaternion<T>> Slerp( const Quaternion<T>& q1, const Quaternion<T>& q2, const Vector<T, 4>& t ) noexcept
     {
         return Math::Slerp( q1.ToSimd( ), q2.ToSimd( ), t.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. When the value of t is 0.0, the function returns q1, 
+    /// and when the value of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const QuaternionSimd<Quaternion<T>>& q1, const Quaternion<T>& q2, const T t ) noexcept
+    {
+        return Math::Slerp( q1, q2.ToSimd( ), t );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. When the value of t is 0.0, the function returns q1, 
+    /// and when the value of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const Quaternion<T>& q1, const QuaternionSimd<Quaternion<T>>& q2, const T t ) noexcept
+    {
+        return Math::Slerp( q1.ToSimd( ), q2, t );
+    }
+
+    /// <summary>
+    /// Spherical linear interpolation between two unit quaternions.
+    /// </summary>
+    /// <param name="q1">
+    /// The unit quaternion to interpolate from.
+    /// </param>
+    /// <param name="q2">
+    /// The unit quaternion to interpolate to.
+    /// </param>
+    /// <param name="t">
+    /// Interpolation control factor. When the value of t is 0.0, the function returns q1, 
+    /// and when the value of t is 1.0, the function returns q2.
+    /// </param>
+    /// <returns></returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    QuaternionSimd<Quaternion<T>> Slerp( const Quaternion<T>& q1, const Quaternion<T>& q2, const T t ) noexcept
+    {
+        return Math::Slerp( q1.ToSimd( ), q2.ToSimd( ), t );
     }
 
 
@@ -11644,6 +11932,7 @@ namespace Harlinn::Common::Core::Math
             result[ 3 ] = Traits::Load( matrix[ 3 ].data( ) );
             return result;
         }
+
         static ArrayType ToMatrix( const SquareMatrixSimd& simd )
         {
             ArrayType result;
@@ -11769,6 +12058,11 @@ namespace Harlinn::Common::Core::Math
         Simd ToSimd( ) const noexcept
         {
             return Simd( Simd::ToSimd( data_ ) );
+        }
+
+        operator Simd( ) const noexcept
+        {
+            return ToSimd( );
         }
         
 
@@ -13144,7 +13438,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const QuaternionSimd<Quaternion<float>>& q )
+    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const QuaternionSimd<Quaternion<float>>& q ) noexcept
     {
         using Traits = SIMD::Traits<float, 4>;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
@@ -13202,7 +13496,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>& q )
+    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>& q ) noexcept
     {
         return RotationQuaternion( q.ToSimd( ) );
     }
@@ -13236,7 +13530,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         using Traits = SIMD::Traits<float, 4>;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
@@ -13295,7 +13589,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -13330,7 +13624,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -13364,7 +13658,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -13398,7 +13692,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -13432,7 +13726,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -13466,7 +13760,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -13501,7 +13795,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -13535,7 +13829,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
     }
@@ -13569,7 +13863,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -13603,7 +13897,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -13638,7 +13932,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -13672,7 +13966,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -13706,7 +14000,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -13741,7 +14035,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -13775,7 +14069,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -13809,7 +14103,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion, translation );
     }
@@ -13843,7 +14137,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -13878,7 +14172,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -13912,7 +14206,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -13946,7 +14240,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -13980,7 +14274,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -14014,7 +14308,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -14049,7 +14343,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -14083,7 +14377,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
     }
@@ -14117,7 +14411,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -14151,7 +14445,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -14186,7 +14480,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -14220,7 +14514,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -14254,7 +14548,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -14289,7 +14583,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -14323,7 +14617,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin, scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -14357,7 +14651,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion,
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation );
     }
@@ -14392,7 +14686,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -14427,7 +14721,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -14461,7 +14755,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -14495,7 +14789,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -14529,7 +14823,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -14563,7 +14857,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -14598,7 +14892,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -14632,7 +14926,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
     }
@@ -14666,7 +14960,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -14700,7 +14994,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -14735,7 +15029,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -14769,7 +15063,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -14803,7 +15097,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -14838,7 +15132,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -14872,7 +15166,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion, scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -14906,7 +15200,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion, translation );
     }
@@ -14940,7 +15234,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -14975,7 +15269,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -15009,7 +15303,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -15043,7 +15337,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -15077,7 +15371,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -15111,7 +15405,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -15146,7 +15440,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>::Simd& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -15180,7 +15474,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
     }
@@ -15214,7 +15508,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -15248,7 +15542,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -15283,7 +15577,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f::Simd& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -15317,7 +15611,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -15351,7 +15645,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const QuaternionSimd<Quaternion<float>>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -15386,7 +15680,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>::Simd& translation )
+                                                            const Vector<float, 3>::Simd& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -15420,7 +15714,7 @@ namespace Harlinn::Common::Core::Math
                                                             const Vector<float,3>& scaling,
                                                             const Point3f& rotationOrigin, 
                                                             const Quaternion<float>& rotationQuaternion, 
-                                                            const Vector<float, 3>& translation )
+                                                            const Vector<float, 3>& translation ) noexcept
     {
         return TransformationMatrix( scalingOrigin.ToSimd( ), scalingOrientationQuaternion.ToSimd( ), scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -15448,7 +15742,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         using Traits = SIMD::Traits<U, 4>;
         using Constants = typename Traits::Constants;
@@ -15489,7 +15783,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -15517,7 +15811,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const Quaternion<U>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -15546,7 +15840,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const Quaternion<U>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling, rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -15574,7 +15868,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -15602,7 +15896,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling, rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -15630,7 +15924,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const Quaternion<U>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -15659,7 +15953,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const Quaternion<U>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling, rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -15687,7 +15981,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation );
     }
@@ -15715,7 +16009,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin, rotationQuaternion, translation.ToSimd( ) );
     }
@@ -15743,7 +16037,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const Quaternion<U>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation );
     }
@@ -15772,7 +16066,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const Quaternion<U>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin, rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
     }
@@ -15800,7 +16094,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion, translation );
     }
@@ -15828,7 +16122,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling.ToSimd(), rotationOrigin.ToSimd( ), rotationQuaternion, translation.ToSimd( ) );
     }
@@ -15856,7 +16150,7 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const Quaternion<U>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling.ToSimd( ), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation );
     }
@@ -15885,9 +16179,480 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<U, 4>::Simd AffineTransformationMatrix( const S& scaling,
                                                                 const T& rotationOrigin,
                                                                 const Quaternion<U>& rotationQuaternion,
-                                                                const W& translation )
+                                                                const W& translation ) noexcept
     {
         return AffineTransformationMatrix( scaling.ToSimd(), rotationOrigin.ToSimd( ), rotationQuaternion.ToSimd( ), translation.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, camera direction, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="cameraDirection">
+    /// The camera direction.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S,T> && Internal::IsCompatible<S, U> && (S::Size == 3)
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    {
+        using Traits = SIMD::Traits<typename S::value_type, 4>;
+        using Constants = typename Traits::Constants;
+        using MatrixSimd = SquareMatrix<typename S::value_type, 4>::Simd;
+        auto r2 = Normalize( cameraDirection );
+
+        auto r0 = Cross( upDirection, r2 );
+        r0 = Normalize( r0 );
+
+        auto r1 = Cross( r2, r0 );
+
+        auto negCameraPosition = -cameraPosition;
+
+        auto d0 = Dot( r0, negCameraPosition );
+        auto d1 = Dot( r1, negCameraPosition );
+        auto d2 = Dot( r2, negCameraPosition );
+
+        MatrixSimd result;
+        result.simd[ 0 ] = Traits::Select( d0.simd, r0.simd, Constants::Select2221 );
+        result.simd[ 1 ] = Traits::Select( d1.simd, r1.simd, Constants::Select2221 );
+        result.simd[ 2 ] = Traits::Select( d2.simd, r2.simd, Constants::Select2221 );
+        result.simd[ 3 ] = Constants::IdentityR4;
+
+        return Transpose( result );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, camera direction, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="cameraDirection">
+    /// The camera direction.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    {
+        return LookTo( cameraPosition, cameraDirection, upDirection.ToSimd() );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, camera direction, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="cameraDirection">
+    /// The camera direction.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    {
+        return LookTo( cameraPosition, cameraDirection.ToSimd( ), upDirection );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, camera direction, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="cameraDirection">
+    /// The camera direction.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    {
+        return LookTo( cameraPosition, cameraDirection.ToSimd( ), upDirection.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, camera direction, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="cameraDirection">
+    /// The camera direction.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    {
+        return LookTo( cameraPosition.ToSimd( ), cameraDirection, upDirection );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, camera direction, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="cameraDirection">
+    /// The camera direction.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    {
+        return LookTo( cameraPosition.ToSimd( ), cameraDirection, upDirection.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, camera direction, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="cameraDirection">
+    /// The camera direction.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    {
+        return LookTo( cameraPosition.ToSimd( ), cameraDirection.ToSimd( ), upDirection );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, camera direction, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="cameraDirection">
+    /// The camera direction.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    {
+        return LookTo( cameraPosition.ToSimd( ), cameraDirection.ToSimd( ), upDirection.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, focal point, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="focusPosition">
+    /// The focal point.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    {
+        auto cameraDirection = focusPosition - cameraPosition;
+        return LookTo( cameraPosition, cameraDirection, upDirection );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, focal point, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="focusPosition">
+    /// The focal point.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    {
+        return LookAt( cameraPosition, focusPosition, upDirection.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, focal point, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="focusPosition">
+    /// The focal point.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    {
+        return LookAt( cameraPosition, focusPosition.ToSimd( ), upDirection );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, focal point, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="focusPosition">
+    /// The focal point.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    {
+        return LookAt( cameraPosition, focusPosition.ToSimd( ), upDirection.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, focal point, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="focusPosition">
+    /// The focal point.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    {
+        return LookAt( cameraPosition.ToSimd( ), focusPosition, upDirection );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, focal point, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="focusPosition">
+    /// The focal point.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    {
+        return LookAt( cameraPosition.ToSimd( ), focusPosition, upDirection.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, focal point, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="focusPosition">
+    /// The focal point.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    {
+        return LookAt( cameraPosition.ToSimd( ), focusPosition.ToSimd( ), upDirection );
+    }
+
+    /// <summary>
+    /// Creates a view matrix using the left-handed coordinate system for the
+    /// provided camera position, focal point, and up direction.
+    /// </summary>
+    /// <param name="cameraPosition">
+    /// The camera position.
+    /// </param>
+    /// <param name="focusPosition">
+    /// The focal point.
+    /// </param>
+    /// <param name="upDirection">
+    /// The up direction of the camera, often [0 1 0]
+    /// </param>
+    /// <returns>
+    /// The view matrix transforming coordinates from world space to view space.
+    /// </returns>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U> && ( S::Size == 3 )
+    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    {
+        return LookAt( cameraPosition.ToSimd( ), focusPosition.ToSimd( ), upDirection.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Creates a left-handed perspective projection matrix.
+    /// </summary>
+    /// <param name="viewWidth">
+    /// The width of the frustum at the nearest clipping plane.
+    /// </param>
+    /// <param name="viewHeight">
+    /// The height of the frustum at the nearest clipping plane.
+    /// </param>
+    /// <param name="nearZ">
+    /// The distance to the nearest clipping plane. Cannot be equal to <c>farZ</c> and must be greater than zero.
+    /// </param>
+    /// <param name="farZ">
+    /// The distance to the far clipping plane. Cannot be equal to <c>nearZ</c> and must be greater than zero.
+    /// </param>
+    /// <returns>
+    /// The perspective projection matrix.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    inline SquareMatrix<T, 4>::Simd PerspectiveProjection( T viewWidth, T viewHeight, T nearZ, T farZ ) noexcept
+    {
+        using Traits = SIMD::Traits<T, 4>;
+        using Constants = typename Traits::Constants;
+        using MatrixSimd = SquareMatrix<T, 4>::Simd;
+        
+        T twoNearZ = nearZ + nearZ;
+        T range = farZ / ( farZ - nearZ );
+        
+        MatrixSimd result;
+
+        result.simd[ 0 ] = Traits::Set( twoNearZ / viewWidth );
+        result.simd[ 1 ] = Traits::Set( twoNearZ / viewHeight, 0.f );
+        result.simd[ 2 ] = Traits::Set( 1.f, range, 0.f, 0.f );
+        result.simd[ 3 ] = Traits::Set( -range * nearZ, 0.f, 0.f );
+        return result;
+    }
+
+    /// <summary>
+    /// Creates a left-handed perspective projection matrix based on a field of view.
+    /// </summary>
+    /// <param name="fovAngleY">
+    /// The top-down field-of-view angle in radians.
+    /// </param>
+    /// <param name="aspectRatio">
+    /// The aspect ratio of the view-space X/Y.
+    /// </param>
+    /// <param name="nearZ">
+    /// The distance to the nearest clipping plane. Cannot be equal to <c>farZ</c> and must be greater than zero.
+    /// </param>
+    /// <param name="farZ">
+    /// The distance to the far clipping plane. Cannot be equal to <c>nearZ</c> and must be greater than zero.
+    /// </param>
+    /// <returns>
+    /// The perspective projection matrix.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    inline SquareMatrix<T, 4>::Simd PerspectiveFovProjection( T fovAngleY, T aspectRatio, T nearZ, T farZ ) noexcept
+    {
+        using Traits = SIMD::Traits<T, 4>;
+        using Constants = typename Traits::Constants;
+        using MatrixSimd = SquareMatrix<T, 4>::Simd;
+
+        T sineFov;
+        T cosineFov;
+        SinCos( static_cast< T >(0.5) * fovAngleY, &sineFov, &cosineFov );
+
+        T height = cosineFov / sineFov;
+        T width = height / aspectRatio;
+        T range = farZ / ( farZ - nearZ );
+
+        MatrixSimd result;
+        result.simd[ 0 ] = Traits::Set( width );
+        result.simd[ 1 ] = Traits::Set( height, 0.f );
+        result.simd[ 2 ] = Traits::Set( 1.f, range, 0.f, 0.f );
+        result.simd[ 3 ] = Traits::Set( -range * nearZ, 0.f, 0.f );
+        return result;
     }
 
 
@@ -15899,7 +16664,7 @@ namespace Harlinn::Common::Core::Math
     /// <param name="matrix">
     /// </param>
     /// <returns></returns>
-    inline Vector<float, 2>::Simd Transform( const Vector<float, 2>::Simd& v, const SquareMatrix<float, 3>::Simd& matrix )
+    inline Vector<float, 2>::Simd Transform( const Vector<float, 2>::Simd& v, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
     {
         using Traits = Vector<float, 2>::Traits;
         using Simd = Vector<float, 2>::Simd;
@@ -15918,7 +16683,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix )
+    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         using Traits = Vector<float, 3>::Traits;
         using Simd = Vector<float, 3>::Simd;
@@ -15936,7 +16701,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>::Simd& matrix )
+    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         return Transform( v.ToSimd(), matrix );
     }
@@ -15953,7 +16718,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>& matrix )
+    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( v, matrix.ToSimd( ) );
     }
@@ -15970,13 +16735,13 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>& matrix )
+    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( v.ToSimd( ), matrix.ToSimd( ) );
     }
 
 
-    inline Vector<float, 4>::Simd Transform( const Vector<float, 4>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix )
+    inline Vector<float, 4>::Simd Transform( const Vector<float, 4>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         using Traits = Vector<float, 4>::Traits;
         using Simd = Vector<float, 4>::Simd;
@@ -15996,7 +16761,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point2f::Simd Transform( const Point2f::Simd& p, const SquareMatrix<float, 3>::Simd& matrix )
+    inline Point2f::Simd Transform( const Point2f::Simd& p, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
     {
         using Traits = SquareMatrix<float, 3>::Traits;
         using Simd = Point2f::Simd;
@@ -16015,7 +16780,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>::Simd& matrix )
+    inline Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         using Traits = SquareMatrix<float, 4>::Traits;
         using Simd = Point3f::Simd;
@@ -16034,7 +16799,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>::Simd& matrix )
+    inline Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         return Transform( p.ToSimd( ), matrix );
     }
@@ -16051,7 +16816,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>& matrix )
+    inline Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( p, matrix.ToSimd( ) );
     }
@@ -16068,7 +16833,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>& matrix )
+    inline Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( p.ToSimd( ), matrix.ToSimd( ) );
     }
@@ -16085,7 +16850,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>::Simd& matrix )
+    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
     {
         using Traits = SquareMatrix<float, 3>::Traits;
         using Simd = Normal3f::Simd;
@@ -16104,7 +16869,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>::Simd& matrix )
+    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         using Traits = SquareMatrix<float, 3>::Traits;
         using Simd = Normal3f::Simd;
@@ -16123,7 +16888,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>::Simd& matrix )
+    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
     {
         return Transform( n.ToSimd( ), matrix );
     }
@@ -16140,7 +16905,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>::Simd& matrix )
+    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         return Transform( n.ToSimd( ), matrix );
     }
@@ -16157,7 +16922,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>& matrix )
+    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>& matrix ) noexcept
     {
         return Transform( n, matrix.ToSimd( ) );
     }
@@ -16174,7 +16939,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>& matrix )
+    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( n, matrix.ToSimd( ) );
     }
@@ -16191,7 +16956,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>& matrix )
+    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>& matrix ) noexcept
     {
         return Transform( n.ToSimd( ), matrix.ToSimd( ) );
     }
@@ -16208,10 +16973,75 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>& matrix )
+    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( n.ToSimd( ), matrix.ToSimd( ) );
     }
+
+    /// <summary>
+    /// Projects a 3D coordinate from object space into screen space.
+    /// </summary>
+    /// <param name="v">
+    /// The 3D coordinate.
+    /// </param>
+    /// <param name="viewportX">
+    /// The x-coordinate of the upper-left corner of the viewport. Assign 0 
+    /// to this parameter, unless you only need to render to a subset of 
+    /// the surface, 
+    /// </param>
+    /// <param name="viewportY">
+    /// The y-coordinate of the upper-left corner of the viewport. Assign 0 
+    /// to this parameter, unless you only need to render to a subset of 
+    /// the surface.
+    /// </param>
+    /// <param name="viewportWidth">
+    /// The width of the clip volume, Assign the width of the render target
+    /// surface to this parameter, unless you only need to render to a subset of 
+    /// the surface.
+    /// </param>
+    /// <param name="viewportHeight">
+    /// The height of the clip volume, Assign the height of the render target
+    /// surface to this parameter, unless you only need to render to a subset of 
+    /// the surface.
+    /// </param>
+    /// <param name="viewportMinZ">
+    /// The minimum depth of the clip volume, usually 0.0f. 
+    /// </param>
+    /// <param name="viewportMaxZ">
+    /// The maximum depth of the clip volume, usually 1.0f. 
+    /// </param>
+    /// <param name="projection">
+    /// The projection matrix.
+    /// </param>
+    /// <param name="viewTransform">
+    /// The view transform matrix.
+    /// </param>
+    /// <param name="WorldTransform">
+    /// The world transform matrix.
+    /// </param>
+    /// <returns>
+    /// Returns the coordinate projected into screen space.
+    /// </returns>
+    template<Internal::SimdType S, typename FloatT = S::value_type, typename MatrixT = typename SquareMatrix<FloatT, 4>::Simd>
+    S Project (const S& v, FloatT viewportX, FloatT viewportY, FloatT viewportWidth, FloatT viewportHeight, FloatT viewportMinZ, FloatT viewportMaxZ,
+        const MatrixT& projection, const MatrixT& viewTransform, const MatrixT& WorldTransform ) noexcept
+    {
+        using Traits = SIMD::Traits<FloatT, 4>;
+        const FloatT halfViewportWidth = viewportWidth * static_cast< FloatT >(0.5);
+        const FloatT halfViewportHeight = viewportHeight * static_cast< FloatT >( 0.5 );
+
+        auto scale = Traits::Set( viewportMaxZ - viewportMinZ, -halfViewportHeight, halfViewportWidth );
+        auto offset = Traits::Set( viewportMinZ, viewportY + halfViewportHeight, viewportX + halfViewportWidth );
+
+        auto transformation = WorldTransform * viewTransform;
+        transformation = transformation * projection;
+
+        auto result = Traits::TransformPoint( v.simd, transformation.simd[0], transformation.simd[ 1 ], transformation.simd[ 2 ], transformation.simd[ 3 ] );
+
+        return S( SIMD::Traits<FloatT, 3>::FMAdd( result, scale, offset ) );
+    }
+
+
 
 
 

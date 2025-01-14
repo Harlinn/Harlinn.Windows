@@ -20,6 +20,126 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Math
     {
+#ifdef USE_HCC_MATH
+        class Scalar
+        {
+        public:
+            using Traits = SIMD::Traits<float, 4>;
+            using SIMDType = typename Traits::SIMDType;
+        private:
+            SIMDType m_vec{};
+        public:
+            INLINE Scalar( ) {}
+            INLINE Scalar( const Scalar& s ) 
+            { 
+                m_vec = s.m_vec; 
+            }
+            INLINE Scalar( float f ) 
+            { 
+                m_vec = Traits::Fill( f );
+            }
+            INLINE explicit Scalar( SIMDType vec ) 
+            { 
+                m_vec = vec; 
+            }
+            INLINE explicit Scalar( EZeroTag ) 
+            { 
+                m_vec = Traits::Zero( );
+            }
+            INLINE explicit Scalar( EIdentityTag ) 
+            { 
+                m_vec = Traits::Fill( 1.f );
+            }
+
+            SIMDType ToSimd( ) const
+            {
+                return m_vec;
+            }
+
+            INLINE float Value( ) const
+            {
+                return Traits::First( m_vec );
+            }
+
+            INLINE operator SIMDType( ) const 
+            { 
+                return m_vec; 
+            }
+            INLINE operator float( ) const 
+            { 
+                return Traits::First( m_vec );
+            }
+
+            friend INLINE Scalar operator- ( const Scalar& s )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( Traits::Negate( s.m_vec ) );
+            }
+            friend INLINE Scalar operator+ ( const Scalar& s1, const Scalar& s2 )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( Traits::Add( s1.m_vec, s2.m_vec ) );
+            }
+            friend INLINE Scalar operator- ( const Scalar& s1, const Scalar& s2 )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( Traits::Sub( s1.m_vec, s2.m_vec ) );
+            }
+            friend INLINE Scalar operator* ( const Scalar& s1, const Scalar& s2 )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( Traits::Mul( s1.m_vec, s2.m_vec ) );
+            }
+            friend INLINE Scalar operator/ ( const Scalar& s1, const Scalar& s2 )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( Traits::Div( s1.m_vec, s2.m_vec ) );
+            }
+            friend INLINE Scalar operator+ ( const Scalar& s1, float s2 )
+            {
+                using Traits = Scalar::Traits;
+                return s1 + Scalar( s2 );
+            }
+            friend INLINE Scalar operator- ( const Scalar& s1, float s2 )
+            {
+                using Traits = Scalar::Traits;
+                return s1 - Scalar( s2 );
+            }
+            friend INLINE Scalar operator* ( const Scalar& s1, float s2 )
+            {
+                using Traits = Scalar::Traits;
+                return s1 * Scalar( s2 );
+            }
+            friend INLINE Scalar operator/ ( const Scalar& s1, float s2 )
+            {
+                using Traits = Scalar::Traits;
+                return s1 / Scalar( s2 );
+            }
+            friend INLINE Scalar operator+ ( float s1, const Scalar& s2 )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( s1 ) + s2;
+            }
+            friend INLINE Scalar operator- ( float s1, const Scalar& s2 )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( s1 ) - s2;
+            }
+            friend INLINE Scalar operator* ( float s1, const Scalar& s2 )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( s1 ) * s2;
+            }
+            friend INLINE Scalar operator/ ( float s1, const Scalar& s2 )
+            {
+                using Traits = Scalar::Traits;
+                return Scalar( s1 ) / s2;
+            }
+            
+        };
+
+        
+#else
         class Scalar
         {
         public:
@@ -50,6 +170,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         INLINE Scalar operator- ( float s1, Scalar s2 ) { return Scalar( s1 ) - s2; }
         INLINE Scalar operator* ( float s1, Scalar s2 ) { return Scalar( s1 ) * s2; }
         INLINE Scalar operator/ ( float s1, Scalar s2 ) { return Scalar( s1 ) / s2; }
+#endif
 
     } // namespace Math
 }

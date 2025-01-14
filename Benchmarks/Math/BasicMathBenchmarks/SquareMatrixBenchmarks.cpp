@@ -34,6 +34,7 @@ namespace
     RandomGenerator<float, SampleCount> FloatMinusOneToOneGenerator( -1.0f, 1.0f );
 }
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix4x4Add( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
@@ -57,6 +58,7 @@ static void BenchmarkPbrtSquareMatrix4x4Add( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix4x4Add );
+#endif
 
 static void BenchmarkSquareMatrix4x4Add( benchmark::State& state )
 {
@@ -83,6 +85,7 @@ static void BenchmarkSquareMatrix4x4Add( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix4x4Add );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix3x3Add( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<3>;
@@ -104,6 +107,7 @@ static void BenchmarkPbrtSquareMatrix3x3Add( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix3x3Add );
+#endif
 
 static void BenchmarkSquareMatrix3x3Add( benchmark::State& state )
 {
@@ -128,7 +132,7 @@ static void BenchmarkSquareMatrix3x3Add( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix3x3Add );
 
-
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix2x2Add( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<2>;
@@ -148,6 +152,7 @@ static void BenchmarkPbrtSquareMatrix2x2Add( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix2x2Add );
+#endif
 
 static void BenchmarkSquareMatrix2x2Add( benchmark::State& state )
 {
@@ -219,7 +224,7 @@ static void BenchmarkSquareMatrix3x3Sub( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix3x3Sub );
 
-
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix4x4Transpose( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
@@ -238,6 +243,7 @@ static void BenchmarkPbrtSquareMatrix4x4Transpose( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix4x4Transpose );
+#endif
 
 static void BenchmarkSquareMatrix4x4Transpose( benchmark::State& state )
 {
@@ -259,7 +265,7 @@ static void BenchmarkSquareMatrix4x4Transpose( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix4x4Transpose );
 
-
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix3x3Transpose( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<3>;
@@ -277,6 +283,7 @@ static void BenchmarkPbrtSquareMatrix3x3Transpose( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix3x3Transpose );
+#endif
 
 static void BenchmarkSquareMatrix3x3Transpose( benchmark::State& state )
 {
@@ -297,6 +304,7 @@ static void BenchmarkSquareMatrix3x3Transpose( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix3x3Transpose );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix2x2Transpose( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<2>;
@@ -313,6 +321,7 @@ static void BenchmarkPbrtSquareMatrix2x2Transpose( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix2x2Transpose );
+#endif
 
 static void BenchmarkSquareMatrix2x2Transpose( benchmark::State& state )
 {
@@ -334,7 +343,7 @@ BENCHMARK( BenchmarkSquareMatrix2x2Transpose );
 
 
 
-
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix4x4ScalarMultiply( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
@@ -353,7 +362,7 @@ static void BenchmarkPbrtSquareMatrix4x4ScalarMultiply( benchmark::State& state 
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix4x4ScalarMultiply );
-
+#endif
 
 static void BenchmarkSquareMatrix4x4ScalarMultiply( benchmark::State& state )
 {
@@ -375,6 +384,7 @@ static void BenchmarkSquareMatrix4x4ScalarMultiply( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix4x4ScalarMultiply );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix3x3ScalarMultiply( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<3>;
@@ -392,7 +402,7 @@ static void BenchmarkPbrtSquareMatrix3x3ScalarMultiply( benchmark::State& state 
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix3x3ScalarMultiply );
-
+#endif
 
 static void BenchmarkSquareMatrix3x3ScalarMultiply( benchmark::State& state )
 {
@@ -413,6 +423,7 @@ static void BenchmarkSquareMatrix3x3ScalarMultiply( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix3x3ScalarMultiply );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix2x2ScalarMultiply( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<2>;
@@ -429,7 +440,7 @@ static void BenchmarkPbrtSquareMatrix2x2ScalarMultiply( benchmark::State& state 
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix2x2ScalarMultiply );
-
+#endif
 
 static void BenchmarkSquareMatrix2x2ScalarMultiply( benchmark::State& state )
 {
@@ -449,7 +460,7 @@ static void BenchmarkSquareMatrix2x2ScalarMultiply( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix2x2ScalarMultiply );
 
-
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix4x4Multiply( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
@@ -473,6 +484,7 @@ static void BenchmarkPbrtSquareMatrix4x4Multiply( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix4x4Multiply );
+#endif
 
 static void BenchmarkSquareMatrix4x4Multiply( benchmark::State& state )
 {
@@ -499,6 +511,7 @@ static void BenchmarkSquareMatrix4x4Multiply( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix4x4Multiply );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix3x3Multiply( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<3>;
@@ -520,7 +533,7 @@ static void BenchmarkPbrtSquareMatrix3x3Multiply( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix3x3Multiply );
-
+#endif
 
 static void BenchmarkSquareMatrix3x3Multiply( benchmark::State& state )
 {
@@ -545,7 +558,7 @@ static void BenchmarkSquareMatrix3x3Multiply( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix3x3Multiply );
 
-
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix2x2Multiply( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<2>;
@@ -565,7 +578,7 @@ static void BenchmarkPbrtSquareMatrix2x2Multiply( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix2x2Multiply );
-
+#endif
 
 static void BenchmarkSquareMatrix2x2Multiply( benchmark::State& state )
 {
@@ -589,7 +602,7 @@ static void BenchmarkSquareMatrix2x2Multiply( benchmark::State& state )
 BENCHMARK( BenchmarkSquareMatrix2x2Multiply );
 
 
-
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix4x4Determinant( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
@@ -608,6 +621,7 @@ static void BenchmarkPbrtSquareMatrix4x4Determinant( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix4x4Determinant );
+#endif
 
 static void BenchmarkXMMatrix4x4Determinant( benchmark::State& state )
 {
@@ -650,6 +664,7 @@ static void BenchmarkSquareMatrix4x4Determinant( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix4x4Determinant );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix3x3Determinant( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<3>;
@@ -667,6 +682,7 @@ static void BenchmarkPbrtSquareMatrix3x3Determinant( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix3x3Determinant );
+#endif
 
 static void BenchmarkSquareMatrix3x3Determinant( benchmark::State& state )
 {
@@ -687,6 +703,7 @@ static void BenchmarkSquareMatrix3x3Determinant( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix3x3Determinant );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix2x2Determinant( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<2>;
@@ -703,6 +720,7 @@ static void BenchmarkPbrtSquareMatrix2x2Determinant( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix2x2Determinant );
+#endif
 
 static void BenchmarkSquareMatrix2x2Determinant( benchmark::State& state )
 {
@@ -722,6 +740,7 @@ static void BenchmarkSquareMatrix2x2Determinant( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix2x2Determinant );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix4x4Inverse( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<4>;
@@ -740,6 +759,7 @@ static void BenchmarkPbrtSquareMatrix4x4Inverse( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix4x4Inverse );
+#endif
 
 static void BenchmarkXMMatrix4x4Inverse( benchmark::State& state )
 {
@@ -782,6 +802,7 @@ static void BenchmarkSquareMatrix4x4Inverse( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix4x4Inverse );
 
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix3x3Inverse( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<3>;
@@ -799,7 +820,7 @@ static void BenchmarkPbrtSquareMatrix3x3Inverse( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix3x3Inverse );
-
+#endif
 static void BenchmarkSquareMatrix3x3Inverse( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -819,7 +840,7 @@ static void BenchmarkSquareMatrix3x3Inverse( benchmark::State& state )
 }
 BENCHMARK( BenchmarkSquareMatrix3x3Inverse );
 
-
+#ifdef RUN_PBRT_BENCHMARKS
 static void BenchmarkPbrtSquareMatrix2x2Inverse( benchmark::State& state )
 {
     using Matrix = pbrt::SquareMatrix<2>;
@@ -836,6 +857,7 @@ static void BenchmarkPbrtSquareMatrix2x2Inverse( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtSquareMatrix2x2Inverse );
+#endif
 
 static void BenchmarkSquareMatrix2x2Inverse( benchmark::State& state )
 {

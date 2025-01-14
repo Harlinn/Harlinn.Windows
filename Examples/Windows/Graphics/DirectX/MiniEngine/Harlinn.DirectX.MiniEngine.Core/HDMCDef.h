@@ -8,6 +8,8 @@
 #include <d3dx12.h>
 #include <HCCThread.h>
 
+#include <HCCVectorMath.h>
+
 #ifdef BUILDING_HARLINN_DIRECTX_MINIENGINE_CORE
 #define HDMC_EXPORT __declspec(dllexport)
 #define HDMC_TEMPLATE_EXPORT __declspec(dllexport)
@@ -26,6 +28,8 @@
 #define HDMC_INLINE_DECL 
 #define HDMC_INLINE inline
 #endif
+
+//#define USE_HCC_MATH 1
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
@@ -56,7 +60,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     using D3D12Resource = Harlinn::Windows::Graphics::D3D12Resource;
     using D3D12RootSignature = Harlinn::Windows::Graphics::D3D12RootSignature;
     
-
+#ifdef USE_HCC_MATH
+    namespace Math
+    {
+        using namespace Harlinn::Common::Core::Math;
+    }
+#endif
 
 }
 

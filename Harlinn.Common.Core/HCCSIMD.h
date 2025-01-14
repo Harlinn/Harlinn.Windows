@@ -2064,14 +2064,14 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr SIMDType TanEstCoefficients = { { 2.484f, -1.954923183e-1f, 2.467401101f, InvPi } };
             static constexpr SIMDType ArcEstCoefficients = { { +1.5707288f, -0.2121144f, +0.0742610f, -0.0187293f } };
             static constexpr SIMDType PiConstants0 = { { Pi, PiTimes2, InvPi, Inv2Pi } };
-            static constexpr SIMDType IdentityR0 = { { 1.0f, 0.0f, 0.0f, 0.0f } };
-            static constexpr SIMDType IdentityR1 = { { 0.0f, 1.0f, 0.0f, 0.0f } };
-            static constexpr SIMDType IdentityR2 = { { 0.0f, 0.0f, 1.0f, 0.0f } };
-            static constexpr SIMDType IdentityR3 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
-            static constexpr SIMDType NegIdentityR0 = { { -1.0f, 0.0f, 0.0f, 0.0f } };
-            static constexpr SIMDType NegIdentityR1 = { { 0.0f, -1.0f, 0.0f, 0.0f } };
-            static constexpr SIMDType NegIdentityR2 = { { 0.0f, 0.0f, -1.0f, 0.0f } };
-            static constexpr SIMDType NegIdentityR3 = { { 0.0f, 0.0f, 0.0f, -1.0f } };
+            static constexpr SIMDType IdentityR1 = { { 1.0f, 0.0f, 0.0f, 0.0f } };
+            static constexpr SIMDType IdentityR2 = { { 0.0f, 1.0f, 0.0f, 0.0f } };
+            static constexpr SIMDType IdentityR3 = { { 0.0f, 0.0f, 1.0f, 0.0f } };
+            static constexpr SIMDType IdentityR4 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+            static constexpr SIMDType NegIdentityR1 = { { -1.0f, 0.0f, 0.0f, 0.0f } };
+            static constexpr SIMDType NegIdentityR2 = { { 0.0f, -1.0f, 0.0f, 0.0f } };
+            static constexpr SIMDType NegIdentityR3 = { { 0.0f, 0.0f, -1.0f, 0.0f } };
+            static constexpr SIMDType NegIdentityR4 = { { 0.0f, 0.0f, 0.0f, -1.0f } };
             static constexpr SIMDType NegativeZero = { { MinusZero, MinusZero, MinusZero, MinusZero } };
             static constexpr SIMDType Negate3 = { { SignMaskValue, SignMaskValue, SignMaskValue, 0x00000000 } };
             static constexpr SIMDType MaskXY = { { BitsSet, BitsSet, 0x00000000, 0x00000000 } };
@@ -3128,6 +3128,12 @@ namespace Harlinn::Common::Core::SIMD
             return Div( lhs, Fill( rhs ) );
         }
 
+        template<typename ... Args>
+        static SIMDType Permute( Args&& ... args )
+        {
+            static_assert( false, "No matching overload" );
+        }
+
         template<int shuffleMask>
         static SIMDType Permute( SIMDType v ) noexcept
         {
@@ -3139,6 +3145,12 @@ namespace Harlinn::Common::Core::SIMD
             {
                 return _mm256_permute_ps( v, shuffleMask );
             }
+        }
+
+        template<typename ... Args>
+        static SIMDType Swizzle( Args&& ... args )
+        {
+            static_assert( false, "No matching overload" );
         }
 
         static SIMDType Swizzle( SIMDType v, UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1 ) noexcept 
@@ -3163,6 +3175,12 @@ namespace Harlinn::Common::Core::SIMD
             return _mm_permute_ps( v, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
         }
 
+
+        template<typename ... Args>
+        static SIMDType Shuffle( Args&& ... args )
+        {
+            static_assert( false, "No matching overload" );
+        }
 
         template<UInt32 selection4, UInt32 selection3, UInt32 selection2, UInt32 selection1>
         static SIMDType Shuffle( SIMDType v1, SIMDType v2 ) noexcept requires( UseShortSIMDType )
@@ -4984,44 +5002,44 @@ namespace Harlinn::Common::Core::SIMD
             constexpr SIMDType OneX = { { static_cast< FloatT >( 1.0 ), static_cast< FloatT >( 0.0 ), static_cast< FloatT >( 0.0 ), static_cast< FloatT >( 0.0 ) } };
             constexpr SIMDType MinusOne = { { static_cast< FloatT >( -1.0 ), static_cast< FloatT >( -1.0 ), static_cast< FloatT >( -1.0 ), static_cast< FloatT >( -1.0 ) } };
             constexpr SIMDType OneMinusEpsilon = { { static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ), static_cast< FloatT >( 1.0 - 0.00001 ) } };
-            constexpr SIMDType SignMask2 = { { 0x80000000, 0x00000000, 0x00000000, 0x00000000 } };
-            constexpr SIMDType Zero = { { 0x00000000, 0x00000000, 0x00000000, 0x00000000 } };
-            constexpr SIMDType MaskXY = { { 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000 } };
+            constexpr SIMDType SignMask2 = { { std::bit_cast< FloatT >( 0x80000000 ), 0, 0, 0 } };
+            constexpr SIMDType Zero = { { 0, 0, 0, 0 } };
+            constexpr SIMDType MaskXY = { { std::bit_cast< FloatT >( 0xFFFFFFFF ), std::bit_cast< FloatT >( 0xFFFFFFFF ), 0, 0 } };
 
-            auto CosOmega = Dot( q1, q2 );
+            auto cosOmega = Dot( q1, q2 );
 
-            auto Control = Less( CosOmega, Zero );
-            auto Sign = Select( One, MinusOne, Control );
+            auto control = Less( cosOmega, Zero );
+            auto sign = Select( One, MinusOne, control );
 
-            CosOmega = Mul( CosOmega, Sign );
+            cosOmega = Mul( cosOmega, sign );
 
-            Control = Less( CosOmega, OneMinusEpsilon );
+            control = Less( cosOmega, OneMinusEpsilon );
 
-            auto SinOmega = Mul( CosOmega, CosOmega );
-            SinOmega = Sub( One, SinOmega );
-            SinOmega = Sqrt( SinOmega );
+            auto sinOmega = Mul( cosOmega, cosOmega );
+            sinOmega = Sub( One, sinOmega );
+            sinOmega = Sqrt( sinOmega );
 
-            auto Omega = ATan2( SinOmega, CosOmega );
+            auto omega = ATan2( sinOmega, cosOmega );
 
-            auto V01 = Shuffle<2, 3, 0, 1>( t, t );
-            V01 = And( V01, MaskXY );
-            V01 = Xor( V01, SignMask2 );
-            V01 = Add( OneX, V01 );
+            auto v01 = Shuffle<2, 3, 0, 1>( t, t );
+            v01 = And( v01, MaskXY );
+            v01 = Xor( v01, SignMask2 );
+            v01 = Add( OneX, v01 );
 
-            auto S0 = Mul( V01, Omega );
-            S0 = Sin( S0 );
-            S0 = Div( S0, SinOmega );
+            auto s0 = Mul( v01, omega );
+            s0 = Sin( s0 );
+            s0 = Div( s0, sinOmega );
 
-            S0 = Select( V01, S0, Control );
+            s0 = Select( v01, s0, control );
 
-            auto S1 = At<1>( S0 );
-            S0 = At<0>( S0 );
+            auto s1 = At<1>( s0 );
+            s0 = At<0>( s0 );
 
-            S1 = Mul( S1, Sign );
-            auto Result = Mul( q1, S0 );
-            S1 = Mul( S1, q1 );
-            Result = Add( Result, S1 );
-            return Result;
+            s1 = Mul( s1, sign );
+            auto result = Mul( q1, s0 );
+            s1 = Mul( s1, q2 );
+            result = Add( result, s1 );
+            return result;
         }
 
         static SIMDType TransformVector( SIMDType v, SIMDType mr1, SIMDType mr2, SIMDType mr3 )

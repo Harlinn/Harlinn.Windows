@@ -20,6 +20,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Math
     {
+#ifdef USE_HCC_MATH
+        using Matrix3 = SquareMatrix<float, 3>;
+        using Matrix3Simd = typename SquareMatrix<float, 3>::Simd;
+#else
+        
+
         // Represents a 3x3 matrix while occuping a 3x4 memory footprint.  The unused row and column are undefined but implicitly
         // (0, 0, 0, 1).  Constructing a Matrix4 will make those values explicit.
         __declspec( align( 16 ) ) class Matrix3
@@ -59,6 +65,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         private:
             Vector3 m_mat[ 3 ];
         };
+#endif
 
     } // namespace Math
 

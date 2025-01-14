@@ -20,6 +20,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Math
     {
+#ifdef USE_HCC_MATH
+        using Quaternion = Harlinn::Common::Core::Math::Quaternion<float>;
+        using QuaternionSimd = Harlinn::Common::Core::Math::QuaternionSimd<Quaternion>;
+#else
         class Quaternion
         {
         public:
@@ -48,6 +52,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         INLINE Quaternion Normalize( Quaternion q ) { return Quaternion( ::DirectX::XMQuaternionNormalize( q ) ); }
         INLINE Quaternion Slerp( Quaternion a, Quaternion b, float t ) { return Normalize( Quaternion( ::DirectX::XMQuaternionSlerp( a, b, t ) ) ); }
         INLINE Quaternion Lerp( Quaternion a, Quaternion b, float t ) { return Normalize( Quaternion( ::DirectX::XMVectorLerp( a, b, t ) ) ); }
+#endif
     }
-
 }
