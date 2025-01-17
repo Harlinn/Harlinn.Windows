@@ -4,7 +4,7 @@ using namespace Harlinn::Common::Core;
 
 using Constants = Math::Constants<float>;
 using Quaternion = Math::Quaternion<float>;
-using Q = Quaternion;
+using Q = Math::Quaternion<float>;
 
 namespace
 {
@@ -17,7 +17,7 @@ namespace
         ~LocalFixture( ) {}
     };
 
-    inline bool Equal( const Quaternion& q1, const Quaternion& q2, float epsilon = 0.0001f )
+    inline bool Equal( const Q& q1, const Q& q2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
         {
@@ -312,5 +312,33 @@ BOOST_AUTO_TEST_CASE( SlerpTest1 )
 
     BOOST_CHECK( equal );
 }
+
+
+
+// --run_test=QuaternionTests/XMQuaternionDotTest1
+BOOST_AUTO_TEST_CASE( XMQuaternionDotTest1 )
+{
+    using namespace DirectX;
+    XMFLOAT4A q1Unloaded( 2.f, 3.f, 4.f, 1.f );
+    auto q1 = XMLoadFloat4A( &q1Unloaded );
+    XMFLOAT4A q2Unloaded( 8.f, 7.f, 6.f, 9.f );
+    auto q2 = XMLoadFloat4A( &q2Unloaded );
+
+    XMFLOAT4A expected( 0.429141968f, 0.539775491f, 0.650409102f, 0.318508387f );
+
+    auto q1n = XMQuaternionNormalize( q1 );
+    auto q2n = XMQuaternionNormalize( q2 );
+
+    auto result = XMQuaternionSlerp(q1n,q2n,0.3f);
+
+    XMFLOAT4A resultStored;
+    XMStoreFloat4A( &resultStored, result );
+
+    auto equal = Equal( resultStored, expected );
+
+    BOOST_CHECK( equal );
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

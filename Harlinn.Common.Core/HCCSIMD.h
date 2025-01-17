@@ -2030,10 +2030,13 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr ValueType PiOver2 = static_cast< ValueType >( 1.57079632679489661923 );
             static constexpr ValueType PiOver4 = static_cast< ValueType >( 0.78539816339744830961 );
             static constexpr ValueType Sqrt2 = static_cast< ValueType >( 1.41421356237309504880 );
+            static constexpr ValueType TwoOverPi = static_cast< ValueType >( 2. / Pi );
+            static constexpr ValueType ThreePiOver4 = static_cast< ValueType >( (3. * Pi)/4. );
 
         };
         struct m128Constants : Constants
         {
+            using Base = Constants;
             using SIMDType = __m128;
             static constexpr SIMDType SinCoefficient1 = { {-2.3889859e-08f,-2.3889859e-08f,-2.3889859e-08f,-2.3889859e-08f} };
             static constexpr SIMDType SinCoefficient2 = { { +2.7525562e-06f, +2.7525562e-06f, +2.7525562e-06f, +2.7525562e-06f } };
@@ -2046,6 +2049,33 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr SIMDType CosCoefficient3 = { {-0.0013888378f,-0.0013888378f,-0.0013888378f,-0.0013888378f} };
             static constexpr SIMDType CosCoefficient4 = { {+0.041666638f,+0.041666638f,+0.041666638f,+0.041666638f} };
             static constexpr SIMDType CosCoefficient5 = { { -0.5f,-0.5f,-0.5f,-0.5f } };
+
+            static constexpr __m256 SinCosCoefficient1 = { {-2.3889859e-08f,-2.3889859e-08f,-2.3889859e-08f,-2.3889859e-08f ,-2.6051615e-07f,-2.6051615e-07f,-2.6051615e-07f,-2.6051615e-07f} };
+            static constexpr __m256 SinCosCoefficient2 = { {+2.7525562e-06f, +2.7525562e-06f, +2.7525562e-06f, +2.7525562e-06f, +2.4760495e-05f,+2.4760495e-05f,+2.4760495e-05f,+2.4760495e-05f} };
+            static constexpr __m256 SinCosCoefficient3 = { {-0.00019840874f,-0.00019840874f,-0.00019840874f,-0.00019840874f, -0.0013888378f,-0.0013888378f,-0.0013888378f,-0.0013888378f} };
+            static constexpr __m256 SinCosCoefficient4 = { {+0.0083333310f,+0.0083333310f,+0.0083333310f,+0.0083333310f, +0.041666638f,+0.041666638f,+0.041666638f,+0.041666638f} };
+            static constexpr __m256 SinCosCoefficient5 = { {-0.16666667f,-0.16666667f,-0.16666667f,-0.16666667f, -0.5f,-0.5f,-0.5f,-0.5f } };
+            static constexpr __m256 One8 = { { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f } };
+
+            static constexpr SIMDType TanCoefficient1 = { {1.0f,1.0f,1.0f,1.0f} };
+            static constexpr SIMDType TanCoefficient2 = { {-4.667168334e-1f,-4.667168334e-1f,-4.667168334e-1f,-4.667168334e-1f} };
+            static constexpr SIMDType TanCoefficient3 = { {2.566383229e-2f,2.566383229e-2f,2.566383229e-2f,2.566383229e-2f} };
+            static constexpr SIMDType TanCoefficient4 = { {-3.118153191e-4f,-3.118153191e-4f,-3.118153191e-4f,-3.118153191e-4f} };
+            static constexpr SIMDType TanCoefficient5 = { {4.981943399e-7f,4.981943399e-7f,4.981943399e-7f,4.981943399e-7f} };
+            static constexpr SIMDType TanCoefficient6 = { {-1.333835001e-1f,-1.333835001e-1f,-1.333835001e-1f,-1.333835001e-1f} };
+            static constexpr SIMDType TanCoefficient7 = { {3.424887824e-3f,3.424887824e-3f,3.424887824e-3f,3.424887824e-3f} };
+            static constexpr SIMDType TanCoefficient8 = { {-1.786170734e-5f,-1.786170734e-5f,-1.786170734e-5f,-1.786170734e-5f} };
+            static constexpr SIMDType TanCoefficient9 = { {6.077100628e-11f, 6.077100628e-11f, 6.077100628e-11f, 6.077100628e-11f } };
+            static constexpr SIMDType TanNearZero = { { 0.000244140625f,0.000244140625f,0.000244140625f,0.000244140625f } };
+
+            static constexpr SIMDType ATanCoefficient1 = { {-0.3333314528f,-0.3333314528f,-0.3333314528f,-0.3333314528f} };
+            static constexpr SIMDType ATanCoefficient2 = { {+0.1999355085f,+0.1999355085f,+0.1999355085f,+0.1999355085f} };
+            static constexpr SIMDType ATanCoefficient3 = { {-0.1420889944f,-0.1420889944f,-0.1420889944f,-0.1420889944f} };
+            static constexpr SIMDType ATanCoefficient4 = { {+0.1065626393f,+0.1065626393f,+0.1065626393f,+0.1065626393f} };
+            static constexpr SIMDType ATanCoefficient5 = { {-0.0752896400f,-0.0752896400f,-0.0752896400f,-0.0752896400f} };
+            static constexpr SIMDType ATanCoefficient6 = { {+0.0429096138f,+0.0429096138f,+0.0429096138f,+0.0429096138f} };
+            static constexpr SIMDType ATanCoefficient7 = { {-0.0161657367f,-0.0161657367f,-0.0161657367f,-0.0161657367f} };
+            static constexpr SIMDType ATanCoefficient8 = { {+0.0028662257f,+0.0028662257f,+0.0028662257f,+0.0028662257f} };
 
 
             static constexpr SIMDType SinCoefficients0 = { { -0.16666667f, +0.0083333310f, -0.00019840874f, +2.7525562e-06f } };
@@ -2089,45 +2119,51 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr SIMDType NegativeOne = { { -1.0f, -1.0f, -1.0f, -1.0f } };
             static constexpr SIMDType OneHalf = { { 0.5f, 0.5f, 0.5f, 0.5f } };
             static constexpr SIMDType NegativeOneHalf = { { -0.5f, -0.5f, -0.5f, -0.5f } };
-            static constexpr SIMDType NegativeTwoPi = { { -PiTimes2, -PiTimes2, -PiTimes2, -PiTimes2 } };
-            static constexpr SIMDType NegativePi = { { NegativePi, NegativePi, NegativePi, NegativePi } };
-            static constexpr SIMDType HalfPi = { { PiOver2, PiOver2, PiOver2, PiOver2 } };
-            static constexpr SIMDType Pi = { { Pi, Pi, Pi, Pi } };
-            static constexpr SIMDType ReciprocalPi = { { InvPi, InvPi, InvPi, InvPi } };
-            static constexpr SIMDType TwoPi = { { PiTimes2, PiTimes2, PiTimes2, PiTimes2 } };
-            static constexpr SIMDType ReciprocalTwoPi = { { Inv2Pi, Inv2Pi, Inv2Pi, Inv2Pi} };
+            static constexpr SIMDType NegativeTwoPi = { { -Base::PiTimes2, -Base::PiTimes2, -Base::PiTimes2, -Base::PiTimes2 } };
+            static constexpr SIMDType NegativePi = { { Base::NegativePi, Base::NegativePi, Base::NegativePi, Base::NegativePi } };
+            static constexpr SIMDType HalfPi = { { Base::PiOver2, Base::PiOver2, Base::PiOver2, Base::PiOver2 } };
+            static constexpr SIMDType Pi = { { Base::Pi, Base::Pi, Base::Pi, Base::Pi } };
+            static constexpr SIMDType ReciprocalPi = { { Base::InvPi, Base::InvPi, Base::InvPi, Base::InvPi } };
+            static constexpr SIMDType TwoPi = { { Base::PiTimes2, Base::PiTimes2, Base::PiTimes2, Base::PiTimes2 } };
+            static constexpr SIMDType TwoOverPi = { { Base::TwoOverPi, Base::TwoOverPi, Base::TwoOverPi, Base::TwoOverPi } };
+            static constexpr SIMDType ReciprocalTwoPi = { { Base::Inv2Pi, Base::Inv2Pi, Base::Inv2Pi, Base::Inv2Pi} };
+            static constexpr SIMDType PiOver4 = { {Base::PiOver4,Base::PiOver4,Base::PiOver4,Base::PiOver4} };
+            static constexpr SIMDType ThreePiOver4 = { {Base::ThreePiOver4,Base::ThreePiOver4,Base::ThreePiOver4,Base::ThreePiOver4} };
             static constexpr SIMDType Epsilon = { { 1.192092896e-7f, 1.192092896e-7f, 1.192092896e-7f, 1.192092896e-7f } };
-            static constexpr SIMDType Infinity = { { InfinityValue, InfinityValue, InfinityValue, InfinityValue } };
-            static constexpr SIMDType QNaN = { { QNaNValue, QNaNValue, QNaNValue, QNaNValue } };
-            static constexpr SIMDType QNaNTest = { { QNaNTestValue, QNaNTestValue, QNaNTestValue, QNaNTestValue } };
-            static constexpr SIMDType AbsMask = { { AbsMaskValue, AbsMaskValue, AbsMaskValue, AbsMaskValue } };
-            static constexpr SIMDType FltMin = { { FltMinValue, FltMinValue, FltMinValue, FltMinValue } };
-            static constexpr SIMDType FltMax = { { FltMaxValue, FltMaxValue, FltMaxValue, FltMaxValue } };
-            static constexpr SIMDType NegOneMask = { { NegOneMaskValue, NegOneMaskValue, NegOneMaskValue, NegOneMaskValue } };
+            static constexpr SIMDType Infinity = { { Base::InfinityValue, Base::InfinityValue, Base::InfinityValue, Base::InfinityValue } };
+            static constexpr SIMDType QNaN = { { Base::QNaNValue, Base::QNaNValue, Base::QNaNValue, Base::QNaNValue } };
+            static constexpr SIMDType QNaNTest = { { Base::QNaNTestValue, Base::QNaNTestValue, Base::QNaNTestValue, Base::QNaNTestValue } };
+            static constexpr SIMDType AbsMask = { { Base::AbsMaskValue, Base::AbsMaskValue, Base::AbsMaskValue, Base::AbsMaskValue } };
+            static constexpr SIMDType FltMin = { { Base::FltMinValue, Base::FltMinValue, Base::FltMinValue, Base::FltMinValue } };
+            static constexpr SIMDType FltMax = { { Base::FltMaxValue, Base::FltMaxValue, Base::FltMaxValue, Base::FltMaxValue } };
+            static constexpr SIMDType NegOneMask = { { Base::NegOneMaskValue, Base::NegOneMaskValue, Base::NegOneMaskValue, Base::NegOneMaskValue } };
 
             //static constexpr SIMDType Select1111 = { { BitsClear, BitsClear, BitsClear, BitsClear } };
 
-            static constexpr SIMDType Select2111 = { { BitsSet, BitsClear, BitsClear, BitsClear } };
-            static constexpr SIMDType Select1211 = { { BitsClear, BitsSet, BitsClear, BitsClear } };
-            static constexpr SIMDType Select2211 = { { BitsSet, BitsSet, BitsClear, BitsClear } };
-            static constexpr SIMDType Select1121 = { { BitsClear, BitsClear, BitsSet, BitsClear } };
-            static constexpr SIMDType Select2121 = { { BitsSet, BitsClear, BitsSet, BitsClear } };
-            static constexpr SIMDType Select1221 = { { BitsClear, BitsSet, BitsSet, BitsClear } };
-            static constexpr SIMDType Select2221 = { { BitsSet, BitsSet, BitsSet, BitsClear } };
-            static constexpr SIMDType Select1112 = { { BitsClear, BitsClear, BitsClear, BitsSet } };
+            static constexpr SIMDType Select2111 = { { Base::BitsSet, Base::BitsClear, Base::BitsClear, Base::BitsClear } };
+            static constexpr SIMDType Select1211 = { { Base::BitsClear, Base::BitsSet, Base::BitsClear, Base::BitsClear } };
+            static constexpr SIMDType Select2211 = { { Base::BitsSet, Base::BitsSet, Base::BitsClear, Base::BitsClear } };
+            static constexpr SIMDType Select1121 = { { Base::BitsClear, Base::BitsClear, Base::BitsSet, Base::BitsClear } };
+            static constexpr SIMDType Select2121 = { { Base::BitsSet, Base::BitsClear, Base::BitsSet, Base::BitsClear } };
+            static constexpr SIMDType Select1221 = { { Base::BitsClear, Base::BitsSet, Base::BitsSet, Base::BitsClear } };
+            static constexpr SIMDType Select2221 = { { Base::BitsSet, Base::BitsSet, Base::BitsSet, Base::BitsClear } };
+            static constexpr SIMDType Select1112 = { { Base::BitsClear, Base::BitsClear, Base::BitsClear, Base::BitsSet } };
 
-            static constexpr SIMDType Select2112 = { { BitsSet, BitsClear, BitsClear, BitsSet } };
-            static constexpr SIMDType Select1212 = { { BitsClear, BitsSet, BitsClear, BitsSet } };
-            static constexpr SIMDType Select2212 = { { BitsSet, BitsSet, BitsClear, BitsSet } };
-            static constexpr SIMDType Select1122 = { { BitsClear, BitsClear, BitsSet, BitsSet } };
-            static constexpr SIMDType Select2122 = { { BitsSet, BitsClear, BitsSet, BitsSet } };
-            static constexpr SIMDType Select1222 = { { BitsClear, BitsSet, BitsSet, BitsSet } };
+            static constexpr SIMDType Select2112 = { { Base::BitsSet, Base::BitsClear, Base::BitsClear, Base::BitsSet } };
+            static constexpr SIMDType Select1212 = { { Base::BitsClear, Base::BitsSet, Base::BitsClear, Base::BitsSet } };
+            static constexpr SIMDType Select2212 = { { Base::BitsSet, Base::BitsSet, Base::BitsClear, Base::BitsSet } };
+            static constexpr SIMDType Select1122 = { { Base::BitsClear, Base::BitsClear, Base::BitsSet, Base::BitsSet } };
+            static constexpr SIMDType Select2122 = { { Base::BitsSet, Base::BitsClear, Base::BitsSet, Base::BitsSet } };
+            static constexpr SIMDType Select1222 = { { Base::BitsClear, Base::BitsSet, Base::BitsSet, Base::BitsSet } };
 
             //static constexpr SIMDType Select2222 = { { BitsSet, BitsSet, BitsSet, BitsSet } };
+
+            static constexpr SIMDType True = { { Base::BitsSet, Base::BitsSet, Base::BitsSet, Base::BitsSet } };
 
         };
         struct m256Constants : Constants
         {
+            using Base = Constants;
             using SIMDType = __m256;
         };
     }
@@ -3021,15 +3057,15 @@ namespace Harlinn::Common::Core::SIMD
 
             result = Mul( result, q1 );
 
-            auto q1Swizzle = Swizzle<0, 1, 2, 3>( q1 );
+            auto q1Swizzle = Shuffle<0, 1, 2, 3>( q1 );
 
             q2X = Mul( q2X, q1Swizzle );
-            q1Swizzle = Swizzle<2, 3, 0, 1>( q1Swizzle );
+            q1Swizzle = Shuffle<2, 3, 0, 1>( q1Swizzle );
 
             result = FMAdd( q2X, controlWZYX, result );
 
             q2Y = Mul( q2Y, q1Swizzle );
-            q1Swizzle = Swizzle<0, 1, 2, 3>( q1Swizzle );
+            q1Swizzle = Shuffle<0, 1, 2, 3>( q1Swizzle );
 
             q2Y = Mul( q2Y, controlZWXY );
 
@@ -3650,19 +3686,21 @@ namespace Harlinn::Common::Core::SIMD
         }
 
 
+        static SIMDType IsInf( SIMDType v ) noexcept
+        {
+            auto tmp = And( v, Constants::AbsMask );
+            return Equal( tmp, Constants::Infinity );
+        }
 
+        static SIMDType IsNaN( SIMDType v ) noexcept
+        {
+            return NotEqual( v, v );
+        }
 
 
         static SIMDType Abs( SIMDType v ) noexcept
         {
-            if constexpr ( UseShortSIMDType )
-            {
-                return _mm_max_ps( _mm_sub_ps( _mm_setzero_ps( ), v ), v );
-            }
-            else
-            {
-                return _mm256_max_ps( _mm256_sub_ps( _mm256_setzero_ps( ), v ), v );
-            }
+            return Max( Sub( Zero( ), v ), v );
         }
 
 
@@ -3861,7 +3899,7 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                SIMDType minusOne = { { -1.f},{ -1.f},{ -1.f},{ -1.f} };
+                SIMDType minusOne = Constants::NegativeOne;
                 auto temp1 = LessOrEqual( v, bounds );
                 auto temp2 = Mul( bounds, minusOne );
                 temp2 = LessOrEqual( temp2, v );
@@ -3869,7 +3907,7 @@ namespace Harlinn::Common::Core::SIMD
             }
             else
             {
-                SIMDType minusOne = { { -1.f},{ -1.f},{ -1.f},{ -1.f}, { -1.f},{ -1.f},{ -1.f},{ -1.f} };
+                SIMDType minusOne = { { -1.f, -1.f, -1.f, -1.f, -1.f,-1.f,-1.f,-1.f} };
                 auto temp1 = LessOrEqual( v, bounds );
                 auto temp2 = Mul( bounds, minusOne );
                 temp2 = LessOrEqual( temp2, v );
@@ -3956,6 +3994,30 @@ namespace Harlinn::Common::Core::SIMD
 
             auto x2 = Mul( x, x );
 
+            /*
+            auto x2_ = _mm256_insertf128_ps( _mm256_castps128_ps256( x2 ), x2, 1 );
+            auto xsign_ = _mm256_insertf128_ps( _mm256_castps128_ps256( x ), sign, 1 );
+            
+            auto vConstantsB = Constants::SinCosCoefficient1;
+            auto vConstants = Constants::SinCosCoefficient2;
+            auto Result = _mm256_fmadd_ps( vConstantsB, x2_, vConstants );
+
+            vConstants = Constants::SinCosCoefficient3;
+            Result = _mm256_fmadd_ps( Result, x2_, vConstants );
+
+            vConstants = Constants::SinCosCoefficient4;
+            Result = _mm256_fmadd_ps( Result, x2_, vConstants );
+
+            vConstants = Constants::SinCosCoefficient5;
+            Result = _mm256_fmadd_ps( Result, x2_, vConstants );
+
+            Result = _mm256_fmadd_ps( Result, x2_, Constants::One8 );
+            Result = _mm256_mul_ps( Result, xsign_ );
+
+            *cosines = _mm256_extractf128_ps( Result, 1 );
+            return _mm256_castps256_ps128( Result );
+            */
+            
             // Cosine
             SIMDType vConstantsB = Constants::CosCoefficient1;
             SIMDType vConstants = Constants::CosCoefficient2;
@@ -3972,6 +4034,7 @@ namespace Harlinn::Common::Core::SIMD
 
             Result = FMAdd( Result, x2, Constants::One );
             Result = Mul( Result, sign );
+
             *cosines = Result;
 
 
@@ -3991,8 +4054,196 @@ namespace Harlinn::Common::Core::SIMD
 
             Result = FMAdd( Result, x2, Constants::One );
             return Mul( Result, x );
+            
+        }
+
+        static SIMDType FastSin( SIMDType v ) noexcept
+        {
+            auto x = ModAngles( v );
+
+            auto sign = And( x, Constants::NegativeZero );
+            auto c = Or( Constants::Pi, sign );
+            auto absx = AndNot( sign, x );
+            auto rflx = Sub( c, x );
+            auto comp = LessOrEqual( absx, Constants::HalfPi );
+            auto select0 = And( comp, x );
+            auto select1 = AndNot( comp, rflx );
+            x = Or( select0, select1 );
+
+            auto x2 = Mul( x, x );
+
+            auto result = FMAdd( Constants::SinCoefficient1, x2, Constants::SinCoefficient2 );
+            result = FMAdd( result, x2, Constants::SinCoefficient3 );
+            result = FMAdd( result, x2, Constants::SinCoefficient4 );
+            result = FMAdd( result, x2, Constants::SinCoefficient5 );
+
+            result = FMAdd( result, x2, Constants::One );
+            return Mul( result, x );
 
         }
+
+        static SIMDType FastCos( SIMDType v ) noexcept
+        {
+            auto x = ModAngles( v );
+
+            auto sign = And( x, Constants::NegativeZero );
+            auto c = Or( Constants::Pi, sign );
+            auto absx = AndNot( sign, x );
+            auto rflx = Sub( c, x );
+            auto comp = LessOrEqual( absx, Constants::HalfPi );
+            auto select0 = And( comp, x );
+            auto select1 = AndNot( comp, rflx );
+            x = Or( select0, select1 );
+            select0 = And( comp, Constants::One );
+            select1 = AndNot( comp, Constants::NegativeOne );
+            sign = Or( select0, select1 );
+
+            auto x2 = Mul( x, x );
+
+            auto result = FMAdd( Constants::CosCoefficient1, x2, Constants::CosCoefficient2 );
+
+            result = FMAdd( result, x2, Constants::CosCoefficient3 );
+
+            result = FMAdd( result, x2, Constants::CosCoefficient4 );
+
+            result = FMAdd( result, x2, Constants::CosCoefficient5 );
+
+            result = FMAdd( result, x2, Constants::One );
+            return Mul( result, sign );
+        }
+
+
+        static SIMDType FastTan( SIMDType v ) noexcept
+        {
+            constexpr SIMDType Mask = { { 0x1, 0x1, 0x1, 0x1 } };
+
+            auto va = Mul( v, Constants::TwoOverPi );
+            va = Round( va );
+
+            auto vc = FNMSub( va, Constants::HalfPi, v );
+            vc = FNMSub( va, Constants::TanCoefficient9, vc );
+            
+            auto vb = Abs( va );
+            vb = _mm_blend_ps( vb, Constants::Zero, 1 );
+
+            auto vc2 = Mul( vc, vc );
+
+            auto vbIsEven = And( vb, Mask );
+            vbIsEven = SameValue( vbIsEven, Constants::Zero );
+
+            auto n = FMAdd( vc2, Constants::TanCoefficient8, Constants::TanCoefficient7 );
+            auto d = FMAdd( vc2, Constants::TanCoefficient5, Constants::TanCoefficient4 );
+            n = FMAdd( vc2, n, Constants::TanCoefficient6 );
+            d = FMAdd( vc2, d, Constants::TanCoefficient3 );
+            n = Mul( vc2, n );
+            d = FMAdd( vc2, d, Constants::TanCoefficient2 );
+            n = FMAdd( vc, n, vc );
+            auto vcNearZero = InBounds( vc, Constants::TanNearZero );
+            d = FMAdd( vc2, d, Constants::TanCoefficient1 );
+
+            n = Select( n, vc, vcNearZero );
+            d = Select( d, Constants::One, vcNearZero );
+
+            auto r0 = Negate( n );
+            auto r1 = Div( n, d );
+            r0 = Div( d, r0 );
+
+            auto isZero = Equal( v, Constants::Zero );
+
+            auto result = Select( r0, r1, vbIsEven );
+
+            return Select( result, Constants::Zero, isZero );
+        }
+
+        static SIMDType FastATan( SIMDType v ) noexcept
+        {
+            auto absV = Abs( v );
+            auto invV = Div( Constants::One, v );
+            auto comp = Greater( v, Constants::One );
+            auto select0 = And( comp, Constants::One );
+            auto select1 = AndNot( comp, Constants::NegativeOne );
+            auto sign = Or( select0, select1 );
+            comp = LessOrEqual( absV, Constants::One );
+            select0 = And( comp, Constants::Zero );
+            select1 = AndNot( comp, sign );
+            sign = Or( select0, select1 );
+            select0 = And( comp, v );
+            select1 = AndNot( comp, invV );
+            auto x = Or( select0, select1 );
+
+            auto x2 = Mul( x, x );
+
+            // Compute polynomial approximation
+            
+            auto vConstantsB = Constants::ATanCoefficient8;
+            auto vConstants = Constants::ATanCoefficient7;
+            auto Result = FMAdd( vConstantsB, x2, vConstants );
+
+            vConstants = Constants::ATanCoefficient6;
+            Result = FMAdd( Result, x2, vConstants );
+
+            vConstants = Constants::ATanCoefficient5;
+            Result = FMAdd( Result, x2, vConstants );
+
+            
+            vConstants = Constants::ATanCoefficient4;
+            Result = FMAdd( Result, x2, vConstants );
+
+            vConstants = Constants::ATanCoefficient3;
+            Result = FMAdd( Result, x2, vConstants );
+
+            vConstants = Constants::ATanCoefficient2;
+            Result = FMAdd( Result, x2, vConstants );
+
+            vConstants = Constants::ATanCoefficient1;
+            Result = FMAdd( Result, x2, vConstants );
+
+            Result = FMAdd( Result, x2, Constants::One );
+
+            Result = Mul( Result, x );
+            auto result1 = Mul( sign, Constants::HalfPi );
+            result1 = Sub( result1, Result );
+
+            comp = Equal( sign, Constants::Zero );
+            select0 = And( comp, Result );
+            select1 = AndNot( comp, result1 );
+            return Or( select0, select1 );
+        }
+
+        static SIMDType FastATan2( SIMDType x, SIMDType y ) noexcept
+        {
+            auto xEqualsZero = Equal( x, Constants::Zero );
+            auto yEqualsZero = Equal( y, Constants::Zero );
+            auto yIsPositive = And( y, Constants::NegativeZero );
+            yIsPositive = SameValue( yIsPositive, Constants::Zero );
+            auto xEqualsInfinity = IsInf( x );
+            auto yEqualsInfinity = IsInf( y );
+
+            auto xSign = And( x, Constants::NegativeZero );
+            auto Pi = Or( Constants::Pi, xSign );
+            auto PiOverTwo = Or( Constants::HalfPi, xSign );
+            auto PiOverFour = Or( Constants::PiOver4, xSign );
+            auto ThreePiOverFour = Or( Constants::ThreePiOver4, xSign );
+
+            auto R1 = Select( Pi, xSign, yIsPositive );
+            
+            auto R2 = Select( Constants::True, PiOverTwo, yEqualsZero );
+            auto R3 = Select( R2, R1, xEqualsZero );
+            auto R4 = Select( ThreePiOverFour, PiOverFour, yIsPositive );
+            auto R5 = Select( PiOverTwo, R4, yEqualsInfinity );
+            auto Result = Select( R3, R5, xEqualsInfinity );
+            auto atanValid = SameValue( Result, Constants::True );
+
+            auto V = Div( x, y );
+
+            auto R0 = FastATan( V );
+
+            R1 = Select( Pi, Constants::NegativeZero, yIsPositive );
+            R2 = Add( R0, R1 );
+
+            return Select( Result, R2, atanValid );
+        }
+
 
 
         static SIMDType Sin( SIMDType v ) noexcept
@@ -4380,6 +4631,34 @@ namespace Harlinn::Common::Core::SIMD
         }
 
         /// <summary>
+        /// Determines whether the elements of v1 are not equal to
+        /// the corresponding elements of v2.
+        /// </summary>
+        /// <param name="v1">
+        /// The first source of values for the comparison.
+        /// </param>
+        /// <param name="v2">
+        /// The second source of values for the comparison.
+        /// </param>
+        /// <returns>
+        /// If an element of v1 is not equal to the corresponding element of v2,
+        /// the corresponding element in the result will be set to 0xFFFFFFFF,
+        /// otherwise the corresponding element in the result will be set to 0.
+        /// </returns>
+        static SIMDType NotEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cmpneq_ps( v1, v2 );
+            }
+            else
+            {
+                return _mm256_cmp_ps( v1, v2, _CMP_NEQ_UQ );
+            }
+        }
+
+
+        /// <summary>
         /// Determines whether the elements of v1 are nearly equal to
         /// the corresponding elements of v2.
         /// </summary>
@@ -4532,15 +4811,15 @@ namespace Harlinn::Common::Core::SIMD
         /// set to 0xFFFFFFFF if the corresponding elements in v1 and v2
         /// have the same binary value, otherwise the element is 0.
         /// </returns>
-        static SIMDIntegerType SameValue( SIMDType v1, SIMDType v2 ) noexcept
+        static SIMDType SameValue( SIMDType v1, SIMDType v2 ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_cmpeq_epi32( _mm_castps_si128( v1 ), _mm_castps_si128( v2 ) );
+                return _mm_castsi128_ps( _mm_cmpeq_epi32( _mm_castps_si128( v1 ), _mm_castps_si128( v2 ) ) );
             }
             else
             {
-                return _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) );
+                return _mm_castsi256_ps( _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) ) );
             }
         }
 
@@ -5015,19 +5294,18 @@ namespace Harlinn::Common::Core::SIMD
 
             control = Less( cosOmega, OneMinusEpsilon );
 
-            auto sinOmega = Mul( cosOmega, cosOmega );
-            sinOmega = Sub( One, sinOmega );
+            auto sinOmega = FNMSub( cosOmega, cosOmega, One );
+
             sinOmega = Sqrt( sinOmega );
 
-            auto omega = ATan2( sinOmega, cosOmega );
+            auto omega = FastATan2( sinOmega, cosOmega );
 
-            auto v01 = Shuffle<2, 3, 0, 1>( t, t );
-            v01 = And( v01, MaskXY );
+            auto v01 = And( t, MaskXY );
             v01 = Xor( v01, SignMask2 );
             v01 = Add( OneX, v01 );
 
             auto s0 = Mul( v01, omega );
-            s0 = Sin( s0 );
+            s0 = FastSin( s0 );
             s0 = Div( s0, sinOmega );
 
             s0 = Select( v01, s0, control );
@@ -5038,8 +5316,7 @@ namespace Harlinn::Common::Core::SIMD
             s1 = Mul( s1, sign );
             auto result = Mul( q1, s0 );
             s1 = Mul( s1, q2 );
-            result = Add( result, s1 );
-            return result;
+            return Add( result, s1 );
         }
 
         static SIMDType TransformVector( SIMDType v, SIMDType mr1, SIMDType mr2, SIMDType mr3 )
@@ -5071,7 +5348,7 @@ namespace Harlinn::Common::Core::SIMD
             {
                 // W
                 auto result = At<3>( v ); 
-                result = _mm_mul_ps( result, mr4 );
+                result = Mul( result, mr4 );
                 // Z
                 auto temp = At<2>( v );
                 result = FMAdd( temp, mr3, result );

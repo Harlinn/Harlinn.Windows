@@ -1424,11 +1424,17 @@ PBRT_CPU_GPU inline pstd::optional<BilinearIntersection> IntersectBilinearPatch(
         Float p2 = LengthSquared(perp);
 
         // Compute matrix determinants for $v$ and $t$ numerators
-        Float v1 =
-            Determinant(SquareMatrix<3>(deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
+#ifdef PBRT_USES_HCCMATH
+        Float v1 = ScalarDeterminant( SquareMatrix<3>( deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
+            perp.y, deltao.z, ray.d.z, perp.z ) );
+        Float t1 = ScalarDeterminant( SquareMatrix<3>( deltao.x, ud.x, perp.x, deltao.y, ud.y,
+            perp.y, deltao.z, ud.z, perp.z ) );
+#else
+        Float v1 = Determinant(SquareMatrix<3>(deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
                                         perp.y, deltao.z, ray.d.z, perp.z));
         Float t1 = Determinant(SquareMatrix<3>(deltao.x, ud.x, perp.x, deltao.y, ud.y,
                                                perp.y, deltao.z, ud.z, perp.z));
+#endif
 
         // Set _u_, _v_, and _t_ if intersection is valid
         if (t1 > p2 * eps && 0 <= v1 && v1 <= p2) {
@@ -1445,11 +1451,17 @@ PBRT_CPU_GPU inline pstd::optional<BilinearIntersection> IntersectBilinearPatch(
         Vector3f deltao = uo - ray.o;
         Vector3f perp = Cross(ray.d, ud);
         Float p2 = LengthSquared(perp);
-        Float v2 =
-            Determinant(SquareMatrix<3>(deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
+#ifdef PBRT_USES_HCCMATH
+        Float v2 = ScalarDeterminant( SquareMatrix<3>( deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
+            perp.y, deltao.z, ray.d.z, perp.z ) );
+        Float t2 = ScalarDeterminant( SquareMatrix<3>( deltao.x, ud.x, perp.x, deltao.y, ud.y,
+            perp.y, deltao.z, ud.z, perp.z ) );
+#else
+        Float v2 = Determinant(SquareMatrix<3>(deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
                                         perp.y, deltao.z, ray.d.z, perp.z));
         Float t2 = Determinant(SquareMatrix<3>(deltao.x, ud.x, perp.x, deltao.y, ud.y,
                                                perp.y, deltao.z, ud.z, perp.z));
+#endif
         t2 /= p2;
         if (0 <= v2 && v2 <= p2 && t > t2 && t2 > eps) {
             t = t2;

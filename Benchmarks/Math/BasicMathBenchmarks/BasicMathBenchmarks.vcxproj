@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicMathBenchmarks.cpp" />
+    <ClCompile Include="QuaternionBenchmarks.cpp" />
     <ClCompile Include="SquareMatrixBenchmarks.cpp" />
     <ClCompile Include="Transform3DBenchmarks.cpp" />
     <ClCompile Include="TupleFloatBenchmarks.cpp" />

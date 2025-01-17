@@ -44,6 +44,7 @@ namespace
         return true;
     }
 
+#ifndef PBRT_USES_HCCMATH
     inline bool Equal( const pbrt::SquareMatrix<4>& m1, const pbrt::SquareMatrix<4>& m2, float epsilon = 0.0001f )
     {
         for ( int i = 0; i < 4; i++ )
@@ -61,7 +62,7 @@ namespace
         }
         return true;
     }
-
+#endif
 }
 
 BOOST_FIXTURE_TEST_SUITE( SquareMatrix4FloatTests, LocalFixture )
@@ -99,14 +100,19 @@ BOOST_AUTO_TEST_CASE( PbrtInverseTest1 )
         0.857143f, 0.428571f, 0.285714f, 0.0f,
         -0.428571f, 0.285714f, 0.857143f, 0.0f,
         -0.714286f, -0.857143f, -3.57143f, 1.0f );
-
+#ifdef PBRT_USES_HCCMATH
+    auto inverse = Inverse( matrix );
+    bool equal = Equal( inverse, expected );
+#else
     auto inverse = pbrt::Inverse( matrix );
-
     BOOST_CHECK( inverse.has_value( ) );
 
     pbrt::SquareMatrix<4> inverseMatrix = inverse.value( );
-
     bool equal = Equal( inverseMatrix, expected );
+#endif
+    
+
+    
 
     BOOST_CHECK( equal );
 }

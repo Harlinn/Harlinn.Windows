@@ -140,6 +140,7 @@ static void BenchmarkMathFMA1( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathFMA1 );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFMA1( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -153,6 +154,7 @@ static void BenchmarkPbrtFMA1( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFMA1 );
+#endif
 
 static void BenchmarkMathFMA2( benchmark::State& state )
 {
@@ -170,6 +172,7 @@ static void BenchmarkMathFMA2( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathFMA2 );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFMA2( benchmark::State& state )
 {
     using Vector = pbrt::Vector2f;
@@ -184,7 +187,7 @@ static void BenchmarkPbrtFMA2( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFMA2 );
-
+#endif
 
 static void BenchmarkMathFMA3( benchmark::State& state )
 {
@@ -202,6 +205,7 @@ static void BenchmarkMathFMA3( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathFMA3 );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFMA3( benchmark::State& state )
 {
     using Vector = pbrt::Vector3f;
@@ -216,6 +220,7 @@ static void BenchmarkPbrtFMA3( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFMA3 );
+#endif
 
 
 static void BenchmarkMathQuaternionAdd( benchmark::State& state )
@@ -233,6 +238,7 @@ static void BenchmarkMathQuaternionAdd( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathQuaternionAdd );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtQuaternionAdd( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -247,6 +253,7 @@ static void BenchmarkPbrtQuaternionAdd( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtQuaternionAdd );
+#endif
 
 static void BenchmarkMathPoint3Distance( benchmark::State& state )
 {
@@ -263,6 +270,7 @@ static void BenchmarkMathPoint3Distance( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathPoint3Distance );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtPoint3Distance( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -277,6 +285,7 @@ static void BenchmarkPbrtPoint3Distance( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtPoint3Distance );
+#endif
 
 static void BenchmarkMathPoint3DistanceSquared( benchmark::State& state )
 {
@@ -293,6 +302,7 @@ static void BenchmarkMathPoint3DistanceSquared( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathPoint3DistanceSquared );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtPoint3DistanceSquared( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -307,6 +317,7 @@ static void BenchmarkPbrtPoint3DistanceSquared( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtPoint3DistanceSquared );
+#endif
 
 static void BenchmarkMathVector3Cross( benchmark::State& state )
 {
@@ -379,6 +390,7 @@ static void BenchmarkMathVector3Dot( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathVector3Dot );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Dot( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -393,7 +405,7 @@ static void BenchmarkPbrtVector3Dot( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtVector3Dot );
-
+#endif
 
 static void BenchmarkMathVector3AngleBetween( benchmark::State& state )
 {
@@ -410,6 +422,7 @@ static void BenchmarkMathVector3AngleBetween( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathVector3AngleBetween );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3AngleBetween( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -424,6 +437,7 @@ static void BenchmarkPbrtVector3AngleBetween( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtVector3AngleBetween );
+#endif
 
 // XMVector3AngleBetweenVectors
 
@@ -455,6 +469,7 @@ static void BenchmarkMathVector3LengthSquared( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathVector3LengthSquared );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3LengthSquared( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -468,7 +483,7 @@ static void BenchmarkPbrtVector3LengthSquared( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtVector3LengthSquared );
-
+#endif
 
 static void BenchmarkMathVector3Length( benchmark::State& state )
 {
@@ -484,6 +499,7 @@ static void BenchmarkMathVector3Length( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathVector3Length );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Length( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -497,6 +513,7 @@ static void BenchmarkPbrtVector3Length( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtVector3Length );
+#endif
 
 static void BenchmarkMathVector3Ceil( benchmark::State& state )
 {
@@ -512,6 +529,7 @@ static void BenchmarkMathVector3Ceil( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathVector3Ceil );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Ceil( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -525,6 +543,7 @@ static void BenchmarkPbrtVector3Ceil( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtVector3Ceil );
+#endif
 
 static void BenchmarkMathVector3Floor( benchmark::State& state )
 {
@@ -540,6 +559,7 @@ static void BenchmarkMathVector3Floor( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathVector3Floor );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Floor( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -553,7 +573,7 @@ static void BenchmarkPbrtVector3Floor( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtVector3Floor );
-
+#endif
 
 static void BenchmarkMathVector3Trunc( benchmark::State& state )
 {
@@ -600,6 +620,7 @@ static void BenchmarkMathVector3Lerp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkMathVector3Lerp );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtVector3Lerp( benchmark::State& state )
 {
     using namespace Harlinn::Common::Core::Math;
@@ -615,6 +636,7 @@ static void BenchmarkPbrtVector3Lerp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtVector3Lerp );
+#endif
 
 static void BenchmarkMathVector3Clamp( benchmark::State& state )
 {

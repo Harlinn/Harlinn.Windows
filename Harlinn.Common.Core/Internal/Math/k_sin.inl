@@ -66,12 +66,12 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		__kernel_sin( double x, double y, int iy )
 	{
 		using namespace __kernel_sin_internal;
-		double z, r, v, w;
+		//double z, r, v, w;
 
-		z = x * x;
-		w = z * z;
-		r = S2 + z * ( S3 + z * S4 ) + z * w * ( S5 + z * S6 );
-		v = z * x;
+		double z = x * x;
+		double w = z * z;
+		double r = S2 + z * ( S3 + z * S4 ) + z * w * ( S5 + z * S6 );
+		double v = z * x;
 		if ( iy == 0 ) return x + v * ( S1 + z * r );
 		else      return x - ( ( z * ( half * y - v * r ) - y ) - v * S1 );
 	}

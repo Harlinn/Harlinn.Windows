@@ -24,6 +24,8 @@ std::string CompensatedSum<Float>::ToString() const {
     return StringPrintf("[ CompensatedSum sum: %s c: %s ]", sum, c);
 }
 
+#ifndef PBRT_USES_HCCMATH
+
 template <int N>
 std::string SquareMatrix<N>::ToString() const {
     std::string s = "[ [";
@@ -41,7 +43,9 @@ std::string SquareMatrix<N>::ToString() const {
     s += " ]";
     return s;
 }
+#endif
 
+#ifndef PBRT_USES_HCCMATH
 // General case
 template <int N>
 PBRT_CPU_GPU PBRTO_EXPORT pstd::optional<SquareMatrix<N>> Inverse(const SquareMatrix<N> &m) {
@@ -105,13 +109,19 @@ PBRT_CPU_GPU PBRTO_EXPORT pstd::optional<SquareMatrix<N>> Inverse(const SquareMa
     }
     return SquareMatrix<N>(minv);
 }
+#endif
 
+#ifndef PBRT_USES_HCCMATH
 template PBRTO_TEMPLATE_EXPORT class SquareMatrix<2>;
+
+
 template PBRT_CPU_GPU PBRTO_TEMPLATE_EXPORT pstd::optional<SquareMatrix<2>> Inverse(const SquareMatrix<2> &);
 template PBRT_CPU_GPU PBRTO_TEMPLATE_EXPORT SquareMatrix<2> operator*(const SquareMatrix<2> &m1, const SquareMatrix<2> &m2);
 
+
 template PBRTO_TEMPLATE_EXPORT class SquareMatrix<3>;
 template PBRTO_TEMPLATE_EXPORT class SquareMatrix<4>;
+#endif
 
 int NextPrime(int x) {
     if (x == 2)

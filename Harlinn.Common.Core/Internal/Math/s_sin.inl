@@ -56,8 +56,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 	constexpr inline double
 		sin( double x )
 	{
-		double y[ 2 ], z = 0.0;
-		int32_t n, ix;
+		double z = 0.0;
+		int32_t ix{};
 
 		/* High word of x. */
 		GET_HIGH_WORD( ix, x );
@@ -79,7 +79,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* argument reduction needed */
 		else
 		{
-			n = __ieee754_rem_pio2( x, y );
+			double y[ 2 ]{};
+			int32_t n = __ieee754_rem_pio2( x, y );
 			switch ( n & 3 )
 			{
 				case 0: return  __kernel_sin( y[ 0 ], y[ 1 ], 1 );

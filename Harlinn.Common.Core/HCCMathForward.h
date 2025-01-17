@@ -175,6 +175,10 @@ namespace Harlinn::Common::Core::Math
 
     template<typename T>
         requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ATan2( T x, T y ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
     inline constexpr std::remove_cvref_t<T> NextDown( T x ) noexcept;
     template<typename T>
         requires IsFloatingPoint<T>

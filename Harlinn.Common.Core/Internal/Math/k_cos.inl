@@ -74,12 +74,12 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		__kernel_cos( double x, double y )
 	{
 		using namespace __kernel_cos_internal;
-		double hz, z, r, w;
+		//double hz, z, r, w;
 
-		z = x * x;
-		w = z * z;
-		r = z * ( C1 + z * ( C2 + z * C3 ) ) + w * w * ( C4 + z * ( C5 + z * C6 ) );
-		hz = 0.5 * z;
+		double z = x * x;
+		double w = z * z;
+		double r = z * ( C1 + z * ( C2 + z * C3 ) ) + w * w * ( C4 + z * ( C5 + z * C6 ) );
+		double hz = 0.5 * z;
 		w = one - hz;
 		return w + ( ( ( one - w ) - hz ) + ( z * r - x * y ) );
 	}

@@ -3354,9 +3354,68 @@ BOOST_AUTO_TEST_CASE( ShuffleTest1 )
 
     equal = result3 == expected3;
     BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/TanTest1
+BOOST_AUTO_TEST_CASE( TanTest1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+
+    auto v = Constants::PiOver4;
+    auto result = Traits::FastTan( v );
+    auto expected = std::tan( Traits::First( Constants::PiOver4 ) );
+    auto nearlyEqual = AreNearlyEqual( Traits::First( result ), expected );
+    BOOST_CHECK( nearlyEqual );
+}
+
+// --run_test=SIMDFloatTests/ATanTest1
+BOOST_AUTO_TEST_CASE( ATanTest1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+
+    auto v = Traits::Fill( .3f );
+    auto result = Traits::FastATan( v );
+    auto expected = std::atan( .3f );
+    auto nearlyEqual = AreNearlyEqual( Traits::First( result ), expected );
+    BOOST_CHECK( nearlyEqual );
+}
+
+// --run_test=SIMDFloatTests/ATanTest2
+BOOST_AUTO_TEST_CASE( ATanTest2 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
+
+    auto v = Traits::Fill( -.3f );
+    auto result = Traits::FastATan( v );
+    auto expected = std::atan( -.3f );
+    auto nearlyEqual = AreNearlyEqual( Traits::First( result ), expected );
+    BOOST_CHECK( nearlyEqual );
+}
 
 
+// --run_test=SIMDFloatTests/ATan2Test1
+BOOST_AUTO_TEST_CASE( ATan2Test1 )
+{
+    using Traits = SIMD::Traits<float, 3>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+    using ArrayType = typename Traits::ArrayType;
 
+    auto x = Traits::Fill( .3f );
+    auto y = Traits::Fill( -.5f );
+    auto result = Traits::FastATan2( x, y );
+    auto expected = std::atan2( .3f, -.5f );
+    auto nearlyEqual = AreNearlyEqual( Traits::First( result ), expected );
+    BOOST_CHECK( nearlyEqual );
 }
 
 

@@ -202,8 +202,14 @@ struct CompensatedFloat {
     Float v, err;
 };
 
+#ifdef PBRT_USES_HCCMATH
+template <int N>
+using SquareMatrix = Math::SquareMatrix<Float, N>;
+#else
 template <int N>
 class SquareMatrix;
+#endif
+
 PBRT_CPU_GPU inline Float SinXOverX(Float x);
 
 // Math Inline Functions
@@ -755,11 +761,20 @@ pstd::optional<SquareMatrix<N>> LinearLeastSquares(const Float A[][N], const Flo
                 AtA[i][j] += A[r][i] * A[r][j];
                 AtB[i][j] += A[r][i] * B[r][j];
             }
-
+#ifdef PBRT_USES_HCCMATH
+    typename Math::Vector<Float, N>::Simd determinant;
+    using Traits = typename Math::Vector<Float, N>::Traits;
+    auto AtAi = Inverse( AtA, &determinant );
+    if ( Traits::First( determinant.simd ) == 0.f )
+        return {};
+    return SquareMatrix<N>(Transpose( AtAi * AtB ));
+#else
     auto AtAi = Inverse(AtA);
     if (!AtAi)
         return {};
-    return Transpose(*AtAi * AtB);
+    return Transpose( *AtAi * AtB );
+#endif
+    
 }
 
 // Math Function Declarations
@@ -1427,15 +1442,88 @@ PBRT_CPU_GPU inline void initDiag(Float m[N][N], int i, Float v, Args... args) {
 
 #ifdef PBRT_USES_HCCMATH
 
+
+/*
 template <int N>
 class SquareMatrix : public Math::SquareMatrix<Float, N>
 {
 public:
     using Base = Math::SquareMatrix<Float, N>;
     using Base::Base;
+    using Simd = typename Base::Simd;
 
+    SquareMatrix( ) noexcept = default;
+    SquareMatrix( const SquareMatrix& other ) noexcept
+        : Base( static_cast<const Base&>( other ) )
+    { }
+    SquareMatrix( const Base& other ) noexcept
+        : Base( static_cast< const Base& >( other ) )
+    { }
 
+    SquareMatrix( const Simd& simd ) noexcept
+        : Base( simd )
+    {
+    }
+
+    SquareMatrix& operator = ( const SquareMatrix& other ) noexcept
+    {
+        Base::operator = ( static_cast< const Base& >( other ) );
+        return *this;
+    }
+    SquareMatrix& operator = ( const Base& other ) noexcept
+    {
+        Base::operator = ( other );
+        return *this;
+    }
+    SquareMatrix& operator = ( const Simd& simd ) noexcept
+    {
+        Base::operator = ( simd );
+        return *this;
+    }
+
+    std::string ToString( ) const
+    {
+        const SquareMatrix& m = *this;
+        std::string s = "[ [";
+        for ( int i = 0; i < N; ++i )
+        {
+            for ( int j = 0; j < N; ++j )
+            {
+                s += StringPrintf( " %f", m[ i ][ j ] );
+                if ( j < N - 1 )
+                    s += ',';
+                else
+                    s += " ]";
+            }
+            if ( i < N - 1 )
+                s += ", [";
+        }
+        s += " ]";
+        return s;
+    }
 };
+*/
+
+template <typename Tresult, int N, typename T>
+PBRT_CPU_GPU inline Tresult Mul( const SquareMatrix<N>& m, const T& v )
+{
+    Tresult result;
+    for ( int i = 0; i < N; ++i )
+    {
+        result[ i ] = 0;
+        for ( int j = 0; j < N; ++j )
+            result[ i ] += m[ i ][ j ] * v[ j ];
+    }
+    return result;
+}
+
+
+template <int N, typename T>
+    requires (std::is_same_v<SquareMatrix<N>,T> == false )
+PBRT_CPU_GPU inline T operator*( const SquareMatrix<N>& m, const T& v )
+{
+    return Mul<T>( m, v );
+}
 
 #else
 // SquareMatrix Definition

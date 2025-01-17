@@ -61,6 +61,7 @@ class Transform {
         }
     }
 
+
     PBRT_CPU_GPU
     Transform(const Float mat[4][4]) 
         : Transform(SquareMatrix<4>(mat)) 

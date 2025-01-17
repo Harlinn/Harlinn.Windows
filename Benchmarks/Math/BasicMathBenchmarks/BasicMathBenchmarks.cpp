@@ -2709,6 +2709,7 @@ static void BenchmarkFloatFMA( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatFMA );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatFMA( benchmark::State& state )
 {
 
@@ -2719,7 +2720,7 @@ static void BenchmarkPbrtFloatFMA( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatFMA );
-
+#endif
 static void BenchmarkFloatSinXOverX( benchmark::State& state )
 {
 
@@ -2731,6 +2732,7 @@ static void BenchmarkFloatSinXOverX( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSinXOverX );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSinXOverX( benchmark::State& state )
 {
 
@@ -2741,7 +2743,7 @@ static void BenchmarkPbrtFloatSinXOverX( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSinXOverX );
-
+#endif
 
 static void BenchmarkFloatExpM1( benchmark::State& state )
 {
@@ -2777,6 +2779,7 @@ static void BenchmarkFloatSinc( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSinc );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSinc( benchmark::State& state )
 {
 
@@ -2787,7 +2790,7 @@ static void BenchmarkPbrtFloatSinc( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSinc );
-
+#endif
 
 static void BenchmarkFloatMod( benchmark::State& state )
 {
@@ -2800,6 +2803,7 @@ static void BenchmarkFloatMod( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatMod );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatMod( benchmark::State& state )
 {
 
@@ -2810,6 +2814,7 @@ static void BenchmarkPbrtFloatMod( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatMod );
+#endif
 
 static void BenchmarkFloatSmoothStep( benchmark::State& state )
 {
@@ -2822,6 +2827,7 @@ static void BenchmarkFloatSmoothStep( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSmoothStep );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSmoothStep( benchmark::State& state )
 {
 
@@ -2832,7 +2838,7 @@ static void BenchmarkPbrtFloatSmoothStep( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSmoothStep );
-
+#endif
 
 static void BenchmarkFloatSafeSqrt( benchmark::State& state )
 {
@@ -2844,6 +2850,7 @@ static void BenchmarkFloatSafeSqrt( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSafeSqrt );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSafeSqrt( benchmark::State& state )
 {
     FloatPositiveGenerator.Reset( );
@@ -2853,6 +2860,7 @@ static void BenchmarkPbrtFloatSafeSqrt( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSafeSqrt );
+#endif
 
 static void BenchmarkFloatSqr( benchmark::State& state )
 {
@@ -2864,6 +2872,7 @@ static void BenchmarkFloatSqr( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSqr );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSqr( benchmark::State& state )
 {
     FloatPositiveGenerator.Reset( );
@@ -2873,6 +2882,7 @@ static void BenchmarkPbrtFloatSqr( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSqr );
+#endif
 
 static void BenchmarkFloatSafeASin( benchmark::State& state )
 {
@@ -2884,6 +2894,7 @@ static void BenchmarkFloatSafeASin( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSafeASin );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSafeASin( benchmark::State& state )
 {
     FloatMinusOneToOneGenerator.Reset( );
@@ -2893,6 +2904,7 @@ static void BenchmarkPbrtFloatSafeASin( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSafeASin );
+#endif
 
 static void BenchmarkFloatSafeACos( benchmark::State& state )
 {
@@ -2904,6 +2916,7 @@ static void BenchmarkFloatSafeACos( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSafeACos );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSafeACos( benchmark::State& state )
 {
     FloatMinusOneToOneGenerator.Reset( );
@@ -2913,6 +2926,7 @@ static void BenchmarkPbrtFloatSafeACos( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSafeACos );
+#endif
 
 static void BenchmarkFloatNextFloatUp( benchmark::State& state )
 {
@@ -2924,6 +2938,7 @@ static void BenchmarkFloatNextFloatUp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatNextFloatUp );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatNextFloatUp( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -2933,6 +2948,7 @@ static void BenchmarkPbrtFloatNextFloatUp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatNextFloatUp );
+#endif
 
 static void BenchmarkFloatNextFloatDown( benchmark::State& state )
 {
@@ -2944,6 +2960,7 @@ static void BenchmarkFloatNextFloatDown( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatNextFloatDown );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatNextFloatDown( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -2953,6 +2970,7 @@ static void BenchmarkPbrtFloatNextFloatDown( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatNextFloatDown );
+#endif
 
 static void BenchmarkFloatAddRoundUp( benchmark::State& state )
 {
@@ -2964,6 +2982,7 @@ static void BenchmarkFloatAddRoundUp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatAddRoundUp );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatAddRoundUp( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -2973,6 +2992,7 @@ static void BenchmarkPbrtFloatAddRoundUp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatAddRoundUp );
+#endif
 
 
 static void BenchmarkFloatAddRoundDown( benchmark::State& state )
@@ -2985,6 +3005,7 @@ static void BenchmarkFloatAddRoundDown( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatAddRoundDown );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatAddRoundDown( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -2994,6 +3015,7 @@ static void BenchmarkPbrtFloatAddRoundDown( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatAddRoundDown );
+#endif
 
 static void BenchmarkFloatSubRoundUp( benchmark::State& state )
 {
@@ -3005,6 +3027,7 @@ static void BenchmarkFloatSubRoundUp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSubRoundUp );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSubRoundUp( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3014,6 +3037,7 @@ static void BenchmarkPbrtFloatSubRoundUp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSubRoundUp );
+#endif
 
 
 static void BenchmarkFloatSubRoundDown( benchmark::State& state )
@@ -3026,6 +3050,7 @@ static void BenchmarkFloatSubRoundDown( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSubRoundDown );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSubRoundDown( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3035,6 +3060,7 @@ static void BenchmarkPbrtFloatSubRoundDown( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSubRoundDown );
+#endif
 
 
 static void BenchmarkFloatMulRoundUp( benchmark::State& state )
@@ -3047,6 +3073,7 @@ static void BenchmarkFloatMulRoundUp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatMulRoundUp );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatMulRoundUp( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3056,6 +3083,7 @@ static void BenchmarkPbrtFloatMulRoundUp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatMulRoundUp );
+#endif
 
 
 static void BenchmarkFloatMulRoundDown( benchmark::State& state )
@@ -3068,6 +3096,7 @@ static void BenchmarkFloatMulRoundDown( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatMulRoundDown );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatMulRoundDown( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3077,6 +3106,7 @@ static void BenchmarkPbrtFloatMulRoundDown( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatMulRoundDown );
+#endif
 
 static void BenchmarkFloatDivRoundUp( benchmark::State& state )
 {
@@ -3088,6 +3118,7 @@ static void BenchmarkFloatDivRoundUp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatDivRoundUp );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatDivRoundUp( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3097,6 +3128,7 @@ static void BenchmarkPbrtFloatDivRoundUp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatDivRoundUp );
+#endif
 
 
 static void BenchmarkFloatDivRoundDown( benchmark::State& state )
@@ -3109,6 +3141,7 @@ static void BenchmarkFloatDivRoundDown( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatDivRoundDown );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatDivRoundDown( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3118,6 +3151,7 @@ static void BenchmarkPbrtFloatDivRoundDown( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatDivRoundDown );
+#endif
 
 static void BenchmarkFloatSqrtRoundUp( benchmark::State& state )
 {
@@ -3129,6 +3163,7 @@ static void BenchmarkFloatSqrtRoundUp( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSqrtRoundUp );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSqrtRoundUp( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3138,7 +3173,7 @@ static void BenchmarkPbrtFloatSqrtRoundUp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSqrtRoundUp );
-
+#endif
 
 static void BenchmarkFloatSqrtRoundDown( benchmark::State& state )
 {
@@ -3150,6 +3185,7 @@ static void BenchmarkFloatSqrtRoundDown( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSqrtRoundDown );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSqrtRoundDown( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3159,6 +3195,7 @@ static void BenchmarkPbrtFloatSqrtRoundDown( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSqrtRoundDown );
+#endif
 
 static void BenchmarkFloatFMARoundUp( benchmark::State& state )
 {
@@ -3171,6 +3208,7 @@ static void BenchmarkFloatFMARoundUp( benchmark::State& state )
 BENCHMARK( BenchmarkFloatFMARoundUp );
 
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatFMARoundUp( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3180,6 +3218,7 @@ static void BenchmarkPbrtFloatFMARoundUp( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatFMARoundUp );
+#endif
 
 static void BenchmarkFloatFMARoundDown( benchmark::State& state )
 {
@@ -3191,6 +3230,7 @@ static void BenchmarkFloatFMARoundDown( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatFMARoundDown );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatFMARoundDown( benchmark::State& state )
 {
     FloatGenerator.Reset( );
@@ -3200,6 +3240,7 @@ static void BenchmarkPbrtFloatFMARoundDown( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatFMARoundDown );
+#endif
 
 
 static void BenchmarkFloatFastLog2( benchmark::State& state )
@@ -3212,6 +3253,7 @@ static void BenchmarkFloatFastLog2( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatFastLog2 );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatLog2( benchmark::State& state )
 {
     FloatZeroToOneGenerator.Reset( );
@@ -3221,6 +3263,7 @@ static void BenchmarkPbrtFloatLog2( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatLog2 );
+#endif
 
 
 static void BenchmarkFloatLog2Int( benchmark::State& state )
@@ -3233,6 +3276,7 @@ static void BenchmarkFloatLog2Int( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatLog2Int );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatLog2Int( benchmark::State& state )
 {
     FloatZeroToOneGenerator.Reset( );
@@ -3242,6 +3286,7 @@ static void BenchmarkPbrtFloatLog2Int( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatLog2Int );
+#endif
 
 static void BenchmarkFloatGaussian( benchmark::State& state )
 {
@@ -3253,6 +3298,7 @@ static void BenchmarkFloatGaussian( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatGaussian );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatGaussian( benchmark::State& state )
 {
     FloatZeroToOneGenerator.Reset( );
@@ -3262,6 +3308,7 @@ static void BenchmarkPbrtFloatGaussian( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatGaussian );
+#endif
 
 static void BenchmarkFloatLogistic( benchmark::State& state )
 {
@@ -3273,6 +3320,7 @@ static void BenchmarkFloatLogistic( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatLogistic );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatLogistic( benchmark::State& state )
 {
     Float0To10Generator.Reset( );
@@ -3282,6 +3330,7 @@ static void BenchmarkPbrtFloatLogistic( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatLogistic );
+#endif
 
 static void BenchmarkFloatDifferenceOfProducts( benchmark::State& state )
 {
@@ -3293,6 +3342,7 @@ static void BenchmarkFloatDifferenceOfProducts( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatDifferenceOfProducts );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatDifferenceOfProducts( benchmark::State& state )
 {
     Float0To10Generator.Reset( );
@@ -3302,6 +3352,7 @@ static void BenchmarkPbrtFloatDifferenceOfProducts( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatDifferenceOfProducts );
+#endif
 
 static void BenchmarkFloatSumOfProducts( benchmark::State& state )
 {
@@ -3313,6 +3364,7 @@ static void BenchmarkFloatSumOfProducts( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatSumOfProducts );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatSumOfProducts( benchmark::State& state )
 {
     Float0To10Generator.Reset( );
@@ -3322,6 +3374,7 @@ static void BenchmarkPbrtFloatSumOfProducts( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatSumOfProducts );
+#endif
 
 static void BenchmarkFloatQuadratic( benchmark::State& state )
 {
@@ -3357,6 +3410,7 @@ static void BenchmarkFloatIntervalMultiply( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalMultiply );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalMultiply( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3368,6 +3422,7 @@ static void BenchmarkPbrtFloatIntervalMultiply( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalMultiply );
+#endif
 
 static void BenchmarkFloatIntervalDivide( benchmark::State& state )
 {
@@ -3381,6 +3436,7 @@ static void BenchmarkFloatIntervalDivide( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalDivide );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalDivide( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3392,6 +3448,7 @@ static void BenchmarkPbrtFloatIntervalDivide( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalDivide );
+#endif
 
 static void BenchmarkFloatIntervalScalarMultiply( benchmark::State& state )
 {
@@ -3405,6 +3462,7 @@ static void BenchmarkFloatIntervalScalarMultiply( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalScalarMultiply );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalScalarMultiply( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3416,6 +3474,7 @@ static void BenchmarkPbrtFloatIntervalScalarMultiply( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalScalarMultiply );
+#endif
 
 static void BenchmarkFloatIntervalScalarDivision( benchmark::State& state )
 {
@@ -3429,6 +3488,7 @@ static void BenchmarkFloatIntervalScalarDivision( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalScalarDivision );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalScalarDivision( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3440,6 +3500,7 @@ static void BenchmarkPbrtFloatIntervalScalarDivision( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalScalarDivision );
+#endif
 
 static void BenchmarkFloatIntervalAddition( benchmark::State& state )
 {
@@ -3453,6 +3514,7 @@ static void BenchmarkFloatIntervalAddition( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalAddition );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalAddition( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3464,6 +3526,7 @@ static void BenchmarkPbrtFloatIntervalAddition( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalAddition );
+#endif
 
 static void BenchmarkFloatIntervalSubtraction( benchmark::State& state )
 {
@@ -3477,6 +3540,7 @@ static void BenchmarkFloatIntervalSubtraction( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalSubtraction );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalSubtraction( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3488,6 +3552,7 @@ static void BenchmarkPbrtFloatIntervalSubtraction( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalSubtraction );
+#endif
 
 static void BenchmarkFloatIntervalScalarAddition( benchmark::State& state )
 {
@@ -3501,6 +3566,7 @@ static void BenchmarkFloatIntervalScalarAddition( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalScalarAddition );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalScalarAddition( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3512,6 +3578,7 @@ static void BenchmarkPbrtFloatIntervalScalarAddition( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalScalarAddition );
+#endif
 
 static void BenchmarkFloatIntervalScalarSubtraction( benchmark::State& state )
 {
@@ -3525,6 +3592,7 @@ static void BenchmarkFloatIntervalScalarSubtraction( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalScalarSubtraction );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalScalarSubtraction( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3536,6 +3604,7 @@ static void BenchmarkPbrtFloatIntervalScalarSubtraction( benchmark::State& state
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalScalarSubtraction );
+#endif
 
 static void BenchmarkFloatIntervalSqrt( benchmark::State& state )
 {
@@ -3549,6 +3618,7 @@ static void BenchmarkFloatIntervalSqrt( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalSqrt );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalSqrt( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3560,6 +3630,7 @@ static void BenchmarkPbrtFloatIntervalSqrt( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalSqrt );
+#endif
 
 static void BenchmarkFloatIntervalFMA( benchmark::State& state )
 {
@@ -3573,6 +3644,7 @@ static void BenchmarkFloatIntervalFMA( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalFMA );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalFMA( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3584,6 +3656,7 @@ static void BenchmarkPbrtFloatIntervalFMA( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalFMA );
+#endif
 
 static void BenchmarkFloatIntervalDifferenceOfProducts( benchmark::State& state )
 {
@@ -3597,6 +3670,7 @@ static void BenchmarkFloatIntervalDifferenceOfProducts( benchmark::State& state 
 }
 BENCHMARK( BenchmarkFloatIntervalDifferenceOfProducts );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalDifferenceOfProducts( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3608,6 +3682,7 @@ static void BenchmarkPbrtFloatIntervalDifferenceOfProducts( benchmark::State& st
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalDifferenceOfProducts );
+#endif
 
 static void BenchmarkFloatIntervalSumOfProducts( benchmark::State& state )
 {
@@ -3621,6 +3696,7 @@ static void BenchmarkFloatIntervalSumOfProducts( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalSumOfProducts );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalSumOfProducts( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3632,6 +3708,7 @@ static void BenchmarkPbrtFloatIntervalSumOfProducts( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalSumOfProducts );
+#endif
 
 static void BenchmarkFloatIntervalQuadratic( benchmark::State& state )
 {
@@ -3648,6 +3725,7 @@ static void BenchmarkFloatIntervalQuadratic( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalQuadratic );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalQuadratic( benchmark::State& state )
 {
     Float1To100Generator.Reset( );
@@ -3662,6 +3740,7 @@ static void BenchmarkPbrtFloatIntervalQuadratic( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalQuadratic );
+#endif
 
 static void BenchmarkFloatIntervalACos( benchmark::State& state )
 {
@@ -3675,6 +3754,7 @@ static void BenchmarkFloatIntervalACos( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalACos );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalACos( benchmark::State& state )
 {
     FloatMinusOneToOneGenerator.Reset( );
@@ -3686,6 +3766,7 @@ static void BenchmarkPbrtFloatIntervalACos( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalACos );
+#endif
 
 static void BenchmarkFloatIntervalCos( benchmark::State& state )
 {
@@ -3699,6 +3780,7 @@ static void BenchmarkFloatIntervalCos( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalCos );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalCos( benchmark::State& state )
 {
     FloatAngleInRadiansGenerator.Reset( );
@@ -3710,7 +3792,7 @@ static void BenchmarkPbrtFloatIntervalCos( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalCos );
-
+#endif
 
 static void BenchmarkFloatIntervalSin( benchmark::State& state )
 {
@@ -3724,6 +3806,7 @@ static void BenchmarkFloatIntervalSin( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatIntervalSin );
 
+#ifndef PBRT_USES_HCCMATH
 static void BenchmarkPbrtFloatIntervalSin( benchmark::State& state )
 {
     FloatAngleInRadiansGenerator.Reset( );
@@ -3735,6 +3818,7 @@ static void BenchmarkPbrtFloatIntervalSin( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkPbrtFloatIntervalSin );
+#endif
 
 
 #endif

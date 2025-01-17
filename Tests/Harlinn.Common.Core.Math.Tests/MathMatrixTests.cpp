@@ -274,13 +274,14 @@ BOOST_AUTO_TEST_CASE( PbrtTest1 )
     ( 1.5f, -2.f, 3.4f,
         5.4f, 6.f, 7.6f,
         -9.f, 10.f, 11.f );
-
+    float expectedResult = 607.799988f;
+#ifdef PBRT_USES_HCCMATH
+    auto result = ScalarDeterminant( matrix1 );
+#else
     auto result = pbrt::Determinant( matrix1 );
-
-    if ( result )
-    {
-        BOOST_CHECK( result != 0 );
-    }
+#endif
+    auto nearlyEqual = AreNearlyEqual( result, expectedResult, 1e-2f );
+    BOOST_CHECK( nearlyEqual );
 
 }
 

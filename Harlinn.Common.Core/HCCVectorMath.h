@@ -22,7 +22,15 @@
 
 namespace Harlinn::Common::Core::Math
 {
-    
+    template<typename MatrixT, typename size_t N>
+    struct SquareMatrixSimd;
+
+
+    template<typename T, size_t N>
+    class SquareMatrix;
+
+
+
 
     template<typename T>
     constexpr bool IsLoadedType = T::Loaded;
@@ -746,6 +754,22 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        TupleSimd( value_type x, value_type y ) noexcept
+            : simd( Traits::Set(y, x) )
+        {
+        }
+
+        TupleSimd( value_type x, value_type y, value_type z ) noexcept
+            : simd( Traits::Set( z, y, x ) )
+        {
+        }
+
+        TupleSimd( value_type x, value_type y, value_type z, value_type w ) noexcept
+            : simd( Traits::Set( w, z, y, x ) )
+        {
+        }
+
+
         TupleSimd operator - ( ) const noexcept
         {
             return Traits::Negate( simd );
@@ -859,17 +883,37 @@ namespace Harlinn::Common::Core::Math
         {
             return Traits::At<0>( simd );
         }
+        void SetX( SIMDType src )
+        {
+            simd = Traits::Permute<4, 1, 2, 3>( simd, src );
+        }
         TupleSimd Y( ) const
         {
             return Traits::At<1>( simd );
+        }
+        void SetY( SIMDType src )
+        {
+            simd = Traits::Permute<0, 5, 2, 3>( simd, src );
         }
         TupleSimd Z( ) const requires (Size > 2)
         {
             return Traits::At<2>( simd );
         }
+        void SetZ( SIMDType src ) requires ( Size > 2 )
+        {
+            simd = Traits::Permute<0, 1, 6, 3>( simd, src );
+        }
+        void SetXYZ( SIMDType src ) requires ( Size > 2 )
+        {
+            simd = Traits::Permute<0, 1, 2, 7>( src, simd );
+        }
         TupleSimd W( ) const requires ( Size > 3 )
         {
             return Traits::At<3>( simd );
+        }
+        void SetW( SIMDType src ) requires ( Size > 3 )
+        {
+            simd = Traits::Permute<0, 1, 2, 7>( simd, src );
         }
 
 
@@ -2572,6 +2616,73 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
     }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, typename U >
+        requires Internal::IsCompatible<S, T>&& std::is_arithmetic_v<U>
+    inline S Lerp( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        auto v = static_cast< FloatT >( c );
+        return S(Traits::Lerp( a, b, Traits::Fill( v ) ));
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, typename U >
+        requires Internal::IsCompatible<S, T>&& std::is_arithmetic_v<U>
+    inline S Lerp( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        auto v = static_cast< FloatT >( c );
+        return S( Traits::Lerp( a, b.ToSimd(), Traits::Fill( v ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, typename U >
+        requires Internal::IsCompatible<S, T>&& std::is_arithmetic_v<U>
+    inline typename S::Simd Lerp( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = typename S::Simd;
+        auto v = static_cast< FloatT >( c );
+        return Simd( Traits::Lerp( a.ToSimd( ), b, Traits::Fill( v ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// c is inside [0,1), or the linear extrapolation for elements
+    /// in c outside [0,1).
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, typename U >
+        requires Internal::IsCompatible<S, T>&& std::is_arithmetic_v<U>
+    inline typename S::Simd Lerp( const S& a, const T& b, const U c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using FloatT = typename Traits::Type;
+        using Simd = typename S::Simd;
+        auto v = static_cast< FloatT >( c );
+        return Simd( Traits::Lerp( a.ToSimd( ), b.ToSimd( ), Traits::Fill( v ) ) );
+    }
+
     
     // Permute
 
@@ -10129,6 +10240,13 @@ namespace Harlinn::Common::Core::Math
         using ValueType = typename QuaternionType::ValueType;
         using size_type = size_t;
         using value_type = ValueType;
+        using Vector = typename Vector<value_type, 3>;
+        using VectorSimd = typename Vector::Simd;
+        using Normal = Normal3f;
+        using NormalSimd = typename Normal::Simd;
+
+        using Matrix = SquareMatrix<ValueType, 4>;
+        using MatrixSimd = typename Matrix::Simd;
 
         static constexpr size_type Size = 4;
         static constexpr bool Loaded = true;
@@ -10162,7 +10280,8 @@ namespace Harlinn::Common::Core::Math
         /// (around x-axis), then yaw (around y-axis), and then roll 
         /// (around z-axis).
         /// </param>
-        QuaternionSimd( const Vector<ValueType,3>::Simd& pitchYawRoll )
+        template<Internal::SimdType T>
+        QuaternionSimd( const T& pitchYawRoll )
         {
             if constexpr ( std::is_same_v<value_type, float> )
             {
@@ -10193,6 +10312,21 @@ namespace Harlinn::Common::Core::Math
         /// <summary>
         /// Creates a quaternion based on the pitch, yaw, and roll (Euler angles).
         /// </summary>
+        /// <param name="pitchYawRoll">
+        /// A vector containing the Euler angles in the order pitch 
+        /// (around x-axis), then yaw (around y-axis), and then roll 
+        /// (around z-axis).
+        /// </param>
+        template<Internal::TupleType T>
+        QuaternionSimd( const T& pitchYawRoll )
+            : QuaternionSimd( pitchYawRoll.ToSimd() )
+        {
+        }
+
+
+        /// <summary>
+        /// Creates a quaternion based on the pitch, yaw, and roll (Euler angles).
+        /// </summary>
         /// <param name="pitch">
         /// Angle of rotation around the x-axis, in radians.
         /// </param>
@@ -10203,10 +10337,126 @@ namespace Harlinn::Common::Core::Math
         /// Angle of rotation around the z-axis, in radians.
         /// </param>
         QuaternionSimd( ValueType pitch, ValueType yaw, ValueType roll ) noexcept
-            : QuaternionSimd( Vector<ValueType, 3>::Simd( Vector<ValueType, 3>::Traits::Set( roll, yaw, pitch ) ) )
+            : QuaternionSimd( VectorSimd( Vector::Traits::Set( roll, yaw, pitch ) ) )
         { }
 
         explicit QuaternionSimd( const QuaternionType& quaternion ) noexcept;
+
+
+        /// <summary>
+        /// Creates a rotation quaternion around a normalized axis.
+        /// </summary>
+        /// <param name="normalizedAxis">
+        /// A normalized vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angle">
+        /// The angle of rotation in radians.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static QuaternionSimd FromNormalizedAxisAndAngle( const VectorSimd& normalizedAxis, float angle ) noexcept
+        {
+            using Constants = Traits::Constants;
+            
+            auto n = Traits::And( normalizedAxis.simd, Constants::Mask3 );
+            n = Traits::Or( n, Constants::IdentityR4 );
+            auto scale = Traits::Fill( 0.5f * angle );
+            SIMDType cosine;
+            auto sine = Traits::FastSinCos( scale, &cosine );
+            scale = Traits::And( sine, Constants::Mask3 );
+            cosine = Traits::And( cosine, Constants::MaskW );
+            scale = Traits::Or( scale, cosine );
+            return QuaternionSimd( Traits::Mul( n, scale ) );
+        }
+
+        /// <summary>
+        /// Creates a rotation quaternion around a normalized axis.
+        /// </summary>
+        /// <param name="normalizedAxis">
+        /// A normalized vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angle">
+        /// The angle of rotation in radians.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static QuaternionSimd FromNormalizedAxisAndAngle( const Vector& normalizedAxis, float angle ) noexcept
+        {
+            return FromNormalizedAxisAndAngle( normalizedAxis.ToSimd( ), angle );
+        }
+
+        /// <summary>
+        /// Creates a rotation quaternion around an axis.
+        /// </summary>
+        /// <param name="normalizedAxis">
+        /// A vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angle">
+        /// The angle of rotation in radians.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static QuaternionSimd FromAxisAndAngle( const VectorSimd& axis, float angle ) noexcept
+        {
+            return FromNormalizedAxisAndAngle( Normalize( axis ), angle );
+        }
+        /// <summary>
+        /// Creates a rotation quaternion around an axis.
+        /// </summary>
+        /// <param name="normalizedAxis">
+        /// A vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angle">
+        /// The angle of rotation in radians.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static QuaternionSimd FromAxisAndAngle( const Vector& axis, float angle ) noexcept
+        {
+            return FromNormalizedAxisAndAngle( Normalize( axis ), angle );
+        }
+
+        /// <summary>
+        /// Creates a rotation quaternion from a rotation matrix.
+        /// </summary>
+        /// <param name="matrix">
+        /// The rotation matrix.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static QuaternionSimd FromMatrix( const MatrixSimd& matrix ) noexcept;
+        /// <summary>
+        /// Creates a rotation quaternion from a rotation matrix.
+        /// </summary>
+        /// <param name="matrix">
+        /// The rotation matrix.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static QuaternionSimd FromMatrix( const Matrix& matrix ) noexcept;
+
+
+
+        
+
+        /// <summary>
+        /// Returns the identity quaternion.
+        /// </summary>
+        /// <returns>
+        /// The identity quaternion.
+        /// </returns>
+        static constexpr QuaternionSimd Identity( ) noexcept
+        {
+            constexpr SIMDType identity = { {0.f,0.f,0.f,1.f} };
+            return QuaternionSimd( identity );
+        }
+
 
         QuaternionSimd& operator = ( const QuaternionSimd& other ) noexcept
         {
@@ -10276,7 +10526,6 @@ namespace Harlinn::Common::Core::Math
             simd = Traits::Div( simd, Traits::Fill( value ) );
             return *this;
         }
-
     };
 
     /// <summary>
@@ -10314,12 +10563,20 @@ namespace Harlinn::Common::Core::Math
 
         using Simd = QuaternionSimd<Quaternion>;
 
+        using Vector = typename Vector<value_type, 3>;
+        using VectorSimd = typename Vector::Simd;
+        using Normal = Normal3f;
+        using NormalSimd = typename Normal::Simd;
+
+        using Matrix = SquareMatrix<ValueType, 4>;
+        using MatrixSimd = typename Matrix::Simd;
+
         union
         {
             ArrayType values;
             struct
             {
-                Vector<ValueType, 3> v;
+                Vector v;
                 ValueType w;
             };
         };
@@ -10333,7 +10590,12 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
-        constexpr Quaternion( const Vector<ValueType,3>& vv, ValueType wv ) noexcept
+        constexpr Quaternion( const ArrayType& a ) noexcept
+            : values( a )
+        {
+        }
+
+        constexpr Quaternion( const Vector& vv, ValueType wv ) noexcept
             : v( vv ), w( wv )
         {
         }
@@ -10385,62 +10647,108 @@ namespace Harlinn::Common::Core::Math
                 auto simd = Traits::FMAdd( q1, r1, q0 );
                 values = Traits::ToArray( simd );
             }
-            /*
-            const float halfPitch = pitch * static_cast< ValueType >( 0.5 );
-            //float cp = Cos( halfPitch );
-            //float sp = Sin( halfPitch );
-            float cp, sp;
-            SinCos( halfPitch, &sp, &cp );
-
-            const float halfYaw = yaw * static_cast< ValueType >( 0.5 );
-            //float cy = Cos( halfYaw );
-            //float sy = Sin( halfYaw );
-            float cy, sy;
-            SinCos( halfYaw, &sy, &cy );
-
-            const float halfRoll = roll * static_cast< ValueType >( 0.5 );
-            //float cr = Cos( halfRoll );
-            //float sr = Sin( halfRoll );
-
-            float cr, sr;
-            SinCos( halfRoll, &sr, &cr );
-
-            values[ 0 ] = cr * sp * cy + sr * cp * sy;
-            values[ 1 ] = cr * cp * sy - sr * sp * cy;
-            values[ 2 ] = sr * cp * cy - cr * sp * sy;
-            values[ 3 ] = cr * cp * cy + sr * sp * sy;
-            */
         }
 
-        /// <summary>
-        /// Creates a quaternion about a normal vector.
-        /// </summary>
-        /// <param name="normalAxis">
-        /// Normal vector describing the axis of rotation.
-        /// </param>
-        /// <param name="angleOfRotation">
-        /// Angle of rotation in radians. Angles are measured clockwise 
-        /// when looking along the rotation axis toward the origin.
-        /// </param>
-        Quaternion( const Normal3f& normalAxis, ValueType angleOfRotation ) noexcept
-        {
-            auto halfAngleOfRotation = static_cast< ValueType >( 0.5 ) * angleOfRotation;
-            auto cosine = Cos( halfAngleOfRotation );
-            auto sine = Sin( halfAngleOfRotation );
-
-            values[ 0 ] = normalAxis.x * sine;
-            values[ 1 ] = normalAxis.y * sine;
-            values[ 2 ] = normalAxis.z * sine;
-            values[ 3 ] = cosine;
-        }
-
-
-        
         Quaternion( const Quaternion& other ) noexcept
             : values( other.values )
         {
         }
 
+        /// <summary>
+        /// Creates a rotation quaternion around a normalized axis.
+        /// </summary>
+        /// <param name="normalizedAxis">
+        /// A normalized vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angle">
+        /// The angle of rotation in radians.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static Simd FromNormalizedAxisAndAngle( const VectorSimd& normalizedAxis, float angle ) noexcept
+        {
+            return Simd::FromNormalizedAxisAndAngle( normalizedAxis, angle );
+        }
+
+        /// <summary>
+        /// Creates a rotation quaternion around a normalized axis.
+        /// </summary>
+        /// <param name="normalizedAxis">
+        /// A normalized vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angle">
+        /// The angle of rotation in radians.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static Simd FromNormalizedAxisAndAngle( const Vector& normalizedAxis, float angle ) noexcept
+        {
+            return Simd::FromNormalizedAxisAndAngle( normalizedAxis, angle );
+        }
+
+        /// <summary>
+        /// Creates a rotation quaternion around an axis.
+        /// </summary>
+        /// <param name="normalizedAxis">
+        /// A vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angle">
+        /// The angle of rotation in radians.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static Simd FromAxisAndAngle( const VectorSimd& axis, float angle ) noexcept
+        {
+            return Simd::FromAxisAndAngle( axis, angle );
+        }
+
+        /// <summary>
+        /// Creates a rotation quaternion around an axis.
+        /// </summary>
+        /// <param name="normalizedAxis">
+        /// A vector describing the axis of rotation.
+        /// </param>
+        /// <param name="angle">
+        /// The angle of rotation in radians.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static Simd FromAxisAndAngle( const Vector& axis, float angle ) noexcept
+        {
+            return Simd::FromAxisAndAngle( axis, angle );
+        }
+
+        /// <summary>
+        /// Creates a rotation quaternion from a rotation matrix.
+        /// </summary>
+        /// <param name="matrix">
+        /// The rotation matrix.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static Simd FromMatrix( const MatrixSimd& matrix ) noexcept
+        {
+            return Simd::FromMatrix( matrix );
+        }
+        /// <summary>
+        /// Creates a rotation quaternion from a rotation matrix.
+        /// </summary>
+        /// <param name="matrix">
+        /// The rotation matrix.
+        /// </param>
+        /// <returns>
+        /// The rotation quaternion.
+        /// </returns>
+        static Simd FromMatrix( const Matrix& matrix ) noexcept
+        {
+            return Simd::FromMatrix( matrix );
+        }
+        
         /// <summary>
         /// Returns the identity quaternion.
         /// </summary>
@@ -10454,7 +10762,7 @@ namespace Harlinn::Common::Core::Math
 
         struct AxisAngle
         {
-            Vector<ValueType, 3> Axis;
+            Vector Axis;
             value_type Angle;
         };
 
@@ -10513,7 +10821,7 @@ namespace Harlinn::Common::Core::Math
 
         Simd operator - ( ) const noexcept
         {
-            return Traits::Negate( Traits::Load( values ) );
+            return Simd(Traits::Negate( Traits::Load( values ) ));
         }
 
         const_reference operator[]( size_t index ) const noexcept
@@ -11664,6 +11972,174 @@ namespace Harlinn::Common::Core::Math
         return Math::Slerp( q1.ToSimd( ), q2.ToSimd( ), t );
     }
 
+    /// <summary>
+    /// Rotates a vector using a quaternion.
+    /// </summary>
+    /// <param name="v">
+    /// The vector to rotate.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Quaternion describing the rotation to apply to the vector.
+    /// </param>
+    /// <returns>
+    /// The rotated vector.
+    /// </returns>
+    template<Internal::SimdType S, typename FloatT = typename S::value_Type >
+        requires ( S::Size == 3 )
+    S Rotate( const S& v, const QuaternionSimd<Quaternion<FloatT>>& rotationQuaternion )
+    {
+        using Traits = SIMD::Traits<FloatT, 4>;
+        using Constants = Traits::Constants;
+        using Q = QuaternionSimd<Quaternion<FloatT>>;
+
+        Q qa( Traits::Select( Constants::Select2221, v.simd, Constants::Select2221 ) );
+        
+        Q qc = Conjugate( rotationQuaternion );
+
+        return S(((qa * qc) * rotationQuaternion).simd);
+    }
+
+    /// <summary>
+    /// Rotates a vector using a quaternion.
+    /// </summary>
+    /// <param name="v">
+    /// The vector to rotate.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Quaternion describing the rotation to apply to the vector.
+    /// </param>
+    /// <returns>
+    /// The rotated vector.
+    /// </returns>
+    template<Internal::SimdType S, typename FloatT = typename S::value_Type >
+        requires ( S::Size == 3 )
+    S Rotate( const S& v, const Quaternion<FloatT>& rotationQuaternion )
+    {
+        return Rotate( v, rotationQuaternion.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Rotates a vector using a quaternion.
+    /// </summary>
+    /// <param name="v">
+    /// The vector to rotate.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Quaternion describing the rotation to apply to the vector.
+    /// </param>
+    /// <returns>
+    /// The rotated vector.
+    /// </returns>
+    template<Internal::TupleType S, typename FloatT = typename S::value_Type >
+        requires ( S::Size == 3 )
+    typename S::Simd Rotate( const S& v, const QuaternionSimd<Quaternion<FloatT>>& rotationQuaternion )
+    {
+        return Rotate( v.ToSimd( ), rotationQuaternion );
+    }
+
+    /// <summary>
+    /// Rotates a vector using a quaternion.
+    /// </summary>
+    /// <param name="v">
+    /// The vector to rotate.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Quaternion describing the rotation to apply to the vector.
+    /// </param>
+    /// <returns>
+    /// The rotated vector.
+    /// </returns>
+    template<Internal::TupleType S, typename FloatT = typename S::value_Type >
+        requires ( S::Size == 3 )
+    typename S::Simd Rotate( const S& v, const Quaternion<FloatT>& rotationQuaternion )
+    {
+        return Rotate( v.ToSimd( ), rotationQuaternion.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Rotates a vector using the inverse of a quaternion.
+    /// </summary>
+    /// <param name="v">
+    /// The vector to rotate.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Quaternion describing the rotation to apply to the vector.
+    /// </param>
+    /// <returns>
+    /// The rotated vector.
+    /// </returns>
+    template<Internal::SimdType S, typename FloatT = typename S::value_Type >
+        requires ( S::Size == 3 )
+    S InverseRotate( const S& v, const QuaternionSimd<Quaternion<FloatT>>& rotationQuaternion )
+    {
+        using Traits = SIMD::Traits<FloatT, 4>;
+        using Constants = Traits::Constants;
+        using Q = QuaternionSimd<Quaternion<FloatT>>;
+
+        Q qa( Traits::Select( Constants::Select2221, v.simd, Constants::Select2221 ) );
+
+        auto result = rotationQuaternion * qa;
+        auto rc = Conjugate( rotationQuaternion );
+        return S(( result * rc ).simd );
+    }
+
+    /// <summary>
+    /// Rotates a vector using the inverse of a quaternion.
+    /// </summary>
+    /// <param name="v">
+    /// The vector to rotate.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Quaternion describing the rotation to apply to the vector.
+    /// </param>
+    /// <returns>
+    /// The rotated vector.
+    /// </returns>
+    template<Internal::SimdType S, typename FloatT = typename S::value_Type >
+        requires ( S::Size == 3 )
+    S InverseRotate( const S& v, const Quaternion<FloatT>& rotationQuaternion )
+    {
+        return InverseRotate( v, rotationQuaternion.ToSimd( ) );
+    }
+
+    /// <summary>
+    /// Rotates a vector using the inverse of a quaternion.
+    /// </summary>
+    /// <param name="v">
+    /// The vector to rotate.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Quaternion describing the rotation to apply to the vector.
+    /// </param>
+    /// <returns>
+    /// The rotated vector.
+    /// </returns>
+    template<Internal::TupleType S, typename FloatT = typename S::value_Type >
+        requires ( S::Size == 3 )
+    S InverseRotate( const S& v, const QuaternionSimd<Quaternion<FloatT>>& rotationQuaternion )
+    {
+        return InverseRotate( v.ToSimd( ), rotationQuaternion );
+    }
+
+    /// <summary>
+    /// Rotates a vector using the inverse of a quaternion.
+    /// </summary>
+    /// <param name="v">
+    /// The vector to rotate.
+    /// </param>
+    /// <param name="rotationQuaternion">
+    /// Quaternion describing the rotation to apply to the vector.
+    /// </param>
+    /// <returns>
+    /// The rotated vector.
+    /// </returns>
+    template<Internal::TupleType S, typename FloatT = typename S::value_Type >
+        requires ( S::Size == 3 )
+    S InverseRotate( const S& v, const Quaternion<FloatT>& rotationQuaternion )
+    {
+        return InverseRotate( v.ToSimd( ), rotationQuaternion.ToSimd( ) );
+    }
 
 
     template<Internal::SimdType T, Internal::SimdType U>
@@ -11837,6 +12313,11 @@ namespace Harlinn::Common::Core::Math
         {
             return Traits::Load( matrix[ 0 ].data( ) );
         }
+        static SIMDType ToSimd( const value_type matrix[Size][ Size ] )
+        {
+            return Traits::Load( &matrix[ 0 ][ 0 ] );
+        }
+
         static ArrayType ToMatrix( const SquareMatrixSimd& simd )
         {
             ArrayType result;
@@ -11845,6 +12326,7 @@ namespace Harlinn::Common::Core::Math
         }
 
         SquareMatrixSimd( )
+            : simd( { { static_cast<value_type>(1.), static_cast< value_type >( 0. ),static_cast< value_type >( 0. ),static_cast< value_type >( 1. )}} )
         {
         }
         explicit SquareMatrixSimd( SIMDType other )
@@ -11859,6 +12341,20 @@ namespace Harlinn::Common::Core::Math
             : simd( ToSimd( matrix ) )
         {
         }
+
+        bool operator == ( const SquareMatrixSimd& other ) const
+        {
+            return Traits::AllEqual( simd, other.simd );
+        }
+        bool operator != ( const SquareMatrixSimd& other ) const
+        {
+            return Traits::AllEqual( simd, other.simd ) == false;
+        }
+
+        bool IsIdentity( ) const
+        {
+            return Traits::AllEqual( simd, { { static_cast< value_type >( 1. ), static_cast< value_type >( 0. ),static_cast< value_type >( 0. ),static_cast< value_type >( 1. )} } );
+        }
     };
 
 
@@ -11869,6 +12365,7 @@ namespace Harlinn::Common::Core::Math
         using MatrixType = MatrixT;
         using value_type = typename MatrixT::value_type;
         using Traits = Core::SIMD::Traits<value_type, 3>;
+        using Constants = typename Traits::Constants;
         using SIMDType = typename Traits::SIMDType;
         using ArrayType = std::array<std::array<value_type, 3>, 3>;
         static constexpr size_t Size = 3;
@@ -11878,11 +12375,20 @@ namespace Harlinn::Common::Core::Math
         static std::array<SIMDType, 3> ToSimd( const ArrayType& matrix )
         {
             std::array<SIMDType, 3> result;
-            result[ 0 ] = Traits::Load( matrix[ 0 ].data( ) );
-            result[ 1 ] = Traits::Load( matrix[ 1 ].data( ) );
-            result[ 2 ] = Traits::Load( matrix[ 2 ].data( ) );
+            result[ 0 ] = Traits::Load( matrix[ 0 ] );
+            result[ 1 ] = Traits::Load( matrix[ 1 ] );
+            result[ 2 ] = Traits::Load( matrix[ 2 ] );
             return result;
         }
+        static std::array<SIMDType, 3> ToSimd( const value_type matrix[Size][ Size ] )
+        {
+            std::array<SIMDType, 3> result;
+            result[ 0 ] = Traits::Load( matrix[ 0 ] );
+            result[ 1 ] = Traits::Load( matrix[ 1 ] );
+            result[ 2 ] = Traits::Load( matrix[ 2 ] );
+            return result;
+        }
+
         static ArrayType ToMatrix( const SquareMatrixSimd& simd )
         {
             ArrayType result;
@@ -11893,6 +12399,7 @@ namespace Harlinn::Common::Core::Math
         }
 
         SquareMatrixSimd( )
+            : simd( { {Constants::IdentityR1, Constants::IdentityR2, Constants::IdentityR3} } )
         {
         }
         explicit SquareMatrixSimd( const std::array<SIMDType, 3>& other )
@@ -11907,6 +12414,26 @@ namespace Harlinn::Common::Core::Math
             : simd( ToSimd( matrix ) )
         {
         }
+
+        bool operator == ( const SquareMatrixSimd& other ) const
+        {
+            return Traits::AllEqual( simd[ 0 ], other.simd[ 0 ] ) &&
+                Traits::AllEqual( simd[ 1 ], other.simd[ 1 ] ) &&
+                Traits::AllEqual( simd[ 2 ], other.simd[ 2 ] );
+        }
+        bool operator != ( const SquareMatrixSimd& other ) const
+        {
+            return Traits::AllEqual( simd[ 0 ], other.simd[ 0 ] ) == false ||
+                Traits::AllEqual( simd[ 1 ], other.simd[ 1 ] ) == false ||
+                Traits::AllEqual( simd[ 2 ], other.simd[ 2 ] ) == false;
+        }
+
+        bool IsIdentity( ) const
+        {
+            return Traits::AllEqual( simd[ 0 ], Constants::IdentityR1 ) &&
+                Traits::AllEqual( simd[ 1 ], Constants::IdentityR2 ) &&
+                Traits::AllEqual( simd[ 2 ], Constants::IdentityR3 );
+        }
     };
 
 
@@ -11917,6 +12444,7 @@ namespace Harlinn::Common::Core::Math
         using MatrixType = MatrixT;
         using value_type = typename MatrixT::value_type;
         using Traits = Core::SIMD::Traits<value_type, 4>;
+        using Constants = typename Traits::Constants;
         using SIMDType = typename Traits::SIMDType;
         using ArrayType = std::array<std::array<value_type, 4>, 4>;
         static constexpr size_t Size = 4;
@@ -11926,10 +12454,20 @@ namespace Harlinn::Common::Core::Math
         static std::array<SIMDType, 4> ToSimd( const ArrayType& matrix )
         {
             std::array<SIMDType, 4> result;
-            result[ 0 ] = Traits::Load( matrix[ 0 ].data( ) );
-            result[ 1 ] = Traits::Load( matrix[ 1 ].data( ) );
-            result[ 2 ] = Traits::Load( matrix[ 2 ].data( ) );
-            result[ 3 ] = Traits::Load( matrix[ 3 ].data( ) );
+            result[ 0 ] = Traits::Load( matrix[ 0 ] );
+            result[ 1 ] = Traits::Load( matrix[ 1 ] );
+            result[ 2 ] = Traits::Load( matrix[ 2 ] );
+            result[ 3 ] = Traits::Load( matrix[ 3 ] );
+            return result;
+        }
+
+        static std::array<SIMDType, 4> ToSimd( const value_type matrix[Size][Size] )
+        {
+            std::array<SIMDType, 4> result;
+            result[ 0 ] = Traits::Load( matrix[ 0 ] );
+            result[ 1 ] = Traits::Load( matrix[ 1 ] );
+            result[ 2 ] = Traits::Load( matrix[ 2 ] );
+            result[ 3 ] = Traits::Load( matrix[ 3 ] );
             return result;
         }
 
@@ -11944,20 +12482,41 @@ namespace Harlinn::Common::Core::Math
         }
 
         SquareMatrixSimd( )
-        {
-        }
+            : simd( Constants::IdentityR1, Constants::IdentityR2, Constants::IdentityR3, Constants::IdentityR4 )
+        { }
         explicit SquareMatrixSimd( const std::array<SIMDType,4>& other )
             : simd( other )
-        {
-        }
+        { }
         SquareMatrixSimd( const SquareMatrixSimd& other )
             : simd( other.simd )
-        {
-        }
+        { }
         explicit SquareMatrixSimd( const ArrayType& matrix )
             : simd( ToSimd( matrix ) )
+        { }
+
+        bool operator == ( const SquareMatrixSimd& other ) const
         {
+            return Traits::AllEqual( simd[ 0 ], other.simd[ 0 ] ) &&
+                Traits::AllEqual( simd[ 1 ], other.simd[ 1 ] ) &&
+                Traits::AllEqual( simd[ 2 ], other.simd[ 2 ] ) &&
+                Traits::AllEqual( simd[ 3 ], other.simd[ 3 ] );
         }
+        bool operator != ( const SquareMatrixSimd& other ) const
+        {
+            return Traits::AllEqual( simd[ 0 ], other.simd[ 0 ] ) == false ||
+                Traits::AllEqual( simd[ 1 ], other.simd[ 1 ] ) == false ||
+                Traits::AllEqual( simd[ 2 ], other.simd[ 2 ] ) == false ||
+                Traits::AllEqual( simd[ 3 ], other.simd[ 3 ] ) == false;
+        }
+
+        bool IsIdentity( ) const
+        {
+            return Traits::AllEqual( simd[ 0 ], Constants::IdentityR1 ) &&
+                Traits::AllEqual( simd[ 1 ], Constants::IdentityR2 ) &&
+                Traits::AllEqual( simd[ 2 ], Constants::IdentityR3 ) &&
+                Traits::AllEqual( simd[ 3 ], Constants::IdentityR4 );
+        }
+
     };
     
 
@@ -11992,6 +12551,23 @@ namespace Harlinn::Common::Core::Math
             }
             return m;
         }
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, value_type>
+        static MatrixData MakeData( const T& mat ) noexcept
+        {
+            MatrixData result;
+            memcpy( result[ 0 ].data( ), mat.data( ), std::min( Size * Size, mat.size( ) )*sizeof(value_type));
+            return result;
+        }
+        
+        static MatrixData MakeData( const value_type mat[ Size ][ Size ] ) noexcept
+        {
+            MatrixData result;
+            memcpy( result[ 0 ].data( ), &mat[0][0], Size * Size * sizeof( value_type ) );
+            return result;
+        }
+
         static constexpr MatrixData ZeroValue{};
         static constexpr MatrixData DefaultValue = MakeDefaultValue( );
         MatrixData data_ = DefaultValue;
@@ -12004,11 +12580,20 @@ namespace Harlinn::Common::Core::Math
             return zeroMatrix;
         }
 
-        constexpr SquareMatrix( ) noexcept = default;
+        constexpr SquareMatrix( ) noexcept
+            : data_( DefaultValue )
+        { }
 
         SquareMatrix( const value_type mat[ Size ][ Size ] )
-            : data_( MatrixData( mat ) )
         {
+            memcpy( data_[ 0 ].data( ), &mat[ 0 ][ 0 ], Size * Size * sizeof( value_type ) );
+        }
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, value_type>
+        SquareMatrix( const T& mat )
+        {
+            memcpy( data_[ 0 ].data( ), mat.data( ), std::min( Size * Size, mat.size( ) ) * sizeof( value_type ) );
         }
 
         SquareMatrix( const Simd& simd ) noexcept
@@ -12024,6 +12609,7 @@ namespace Harlinn::Common::Core::Math
         SquareMatrix& operator = ( const Simd& simd ) noexcept
         {
             data_ = Simd::ToMatrix( simd );
+            return *this;
         }
 
         SquareMatrix& operator = ( const MatrixData& data ) noexcept
@@ -12042,7 +12628,7 @@ namespace Harlinn::Common::Core::Math
         static SquareMatrix Diag( value_type v, Args... args )
         {
             SquareMatrix m;
-            InitDiagonalMatrix( std::make_index_sequence<N>( ), m.data_, v, args... );
+            Internal::InitDiagonalMatrix( std::make_index_sequence<N>( ), m.data_, v, args... );
             return m;
         }
 
@@ -12086,7 +12672,31 @@ namespace Harlinn::Common::Core::Math
             return data_ == DefaultValue;
         }
 
-        std::string ToString( ) const;
+        std::string ToString( ) const
+        {
+            std::string s = "[ [";
+            for ( int i = 0; i < N; ++i )
+            {
+                for ( int j = 0; j < N; ++j )
+                {
+                    s += std::format( " {}", data_[ i ][ j ] );
+                    if ( j < N - 1 )
+                        s += ',';
+                    else
+                        s += " ]";
+                }
+                if ( i < N - 1 )
+                    s += ", [";
+            }
+            s += " ]";
+            return s;
+        }
+
+        friend std::ostream& operator << ( std::ostream& stream, const SquareMatrix& m )
+        {
+            stream << m.ToString( );
+            return stream;
+        }
 
     };
 
@@ -13321,17 +13931,26 @@ namespace Harlinn::Common::Core::Math
     inline SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept
     {
         using Traits = SIMD::Traits<float, 4>;
+        using Constants = typename Traits::Constants;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
         using SIMDType = typename Traits::SIMDType;
         constexpr SIMDType maskXYZ{ { std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), std::bit_cast< float >( 0xFFFFFFFF ), 0x00000000 } };
+        /*
+        SIMDType C1;
+        auto C0 = Traits::FastSinCos( Traits::Fill( angle ), &C1 );
+        auto C2 = Traits::Sub( Constants::One, C1 );
+        */
+        
+        
         float sine;
         float cosine;
-        
+
         SinCos( angle, &sine, &cosine );
 
         auto C0 = Traits::Fill( sine );
         auto C1 = Traits::Fill( cosine );
         auto C2 = Traits::Fill( 1.0f - cosine );
+        
 
         auto N0 = Traits::Shuffle<3, 0, 2, 1>( normalizedAxis.simd );
         auto N1 = Traits::Shuffle<3, 1, 0, 2>( normalizedAxis.simd );
@@ -13343,8 +13962,10 @@ namespace Harlinn::Common::Core::Math
         R0 = Traits::FMAdd( R0, normalizedAxis.simd, C1 );
 
         auto R1 = Traits::FMAdd( C0, normalizedAxis.simd, V0 );
-        auto R2 = Traits::Mul( C0, normalizedAxis.simd );
-        R2 = Traits::Sub( V0, R2 );
+        
+        //auto R2 = Traits::Mul( C0, normalizedAxis.simd );
+        //R2 = Traits::Sub( V0, R2 );
+        auto R2 = Traits::FNMAdd( C0, normalizedAxis.simd, V0 );
 
         V0 = Traits::And( R0, maskXYZ );
         auto V1 = Traits::Shuffle<2, 1, 2, 0>( R1, R2 );
@@ -16653,6 +17274,105 @@ namespace Harlinn::Common::Core::Math
         result.simd[ 2 ] = Traits::Set( 1.f, range, 0.f, 0.f );
         result.simd[ 3 ] = Traits::Set( -range * nearZ, 0.f, 0.f );
         return result;
+    }
+
+    template<typename QuaternionT>
+    inline QuaternionSimd<QuaternionT> QuaternionSimd<QuaternionT>::FromMatrix( const MatrixSimd& matrix ) noexcept
+    {
+        using Traits = SIMD::Traits<float, 4>;
+        using Constants = Traits::Constants;
+        using Simd = QuaternionSimd<QuaternionT>;
+        constexpr SIMDType XMPMMP = { { +1.0f, -1.0f, -1.0f, +1.0f } };
+        constexpr SIMDType XMMPMP = { { -1.0f, +1.0f, -1.0f, +1.0f } };
+        constexpr SIMDType XMMMPP = { { -1.0f, -1.0f, +1.0f, +1.0f } };
+
+        auto r0 = matrix.simd[ 0 ];
+        auto r1 = matrix.simd[ 1 ];
+        auto r2 = matrix.simd[ 2 ];
+
+        // (r00, r00, r00, r00)
+        auto r00 = Traits::Shuffle<0, 0, 0, 0>( r0 );
+        // (r11, r11, r11, r11)
+        auto r11 = Traits::Shuffle<1, 1, 1, 1>( r1 );
+        // (r22, r22, r22, r22)
+        auto r22 = Traits::Shuffle<2, 2, 2, 2>( r2 );
+
+        // x^2 >= y^2 equivalent to r11 - r00 <= 0
+        // (r11 - r00, r11 - r00, r11 - r00, r11 - r00)
+        auto r11mr00 = Traits::Sub( r11, r00 );
+        auto x2gey2 = Traits::LessOrEqual( r11mr00, Constants::Zero );
+
+        // z^2 >= w^2 equivalent to r11 + r00 <= 0
+        // (r11 + r00, r11 + r00, r11 + r00, r11 + r00)
+        auto r11pr00 = Traits::Add( r11, r00 );
+        auto z2gew2 = Traits::LessOrEqual( r11pr00, Constants::Zero );
+
+        // x^2 + y^2 >= z^2 + w^2 equivalent to r22 <= 0
+        auto x2py2gez2pw2 = Traits::LessOrEqual( r22, Constants::Zero );
+
+        // (4*x^2, 4*y^2, 4*z^2, 4*w^2)
+        auto t0 = Traits::FMAdd( XMPMMP, r00, Constants::One );
+        auto t1 = Traits::Mul( XMMPMP, r11 );
+        auto t2 = Traits::FMAdd( XMMMPP, r22, t0 );
+        auto x2y2z2w2 = Traits::Add( t1, t2 );
+
+        // (r01, r02, r12, r11)
+        t0 = Traits::Shuffle<1, 2, 2, 1>( r0, r1 );
+        // (r10, r10, r20, r21)
+        t1 = Traits::Shuffle<1, 0, 0, 0>( r1, r2 );
+        // (r10, r20, r21, r10)
+        t1 = Traits::Shuffle<1, 3, 2, 0>( t1 );
+        // (4*x*y, 4*x*z, 4*y*z, unused)
+        auto xyxzyz = Traits::Add( t0, t1 );
+
+        // (r21, r20, r10, r10)
+        t0 = Traits::Shuffle<0, 0, 0, 1>( r2, r1 );
+        // (r12, r12, r02, r01)
+        t1 = Traits::Shuffle<1, 2, 2, 2>( r1, r0 );
+        // (r12, r02, r01, r12)
+        t1 = Traits::Shuffle<1, 3, 2, 0>( t1 );
+        // (4*x*w, 4*y*w, 4*z*w, unused)
+        auto xwywzw = Traits::Sub( t0, t1 );
+        xwywzw = Traits::Mul( XMMPMP, xwywzw );
+
+        // (4*x^2, 4*y^2, 4*x*y, unused)
+        t0 = Traits::Shuffle<0, 0, 1, 0>( x2y2z2w2, xyxzyz );
+        // (4*z^2, 4*w^2, 4*z*w, unused)
+        t1 = Traits::Shuffle<0, 2, 3, 2>( x2y2z2w2, xwywzw );
+        // (4*x*z, 4*y*z, 4*x*w, 4*y*w)
+        t2 = Traits::Shuffle<1, 0, 2, 1>( xyxzyz, xwywzw );
+
+        // (4*x*x, 4*x*y, 4*x*z, 4*x*w)
+        auto tensor0 = Traits::Shuffle<2, 0, 2, 0>( t0, t2 );
+        // (4*y*x, 4*y*y, 4*y*z, 4*y*w)
+        auto tensor1 = Traits::Shuffle<3, 1, 1, 2>( t0, t2 );
+        // (4*z*x, 4*z*y, 4*z*z, 4*z*w)
+        auto tensor2 = Traits::Shuffle<2, 0, 1, 0>( t2, t1 );
+        // (4*w*x, 4*w*y, 4*w*z, 4*w*w)
+        auto tensor3 = Traits::Shuffle<1, 2, 3, 2>( t2, t1 );
+
+        // Select the row of the tensor-product matrix that has the largest
+        // magnitude.
+        t0 = Traits::And( x2gey2, tensor0 );
+        t1 = Traits::AndNot( x2gey2, tensor1 );
+        t0 = Traits::Or( t0, t1 );
+        t1 = Traits::And( z2gew2, tensor2 );
+        t2 = Traits::AndNot( z2gew2, tensor3 );
+        t1 = Traits::Or( t1, t2 );
+        t0 = Traits::And( x2py2gez2pw2, t0 );
+        t1 = Traits::AndNot_ps( x2py2gez2pw2, t1 );
+        t2 = Traits::Or( t0, t1 );
+
+        // Normalize the row.  No division by zero is possible because the
+        // quaternion is unit-length (and the row is a nonzero multiple of
+        // the quaternion).
+        t0 = Length( Math::Vector<value_type,4>::Simd( t2 ) ).simd;
+        return Simd( Traits::Div( t2, t0 ) );
+    }
+    template<typename QuaternionT>
+    inline QuaternionSimd<QuaternionT> QuaternionSimd<QuaternionT>::FromMatrix( const Matrix& matrix ) noexcept
+    {
+        return FromMatrix( matrix.ToSimd( ) );
     }
 
 

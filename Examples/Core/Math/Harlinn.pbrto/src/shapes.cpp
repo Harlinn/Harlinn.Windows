@@ -583,7 +583,7 @@ bool Curve::IntersectRay(const Ray &r, Float tMax,
         Vector3f dy;
         CoordinateSystem(ray.d, &dx, &dy);
     }
-    Transform rayFromObject = LookAt(ray.o, ray.o + ray.d, dx);
+    Transform rayFromObject = pbrt::LookAt(ray.o, ray.o + ray.d, dx);
     pstd::array<Point3f, 4> cp = {rayFromObject(cpObj[0]), rayFromObject(cpObj[1]),
                                   rayFromObject(cpObj[2]), rayFromObject(cpObj[3])};
 

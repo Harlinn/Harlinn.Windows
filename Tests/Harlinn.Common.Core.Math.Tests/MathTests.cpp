@@ -1868,6 +1868,71 @@ BOOST_AUTO_TEST_CASE( Deg2RadDoubleTest1 )
 // --run_test=MathTests/SinDoubleTest1
 BOOST_AUTO_TEST_CASE( SinDoubleTest1 )
 {
+    constexpr auto rM20000 = Deg2Rad( -20000. );
+    constexpr auto rM720 = Deg2Rad( -720. );
+    constexpr auto rM360 = Deg2Rad( -360. );
+    constexpr auto rM180 = Deg2Rad( -180. );
+    constexpr auto rM135 = Deg2Rad( 135. );
+    constexpr auto rM90 = Deg2Rad( -90. );
+    constexpr auto rM45 = Deg2Rad( -45. );
+    constexpr auto r0 = Deg2Rad( 0. );
+    constexpr auto r45 = Deg2Rad( 45. );
+    constexpr auto r90 = Deg2Rad( 90. );
+    constexpr auto r135 = Deg2Rad( 135. );
+    constexpr auto r180 = Deg2Rad( 180. );
+    constexpr auto r360 = Deg2Rad( 360. );
+    constexpr auto r720 = Deg2Rad( 720. );
+    constexpr auto r20000 = Deg2Rad( 20000. );
+
+    constexpr auto sineRM20000 = Sin( rM20000 );
+    constexpr auto sineRM720 = Sin( rM720 );
+    constexpr auto sineRM360 = Sin( rM360 );
+    constexpr auto sineRM180 = Sin( rM180 );
+    constexpr auto sineRM135 = Sin( rM135 );
+    constexpr auto sineRM90 = Sin( rM90 );
+    constexpr auto sineRM45 = Sin( rM45 );
+    constexpr auto sineR0 = Sin( r0 );
+    constexpr auto sineR45 = Sin( r45 );
+    constexpr auto sineR90 = Sin( r90 );
+    constexpr auto sineR135 = Sin( r135 );
+    constexpr auto sineR180 = Sin( r180 );
+    constexpr auto sineR360 = Sin( r360 );
+    constexpr auto sineR720 = Sin( r720 );
+    constexpr auto sineR20000 = Sin( r20000 );
+
+    auto expectedSineRM20000 = std::sin( rM20000 );
+    auto expectedSineRM720 = std::sin( rM720 );
+    auto expectedSineRM360 = std::sin( rM360 );
+    auto expectedSineRM180 = std::sin( rM180 );
+    auto expectedSineRM135 = std::sin( rM135 );
+    auto expectedSineRM90 = std::sin( rM90 );
+    auto expectedSineRM45 = std::sin( rM45 );
+    auto expectedSineR0 = std::sin( r0 );
+    auto expectedSineR45 = std::sin( r45 );
+    auto expectedSineR90 = std::sin( r90 );
+    auto expectedSineR135 = std::sin( r135 );
+    auto expectedSineR180 = std::sin( r180 );
+    auto expectedSineR360 = std::sin( r360 );
+    auto expectedSineR720 = std::sin( r720 );
+    auto expectedSineR20000 = std::sin( r20000 );
+
+    BOOST_CHECK( expectedSineRM20000 == sineRM20000 );
+    BOOST_CHECK( expectedSineRM720 == sineRM720 );
+    BOOST_CHECK( expectedSineRM360 == sineRM360 );
+    BOOST_CHECK( expectedSineRM180 == sineRM180 );
+    BOOST_CHECK( expectedSineRM135 == sineRM135 );
+    BOOST_CHECK( expectedSineRM90 == sineRM90 );
+    BOOST_CHECK_CLOSE( expectedSineRM45, sineRM45, 0.0000000000001 );
+    BOOST_CHECK( expectedSineR0 == sineR0 );
+    BOOST_CHECK_CLOSE( expectedSineR45, sineR45, 0.0000000000001 );
+    BOOST_CHECK( expectedSineR90 == sineR90 );
+    BOOST_CHECK( expectedSineR135 == sineR135 );
+    BOOST_CHECK( expectedSineR180 == sineR180 );
+    BOOST_CHECK( expectedSineR360 == sineR360 );
+    BOOST_CHECK( expectedSineR720 == sineR720 );
+    BOOST_CHECK( expectedSineR20000 == sineR20000 );
+
+    
     constexpr auto radians = Deg2Rad( 0.001 );
     constexpr auto result1a = Sin( radians );
     auto result1b = std::sin( radians );

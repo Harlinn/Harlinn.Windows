@@ -129,7 +129,11 @@ PBRT_CPU_GPU Transform LookAt(Point3f pos, Point3f look, Vector3f up) {
     worldFromCamera[2][2] = dir.z;
     worldFromCamera[3][2] = 0.;
 
+#ifdef PBRT_USES_HCCMATH
+    SquareMatrix<4> cameraFromWorld = Inverse( worldFromCamera );
+#else
     SquareMatrix<4> cameraFromWorld = InvertOrExit(worldFromCamera);
+#endif
     return Transform(cameraFromWorld, worldFromCamera);
 }
 
@@ -169,7 +173,11 @@ PBRT_CPU_GPU bool Transform::SwapsHandedness() const {
                       m[1][0], m[1][1], m[1][2],
                       m[2][0], m[2][1], m[2][2]);
     // clang-format on
+#ifdef PBRT_USES_HCCMATH
+    return ScalarDeterminant( s ) < 0;
+#else
     return Determinant(s) < 0;
+#endif
 }
 
 PBRT_CPU_GPU Transform::operator Quaternion() const {
@@ -231,7 +239,11 @@ void Transform::Decompose(Vector3f *T, SquareMatrix<4> *R, SquareMatrix<4> *S) c
     *R = M;
     do {
         // Compute next matrix _Rnext_ in series
+#ifdef PBRT_USES_HCCMATH_SQRT
+        SquareMatrix<4> Rit = Inverse( Transpose( *R ) );
+#else
         SquareMatrix<4> Rit = InvertOrExit(Transpose(*R));
+#endif
         SquareMatrix<4> Rnext = (*R + Rit) / 2;
 
         // Compute norm of difference between _R_ and _Rnext_
@@ -248,7 +260,11 @@ void Transform::Decompose(Vector3f *T, SquareMatrix<4> *R, SquareMatrix<4> *S) c
     // XXX TODO FIXME deal with flip...
 
     // Compute scale _S_ using rotation and original matrix
+#ifdef PBRT_USES_HCCMATH_SQRT
+    * S = Inverse( *R ) * M;
+#else
     *S = InvertOrExit(*R) * M;
+#endif
 }
 
 PBRT_CPU_GPU SurfaceInteraction Transform::operator()(const SurfaceInteraction &si) const {

@@ -55,8 +55,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		constexpr inline int __ieee754_rem_pio2_medium( double x, int32_t ix, double* y )
 		{
 			/* Use a specialized rint() to get fn.  Assume round-to-nearest. */
-			double fn;
-			STRICT_ASSIGN( double, fn, x * invpio2 + 0x1.8p52 );
+			double fn = x * invpio2 + 0x1.8p52;
+			//STRICT_ASSIGN( double, fn, x * invpio2 + 0x1.8p52 );
 			fn = fn - 0x1.8p52;
 #ifdef HAVE_EFFICIENT_IRINT
 			int32_t n = irint( fn );
@@ -66,7 +66,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			double r = x - fn * pio2_1;
 			double w = fn * pio2_1t;	/* 1st round good to 85 bit */
 			{
-				uint32_t high;
+				uint32_t high{};
 				int32_t j = ix >> 20;
 				y[ 0 ] = r - w;
 				GET_HIGH_WORD( high, y[ 0 ] );
@@ -93,17 +93,19 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			y[ 1 ] = ( r - y[ 0 ] ) - w;
 			return n;
 		}
+
+
 	}
 	constexpr inline int
 		__ieee754_rem_pio2( double x, double* y )
 	{
 		using namespace __ieee754_rem_pio2_internal;
 		//double z, w, t, r, fn;
-		double z;
-		double tx[ 3 ], ty[ 2 ];
+		double z = 0.;
+		double tx[ 3 ]{}, ty[ 2 ]{};
 		//int32_t e0, i, j, nx, n, ix, hx;
-		int32_t e0, i, nx, n, ix, hx;
-		uint32_t low;
+		int32_t e0{}, i{}, nx{}, n{}, ix{}, hx{};
+		uint32_t low{};
 
 		GET_HIGH_WORD( hx, x );		/* high word of x */
 		ix = hx & 0x7fffffff;
@@ -262,7 +264,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		tx[ 2 ] = z;
 		nx = 3;
-		while ( tx[ nx - 1 ] == zero ) nx--;	/* skip zero term */
+		while ( tx[ nx - 1 ] == 0./*zero*/ ) nx--;	/* skip zero term */
 		n = __kernel_rem_pio2( tx, ty, e0, nx, 1 );
 		if ( hx < 0 ) { y[ 0 ] = -ty[ 0 ]; y[ 1 ] = -ty[ 1 ]; return -n; }
 		y[ 0 ] = ty[ 0 ]; y[ 1 ] = ty[ 1 ]; return n;

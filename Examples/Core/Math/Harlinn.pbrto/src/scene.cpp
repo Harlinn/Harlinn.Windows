@@ -578,13 +578,21 @@ void BasicSceneBuilder::Option(const std::string &name, const std::string &value
 
 void BasicSceneBuilder::Transform(Float tr[16], FileLoc loc) {
     graphicsState.ForActiveTransforms([=](auto t) {
+#ifdef PBRT_USES_HCCMATH
+        return Transpose( pbrt::Transform( SquareMatrix<4>( std::span( tr, 16 ) ) ) );
+#else
         return Transpose(pbrt::Transform(SquareMatrix<4>(pstd::MakeSpan(tr, 16))));
+#endif
     });
 }
 
 void BasicSceneBuilder::ConcatTransform(Float tr[16], FileLoc loc) {
     graphicsState.ForActiveTransforms([=](auto t) {
+#ifdef PBRT_USES_HCCMATH
+        return t * Transpose( pbrt::Transform( SquareMatrix<4>( std::span( tr, 16 ) ) ) );
+#else
         return t * Transpose(pbrt::Transform(SquareMatrix<4>(pstd::MakeSpan(tr, 16))));
+#endif
     });
 }
 

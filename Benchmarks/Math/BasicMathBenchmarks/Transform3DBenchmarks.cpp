@@ -42,14 +42,48 @@ namespace
 }
 #ifdef RUN_TRANSFORM_BENCHMARKS
 
-static void BenchmarkPointRotationAxis( benchmark::State& state )
+static void BenchmarkPointRotation( benchmark::State& state )
 {
-    Math::Vector3f axis( 0.f, 1.f, 0.f );
     FloatAngleInRadiansGenerator.Reset( );
     for ( auto _ : state )
     {
+        auto transformation = Math::Rotation( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        Math::Point3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        Math::Point3f p1Rotated = Math::Transform( p1, transformation );
+        benchmark::DoNotOptimize( p1Rotated.z );
+    }
+}
+BENCHMARK( BenchmarkPointRotation );
+
+static void BenchmarkPointXMMatrixRotationRollPitchYaw( benchmark::State& state )
+{
+    using namespace DirectX;
+    
+    FloatAngleInRadiansGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        auto transformation = XMMatrixRotationRollPitchYaw( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        XMFLOAT3A p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+        auto p1Loaded = XMLoadFloat3A( &p1 );
+        auto p1Transformed = XMVector3TransformCoord( p1Loaded, transformation );
+        XMFLOAT3A p1Stored;
+        XMStoreFloat3A( &p1Stored, p1Transformed );
+
+        benchmark::DoNotOptimize( p1Stored.z );
+    }
+}
+BENCHMARK( BenchmarkPointXMMatrixRotationRollPitchYaw );
+
+
+static void BenchmarkPointRotationAxis( benchmark::State& state )
+{
+    FloatAngleInRadiansGenerator.Reset( );
+    Math::Vector3f axis( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+    
+    for ( auto _ : state )
+    {
         auto transformation = Math::RotationAxis( axis, FloatAngleInRadiansGenerator() );
-        Math::Point3f p1( 2.f, 2.f, 2.f );
+        Math::Point3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Point3f p1Rotated = Math::Transform( p1, transformation );
         benchmark::DoNotOptimize( p1Rotated.z );
     }
@@ -59,13 +93,14 @@ BENCHMARK( BenchmarkPointRotationAxis );
 static void BenchmarkPointXMMatrixRotationAxis( benchmark::State& state )
 {
     using namespace DirectX;
-    XMFLOAT3A axis( 0.f, 1.f, 0.f );
     FloatAngleInRadiansGenerator.Reset( );
+    XMFLOAT3A axis( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+    
     for ( auto _ : state )
     {
         auto axisLoaded = XMLoadFloat3A( &axis );
         auto transformation = XMMatrixRotationAxis( axisLoaded, FloatAngleInRadiansGenerator( ) );
-        XMFLOAT3A p1( 2.f, 2.f, 2.f );
+        XMFLOAT3A p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3A( &p1 );
         auto p1Transformed = XMVector3TransformCoord( p1Loaded, transformation );
         XMFLOAT3A p1Stored;
@@ -78,12 +113,13 @@ BENCHMARK( BenchmarkPointXMMatrixRotationAxis );
 
 static void BenchmarkVectorRotationAxis( benchmark::State& state )
 {
-    Math::Vector3f axis( 0.f, 1.f, 0.f );
     FloatAngleInRadiansGenerator.Reset( );
+    Math::Vector3f axis( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+    
     for ( auto _ : state )
     {
         auto transformation = Math::RotationAxis( axis, FloatAngleInRadiansGenerator( ) );
-        Math::Vector3f v1( 2.f, 2.f, 2.f );
+        Math::Vector3f v1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Vector3f v1Rotated = Math::Transform( v1, transformation );
         benchmark::DoNotOptimize( v1Rotated.z );
     }
@@ -93,13 +129,14 @@ BENCHMARK( BenchmarkVectorRotationAxis );
 static void BenchmarkVectorXMMatrixRotationAxis( benchmark::State& state )
 {
     using namespace DirectX;
-    XMFLOAT3A axis( 0.f, 1.f, 0.f );
     FloatAngleInRadiansGenerator.Reset( );
+    XMFLOAT3A axis( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+    
     for ( auto _ : state )
     {
         auto axisLoaded = XMLoadFloat3A( &axis );
         auto transformation = XMMatrixRotationAxis( axisLoaded, FloatAngleInRadiansGenerator( ) );
-        XMFLOAT3A p1( 2.f, 2.f, 2.f );
+        XMFLOAT3A p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3A( &p1 );
         auto p1Transformed = XMVector3Transform( p1Loaded, transformation );
         XMFLOAT3A p1Stored;
@@ -112,12 +149,13 @@ BENCHMARK( BenchmarkVectorXMMatrixRotationAxis );
 
 static void BenchmarkNormalRotationAxis( benchmark::State& state )
 {
-    Math::Vector3f axis( 0.f, 1.f, 0.f );
     FloatAngleInRadiansGenerator.Reset( );
+    Math::Vector3f axis( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+    
     for ( auto _ : state )
     {
         auto transformation = Math::RotationAxis( axis, FloatAngleInRadiansGenerator( ) );
-        Math::Normal3f n1( 2.f, 2.f, 2.f );
+        Math::Normal3f n1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Normal3f n1Rotated = Math::Transform( n1, transformation );
         benchmark::DoNotOptimize( n1Rotated.z );
     }
@@ -127,13 +165,14 @@ BENCHMARK( BenchmarkNormalRotationAxis );
 static void BenchmarkNormalXMMatrixRotationAxis( benchmark::State& state )
 {
     using namespace DirectX;
-    XMFLOAT3A axis( 0.f, 1.f, 0.f );
     FloatAngleInRadiansGenerator.Reset( );
+    XMFLOAT3A axis( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
+    
     for ( auto _ : state )
     {
         auto axisLoaded = XMLoadFloat3A( &axis );
         auto transformation = XMMatrixRotationAxis( axisLoaded, FloatAngleInRadiansGenerator( ) );
-        XMFLOAT3A p1( 2.f, 2.f, 2.f );
+        XMFLOAT3A p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3A( &p1 );
         auto p1Transformed = XMVector3TransformNormal( p1Loaded, transformation );
         XMFLOAT3A p1Stored;
@@ -156,7 +195,7 @@ static void BenchmarkPointTranslation( benchmark::State& state )
         float offsetY = FloatAngleInRadiansGenerator( );
         float offsetZ = FloatAngleInRadiansGenerator( );
         auto transformation = Math::Translation( offsetX, offsetY, offsetZ );
-        Math::Point3f p1( 2.f, 2.f, 2.f );
+        Math::Point3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Point3f result = Math::Transform( p1, transformation );
         benchmark::DoNotOptimize( result.z );
     }
@@ -173,7 +212,7 @@ static void BenchmarkPointXMMatrixTranslation( benchmark::State& state )
         float offsetY = FloatAngleInRadiansGenerator( );
         float offsetZ = FloatAngleInRadiansGenerator( );
         auto transformation = XMMatrixTranslation( offsetX, offsetY, offsetZ );
-        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        XMFLOAT3 p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3( &p1 );
         auto result = XMVector3TransformCoord( p1Loaded, transformation );
         XMFLOAT3 resultStored;
@@ -193,7 +232,7 @@ static void BenchmarkVectorTranslation( benchmark::State& state )
         float offsetY = FloatAngleInRadiansGenerator( );
         float offsetZ = FloatAngleInRadiansGenerator( );
         auto transformation = Math::Translation( offsetX, offsetY, offsetZ );
-        Math::Vector3f p1( 2.f, 2.f, 2.f );
+        Math::Vector3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Vector3f result = Math::Transform( p1, transformation );
         benchmark::DoNotOptimize( result.z );
     }
@@ -210,7 +249,7 @@ static void BenchmarkVectorXMMatrixTranslation( benchmark::State& state )
         float offsetY = FloatAngleInRadiansGenerator( );
         float offsetZ = FloatAngleInRadiansGenerator( );
         auto transformation = XMMatrixTranslation( offsetX, offsetY, offsetZ );
-        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        XMFLOAT3 p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3( &p1 );
         auto result = XMVector3Transform( p1Loaded, transformation );
         XMFLOAT3 resultStored;
@@ -230,7 +269,7 @@ static void BenchmarkNormalTranslation( benchmark::State& state )
         float offsetY = FloatAngleInRadiansGenerator( );
         float offsetZ = FloatAngleInRadiansGenerator( );
         auto transformation = Math::Translation( offsetX, offsetY, offsetZ );
-        Math::Normal3f p1( 2.f, 2.f, 2.f );
+        Math::Normal3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Normal3f result = Math::Transform( p1, transformation );
         benchmark::DoNotOptimize( result.z );
     }
@@ -247,7 +286,7 @@ static void BenchmarkNormalXMMatrixTranslation( benchmark::State& state )
         float offsetY = FloatAngleInRadiansGenerator( );
         float offsetZ = FloatAngleInRadiansGenerator( );
         auto transformation = XMMatrixTranslation( offsetX, offsetY, offsetZ );
-        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        XMFLOAT3 p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3( &p1 );
         auto result = XMVector3TransformNormal( p1Loaded, transformation );
         XMFLOAT3 resultStored;
@@ -269,7 +308,7 @@ static void BenchmarkPointScaling( benchmark::State& state )
         float scalingY = FloatAngleInRadiansGenerator( );
         float scalingZ = FloatAngleInRadiansGenerator( );
         auto transformation = Math::Scaling( scalingX, scalingY, scalingZ );
-        Math::Point3f p1( 2.f, 2.f, 2.f );
+        Math::Point3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Point3f result = Math::Transform( p1, transformation );
         benchmark::DoNotOptimize( result.z );
     }
@@ -287,7 +326,7 @@ static void BenchmarkPointXMMatrixScaling( benchmark::State& state )
         float scalingY = FloatAngleInRadiansGenerator( );
         float scalingZ = FloatAngleInRadiansGenerator( );
         auto transformation = XMMatrixScaling( scalingX, scalingY, scalingZ );
-        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        XMFLOAT3 p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3( &p1 );
         auto result = XMVector3TransformCoord( p1Loaded, transformation );
         XMFLOAT3 resultStored;
@@ -307,7 +346,7 @@ static void BenchmarkVectorScaling( benchmark::State& state )
         float scalingY = FloatAngleInRadiansGenerator( );
         float scalingZ = FloatAngleInRadiansGenerator( );
         auto transformation = Math::Scaling( scalingX, scalingY, scalingZ );
-        Math::Vector3f p1( 2.f, 2.f, 2.f );
+        Math::Vector3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Vector3f result = Math::Transform( p1, transformation );
         benchmark::DoNotOptimize( result.z );
     }
@@ -325,7 +364,7 @@ static void BenchmarkVectorXMMatrixScaling( benchmark::State& state )
         float scalingY = FloatAngleInRadiansGenerator( );
         float scalingZ = FloatAngleInRadiansGenerator( );
         auto transformation = XMMatrixScaling( scalingX, scalingY, scalingZ );
-        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        XMFLOAT3 p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3( &p1 );
         auto result = XMVector3Transform( p1Loaded, transformation );
         XMFLOAT3 resultStored;
@@ -346,7 +385,7 @@ static void BenchmarkNormalScaling( benchmark::State& state )
         float scalingY = FloatAngleInRadiansGenerator( );
         float scalingZ = FloatAngleInRadiansGenerator( );
         auto transformation = Math::Scaling( scalingX, scalingY, scalingZ );
-        Math::Normal3f p1( 2.f, 2.f, 2.f );
+        Math::Normal3f p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         Math::Normal3f result = Math::Transform( p1, transformation );
         benchmark::DoNotOptimize( result.z );
     }
@@ -363,7 +402,7 @@ static void BenchmarkNormalXMMatrixScaling( benchmark::State& state )
         float scalingY = FloatAngleInRadiansGenerator( );
         float scalingZ = FloatAngleInRadiansGenerator( );
         auto transformation = XMMatrixScaling( scalingX, scalingY, scalingZ );
-        XMFLOAT3 p1( 2.f, 2.f, 2.f );
+        XMFLOAT3 p1( FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ), FloatAngleInRadiansGenerator( ) );
         auto p1Loaded = XMLoadFloat3( &p1 );
         auto result = XMVector3TransformNormal( p1Loaded, transformation );
         XMFLOAT3 resultStored;

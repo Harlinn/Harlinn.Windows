@@ -45,7 +45,7 @@ namespace
         }
         return true;
     }
-
+#ifndef PBRT_USES_HCCMATH
     inline bool Equal( const pbrt::SquareMatrix<3>& m1, const pbrt::SquareMatrix<3>& m2, float epsilon = 0.0001f )
     {
         for ( int i = 0; i < 3; i++ )
@@ -63,7 +63,7 @@ namespace
         }
         return true;
     }
-
+#endif
 }
 
 BOOST_FIXTURE_TEST_SUITE( SquareMatrix3FloatTests, LocalFixture )

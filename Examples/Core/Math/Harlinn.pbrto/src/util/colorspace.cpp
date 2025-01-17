@@ -30,9 +30,18 @@ RGBColorSpace::RGBColorSpace(Point2f r, Point2f g, Point2f b, Spectrum illuminan
 
     // Initialize XYZ color space conversion matrices
     SquareMatrix<3> rgb(R.X, G.X, B.X, R.Y, G.Y, B.Y, R.Z, G.Z, B.Z);
+#ifdef PBRT_USES_HCCMATH
+    SquareMatrix<3> rgbI = Inverse( rgb );
+    XYZ C = rgbI * W;
+#else
     XYZ C = InvertOrExit(rgb) * W;
+#endif
     XYZFromRGB = rgb * SquareMatrix<3>::Diag(C[0], C[1], C[2]);
+#ifdef PBRT_USES_HCCMATH
+    RGBFromXYZ = Inverse( XYZFromRGB );
+#else
     RGBFromXYZ = InvertOrExit(XYZFromRGB);
+#endif
 }
 
 SquareMatrix<3> ConvertRGBColorSpace(const RGBColorSpace &from, const RGBColorSpace &to) {
