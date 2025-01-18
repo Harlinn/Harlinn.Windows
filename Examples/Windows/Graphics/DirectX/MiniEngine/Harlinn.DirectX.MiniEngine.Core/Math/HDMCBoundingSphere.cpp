@@ -31,7 +31,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         float dist = Length( diff );
 
         // Safe normalize vector between sphere centers
+#ifdef HDMC_USES_HCC_MATH
+        diff = dist < 1e-6f ? Vector3( Constants::IdentityR1 ) : diff * Recip( dist );
+#else
         diff = dist < 1e-6f ? Vector3( kXUnitVector ) : diff * Recip( dist );
+#endif
 
         Vector3 extremeA = GetCenter( ) + diff * Max( radA, radB - dist );
         Vector3 extremeB = rhs.GetCenter( ) - diff * Max( radB, radA - dist );

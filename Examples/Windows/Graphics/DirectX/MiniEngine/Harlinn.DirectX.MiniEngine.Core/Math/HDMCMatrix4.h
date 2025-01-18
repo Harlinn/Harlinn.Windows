@@ -17,6 +17,9 @@
 
 namespace Harlinn::Windows::DirectX::MiniEngine::Math
 {
+#ifdef HDMC_USES_HCC_MATH
+    using Matrix4 = m::SquareMatrix<float, 4>::Simd;
+#else
     __declspec( align( 16 ) ) class Matrix4
     {
     public:
@@ -84,4 +87,5 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
     private:
         XMMATRIX m_mat;
     };
+#endif
 }

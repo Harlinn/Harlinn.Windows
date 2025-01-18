@@ -2078,21 +2078,8 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr SIMDType ATanCoefficient8 = { {+0.0028662257f,+0.0028662257f,+0.0028662257f,+0.0028662257f} };
 
 
-            static constexpr SIMDType SinCoefficients0 = { { -0.16666667f, +0.0083333310f, -0.00019840874f, +2.7525562e-06f } };
-            static constexpr SIMDType SinCoefficients1 = { { -2.3889859e-08f, -0.16665852f /*Est1*/, +0.0083139502f /*Est2*/, -0.00018524670f /*Est3*/ } };
-            static constexpr SIMDType CosCoefficients0 = { { -0.5f, +0.041666638f, -0.0013888378f, +2.4760495e-05f } };
-            static constexpr SIMDType CosCoefficients1 = { { -2.6051615e-07f, -0.49992746f /*Est1*/, +0.041493919f /*Est2*/, -0.0012712436f /*Est3*/ } };
-            static constexpr SIMDType TanCoefficients0 = { { 1.0f, 0.333333333f, 0.133333333f, 5.396825397e-2f } };
-            static constexpr SIMDType TanCoefficients1 = { { 2.186948854e-2f, 8.863235530e-3f, 3.592128167e-3f, 1.455834485e-3f } };
-            static constexpr SIMDType TanCoefficients2 = { { 5.900274264e-4f, 2.391290764e-4f, 9.691537707e-5f, 3.927832950e-5f } };
             static constexpr SIMDType ArcCoefficients0 = { { +1.5707963050f, -0.2145988016f, +0.0889789874f, -0.0501743046f } };
             static constexpr SIMDType ArcCoefficients1 = { { +0.0308918810f, -0.0170881256f, +0.0066700901f, -0.0012624911f } };
-            static constexpr SIMDType ATanCoefficients0 = { { -0.3333314528f, +0.1999355085f, -0.1420889944f, +0.1065626393f } };
-            static constexpr SIMDType ATanCoefficients1 = { { -0.0752896400f, +0.0429096138f, -0.0161657367f, +0.0028662257f } };
-            static constexpr SIMDType ATanEstCoefficients0 = { { +0.999866f, +0.999866f, +0.999866f, +0.999866f } };
-            static constexpr SIMDType ATanEstCoefficients1 = { { -0.3302995f, +0.180141f, -0.085133f, +0.0208351f } };
-            static constexpr SIMDType TanEstCoefficients = { { 2.484f, -1.954923183e-1f, 2.467401101f, InvPi } };
-            static constexpr SIMDType ArcEstCoefficients = { { +1.5707288f, -0.2121144f, +0.0742610f, -0.0187293f } };
             static constexpr SIMDType PiConstants0 = { { Pi, PiTimes2, InvPi, Inv2Pi } };
             static constexpr SIMDType IdentityR1 = { { 1.0f, 0.0f, 0.0f, 0.0f } };
             static constexpr SIMDType IdentityR2 = { { 0.0f, 1.0f, 0.0f, 0.0f } };
@@ -2110,6 +2097,10 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr SIMDType MaskY = { { 0x00000000, BitsSet, 0x00000000, 0x00000000 } };
             static constexpr SIMDType MaskZ = { { 0x00000000, 0x00000000, BitsSet, 0x00000000 } };
             static constexpr SIMDType MaskW = { { 0x00000000, 0x00000000, 0x00000000, BitsSet } };
+            static constexpr SIMDType NegateX = { { -1.0f, 1.0f, 1.0f, 1.0f } };
+            static constexpr SIMDType NegateY = { { 1.0f, -1.0f, 1.0f, 1.0f } };
+            static constexpr SIMDType NegateZ = { { 1.0f, 1.0f, -1.0f, 1.0f } };
+            static constexpr SIMDType NegateW = { { 1.0f, 1.0f, 1.0f, -1.0f } };
             static constexpr SIMDType One = { { 1.0f, 1.0f, 1.0f, 1.0f } };
             static constexpr SIMDType One3 = { { 1.0f, 1.0f, 1.0f, 0.0f } };
             static constexpr SIMDType Zero = { { 0.0f, 0.0f, 0.0f, 0.0f } };
@@ -3229,6 +3220,10 @@ namespace Harlinn::Common::Core::SIMD
         {
             return _mm_shuffle_ps( v1, v1, _MM_SHUFFLE( selection4, selection3, selection2, selection1 ) );
         }
+
+
+        
+
 
         /// <summary>
         /// Set each bit of the result based on the most significant bit of 
@@ -5318,6 +5313,7 @@ namespace Harlinn::Common::Core::SIMD
             s1 = Mul( s1, q2 );
             return Add( result, s1 );
         }
+
 
         static SIMDType TransformVector( SIMDType v, SIMDType mr1, SIMDType mr2, SIMDType mr3 )
         {

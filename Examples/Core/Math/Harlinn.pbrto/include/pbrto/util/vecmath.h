@@ -1800,8 +1800,15 @@ class Bounds3 {
 
     PBRT_CPU_GPU
     Point3f Lerp(Point3f t) const {
+#ifdef PBRT_USES_HCCMATH
+        return Point3f( 
+            pbrt::Lerp( t.x, pMin.x, pMax.x ), 
+            pbrt::Lerp( t.y, pMin.y, pMax.y ),
+            pbrt::Lerp( t.z, pMin.z, pMax.z ) );
+#else
         return Point3f(pbrt::Lerp(t.x, pMin.x, pMax.x), pbrt::Lerp(t.y, pMin.y, pMax.y),
                        pbrt::Lerp(t.z, pMin.z, pMax.z));
+#endif
     }
 
     PBRT_CPU_GPU

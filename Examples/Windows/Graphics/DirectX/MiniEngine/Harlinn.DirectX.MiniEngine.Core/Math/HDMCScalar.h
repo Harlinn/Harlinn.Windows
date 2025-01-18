@@ -20,12 +20,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Math
     {
-#ifdef USE_HCC_MATH
+#ifdef HDMC_USES_HCC_MATH
         class Scalar
         {
         public:
-            using Traits = SIMD::Traits<float, 4>;
-            using SIMDType = typename Traits::SIMDType;
+            using Traits = m::Traits;
+            using SIMDType = m::SIMDType;
         private:
             SIMDType m_vec{};
         public:

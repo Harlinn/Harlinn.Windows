@@ -33,33 +33,157 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
     // This transform strictly prohibits non-uniform scale.  Scale itself is barely tolerated.
     class OrthogonalTransform
     {
+#ifdef HDMC_USES_HCC_MATH
+        using Constants = m::Traits::Constants;
+#endif
+        Quaternion m_rotation;
+        Vector3 m_translation;
     public:
-        INLINE OrthogonalTransform( ) : m_rotation( kIdentity ), m_translation( kZero ) {}
-        INLINE OrthogonalTransform( Quaternion rotate ) : m_rotation( rotate ), m_translation( kZero ) {}
-        INLINE OrthogonalTransform( Vector3 translate ) : m_rotation( kIdentity ), m_translation( translate ) {}
-        INLINE OrthogonalTransform( Quaternion rotate, Vector3 translate ) : m_rotation( rotate ), m_translation( translate ) {}
-        INLINE OrthogonalTransform( const Matrix3& mat ) : m_rotation( mat ), m_translation( kZero ) {}
-        INLINE OrthogonalTransform( const Matrix3& mat, Vector3 translate ) : m_rotation( mat ), m_translation( translate ) {}
-        INLINE OrthogonalTransform( EIdentityTag ) : m_rotation( kIdentity ), m_translation( kZero ) {}
+        INLINE OrthogonalTransform( ) 
+#ifdef HDMC_USES_HCC_MATH
+            : m_rotation( Constants::IdentityR4 ),
+              m_translation( Constants::Zero )
+#else
+            : m_rotation( kIdentity ), 
+              m_translation( kZero ) 
+#endif
+        {}
+        INLINE OrthogonalTransform( Quaternion rotate ) 
+            : m_rotation( rotate ), 
+#ifdef HDMC_USES_HCC_MATH
+              m_translation( Constants::Zero )
+#else
+              m_translation( kZero )
+#endif
+        {}
+        INLINE OrthogonalTransform( Vector3 translate ) 
+#ifdef HDMC_USES_HCC_MATH
+            : m_rotation( Constants::IdentityR4 ),
+#else
+            : m_rotation( kIdentity ), 
+#endif
+              m_translation( translate ) 
+        {}
+        INLINE OrthogonalTransform( Quaternion rotate, Vector3 translate ) 
+            : m_rotation( rotate ), 
+              m_translation( translate ) 
+        {}
+        INLINE OrthogonalTransform( const Matrix3& mat ) 
+#ifdef HDMC_USES_HCC_MATH
+            : m_rotation( Quaternion::FromMatrix( mat.simd ) ),
+              m_translation( Constants::Zero )
+#else
+            : m_rotation( mat ),
+              m_translation( kZero ) 
+#endif
+        {}
+        INLINE OrthogonalTransform( const Matrix3& mat, Vector3 translate ) 
+#ifdef HDMC_USES_HCC_MATH
+            : m_rotation( Quaternion::FromMatrix( mat.simd ) ),
+#else
+            : m_rotation( mat ), 
+#endif
+              m_translation( translate ) 
+        {}
+        INLINE OrthogonalTransform( EIdentityTag ) 
+#ifdef HDMC_USES_HCC_MATH
+            : m_rotation( Constants::IdentityR4 ),
+              m_translation( Constants::Zero )
+#else
+            : m_rotation( kIdentity ), 
+              m_translation( kZero ) 
+#endif
+        {}
+#ifdef HDMC_USES_HCC_MATH
+        template<size_t N>
+            requires (N > 3)
+        INLINE explicit OrthogonalTransform( const std::array<m::SIMDType,N>& mat ) 
+            : m_rotation( Quaternion::FromMatrix( mat ) ),
+              m_translation( mat[ 3 ] )
+        { }
+#else
         INLINE explicit OrthogonalTransform( const XMMATRIX& mat ) { *this = OrthogonalTransform( Matrix3( mat ), Vector3( mat.r[ 3 ] ) ); }
+#endif
 
+#ifdef HDMC_USES_HCC_MATH
+        INLINE void SetRotation( const Quaternion& q ) 
+        { 
+            m_rotation = q; 
+        }
+#else
         INLINE void SetRotation( Quaternion q ) { m_rotation = q; }
+#endif
+
+#ifdef HDMC_USES_HCC_MATH
+        INLINE void SetTranslation( const Vector3& v ) 
+        { 
+            m_translation = v; 
+        }
+#else
         INLINE void SetTranslation( Vector3 v ) { m_translation = v; }
+#endif
 
+#ifdef HDMC_USES_HCC_MATH
+        INLINE const Quaternion& GetRotation( ) const 
+        { 
+            return m_rotation; 
+        }
+#else
         INLINE Quaternion GetRotation( ) const { return m_rotation; }
+#endif
+#ifdef HDMC_USES_HCC_MATH
+        INLINE const Vector3& GetTranslation( ) const 
+        { 
+            return m_translation; 
+        }
+#else
         INLINE Vector3 GetTranslation( ) const { return m_translation; }
-
-        static INLINE OrthogonalTransform MakeXRotation( float angle ) { return OrthogonalTransform( Quaternion( Vector3( kXUnitVector ), angle ) ); }
-        static INLINE OrthogonalTransform MakeYRotation( float angle ) { return OrthogonalTransform( Quaternion( Vector3( kYUnitVector ), angle ) ); }
-        static INLINE OrthogonalTransform MakeZRotation( float angle ) { return OrthogonalTransform( Quaternion( Vector3( kZUnitVector ), angle ) ); }
+#endif
+        static INLINE OrthogonalTransform MakeXRotation( float angle ) 
+        { 
+#ifdef HDMC_USES_HCC_MATH
+            return OrthogonalTransform( Quaternion::FromAxisAndAngle( Vector3( Constants::IdentityR1 ), angle ) );
+#else
+            return OrthogonalTransform( Quaternion( Vector3( kXUnitVector ), angle ) ); 
+#endif
+        }
+        static INLINE OrthogonalTransform MakeYRotation( float angle ) 
+        { 
+#ifdef HDMC_USES_HCC_MATH
+            return OrthogonalTransform( Quaternion::FromAxisAndAngle( Vector3( Constants::IdentityR2 ), angle ) );
+#else
+            return OrthogonalTransform( Quaternion( Vector3( kYUnitVector ), angle ) ); 
+#endif
+        }
+        static INLINE OrthogonalTransform MakeZRotation( float angle ) 
+        { 
+#ifdef HDMC_USES_HCC_MATH
+            return OrthogonalTransform( Quaternion::FromAxisAndAngle( Vector3( Constants::IdentityR3 ), angle ) );
+#else
+            return OrthogonalTransform( Quaternion( Vector3( kZUnitVector ), angle ) ); 
+#endif
+        }
         static INLINE OrthogonalTransform MakeTranslation( Vector3 translate ) { return OrthogonalTransform( translate ); }
 
-        INLINE Vector3 operator* ( Vector3 vec ) const { return m_rotation * vec + m_translation; }
+        INLINE Vector3 operator* ( Vector3 vec ) const 
+        { 
+#ifdef HDMC_USES_HCC_MATH
+            return m::Rotate( vec, m_rotation ) + m_translation;
+#else
+            return m_rotation * vec + m_translation; 
+#endif
+        }
         INLINE Vector4 operator* ( Vector4 vec ) const
         {
+#ifdef HDMC_USES_HCC_MATH
+            return
+                Vector4( SetWToZero( m::Rotate( Vector3( vec.simd ), m_rotation ).simd  ) ) +
+                Vector4( SetWToOne( m_translation.simd ) ) * vec.W( );
+#else
             return
                 Vector4( SetWToZero( m_rotation * Vector3( ( XMVECTOR )vec ) ) ) +
                 Vector4( SetWToOne( m_translation ) ) * vec.GetW( );
+#endif
         }
         INLINE BoundingSphere operator* ( BoundingSphere sphere ) const
         {
@@ -68,19 +192,27 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 
         INLINE OrthogonalTransform operator* ( const OrthogonalTransform& xform ) const
         {
+#ifdef HDMC_USES_HCC_MATH
+            return OrthogonalTransform( m_rotation * xform.m_rotation, m::Rotate( xform.m_translation, m_rotation ) + m_translation );
+#else
             return OrthogonalTransform( m_rotation * xform.m_rotation, m_rotation * xform.m_translation + m_translation );
+#endif
         }
 
         INLINE OrthogonalTransform operator~ ( ) const
         {
+#ifdef HDMC_USES_HCC_MATH
+            Quaternion invertedRotation = m::Conjugate( m_rotation );
+            return OrthogonalTransform( invertedRotation, m::Rotate( -m_translation, invertedRotation ) );
+#else
             Quaternion invertedRotation = ~m_rotation;
             return OrthogonalTransform( invertedRotation, invertedRotation * -m_translation );
+#endif
         }
 
     private:
 
-        Quaternion m_rotation;
-        Vector3 m_translation;
+        
     };
 
     //
@@ -88,12 +220,20 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
     //
     class ScaleAndTranslation
     {
+        Vector4 m_repr;
     public:
+#ifdef HDMC_USES_HCC_MATH
+        using Constants = m::Traits::Constants;
+#endif
         INLINE ScaleAndTranslation( )
         {
         }
         INLINE ScaleAndTranslation( EIdentityTag )
+#ifdef HDMC_USES_HCC_MATH
+            : m_repr( Constants::IdentityR4 )
+#else
             : m_repr( kWUnitVector )
+#endif
         {
         }
         INLINE ScaleAndTranslation( float tx, float ty, float tz, float scale )
@@ -105,26 +245,55 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
             m_repr = Vector4( translate );
             m_repr.SetW( scale );
         }
+#ifdef HDMC_USES_HCC_MATH
+        INLINE explicit ScaleAndTranslation( const Vector4& v )
+            : m_repr( v )
+        {
+        }
+        INLINE explicit ScaleAndTranslation( const m::SIMDType& v )
+            : m_repr( v )
+        {
+        }
+#else
         INLINE explicit ScaleAndTranslation( const XMVECTOR& v )
             : m_repr( v )
         {
         }
-
+#endif
         INLINE void SetScale( Scalar s ) { m_repr.SetW( s ); }
-        INLINE void SetTranslation( Vector3 t ) { m_repr.SetXYZ( t ); }
+        INLINE void SetTranslation( Vector3 t ) 
+        { 
+#ifdef HDMC_USES_HCC_MATH
+            m_repr.SetXYZ( t.simd ); 
+#else
+            m_repr.SetXYZ( t );
+#endif
+        }
 
-        INLINE Scalar GetScale( ) const { return m_repr.GetW( ); }
+        INLINE Scalar GetScale( ) const 
+        { 
+#ifdef HDMC_USES_HCC_MATH
+            return Scalar( m_repr.W( ).simd );
+#else
+            return m_repr.GetW( ); 
+#endif
+        }
         INLINE Vector3 GetTranslation( ) const { return ( Vector3 )m_repr; }
 
         INLINE BoundingSphere operator*( const BoundingSphere& sphere ) const
         {
+            
+#ifdef HDMC_USES_HCC_MATH
+            Vector4 scaledSphere = ( Vector4 )sphere * Vector4(  GetScale( ).ToSimd() );
+            Vector4 translation = Vector4( SetWToZero( m_repr.simd ) );
+#else
             Vector4 scaledSphere = ( Vector4 )sphere * GetScale( );
             Vector4 translation = Vector4( SetWToZero( m_repr ) );
+#endif
             return BoundingSphere( scaledSphere + translation );
         }
 
-    private:
-        Vector4 m_repr;
+    
     };
 
     //
@@ -132,12 +301,22 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
     // 
     class UniformTransform
     {
+        Quaternion m_rotation;
+        ScaleAndTranslation m_translationScale;
     public:
+#ifdef HDMC_USES_HCC_MATH
+        using Constants = m::Traits::Constants;
+#endif
         INLINE UniformTransform( )
         {
         }
         INLINE UniformTransform( EIdentityTag )
-            : m_rotation( kIdentity ), m_translationScale( kIdentity )
+#ifdef HDMC_USES_HCC_MATH
+            : m_rotation( Constants::IdentityR4 ),
+#else
+            : m_rotation( kIdentity ), 
+#endif
+              m_translationScale( kIdentity )
         {
         }
         INLINE UniformTransform( Quaternion rotation, ScaleAndTranslation transScale )
@@ -161,24 +340,29 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 
         INLINE Vector3 operator*( Vector3 vec ) const
         {
+#ifdef HDMC_USES_HCC_MATH
+            return m::Rotate( ( vec * Vector3( m_translationScale.GetScale( ).ToSimd( ) ) ), m_rotation ) + m_translationScale.GetTranslation( );
+#else
             return m_rotation * ( vec * m_translationScale.GetScale( ) ) + m_translationScale.GetTranslation( );
+#endif
         }
 
         INLINE BoundingSphere operator*( BoundingSphere sphere ) const
         {
             return BoundingSphere( *this * sphere.GetCenter( ), GetScale( ) * sphere.GetRadius( ) );
         }
-
-    private:
-        Quaternion m_rotation;
-        ScaleAndTranslation m_translationScale;
     };
 
     // A AffineTransform is a 3x4 matrix with an implicit 4th row = [0,0,0,1].  This is used to perform a change of
     // basis on 3D points.  An affine transformation does not have to have orthonormal basis vectors.
     class AffineTransform
     {
+        Matrix3 m_basis;
+        Vector3 m_translation;
     public:
+#ifdef HDMC_USES_HCC_MATH
+        using Constants = m::Traits::Constants;
+#endif
         INLINE AffineTransform( )
         {
         }
@@ -243,8 +427,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
             return AffineTransform( m_basis * mat.m_basis, *this * mat.GetTranslation( ) );
         }
 
-    private:
-        Matrix3 m_basis;
-        Vector3 m_translation;
+    
+        
     };
 }

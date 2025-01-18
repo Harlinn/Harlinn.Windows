@@ -22,12 +22,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
     private:
         Vector4 m_repr;
     public:
+#ifdef HDMC_USES_HCC_MATH
+        using Constants = m::Traits::Constants;
+#endif
         BoundingSphere( ) 
         {}
         BoundingSphere( float x, float y, float z, float r ) 
             : m_repr( x, y, z, r ) 
         {}
-#ifdef USE_HCC_MATH
+#ifdef HDMC_USES_HCC_MATH
         BoundingSphere( const std::array<float,4>& unaligned_array )
             : m_repr( unaligned_array )
         {
@@ -37,10 +40,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
             : m_repr( *unaligned_array ) 
         {}
 #endif
-#ifdef USE_HCC_MATH
+#ifdef HDMC_USES_HCC_MATH
         BoundingSphere( const Vector3& center, const Scalar& radius )
-            : m_repr( center.x, center.y, center.z, radius )
+            : m_repr( center.simd )
         {
+            m_repr.SetW( radius );
         }
 #else
         BoundingSphere( const Vector3& center, const Scalar& radius )
@@ -49,8 +53,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
             m_repr.SetW( radius );
         }
 #endif
-#ifdef USE_HCC_MATH
+#ifdef HDMC_USES_HCC_MATH
         BoundingSphere( EZeroTag )
+            : m_repr( Constants::Zero )
         {
         }
 #else
@@ -58,9 +63,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
             : m_repr( kZero ) 
         {}
 #endif
-#ifdef USE_HCC_MATH
+#ifdef HDMC_USES_HCC_MATH
         explicit BoundingSphere( const Vector4& sphere )
             : m_repr( sphere )
+        { }
+        explicit BoundingSphere( const m::SIMDType& v )
+            : m_repr( v )
         {
         }
 #else
@@ -83,10 +91,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         { 
             return Vector3( m_repr ); 
         }
-#ifdef USE_HCC_MATH
+#ifdef HDMC_USES_HCC_MATH
         Scalar GetRadius( void ) const
         {
-            return m_repr.w;
+            return Scalar( m_repr.W().simd );
         }
 #else
         Scalar GetRadius( void ) const 

@@ -32,6 +32,25 @@ namespace
 }
 BOOST_FIXTURE_TEST_SUITE( MathVector2FloatTests, LocalFixture )
 
+// --run_test=MathVector2FloatTests/VectorTypeTest1
+BOOST_AUTO_TEST_CASE( VectorTypeTest1 )
+{
+    using Vector = Math::Vector<float, 2>;
+
+    constexpr bool isVectorType1 = Math::VectorType<Vector>;
+    constexpr bool isVectorType2 = Math::VectorType<Math::Normal3f>;
+    constexpr bool isVectorType3 = Math::VectorType<Math::Point2f>;
+
+    BOOST_CHECK( isVectorType1 );
+    BOOST_CHECK( isVectorType2 == false );
+    BOOST_CHECK( isVectorType3 == false );
+
+    BOOST_CHECK( sizeof( Vector ) == 8 );
+
+}
+
+
+
 // --run_test=MathVector2FloatTests/AddTest1
 BOOST_AUTO_TEST_CASE( AddTest1 )
 {

@@ -8,7 +8,10 @@
 #include <d3dx12.h>
 #include <HCCThread.h>
 
+//#define HDMC_USES_HCC_MATH 1
+#ifdef HDMC_USES_HCC_MATH
 #include <HCCVectorMath.h>
+#endif
 
 #ifdef BUILDING_HARLINN_DIRECTX_MINIENGINE_CORE
 #define HDMC_EXPORT __declspec(dllexport)
@@ -29,10 +32,22 @@
 #define HDMC_INLINE inline
 #endif
 
-//#define USE_HCC_MATH 1
+
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
+#ifdef HDMC_USES_HCC_MATH
+    namespace Math
+    {
+        namespace m
+        {
+            using namespace Harlinn::Common::Core::Math;
+
+            using Traits = SIMD::Traits<float, 4>;
+            using SIMDType = typename Traits::SIMDType;
+        }
+    }
+#else
     using XMVECTOR = ::DirectX::XMVECTOR;
     using FXMVECTOR = ::DirectX::FXMVECTOR;
     using XMFLOAT2 = ::DirectX::XMFLOAT2;
@@ -44,7 +59,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     using XMUINT2 = ::DirectX::XMUINT2;
     using XMUINT3 = ::DirectX::XMUINT3;
     using XMUINT4 = ::DirectX::XMUINT4;
-    
+#endif    
     using D3DBlob = Harlinn::Windows::Graphics::D3DBlob;
     using D3D12CommandAllocator = Harlinn::Windows::Graphics::D3D12CommandAllocator;
     using D3D12CommandList = Harlinn::Windows::Graphics::D3D12CommandList;
@@ -60,12 +75,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     using D3D12Resource = Harlinn::Windows::Graphics::D3D12Resource;
     using D3D12RootSignature = Harlinn::Windows::Graphics::D3D12RootSignature;
     
-#ifdef USE_HCC_MATH
-    namespace Math
-    {
-        using namespace Harlinn::Common::Core::Math;
-    }
-#endif
 
 }
 

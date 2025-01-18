@@ -85,21 +85,61 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         //using namespace DirectX;
 
+#ifdef HDMC_USES_HCC_MATH
+        INLINE m::SIMDType SplatZero( )
+        {
+            return m::Traits::Zero( );
+        }
+#else
         INLINE XMVECTOR SplatZero( )
         {
             return ::DirectX::XMVectorZero( );
         }
+#endif
 
 #if !defined(_XM_NO_INTRINSICS_) && defined(_XM_SSE_INTRINSICS_)
 
+#ifdef HDMC_USES_HCC_MATH
+        INLINE m::SIMDType SplatOne( )
+        {
+            return m::Traits::Constants::IdentityR1;
+        }
+#else
         INLINE XMVECTOR SplatOne( XMVECTOR zero = SplatZero( ) )
         {
             __m128i AllBits = _mm_castps_si128( _mm_cmpeq_ps( zero, zero ) );
             return _mm_castsi128_ps( _mm_slli_epi32( _mm_srli_epi32( AllBits, 25 ), 23 ) );	// return 0x3F800000
             //return _mm_cvtepi32_ps(_mm_srli_epi32(SetAllBits(zero), 31));				// return (float)1;  (alternate method)
         }
+#endif
 
 #if defined(_XM_SSE4_INTRINSICS_)
+#ifdef HDMC_USES_HCC_MATH
+        INLINE m::SIMDType CreateXUnitVector( )
+        {
+            return m::Traits::Constants::IdentityR1;
+        }
+        INLINE m::SIMDType CreateYUnitVector( )
+        {
+            return m::Traits::Constants::IdentityR2;
+        }
+        INLINE m::SIMDType CreateZUnitVector( )
+        {
+            return m::Traits::Constants::IdentityR3;
+        }
+        INLINE m::SIMDType CreateWUnitVector( )
+        {
+            return m::Traits::Constants::IdentityR4;
+        }
+        INLINE m::SIMDType SetWToZero( m::SIMDType vec )
+        {
+            return m::Traits::And( vec, m::Traits::Constants::Mask3 );
+        }
+        INLINE m::SIMDType SetWToOne( m::SIMDType vec )
+        {
+            return _mm_blend_ps( vec, m::Traits::Constants::IdentityR1, 0x8 );
+        }
+#else
         INLINE XMVECTOR CreateXUnitVector( XMVECTOR one = SplatOne( ) )
         {
             return _mm_insert_ps( one, one, 0x0E );
@@ -124,6 +164,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
             return _mm_blend_ps( vec, SplatOne( ), 0x8 );
         }
+#endif
 #else
         INLINE XMVECTOR CreateXUnitVector( XMVECTOR one = SplatOne( ) )
         {
