@@ -193,6 +193,7 @@
     <ClInclude Include="HWApplication.h" />
     <ClInclude Include="HWApplicationOptions.h" />
     <ClInclude Include="HWCameraUIControl.h" />
+    <ClInclude Include="HWColor.h" />
     <ClInclude Include="HWCommon.h" />
     <ClInclude Include="HWContainerControl.h" />
     <ClInclude Include="HWControl.h" />

@@ -16,6 +16,7 @@
 
 #include "HDMCColor.h"
 
+#ifndef HDMC_USES_HCC_MATH
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
     uint32_t Color::R11G11B10F( bool RoundToEven ) const
@@ -153,3 +154,4 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 #endif
     }
 }
+#endif

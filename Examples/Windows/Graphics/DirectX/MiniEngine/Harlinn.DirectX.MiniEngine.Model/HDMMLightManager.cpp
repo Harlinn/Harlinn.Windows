@@ -203,6 +203,24 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             shadowCamera.SetPerspectiveMatrix( coneOuter * 2, 1.0f, lightRadius * .05f, lightRadius * 1.0f );
             shadowCamera.Update( );
             m_LightShadowMatrix[ n ] = shadowCamera.GetViewProjMatrix( );
+#ifdef HDMC_USES_HCC_MATH
+            Matrix4 shadowTextureMatrix = Matrix4( AffineTransform( Matrix3MakeScale( 0.5f, -0.5f, 1.0f ), Vector3( 0.5f, 0.5f, 0.0f ) ) ) * m_LightShadowMatrix[ n ];
+            auto posvalues = pos.Values( );
+            m_LightData[ n ].pos[ 0 ] = posvalues.x;
+            m_LightData[ n ].pos[ 1 ] = posvalues.y;
+            m_LightData[ n ].pos[ 2 ] = posvalues.z;
+            m_LightData[ n ].radiusSq = lightRadius * lightRadius;
+            auto colorValues = color.Values( );
+            m_LightData[ n ].color[ 0 ] = colorValues.x;
+            m_LightData[ n ].color[ 1 ] = colorValues.y;
+            m_LightData[ n ].color[ 2 ] = colorValues.z;
+            m_LightData[ n ].type = type;
+
+            auto coneDirValues = coneDir.Values( );
+            m_LightData[ n ].coneDir[ 0 ] = coneDirValues.x;
+            m_LightData[ n ].coneDir[ 1 ] = coneDirValues.y;
+            m_LightData[ n ].coneDir[ 2 ] = coneDirValues.z;
+#else
             Matrix4 shadowTextureMatrix = Matrix4( AffineTransform( Matrix3::MakeScale( 0.5f, -0.5f, 1.0f ), Vector3( 0.5f, 0.5f, 0.0f ) ) ) * m_LightShadowMatrix[ n ];
 
             m_LightData[ n ].pos[ 0 ] = pos.GetX( );
@@ -216,6 +234,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             m_LightData[ n ].coneDir[ 0 ] = coneDir.GetX( );
             m_LightData[ n ].coneDir[ 1 ] = coneDir.GetY( );
             m_LightData[ n ].coneDir[ 2 ] = coneDir.GetZ( );
+#endif
             m_LightData[ n ].coneAngles[ 0 ] = 1.0f / ( cosf( coneInner ) - cosf( coneOuter ) );
             m_LightData[ n ].coneAngles[ 1 ] = cosf( coneOuter );
             std::memcpy( m_LightData[ n ].shadowTextureMatrix, &shadowTextureMatrix, sizeof( shadowTextureMatrix ) );

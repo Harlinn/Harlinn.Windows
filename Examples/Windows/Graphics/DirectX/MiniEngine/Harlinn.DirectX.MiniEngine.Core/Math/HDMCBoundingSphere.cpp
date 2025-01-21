@@ -19,6 +19,26 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 {
     BoundingSphere BoundingSphere::Union( const BoundingSphere& rhs )
     {
+#ifdef HDMC_USES_HCC_MATH
+        auto radA = GetRadius( );
+        if ( m::Traits::First( radA.simd ) == 0.0f )
+            return rhs;
+
+        auto radB = rhs.GetRadius( );
+        if ( m::Traits::First( radB.simd ) == 0.0f )
+            return *this;
+
+        Vector3 diff = GetCenter( ) - rhs.GetCenter( );
+        auto dist = Length( diff );
+
+        // Safe normalize vector between sphere centers
+        diff = m::Traits::First( dist.simd ) < 1e-6f ? Vector3( Constants::IdentityR1 ) : diff * m::Reciprocal( dist );
+
+        Vector3 extremeA = GetCenter( ) + diff * m::Max( Vector3( radA.simd ), Vector3( radB.simd ) - dist );
+        Vector3 extremeB = rhs.GetCenter( ) - diff * m::Max( Vector3( radB.simd ), Vector3( radA.simd ) - dist );
+
+        return BoundingSphere( ( extremeA + extremeB ) * 0.5f, m::ScalarLength( extremeA - extremeB ) * 0.5f );
+#else
         float radA = GetRadius( );
         if ( radA == 0.0f )
             return rhs;
@@ -31,15 +51,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         float dist = Length( diff );
 
         // Safe normalize vector between sphere centers
-#ifdef HDMC_USES_HCC_MATH
-        diff = dist < 1e-6f ? Vector3( Constants::IdentityR1 ) : diff * Recip( dist );
-#else
         diff = dist < 1e-6f ? Vector3( kXUnitVector ) : diff * Recip( dist );
-#endif
-
         Vector3 extremeA = GetCenter( ) + diff * Max( radA, radB - dist );
         Vector3 extremeB = rhs.GetCenter( ) - diff * Max( radB, radA - dist );
 
         return BoundingSphere( ( extremeA + extremeB ) * 0.5f, Length( extremeA - extremeB ) * 0.5f );
+#endif
+
+        
+        
     }
 }

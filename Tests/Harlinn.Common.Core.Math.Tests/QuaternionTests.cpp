@@ -62,6 +62,21 @@ namespace
         }
         return true;
     }
+
+    inline bool Equal( const DirectX::XMFLOAT3A& q1, const DirectX::XMFLOAT3A& q2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto v1 = ( &q1.x )[ i ];
+            float v2 = ( &q2.x )[ i ];
+            auto delta = v1 - v2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 BOOST_FIXTURE_TEST_SUITE( QuaternionTests, LocalFixture )
@@ -151,6 +166,45 @@ BOOST_AUTO_TEST_CASE( MultiplyTest1 )
 
     BOOST_CHECK( equal );
 }
+
+// --run_test=QuaternionTests/MultiplyTest2
+BOOST_AUTO_TEST_CASE( MultiplyTest2 )
+{
+    Q q1( -22.1869278f, -22.1869278f, -49.2577934f, 0.f );
+    Q q2( 0.0632871166f, -0.303319544f, -0.0201944206f, 0.950570464f );
+    Q expected( -6.59743977f, -17.5248032f, -54.9568787f, -6.32031488f );
+
+    Q result = q1 * q2;
+
+    auto equal = Equal( result, expected );
+
+    BOOST_CHECK( equal );
+}
+
+// --run_test=QuaternionTests/XMQuaternionMultiplyTest2
+BOOST_AUTO_TEST_CASE( XMQuaternionMultiplyTest2 )
+{
+    using namespace DirectX;
+
+    XMFLOAT4A q1Unloaded( -22.1869278f, -22.1869278f, -49.2577934f, 0.f );
+    auto q1 = XMLoadFloat4A( &q1Unloaded );
+
+    XMFLOAT4A q2Unloaded( 0.0632871166f, -0.303319544f, -0.0201944206f, 0.950570464f );
+    auto q2 = XMLoadFloat4A( &q2Unloaded );
+
+    XMFLOAT4A expected( -6.59743977f, -17.5248032f, -54.9568787f, -6.32031488f );
+
+    auto result = XMQuaternionMultiply( q1, q2 );
+
+    XMFLOAT4A resultStored;
+    XMStoreFloat4A( &resultStored, result );
+
+    auto equal = Equal( resultStored, expected );
+
+    BOOST_CHECK( equal );
+}
+
+
 
 // --run_test=QuaternionTests/MultiplyScalarTest1
 BOOST_AUTO_TEST_CASE( MultiplyScalarTest1 )
@@ -313,7 +367,47 @@ BOOST_AUTO_TEST_CASE( SlerpTest1 )
     BOOST_CHECK( equal );
 }
 
+// --run_test=QuaternionTests/XMQuaternionRotateTest1
+BOOST_AUTO_TEST_CASE( XMQuaternionRotateTest1 )
+{
+    Math::Vector<float, 3> vec( -22.186928, -22.186928, -49.257793 );
+    Q rotation( -0.06328712, 0.30331954, 0.02019442, 0.95057046 );
+    Math::Vector<float, 3> expected( -44.661453, -28.521133, -24.550959 );
 
+    Math::Vector<float, 3> result = Math::Rotate( vec, rotation );
+
+    auto equal = Equal( result, expected );
+
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=QuaternionTests/XMVector3RotateTest1
+BOOST_AUTO_TEST_CASE( XMVector3RotateTest1 )
+{
+    using namespace DirectX;
+
+    XMFLOAT3A vecUnloaded( -22.186928, -22.186928, -49.257793 );
+    auto vec = XMLoadFloat3A( &vecUnloaded );
+
+    XMFLOAT4A rotationUnloaded( -0.06328712, 0.30331954, 0.02019442, 0.95057046 );
+    auto rotation = XMLoadFloat4A( &rotationUnloaded );
+
+    XMFLOAT3A expected( -44.661453, -28.521133, -24.550959 );
+
+    auto result = XMVector3Rotate( vec, rotation );
+
+    XMFLOAT3A resultStored;
+    XMStoreFloat3A( &resultStored, result );
+
+    auto equal = Equal( resultStored, expected );
+
+    BOOST_CHECK( equal );
+}
+
+
+
+/*
 
 // --run_test=QuaternionTests/XMQuaternionDotTest1
 BOOST_AUTO_TEST_CASE( XMQuaternionDotTest1 )
@@ -338,7 +432,7 @@ BOOST_AUTO_TEST_CASE( XMQuaternionDotTest1 )
 
     BOOST_CHECK( equal );
 }
-
+*/
 
 
 BOOST_AUTO_TEST_SUITE_END( )

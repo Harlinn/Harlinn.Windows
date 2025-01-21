@@ -33,15 +33,23 @@
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
 
+#ifndef HDMC_USES_HCC_MATH
     using namespace DirectX;
     using namespace Math;
+#endif
+    
     using namespace Renderer;
     using namespace Graphics;
 
     static inline Vector3 SafeNormalize( Vector3 x )
     {
+#ifdef HDMC_USES_HCC_MATH
+        auto lenSq = Math::m::LengthSquared( x );
+        return First( lenSq ) < 1e-10f ? Vector3( m::Traits::Constants::IdentityR1 ) : x * Math::m::ReciprocalSqrt( lenSq );
+#else
         float lenSq = LengthSquare( x );
         return lenSq < 1e-10f ? Vector3( kXUnitVector ) : x * RecipSqrt( lenSq );
+#endif
     }
 
     void Renderer::CompileMesh(
@@ -115,11 +123,19 @@ namespace Harlinn::Windows::DirectX::MiniEngine
                 ibSize += draw->IB->size( );
                 collectiveSphere = collectiveSphere.Union( draw->m_BoundsLS );
             }
+#ifdef HDMC_USES_HCC_MATH
 
+            auto values = collectiveSphere.Values( );
+            mesh->bounds[ 0 ] = values.x;
+            mesh->bounds[ 1 ] = values.y;
+            mesh->bounds[ 2 ] = values.z;
+            mesh->bounds[ 3 ] = values.w;
+#else
             mesh->bounds[ 0 ] = collectiveSphere.GetCenter( ).GetX( );
             mesh->bounds[ 1 ] = collectiveSphere.GetCenter( ).GetY( );
             mesh->bounds[ 2 ] = collectiveSphere.GetCenter( ).GetZ( );
             mesh->bounds[ 3 ] = collectiveSphere.GetRadius( );
+#endif
             mesh->vbOffset = ( uint32_t )bufferMemory.size( ) + curVBOffset;
             mesh->vbSize = ( uint32_t )vbSize;
             mesh->vbDepthOffset = ( uint32_t )bufferMemory.size( ) + curDepthVBOffset;
@@ -207,10 +223,17 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             }
             else
             {
+#ifdef HDMC_USES_HCC_MATH
+                thisGraphNode.xform = ToMatrix4(
+                    ToMatrix3( thisGraphNode.rotation ) * Matrix3MakeScale( thisGraphNode.scale ),
+                    Vector3( *( const XMFLOAT3* )curNode->translation )
+                );
+#else
                 thisGraphNode.xform = Matrix4(
                     Matrix3( thisGraphNode.rotation ) * Matrix3::MakeScale( thisGraphNode.scale ),
                     Vector3( *( const XMFLOAT3* )curNode->translation )
                 );
+#endif
             }
 
             const Matrix4 LocalXform = xform * thisGraphNode.xform;
@@ -461,7 +484,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         model.m_BoundingSphere = BoundingSphere( kZero );
         model.m_BoundingBox = AxisAlignedBox( kZero );
+#ifdef HDMC_USES_HCC_MATH
+        uint32_t numNodes = WalkGraph( model.m_SceneGraph, model.m_BoundingSphere, model.m_BoundingBox, model.m_Meshes, bufferMemory, scene->nodes, 0, Matrix4::Identity( ) );
+#else
         uint32_t numNodes = WalkGraph( model.m_SceneGraph, model.m_BoundingSphere, model.m_BoundingBox, model.m_Meshes, bufferMemory, scene->nodes, 0, Matrix4( kIdentity ) );
+#endif
         model.m_SceneGraph.resize( numNodes );
 
         BuildAnimations( model, asset );
@@ -494,6 +521,21 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         header.numAnimationCurves = ( uint32_t )data.m_AnimationCurves.size( );
         header.numAnimations = ( uint32_t )data.m_Animations.size( );
         header.numJoints = ( uint32_t )data.m_JointIndices.size( );
+#ifdef HDMC_USES_HCC_MATH
+        auto boundingSphere = data.m_BoundingSphere.Values( );
+        header.boundingSphere[ 0 ] = boundingSphere.x;
+        header.boundingSphere[ 1 ] = boundingSphere.y;
+        header.boundingSphere[ 2 ] = boundingSphere.z;
+        header.boundingSphere[ 3 ] = boundingSphere.w;
+        auto boundingBoxMin = data.m_BoundingBox.GetMin( ).Values( );
+        header.minPos[ 0 ] = boundingBoxMin.x;
+        header.minPos[ 1 ] = boundingBoxMin.y;
+        header.minPos[ 2 ] = boundingBoxMin.z;
+        auto boundingBoxMax = data.m_BoundingBox.GetMax( ).Values( );
+        header.maxPos[ 0 ] = boundingBoxMax.x;
+        header.maxPos[ 1 ] = boundingBoxMax.y;
+        header.maxPos[ 2 ] = boundingBoxMax.z;
+#else
         header.boundingSphere[ 0 ] = data.m_BoundingSphere.GetCenter( ).GetX( );
         header.boundingSphere[ 1 ] = data.m_BoundingSphere.GetCenter( ).GetY( );
         header.boundingSphere[ 2 ] = data.m_BoundingSphere.GetCenter( ).GetZ( );
@@ -504,7 +546,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         header.maxPos[ 0 ] = data.m_BoundingBox.GetMax( ).GetX( );
         header.maxPos[ 1 ] = data.m_BoundingBox.GetMax( ).GetY( );
         header.maxPos[ 2 ] = data.m_BoundingBox.GetMax( ).GetZ( );
-
+#endif
         outFile.write( ( char* )&header, sizeof( FileHeader ) );
         outFile.write( ( char* )data.m_GeometryData.data( ), header.geometrySize );
         outFile.write( ( char* )data.m_SceneGraph.data( ), header.numNodes * sizeof( GraphNode ) );

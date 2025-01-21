@@ -21,6 +21,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     namespace Math
     {
 #ifdef HDMC_USES_HCC_MATH
+        using Scalar = m::Scalar<float, 4>::Simd;
+        /*
         class Scalar
         {
         public:
@@ -137,7 +139,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             }
             
         };
-
+        */
         
 #else
         class Scalar
@@ -171,6 +173,45 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         INLINE Scalar operator* ( float s1, Scalar s2 ) { return Scalar( s1 ) * s2; }
         INLINE Scalar operator/ ( float s1, Scalar s2 ) { return Scalar( s1 ) / s2; }
 #endif
+
+        inline std::string ToString( const Scalar& s )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m::Vector<float, 4> vec( m::Vector<float, 4>::Simd( s.simd ) );
+#else
+            ::DirectX::XMFLOAT4A vec;
+            ::DirectX::XMStoreFloat4A( &vec, s );
+#endif
+            return std::format( "[ {}, {}, {}, {} ]", vec.x, vec.y, vec.z, vec.w );
+
+        }
+
+        inline void Dump( const char* name, const Scalar& v, const char* file, int line, const char* function )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m::Vector<float, 4> vec( v );
+#else
+            ::DirectX::XMFLOAT4A vec;
+            ::DirectX::XMStoreFloat4A( &vec, v );
+#endif
+
+            PrintLn( "// {}:", name );
+            PrintLn( "// [ {}, {}, {}, {} ]", vec.x, vec.y, vec.z, vec.w );
+            PrintLn( "// Function: {} ", function );
+            PrintLn( "// Position: {}({})", file, line );
+            PrintLn( "Scalar<float,4> {}( {}, {}, {}, {} );", name, vec.x, vec.y, vec.z, vec.w );
+        }
+
+        inline void Dump( const char* name, const float v, const char* file, int line, const char* function )
+        {
+
+            PrintLn( "// {}:", name );
+            PrintLn( "// {}", v );
+            PrintLn( "// Function: {} ", function );
+            PrintLn( "// Position: {}({})", file, line );
+            PrintLn( "float {} = {};", name, v );
+        }
+
 
     } // namespace Math
 }

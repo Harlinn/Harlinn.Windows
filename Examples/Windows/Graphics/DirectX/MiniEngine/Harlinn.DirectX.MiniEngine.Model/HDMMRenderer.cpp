@@ -287,8 +287,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
             const auto& texRes = s_RadianceCubeMap.Get( )->GetResource( );
             const D3D12_RESOURCE_DESC& texDesc = texRes.GetDesc( );
+#ifdef HDMC_USES_HCC_MATH
+            s_SpecularIBLRange = m::Max( 0.0f, ( float )texDesc.MipLevels - 1 );
+            s_SpecularIBLBias = m::Min( s_SpecularIBLBias, s_SpecularIBLRange );
+#else
             s_SpecularIBLRange = Max( 0.0f, ( float )texDesc.MipLevels - 1 );
             s_SpecularIBLBias = Min( s_SpecularIBLBias, s_SpecularIBLRange );
+#endif
         }
 
         uint32_t DestCount = 2;
@@ -305,7 +310,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     void Renderer::SetIBLBias( float LODBias )
     {
+#ifdef HDMC_USES_HCC_MATH
+        s_SpecularIBLBias = m::Min( LODBias, s_SpecularIBLRange );
+#else
         s_SpecularIBLBias = Min( LODBias, s_SpecularIBLRange );
+#endif
     }
 
     void Renderer::Shutdown( void )
@@ -453,8 +462,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Matrix3 ViewInverse;
         } skyVSCB;
         skyVSCB.ProjInverse = Invert( Camera.GetProjMatrix( ) );
+#ifdef HDMC_USES_HCC_MATH
+        skyVSCB.ViewInverse = ToMatrix3( Invert( Camera.GetViewMatrix( ) ) );
+#else
         skyVSCB.ViewInverse = Invert( Camera.GetViewMatrix( ) ).Get3x3( );
-
+#endif
         __declspec( align( 16 ) ) struct SkyboxPSCB
         {
             float TextureLevel;
@@ -491,8 +503,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         uint64_t depthPSO = ( skinned ? 2 : 0 ) + ( alphaTest ? 1 : 0 );
 
         union float_or_int { float f; uint32_t u; } dist;
+#ifdef HDMC_USES_HCC_MATH
+        dist.f = m::Max( distance, 0.0f );
+#else
         dist.f = Max( distance, 0.0f );
-
+#endif
         if ( m_BatchType == kShadows )
         {
             if ( alphaBlend )

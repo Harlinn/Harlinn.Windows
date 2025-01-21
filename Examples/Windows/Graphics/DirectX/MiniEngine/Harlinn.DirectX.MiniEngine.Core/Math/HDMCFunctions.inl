@@ -17,6 +17,18 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 {
 	// To allow floats to implicitly construct Scalars, we need to clarify these operators and suppress
 	// upconversion.
+#ifdef HDMC_USES_HCC_MATH
+	INLINE bool operator<  ( Scalar lhs, float rhs ) { return m::Traits::First( lhs.simd ) < rhs; }
+	INLINE bool operator<= ( Scalar lhs, float rhs ) { return m::Traits::First( lhs.simd ) <= rhs; }
+	INLINE bool operator>  ( Scalar lhs, float rhs ) { return m::Traits::First( lhs.simd ) > rhs; }
+	INLINE bool operator>= ( Scalar lhs, float rhs ) { return m::Traits::First( lhs.simd ) >= rhs; }
+	INLINE bool operator== ( Scalar lhs, float rhs ) { return m::Traits::First( lhs.simd ) == rhs; }
+	INLINE bool operator<  ( float lhs, Scalar rhs ) { return lhs < m::Traits::First( rhs.simd ); }
+	INLINE bool operator<= ( float lhs, Scalar rhs ) { return lhs <= m::Traits::First( rhs.simd ); }
+	INLINE bool operator>  ( float lhs, Scalar rhs ) { return lhs > m::Traits::First( rhs.simd ); }
+	INLINE bool operator>= ( float lhs, Scalar rhs ) { return lhs >= m::Traits::First( rhs.simd ); }
+	INLINE bool operator== ( float lhs, Scalar rhs ) { return lhs == m::Traits::First( rhs.simd ); }
+#else
 	INLINE bool operator<  ( Scalar lhs, float rhs ) { return ( float )lhs < rhs; }
 	INLINE bool operator<= ( Scalar lhs, float rhs ) { return ( float )lhs <= rhs; }
 	INLINE bool operator>  ( Scalar lhs, float rhs ) { return ( float )lhs > rhs; }
@@ -27,7 +39,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 	INLINE bool operator>  ( float lhs, Scalar rhs ) { return lhs > ( float )rhs; }
 	INLINE bool operator>= ( float lhs, Scalar rhs ) { return lhs >= ( float )rhs; }
 	INLINE bool operator== ( float lhs, Scalar rhs ) { return lhs == ( float )rhs; }
+#endif
 
+#ifndef HDMC_USES_HCC_MATH
 #define CREATE_SIMD_FUNCTIONS( TYPE ) \
 	INLINE TYPE Sqrt( TYPE s ) { return TYPE(::DirectX::XMVectorSqrt(s)); } \
 	INLINE TYPE Recip( TYPE s ) { return TYPE(::DirectX::XMVectorReciprocal(s)); } \
@@ -97,6 +111,24 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 	INLINE Vector4 Normalize( Vector4 v ) { return Vector4( ::DirectX::XMVector4Normalize( v ) ); }
 
 	INLINE Matrix3 Transpose( const Matrix3& mat ) { return Matrix3( ::DirectX::XMMatrixTranspose( mat ) ); }
+#endif
+
+#ifdef HDMC_USES_HCC_MATH
+	INLINE Matrix3 InverseTranspose( const Matrix3& mat )
+	{
+		const Vector3 x = mat.simd[ 0 ];
+		const Vector3 y = mat.simd[ 1 ];
+		const Vector3 z = mat.simd[ 2 ];
+
+		const Vector3 inv0 = Cross( y, z );
+		const Vector3 inv1 = Cross( z, x );
+		const Vector3 inv2 = Cross( x, y );
+		const Scalar rDet = m::Reciprocal( Dot( z, inv2 ) );
+
+		// Return the adjoint / determinant
+		return Matrix3( inv0.simd, inv1.simd, inv2.simd ) * rDet;
+	}
+#else
 	INLINE Matrix3 InverseTranspose( const Matrix3& mat )
 	{
 		const Vector3 x = mat.GetX( );
@@ -111,19 +143,43 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 		// Return the adjoint / determinant
 		return Matrix3( inv0, inv1, inv2 ) * rDet;
 	}
-
+#endif
 	// inline Matrix3 Inverse( const Matrix3& mat ) { TBD }
 	// inline Transform Inverse( const Transform& mat ) { TBD }
 
 	// This specialized matrix invert assumes that the 3x3 matrix is orthogonal (and normalized).
 	INLINE AffineTransform OrthoInvert( const AffineTransform& xform )
 	{
+#ifdef HDMC_USES_HCC_MATH
+		Matrix3 basis = m::Transpose( xform.GetBasis( ) );
+		return AffineTransform( basis, m::Traits::TransformNormal( (-( xform.GetTranslation( ) )).simd, basis.simd[ 0 ], basis.simd[ 1 ], basis.simd[ 2 ] ) );
+#else
 		Matrix3 basis = Transpose( xform.GetBasis( ) );
 		return AffineTransform( basis, basis * -xform.GetTranslation( ) );
+#endif
 	}
 
 	INLINE OrthogonalTransform Invert( const OrthogonalTransform& xform ) { return ~xform; }
 
+#ifdef HDMC_USES_HCC_MATH
+	INLINE Matrix4 Transpose( const Matrix4& mat ) 
+	{ 
+		return m::Transpose( mat ); 
+	}
+	INLINE Matrix4 Invert( const Matrix4& mat ) 
+	{ 
+		return m::Inverse( mat ); 
+	}
+
+	INLINE Matrix4 OrthoInvert( const Matrix4& xform )
+	{
+		Matrix3	xform3x3( xform.simd );
+		Matrix3 basis = m::Transpose( xform3x3 );
+		Vector3 translate( m::Traits::TransformNormal(( -Vector3( xform.simd[ 3 ] ) ).simd, basis.simd[ 0 ], basis.simd[ 1 ], basis.simd[ 2 ] ) );
+		Matrix4 result( SetWToZero( basis.simd[ 0 ] ), SetWToZero( basis.simd[ 1 ] ), SetWToZero( basis.simd[ 2 ] ), SetWToOne( translate.simd ) );
+		return result;
+	}
+#else
 	INLINE Matrix4 Transpose( const Matrix4& mat ) { return Matrix4( ::DirectX::XMMatrixTranspose( mat ) ); }
 	INLINE Matrix4 Invert( const Matrix4& mat ) { return Matrix4( ::DirectX::XMMatrixInverse( nullptr, mat ) ); }
 
@@ -133,4 +189,5 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 		Vector3 translate = basis * -Vector3( xform.GetW( ) );
 		return Matrix4( basis, translate );
 	}
+#endif
 }

@@ -275,8 +275,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         LoadMaterials( *model, materialTextures, textureNames, textureOptions, basePath );
 
+#ifdef HDMC_USES_HCC_MATH
+        model->m_BoundingSphere = BoundingSphere( header.boundingSphere );
+        model->m_BoundingBox = AxisAlignedBox( Vector3( header.minPos[0], header.minPos[ 1 ], header.minPos[ 2 ] ), Vector3( header.maxPos[ 0 ], header.maxPos[ 1 ], header.maxPos[ 2 ] ) );
+#else
         model->m_BoundingSphere = BoundingSphere( *( XMFLOAT4* )header.boundingSphere );
         model->m_BoundingBox = AxisAlignedBox( Vector3( *( XMFLOAT3* )header.minPos ), Vector3( *( XMFLOAT3* )header.maxPos ) );
+#endif
+        
 
         // Load animation data
         model->m_NumAnimations = header.numAnimations;

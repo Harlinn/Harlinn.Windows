@@ -581,8 +581,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // Before 2 seconds, use slow scale (200ms/tick), afterward use fast scale (50ms/tick).
         float timeStretch = durationHeld < 2.0f ? 5.0f : 20.0f;
 
+#ifdef HDMC_USES_HCC_MATH
+        if ( m::Floor( durationHeld * timeStretch ) > m::Floor( oldDuration * timeStretch ) )
+            action( );
+#else
         if ( Floor( durationHeld * timeStretch ) > Floor( oldDuration * timeStretch ) )
             action( );
+#endif
     }
 
     void EngineTuning::Update( float frameTime )
@@ -669,8 +674,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         float hScale = g_DisplayWidth / 1920.0f;
         float vScale = g_DisplayHeight / 1080.0f;
 
+#ifdef HDMC_USES_HCC_MATH
+        Context.SetScissor( ( uint32_t )m::Floor( x * hScale ), ( uint32_t )m::Floor( y * vScale ),
+            ( uint32_t )m::Ceil( ( x + w ) * hScale ), ( uint32_t )m::Ceil( ( y + h ) * vScale ) );
+#else
         Context.SetScissor( ( uint32_t )Floor( x * hScale ), ( uint32_t )Floor( y * vScale ),
             ( uint32_t )Ceiling( ( x + w ) * hScale ), ( uint32_t )Ceiling( ( y + h ) * vScale ) );
+#endif
 
         Text.ResetCursor( x, y - s_ScrollOffset );
         Text.SetColor( Color( 0.5f, 1.0f, 1.0f ) );

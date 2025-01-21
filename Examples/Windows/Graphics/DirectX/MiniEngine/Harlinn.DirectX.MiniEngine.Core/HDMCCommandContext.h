@@ -355,7 +355,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
         void SetBlendFactor( Color BlendFactor )
         {
+#ifdef HDMC_USES_HCC_MATH
+            m_CommandList.OMSetBlendFactor( BlendFactor.data( ) );
+#else
             m_CommandList.OMSetBlendFactor( BlendFactor.GetPtr( ) );
+#endif
         }
         void SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY Topology )
         {

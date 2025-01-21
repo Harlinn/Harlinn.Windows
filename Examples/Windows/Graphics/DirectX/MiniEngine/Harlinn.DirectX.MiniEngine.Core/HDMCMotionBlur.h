@@ -19,7 +19,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 {
 
     // Forward declarations
+#ifdef HDMC_USES_HCC_MATH
+    namespace Math
+    {
+        using Matrix4 = m::SquareMatrix<float, 4>::Simd;
+        class Camera;
+    }
+#else
     namespace Math { class Matrix4; class Camera; }
+#endif
     class ColorBuffer;
     class CommandContext;
 

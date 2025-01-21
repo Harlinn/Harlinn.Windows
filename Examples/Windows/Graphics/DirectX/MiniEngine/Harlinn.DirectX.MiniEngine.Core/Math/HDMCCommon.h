@@ -115,29 +115,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
 #if defined(_XM_SSE4_INTRINSICS_)
 #ifdef HDMC_USES_HCC_MATH
-        INLINE m::SIMDType CreateXUnitVector( )
-        {
-            return m::Traits::Constants::IdentityR1;
-        }
-        INLINE m::SIMDType CreateYUnitVector( )
-        {
-            return m::Traits::Constants::IdentityR2;
-        }
-        INLINE m::SIMDType CreateZUnitVector( )
-        {
-            return m::Traits::Constants::IdentityR3;
-        }
-        INLINE m::SIMDType CreateWUnitVector( )
-        {
-            return m::Traits::Constants::IdentityR4;
-        }
         INLINE m::SIMDType SetWToZero( m::SIMDType vec )
         {
             return m::Traits::And( vec, m::Traits::Constants::Mask3 );
         }
         INLINE m::SIMDType SetWToOne( m::SIMDType vec )
         {
-            return _mm_blend_ps( vec, m::Traits::Constants::IdentityR1, 0x8 );
+            return _mm_blend_ps( vec, m::Traits::Constants::One, 0x8 );
         }
 #else
         INLINE XMVECTOR CreateXUnitVector( XMVECTOR one = SplatOne( ) )
@@ -209,10 +193,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         enum EZeroTag { kZero, kOrigin };
         enum EIdentityTag { kOne, kIdentity };
+#ifndef HDMC_USES_HCC_MATH
         enum EXUnitVector { kXUnitVector };
         enum EYUnitVector { kYUnitVector };
         enum EZUnitVector { kZUnitVector };
         enum EWUnitVector { kWUnitVector };
+#endif
 
     }
 }

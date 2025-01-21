@@ -27,12 +27,43 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         using Vector4 = m::Vector<float, 4>::Simd;
 
 
+        inline Vector3 ToVector3( const Vector4& v )
+        {
+            return SetWToZero( v.simd );
+        }
+        inline Vector4 ToVector4( const Vector3& v )
+        {
+            return SetWToOne( v.simd );
+        }
+        inline Vector4 ToVector4( const Vector3& v, float w )
+        {
+            return m::Traits::SetW( v.simd, w );
+        }
+
+        INLINE Vector3 ToVector3( EZeroTag ) 
+        {
+            return SplatZero( ); 
+        }
+        INLINE Vector3 ToVector3( EIdentityTag ) 
+        { 
+            return SplatOne( ); 
+        }
+
+        INLINE Vector4 ToVector4( EZeroTag )
+        {
+            return SplatZero( );
+        }
+        INLINE Vector4 ToVector4( EIdentityTag )
+        {
+            return SplatOne( );
+        }
+
         // For W != 1, divide XYZ by W.  If W == 0, do nothing
         INLINE Vector3 MakeHomogeneous( Vector4 v )
         {
             using Traits = Vector4::Traits;
             Scalar W ( v.W( ).simd );
-            return Vector3( Traits::Select( Traits::Div( v.simd, W.ToSimd() ), v.simd, Traits::Equal( W.ToSimd( ), SplatZero( ) ) ) );
+            return Vector3( Traits::Select( Traits::Div( v.simd, W.simd ), v.simd, Traits::Equal( W.simd, SplatZero( ) ) ) );
         }
 
         class BoolVector
@@ -43,6 +74,17 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         protected:
             m::SIMDType m_vec;
         };
+
+
+        inline Vector3 Select( const Vector3& a, const Vector3& b, const BoolVector& selectControl )
+        {
+            return m::Traits::Select( a.simd, b.simd, selectControl );
+        }
+        inline Vector4 Select( const Vector4& a, const Vector4& b, const BoolVector& selectControl )
+        {
+            return m::Traits::Select( a.simd, b.simd, selectControl );
+        }
+
 #else
         class Vector4;
         class Vector3
@@ -58,6 +100,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             INLINE explicit Vector3( FXMVECTOR vec ) { m_vec = vec; }
             INLINE explicit Vector3( EZeroTag ) { m_vec = SplatZero( ); }
             INLINE explicit Vector3( EIdentityTag ) { m_vec = SplatOne( ); }
+
             INLINE explicit Vector3( EXUnitVector ) { m_vec = CreateXUnitVector( ); }
             INLINE explicit Vector3( EYUnitVector ) { m_vec = CreateYUnitVector( ); }
             INLINE explicit Vector3( EZUnitVector ) { m_vec = CreateZUnitVector( ); }
@@ -109,11 +152,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             INLINE explicit Vector4( FXMVECTOR vec ) { m_vec = vec; }
             INLINE explicit Vector4( EZeroTag ) { m_vec = SplatZero( ); }
             INLINE explicit Vector4( EIdentityTag ) { m_vec = SplatOne( ); }
+            
             INLINE explicit Vector4( EXUnitVector ) { m_vec = CreateXUnitVector( ); }
             INLINE explicit Vector4( EYUnitVector ) { m_vec = CreateYUnitVector( ); }
             INLINE explicit Vector4( EZUnitVector ) { m_vec = CreateZUnitVector( ); }
             INLINE explicit Vector4( EWUnitVector ) { m_vec = CreateWUnitVector( ); }
-
+            
             INLINE operator XMVECTOR( ) const { return m_vec; }
 
             INLINE Scalar GetX( ) const { return Scalar( ::DirectX::XMVectorSplatX( m_vec ) ); }
@@ -169,6 +213,63 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             XMVECTOR m_vec;
         };
 #endif
+        inline std::string ToString( const Vector3& v )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m::Vector<float, 4> vec( Vector4( v.simd ) );
+#else
+            ::DirectX::XMFLOAT4A vec;
+            ::DirectX::XMStoreFloat4A( &vec, v );
+#endif
+            return std::format( "[ {}, {}, {}, ({}) ]", vec.x, vec.y, vec.z, vec.w );
+
+        }
+
+        inline std::string ToString( const Vector4& v )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m::Vector<float, 4> vec( Vector4( v.simd ) );
+#else
+            ::DirectX::XMFLOAT4A vec;
+            ::DirectX::XMStoreFloat4A( &vec, v );
+#endif
+            return std::format( "[ {}, {}, {}, {} ]", vec.x, vec.y, vec.z, vec.w );
+
+        }
+
+        inline void Dump(const char* name, const Vector3& v, const char* file, int line, const char* function )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m::Vector<float, 4> vec( Vector4(v.simd) );
+#else
+            ::DirectX::XMFLOAT4A vec;
+            ::DirectX::XMStoreFloat4A( &vec, v );
+#endif
+            
+            PrintLn( "// {}:", name );
+            PrintLn( "// [ {}, {}, {}, ({}) ]", vec.x, vec.y, vec.z, vec.w );
+            PrintLn( "// Function: {} ", function );
+            PrintLn( "// Position: {}({})", file, line );
+            PrintLn( "Vector<float,3> {}({}, {}, {});", name, vec.x, vec.y, vec.z );
+        }
+
+        inline void Dump( const char* name, const Vector4& v, const char* file, int line, const char* function )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m::Vector<float, 4> vec( v );
+#else
+            ::DirectX::XMFLOAT4A vec;
+            ::DirectX::XMStoreFloat4A( &vec, v );
+#endif
+
+            PrintLn( "// {}:", name );
+            PrintLn( "// [ {}, {}, {}, {} ]", vec.x, vec.y, vec.z, vec.w );
+            PrintLn( "// Function: {} ", function );
+            PrintLn( "// Position: {}({})", file, line );
+            PrintLn( "Vector<float,4> {}( {}, {}, {}, {} );", name, vec.x, vec.y, vec.z, vec.w );
+        }
+
+
     } // namespace Math
 
 }

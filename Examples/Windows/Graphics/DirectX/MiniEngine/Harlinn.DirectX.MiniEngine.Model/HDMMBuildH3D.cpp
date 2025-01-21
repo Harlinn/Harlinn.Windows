@@ -22,8 +22,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         model.m_SceneGraph.resize( 1 );
 
         GraphNode& node = model.m_SceneGraph[ 0 ];
+#ifdef HDMC_USES_HCC_MATH
+        node.xform = Matrix4::Identity( );
+        node.rotation = Quaternion::Identity( );
+#else
         node.xform = Matrix4( kIdentity );
         node.rotation = Quaternion( kIdentity );
+#endif
+        
         node.scale = XMFLOAT3( 1.0f, 1.0f, 1.0f );
         node.matrixIdx = 0;
         node.hasSibling = 0;
@@ -209,7 +215,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
             BoundingSphere sphereOS;
             AxisAlignedBox boxOS;
+#ifdef HDMC_USES_HCC_MATH
+            Renderer::CompileMesh( model.m_Meshes, model.m_GeometryData, gltfMesh, 0, Matrix4::Identity( ), sphereOS, boxOS );
+#else
             Renderer::CompileMesh( model.m_Meshes, model.m_GeometryData, gltfMesh, 0, Matrix4( kIdentity ), sphereOS, boxOS );
+#endif
             model.m_BoundingSphere = model.m_BoundingSphere.Union( sphereOS );
             model.m_BoundingBox.AddBoundingBox( boxOS );
         }

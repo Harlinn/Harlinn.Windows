@@ -23,17 +23,30 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     using Math::Quaternion;
     using Math::Vector4;
-
+#ifdef HDMC_USES_HCC_MATH
+    static inline float ToFloat( const int8_t x ) { return Math::m::Max( x / 127.0f, -1.0f ); }
+#else
     static inline float ToFloat( const int8_t x ) { return Math::Max( x / 127.0f, -1.0f ); }
+#endif
     static inline float ToFloat( const uint8_t x ) { return x / 255.0f; }
+#ifdef HDMC_USES_HCC_MATH
+    static inline float ToFloat( const int16_t x ) { return Math::m::Max( x / 32767.0f, -1.0f ); }
+#else
     static inline float ToFloat( const int16_t x ) { return Math::Max( x / 32767.0f, -1.0f ); }
+#endif
     static inline float ToFloat( const uint16_t x ) { return x / 65535.0f; }
 
     static inline void Lerp3( float* Dest, const float* Key1, const float* Key2, float T )
     {
+#ifdef HDMC_USES_HCC_MATH
+        Dest[ 0 ] = Math::m::Lerp( Key1[ 0 ], Key2[ 0 ], T );
+        Dest[ 1 ] = Math::m::Lerp( Key1[ 1 ], Key2[ 1 ], T );
+        Dest[ 2 ] = Math::m::Lerp( Key1[ 2 ], Key2[ 2 ], T );
+#else
         Dest[ 0 ] = Math::Lerp( Key1[ 0 ], Key2[ 0 ], T );
         Dest[ 1 ] = Math::Lerp( Key1[ 1 ], Key2[ 1 ], T );
         Dest[ 2 ] = Math::Lerp( Key1[ 2 ], Key2[ 2 ], T );
+#endif
     }
 
     template <typename T>
@@ -44,7 +57,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     static inline Quaternion ToQuat( const float* rot )
     {
+#ifdef HDMC_USES_HCC_MATH
+        return Quaternion( *reinterpret_cast<const Math::m::Quaternion<float>*>(rot) );
+#else
         return Quaternion( XMLoadFloat4( ( const XMFLOAT4* )rot ) );
+#endif
     }
 
     static inline void Slerp( float* Dest, const void* Key1, const void* Key2, float T, uint32_t Format )
@@ -55,35 +72,55 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             {
                 const int8_t* key1 = ( const int8_t* )Key1;
                 const int8_t* key2 = ( const int8_t* )Key2;
+#ifdef HDMC_USES_HCC_MATH
+                Math::m::Traits::UnalignedStore( Dest, Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ).simd );
+#else
                 XMStoreFloat4( ( XMFLOAT4* )Dest, ( FXMVECTOR )Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ) );
+#endif
                 break;
             }
             case AnimationCurve::kUNorm8:
             {
                 const uint8_t* key1 = ( const uint8_t* )Key1;
                 const uint8_t* key2 = ( const uint8_t* )Key2;
+#ifdef HDMC_USES_HCC_MATH
+                Math::m::Traits::UnalignedStore( Dest, Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ).simd );
+#else
                 XMStoreFloat4( ( XMFLOAT4* )Dest, ( FXMVECTOR )Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ) );
+#endif
                 break;
             }
             case AnimationCurve::kSNorm16:
             {
                 const int16_t* key1 = ( const int16_t* )Key1;
                 const int16_t* key2 = ( const int16_t* )Key2;
+#ifdef HDMC_USES_HCC_MATH
+                Math::m::Traits::UnalignedStore( Dest, Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ).simd );
+#else
                 XMStoreFloat4( ( XMFLOAT4* )Dest, ( FXMVECTOR )Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ) );
+#endif
                 break;
             }
             case AnimationCurve::kUNorm16:
             {
                 const uint16_t* key1 = ( const uint16_t* )Key1;
                 const uint16_t* key2 = ( const uint16_t* )Key2;
+#ifdef HDMC_USES_HCC_MATH
+                Math::m::Traits::UnalignedStore( Dest, Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ).simd );
+#else
                 XMStoreFloat4( ( XMFLOAT4* )Dest, ( FXMVECTOR )Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ) );
+#endif
                 break;
             }
             case AnimationCurve::kFloat:
             {
                 const float* key1 = ( const float* )Key1;
                 const float* key2 = ( const float* )Key2;
+#ifdef HDMC_USES_HCC_MATH
+                Math::m::Traits::UnalignedStore( Dest, Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ).simd );
+#else
                 XMStoreFloat4( ( XMFLOAT4* )Dest, ( FXMVECTOR )Math::Slerp( ToQuat( key1 ), ToQuat( key2 ), T ) );
+#endif
                 break;
             }
             default:
@@ -123,8 +160,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             {
                 const AnimationCurve& curve = firstCurve[ j ];
                 ASSERT( curve.numSegments > 0 );
-
+#ifdef HDMC_USES_HCC_MATH
+                const float progress = Math::m::Clamp( ( anim.time - curve.startTime ) * curve.rangeScale, 0.0f, curve.numSegments );
+#else
                 const float progress = Math::Clamp( ( anim.time - curve.startTime ) * curve.rangeScale, 0.0f, curve.numSegments );
+#endif
                 const uint32_t segment = ( uint32_t )progress;
                 const float lerpT = progress - ( float )segment;
 

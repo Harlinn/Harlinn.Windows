@@ -42,6 +42,9 @@ namespace Harlinn::Common::Core::Math
     {
         struct VectorBase
         { };
+
+        struct ScalarBase
+        { };
     }
 
     template<typename T>
@@ -49,6 +52,12 @@ namespace Harlinn::Common::Core::Math
 
     template<typename T>
     concept VectorSimdType = std::is_base_of_v<Internal::VectorBase, typename T::TupleType>;
+
+    template<typename T>
+    concept ScalarType = std::is_base_of_v<Internal::ScalarBase, T>;
+
+    template<typename T>
+    concept ScalarSimdType = std::is_base_of_v<Internal::ScalarBase, typename T::TupleType>;
 
 
 
@@ -749,6 +758,31 @@ namespace Harlinn::Common::Core::Math
         {
         }
 
+        template<Internal::SimdType S>
+            requires std::is_same_v<Traits, typename S::Traits> ||
+                ( std::is_same_v<typename Traits::Type, typename S::Traits::Type> && ( Size > S::Size ) )
+        TupleSimd( const S& other ) noexcept
+            : simd( other.simd )
+        {
+        }
+
+        template<Internal::SimdType S>
+            requires std::is_same_v<typename Traits::Type, typename S::Traits::Type> && ( Size < S::Size )
+        TupleSimd( const S& other ) noexcept
+            : simd( other.simd )
+        {
+            if constexpr ( Size < 4 )
+            {
+                simd = Traits::SetW( simd, 0 );
+            }
+            if constexpr ( Size < 3 )
+            {
+                simd = Traits::SetZ( simd, 0 );
+            }
+        }
+
+
+
         TupleSimd( const TupleType& other ) noexcept
             : simd( Traits::Load( other.values.data( ) ) )
         {
@@ -767,6 +801,22 @@ namespace Harlinn::Common::Core::Math
         TupleSimd( value_type x, value_type y, value_type z, value_type w ) noexcept
             : simd( Traits::Set( w, z, y, x ) )
         {
+        }
+
+        TupleSimd( value_type x ) noexcept requires ( Size == 2 )
+            : simd( Traits::Set( x, x ) )
+        { }
+        TupleSimd( value_type x ) noexcept requires ( Size == 3 )
+            : simd( Traits::Set( x, x, x ) )
+        {
+        }
+        TupleSimd( value_type x ) noexcept requires ( Size == 4 )
+            : simd( Traits::Set( x, x, x, x ) )
+        { }
+
+        TupleType Values( ) const noexcept
+        {
+            return TupleType( *this );
         }
 
 
@@ -887,6 +937,10 @@ namespace Harlinn::Common::Core::Math
         {
             simd = Traits::Permute<4, 1, 2, 3>( simd, src );
         }
+        void SetX( const TupleSimd& src )
+        {
+            SetX( src.simd );
+        }
         TupleSimd Y( ) const
         {
             return Traits::At<1>( simd );
@@ -894,6 +948,10 @@ namespace Harlinn::Common::Core::Math
         void SetY( SIMDType src )
         {
             simd = Traits::Permute<0, 5, 2, 3>( simd, src );
+        }
+        void SetY( const TupleSimd& src )
+        {
+            SetY( src.simd );
         }
         TupleSimd Z( ) const requires (Size > 2)
         {
@@ -903,9 +961,17 @@ namespace Harlinn::Common::Core::Math
         {
             simd = Traits::Permute<0, 1, 6, 3>( simd, src );
         }
+        void SetZ( const TupleSimd& src )
+        {
+            SetZ( src.simd );
+        }
         void SetXYZ( SIMDType src ) requires ( Size > 2 )
         {
             simd = Traits::Permute<0, 1, 2, 7>( src, simd );
+        }
+        void SetXYZ( const TupleSimd& src )
+        {
+            SetXYZ( src.simd );
         }
         TupleSimd W( ) const requires ( Size > 3 )
         {
@@ -915,7 +981,10 @@ namespace Harlinn::Common::Core::Math
         {
             simd = Traits::Permute<0, 1, 2, 7>( simd, src );
         }
-
+        void SetW( const TupleSimd& src )
+        {
+            SetW( src.simd );
+        }
 
     };
 
@@ -1631,7 +1700,7 @@ namespace Harlinn::Common::Core::Math
         };
 
         Tuple4( ) noexcept
-            : x( 0.0 ), y( 0.0 ), z( 0.0 ), w( 0.0 )
+            : x( static_cast<value_type>( 0 ) ), y( static_cast< value_type >( 0 ) ), z( static_cast< value_type >( 0 ) ), w( static_cast< value_type >( 0 ) )
         {
         }
 
@@ -2134,6 +2203,25 @@ namespace Harlinn::Common::Core::Math
     
     
     /// <summary>
+    /// Retrieves the lowest element of v 
+    /// </summary>
+    template<Internal::SimdType T>
+    inline auto First( const T& v )
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( v.simd );
+    }
+    /// <summary>
+    /// Retrieves the lowest element of v 
+    /// </summary>
+    template<Internal::TupleType T>
+    inline auto First( const T& v )
+    {
+        return v.x;
+    }
+
+
+    /// <summary>
     /// Calculates the horizontal sum of the elements in the vector.
     /// </summary>
     template<Internal::SimdType T>
@@ -2630,7 +2718,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
         auto v = static_cast< FloatT >( c );
-        return S(Traits::Lerp( a, b, Traits::Fill( v ) ));
+        return S(Traits::Lerp( a.simd, b.simd, Traits::Fill( v ) ));
     }
 
     /// <summary>
@@ -2646,7 +2734,7 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
         auto v = static_cast< FloatT >( c );
-        return S( Traits::Lerp( a, b.ToSimd(), Traits::Fill( v ) ) );
+        return S( Traits::Lerp( a.simd, b.ToSimd().simd, Traits::Fill( v ) ) );
     }
 
     /// <summary>
@@ -2663,7 +2751,7 @@ namespace Harlinn::Common::Core::Math
         using FloatT = typename Traits::Type;
         using Simd = typename S::Simd;
         auto v = static_cast< FloatT >( c );
-        return Simd( Traits::Lerp( a.ToSimd( ), b, Traits::Fill( v ) ) );
+        return Simd( Traits::Lerp( a.ToSimd( ).simd, b.simd, Traits::Fill( v ) ) );
     }
 
     /// <summary>
@@ -2680,7 +2768,7 @@ namespace Harlinn::Common::Core::Math
         using FloatT = typename Traits::Type;
         using Simd = typename S::Simd;
         auto v = static_cast< FloatT >( c );
-        return Simd( Traits::Lerp( a.ToSimd( ), b.ToSimd( ), Traits::Fill( v ) ) );
+        return Simd( Traits::Lerp( a.ToSimd( ).simd, b.ToSimd( ).simd, Traits::Fill( v ) ) );
     }
 
     
@@ -9689,11 +9777,18 @@ namespace Harlinn::Common::Core::Math
             : Base( values )
         { }
 
-        template<typename T>
+        template<Internal::TupleType T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
-            : Base( other )
+            : Base( other.x, other.y )
         { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray(  other.simd ) )
+        { }
+
     };
 
     
@@ -9721,13 +9816,58 @@ namespace Harlinn::Common::Core::Math
             : Base( values )
         { }
 
-        template<typename T>
+        template<Internal::TupleType T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
-            : Base( other )
+            : Base( other.x, other.y )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        { }
+    };
+
+    template<>
+    class Vector<UInt32, 2> : public Tuple2<Vector<UInt32, 2>, UInt32>, public Internal::VectorBase
+    {
+    public:
+        using Base = Tuple2<Vector<UInt32, 2>, UInt32>;
+
+        using Traits = Base::Traits;
+
+        Vector( ) noexcept = default;
+        explicit Vector( UInt32 v ) noexcept
+            : Base( v, v )
         {
         }
+        Vector( UInt32 xv, UInt32 yv ) noexcept
+            : Base( xv, yv )
+        {
+        }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<Internal::TupleType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Base( other.x, other.y )
+        {
+        }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        {
+        }
+
     };
+
 
     template<>
     class Vector<float, 3> : public Tuple3<Vector<float, 3>,float>, public Internal::VectorBase
@@ -9750,12 +9890,17 @@ namespace Harlinn::Common::Core::Math
             : Base( values )
         { }
 
-        template<typename T>
+        template<Internal::TupleType T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
-            : Base( other )
-        {
-        }
+            : Base( other.x, other.y, other.z )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        { }
     };
 
     template<>
@@ -9779,13 +9924,55 @@ namespace Harlinn::Common::Core::Math
             : Base( values )
         { }
 
-        template<typename T>
+        template<Internal::TupleType T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
-            : Base( other )
+            : Base( other.x, other.y, other.z )
+        { }
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        { }
+    };
+
+    template<>
+    class Vector<UInt32, 3> : public Tuple3<Vector<UInt32, 3>, UInt32>, public Internal::VectorBase
+    {
+    public:
+        using Base = Tuple3<Vector<UInt32, 3>, UInt32>;
+        using Traits = Base::Traits;
+
+        Vector( ) noexcept = default;
+        explicit Vector( UInt32 v ) noexcept
+            : Base( v, v, v )
+        {
+        }
+        Vector( UInt32 xv, UInt32 yv, UInt32 zv ) noexcept
+            : Base( xv, yv, zv )
+        {
+        }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<Internal::TupleType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Base( other.x, other.y, other.z )
+        {
+        }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
         {
         }
     };
+
 
     template<>
     class Vector<float, 4> : public Tuple4<Vector<float, 4>,float>, public Internal::VectorBase
@@ -9811,12 +9998,17 @@ namespace Harlinn::Common::Core::Math
             : Base( values )
         { }
 
-        template<typename T>
+        template<Internal::TupleType T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
-            : Base( other )
-        {
-        }
+            : Base( other.x, other.y, other.z, other.w )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        { }
     };
 
 
@@ -9843,10 +10035,55 @@ namespace Harlinn::Common::Core::Math
             : Base( values )
         { }
 
-        template<typename T>
+        template<Internal::TupleType T>
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
-            : Base( other )
+            : Base( other.x, other.y, other.z, other.w )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        { }
+    };
+
+    template<>
+    class Vector<UInt32, 4> : public Tuple4<Vector<UInt32, 4>, UInt32>, public Internal::VectorBase
+    {
+    public:
+        using Base = Tuple4<Vector<UInt32, 4>, UInt32>;
+
+        using Traits = Base::Traits;
+        using Base::Size;
+        using value_type = Base::value_type;
+
+        Vector( ) noexcept = default;
+        explicit Vector( UInt32 v ) noexcept
+            : Base( v, v, v, v )
+        {
+        }
+        Vector( UInt32 xv, UInt32 yv, UInt32 zv, UInt32 wv ) noexcept
+            : Base( xv, yv, zv, wv )
+        {
+        }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<Internal::TupleType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Base( other.x, other.y, other.z, other.w )
+        {
+        }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
         {
         }
     };
@@ -9993,6 +10230,196 @@ namespace Harlinn::Common::Core::Math
     using Vector3i = Vector<int, 3>;
 
     
+    template<typename T, size_t N>
+    class Scalar;
+
+
+    template<>
+    class Scalar<float, 2> : public Tuple2<Scalar<float, 2>, float>, public Internal::ScalarBase
+    {
+    public:
+        using Base = Tuple2<Scalar<float, 2>, float>;
+
+        using Traits = Base::Traits;
+
+        Scalar( ) noexcept = default;
+        explicit Scalar( float v ) noexcept
+            : Base( v, v )
+        {
+        }
+        Scalar( float xv, float yv ) noexcept
+            : Base( xv, yv )
+        {
+        }
+
+        Scalar( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Scalar( const T& other ) noexcept
+            : Base( other )
+        {
+        }
+    };
+
+    template<>
+    class Scalar<double, 2> : public Tuple2<Scalar<double, 2>, double>, public Internal::ScalarBase
+    {
+    public:
+        using Base = Tuple2<Scalar<double, 2>, double>;
+        using Traits = Base::Traits;
+
+        Scalar( ) noexcept = default;
+        explicit Scalar( double v ) noexcept
+            : Base( v, v )
+        {
+        }
+        Scalar( double xv, double yv ) noexcept
+            : Base( xv, yv )
+        {
+        }
+
+        Scalar( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Scalar( const T& other ) noexcept
+            : Base( other )
+        {
+        }
+    };
+
+    template<>
+    class Scalar<float, 3> : public Tuple3<Scalar<float, 3>, float>, public Internal::ScalarBase
+    {
+    public:
+        using Base = Tuple3<Scalar<float, 3>, float>;
+        using Traits = Base::Traits;
+
+        Scalar( ) noexcept = default;
+        explicit Scalar( float v ) noexcept
+            : Base( v, v, v )
+        {
+        }
+        Scalar( float xv, float yv, float zv ) noexcept
+            : Base( xv, yv, zv )
+        {
+        }
+
+        Scalar( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Scalar( const T& other ) noexcept
+            : Base( other )
+        {
+        }
+    };
+
+    template<>
+    class Scalar<double, 3> : public Tuple3<Scalar<double, 3>, double>, public Internal::ScalarBase
+    {
+    public:
+        using Base = Tuple3<Scalar<double, 3>, double>;
+        using Traits = Base::Traits;
+
+        Scalar( ) noexcept = default;
+        explicit Scalar( double v ) noexcept
+            : Base( v, v, v )
+        {
+        }
+        Scalar( double xv, double yv, double zv ) noexcept
+            : Base( xv, yv, zv )
+        {
+        }
+
+        Scalar( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Scalar( const T& other ) noexcept
+            : Base( other )
+        {
+        }
+    };
+
+    template<>
+    class Scalar<float, 4> : public Tuple4<Scalar<float, 4>, float>, public Internal::ScalarBase
+    {
+    public:
+        using Base = Tuple4<Scalar<float, 4>, float>;
+
+        using Traits = Base::Traits;
+        using Base::Size;
+        using value_type = Base::value_type;
+
+        Scalar( ) noexcept = default;
+        explicit Scalar( float v ) noexcept
+            : Base( v, v, v, v )
+        {
+        }
+        Scalar( float xv, float yv, float zv, float wv ) noexcept
+            : Base( xv, yv, zv, wv )
+        {
+        }
+
+        Scalar( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Scalar( const T& other ) noexcept
+            : Base( other )
+        {
+        }
+    };
+
+
+
+    template<>
+    class Scalar<double, 4> : public Tuple4<Scalar<double, 4>, double>, public Internal::ScalarBase
+    {
+    public:
+        using Base = Tuple4<Scalar<double, 4>, double>;
+
+        using Traits = Base::Traits;
+
+        Scalar( ) noexcept = default;
+        explicit Scalar( double v ) noexcept
+            : Base( v, v, v, v )
+        {
+        }
+        Scalar( double xv, double yv, double zv, double wv ) noexcept
+            : Base( xv, yv, zv, wv )
+        {
+        }
+
+        Scalar( const ArrayType& values ) noexcept
+            : Base( values )
+        {
+        }
+
+        template<typename T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Scalar( const T& other ) noexcept
+            : Base( other )
+        {
+        }
+    };
 
 
 
@@ -10442,8 +10869,7 @@ namespace Harlinn::Common::Core::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        template<size_t N>
-        static QuaternionSimd FromMatrix( const QuaternionSimd& matrix ) noexcept
+        static QuaternionSimd FromMatrix( const MatrixSimd& matrix ) noexcept
         {
             return FromMatrix( matrix.simd );
         }
@@ -10457,7 +10883,6 @@ namespace Harlinn::Common::Core::Math
         /// The rotation quaternion.
         /// </returns>
         static QuaternionSimd FromMatrix( const Matrix& matrix ) noexcept;
-
 
 
         
@@ -12021,11 +12446,15 @@ namespace Harlinn::Common::Core::Math
         using Constants = Traits::Constants;
         using Q = QuaternionSimd<Quaternion<FloatT>>;
 
-        Q qa( Traits::Select( Constants::Select2221, v.simd, Constants::Select2221 ) );
+        Q a( Traits::Select( Constants::Select2221, v.simd, Constants::Select2221 ) );
         
         Q qc = Conjugate( rotationQuaternion );
 
-        return S(((qa * qc) * rotationQuaternion).simd);
+        Q qca = qc * a;
+
+        Q result = qca * rotationQuaternion;
+
+        return S( result.simd);
     }
 
     /// <summary>
@@ -12283,6 +12712,12 @@ namespace Harlinn::Common::Core::Math
     {
     };
 
+    enum class MatrixType : UInt32
+    {
+        Zero,
+        Identity
+    };
+
 
     template<typename MatrixT>
     struct alignas( Core::SIMD::Traits<typename MatrixT::value_type, 1>::AlignAs )
@@ -12336,6 +12771,9 @@ namespace Harlinn::Common::Core::Math
         using ArrayType = std::array<std::array<value_type, 2>, 2>;
         static constexpr size_t Size = 2;
 
+        static constexpr SIMDType ZeroValues = { { static_cast< value_type >( 0. ), static_cast< value_type >( 0. ),static_cast< value_type >( 0. ),static_cast< value_type >( 0. ) } };
+        static constexpr SIMDType IdentityValues = { { static_cast< value_type >( 1. ), static_cast< value_type >( 0. ),static_cast< value_type >( 0. ),static_cast< value_type >( 1. )} };
+
         SIMDType simd;
 
         static SIMDType ToSimd( const ArrayType& matrix )
@@ -12355,9 +12793,15 @@ namespace Harlinn::Common::Core::Math
         }
 
         SquareMatrixSimd( )
-            : simd( { { static_cast<value_type>(1.), static_cast< value_type >( 0. ),static_cast< value_type >( 0. ),static_cast< value_type >( 1. )}} )
+            : simd( ZeroValues )
         {
         }
+
+        explicit SquareMatrixSimd( Math::MatrixType matrixType )
+            : simd( matrixType == Math::MatrixType::Identity? IdentityValues : ZeroValues )
+        {
+        }
+
         explicit SquareMatrixSimd( SIMDType other )
             : simd( other )
         {
@@ -12380,9 +12824,19 @@ namespace Harlinn::Common::Core::Math
             return Traits::AllEqual( simd, other.simd ) == false;
         }
 
+        static SquareMatrixSimd Zero( )
+        {
+            return SquareMatrixSimd( ZeroValues );
+        }
+
+        static SquareMatrixSimd Identity( )
+        {
+            return SquareMatrixSimd( IdentityValues );
+        }
+
         bool IsIdentity( ) const
         {
-            return Traits::AllEqual( simd, { { static_cast< value_type >( 1. ), static_cast< value_type >( 0. ),static_cast< value_type >( 0. ),static_cast< value_type >( 1. )} } );
+            return Traits::AllEqual( simd, IdentityValues );
         }
     };
 
@@ -12400,6 +12854,9 @@ namespace Harlinn::Common::Core::Math
         static constexpr size_t Size = 3;
 
         std::array<SIMDType, 3> simd;
+
+        static constexpr std::array<SIMDType, 3> ZeroValues{ Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero };
+        static constexpr std::array<SIMDType, 3> IdentityValues{ Traits::Constants::IdentityR1, Traits::Constants::IdentityR2, Traits::Constants::IdentityR3 };
 
         static std::array<SIMDType, 3> ToSimd( const ArrayType& matrix )
         {
@@ -12428,9 +12885,14 @@ namespace Harlinn::Common::Core::Math
         }
 
         SquareMatrixSimd( )
-            : simd( { {Constants::IdentityR1, Constants::IdentityR2, Constants::IdentityR3} } )
+            : simd( ZeroValues )
         {
         }
+
+        explicit SquareMatrixSimd( Math::MatrixType matrixType )
+            : simd( matrixType == Math::MatrixType::Identity ? IdentityValues : ZeroValues )
+        { }
+
         explicit SquareMatrixSimd( const std::array<SIMDType, 3>& other )
             : simd( other )
         {
@@ -12443,6 +12905,11 @@ namespace Harlinn::Common::Core::Math
                 Traits::And( other[ 1 ], Traits::Constants::Mask3 ),
                 Traits::And( other[ 2 ], Traits::Constants::Mask3 )
             }
+        {
+        }
+
+        explicit SquareMatrixSimd( const SIMDType r1, const SIMDType r2, const SIMDType r3 )
+            : simd{ r1, r2, r3 }
         {
         }
 
@@ -12480,14 +12947,23 @@ namespace Harlinn::Common::Core::Math
 
         static SquareMatrixSimd Zero( )
         {
-            constexpr std::array<SIMDType, 3> zero{ Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero };
-            return SquareMatrixSimd( zero );
+            return SquareMatrixSimd( ZeroValues );
         }
 
         static SquareMatrixSimd Identity( )
         {
-            constexpr std::array<SIMDType, 3> identity{ Traits::Constants::IdentityR1, Traits::Constants::IdentityR2, Traits::Constants::IdentityR3 };
-            return SquareMatrixSimd( identity );
+            return SquareMatrixSimd( IdentityValues );
+        }
+
+        template<Internal::SimdType S>
+            requires (S::Size > 2)
+        SquareMatrixSimd operator * ( const S& v ) const noexcept
+        {
+            std::array<SIMDType, 3> result;
+            result[ 0 ] = Traits::Mul( simd[ 0 ], v.simd );
+            result[ 1 ] = Traits::Mul( simd[ 1 ], v.simd );
+            result[ 2 ] = Traits::Mul( simd[ 2 ], v.simd );
+            return SquareMatrixSimd( result );
         }
 
     };
@@ -12506,6 +12982,9 @@ namespace Harlinn::Common::Core::Math
         static constexpr size_t Size = 4;
 
         std::array<SIMDType, 4> simd;
+
+        static constexpr std::array<SIMDType, 4> ZeroValues{ Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero };
+        static constexpr std::array<SIMDType, 4> IdentityValues{ Traits::Constants::IdentityR1, Traits::Constants::IdentityR2, Traits::Constants::IdentityR3, Traits::Constants::IdentityR4 };
 
         static std::array<SIMDType, 4> ToSimd( const ArrayType& matrix )
         {
@@ -12538,8 +13017,13 @@ namespace Harlinn::Common::Core::Math
         }
 
         SquareMatrixSimd( )
-            : simd( Constants::IdentityR1, Constants::IdentityR2, Constants::IdentityR3, Constants::IdentityR4 )
+            : simd( ZeroValues )
         { }
+
+        explicit SquareMatrixSimd( Math::MatrixType matrixType )
+            : simd( matrixType == Math::MatrixType::Identity ? IdentityValues : ZeroValues )
+        { }
+
         explicit SquareMatrixSimd( const std::array<SIMDType,4>& other )
             : simd( other )
         { }
@@ -12553,6 +13037,16 @@ namespace Harlinn::Common::Core::Math
                 Constants::IdentityR4
             }
         { }
+
+        explicit SquareMatrixSimd( const SIMDType r1, const SIMDType r2, const SIMDType r3 )
+            : simd{ r1, r2, r3, Constants::IdentityR4 }
+        {
+        }
+
+        explicit SquareMatrixSimd( const SIMDType r1, const SIMDType r2, const SIMDType r3, const SIMDType r4 )
+            : simd { r1, r2, r3, r4 }
+        {
+        }
 
         SquareMatrixSimd( const SquareMatrixSimd& other )
             : simd( other.simd )
@@ -12586,14 +13080,12 @@ namespace Harlinn::Common::Core::Math
 
         static SquareMatrixSimd Zero( )
         {
-            constexpr std::array<SIMDType, 4> zero{ Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero };
-            return SquareMatrixSimd( zero );
+            return SquareMatrixSimd( ZeroValues );
         }
 
         static SquareMatrixSimd Identity( )
         {
-            constexpr std::array<SIMDType, 4> identity{ Traits::Constants::IdentityR1, Traits::Constants::IdentityR2, Traits::Constants::IdentityR3, Traits::Constants::IdentityR4 };
-            return SquareMatrixSimd( identity );
+            return SquareMatrixSimd( IdentityValues );
         }
 
     };
@@ -13818,6 +14310,21 @@ namespace Harlinn::Common::Core::Math
     /// the x-axis, y-axis, and z-axis.
     /// </summary>
     /// <param name="v">
+    /// Scaling factor along the x-axis, y-axis, and z-axis.
+    /// </param>
+    /// <returns>
+    /// The scaling matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd Scaling( float scale )
+    {
+        return Scaling( scale, scale, scale );
+    }
+
+    /// <summary>
+    /// Creates a transformation matrix for scaling along 
+    /// the x-axis, y-axis, and z-axis.
+    /// </summary>
+    /// <param name="v">
     /// Scaling factors along the x-axis, y-axis, and z-axis.
     /// </param>
     /// <returns>
@@ -14010,8 +14517,8 @@ namespace Harlinn::Common::Core::Math
         float cosine;
         SinCos( angle, &sine, &cosine );
 
-        auto sines = Traits::Fill( sine );
-        auto cosines = Traits::Fill( cosine );
+        auto sines = Traits::Set( sine );
+        auto cosines = Traits::Set( cosine );
         cosines = Traits::Shuffle<3, 0, 0, 3>( cosines, sines );
         Simd result;
         result.simd[ 0 ] = Constants::IdentityR1;
@@ -14042,8 +14549,8 @@ namespace Harlinn::Common::Core::Math
         float cosine;
         SinCos( angle, &sine, &cosine );
 
-        auto sines = Traits::Fill( sine );
-        auto cosines = Traits::Fill( cosine );
+        auto sines = Traits::Set( sine );
+        auto cosines = Traits::Set( cosine );
 
         sines = Traits::Shuffle<3, 0, 3, 0>( sines, cosines );
         Simd result;
@@ -14076,8 +14583,8 @@ namespace Harlinn::Common::Core::Math
         float cosine;
         SinCos( angle, &sine, &cosine );
 
-        auto sines = Traits::Fill( sine );
-        auto cosines = Traits::Fill( cosine );
+        auto sines = Traits::Set( sine );
+        auto cosines = Traits::Set( cosine );
         
         cosines = Traits::UnpackLow( cosines, sines );
         Simd result;
@@ -14237,7 +14744,7 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const QuaternionSimd<Quaternion<float>>& q ) noexcept
+    inline SquareMatrix<float, 4>::Simd Rotation( const QuaternionSimd<Quaternion<float>>& q ) noexcept
     {
         using Traits = SIMD::Traits<float, 4>;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
@@ -14295,10 +14802,40 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
+    inline SquareMatrix<float, 4>::Simd Rotation( const Quaternion<float>& q ) noexcept
+    {
+        return Rotation( q.ToSimd( ) );
+    }
+
+
+    /// <summary>
+    /// Creates a rotation matrix from a quaternion.
+    /// </summary>
+    /// <param name="q">
+    /// The quaternion that defines the rotation.
+    /// </param>
+    /// <returns>
+    /// The rotation matrix.
+    /// </returns>
+    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const QuaternionSimd<Quaternion<float>>& q ) noexcept
+    {
+        return Rotation( q );
+    }
+
+    /// <summary>
+    /// Creates a rotation matrix from a quaternion.
+    /// </summary>
+    /// <param name="q">
+    /// The quaternion that defines the rotation.
+    /// </param>
+    /// <returns>
+    /// The rotation matrix.
+    /// </returns>
     inline SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>& q ) noexcept
     {
-        return RotationQuaternion( q.ToSimd( ) );
+        return Rotation( q.ToSimd( ) );
     }
+
 
     /// <summary>
     /// Creates a transformation matrix.
@@ -17540,7 +18077,7 @@ namespace Harlinn::Common::Core::Math
         t2 = Traits::AndNot( z2gew2, tensor3 );
         t1 = Traits::Or( t1, t2 );
         t0 = Traits::And( x2py2gez2pw2, t0 );
-        t1 = Traits::AndNot_ps( x2py2gez2pw2, t1 );
+        t1 = Traits::AndNot( x2py2gez2pw2, t1 );
         t2 = Traits::Or( t0, t1 );
 
         // Normalize the row.  No division by zero is possible because the
@@ -17554,6 +18091,8 @@ namespace Harlinn::Common::Core::Math
     {
         return FromMatrix( matrix.ToSimd( ) );
     }
+
+
 
 
     /// <summary>

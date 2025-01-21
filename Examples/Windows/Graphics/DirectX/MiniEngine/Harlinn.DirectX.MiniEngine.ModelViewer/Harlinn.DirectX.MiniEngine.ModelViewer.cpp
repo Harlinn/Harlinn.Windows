@@ -184,9 +184,21 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         m_Camera.SetZRange( 1.0f, 10000.0f );
         if ( gltfFileName.size( ) == 0 )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m_CameraController.reset( new FlyingFPSCamera( m_Camera, Vector3( m::Traits::Constants::IdentityR2 ) ) );
+#else
             m_CameraController.reset( new FlyingFPSCamera( m_Camera, Vector3( kYUnitVector ) ) );
+#endif
+        }
         else
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m_CameraController.reset( new OrbitCamera( m_Camera, m_ModelInst.GetBoundingSphere( ), Vector3( m::Traits::Constants::IdentityR2 ) ) );
+#else
             m_CameraController.reset( new OrbitCamera( m_Camera, m_ModelInst.GetBoundingSphere( ), Vector3( kYUnitVector ) ) );
+#endif
+        }
     }
 
     void ModelViewer::Cleanup( void )
@@ -372,4 +384,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     ModelViewer modelViewer;
 
     return GameCore::RunApplication( modelViewer, L"ModelViewer", hInstance, nCmdShow ); 
+}
+
+int wmain( int argc, wchar_t* argv[ ] )
+{
+    using namespace Harlinn::Windows::DirectX::MiniEngine;
+
+    STARTUPINFOW startupInfo = { sizeof( STARTUPINFOW ),0, };
+    GetStartupInfoW( &startupInfo );
+
+    ModelViewer modelViewer;
+
+    return GameCore::RunApplication( modelViewer, L"ModelViewer", nullptr /*hInstance*/, SW_SHOWNORMAL );
 }

@@ -160,8 +160,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Context.SetViewportAndScissor( 0, 0, dest.GetWidth( ), dest.GetHeight( ) );
             float TexelWidth = 1.0f / source.GetWidth( );
             float TexelHeight = 1.0f / source.GetHeight( );
+#ifdef HDMC_USES_HCC_MATH
+            float X = Math::m::Cos( ( float )SharpeningRotation / 180.0f * 3.14159f ) * ( float )SharpeningSpread;
+            float Y = Math::m::Sin( ( float )SharpeningRotation / 180.0f * 3.14159f ) * ( float )SharpeningSpread;
+#else
             float X = Math::Cos( ( float )SharpeningRotation / 180.0f * 3.14159f ) * ( float )SharpeningSpread;
             float Y = Math::Sin( ( float )SharpeningRotation / 180.0f * 3.14159f ) * ( float )SharpeningSpread;
+#endif
             const float WA = ( float )SharpeningStrength;
             const float WB = 1.0f + 4.0f * WA;
             float Constants[ ] = { X * TexelWidth, Y * TexelHeight, Y * TexelWidth, -X * TexelHeight, WA, WB };

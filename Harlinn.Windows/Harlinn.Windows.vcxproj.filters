@@ -171,6 +171,9 @@
     <ClInclude Include="HWMFLive555.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HWColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

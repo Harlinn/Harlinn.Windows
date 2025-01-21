@@ -18,8 +18,9 @@
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
-
+#ifndef HDMC_USES_HCC_MATH
     class Color;
+#endif
     class GraphicsContext;
 
     namespace TextRenderer

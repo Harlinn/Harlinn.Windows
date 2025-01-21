@@ -571,6 +571,39 @@ namespace Harlinn::Common::Core::Math
     }
     static_assert( Sqrt(2.0) > 0.0 );
 
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ReciprocalSqrt( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            constexpr FloatType one = static_cast< FloatType >( 1. );
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return one / Math::Internal::OpenLibM::sqrtf( x );
+            }
+            else
+            {
+                return one / Math::Internal::OpenLibM::sqrt( x );
+            }
+        }
+        else
+        {
+
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_rsqrt_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_rsqrt_ps( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
 
     namespace Internal
     {
@@ -2856,6 +2889,37 @@ namespace Harlinn::Common::Core::Math
             return Math::Internal::OpenLibM::log10( x );
         }
     }
+
+    /// <summary>
+    /// Computes the value of x raised to the power y.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A floating point type.
+    /// </typeparam>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
+    /// <param name="y">
+    /// A floating point value.
+    /// </param>
+    /// <returns>
+    /// x raised to the power y.
+    /// </returns>
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Pow( T x, T y ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::powf( x, y );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::pow( x, y );
+        }
+    }
+
 
 
     /// <summary>

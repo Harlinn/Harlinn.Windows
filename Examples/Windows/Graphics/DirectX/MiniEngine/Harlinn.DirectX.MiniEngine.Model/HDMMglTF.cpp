@@ -333,7 +333,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
         const float kF32toF16 = ( 1.0 / ( 1ull << 56 ) ) * ( 1.0 / ( 1ull << 56 ) ); // 2^-112
         union { float f; uint32_t u; } x;
+#ifdef HDMC_USES_HCC_MATH
+        x.f = Math::m::Clamp( f, 0.0f, 1.0f ) * kF32toF16;
+#else
         x.f = Math::Clamp( f, 0.0f, 1.0f ) * kF32toF16;
+#endif
         return x.u >> 13;
     }
 

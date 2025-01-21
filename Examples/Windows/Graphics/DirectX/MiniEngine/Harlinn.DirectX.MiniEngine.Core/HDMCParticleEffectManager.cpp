@@ -653,8 +653,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         s_ChangesPerView.gViewProj = Camera.GetViewProjMatrix( );
         s_ChangesPerView.gInvView = Invert( Camera.GetViewMatrix( ) );
+
+#ifdef HDMC_USES_HCC_MATH
+        float HCot = m::Traits::Extract<0>( Camera.GetProjMatrix( ).simd[ 0 ] );
+        float VCot = m::Traits::Extract<1>( Camera.GetProjMatrix( ).simd[ 1 ] );
+#else
         float HCot = Camera.GetProjMatrix( ).GetX( ).GetX( );
         float VCot = Camera.GetProjMatrix( ).GetY( ).GetY( );
+#endif
         s_ChangesPerView.gVertCotangent = VCot;
         s_ChangesPerView.gAspectRatio = HCot / VCot;
         s_ChangesPerView.gRcpFarZ = 1.0f / Camera.GetFarClip( );

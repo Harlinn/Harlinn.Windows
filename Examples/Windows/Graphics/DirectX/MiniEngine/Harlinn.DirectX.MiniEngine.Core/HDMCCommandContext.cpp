@@ -282,7 +282,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         CD3DX12_RECT ClearRect( 0, 0, ( LONG )Target.GetWidth( ), ( LONG )Target.GetHeight( ) );
 
         //TODO: My Nvidia card is not clearing UAVs with either Float or Uint variants.
+#ifdef HDMC_USES_HCC_MATH
+        const float* ClearColor = Target.GetClearColor( ).data( );
+#else
         const float* ClearColor = Target.GetClearColor( ).GetPtr( );
+#endif
         m_CommandList.ClearUnorderedAccessViewFloat( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 1, &ClearRect );
     }
 
@@ -296,14 +300,22 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         CD3DX12_RECT ClearRect( 0, 0, ( LONG )Target.GetWidth( ), ( LONG )Target.GetHeight( ) );
 
         //TODO: My Nvidia card is not clearing UAVs with either Float or Uint variants.
+#ifdef HDMC_USES_HCC_MATH
+        const float* ClearColor = Target.GetClearColor( ).data( );
+#else
         const float* ClearColor = Target.GetClearColor( ).GetPtr( );
+#endif
         m_CommandList.ClearUnorderedAccessViewFloat( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 1, &ClearRect );
     }
 
     void GraphicsContext::ClearColor( ColorBuffer& Target, D3D12_RECT* Rect )
     {
         FlushResourceBarriers( );
+#ifdef HDMC_USES_HCC_MATH
+        m_CommandList.ClearRenderTargetView( Target.GetRTV( ), Target.GetClearColor( ).data( ), ( Rect == nullptr ) ? 0 : 1, Rect );
+#else
         m_CommandList.ClearRenderTargetView( Target.GetRTV( ), Target.GetClearColor( ).GetPtr( ), ( Rect == nullptr ) ? 0 : 1, Rect );
+#endif
     }
 
     void GraphicsContext::ClearColor( ColorBuffer& Target, float Colour[ 4 ], D3D12_RECT* Rect )

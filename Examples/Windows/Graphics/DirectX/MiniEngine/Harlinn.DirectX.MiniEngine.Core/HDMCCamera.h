@@ -36,25 +36,84 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         void SetTransform( const AffineTransform& xform );
         HDMC_EXPORT void SetTransform( const OrthogonalTransform& xform );
 
-        const Quaternion GetRotation( ) const { return m_CameraToWorld.GetRotation( ); }
-        const Vector3 GetRightVec( ) const { return m_Basis.GetX( ); }
-        const Vector3 GetUpVec( ) const { return m_Basis.GetY( ); }
-        const Vector3 GetForwardVec( ) const { return -m_Basis.GetZ( ); }
-        const Vector3 GetPosition( ) const { return m_CameraToWorld.GetTranslation( ); }
+        const Quaternion GetRotation( ) const 
+        { 
+            return m_CameraToWorld.GetRotation( ); 
+        }
+#ifdef HDMC_USES_HCC_MATH
+        const Vector3 GetRightVec( ) const 
+        { 
+            return m_Basis.simd[ 0 ]; 
+        }
+        const Vector3 GetUpVec( ) const 
+        { 
+            return m_Basis.simd[ 1 ]; 
+        }
+        const Vector3 GetForwardVec( ) const 
+        { 
+            return -Vector3(m_Basis.simd[ 2 ]); 
+        }
+#else
+        const Vector3 GetRightVec( ) const 
+        { 
+            return m_Basis.GetX( ); 
+        }
+        const Vector3 GetUpVec( ) const 
+        { 
+            return m_Basis.GetY( ); 
+        }
+        const Vector3 GetForwardVec( ) const 
+        { 
+            return -m_Basis.GetZ( ); 
+        }
+#endif
+        const Vector3 GetPosition( ) const 
+        { 
+            return m_CameraToWorld.GetTranslation( ); 
+        }
 
         // Accessors for reading the various matrices and frusta
-        const Matrix4& GetViewMatrix( ) const { return m_ViewMatrix; }
-        const Matrix4& GetProjMatrix( ) const { return m_ProjMatrix; }
-        const Matrix4& GetViewProjMatrix( ) const { return m_ViewProjMatrix; }
-        const Matrix4& GetReprojectionMatrix( ) const { return m_ReprojectMatrix; }
-        const Frustum& GetViewSpaceFrustum( ) const { return m_FrustumVS; }
-        const Frustum& GetWorldSpaceFrustum( ) const { return m_FrustumWS; }
+        const Matrix4& GetViewMatrix( ) const 
+        { 
+            return m_ViewMatrix; 
+        }
+        const Matrix4& GetProjMatrix( ) const 
+        { 
+            return m_ProjMatrix; 
+        }
+        const Matrix4& GetViewProjMatrix( ) const 
+        { 
+            return m_ViewProjMatrix; 
+        }
+        const Matrix4& GetReprojectionMatrix( ) const 
+        { 
+            return m_ReprojectMatrix; 
+        }
+        const Frustum& GetViewSpaceFrustum( ) const 
+        { 
+            return m_FrustumVS; 
+        }
+        const Frustum& GetWorldSpaceFrustum( ) const 
+        { 
+            return m_FrustumWS; 
+        }
 
     protected:
 
-        BaseCamera( ) : m_CameraToWorld( kIdentity ), m_Basis( kIdentity ) {}
+        BaseCamera( ) 
+            : m_CameraToWorld( kIdentity ), 
+#ifdef HDMC_USES_HCC_MATH
+              m_Basis( Matrix3::Identity( ) )
+#else
+              m_Basis( kIdentity ) 
+#endif
+        {
+        }
 
-        void SetProjMatrix( const Matrix4& ProjMat ) { m_ProjMatrix = ProjMat; }
+        void SetProjMatrix( const Matrix4& ProjMat ) 
+        { 
+            m_ProjMatrix = ProjMat; 
+        }
 
         OrthogonalTransform m_CameraToWorld;
 
@@ -65,26 +124,54 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         // to the right, +Y is up, and -Z is forward.  This has to match what the projection matrix expects, but you might
         // also need to know what the convention is if you work in view space in a shader.
         Matrix4 m_ViewMatrix;		// i.e. "World-to-View" matrix
-
         // The projection matrix transforms view space to clip space.  Once division by W has occurred, the final coordinates
         // can be transformed by the viewport matrix to screen space.  The projection matrix is determined by the screen aspect 
         // and camera field of view.  A projection matrix can also be orthographic.  In that case, field of view would be defined
         // in linear units, not angles.
         Matrix4 m_ProjMatrix;		// i.e. "View-to-Projection" matrix
-
         // A concatenation of the view and projection matrices.
         Matrix4 m_ViewProjMatrix;	// i.e.  "World-To-Projection" matrix.
-
         // The view-projection matrix from the previous frame
         Matrix4 m_PreviousViewProjMatrix;
-
         // Projects a clip-space coordinate to the previous frame (useful for temporal effects).
         Matrix4 m_ReprojectMatrix;
-
         Frustum m_FrustumVS;		// View-space view frustum
         Frustum m_FrustumWS;		// World-space view frustum
 
     };
+
+
+    inline void Dump( const char* name, const BaseCamera& baseCamera, const char* file, int line, const char* function )
+    {
+        PrintLn( "// {}:", name );
+
+        auto Rotation = baseCamera.GetRotation( );
+
+        PrintLn( "//   Rotation: {}", ToString( Rotation ) );
+        auto Position = baseCamera.GetPosition( );
+        PrintLn( "//   Position: {}", ToString( Position ) );
+        auto Right = baseCamera.GetRightVec( );
+        PrintLn( "//   Right: {}", ToString( Right ) );
+        auto Up = baseCamera.GetUpVec( );
+        PrintLn( "//   Up: {}", ToString( Up ) );
+        auto Forward = baseCamera.GetForwardVec( );
+        PrintLn( "//   Forward: {}", ToString( Forward ) );
+
+        const auto& ViewMatrix = baseCamera.GetViewMatrix( );
+        PrintLn( "//   ViewMatrix: {}", ToString( ViewMatrix ) );
+
+        const auto& ProjMatrix = baseCamera.GetProjMatrix( );
+        PrintLn( "//   ProjMatrix: {}", ToString( ProjMatrix ) );
+
+        const auto& ViewProjMatrix = baseCamera.GetViewProjMatrix( );
+        PrintLn( "//   ViewProjMatrix: {}", ToString( ViewProjMatrix ) );
+
+
+
+        PrintLn( "// Function: {} ", function );
+        PrintLn( "// Position: {}({})", file, line );
+    }
+
 
     class Camera : public BaseCamera
     {
@@ -93,15 +180,40 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 
         // Controls the view-to-projection matrix
         void SetPerspectiveMatrix( float verticalFovRadians, float aspectHeightOverWidth, float nearZClip, float farZClip );
-        void SetFOV( float verticalFovInRadians ) { m_VerticalFOV = verticalFovInRadians; UpdateProjMatrix( ); }
-        void SetAspectRatio( float heightOverWidth ) { m_AspectRatio = heightOverWidth; UpdateProjMatrix( ); }
-        void SetZRange( float nearZ, float farZ ) { m_NearClip = nearZ; m_FarClip = farZ; UpdateProjMatrix( ); }
-        void ReverseZ( bool enable ) { m_ReverseZ = enable; UpdateProjMatrix( ); }
+        void SetFOV( float verticalFovInRadians ) 
+        { 
+            m_VerticalFOV = verticalFovInRadians; UpdateProjMatrix( ); 
+        }
+        void SetAspectRatio( float heightOverWidth ) 
+        { 
+            m_AspectRatio = heightOverWidth; UpdateProjMatrix( ); 
+        }
+        void SetZRange( float nearZ, float farZ ) 
+        { 
+            m_NearClip = nearZ; m_FarClip = farZ; 
+            UpdateProjMatrix( ); 
+        }
+        void ReverseZ( bool enable ) 
+        { 
+            m_ReverseZ = enable; UpdateProjMatrix( ); 
+        }
 
-        float GetFOV( ) const { return m_VerticalFOV; }
-        float GetNearClip( ) const { return m_NearClip; }
-        float GetFarClip( ) const { return m_FarClip; }
-        float GetClearDepth( ) const { return m_ReverseZ ? 0.0f : 1.0f; }
+        float GetFOV( ) const 
+        { 
+            return m_VerticalFOV; 
+        }
+        float GetNearClip( ) const 
+        { 
+            return m_NearClip; 
+        }
+        float GetFarClip( ) const 
+        { 
+            return m_FarClip; 
+        }
+        float GetClearDepth( ) const 
+        { 
+            return m_ReverseZ ? 0.0f : 1.0f; 
+        }
 
     private:
 
@@ -136,7 +248,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
     inline void BaseCamera::SetRotation( Quaternion basisRotation )
     {
         m_CameraToWorld.SetRotation( Normalize( basisRotation ) );
+#ifdef HDMC_USES_HCC_MATH
+        m_Basis = Matrix3( m::Rotation( m_CameraToWorld.GetRotation( ) ).simd );
+#else
         m_Basis = Matrix3( m_CameraToWorld.GetRotation( ) );
+#endif
     }
 
     inline Camera::Camera( ) : m_ReverseZ( true ), m_InfiniteZ( false )

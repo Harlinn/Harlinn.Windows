@@ -90,7 +90,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     public:
         HDMC_EXPORT OrbitCamera( Math::Camera& camera,
             Math::BoundingSphere focus,
+#ifdef HDMC_USES_HCC_MATH
+            Math::Vector3 upVec = Math::Vector3( m::Traits::Constants::IdentityR2 ) );
+#else
             Math::Vector3 upVec = Math::Vector3( Math::kYUnitVector ) );
+#endif
 
         HDMC_EXPORT virtual void Update( float dt ) override;
 

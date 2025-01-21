@@ -26,7 +26,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     namespace Math
     {
         class Camera;
+#ifdef HDMC_USES_HCC_MATH
+        using Vector3 = m::Vector<float, 3>::Simd;
+#else
         class Vector3;
+#endif
     }
 
     namespace Sponza

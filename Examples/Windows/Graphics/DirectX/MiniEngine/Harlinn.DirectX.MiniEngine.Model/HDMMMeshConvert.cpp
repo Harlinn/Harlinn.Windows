@@ -219,7 +219,17 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
 
         const glTF::Material& material = *inPrim.material;
-
+#ifdef HDMC_USES_HCC_MATH
+        std::unique_ptr<::DirectX::XMFLOAT3[ ]> position;
+        std::unique_ptr<::DirectX::XMFLOAT3[ ]> normal;
+        std::unique_ptr<::DirectX::XMFLOAT4[ ]> tangent;
+        std::unique_ptr<::DirectX::XMFLOAT2[ ]> texcoord0;
+        std::unique_ptr<::DirectX::XMFLOAT2[ ]> texcoord1;
+        std::unique_ptr<::DirectX::XMFLOAT4[ ]> joints;
+        std::unique_ptr<::DirectX::XMFLOAT4[ ]> weights;
+        position.reset( new ::DirectX::XMFLOAT3[ vertexCount ] );
+        normal.reset( new ::DirectX::XMFLOAT3[ vertexCount ] );
+#else
         std::unique_ptr<XMFLOAT3[ ]> position;
         std::unique_ptr<XMFLOAT3[ ]> normal;
         std::unique_ptr<XMFLOAT4[ ]> tangent;
@@ -229,31 +239,45 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         std::unique_ptr<XMFLOAT4[ ]> weights;
         position.reset( new XMFLOAT3[ vertexCount ] );
         normal.reset( new XMFLOAT3[ vertexCount ] );
-
+#endif
         ASSERT_SUCCEEDED( vbr.Read( position.get( ), "POSITION", 0, vertexCount ) );
         {
             // Local space bounds
             Vector3 sphereCenterLS = ( Vector3( *( XMFLOAT3* )inPrim.minPos ) + Vector3( *( XMFLOAT3* )inPrim.maxPos ) ) * 0.5f;
-            Scalar maxRadiusLSSq( kZero );
+#ifdef HDMC_USES_HCC_MATH
+            Vector3 maxRadiusLSSq;
 
+#else
+            Scalar maxRadiusLSSq( kZero );
+#endif
             // Object space bounds
             // (This would be expressed better with an AffineTransform * Vector3)
             Vector3 sphereCenterOS = Vector3( localToObject * Vector4( sphereCenterLS ) );
+#ifdef HDMC_USES_HCC_MATH
+            Vector3 maxRadiusOSSq;
+#else
             Scalar maxRadiusOSSq( kZero );
-
+#endif
             outPrim.m_BBoxLS = AxisAlignedBox( kZero );
             outPrim.m_BBoxOS = AxisAlignedBox( kZero );
 
             for ( uint32_t v = 0; v < vertexCount/*maxIndex*/; ++v )
             {
+#ifdef HDMC_USES_HCC_MATH
+                Vector3 positionLS = Vector3( reinterpret_cast<const XMFLOAT3&>( position[ v ] ) );
+                maxRadiusLSSq = m::Max( maxRadiusLSSq, m::LengthSquared( sphereCenterLS - positionLS ) );
+#else
                 Vector3 positionLS = Vector3( position[ v ] );
                 maxRadiusLSSq = Max( maxRadiusLSSq, LengthSquare( sphereCenterLS - positionLS ) );
-
+#endif
                 outPrim.m_BBoxLS.AddPoint( positionLS );
-
+#ifdef HDMC_USES_HCC_MATH
+                Vector3 positionOS = Vector3( localToObject * Vector4( positionLS ) );
+                maxRadiusOSSq = m::Max( maxRadiusOSSq, m::LengthSquared( sphereCenterOS - positionOS ) );
+#else
                 Vector3 positionOS = Vector3( localToObject * Vector4( positionLS ) );
                 maxRadiusOSSq = Max( maxRadiusOSSq, LengthSquare( sphereCenterOS - positionOS ) );
-
+#endif
                 outPrim.m_BBoxOS.AddPoint( positionOS );
             }
 
@@ -278,19 +302,31 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         if ( HasUV0 )
         {
+#ifdef HDMC_USES_HCC_MATH
+            texcoord0.reset( new ::DirectX::XMFLOAT2[ vertexCount ] );
+#else
             texcoord0.reset( new XMFLOAT2[ vertexCount ] );
+#endif
             ASSERT_SUCCEEDED( vbr.Read( texcoord0.get( ), "TEXCOORD", 0, vertexCount ) );
         }
 
         if ( HasUV1 )
         {
+#ifdef HDMC_USES_HCC_MATH
+            texcoord1.reset( new ::DirectX::XMFLOAT2[ vertexCount ] );
+#else
             texcoord1.reset( new XMFLOAT2[ vertexCount ] );
+#endif
             ASSERT_SUCCEEDED( vbr.Read( texcoord1.get( ), "TEXCOORD", 1, vertexCount ) );
         }
 
         if ( HasTangents )
         {
+#ifdef HDMC_USES_HCC_MATH
+            tangent.reset( new ::DirectX::XMFLOAT4[ vertexCount ] );
+#else
             tangent.reset( new XMFLOAT4[ vertexCount ] );
+#endif
             ASSERT_SUCCEEDED( vbr.Read( tangent.get( ), "TANGENT", 0, vertexCount ) );
         }
         else
@@ -302,7 +338,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
             if ( HasUV0 && material.normalUV == 0 )
             {
+#ifdef HDMC_USES_HCC_MATH
+                tangent.reset( new ::DirectX::XMFLOAT4[ vertexCount ] );
+#else
                 tangent.reset( new XMFLOAT4[ vertexCount ] );
+#endif
                 if ( b32BitIndices )
                 {
                     hr = ComputeTangentFrame( ( uint32_t* )indices, indexCount / 3, position.get( ), normal.get( ), texcoord0.get( ),
@@ -316,7 +356,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             }
             else if ( HasUV1 && material.normalUV == 1 )
             {
+#ifdef HDMC_USES_HCC_MATH
+                tangent.reset( new ::DirectX::XMFLOAT4[ vertexCount ] );
+#else
                 tangent.reset( new XMFLOAT4[ vertexCount ] );
+#endif
                 if ( b32BitIndices )
                 {
                     hr = ComputeTangentFrame( ( uint32_t* )indices, indexCount / 3, position.get( ), normal.get( ), texcoord1.get( ),
@@ -334,8 +378,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         if ( HasSkin )
         {
+#ifdef HDMC_USES_HCC_MATH
+            joints.reset( new ::DirectX::XMFLOAT4[ vertexCount ] );
+            weights.reset( new ::DirectX::XMFLOAT4[ vertexCount ] );
+#else
             joints.reset( new XMFLOAT4[ vertexCount ] );
             weights.reset( new XMFLOAT4[ vertexCount ] );
+#endif
             ASSERT_SUCCEEDED( vbr.Read( joints.get( ), "BLENDINDICES", 0, vertexCount ) );
             ASSERT_SUCCEEDED( vbr.Read( weights.get( ), "BLENDWEIGHT", 0, vertexCount ) );
         }

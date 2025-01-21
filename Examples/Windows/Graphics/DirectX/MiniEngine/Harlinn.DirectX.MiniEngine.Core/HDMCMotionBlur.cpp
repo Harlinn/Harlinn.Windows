@@ -115,6 +115,20 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         float RcpHalfDimY = 2.0f / Height;
         float RcpZMagic = nearClip / ( farClip - nearClip );
 
+#ifdef HDMC_USES_HCC_MATH
+        Matrix4 preMult = ToMatrix4(
+            Vector4( RcpHalfDimX, 0.0f, 0.0f, 0.0f ),
+            Vector4( 0.0f, -RcpHalfDimY, 0.0f, 0.0f ),
+            Vector4( 0.0f, 0.0f, UseLinearZ ? RcpZMagic : 1.0f, 0.0f ),
+            Vector4( -1.0f, 1.0f, UseLinearZ ? -RcpZMagic : 0.0f, 1.0f )
+        );
+
+        Matrix4 postMult = ToMatrix4(
+            Vector4( 1.0f / RcpHalfDimX, 0.0f, 0.0f, 0.0f ),
+            Vector4( 0.0f, -1.0f / RcpHalfDimY, 0.0f, 0.0f ),
+            Vector4( 0.0f, 0.0f, 1.0f, 0.0f ),
+            Vector4( 1.0f / RcpHalfDimX, 1.0f / RcpHalfDimY, 0.0f, 1.0f ) );
+#else
         Matrix4 preMult = Matrix4(
             Vector4( RcpHalfDimX, 0.0f, 0.0f, 0.0f ),
             Vector4( 0.0f, -RcpHalfDimY, 0.0f, 0.0f ),
@@ -127,7 +141,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Vector4( 0.0f, -1.0f / RcpHalfDimY, 0.0f, 0.0f ),
             Vector4( 0.0f, 0.0f, 1.0f, 0.0f ),
             Vector4( 1.0f / RcpHalfDimX, 1.0f / RcpHalfDimY, 0.0f, 1.0f ) );
-
+#endif
 
         Matrix4 CurToPrevXForm = postMult * reprojectionMatrix * preMult;
 
@@ -169,7 +183,20 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         float RcpHalfDimX = 2.0f / Width;
         float RcpHalfDimY = 2.0f / Height;
         float RcpZMagic = nearClip / ( farClip - nearClip );
+#ifdef HDMC_USES_HCC_MATH
+        Matrix4 preMult = ToMatrix4(
+            Vector4( RcpHalfDimX, 0.0f, 0.0f, 0.0f ),
+            Vector4( 0.0f, -RcpHalfDimY, 0.0f, 0.0f ),
+            Vector4( 0.0f, 0.0f, UseLinearZ ? RcpZMagic : 1.0f, 0.0f ),
+            Vector4( -1.0f, 1.0f, UseLinearZ ? -RcpZMagic : 0.0f, 1.0f )
+        );
 
+        Matrix4 postMult = ToMatrix4(
+            Vector4( 1.0f / RcpHalfDimX, 0.0f, 0.0f, 0.0f ),
+            Vector4( 0.0f, -1.0f / RcpHalfDimY, 0.0f, 0.0f ),
+            Vector4( 0.0f, 0.0f, 1.0f, 0.0f ),
+            Vector4( 1.0f / RcpHalfDimX, 1.0f / RcpHalfDimY, 0.0f, 1.0f ) );
+#else
         Matrix4 preMult = Matrix4(
             Vector4( RcpHalfDimX, 0.0f, 0.0f, 0.0f ),
             Vector4( 0.0f, -RcpHalfDimY, 0.0f, 0.0f ),
@@ -182,7 +209,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Vector4( 0.0f, -1.0f / RcpHalfDimY, 0.0f, 0.0f ),
             Vector4( 0.0f, 0.0f, 1.0f, 0.0f ),
             Vector4( 1.0f / RcpHalfDimX, 1.0f / RcpHalfDimY, 0.0f, 1.0f ) );
-
+#endif
         Matrix4 CurToPrevXForm = postMult * reprojectionMatrix * preMult;
 
         Context.SetDynamicConstantBufferView( 3, sizeof( CurToPrevXForm ), &CurToPrevXForm );

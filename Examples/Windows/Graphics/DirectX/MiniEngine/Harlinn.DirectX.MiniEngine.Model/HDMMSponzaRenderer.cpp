@@ -156,9 +156,17 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         ParticleEffects::InitFromJSON( L"Sponza/particles.json" );
 
+#ifdef HDMC_USES_HCC_MATH
+        float modelRadius = ScalarLength( m_Model.GetBoundingBox( ).GetDimensions( ) ) * 0.5f;
+#else
         float modelRadius = Length( m_Model.GetBoundingBox( ).GetDimensions( ) ) * 0.5f;
+#endif
         const Vector3 eye = m_Model.GetBoundingBox( ).GetCenter( ) + Vector3( modelRadius * 0.5f, 0.0f, 0.0f );
+#ifdef HDMC_USES_HCC_MATH
+        Camera.SetEyeAtUp( eye, Vector3( kZero ), Vector3( m::Traits::Constants::IdentityR2 ) );
+#else
         Camera.SetEyeAtUp( eye, Vector3( kZero ), Vector3( kYUnitVector ) );
+#endif
 
         Lighting::CreateRandomLights( m_Model.GetBoundingBox( ).GetMin( ), m_Model.GetBoundingBox( ).GetMax( ) );
     }
@@ -185,7 +193,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         } vsConstants;
         vsConstants.modelToProjection = ViewProjMat;
         vsConstants.modelToShadow = m_SunShadow.GetShadowMatrix( );
+#ifdef HDMC_USES_HCC_MATH
+        vsConstants.viewerPos = viewerPos;
+#else
         XMStoreFloat3( &vsConstants.viewerPos, viewerPos );
+#endif
 
         gfxContext.SetDynamicConstantBufferView( Renderer::kMeshConstants, sizeof( vsConstants ), &vsConstants );
 
@@ -279,8 +291,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         } psConstants;
 
         psConstants.sunDirection = m_SunDirection;
+#ifdef HDMC_USES_HCC_MATH
+        psConstants.sunLight = Vector3( 1.0f, 1.0f, 1.0f ) * (float)m_SunLightIntensity;
+        psConstants.ambientLight = Vector3( 1.0f, 1.0f, 1.0f ) * ( float )m_AmbientIntensity;
+#else
         psConstants.sunLight = Vector3( 1.0f, 1.0f, 1.0f ) * m_SunLightIntensity;
         psConstants.ambientLight = Vector3( 1.0f, 1.0f, 1.0f ) * m_AmbientIntensity;
+#endif
         psConstants.ShadowTexelSize[ 0 ] = 1.0f / g_ShadowBuffer.GetWidth( );
         psConstants.InvTileDim[ 0 ] = 1.0f / Lighting::LightGridDim;
         psConstants.InvTileDim[ 1 ] = 1.0f / Lighting::LightGridDim;

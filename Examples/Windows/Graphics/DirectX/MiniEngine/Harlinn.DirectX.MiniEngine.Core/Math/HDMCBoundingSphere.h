@@ -31,8 +31,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
             : m_repr( x, y, z, r ) 
         {}
 #ifdef HDMC_USES_HCC_MATH
+        /*
         BoundingSphere( const std::array<float,4>& unaligned_array )
             : m_repr( unaligned_array )
+        {
+        }
+        */
+        BoundingSphere( const float* unaligned_array )
+            : m_repr( m::Traits::UnalignedLoad( unaligned_array ) )
         {
         }
 #else
@@ -44,7 +50,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         BoundingSphere( const Vector3& center, const Scalar& radius )
             : m_repr( center.simd )
         {
-            m_repr.SetW( radius );
+            m_repr.SetW( radius.simd );
         }
 #else
         BoundingSphere( const Vector3& center, const Scalar& radius )
@@ -67,10 +73,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         explicit BoundingSphere( const Vector4& sphere )
             : m_repr( sphere )
         { }
+
+        explicit BoundingSphere( const XMFLOAT4& f4 )
+            : m_repr( f4 )
+        { }
+
         explicit BoundingSphere( const m::SIMDType& v )
             : m_repr( v )
-        {
-        }
+        { }
 #else
         explicit BoundingSphere( const XMVECTOR& v ) 
             : m_repr( v ) 
@@ -87,15 +97,28 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
             return m_repr;
         }
 
+#ifdef HDMC_USES_HCC_MATH
+        Vector3 GetCenter( void ) const
+        {
+            return Vector3( SetWToZero( m_repr.simd ) );
+        }
+#else
         Vector3 GetCenter( void ) const 
         { 
             return Vector3( m_repr ); 
         }
+#endif
 #ifdef HDMC_USES_HCC_MATH
         Scalar GetRadius( void ) const
         {
             return Scalar( m_repr.W().simd );
         }
+
+        m::Vector<float, 4> Values( ) const
+        {
+            return m::Vector<float, 4>( m_repr );
+        }
+
 #else
         Scalar GetRadius( void ) const 
         { 

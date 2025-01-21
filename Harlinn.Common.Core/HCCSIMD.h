@@ -2261,11 +2261,11 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_set1_ps( value );
+                return _mm_broadcast_ss( &value );
             }
             else
             {
-                return _mm256_set1_ps( value );
+                return _mm256_broadcast_ss( &value );
             }
         }
 
@@ -2328,7 +2328,7 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_set_ps( 0.f, 0.f, 0.f, value1 );
+                return _mm_set_ss( value1 );
             }
             else
             {
@@ -2391,6 +2391,56 @@ namespace Harlinn::Common::Core::SIMD
         {
             return _mm256_set_ps( value8, value7, value6, value5, value4, value3, value2, value1 );
         }
+
+        static SIMDType SetX( SIMDType v, Type value ) 
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_blend_ps( v, _mm_broadcast_ss( &value ), 0b0001 );
+            }
+            else
+            {
+                return _mm256_blend_ps( v, _mm256_broadcast_ss( &value ), 0b0001 );
+            }
+        }
+
+        static SIMDType SetY( SIMDType v, Type value )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_blend_ps( v, _mm_broadcast_ss( &value ), 0b0010 );
+            }
+            else
+            {
+                return _mm256_blend_ps( v, _mm256_broadcast_ss( &value ), 0b0010 );
+            }
+        }
+
+        static SIMDType SetZ( SIMDType v, Type value )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_blend_ps( v, _mm_broadcast_ss( &value ), 0b0100 );
+            }
+            else
+            {
+                return _mm256_blend_ps( v, _mm256_broadcast_ss( &value ), 0b0100 );
+            }
+        }
+
+        static SIMDType SetW( SIMDType v, Type value )
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_blend_ps( v, _mm_broadcast_ss( &value ), 0b1000 );
+            }
+            else
+            {
+                return _mm256_blend_ps( v, _mm256_broadcast_ss( &value ), 0b1000 );
+            }
+        }
+        
+        
 
 
         static SIMDType Load( const Type* src ) noexcept

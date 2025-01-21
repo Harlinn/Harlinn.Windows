@@ -3,15 +3,20 @@
 #define HDMCDEF_H_
 
 #include <HWDef.h>
+
+#define HDMC_USES_HCC_MATH 1
+#ifdef HDMC_USES_HCC_MATH
+#define HDMC_USES_HCC_MATH_DEBUG 1
+#include <HCCVectorMath.h>
+#include <HWColor.h>
+#endif
+
+
 #include <HWGraphicsD3D12.h>
 #include <HWDXGI.h>
 #include <d3dx12.h>
 #include <HCCThread.h>
 
-//#define HDMC_USES_HCC_MATH 1
-#ifdef HDMC_USES_HCC_MATH
-#include <HCCVectorMath.h>
-#endif
 
 #ifdef BUILDING_HARLINN_DIRECTX_MINIENGINE_CORE
 #define HDMC_EXPORT __declspec(dllexport)
@@ -32,7 +37,12 @@
 #define HDMC_INLINE inline
 #endif
 
-
+#define HDMC_DUMPING 1
+#ifdef HDMC_DUMPING
+#define HDMC_DUMP( n ) ::Harlinn::Windows::DirectX::MiniEngine::Math::Dump( #n, n, __FILE__, __LINE__, __FUNCTION__ )
+#else
+#define HDMC_DUMP( n )
+#endif
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
@@ -41,12 +51,16 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
         namespace m
         {
-            using namespace Harlinn::Common::Core::Math;
+            using namespace ::Harlinn::Common::Core::Math;
 
             using Traits = SIMD::Traits<float, 4>;
             using SIMDType = typename Traits::SIMDType;
         }
     }
+    using XMFLOAT2 = Math::m::Vector<float, 2>;
+    using XMFLOAT3 = Math::m::Vector<float, 3>;
+    using XMFLOAT4 = Math::m::Vector<float, 4>;
+    using XMUINT4 = Math::m::Vector<UInt32, 4>;
 #else
     using XMVECTOR = ::DirectX::XMVECTOR;
     using FXMVECTOR = ::DirectX::FXMVECTOR;
@@ -60,20 +74,20 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     using XMUINT3 = ::DirectX::XMUINT3;
     using XMUINT4 = ::DirectX::XMUINT4;
 #endif    
-    using D3DBlob = Harlinn::Windows::Graphics::D3DBlob;
-    using D3D12CommandAllocator = Harlinn::Windows::Graphics::D3D12CommandAllocator;
-    using D3D12CommandList = Harlinn::Windows::Graphics::D3D12CommandList;
-    using D3D12CommandQueue = Harlinn::Windows::Graphics::D3D12CommandQueue;
-    using D3D12CommandSignature = Harlinn::Windows::Graphics::D3D12CommandSignature;
-    using D3D12DescriptorHeap = Harlinn::Windows::Graphics::D3D12DescriptorHeap;
-    using D3D12Device = Harlinn::Windows::Graphics::D3D12Device;
-    using D3D12Fence = Harlinn::Windows::Graphics::D3D12Fence;
-    using D3D12GraphicsCommandList = Harlinn::Windows::Graphics::D3D12GraphicsCommandList;
-    using D3D12Heap = Harlinn::Windows::Graphics::D3D12Heap;
-    using D3D12PipelineState = Harlinn::Windows::Graphics::D3D12PipelineState;
-    using D3D12QueryHeap = Harlinn::Windows::Graphics::D3D12QueryHeap;
-    using D3D12Resource = Harlinn::Windows::Graphics::D3D12Resource;
-    using D3D12RootSignature = Harlinn::Windows::Graphics::D3D12RootSignature;
+    using D3DBlob = ::Harlinn::Windows::Graphics::D3DBlob;
+    using D3D12CommandAllocator = ::Harlinn::Windows::Graphics::D3D12CommandAllocator;
+    using D3D12CommandList = ::Harlinn::Windows::Graphics::D3D12CommandList;
+    using D3D12CommandQueue = ::Harlinn::Windows::Graphics::D3D12CommandQueue;
+    using D3D12CommandSignature = ::Harlinn::Windows::Graphics::D3D12CommandSignature;
+    using D3D12DescriptorHeap = ::Harlinn::Windows::Graphics::D3D12DescriptorHeap;
+    using D3D12Device = ::Harlinn::Windows::Graphics::D3D12Device;
+    using D3D12Fence = ::Harlinn::Windows::Graphics::D3D12Fence;
+    using D3D12GraphicsCommandList = ::Harlinn::Windows::Graphics::D3D12GraphicsCommandList;
+    using D3D12Heap = ::Harlinn::Windows::Graphics::D3D12Heap;
+    using D3D12PipelineState = ::Harlinn::Windows::Graphics::D3D12PipelineState;
+    using D3D12QueryHeap = ::Harlinn::Windows::Graphics::D3D12QueryHeap;
+    using D3D12Resource = ::Harlinn::Windows::Graphics::D3D12Resource;
+    using D3D12RootSignature = ::Harlinn::Windows::Graphics::D3D12RootSignature;
     
 
 }

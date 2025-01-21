@@ -19,6 +19,10 @@
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
+#ifdef HDMC_USES_HCC_MATH
+    using Color = ::Harlinn::Windows::Graphics::Color;
+
+#else
 
     class Color
     {
@@ -154,7 +158,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         uint32_t a = ::DirectX::XMVectorGetIntW( result );
         return a << 24 | b << 16 | g << 8 | r;
     }
+#endif
 }
-
-
 #endif

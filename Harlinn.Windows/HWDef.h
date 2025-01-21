@@ -45,9 +45,6 @@
 #define HW_INLINE inline
 #endif
 
-namespace Harlinn::Common::Core
-{
-}
 namespace Harlinn::Windows
 {
     using namespace Harlinn::Common::Core;

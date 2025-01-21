@@ -37,9 +37,17 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_FrustumCorners[ kFarLowerRight ] = Vector3( FarX, -FarY, -FarClip );	// Far lower right
         m_FrustumCorners[ kFarUpperRight ] = Vector3( FarX, FarY, -FarClip );	// Far upper right
 
+#ifdef HDMC_USES_HCC_MATH
+        const float NHx = m::ReciprocalSqrt( 1.0f + HTan * HTan );
+#else
         const float NHx = RecipSqrt( 1.0f + HTan * HTan );
+#endif
         const float NHz = -NHx * HTan;
+#ifdef HDMC_USES_HCC_MATH
+        const float NVy = m::ReciprocalSqrt( 1.0f + VTan * VTan );
+#else
         const float NVy = RecipSqrt( 1.0f + VTan * VTan );
+#endif
         const float NVz = -NVy * VTan;
 
         // Define the bounding planes

@@ -502,8 +502,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             PreparePresentHDR( );
         else
             PreparePresentSDR( );
-
+#ifdef HDMC_USES_HCC_MATH
+        UINT PresentInterval = s_EnableVSync ? std::min( 4, ( int )m::Round( s_FrameTime * 60.0f ) ) : 0;
+#else
         UINT PresentInterval = s_EnableVSync ? std::min( 4, ( int )Round( s_FrameTime * 60.0f ) ) : 0;
+#endif
 
         s_SwapChain1.Present( PresentInterval, 0 );
 

@@ -19,6 +19,26 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 {
 #ifdef HDMC_USES_HCC_MATH
     using Matrix4 = m::SquareMatrix<float, 4>::Simd;
+
+    INLINE Matrix4 ToMatrix4( const Matrix3& xyz, Vector3 w )
+    {
+        Matrix4 result;
+        result.simd[ 0 ] = SetWToZero( xyz.simd[ 0 ] );
+        result.simd[ 1 ] = SetWToZero( xyz.simd[ 1 ] );
+        result.simd[ 2 ] = SetWToZero( xyz.simd[ 2 ] );
+        result.simd[ 3 ] = SetWToOne( w.simd );
+        return result;
+    }
+
+    INLINE Matrix4 ToMatrix4( const AffineTransform& xform ) 
+    { 
+        return ToMatrix4( xform.GetBasis( ), xform.GetTranslation( ) );
+    }
+    INLINE Matrix4 ToMatrix4( const OrthogonalTransform& xform ) 
+    { 
+        return ToMatrix4( ToMatrix3( xform.GetRotation( ) ), xform.GetTranslation( ) ); 
+    }
+
 #else
     __declspec( align( 16 ) ) class Matrix4
     {
@@ -54,8 +74,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         INLINE Matrix4( const AffineTransform& xform ) { *this = Matrix4( xform.GetBasis( ), xform.GetTranslation( ) ); }
         INLINE Matrix4( const OrthogonalTransform& xform ) { *this = Matrix4( Matrix3( xform.GetRotation( ) ), xform.GetTranslation( ) ); }
         INLINE explicit Matrix4( const XMMATRIX& mat ) { m_mat = mat; }
-        INLINE explicit Matrix4( EIdentityTag ) { m_mat = ::DirectX::XMMatrixIdentity( ); }
-        INLINE explicit Matrix4( EZeroTag ) { m_mat.r[ 0 ] = m_mat.r[ 1 ] = m_mat.r[ 2 ] = m_mat.r[ 3 ] = SplatZero( ); }
+        INLINE explicit Matrix4( EIdentityTag ) 
+        { 
+            m_mat = ::DirectX::XMMatrixIdentity( ); 
+        }
+        INLINE explicit Matrix4( EZeroTag ) 
+        { 
+            m_mat.r[ 0 ] = m_mat.r[ 1 ] = m_mat.r[ 2 ] = m_mat.r[ 3 ] = SplatZero( ); 
+        }
 
         INLINE const Matrix3& Get3x3( ) const { return ( const Matrix3& )*this; }
         INLINE void Set3x3( const Matrix3& xyz )
@@ -88,4 +114,55 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         XMMATRIX m_mat;
     };
 #endif
+
+    inline std::string ToString( const Matrix4& m )
+    {
+#ifdef HDMC_USES_HCC_MATH
+        m::Vector<float, 4> matrix[ 4 ]{ Vector4( m.simd[ 0 ] ),
+            Vector4( m.simd[ 1 ] ),
+            Vector4( m.simd[ 2 ] ),
+            Vector4( m.simd[ 3 ] ) };
+#else
+        ::DirectX::XMFLOAT4A matrix[ 4 ];
+        ::DirectX::XMStoreFloat4A( &matrix[ 0 ], m.GetX( ) );
+        ::DirectX::XMStoreFloat4A( &matrix[ 1 ], m.GetY( ) );
+        ::DirectX::XMStoreFloat4A( &matrix[ 2 ], m.GetZ( ) );
+        ::DirectX::XMStoreFloat4A( &matrix[ 3 ], m.GetW( ) );
+#endif
+        return std::format( "[ [ {}, {}, {}, {} ], [ {}, {}, {}, {} ], [ {}, {}, {}, {} ], [ {}, {}, {}, {} ] ]",
+            matrix[ 0 ].x, matrix[ 0 ].y, matrix[ 0 ].z, matrix[ 0 ].w,
+            matrix[ 1 ].x, matrix[ 1 ].y, matrix[ 1 ].z, matrix[ 1 ].w,
+            matrix[ 2 ].x, matrix[ 2 ].y, matrix[ 2 ].z, matrix[ 2 ].w,
+            matrix[ 3 ].x, matrix[ 3 ].y, matrix[ 3 ].z, matrix[ 3 ].w );
+
+    }
+
+    inline void Dump( const char* name, const Matrix4& m, const char* file, int line, const char* function )
+    {
+#ifdef HDMC_USES_HCC_MATH
+        m::Vector<float, 4> matrix[ 4 ]{ Vector4( m.simd[ 0 ] ), 
+            Vector4( m.simd[ 1 ] ), 
+            Vector4( m.simd[ 2 ] ),
+            Vector4( m.simd[ 3 ] ) };
+#else
+        ::DirectX::XMFLOAT4A matrix[ 4 ];
+        ::DirectX::XMStoreFloat4A( &matrix[ 0 ], m.GetX( ) );
+        ::DirectX::XMStoreFloat4A( &matrix[ 1 ], m.GetY( ) );
+        ::DirectX::XMStoreFloat4A( &matrix[ 2 ], m.GetZ( ) );
+        ::DirectX::XMStoreFloat4A( &matrix[ 3 ], m.GetW( ) );
+#endif
+
+        PrintLn( "// {}:", name );
+        PrintLn( "// [ {}, {}, {}, {} ]", matrix[ 0 ].x, matrix[ 0 ].y, matrix[ 0 ].z, matrix[ 0 ].w );
+        PrintLn( "// [ {}, {}, {}, {} ]", matrix[ 1 ].x, matrix[ 1 ].y, matrix[ 1 ].z, matrix[ 1 ].w );
+        PrintLn( "// [ {}, {}, {}, {} ]", matrix[ 2 ].x, matrix[ 2 ].y, matrix[ 2 ].z, matrix[ 2 ].w );
+        PrintLn( "// [ {}, {}, {}, {} ]", matrix[ 3 ].x, matrix[ 3 ].y, matrix[ 3 ].z, matrix[ 3 ].w );
+        PrintLn( "// Function: {} ", function );
+        PrintLn( "// Position: {}({})", file, line );
+        PrintLn( "SquareMatrix<float, 4> {}( {}, {}, {}, {},", name, matrix[ 0 ].x, matrix[ 0 ].y, matrix[ 0 ].z, matrix[ 0 ].w );
+        PrintLn( "                           {}, {}, {}, {},", matrix[ 1 ].x, matrix[ 1 ].y, matrix[ 1 ].z, matrix[ 1 ].w );
+        PrintLn( "                           {}, {}, {}, {},", matrix[ 2 ].x, matrix[ 2 ].y, matrix[ 2 ].z, matrix[ 2 ].w );
+        PrintLn( "                           {}, {}, {}, {} );", matrix[ 3 ].x, matrix[ 3 ].y, matrix[ 3 ].z, matrix[ 3 ].w );
+    }
+
 }

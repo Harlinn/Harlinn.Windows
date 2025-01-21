@@ -51,13 +51,21 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             const Mesh& mesh = *( const Mesh* )pMesh;
 
             const ScaleAndTranslation& sphereXform = sphereTransforms[ mesh.meshCBV ];
+#ifdef HDMC_USES_HCC_MATH
+            BoundingSphere sphereLS( mesh.bounds );
+#else
             BoundingSphere sphereLS( ( const XMFLOAT4* )mesh.bounds );
+#endif
             BoundingSphere sphereWS = sphereXform * sphereLS;
             BoundingSphere sphereVS = BoundingSphere( viewMat * sphereWS.GetCenter( ), sphereWS.GetRadius( ) );
 
             if ( frustum.IntersectSphere( sphereVS ) )
             {
+#ifdef HDMC_USES_HCC_MATH
+                float distance = Math::m::First((-sphereVS.GetCenter( ) ).Z( )) - Math::m::First(sphereVS.GetRadius( ));
+#else
                 float distance = -sphereVS.GetCenter( ).GetZ( ) - sphereVS.GetRadius( );
+#endif
                 sorter.AddMesh( mesh, distance,
                     meshConstants.GetGpuVirtualAddress( ) + sizeof( MeshConstants ) * mesh.meshCBV,
                     m_MaterialConstants.GetGpuVirtualAddress( ) + sizeof( MaterialConstants ) * mesh.materialCBV,
@@ -178,7 +186,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
                 if ( node.staleMatrix )
                 {
                     node.staleMatrix = false;
+#ifdef HDMC_USES_HCC_MATH
+                    Set3x3( ToMatrix3( node.rotation ) * Matrix3MakeScale( node.scale ), node.xform );
+#else
                     node.xform.Set3x3( Matrix3( node.rotation ) * Matrix3::MakeScale( node.scale ) );
+#endif
                 }
             }
         }
@@ -199,13 +211,26 @@ namespace Harlinn::Windows::DirectX::MiniEngine
                 // should not read from it.
                 MeshConstants& cbv = cb[ Node->matrixIdx ];
                 cbv.World = xform;
+#ifdef HDMC_USES_HCC_MATH
+                auto xform3x3 = ToMatrix3( xform );
+                cbv.WorldIT = InverseTranspose( xform3x3 );
+
+                Scalar scaleXSqr = LengthSquared( Vector3( xform3x3.simd[ 0 ] ) );
+                Scalar scaleYSqr = LengthSquared( Vector3( xform3x3.simd[ 1 ] ) );
+                Scalar scaleZSqr = LengthSquared( Vector3( xform3x3.simd[ 2 ] ) );
+#else
                 cbv.WorldIT = InverseTranspose( xform.Get3x3( ) );
 
                 Scalar scaleXSqr = LengthSquare( ( Vector3 )xform.GetX( ) );
                 Scalar scaleYSqr = LengthSquare( ( Vector3 )xform.GetY( ) );
                 Scalar scaleZSqr = LengthSquare( ( Vector3 )xform.GetZ( ) );
+#endif
                 Scalar sphereScale = Sqrt( Max( Max( scaleXSqr, scaleYSqr ), scaleZSqr ) );
+#ifdef HDMC_USES_HCC_MATH
+                boundingSphereTransforms[ Node->matrixIdx ] = ScaleAndTranslation( Vector3( xform.simd[3] ), sphereScale );
+#else
                 boundingSphereTransforms[ Node->matrixIdx ] = ScaleAndTranslation( ( Vector3 )xform.GetW( ), sphereScale );
+#endif
             }
 
             // If the next node will be a descendent, replace the parent matrix with our new matrix
@@ -235,7 +260,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
             Joint& joint = m_Skeleton[ i ];
             joint.posXform = cb[ m_Model->m_JointIndices[ i ] ].World * m_Model->m_JointIBMs[ i ];
+#ifdef HDMC_USES_HCC_MATH
+            joint.nrmXform = InverseTranspose( ToMatrix3( joint.posXform ) );
+#else
             joint.nrmXform = InverseTranspose( joint.posXform.Get3x3( ) );
+#endif
         }
 
         m_MeshConstantsCPU.Unmap( );

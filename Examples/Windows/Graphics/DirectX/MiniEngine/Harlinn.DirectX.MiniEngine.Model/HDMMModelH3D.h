@@ -191,7 +191,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return m_pMaterial[ materialIdx ];
         }
 
-        const Math::AxisAlignedBox& GetBoundingBox( ) const { return m_Header.boundingBox; }
+        const Math::AxisAlignedBox& GetBoundingBox( ) const 
+        { 
+            return m_Header.boundingBox; 
+        }
 
         uint32_t GetVertexStride( ) const { return m_VertexStride; }
         const D3D12_VERTEX_BUFFER_VIEW& GetVertexBuffer( ) const { return m_VertexBuffer; }

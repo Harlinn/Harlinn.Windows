@@ -23,10 +23,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 #ifdef HDMC_USES_HCC_MATH
         using Quaternion = m::Quaternion<float>::Simd;
 
-        Quaternion Lerp( Quaternion a, Quaternion b, float t )
+        INLINE Quaternion Lerp( Quaternion a, Quaternion b, float t )
         {
-            Vector3 av( a.simd );
-            Vector3 bv( b.simd );
+            Vector4 av( a.simd );
+            Vector4 bv( b.simd );
             auto result = m::Lerp(av, bv, t );
             return m::Normalize( Quaternion( result.simd ) );
         }
@@ -39,6 +39,17 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         { 
             return m::Slerp( a, b, t  ); 
         }
+
+        INLINE Vector3 operator* ( const Quaternion& q, const Vector3& rhs )
+        { 
+            return m::Rotate( rhs, q );
+        }
+
+        INLINE Quaternion operator~ ( const Quaternion& q ) 
+        { 
+            return m::Conjugate( q );
+        }
+
 #else
         class Quaternion
         {
@@ -69,5 +80,40 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         INLINE Quaternion Slerp( Quaternion a, Quaternion b, float t ) { return Normalize( Quaternion( ::DirectX::XMQuaternionSlerp( a, b, t ) ) ); }
         INLINE Quaternion Lerp( Quaternion a, Quaternion b, float t ) { return Normalize( Quaternion( ::DirectX::XMVectorLerp( a, b, t ) ) ); }
 #endif
+        inline std::string ToString( const Quaternion& q )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m::Vector<float, 4> vec( Vector4( q.simd ) );
+#else
+            ::DirectX::XMFLOAT4A vec;
+            ::DirectX::XMStoreFloat4A( &vec, q );
+#endif
+            return std::format( "[ {}, {}, {}, {} ]", vec.x, vec.y, vec.z, vec.w );
+
+        }
+
+        inline void Dump( const char* name, const Quaternion& q, const char* file, int line, const char* function )
+        {
+#ifdef HDMC_USES_HCC_MATH
+            m::Quaternion<float> vec( q );
+#else
+            ::DirectX::XMFLOAT4A vec;
+            ::DirectX::XMStoreFloat4A( &vec, q );
+#endif
+
+            PrintLn( "// {}:", name );
+#ifdef HDMC_USES_HCC_MATH
+            PrintLn( "// [ {}, {}, {}, {} ]", vec.v.x, vec.v.y, vec.v.z, vec.w );
+#else
+            PrintLn( "// [ {}, {}, {}, {} ]", vec.x, vec.y, vec.z, vec.w );
+#endif
+            PrintLn( "// Function: {} ", function );
+            PrintLn( "// Position: {}({})", file, line );
+#ifdef HDMC_USES_HCC_MATH
+            PrintLn( "Quaternion<float> {}( {}, {}, {}, {} );", name, vec.v.x, vec.v.y, vec.v.z, vec.w );
+#else
+            PrintLn( "Quaternion<float> {}( {}, {}, {}, {} );", name, vec.x, vec.y, vec.z, vec.w );
+#endif
+        }
     }
 }

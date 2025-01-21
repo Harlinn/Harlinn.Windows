@@ -77,15 +77,27 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             ParticleSpawnData& SpawnData = pSpawnData[ i ];
             SpawnData.AgeRate = 1.0f / s_RNG.NextFloat( m_EffectProperties.LifeMinMax.x, m_EffectProperties.LifeMinMax.y );
             float horizontalAngle = s_RNG.NextFloat( ::DirectX::XM_2PI );
+#ifdef HDMC_USES_HCC_MATH
+            float horizontalVelocity = s_RNG.NextFloat( First( m_EffectProperties.Velocity.X( ) ), First( m_EffectProperties.Velocity.Y( ) ) );
+#else
             float horizontalVelocity = s_RNG.NextFloat( m_EffectProperties.Velocity.GetX( ), m_EffectProperties.Velocity.GetY( ) );
+#endif
             SpawnData.Velocity.x = horizontalVelocity * cos( horizontalAngle );
+#ifdef HDMC_USES_HCC_MATH
+            SpawnData.Velocity.y = s_RNG.NextFloat( First( m_EffectProperties.Velocity.Z( ) ), First( m_EffectProperties.Velocity.W( ) ) );
+#else
             SpawnData.Velocity.y = s_RNG.NextFloat( m_EffectProperties.Velocity.GetZ( ), m_EffectProperties.Velocity.GetW( ) );
+#endif
             SpawnData.Velocity.z = horizontalVelocity * sin( horizontalAngle );
 
             SpawnData.SpreadOffset = RandSpread( m_EffectProperties.Spread );
-
+#ifdef HDMC_USES_HCC_MATH
+            SpawnData.StartSize = s_RNG.NextFloat( First( m_EffectProperties.Size.X( ) ), First( m_EffectProperties.Size.Y( ) ) );
+            SpawnData.EndSize = s_RNG.NextFloat( First( m_EffectProperties.Size.Z( ) ), First( m_EffectProperties.Size.W( ) ) );
+#else
             SpawnData.StartSize = s_RNG.NextFloat( m_EffectProperties.Size.GetX( ), m_EffectProperties.Size.GetY( ) );
             SpawnData.EndSize = s_RNG.NextFloat( m_EffectProperties.Size.GetZ( ), m_EffectProperties.Size.GetW( ) );
+#endif
             SpawnData.StartColor = RandColor( m_EffectProperties.MinStartColor, m_EffectProperties.MaxStartColor );
             SpawnData.EndColor = RandColor( m_EffectProperties.MinEndColor, m_EffectProperties.MaxEndColor );
             SpawnData.Mass = s_RNG.NextFloat( m_EffectProperties.MassMinMax.x, m_EffectProperties.MassMinMax.y );
