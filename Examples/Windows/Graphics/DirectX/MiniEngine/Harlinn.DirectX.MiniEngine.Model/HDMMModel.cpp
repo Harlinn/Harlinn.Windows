@@ -203,7 +203,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
             Matrix4 xform = Node->xform;
             if ( !Node->skeletonRoot )
+            {
+#ifdef HDMC_USES_HCC_MATH
+                xform = xform * ParentMatrix;
+#else
                 xform = ParentMatrix * xform;
+#endif
+            }
 
             // Concatenate the transform with the parent's matrix and update the matrix list
             {
@@ -259,10 +265,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         for ( uint32_t i = 0; i < m_Model->m_NumJoints; ++i )
         {
             Joint& joint = m_Skeleton[ i ];
-            joint.posXform = cb[ m_Model->m_JointIndices[ i ] ].World * m_Model->m_JointIBMs[ i ];
+            
 #ifdef HDMC_USES_HCC_MATH
+            joint.posXform = m_Model->m_JointIBMs[ i ] * cb[ m_Model->m_JointIndices[ i ] ].World;
             joint.nrmXform = InverseTranspose( ToMatrix3( joint.posXform ) );
 #else
+            joint.posXform = cb[ m_Model->m_JointIndices[ i ] ].World * m_Model->m_JointIBMs[ i ];
             joint.nrmXform = InverseTranspose( joint.posXform.Get3x3( ) );
 #endif
         }

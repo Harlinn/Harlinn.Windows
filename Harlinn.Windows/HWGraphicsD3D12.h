@@ -2332,6 +2332,11 @@ namespace Harlinn::Windows::Graphics::D3D12
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        void CreateCommandList( _In_ UINT nodeMask, _In_ CommandListType type, _In_ ID3D12CommandAllocator* pCommandAllocator, _In_opt_ ID3D12PipelineState* pInitialState, REFIID riid, _COM_Outptr_ void** ppCommandList ) const
+        {
+            CreateCommandList( nodeMask, static_cast< D3D12_COMMAND_LIST_TYPE >(type), pCommandAllocator, pInitialState, riid, ppCommandList );
+        }
+
         template <typename T = GraphicsCommandList>
             requires std::is_base_of_v<GraphicsCommandList, T>
         T CreateCommandList( _In_ UINT nodeMask, _In_ D3D12_COMMAND_LIST_TYPE type, const CommandAllocator& commandAllocator, const PipelineState& initialState ) const
@@ -2342,6 +2347,14 @@ namespace Harlinn::Windows::Graphics::D3D12
             CreateCommandList( nodeMask, type, commandAllocator.GetInterfacePointer<ID3D12CommandAllocator>(), initialState.GetInterfacePointer<ID3D12PipelineState>( ), refiid, (void**)&ptr );
             return T( ptr, false );
         }
+
+        template <typename T = GraphicsCommandList>
+            requires std::is_base_of_v<GraphicsCommandList, T>
+        T CreateCommandList( _In_ UINT nodeMask, _In_ CommandListType type, const CommandAllocator& commandAllocator, const PipelineState& initialState ) const
+        {
+            return CreateCommandList<T>( nodeMask, static_cast< D3D12_COMMAND_LIST_TYPE >( type ), commandAllocator, initialState );
+        }
+
         template <typename T = GraphicsCommandList>
             requires std::is_base_of_v<GraphicsCommandList, T>
         T CreateCommandList( _In_ UINT nodeMask, _In_ D3D12_COMMAND_LIST_TYPE type, const CommandAllocator& commandAllocator ) const
@@ -2351,6 +2364,12 @@ namespace Harlinn::Windows::Graphics::D3D12
             ItfT* ptr = nullptr;
             CreateCommandList( nodeMask, type, commandAllocator.GetInterfacePointer<ID3D12CommandAllocator>( ), nullptr, refiid, (void**)&ptr );
             return T( ptr, false );
+        }
+        template <typename T = GraphicsCommandList>
+            requires std::is_base_of_v<GraphicsCommandList, T>
+        T CreateCommandList( _In_ UINT nodeMask, CommandListType type, const CommandAllocator& commandAllocator ) const
+        {
+            return CreateCommandList<T>( nodeMask, static_cast< D3D12_COMMAND_LIST_TYPE >( type ), commandAllocator );
         }
 
 
@@ -2689,7 +2708,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             requires std::is_base_of_v<Fence,T>
         T CreateFence( UINT64 initialValue = 0, D3D12_FENCE_FLAGS flags = D3D12_FENCE_FLAGS::D3D12_FENCE_FLAG_NONE ) const
         {
-            using IntfT = T::InterfaceType;
+            using IntfT = typename T::InterfaceType;
             IID IntfTId = __uuidof( IntfT );
 
             IntfT* intf = nullptr;

@@ -20,6 +20,7 @@
 
 namespace Harlinn::Windows
 {
+    using namespace Harlinn::Windows::Graphics;
     // ------------------------------------------------------------------------
     // DXMessageLoop
     // ------------------------------------------------------------------------
@@ -87,6 +88,7 @@ namespace Harlinn::Windows
         OnQuit( this );
     }
 
+
     // ------------------------------------------------------------------------
     // DXContext
     // ------------------------------------------------------------------------
@@ -106,7 +108,7 @@ namespace Harlinn::Windows
         hardwareAdapter_ = dxgiFactory_.FindAdapter( D3D_FEATURE_LEVEL_12_1 );
         device_ = Graphics::D3D12::CreateDevice( hardwareAdapter_, D3D_FEATURE_LEVEL_12_1 );
 
-        
+
 #ifdef DX12_ENABLE_DEBUG_LAYER
         if ( pdx12Debug != NULL )
         {
@@ -130,7 +132,7 @@ namespace Harlinn::Windows
         commandQueue_ = this->CreateCommandQueue( );
         SetupFrameContexts( );
         
-        commandList_ = device_.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameContexts_[ 0 ].commandAllocator_ );
+        commandList_ = device_.CreateCommandList( 0, D3D12::CommandListType::Direct, frameContexts_[ 0 ].commandAllocator_ );
         commandList_.Close( );
 
         commandList_ = this->CreateCommandList( frameContexts_[ 0 ].commandAllocator_ );
@@ -444,15 +446,42 @@ namespace Harlinn::Windows
             ::PostQuitMessage( -1 );
         } );
 
-        mainForm.Show( );
+        this->DoOnInit( );
+        try
+        {
+            mainForm.Show( );
 
-        int result = messageLoop.Run( );
+            int result = messageLoop.Run( );
 
-        messageLoop_ = nullptr;
-
-        return result;
+            messageLoop_ = nullptr;
+            this->DoOnExit( );
+            return result;
+        }
+        catch ( ... )
+        {
+            messageLoop_ = nullptr;
+            this->DoOnExit( true );
+            throw;
+        }
     }
 
-
+    void DXApplication::DoOnInit( )
+    {
+        this->OnInit( this );
+    }
+    void DXApplication::DoOnExit( bool dontThrow )
+    {
+        try
+        {
+            this->OnExit( this );
+        }
+        catch ( ... )
+        {
+            if ( dontThrow == false )
+            {
+                throw;
+            }
+        }
+    }
 
 }

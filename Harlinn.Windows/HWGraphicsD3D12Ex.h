@@ -24,6 +24,8 @@
 
 namespace Harlinn::Windows::Graphics::D3D12
 {
+    using GPUVirtualAddress = UInt64;
+
     /// <summary>
     /// Specifies the type of a command list.
     /// </summary>
@@ -1013,7 +1015,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// <summary>
     /// Flags to control pipeline state.
     /// </summary>
-    enum PipelineStateFlags : Int32
+    enum class PipelineStateFlags : Int32
     {
         /// <summary>
         /// Indicates no flags.
@@ -2726,18 +2728,1705 @@ namespace Harlinn::Windows::Graphics::D3D12
 
     /// <summary>
     /// <para>
+    /// Specifies how memory gets routed by a shader resource view.
+    /// </para>
+    /// <para>
     /// Alias for D3D12_SHADER_COMPONENT_MAPPING
     /// </para>
     /// </summary>
-    enum class ShaderComponentMapping : Int32
+    /// <remarks>
+    /// <para>
+    /// This enum allows the SRV to select how memory gets routed to the four 
+    /// return components in a shader after a memory fetch. The options for each 
+    /// shader component [0..3] (corresponding to RGBA) are: component 0..3 from 
+    /// the SRV fetch result or force 0 or force 1.
+    /// </para>
+    /// <para>
+    /// The default 1:1 mapping can be indicated by specifying <c>DefaultShader4ComponentMapping</c>, 
+    /// otherwise an arbitrary mapping can be specified using the <c>EncodeShader4ComponentMapping</c>
+    /// function.
+    /// </para>
+    /// </remarks>
+    enum class ShaderComponentMapping : UInt32
     {
+        /// <summary>
+        /// Indicates return component 0 (red).
+        /// </summary>
         FromMemoryComponent0 = D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_0,
+        /// <summary>
+        /// Indicates return component 1 (green).
+        /// </summary>
         FromMemoryComponent1 = D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_1,
+        /// <summary>
+        /// Indicates return component 2 (blue).
+        /// </summary>
         FromMemoryComponent2 = D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_2,
+        /// <summary>
+        /// Indicates return component 3 (alpha).
+        /// </summary>
         FromMemoryComponent3 = D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_3,
+        /// <summary>
+        /// Indicates forcing the resulting value to 0.
+        /// </summary>
         ForceValue0 = D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_0,
+        /// <summary>
+        /// Indicates forcing the resulting value 1. The value of forcing 1 is either 
+        /// 0x1 or 1.0f depending on the format type for that component in the source format.
+        /// </summary>
         ForceValue1 = D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_1
     };
+
+
+    constexpr UInt32 ShaderComponentMappingMask = D3D12_SHADER_COMPONENT_MAPPING_MASK;
+    constexpr UInt32 ShaderComponentMappingShift = D3D12_SHADER_COMPONENT_MAPPING_SHIFT;
+    constexpr UInt32 ShaderComponentMappingAlwaysSetBitAvoidingZeroMemMistakes = D3D12_SHADER_COMPONENT_MAPPING_ALWAYS_SET_BIT_AVOIDING_ZEROMEM_MISTAKES;
+    constexpr UInt32 DefaultShader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+
+    constexpr inline UInt32 EncodeShader4ComponentMapping( UInt32 src0, UInt32 src1, UInt32 src2, UInt32 src3 )
+    {
+        return ( ( ( src0 & ShaderComponentMappingMask ) |
+                ( ( src1 & ShaderComponentMappingMask ) << ShaderComponentMappingShift ) |
+                ( ( src2 & ShaderComponentMappingMask ) << ( ShaderComponentMappingShift * 2 ) ) |
+                ( ( src3 & ShaderComponentMappingMask ) << ( ShaderComponentMappingShift * 3 ) ) |
+                ShaderComponentMappingAlwaysSetBitAvoidingZeroMemMistakes ) );
+    }
+    constexpr inline UInt32 EncodeShader4ComponentMapping( ShaderComponentMapping src0, ShaderComponentMapping src1, ShaderComponentMapping src2, ShaderComponentMapping src3 )
+    {
+        return EncodeShader4ComponentMapping( static_cast< UInt32 >( src0 ), static_cast< UInt32 >( src1 ), static_cast< UInt32 >( src2 ), static_cast< UInt32 >( src3 ) );
+    }
+
+
+    constexpr inline ShaderComponentMapping DecodeShader4ComponentMapping( Int32 componentToExtract, Int32 mapping )
+    {
+        return static_cast< ShaderComponentMapping >( mapping >> ( ShaderComponentMappingShift * componentToExtract ) & ShaderComponentMappingMask );
+    }
+
+    /// <summary>
+    /// <para>
+    /// Identifies how to view a buffer resource
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_BUFFER_SRV_FLAGS
+    /// </para>
+    /// </summary>
+    enum class BufferSRVFlags : Int32
+    {
+        /// <summary>
+        /// Indicates a default view.
+        /// </summary>
+        None = D3D12_BUFFER_SRV_FLAG_NONE,
+        /// <summary>
+        /// View the buffer as raw.
+        /// </summary>
+        Raw = D3D12_BUFFER_SRV_FLAG_RAW
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( BufferSRVFlags, Int32 );
+    
+    /// <summary>
+    /// <para>
+    /// Describes the elements in a buffer resource to use in a shader-resource view.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_BUFFER_SRV
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// This structure is used by ShaderResourceViewDesc to create a view of a buffer.
+    /// </remarks>
+    struct BufferSRV
+    {
+        /// <summary>
+        /// The index of the first element to be accessed by the view.
+        /// </summary>
+        UInt64 FirstElement = 0;
+        /// <summary>
+        /// The number of elements in the resource.
+        /// </summary>
+        UInt32 NumElements = 0;
+        /// <summary>
+        /// The size of each element in the buffer structure (in bytes) when 
+        /// the buffer represents a structured buffer. The size must match the 
+        /// struct size declared in shaders that access the view.
+        /// </summary>
+        UInt32 StructureByteStride = 0;
+        /// <summary>
+        /// Identifies view options for the buffer. Currently, the only option is 
+        /// to identify a raw view of the buffer. 
+        /// </summary>
+        BufferSRVFlags Flags = BufferSRVFlags::None;
+    };
+
+    static_assert( sizeof( D3D12_BUFFER_SRV ) == sizeof( BufferSRV ) );
+
+    /// <summary>
+    /// <para>
+    /// Specifies the subresource from a 1D texture to use in a shader-resource view.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_TEX1D_SRV
+    /// </para>
+    /// </summary>
+    struct Tex1DSRV
+    {
+        UInt32 MostDetailedMip = 0;
+        UInt32 MipLevels = 0;
+        float ResourceMinLODClamp = 0.f;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX1D_ARRAY_SRV
+    /// </para>
+    /// </summary>
+    struct Tex1DArraySRV
+    {
+        UInt32 MostDetailedMip = 0;
+        UInt32 MipLevels = 0;
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+        float ResourceMinLODClamp = 0.f;
+    };
+
+    /// <summary>
+    /// Alias for D3D12_TEX2D_SRV
+    /// </summary>
+    struct Tex2DSRV
+    {
+        UInt32 MostDetailedMip = 0;
+        UInt32 MipLevels = 0;
+        UInt32 PlaneSlice = 0;
+        float ResourceMinLODClamp = 0.f;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2D_ARRAY_SRV
+    /// </para>
+    /// </summary>
+    struct Tex2DArraySRV
+    {
+        UInt32 MostDetailedMip = 0;
+        UInt32 MipLevels = 0;
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+        UInt32 PlaneSlice = 0;
+        float ResourceMinLODClamp = 0.f;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX3D_SRV
+    /// </para>
+    /// </summary>
+    struct Tex3DSRV
+    {
+        UInt32 MostDetailedMip = 0;
+        UInt32 MipLevels = 0;
+        float ResourceMinLODClamp = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEXCUBE_SRV
+    /// </para>
+    /// </summary>
+    struct TexCubeSRV
+    {
+        UInt32 MostDetailedMip = 0;
+        UInt32 MipLevels = 0;
+        float ResourceMinLODClamp = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEXCUBE_ARRAY_SRV
+    /// </para>
+    /// </summary>
+    struct TexCubeArraySRV
+    {
+        UInt32 MostDetailedMip = 0;
+        UInt32 MipLevels = 0;
+        UInt32 First2DArrayFace = 0;
+        UInt32 NumCubes = 0;
+        float ResourceMinLODClamp = 0.f;
+    };
+
+    /// <summary>
+    /// Alias for D3D12_TEX2DMS_SRV
+    /// </summary>
+    struct Tex2DMSSRV
+    {
+        UInt32 UnusedField_NothingToDefine = 0;
+    };
+
+    /// <summary>
+    /// Alias for D3D12_TEX2DMS_ARRAY_SRV
+    /// </summary>
+    struct Tex2DMSArraySRV
+    {
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+    };
+
+    /// <summary>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_SRV
+    /// </summary>
+    struct RaytracingAccelerationStructureSRV
+    {
+        GPUVirtualAddress Location = 0;
+    };
+
+    /// <summary>
+    /// Identifies the type of resource that will be viewed as a shader resource.
+    /// </summary>
+    enum class SRVDimension
+    {
+        /// <summary>
+        /// The type is unknown.
+        /// </summary>
+        Unknown = D3D12_SRV_DIMENSION_UNKNOWN,
+        /// <summary>
+        /// The resource is a buffer.
+        /// </summary>
+        Buffer = D3D12_SRV_DIMENSION_BUFFER,
+        /// <summary>
+        /// The resource is a 1D texture.
+        /// </summary>
+        Texture1D = D3D12_SRV_DIMENSION_TEXTURE1D,
+        /// <summary>
+        /// The resource is an array of 1D textures.
+        /// </summary>
+        Texture1DArray = D3D12_SRV_DIMENSION_TEXTURE1DARRAY,
+        /// <summary>
+        /// The resource is a 2D texture.
+        /// </summary>
+        Texture2D = D3D12_SRV_DIMENSION_TEXTURE2D,
+        /// <summary>
+        /// The resource is an array of 2D textures.
+        /// </summary>
+        Texture2DArray = D3D12_SRV_DIMENSION_TEXTURE2DARRAY,
+        /// <summary>
+        /// The resource is a multisampling 2D texture.
+        /// </summary>
+        Texture2DMS = D3D12_SRV_DIMENSION_TEXTURE2DMS,
+        /// <summary>
+        /// The resource is an array of multisampling 2D textures.
+        /// </summary>
+        Texture2DMSArray = D3D12_SRV_DIMENSION_TEXTURE2DMSARRAY,
+        /// <summary>
+        /// The resource is a 3D texture.
+        /// </summary>
+        Texture3D = D3D12_SRV_DIMENSION_TEXTURE3D,
+        /// <summary>
+        /// The resource is a cube texture.
+        /// </summary>
+        TextureCube = D3D12_SRV_DIMENSION_TEXTURECUBE,
+        /// <summary>
+        /// The resource is an array of cube textures.
+        /// </summary>
+        TextureCubeArray = D3D12_SRV_DIMENSION_TEXTURECUBEARRAY,
+        /// <summary>
+        /// The resource is a raytracing acceleration structure.
+        /// </summary>
+        RaytracingAccelerationStructure = D3D12_SRV_DIMENSION_RAYTRACING_ACCELERATION_STRUCTURE
+    };
+
+    using ShaderResourceViewType = SRVDimension;
+
+
+    /// <summary>
+    /// Alias for D3D12_SHADER_RESOURCE_VIEW_DESC
+    /// </summary>
+    struct ShaderResourceViewDesc
+    {
+        DXGI::Format Format = DXGI::Format::Unknown;
+        ShaderResourceViewType ViewDimension = ShaderResourceViewType::Unknown;
+        UInt32 Shader4ComponentMapping = DefaultShader4ComponentMapping;
+        union
+        {
+            BufferSRV Buffer;
+            Tex1DSRV Texture1D;
+            Tex1DArraySRV Texture1DArray;
+            Tex2DSRV Texture2D;
+            Tex2DArraySRV Texture2DArray;
+            Tex2DMSSRV Texture2DMS;
+            Tex2DMSArraySRV Texture2DMSArray;
+            Tex3DSRV Texture3D;
+            TexCubeSRV TextureCube;
+            TexCubeArraySRV TextureCubeArray;
+            RaytracingAccelerationStructureSRV RaytracingAccelerationStructure;
+        };
+    };
+    static_assert( sizeof( ShaderResourceViewDesc ) == sizeof( D3D12_SHADER_RESOURCE_VIEW_DESC ) );
+
+    /// <summary>
+    /// Alias for D3D12_CONSTANT_BUFFER_VIEW_DESC
+    /// </summary>
+    struct ConstantBufferViewDesc
+    {
+        GPUVirtualAddress BufferLocation = 0;
+        UInt32 SizeInBytes = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Specifies filtering options during texture sampling.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_FILTER
+    /// </para>
+    /// </summary>
+    enum class Filter
+    {
+        Empty = 0,
+        None = 0,
+        /// <summary>
+        /// Use point sampling for minification, magnification, and mip-level sampling.
+        /// </summary>
+        MinMagMIPPoint = D3D12_FILTER_MIN_MAG_MIP_POINT,
+        /// <summary>
+        /// Use point sampling for minification and magnification; use linear interpolation for mip-level sampling.
+        /// </summary>
+        MinMagPointMIPLinear = D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR,
+        /// <summary>
+        /// Use point sampling for minification; use linear interpolation for magnification; use point sampling for mip-level sampling.
+        /// </summary>
+        MinPointMagLinearMIPPoint = D3D12_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT,
+        /// <summary>
+        /// Use point sampling for minification; use linear interpolation for magnification and mip-level sampling.
+        /// </summary>
+        MinPointMagMIPLinear = D3D12_FILTER_MIN_POINT_MAG_MIP_LINEAR,
+        /// <summary>
+        /// Use linear interpolation for minification; use point sampling for magnification and mip-level sampling.
+        /// </summary>
+        MinLinearMagMIPPoint = D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT,
+        /// <summary>
+        /// Use linear interpolation for minification; use point sampling for magnification; use linear interpolation for mip-level sampling.
+        /// </summary>
+        MinLinearMagPointMIPLinear = D3D12_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
+        /// <summary>
+        /// Use linear interpolation for minification and magnification; use point sampling for mip-level sampling.
+        /// </summary>
+        MinMagLinearMIPPoint = D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT,
+        /// <summary>
+        /// Use linear interpolation for minification, magnification, and mip-level sampling.
+        /// </summary>
+        MinMagMIPLinear = D3D12_FILTER_MIN_MAG_MIP_LINEAR,
+        /// <summary>
+        /// Use point sampling for minification; use linear interpolation for magnification; 
+        /// use point sampling for mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        MinMagAnisotropicMIPPoint = D3D12_FILTER_MIN_MAG_ANISOTROPIC_MIP_POINT,
+        /// <summary>
+        /// Use anisotropic interpolation for minification, magnification, and mip-level sampling.
+        /// </summary>
+        Anisotropic = D3D12_FILTER_ANISOTROPIC,
+        /// <summary>
+        /// Use point sampling for minification, magnification, and mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonMinMagMIPPoint = D3D12_FILTER_COMPARISON_MIN_MAG_MIP_POINT,
+        /// <summary>
+        /// Use point sampling for minification and magnification; use linear interpolation for mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonMinMagPointMIPLinear = D3D12_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR,
+        /// <summary>
+        /// Use point sampling for minification; use linear interpolation for magnification; use point sampling for mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonMinPointMagLinearMIPPoint = D3D12_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT,
+        /// <summary>
+        /// Use point sampling for minification; use linear interpolation for magnification and mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonMinPointMagMIPLinear = D3D12_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR,
+        /// <summary>
+        /// Use linear interpolation for minification; use point sampling for magnification and mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonMinLinearMagMIPPoint = D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT,
+        /// <summary>
+        /// Use linear interpolation for minification; use point sampling for magnification; use linear interpolation for mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonMinLinearMagPointMIPLinear = D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
+        /// <summary>
+        /// Use linear interpolation for minification and magnification; use point sampling for mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonMinMagLinearMIPPoint = D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,
+        /// <summary>
+        /// Use linear interpolation for minification, magnification, and mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonMinMagMIPLinear = D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR,
+        ComparisonMinMagAnisotropicMIPPoint = D3D12_FILTER_COMPARISON_MIN_MAG_ANISOTROPIC_MIP_POINT,
+        /// <summary>
+        /// Use anisotropic interpolation for minification, magnification, and mip-level sampling. Compare the result to the comparison value.
+        /// </summary>
+        ComparisonAnisotropic = D3D12_FILTER_COMPARISON_ANISOTROPIC,
+        /// <summary>
+        /// Fetch the same set of texels as MinMagMIPPoint and instead of filtering them 
+        /// return the minimum of the texels. Texels that are weighted 0 during filtering 
+        /// aren't counted towards the minimum. You can query support for this filter type 
+        /// from the MinMaxFiltering member in the D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumMinMAGMIPPoint = D3D12_FILTER_MINIMUM_MIN_MAG_MIP_POINT,
+        /// <summary>
+        /// Fetch the same set of texels as MinMagPointMIPLinear and instead 
+        /// of filtering them return the minimum of the texels. Texels that are 
+        /// weighted 0 during filtering aren't counted towards the minimum. You 
+        /// can query support for this filter type from the MinMaxFiltering member 
+        /// in the D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumMinMagPointMIPLinear = D3D12_FILTER_MINIMUM_MIN_MAG_POINT_MIP_LINEAR,
+        /// <summary>
+        /// Fetch the same set of texels as MinPointMagLinearMIPPoint and instead 
+        /// of filtering them return the minimum of the texels. Texels that are 
+        /// weighted 0 during filtering aren't counted towards the minimum. You can 
+        /// query support for this filter type from the MinMaxFiltering member in the 
+        /// D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumMinPointMagLinearMIPPoint = D3D12_FILTER_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT,
+        /// <summary>
+        /// Fetch the same set of texels as MinPointMagMIPLinear and instead of filtering them 
+        /// return the minimum of the texels. Texels that are weighted 0 during filtering aren't 
+        /// counted towards the minimum. You can query support for this filter type from the 
+        /// MinMaxFiltering member in the D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumMinPointMagMIPLinear = D3D12_FILTER_MINIMUM_MIN_POINT_MAG_MIP_LINEAR,
+        /// <summary>
+        /// Fetch the same set of texels as MinLinearMagMIPPoint and instead of filtering 
+        /// them return the minimum of the texels. Texels that are weighted 0 during filtering 
+        /// aren't counted towards the minimum. You can query support for this filter type 
+        /// from the MinMaxFiltering member in the D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumMinLinearMagMIPPoint = D3D12_FILTER_MINIMUM_MIN_LINEAR_MAG_MIP_POINT,
+        /// <summary>
+        /// Fetch the same set of texels as MinLinearMagPointMIPLinear and instead 
+        /// of filtering them return the minimum of the texels. Texels that are weighted 
+        /// 0 during filtering aren't counted towards the minimum. You can query support 
+        /// for this filter type from the MinMaxFiltering member in the 
+        /// D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumMinLinearMagPointMIPLinear = D3D12_FILTER_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
+        /// <summary>
+        /// Fetch the same set of texels as MinMagLinearMIPPoint and instead of filtering 
+        /// them return the minimum of the texels. Texels that are weighted 0 during 
+        /// filtering aren't counted towards the minimum. You can query support for 
+        /// this filter type from the MinMaxFiltering member in the 
+        /// D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumMinMagLinearMIPPoint = D3D12_FILTER_MINIMUM_MIN_MAG_LINEAR_MIP_POINT,
+        /// <summary>
+        /// Fetch the same set of texels as MinMagMIPLinear and instead of filtering 
+        /// them return the minimum of the texels. Texels that are weighted 0 during 
+        /// filtering aren't counted towards the minimum. You can query support for 
+        /// this filter type from the MinMaxFiltering member in the 
+        /// D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumMinMagMIPLinear = D3D12_FILTER_MINIMUM_MIN_MAG_MIP_LINEAR,
+        /// <summary>
+        /// 
+        /// </summary>
+        MinimumMinMagAnisotropicMIPPoint = D3D12_FILTER_MINIMUM_MIN_MAG_ANISOTROPIC_MIP_POINT,
+        /// <summary>
+        /// Fetch the same set of texels as Anisotropic and instead of filtering them 
+        /// return the minimum of the texels. Texels that are weighted 0 during filtering 
+        /// aren't counted towards the minimum. You can query support for this filter type 
+        /// from the MinMaxFiltering member in the D3D11::FeatureDataD3D11Options1 structure.
+        /// </summary>
+        MinimumAnisotropic = D3D12_FILTER_MINIMUM_ANISOTROPIC,
+
+        MaximumMinMagMIPPoint = D3D12_FILTER_MAXIMUM_MIN_MAG_MIP_POINT,
+        MaximumMinMagPointMIPLinear = D3D12_FILTER_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR,
+        MaximumMinPointMagLinearMIPPoint = D3D12_FILTER_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT,
+        MaximumMinPointMagMIPLinear = D3D12_FILTER_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR,
+        MaximumMinLinearMagMIPPoint = D3D12_FILTER_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT,
+        MaximumMinLinearMagPointMIPLinear = D3D12_FILTER_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
+        MaximumMinMagLinearMIPPoint = D3D12_FILTER_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT,
+        MaximumMinMagMIPLinear = D3D12_FILTER_MAXIMUM_MIN_MAG_MIP_LINEAR,
+        MaximumMinMagAnisotropicMIPPoint = D3D12_FILTER_MAXIMUM_MIN_MAG_ANISOTROPIC_MIP_POINT,
+        MaximumAnisotropic = D3D12_FILTER_MAXIMUM_ANISOTROPIC
+    };
+
+    /// <summary>
+    /// <para>
+    /// Specifies the type of magnification or minification sampler filters.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_FILTER_TYPE
+    /// </para>
+    /// </summary>
+    enum class FilterType
+    {
+        /// <summary>
+        /// Point filtering is used as a texture magnification or minification filter. The 
+        /// texel with coordinates nearest to the desired pixel value is used. The texture 
+        /// filter to be used between mipmap levels is nearest-point mipmap filtering. The 
+        /// rasterizer uses the color from the texel of the nearest mipmap texture.
+        /// </summary>
+        Point = D3D12_FILTER_TYPE_POINT,
+        /// <summary>
+        /// Bilinear interpolation filtering is used as a texture magnification or minification 
+        /// filter. A weighted average of a 2 x 2 area of texels surrounding the desired pixel 
+        /// is used. The texture filter to use between mipmap levels is trilinear mipmap 
+        /// interpolation. The rasterizer linearly interpolates pixel color, using the texels 
+        /// of the two nearest mipmap textures.
+        /// </summary>
+        Linear = D3D12_FILTER_TYPE_LINEAR
+    };
+
+    /// <summary>
+    /// <para>
+    /// Specifies the type of filter reduction.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_FILTER_REDUCTION_TYPE
+    /// </para>
+    /// </summary>
+    enum FilterReductionType
+    {
+        /// <summary>
+        /// The filter type is standard.
+        /// </summary>
+        Standard = D3D12_FILTER_REDUCTION_TYPE_STANDARD,
+        /// <summary>
+        /// The filter type is comparison.
+        /// </summary>
+        Comparison = D3D12_FILTER_REDUCTION_TYPE_COMPARISON,
+        /// <summary>
+        /// The filter type is minimum.
+        /// </summary>
+        Minimum = D3D12_FILTER_REDUCTION_TYPE_MINIMUM,
+        /// <summary>
+        /// The filter type is maximum.
+        /// </summary>
+        Maximum = D3D12_FILTER_REDUCTION_TYPE_MAXIMUM
+    };
+
+    constexpr UInt32 FilterReductionTypeMask = D3D12_FILTER_REDUCTION_TYPE_MASK;
+    constexpr UInt32 FilterReductionTypeShift = D3D12_FILTER_REDUCTION_TYPE_SHIFT;
+    constexpr UInt32 FilterTypeMask = D3D12_FILTER_TYPE_MASK;
+    constexpr UInt32 MinFilterShift = D3D12_MIN_FILTER_SHIFT;
+    constexpr UInt32 MagFilterShift = D3D12_MAG_FILTER_SHIFT;
+    constexpr UInt32 MIPFilterShift = D3D12_MIP_FILTER_SHIFT;
+    constexpr UInt32 AnisotropicFilteringBit = D3D12_ANISOTROPIC_FILTERING_BIT;
+
+    constexpr Filter EncodeBasicFilter( UInt32 min, UInt32 mag, UInt32 mip, UInt32 reduction )
+    {
+        return static_cast< Filter >( D3D12_ENCODE_BASIC_FILTER( min, mag, mip, reduction ) );
+    }
+
+    constexpr Filter EncodeAnisotropicFilter( UInt32 reduction )
+    {
+        return static_cast< Filter >( D3D12_ENCODE_ANISOTROPIC_FILTER( reduction ) );
+    }
+
+    constexpr Filter EncodeMinMagAnisotropicMIPPointFilter( UInt32 reduction )
+    {
+        return static_cast< Filter >( D3D12_ENCODE_MIN_MAG_ANISOTROPIC_MIP_POINT_FILTER( reduction ) );
+    }
+
+
+    constexpr FilterType DecodeMinFilter( UInt32 filter )
+    {
+        return static_cast< FilterType >( D3D12_DECODE_MIN_FILTER( filter ) );
+    }
+
+    constexpr FilterType DecodeMinFilter( Filter filter )
+    {
+        return DecodeMinFilter( static_cast< UInt32 >( filter ) );
+    }
+
+    constexpr FilterType DecodeMagFilter( UInt32 filter )
+    {
+        return static_cast< FilterType >( D3D12_DECODE_MAG_FILTER( filter ) );
+    }
+
+    constexpr FilterType DecodeMagFilter( Filter filter )
+    {
+        return DecodeMagFilter( static_cast< UInt32 >( filter ) );
+    }
+
+    constexpr FilterType DecodeMIPFilter( UInt32 filter )
+    {
+        return static_cast< FilterType >( D3D12_DECODE_MIP_FILTER( filter ) );
+    }
+
+    constexpr FilterType DecodeMIPFilter( Filter filter )
+    {
+        return DecodeMIPFilter( static_cast< UInt32 >( filter ) );
+    }
+
+    constexpr FilterReductionType DecodeFilterReduction( UInt32 filter )
+    {
+        return static_cast< FilterReductionType >( D3D12_DECODE_FILTER_REDUCTION( filter ) );
+    }
+
+    constexpr FilterReductionType DecodeFilterReduction( Filter filter )
+    {
+        return DecodeFilterReduction( static_cast< UInt32 >( filter ) );
+    }
+
+    constexpr bool IsComparisonFilter( UInt32 filter )
+    {
+        return D3D12_DECODE_IS_COMPARISON_FILTER( filter );
+    }
+
+    constexpr bool IsComparisonFilter( Filter filter )
+    {
+        return IsComparisonFilter( static_cast< UInt32 >( filter ) );
+    }
+
+    constexpr bool IsAnisotropicFilter( UInt32 filter )
+    {
+        return D3D12_DECODE_IS_ANISOTROPIC_FILTER( filter );
+    }
+
+    constexpr bool IsAnisotropicFilter( Filter filter )
+    {
+        return IsAnisotropicFilter( static_cast< UInt32 >( filter ) );
+    }
+
+    /// <summary>
+    /// <para>
+    /// Identifies a technique for resolving texture coordinates that are 
+    /// outside of the boundaries of a texture.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_TEXTURE_ADDRESS_MODE
+    /// </para>
+    /// </summary>
+    enum class TextureAddressMode
+    {
+        None = 0,
+        /// <summary>
+        /// <para>
+        /// Tile the texture at every (u,v) integer junction.
+        /// </para>
+        /// <para>
+        /// For example, for u values between 0 and 3, the texture is repeated three times.
+        /// </para>
+        /// </summary>
+        Wrap = D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+        /// <summary>
+        /// <para>
+        /// Flip the texture at every (u,v) integer junction.
+        /// </para>
+        /// <para>
+        /// For u values between 0 and 1, for example, the texture is 
+        /// addressed normally; between 1 and 2, the texture is flipped( mirrored ); 
+        /// between 2 and 3, the texture is normal again; and so on.
+        /// </para>
+        /// </summary>
+        Mirror = D3D12_TEXTURE_ADDRESS_MODE_MIRROR,
+        /// <summary>
+        /// Texture coordinates outside the range [0.0, 1.0] are set to the texture 
+        /// color at 0.0 or 1.0, respectively.
+        /// </summary>
+        Clamp = D3D12_TEXTURE_ADDRESS_MODE_CLAMP,
+        /// <summary>
+        /// Texture coordinates outside the range [0.0, 1.0] are set to the border 
+        /// color specified in SamplerDesc or HLSL code.
+        /// </summary>
+        Border = D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+        /// <summary>
+        /// Similar to Mirror and Clamp. Takes the absolute value of the texture 
+        /// coordinate (thus, mirroring around 0), and then clamps to the maximum value.
+        /// </summary>
+        MirrorOnce = D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE
+    };
+
+    /// <summary>
+    /// <para>
+    /// Describes a sampler state.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_SAMPLER_DESC
+    /// </para>
+    /// </summary>
+    struct SamplerDesc
+    {
+        /// <summary>
+        /// The filter value that specifies the filtering method to use when sampling a texture.
+        /// </summary>
+        D3D12::Filter Filter = D3D12::Filter::Empty;
+        /// <summary>
+        /// A TextureAddressMode value that specifies the method to use for resolving a u texture coordinate that is outside the 0 to 1 range.
+        /// </summary>
+        TextureAddressMode AddressU = TextureAddressMode::None;
+        /// <summary>
+        /// A TextureAddressMode value that specifies the method to use for resolving a v texture coordinate that is outside the 0 to 1 range.
+        /// </summary>
+        TextureAddressMode AddressV = TextureAddressMode::None;
+        /// <summary>
+        /// A TextureAddressMode value that specifies the method to use for resolving a w texture coordinate that is outside the 0 to 1 range.
+        /// </summary>
+        TextureAddressMode AddressW = TextureAddressMode::None;
+        /// <summary>
+        /// Offset from the calculated mipmap level. For example, if the runtime calculates that a texture should 
+        /// be sampled at mipmap level 3 and MipLODBias is 2, the texture will be sampled at mipmap level 5.
+        /// </summary>
+        float MipLODBias = 0.f;
+        /// <summary>
+        /// Clamping value used if Filter::Anisotropic or FilterComparisonAnisotropic is
+        /// specified in Filter. Valid values are between 1 and 16.
+        /// </summary>
+        UInt32 MaxAnisotropy = 0;
+        /// <summary>
+        /// A ComparisonFunction value that specifies a function that compares sampled data against existing sampled data.
+        /// </summary>
+        D3D12::ComparisonFunction ComparisonFunc = D3D12::ComparisonFunction::Unknown;
+        /// <summary>
+        /// RGBA border color to use if TextureAddressMode::Border is specified 
+        /// for AddressU, AddressV, or AddressW. Range must be between 0.0 and 
+        /// 1.0 inclusive.
+        /// </summary>
+        float BorderColor[ 4 ]{};
+        /// <summary>
+        /// Lower end of the mipmap range to clamp access to, where 0 is the largest and 
+        /// most detailed mipmap level and any level higher than that is less detailed.
+        /// </summary>
+        float MinLOD = 0.f;
+        /// <summary>
+        /// Upper end of the mipmap range to clamp access to, where 0 is the largest and 
+        /// most detailed mipmap level and any level higher than that is less detailed. 
+        /// This value must be greater than or equal to MinLOD. To have no upper 
+        /// limit on LOD, set this member to a large value.
+        /// </summary>
+        float MaxLOD = 0.f;
+    };
+
+    static_assert( sizeof( SamplerDesc ) == sizeof( D3D12_SAMPLER_DESC ) );
+
+
+    /// <summary>
+    /// <para>
+    /// 
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_SAMPLER_FLAGS
+    /// </para>
+    /// </summary>
+    enum class SamplerFlags : UInt32
+    {
+        None = D3D12_SAMPLER_FLAG_NONE,
+        UInt32BorderColor = D3D12_SAMPLER_FLAG_UINT_BORDER_COLOR,
+        NonNormalizedCoordinates = D3D12_SAMPLER_FLAG_NON_NORMALIZED_COORDINATES
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( SamplerFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_SAMPLER_DESC2
+    /// </para>
+    /// </summary>
+    struct SamplerDesc2
+    {
+        /// <summary>
+        /// The filter value that specifies the filtering method to use when sampling a texture.
+        /// </summary>
+        D3D12::Filter Filter = D3D12::Filter::Empty;
+        /// <summary>
+        /// A TextureAddressMode value that specifies the method to use for resolving a u texture coordinate that is outside the 0 to 1 range.
+        /// </summary>
+        TextureAddressMode AddressU = TextureAddressMode::None;
+        /// <summary>
+        /// A TextureAddressMode value that specifies the method to use for resolving a v texture coordinate that is outside the 0 to 1 range.
+        /// </summary>
+        TextureAddressMode AddressV = TextureAddressMode::None;
+        /// <summary>
+        /// A TextureAddressMode value that specifies the method to use for resolving a w texture coordinate that is outside the 0 to 1 range.
+        /// </summary>
+        TextureAddressMode AddressW = TextureAddressMode::None;
+        /// <summary>
+        /// Offset from the calculated mipmap level. For example, if the runtime calculates that a texture should 
+        /// be sampled at mipmap level 3 and MipLODBias is 2, the texture will be sampled at mipmap level 5.
+        /// </summary>
+        float MipLODBias = 0.f;
+        /// <summary>
+        /// Clamping value used if Filter::Anisotropic or FilterComparisonAnisotropic is
+        /// specified in Filter. Valid values are between 1 and 16.
+        /// </summary>
+        UInt32 MaxAnisotropy = 0;
+        /// <summary>
+        /// A ComparisonFunction value that specifies a function that compares sampled data against existing sampled data.
+        /// </summary>
+        D3D12::ComparisonFunction ComparisonFunc = D3D12::ComparisonFunction::Unknown;
+        union
+        {
+            /// <summary>
+            /// RGBA border color to use if TextureAddressMode::Border is specified 
+            /// for AddressU, AddressV, or AddressW. Range must be between 0.0 and 
+            /// 1.0 inclusive.
+            /// </summary>
+            FLOAT FloatBorderColor[ 4 ];
+            UInt32 UintBorderColor[ 4 ]{};
+        };
+
+        /// <summary>
+        /// Lower end of the mipmap range to clamp access to, where 0 is the largest and 
+        /// most detailed mipmap level and any level higher than that is less detailed.
+        /// </summary>
+        float MinLOD = 0.f;
+        /// <summary>
+        /// Upper end of the mipmap range to clamp access to, where 0 is the largest and 
+        /// most detailed mipmap level and any level higher than that is less detailed. 
+        /// This value must be greater than or equal to MinLOD. To have no upper 
+        /// limit on LOD, set this member to a large value.
+        /// </summary>
+        float MaxLOD = 0.f;
+        SamplerFlags Flags;
+    };
+    static_assert( sizeof( SamplerDesc2 ) == sizeof( D3D12_SAMPLER_DESC2 ) );
+
+    /// <summary>
+    /// <para>
+    /// Identifies unordered-access view options for a buffer resource.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_BUFFER_UAV_FLAGS
+    /// </para>
+    /// </summary>
+    enum class BufferUAVFlags : UInt32
+    {
+        /// <summary>
+        /// Indicates a default view.
+        /// </summary>
+        None = D3D12_BUFFER_UAV_FLAG_NONE,
+        /// <summary>
+        /// Resource contains raw, unstructured data. Requires the UAV format 
+        /// to be DXGI::Format::R32 (DXGI_FORMAT_R32_TYPELESS).
+        /// </summary>
+        Raw = D3D12_BUFFER_UAV_FLAG_RAW
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( BufferUAVFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// Describes the elements in a buffer to use in a unordered-access view.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_BUFFER_UAV
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Use this structure with a UnorderedAccessViewDesc structure 
+    /// to view the resource as a buffer.
+    /// </para>
+    /// <para>
+    /// If StructureByteStride value is not 0, a view of a structured buffer is created and the 
+    /// UnorderedAccessViewDesc::Format field must be DXGI::Format::Unknown. If StructureByteStride 
+    /// is 0, a typed view of a buffer is created and a format must be supplied. The specified 
+    /// format for the typed view must be supported by the hardware.
+    /// </para>
+    /// </remarks>
+    struct BufferUAV
+    {
+        /// <summary>
+        /// The zero-based index of the first element to be accessed.
+        /// </summary>
+        UInt64 FirstElement = 0;
+        /// <summary>
+        /// The number of elements in the resource. For structured buffers, this is the number of structures in the buffer.
+        /// </summary>
+        UInt32 NumElements = 0;
+        /// <summary>
+        /// The size of each element in the buffer structure (in bytes) when the buffer represents a structured buffer.
+        /// </summary>
+        UInt32 StructureByteStride = 0;
+        /// <summary>
+        /// The counter offset, in bytes.
+        /// </summary>
+        UInt64 CounterOffsetInBytes = 0;
+        /// <summary>
+        /// BufferUAVFlags value that specifies the view options for the resource.
+        /// </summary>
+        BufferUAVFlags Flags = BufferUAVFlags::None;
+    };
+    static_assert( sizeof( BufferUAV ) == sizeof( D3D12_BUFFER_UAV ) );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX1D_UAV
+    /// </para>
+    /// </summary>
+    struct Tex1DUAV
+    {
+        UInt32 MipSlice = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX1D_ARRAY_UAV
+    /// </para>
+    /// </summary>
+    struct Tex1DArrayUAV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2D_UAV
+    /// </para>
+    /// </summary>
+    struct Tex2DUAV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 PlaneSlice = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2D_ARRAY_UAV
+    /// </para>
+    /// </summary>
+    struct Tex2DArrayUAV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+        UInt32 PlaneSlice = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2DMS_UAV
+    /// </para>
+    /// </summary>
+    struct Tex2DMSUAV
+    {
+        UInt32 UnusedField_NothingToDefine = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2DMS_ARRAY_UAV
+    /// </para>
+    /// </summary>
+    struct Tex2DMSArrayUAV
+    {
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX3D_UAV
+    /// </para>
+    /// </summary>
+    struct Tex3DUAV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 FirstWSlice = 0;
+        UInt32 WSize = 0;
+    };
+    
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_UAV_DIMENSION
+    /// </para>
+    /// </summary>
+    enum class UAVDimension
+    {
+        Unknown = D3D12_UAV_DIMENSION_UNKNOWN,
+        Buffer = D3D12_UAV_DIMENSION_BUFFER,
+        Texture1D = D3D12_UAV_DIMENSION_TEXTURE1D,
+        Texture1Darray = D3D12_UAV_DIMENSION_TEXTURE1DARRAY,
+        Texture2D = D3D12_UAV_DIMENSION_TEXTURE2D,
+        Texture2DArray = D3D12_UAV_DIMENSION_TEXTURE2DARRAY,
+        Texture2DMS = D3D12_UAV_DIMENSION_TEXTURE2DMS,
+        Texture2DMSarray = D3D12_UAV_DIMENSION_TEXTURE2DMSARRAY,
+        Texture3D = D3D12_UAV_DIMENSION_TEXTURE3D
+    };
+
+    using UnorderedAccessViewType = UAVDimension;
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_UNORDERED_ACCESS_VIEW_DESC
+    /// </para>
+    /// </summary>
+    struct UnorderedAccessViewDesc
+    {
+        DXGI::Format Format = DXGI::Format::Unknown;
+        UnorderedAccessViewType ViewDimension = UnorderedAccessViewType::Unknown;
+        union
+        {
+            D3D12_BUFFER_UAV Buffer;
+            D3D12_TEX1D_UAV Texture1D;
+            D3D12_TEX1D_ARRAY_UAV Texture1DArray;
+            D3D12_TEX2D_UAV Texture2D;
+            D3D12_TEX2D_ARRAY_UAV Texture2DArray;
+            D3D12_TEX2DMS_UAV Texture2DMS;
+            D3D12_TEX2DMS_ARRAY_UAV Texture2DMSArray;
+            D3D12_TEX3D_UAV Texture3D;
+        };
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BUFFER_RTV 
+    /// </para>
+    /// </summary>
+    struct BufferRTV
+    {
+        UInt64 FirstElemen = 0;
+        UInt32 NumElements = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX1D_RTV
+    /// </para>
+    /// </summary>
+    struct Tex1DRTV
+    {
+        UInt32 MipSlice = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX1D_ARRAY_RTV
+    /// </para>
+    /// </summary>
+    struct Tex1DArrayRTV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2D_RTV
+    /// </para>
+    /// </summary>
+    struct Tex2DRTV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 PlaneSlice = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2DMS_RTV
+    /// </para>
+    /// </summary>
+    struct Tex2DMSRTV
+    {
+        UInt32 UnusedField_NothingToDefine = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2D_ARRAY_RTV
+    /// </para>
+    /// </summary>
+    struct Tex2DArrayRTV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+        UInt32 PlaneSlice = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX2DMS_ARRAY_RTV
+    /// </para>
+    /// </summary>
+    struct Tex2DMSArrayRTV
+    {
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEX3D_RTV
+    /// </para>
+    /// </summary>
+    struct Tex3DRTV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 FirstWSlice = 0;
+        UInt32 WSize = 0;
+    };
+
+
+    /// <summary>
+    /// Identifies the type of resource to view as a render target.
+    /// <para>
+    /// Alias for D3D12_RTV_DIMENSION
+    /// </para>
+    /// </summary>
+    enum class RTVDimension
+    {
+        Unknown = D3D12_RTV_DIMENSION_UNKNOWN,
+        Buffer = D3D12_RTV_DIMENSION_BUFFER,
+        Texture1D = D3D12_RTV_DIMENSION_TEXTURE1D,
+        Texture1DArray = D3D12_RTV_DIMENSION_TEXTURE1DARRAY,
+        Texture2D = D3D12_RTV_DIMENSION_TEXTURE2D,
+        Texture2DArray = D3D12_RTV_DIMENSION_TEXTURE2DARRAY,
+        Texture2DMS = D3D12_RTV_DIMENSION_TEXTURE2DMS,
+        Texture2DMSArray = D3D12_RTV_DIMENSION_TEXTURE2DMSARRAY,
+        Texture3D = D3D12_RTV_DIMENSION_TEXTURE3D
+    };
+
+    using RenderTargetViewType = RTVDimension;
+
+    /// <summary>
+    /// <para>
+    /// Describes the subresources from a resource that are accessible by using a render-target view.
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_RENDER_TARGET_VIEW_DESC
+    /// </para>
+    /// </summary>
+    struct RenderTargetViewDesc
+    {
+        DXGI::Format Format = DXGI::Format::Unknown;
+        RenderTargetViewType ViewDimension = RenderTargetViewType::Unknown;
+        union
+        {
+            D3D12_BUFFER_RTV Buffer;
+            D3D12_TEX1D_RTV Texture1D;
+            D3D12_TEX1D_ARRAY_RTV Texture1DArray;
+            D3D12_TEX2D_RTV Texture2D;
+            D3D12_TEX2D_ARRAY_RTV Texture2DArray;
+            D3D12_TEX2DMS_RTV Texture2DMS;
+            D3D12_TEX2DMS_ARRAY_RTV Texture2DMSArray;
+            D3D12_TEX3D_RTV Texture3D;
+        };
+    };
+
+    /// <summary>
+    /// <para>
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_TEX1D_DSV
+    /// </para>
+    /// </summary>
+    struct Tex1DDSV
+    {
+        UInt32 MipSlice = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_TEX1D_ARRAY_DSV
+    /// </para>
+    /// </summary>
+    struct Tex1DArrayDSV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_TEX2D_DSV
+    /// </para>
+    /// </summary>
+    struct Tex2DDSV
+    {
+        UInt32 MipSlice = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_TEX2D_ARRAY_DSV
+    /// </para>
+    /// </summary>
+    struct Tex2DArrayDSV
+    {
+        UInt32 MipSlice = 0;
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_TEX2DMS_DSV
+    /// </para>
+    /// </summary>
+    struct Tex2DMSDSV
+    {
+        UInt32 UnusedField_NothingToDefine = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// </para>
+    /// <para>
+    /// Alias for D3D12_TEX2DMS_ARRAY_DSV
+    /// </para>
+    /// </summary>
+    struct Tex2DMSArrayDSV
+    {
+        UInt32 FirstArraySlice = 0;
+        UInt32 ArraySize = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DSV_FLAGS
+    /// </para>
+    /// </summary>
+    enum class DSVFlags : UInt32
+    {
+        None = D3D12_DSV_FLAG_NONE,
+        ReadOnlyDepth = D3D12_DSV_FLAG_READ_ONLY_DEPTH,
+        ReadOnlyStencil = D3D12_DSV_FLAG_READ_ONLY_STENCIL
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( DSVFlags, UInt32 );
+
+    using DepthStencilViewFlags = DSVFlags;
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DSV_DIMENSION
+    /// </para>
+    /// </summary>
+    enum class DSVDimension
+    {
+        Unknown = 0,
+        Texture1D = 1,
+        Texture1DArray = 2,
+        Texture2D = 3,
+        Texture2DArray = 4,
+        Texture2DMS = 5,
+        Texture2DMSArray = 6
+    };
+
+    using DepthStencilViewType = DSVDimension;
+
+    // <summary>
+    /// <para>
+    /// Alias for D3D12_DEPTH_STENCIL_VIEW_DESC
+    /// </para>
+    /// </summary>
+    struct DepthStencilViewDesc
+    {
+        DXGI::Format Format = DXGI::Format::Unknown;
+        DepthStencilViewType ViewDimension = DepthStencilViewType::Unknown;
+        DepthStencilViewFlags Flags = DepthStencilViewFlags::None;
+        union
+        {
+            Tex1DDSV Texture1D;
+            Tex1DArrayDSV Texture1DArray;
+            Tex2DDSV Texture2D;
+            Tex2DArrayDSV Texture2DArray;
+            Tex2DMSDSV Texture2DMS;
+            Tex2DMSArrayDSV Texture2DMSArray;
+        };
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_CLEAR_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ClearFlags : UInt32
+    {
+        Depth = D3D12_CLEAR_FLAG_DEPTH,
+        Stencil = D3D12_CLEAR_FLAG_STENCIL
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ClearFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FENCE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class FenceFlags : UInt32
+    {
+        D3D12_FENCE_FLAG_NONE = 0,
+        D3D12_FENCE_FLAG_SHARED = 0x1,
+        D3D12_FENCE_FLAG_SHARED_CROSS_ADAPTER = 0x2,
+        D3D12_FENCE_FLAG_NON_MONITORED = 0x4
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( FenceFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DESCRIPTOR_HEAP_TYPE
+    /// </para>
+    /// </summary>
+    enum class DescriptorHeapType : Int32
+    {
+        CBV_SRV_UAV = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+        Sampler = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER,
+        RTV = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
+        DSV = D3D12_DESCRIPTOR_HEAP_TYPE_DSV,
+        NumTypes = D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DESCRIPTOR_HEAP_FLAGS
+    /// </para>
+    /// </summary>
+    enum class DescriptorHeapFlags : UInt32
+    {
+        None = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
+        ShaderVisible = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( DescriptorHeapFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DESCRIPTOR_HEAP_DESC
+    /// </para>
+    /// </summary>
+    struct DescriptorHeapDesc
+    {
+        DescriptorHeapType Type = DescriptorHeapType::CBV_SRV_UAV;
+        UInt32 NumDescriptors = 0;
+        DescriptorHeapFlags Flags = DescriptorHeapFlags::None;
+        UInt32 NodeMask = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DESCRIPTOR_RANGE_TYPE
+    /// </para>
+    /// </summary>
+    enum class DescriptorRangeType
+    {
+        SRV = D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
+        UAV = D3D12_DESCRIPTOR_RANGE_TYPE_UAV,
+        CBV = D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
+        Sampler = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DESCRIPTOR_RANGE
+    /// </para>
+    /// </summary>
+    struct DescriptorRange
+    {
+        DescriptorRangeType RangeType = DescriptorRangeType::SRV;
+        UInt32 NumDescriptors = 0;
+        UInt32 BaseShaderRegister = 0;
+        UInt32 RegisterSpace = 0;
+        UInt32 OffsetInDescriptorsFromTableStart = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_DESCRIPTOR_TABLE
+    /// </para>
+    /// </summary>
+    struct RootDescriptorTable
+    {
+        UInt32 NumDescriptorRanges = 0;
+        _Field_size_full_( NumDescriptorRanges )  const DescriptorRange* pDescriptorRanges = nullptr;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_CONSTANTS
+    /// </para>
+    /// </summary>
+    struct RootConstants
+    {
+        UInt32 ShaderRegister = 0;
+        UInt32 RegisterSpace = 0;
+        UInt32 Num32BitValues = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_DESCRIPTOR
+    /// </para>
+    /// </summary>
+    struct RootDescriptor
+    {
+        UINT ShaderRegister = 0;
+        UINT RegisterSpace = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_VISIBILITY
+    /// </para>
+    /// </summary>
+    enum class ShaderVisibility
+    {
+        All = D3D12_SHADER_VISIBILITY_ALL,
+        Vertex = D3D12_SHADER_VISIBILITY_VERTEX,
+        Hull = D3D12_SHADER_VISIBILITY_HULL,
+        Domain = D3D12_SHADER_VISIBILITY_DOMAIN,
+        Geometry = D3D12_SHADER_VISIBILITY_GEOMETRY,
+        Pixel = D3D12_SHADER_VISIBILITY_PIXEL,
+        Amplification = D3D12_SHADER_VISIBILITY_AMPLIFICATION,
+        Mesh = D3D12_SHADER_VISIBILITY_MESH
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_PARAMETER_TYPE
+    /// </para>
+    /// </summary>
+    enum class RootParameterType
+    {
+        DescriptorTable = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE,
+        Constants = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS,
+        CBV = D3D12_ROOT_PARAMETER_TYPE_CBV,
+        SRV = D3D12_ROOT_PARAMETER_TYPE_SRV,
+        UAV = D3D12_ROOT_PARAMETER_TYPE_UAV
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_PARAMETER
+    /// </para>
+    /// </summary>
+    struct RootParameter
+    {
+        RootParameterType ParameterType = RootParameterType::DescriptorTable;
+        union
+        {
+            RootDescriptorTable DescriptorTable;
+            RootConstants Constants;
+            RootDescriptor Descriptor;
+        };
+        D3D12::ShaderVisibility ShaderVisibility = D3D12::ShaderVisibility::All;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_SIGNATURE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class RootSignatureFlags : UInt32
+    {
+        None = D3D12_ROOT_SIGNATURE_FLAG_NONE,
+        AllowInputAssemblerInputLayout = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT,
+        DenyVertexShaderRootAccess = D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS,
+        DenyHullShaderRootAccess = D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS,
+        DenyDomainShaderRootAccess = D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS,
+        DenyGeometryShaderRootAccess = D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS,
+        DenyPixelShaderRootAccess = D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS,
+        AllowStreamOutput = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_STREAM_OUTPUT,
+        LocalRootSignature = D3D12_ROOT_SIGNATURE_FLAG_LOCAL_ROOT_SIGNATURE,
+        DenyAmplificationShaderRootAccess = D3D12_ROOT_SIGNATURE_FLAG_DENY_AMPLIFICATION_SHADER_ROOT_ACCESS,
+        DenyMeshShaderRootAccess = D3D12_ROOT_SIGNATURE_FLAG_DENY_MESH_SHADER_ROOT_ACCESS,
+        CBV_SRV_UAVHeapDirectlyIndexed = D3D12_ROOT_SIGNATURE_FLAG_CBV_SRV_UAV_HEAP_DIRECTLY_INDEXED,
+        SamplerHeapDirectlyIndexed = D3D12_ROOT_SIGNATURE_FLAG_SAMPLER_HEAP_DIRECTLY_INDEXED
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( RootSignatureFlags, UInt32 );
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATIC_BORDER_COLOR
+    /// </para>
+    /// </summary>
+    enum class StaticBorderColor
+    {
+        TransparentBlack = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK,
+        OpaqueBlack = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK,
+        OpaqueWhite = D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE,
+        OpaqueBlackUInt = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK_UINT,
+        OpaqueWhiteUInt = D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE_UINT
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATIC_SAMPLER_DESC
+    /// </para>
+    /// </summary>
+    struct StaticSamplerDesc
+    {
+        D3D12::Filter Filter = D3D12::Filter::None;
+        TextureAddressMode AddressU = TextureAddressMode::None;
+        TextureAddressMode AddressV = TextureAddressMode::None;
+        TextureAddressMode AddressW = TextureAddressMode::None;
+        float MipLODBias = 0.f;
+        UInt32 MaxAnisotropy = 0;
+        ComparisonFunction ComparisonFunc = ComparisonFunction::Unknown;
+        StaticBorderColor BorderColor = StaticBorderColor::TransparentBlack;
+        float MinLOD = 0.f;
+        float MaxLOD = 0.f;
+        UInt32 ShaderRegister = 0;
+        UInt32 RegisterSpace = 0;
+        D3D12::ShaderVisibility ShaderVisibility = D3D12::ShaderVisibility::All;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATIC_SAMPLER_DESC1
+    /// </para>
+    /// </summary>
+    struct StaticSamplerDesc1 : public StaticSamplerDesc
+    {
+        SamplerFlags Flags = SamplerFlags::None;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_SIGNATURE_DESC
+    /// </para>
+    /// </summary>
+    struct RootSignatureDesc
+    {
+        UInt32 NumParameters = 0;
+        _Field_size_full_( NumParameters )  const RootParameter* pParameters = nullptr;
+        UInt32 NumStaticSamplers = 0;
+        _Field_size_full_( NumStaticSamplers )  const StaticSamplerDesc* pStaticSamplers = nullptr;
+        RootSignatureFlags Flags = RootSignatureFlags::None;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DESCRIPTOR_RANGE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class DescriptorRangeFlags : UInt32
+    {
+        None = D3D12_DESCRIPTOR_RANGE_FLAG_NONE,
+        DescriptorsVolatile = D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE,
+        DataVolatile = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE,
+        DataStaticWhileSetAtExecute = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC_WHILE_SET_AT_EXECUTE,
+        DataStatic = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC,
+        DescriptorsStaticKeepingBufferBoundsChecks = D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_STATIC_KEEPING_BUFFER_BOUNDS_CHECKS
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( DescriptorRangeFlags, UInt32 );
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DESCRIPTOR_RANGE1
+    /// </para>
+    /// </summary>
+    struct DescriptorRange1
+    {
+        DescriptorRangeType RangeType = DescriptorRangeType::CBV;
+        UInt32 NumDescriptors = 0;
+        UInt32 BaseShaderRegister = 0;
+        UInt32 RegisterSpace = 0;
+        DescriptorRangeFlags Flags = DescriptorRangeFlags::None;
+        UInt32 OffsetInDescriptorsFromTableStart = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_DESCRIPTOR_TABLE1
+    /// </para>
+    /// </summary>
+    struct RootDescriptorTable1
+    {
+        UInt32 NumDescriptorRanges = 0;
+        _Field_size_full_( NumDescriptorRanges )  const DescriptorRange1* pDescriptorRanges = nullptr;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_DESCRIPTOR_FLAGS
+    /// </para>
+    /// </summary>
+    enum class RootDescriptorFlags : UInt32
+    {
+        None = D3D12_ROOT_DESCRIPTOR_FLAG_NONE,
+        DataVolatile = D3D12_ROOT_DESCRIPTOR_FLAG_DATA_VOLATILE,
+        DataStaticWhileSetAtExecute = D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC_WHILE_SET_AT_EXECUTE,
+        DataStatic = D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( RootDescriptorFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_DESCRIPTOR1
+    /// </para>
+    /// </summary>
+    struct RootDescriptor1
+    {
+        UInt32 ShaderRegister = 0;
+        UInt32 RegisterSpace = 0;
+        RootDescriptorFlags Flags = RootDescriptorFlags::None;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_PARAMETER1
+    /// </para>
+    /// </summary>
+    struct RootParameter1
+    {
+        RootParameterType ParameterType = RootParameterType::DescriptorTable;
+        union
+        {
+            D3D12_ROOT_DESCRIPTOR_TABLE1 DescriptorTable;
+            D3D12_ROOT_CONSTANTS Constants;
+            D3D12_ROOT_DESCRIPTOR1 Descriptor;
+        };
+        D3D12::ShaderVisibility ShaderVisibility = D3D12::ShaderVisibility::All;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_SIGNATURE_DESC1
+    /// </para>
+    /// </summary>
+    struct RootSignatureDesc1
+    {
+        UInt32 NumParameters = 0;
+        _Field_size_full_( NumParameters )  const RootParameter1* pParameters = nullptr;
+        UInt32 NumStaticSamplers = 0;
+        _Field_size_full_( NumStaticSamplers )  const StaticSamplerDesc* pStaticSamplers = nullptr;
+        RootSignatureFlags Flags = RootSignatureFlags::None;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ROOT_SIGNATURE_DESC2
+    /// </para>
+    /// </summary>
+    struct RootSignatureDesc2
+    {
+        UInt32 NumParameters = 0;
+        _Field_size_full_( NumParameters )  const RootParameter1* pParameters = nullptr;
+        UInt32 NumStaticSamplers = 0;
+        _Field_size_full_( NumStaticSamplers )  const StaticSamplerDesc1* pStaticSamplers = nullptr;
+        RootSignatureFlags Flags = RootSignatureFlags::None;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_VERSIONED_ROOT_SIGNATURE_DESC
+    /// </para>
+    /// </summary>
+    struct VersionedRootSignatureDesc
+    {
+        RootSignatureVersion Version = RootSignatureVersion::Version1_1;
+        union
+        {
+            RootSignatureDesc Desc_1_0;
+            RootSignatureDesc1 Desc_1_1;
+            RootSignatureDesc2 Desc_1_2;
+        };
+    };
+
 
 
 }

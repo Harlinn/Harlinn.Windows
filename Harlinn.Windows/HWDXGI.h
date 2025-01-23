@@ -21,6 +21,7 @@
 #include <HCCCOM.h>
 #include <HCCException.h>
 #include <HWCommon.h>
+#include <HWDXGIFormat.h>
 
 #pragma comment(lib,"DXGI.lib")
 

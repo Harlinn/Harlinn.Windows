@@ -229,6 +229,8 @@ namespace Harlinn::Windows
         DXMessageLoop* messageLoop_ = nullptr;
     public:
         using Base = Windows::Application;
+        boost::signals2::signal<void( DXApplication* sender )> OnInit;
+        boost::signals2::signal<void( DXApplication* sender )> OnExit;
 
         HW_EXPORT DXApplication( const std::shared_ptr<Windows::ApplicationOptions>& options, std::unique_ptr<DXContext> dxContext = std::make_unique<DXContext>() );
         HW_EXPORT DXApplication( std::unique_ptr<DXContext> dxContext = std::make_unique<DXContext>( ) );
@@ -247,6 +249,10 @@ namespace Harlinn::Windows
         HW_EXPORT virtual int Run( Form& mainForm ) override;
         HW_EXPORT virtual int Run( Form& mainForm, MessageLoop& messageLoop ) override;
         HW_EXPORT virtual int Run( Form& mainForm, DXMessageLoop& messageLoop );
+    protected:
+        HW_EXPORT virtual void DoOnInit( );
+        HW_EXPORT virtual void DoOnExit( bool dontThrow = false );
+
     };
 
 

@@ -213,7 +213,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 
         INLINE OrthogonalTransform operator* ( const OrthogonalTransform& xform ) const
         {
+#ifdef HDMC_USES_HCC_MATH
+            return OrthogonalTransform( xform.m_rotation * m_rotation, m_rotation * xform.m_translation + m_translation );
+#else
             return OrthogonalTransform( m_rotation * xform.m_rotation, m_rotation * xform.m_translation + m_translation );
+#endif
         }
 
         INLINE OrthogonalTransform operator~ ( ) const

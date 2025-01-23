@@ -200,6 +200,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             { 
                 return Matrix3( scl * GetX( ), scl * GetY( ), scl * GetZ( ) ); 
             }
+            
             INLINE Vector3 operator* ( Vector3 vec ) const 
             { 
                 return Vector3( ::DirectX::XMVector3TransformNormal( vec, *this ) ); 
@@ -208,7 +209,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             { 
                 return Matrix3( *this * mat.GetX( ), *this * mat.GetY( ), *this * mat.GetZ( ) ); 
             }
-
+            
         private:
             Vector3 m_mat[ 3 ];
         };

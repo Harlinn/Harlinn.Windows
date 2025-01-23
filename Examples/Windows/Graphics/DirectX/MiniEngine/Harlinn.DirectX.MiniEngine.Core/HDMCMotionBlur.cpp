@@ -128,6 +128,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Vector4( 0.0f, -1.0f / RcpHalfDimY, 0.0f, 0.0f ),
             Vector4( 0.0f, 0.0f, 1.0f, 0.0f ),
             Vector4( 1.0f / RcpHalfDimX, 1.0f / RcpHalfDimY, 0.0f, 1.0f ) );
+
+        Matrix4 CurToPrevXForm = (preMult * reprojectionMatrix) * postMult;
 #else
         Matrix4 preMult = Matrix4(
             Vector4( RcpHalfDimX, 0.0f, 0.0f, 0.0f ),
@@ -141,9 +143,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Vector4( 0.0f, -1.0f / RcpHalfDimY, 0.0f, 0.0f ),
             Vector4( 0.0f, 0.0f, 1.0f, 0.0f ),
             Vector4( 1.0f / RcpHalfDimX, 1.0f / RcpHalfDimY, 0.0f, 1.0f ) );
-#endif
 
         Matrix4 CurToPrevXForm = postMult * reprojectionMatrix * preMult;
+#endif
+
+        
 
         Context.SetDynamicConstantBufferView( 3, sizeof( CurToPrevXForm ), &CurToPrevXForm );
         Context.TransitionResource( g_VelocityBuffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS );
@@ -196,6 +200,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Vector4( 0.0f, -1.0f / RcpHalfDimY, 0.0f, 0.0f ),
             Vector4( 0.0f, 0.0f, 1.0f, 0.0f ),
             Vector4( 1.0f / RcpHalfDimX, 1.0f / RcpHalfDimY, 0.0f, 1.0f ) );
+        Matrix4 CurToPrevXForm = (preMult * reprojectionMatrix) * postMult;
 #else
         Matrix4 preMult = Matrix4(
             Vector4( RcpHalfDimX, 0.0f, 0.0f, 0.0f ),
@@ -209,8 +214,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Vector4( 0.0f, -1.0f / RcpHalfDimY, 0.0f, 0.0f ),
             Vector4( 0.0f, 0.0f, 1.0f, 0.0f ),
             Vector4( 1.0f / RcpHalfDimX, 1.0f / RcpHalfDimY, 0.0f, 1.0f ) );
-#endif
         Matrix4 CurToPrevXForm = postMult * reprojectionMatrix * preMult;
+#endif
 
         Context.SetDynamicConstantBufferView( 3, sizeof( CurToPrevXForm ), &CurToPrevXForm );
 

@@ -10769,6 +10769,11 @@ namespace Harlinn::Common::Core::Math
 
         explicit QuaternionSimd( const QuaternionType& quaternion ) noexcept;
 
+        constexpr QuaternionSimd( ValueType xv, ValueType yv, ValueType zv, ValueType wv ) noexcept
+            : simd( Traits::Set( wv, zv, yv, xv ) )
+        {
+        }
+
 
         /// <summary>
         /// Creates a rotation quaternion around a normalized axis.

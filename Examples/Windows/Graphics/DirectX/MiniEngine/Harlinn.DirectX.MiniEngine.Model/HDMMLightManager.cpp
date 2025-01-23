@@ -204,7 +204,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             shadowCamera.Update( );
             m_LightShadowMatrix[ n ] = shadowCamera.GetViewProjMatrix( );
 #ifdef HDMC_USES_HCC_MATH
-            Matrix4 shadowTextureMatrix = Matrix4( AffineTransform( Matrix3MakeScale( 0.5f, -0.5f, 1.0f ), Vector3( 0.5f, 0.5f, 0.0f ) ) ) * m_LightShadowMatrix[ n ];
+            Matrix4 shadowTextureMatrix = m_LightShadowMatrix[ n ] * Matrix4( AffineTransform( Matrix3MakeScale( 0.5f, -0.5f, 1.0f ), Vector3( 0.5f, 0.5f, 0.0f ) ) );
             auto posvalues = pos.Values( );
             m_LightData[ n ].pos[ 0 ] = posvalues.x;
             m_LightData[ n ].pos[ 1 ] = posvalues.y;

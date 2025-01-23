@@ -236,7 +236,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 #endif
             }
 
+#ifdef HDMC_USES_HCC_MATH
+            const Matrix4 LocalXform = thisGraphNode.xform * xform;
+#else
             const Matrix4 LocalXform = xform * thisGraphNode.xform;
+#endif
 
             if ( !curNode->pointsToCamera && curNode->mesh != nullptr )
             {

@@ -52,7 +52,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     template <typename T>
     static inline Quaternion ToQuat( const T* rot )
     {
+#ifdef HDMC_USES_HCC_MATH
+        return Quaternion( ToFloat( rot[ 0 ] ), ToFloat( rot[ 1 ] ), ToFloat( rot[ 2 ] ), ToFloat( rot[ 3 ] ) );
+#else
         return ( Quaternion )Vector4( ToFloat( rot[ 0 ] ), ToFloat( rot[ 1 ] ), ToFloat( rot[ 2 ] ), ToFloat( rot[ 3 ] ) );
+#endif
     }
 
     static inline Quaternion ToQuat( const float* rot )

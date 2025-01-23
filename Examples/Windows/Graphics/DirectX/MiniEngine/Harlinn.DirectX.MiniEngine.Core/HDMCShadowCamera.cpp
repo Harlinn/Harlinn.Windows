@@ -59,7 +59,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         // Transform from clip space to texture space
 #ifdef HDMC_USES_HCC_MATH
-        m_ShadowMatrix = ToMatrix4( AffineTransform( Matrix3MakeScale( 0.5f, -0.5f, 1.0f ), Vector3( 0.5f, 0.5f, 0.0f ) ) ) * m_ViewProjMatrix;
+        m_ShadowMatrix = m_ViewProjMatrix * ToMatrix4( AffineTransform( Matrix3MakeScale( 0.5f, -0.5f, 1.0f ), Vector3( 0.5f, 0.5f, 0.0f ) ) );
 #else
         m_ShadowMatrix = Matrix4( AffineTransform( Matrix3::MakeScale( 0.5f, -0.5f, 1.0f ), Vector3( 0.5f, 0.5f, 0.0f ) ) ) * m_ViewProjMatrix;
 #endif
