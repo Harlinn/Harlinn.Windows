@@ -88,13 +88,36 @@ namespace Harlinn::Common::Core
     protected:
         IUnknown* unknown_;
     public:
-        typedef IUnknown InterfaceType;
-
+        /// <summary>
+        /// Every derived class, except for the ComPtr template,
+        /// defines InterfaceType as the type of the interface
+        /// wrapped by the derived class.
+        /// </summary>
+        using InterfaceType = IUnknown;
+        /// <summary>
+        /// The default constructor ensures that 
+        /// the internal pointer to IUnknown
+        /// is set to <c>nullptr</c>.
+        /// </summary>
         constexpr Unknown( ) noexcept
             : unknown_( nullptr )
         {
         }
 
+        /// <summary>
+        /// Constructs a new <c>Unknown</c>, taking
+        /// ownership of the interface pointer held
+        /// by <c>unknown</c>.
+        /// </summary>
+        /// <param name="unknown">
+        /// A pointer to an <c>IUnknown</c> interface,
+        /// or an interface derived from <c>IUnknown</c>.
+        /// </param>
+        /// <param name="addref">
+        /// If <c>true</c>, the constructor
+        /// calls <c>AddRef</c> on the interface pointer held
+        /// by <c>unknown</c>.
+        /// </param>
         explicit Unknown( IUnknown* unknown, bool addref = false ) noexcept
             : unknown_( unknown )
         {
@@ -104,6 +127,23 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Initializes the new object to the interface identified
+        /// by the <c>iid</c> parameter by querying the interface
+        /// held by <c>unknown</c> for the requested interface.
+        /// </summary>
+        /// <param name="iid">
+        /// The identifier of the requested interface.
+        /// </param>
+        /// <param name="unknown">
+        /// The interface wrapper object that will be queried
+        /// for the requested interface.
+        /// </param>
+        /// <param name="throwIfNoInterface">
+        /// Set to <c>false</c> to prevent the constructor
+        /// from throwing and exception if the requested interface
+        /// is not supported. 
+        /// </param>
         Unknown( REFIID iid, const Unknown& unknown, bool throwIfNoInterface = true )
             : unknown_( nullptr )
         {
@@ -123,6 +163,13 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Copy constructor, calls <c>AddRef</c> on the interface pointer held
+        /// by <c>other</c>.
+        /// </summary>
+        /// <param name="other">
+        /// Const reference to the <c>Unknown</c> object that will be copied.
+        /// </param>
         Unknown( const Unknown& other ) noexcept
             : unknown_( other.unknown_ )
         {
@@ -132,6 +179,14 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Move constructor takes ownership of
+        /// the interface pointer held by <c>other</c>.
+        /// </summary>
+        /// <param name="other">
+        /// The object to transfer the ownership of
+        /// the interface pointer from.
+        /// </param>
         Unknown( Unknown&& other ) noexcept
             : unknown_( other.unknown_ )
         {
@@ -141,7 +196,9 @@ namespace Harlinn::Common::Core
             }
         }
 
-
+        /// <summary>
+        /// Destructor, calling <c>Release</c> on the wrapped interface.
+        /// </summary>
         ~Unknown( ) noexcept
         {
             IUnknown* tmp = unknown_;
@@ -152,11 +209,28 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if this object references an interface.
+        /// </summary>
         constexpr operator bool( ) const noexcept
         {
             return unknown_ != nullptr;
         }
 
+        /// <summary>
+        /// Copy assignment, which does nothing if <c>other</c>
+        /// holds the same interface pointer as this object; and 
+        /// if not, calls <c>Release</c> on the currently 
+        /// held interface pointer, then copying the
+        /// interface pointer from <c>other</c>, calling
+        /// <c>AddRef</c> on the newly assigned interface pointer.
+        /// </summary>
+        /// <param name="other">
+        /// The source of the copy assignment.
+        /// </param>
+        /// <returns>
+        /// A reference to the object.
+        /// </returns>
         Unknown& operator = ( const Unknown& other ) noexcept
         {
             if ( unknown_ != other.unknown_ )
@@ -174,23 +248,63 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        /// <summary>
+        /// Move assignment exchanges the current interface pointer,
+        /// with the interface pointer held by <c>other</c>.
+        /// </summary>
+        /// <param name="other">
+        /// The source of the move assignment.
+        /// </param>
+        /// <returns>
+        /// A reference to the object.
+        /// </returns>
         Unknown& operator = ( Unknown&& other ) noexcept
         {
             std::swap( unknown_, other.unknown_ );
             return *this;
         }
 
+        /// <summary>
+        /// Exchanges the current interface pointer,
+        /// with the interface pointer held by <c>other</c>.
+        /// </summary>
+        /// <param name="other">
+        /// The object to exchange interface pointer with.
+        /// </param>
         void swap( Unknown& other ) noexcept
         {
             std::swap( unknown_, other.unknown_ );
         }
 
+        /// <summary>
+        /// Exchanges the current interface pointers between two
+        /// <c>Unknown</c> objects.
+        /// </summary>
+        /// <param name="first">
+        /// The first <c>Unknown</c> object.
+        /// </param>
+        /// <param name="second">
+        /// The second <c>Unknown</c> object.
+        /// </param>
         friend void swap( Unknown& first, Unknown& second ) noexcept
         {
             first.swap( second );
         }
 
-
+        /// <summary>
+        /// Calls <c>Release</c> on the currently held interface pointer
+        /// if the interface pointer held by <c>other</c> points
+        /// to a different interface.
+        /// </summary>
+        /// <param name="other">
+        /// An optional interface pointer to assign to the current
+        /// object.
+        /// </param>
+        /// <param name="addRef">
+        /// if <c>true</c>, and <c>other</c> is not <c>nullptr</c>,
+        /// <c>ResetPtr</c> will call <c>AddRef</c> on the newly
+        /// assigned interface pointer.
+        /// </param>
         void ResetPtr( IUnknown* other = nullptr, bool addRef = false ) noexcept
         {
             if ( unknown_ != other )
@@ -207,6 +321,17 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Assigning <c>nullptr</c> to the object, releases the
+        /// currently held interface pointer, and sets the
+        /// interface pointer to <c>nullptr</c>.
+        /// </summary>
+        /// <param name="">
+        /// <c>nullptr</c>
+        /// </param>
+        /// <returns>
+        /// A reference to the object.
+        /// </returns>
         Unknown& operator = ( nullptr_t )
         {
             if ( unknown_ )
@@ -219,7 +344,12 @@ namespace Harlinn::Common::Core
         }
 
 
-
+        /// <summary>
+        /// Returns the currently held interface pointer,
+        /// setting the interface pointer of the object to
+        /// <c>nullptr</c>.
+        /// </summary>
+        /// <returns></returns>
         IUnknown* Detach( )
         {
             auto tmp = unknown_;
@@ -227,7 +357,20 @@ namespace Harlinn::Common::Core
             return tmp;
         }
 
-
+        /// <summary>
+        /// Creates an instance of the interface 
+        /// wrapper class T, by querying the interface
+        /// pointer for the interface type wrapped by
+        /// T
+        /// </summary>
+        /// <typeparam name="T">
+        /// An interface wrapper class derived from Unknown.
+        /// </typeparam>
+        /// <returns>
+        /// Returns an instance of T, initialized to the interface
+        /// wrapped by T, or <c>nullptr</c> if the interface is
+        /// not supported.
+        /// </returns>
         template<typename T>
             requires std::is_base_of_v<Unknown, T > 
         T As( ) const
@@ -237,6 +380,17 @@ namespace Harlinn::Common::Core
             return result;
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if the interface
+        /// can successfully be queried for the interface
+        /// wrapped by T
+        /// </summary>
+        /// <typeparam name="T">
+        /// An interface wrapper class derived from Unknown.
+        /// </typeparam>
+        /// <returns>
+        /// <c>true</c> if the interface is supported, otherwise <c>false</c>.
+        /// </returns>
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
         bool Is( ) const noexcept
@@ -255,6 +409,19 @@ namespace Harlinn::Common::Core
         }
 
 
+        /// <summary>
+        /// Creates an instance of the interface 
+        /// smart pointer ComPtr&lt;T&gt; for the interface T, by querying the interface
+        /// pointer for the interface type T
+        /// </summary>
+        /// <typeparam name="T">
+        /// An interface type derived from <c>IUnknown</c>.
+        /// </typeparam>
+        /// <returns>
+        /// Returns an instance of the interface smart pointer 
+        /// ComPtr&lt;T&gt; for the interface T, or <c>nullptr</c> if the interface is
+        /// not supported.
+        /// </returns>
         template<typename T>
             requires std::is_base_of_v<IUnknown, T>
         ComPtr<T> As( ) const
@@ -279,7 +446,7 @@ namespace Harlinn::Common::Core
         /// derived from IUnknown.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the interface you want to retrive.
+        /// The type of the interface you want to retrieve.
         /// </typeparam>
         /// <returns>
         /// <p>
@@ -307,7 +474,12 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-
+        /// <summary>
+        /// Retrieves a pointer to the interface wrapped by
+        /// this object.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         template<typename T = IUnknown>
         T* GetInterfacePointer( ) const noexcept
         {
@@ -351,6 +523,20 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /// <summary>
+        /// Queries the interface for an interface pointer of type T
+        /// </summary>
+        /// <typeparam name="T">
+        /// An interface type derived from <c>IUnknown</c>.
+        /// </typeparam>
+        /// <param name="itf">
+        /// A pointer to an interface pointer that will
+        /// be assigned the requested interface pointer if
+        /// supported by the object.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the query succeeded, otherwise <c>false</c>.
+        /// </returns>
         template<typename T>
             requires std::is_base_of_v<IUnknown, T>
         bool QueryInterface( T** itf ) const
@@ -358,24 +544,84 @@ namespace Harlinn::Common::Core
             return QueryInterface( __uuidof( T ), reinterpret_cast< void** >( itf ) );
         }
 
+
+        
+        /// <summary>
+        /// Returns <c>true</c> if the interface pointer held by this
+        /// object is the same as the interface pointer held by the <c>other</c>
+        /// object.
+        /// </summary>
+        /// <param name="other">
+        /// the <c>other</c> object.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if equal, otherwise <c>false</c>.
+        /// </returns>
         constexpr bool operator == ( const Unknown& other ) const noexcept
         {
             return unknown_ == other.unknown_;
         }
+        /// <summary>
+        /// Returns <c>true</c> if the interface pointer held by this
+        /// object is not the same as the interface pointer held by the <c>other</c>
+        /// object.
+        /// </summary>
+        /// <param name="other">
+        /// the <c>other</c> object.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if not equal, otherwise <c>false</c>.
+        /// </returns>
         constexpr bool operator != ( const Unknown& other ) const noexcept
         {
             return unknown_ != other.unknown_;
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if the interface pointer held by this
+        /// object is the same as the interface pointer held by <c>other</c>.
+        /// </summary>
+        /// <param name="other">
+        /// the <c>other</c> interface pointer.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if equal, otherwise <c>false</c>.
+        /// </returns>
         constexpr bool operator == ( const IUnknown* other ) const noexcept
         {
             return unknown_ == other;
         }
+
+        /// <summary>
+        /// Returns <c>true</c> if the interface pointer held by this
+        /// object is not the same as the interface pointer held by <c>other</c>.
+        /// </summary>
+        /// <param name="other">
+        /// the <c>other</c> interface pointer.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if not equal, otherwise <c>false</c>.
+        /// </returns>
         constexpr bool operator != ( const IUnknown* other ) const noexcept
         {
             return unknown_ != other;
         }
 
+        /// <summary>
+        /// Creates and default-initializes a single object of the class associated with a specified CLSID.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the wrapper class derived from Unknown.
+        /// </typeparam>
+        /// <param name="clsid">
+        /// The CLSID associated with the data and code that will be used to create the object.
+        /// </param>
+        /// <param name="classContext">
+        /// Context in which the code that manages the newly created object will run. 
+        /// </param>
+        /// <returns>
+        /// An initialized instance of T
+        /// </returns>
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromClassId( const CLSID& clsid, DWORD classContext = CLSCTX_INPROC_SERVER )
