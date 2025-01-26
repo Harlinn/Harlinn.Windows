@@ -89,8 +89,7 @@ namespace Harlinn::Common::Core
         IUnknown* unknown_;
     public:
         /// <summary>
-        /// Every derived class, except for the ComPtr template,
-        /// defines InterfaceType as the type of the interface
+        /// Every derived class defines InterfaceType as the type of the interface
         /// wrapped by the derived class.
         /// </summary>
         using InterfaceType = IUnknown;
@@ -141,7 +140,7 @@ namespace Harlinn::Common::Core
         /// </param>
         /// <param name="throwIfNoInterface">
         /// Set to <c>false</c> to prevent the constructor
-        /// from throwing and exception if the requested interface
+        /// from throwing an exception if the requested interface
         /// is not supported. 
         /// </param>
         Unknown( REFIID iid, const Unknown& unknown, bool throwIfNoInterface = true )
@@ -489,8 +488,6 @@ namespace Harlinn::Common::Core
         /// <summary>
         /// Queries a COM object for a pointer to one of its interface; 
         /// identifying the interface by a reference to its interface identifier (IID). 
-        /// If the COM object implements the interface, then it returns a pointer to 
-        /// that interface after calling IUnknown::AddRef on it.
         /// </summary>
         /// <param name="riid">IID identifying the requested interface.</param>
         /// <param name="itf">
@@ -519,6 +516,7 @@ namespace Harlinn::Common::Core
                 {
                     CheckHRESULT( hr, unknown_ );
                 }
+                *itf = nullptr;
                 return false;
             }
         }
@@ -622,7 +620,7 @@ namespace Harlinn::Common::Core
         /// <returns>
         /// An initialized instance of T
         /// </returns>
-        template<typename T>
+        template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromClassId( const CLSID& clsid, DWORD classContext = CLSCTX_INPROC_SERVER )
         {
@@ -632,7 +630,7 @@ namespace Harlinn::Common::Core
             return T( result );
         }
 
-        template<typename T>
+        template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromClassId( const wchar_t* clsid, DWORD classContext = CLSCTX_INPROC_SERVER )
         {
@@ -644,14 +642,14 @@ namespace Harlinn::Common::Core
             CheckHRESULT( hr );
             return T( result );
         }
-        template<typename T>
+        template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromClassId( const WideString& clsid, DWORD classContext = CLSCTX_INPROC_SERVER )
         {
             return CoCreateInstanceFromClassId( clsid.c_str( ), classContext );
         }
 
-        template<typename T>
+        template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromProgId( const wchar_t* progId, DWORD classContext = CLSCTX_INPROC_SERVER )
         {
@@ -663,14 +661,14 @@ namespace Harlinn::Common::Core
             CheckHRESULT( hr );
             return T( result );
         }
-        template<typename T>
+        template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromProgId( const WideString& progId, DWORD classContext = CLSCTX_INPROC_SERVER )
         {
             return CoCreateInstanceFromProgId( progId, classContext );
         }
 
-        template<typename T>
+        template<typename T = Unknown>
             requires std::is_base_of_v<Unknown, T>
         static T CoCreateInstanceFromDll( const ModuleHandle& dll, const CLSID& clsid );
 
@@ -786,7 +784,7 @@ public: \
     {
     public:
         using Base = Unknown;
-
+        using InterfaceType = T;
         constexpr ComPtr( ) noexcept
             : Base( nullptr )
         {
@@ -1886,6 +1884,12 @@ public: \
                 _putws( comInterface.c_str() );
             }
         }
+
+        inline void PrintSupportedKnownInterfaces( const Unknown& unknown )
+        {
+            PrintSupportedKnownInterfaces( unknown.GetInterfacePointer( ) );
+        }
+
         /// <summary>
         /// Retrieves the Guids of supported known interfaces.
         /// </summary>

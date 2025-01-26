@@ -60,7 +60,6 @@ namespace Harlinn::Windows
     // ------------------------------------------------------------------------
     // Application
     // ------------------------------------------------------------------------
-    Application* Application::currentApplication_ = nullptr;
 
 
     Application::Application( const std::shared_ptr<Windows::ApplicationOptions>& options, COINIT comInitalizationFlags )
@@ -69,7 +68,6 @@ namespace Harlinn::Windows
         HRESULT hr = CoInitializeEx(0, comInitalizationFlags );
         CheckHRESULT( hr );
 
-        currentApplication_ = this;
         INITCOMMONCONTROLSEX icex = { 0, };
         icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
         icex.dwICC = 0x0000FFFF;
@@ -85,7 +83,6 @@ namespace Harlinn::Windows
 
     Application::~Application( )
     {
-        currentApplication_ = nullptr;
         CoUninitialize( );
     }
 
@@ -112,12 +109,6 @@ namespace Harlinn::Windows
             return result;
         }
         return nullptr;
-    }
-
-
-    Application* Application::Current( )
-    {
-        return currentApplication_;
     }
 
 
@@ -163,14 +154,10 @@ namespace Harlinn::Windows
 
     WindowClass* Application::GetWindowClass( const WideString& className )
     {
-        auto application = Application::Current( );
-        if ( application )
-        {
-            auto& windowClasses = application->GetWindowClasses( );
-            auto result = windowClasses.GetWindowClass( className );
-            return result;
-        }
-        return nullptr;
+        auto& application = Application::Instance( );
+        auto& windowClasses = application.GetWindowClasses( );
+        auto result = windowClasses.GetWindowClass( className );
+        return result;
     }
     WindowClass* Application::GetWindowClass( const wchar_t* className )
     {

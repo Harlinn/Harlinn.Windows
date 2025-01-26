@@ -21,72 +21,7 @@
 namespace Harlinn::Windows
 {
     using namespace Harlinn::Windows::Graphics;
-    // ------------------------------------------------------------------------
-    // DXMessageLoop
-    // ------------------------------------------------------------------------
-    DXMessageLoop* DXMessageLoop::instance_ = nullptr;
-
-    DXMessageLoop::DXMessageLoop( )
-    {
-        instance_ = this;
-    }
-    DXMessageLoop::~DXMessageLoop( )
-    {
-        instance_ = nullptr;
-    }
-
-    int DXMessageLoop::Run( )
-    {
-        Message message;
-        done_ = false;
-        while ( !done_ )
-        {
-            while ( this->GetMessage( message ) )
-            {
-                this->TranslateMessage( message );
-                this->DispatchMessage( message );
-                if ( message.message == WM_QUIT )
-                {
-                    done_ = true;
-                }
-            }
-            if ( !done_ )
-            {
-                if ( !onFirstRenderCalled_ )
-                {
-                    onFirstRenderCalled_ = true;
-                    this->DoOnFirstRender( );
-                }
-                this->DoOnRender( );
-            }
-        }
-        return (int)message.wParam;
-    }
-
-    DXMessageLoop* DXMessageLoop::Instance( )
-    {
-        return instance_;
-    }
-
-    int DXMessageLoop::GetMessage( Message& message )
-    {
-        return ::PeekMessage( &message, NULL, 0U, 0U, PM_REMOVE );
-    }
-
-    void DXMessageLoop::DoOnFirstRender( )
-    {
-        OnFirstRender( this );
-    }
-
-    void DXMessageLoop::DoOnRender( )
-    {
-        OnRender( this );
-    }
-
-    void DXMessageLoop::DoOnQuit( )
-    {
-        OnQuit( this );
-    }
+    
 
 
     // ------------------------------------------------------------------------
@@ -131,9 +66,9 @@ namespace Harlinn::Windows
 
         commandQueue_ = this->CreateCommandQueue( );
         SetupFrameContexts( );
-        
-        commandList_ = device_.CreateCommandList( 0, D3D12::CommandListType::Direct, frameContexts_[ 0 ].commandAllocator_ );
-        commandList_.Close( );
+
+        rootSignature_ = this->DoOnCreateRootSignature( );
+        pipelineState_ = this->DoOnCreatePipelineState( );
 
         commandList_ = this->CreateCommandList( frameContexts_[ 0 ].commandAllocator_ );
 
@@ -196,7 +131,7 @@ namespace Harlinn::Windows
 
     DX::GraphicsCommandList DXContext::CreateCommandList( const DX::CommandAllocator& commandAllocator )
     {
-        auto result = device_.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameContexts_[ 0 ].commandAllocator_ );
+        auto result = device_.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameContexts_[ 0 ].commandAllocator_, pipelineState_ );
         result.Close( );
         return result;
     }
@@ -222,7 +157,7 @@ namespace Harlinn::Windows
         swapChainDesc.BufferCount = BACK_BUFFERS_COUNT;
         swapChainDesc.Width = width;
         swapChainDesc.Height = height;
-        swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        swapChainDesc.Format = static_cast< DXGI_FORMAT >(format_);
         swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         swapChainDesc.SampleDesc.Count = 1;
@@ -425,6 +360,26 @@ namespace Harlinn::Windows
     {
     }
 
+    WideString DXApplication::GetAssetsDirectory( )
+    {
+        return Base::ExecutableDirectory( );
+    }
+
+    WideString DXApplication::GetAssetPath( const WideString& assetName, bool checkExist )
+    {
+        auto assetsDirectory = this->GetAssetsDirectory( );
+        auto path = IO::Path::Combine( assetsDirectory, assetName );
+        if ( checkExist )
+        {
+            if ( IO::File::Exist( path ) == false )
+            {
+                auto message = Format( L"The asset {} cannot be found in {}.", assetName, assetsDirectory );
+                HCC_THROW( IO::FileNotFoundException, message );
+            }
+        }
+        return path;
+    }
+
     int DXApplication::Run( Form& mainForm )
     {
         DXMessageLoop messageLoop;
@@ -482,6 +437,81 @@ namespace Harlinn::Windows
                 throw;
             }
         }
+    }
+
+    // ------------------------------------------------------------------------
+    // DXForm
+    // ------------------------------------------------------------------------
+    WideString DXForm::GetAssetPath( const WideString& assetName, bool checkExist )
+    {
+        return DXApplication::Instance( ).GetAssetPath( assetName, checkExist );
+    }
+
+    // ------------------------------------------------------------------------
+    // DXMessageLoop
+    // ------------------------------------------------------------------------
+    DXMessageLoop* DXMessageLoop::instance_ = nullptr;
+
+    DXMessageLoop::DXMessageLoop( )
+    {
+        instance_ = this;
+    }
+    DXMessageLoop::~DXMessageLoop( )
+    {
+        instance_ = nullptr;
+    }
+
+    int DXMessageLoop::Run( )
+    {
+        Message message;
+        done_ = false;
+        while ( !done_ )
+        {
+            while ( this->GetMessage( message ) )
+            {
+                this->TranslateMessage( message );
+                this->DispatchMessage( message );
+                if ( message.message == WM_QUIT )
+                {
+                    done_ = true;
+                }
+            }
+            if ( !done_ )
+            {
+                if ( !onFirstRenderCalled_ )
+                {
+                    onFirstRenderCalled_ = true;
+                    this->DoOnFirstRender( );
+                }
+                this->DoOnRender( );
+            }
+        }
+        return ( int )message.wParam;
+    }
+
+    DXMessageLoop* DXMessageLoop::Instance( )
+    {
+        return instance_;
+    }
+
+    int DXMessageLoop::GetMessage( Message& message )
+    {
+        return ::PeekMessage( &message, NULL, 0U, 0U, PM_REMOVE );
+    }
+
+    void DXMessageLoop::DoOnFirstRender( )
+    {
+        OnFirstRender( this );
+    }
+
+    void DXMessageLoop::DoOnRender( )
+    {
+        OnRender( this );
+    }
+
+    void DXMessageLoop::DoOnQuit( )
+    {
+        OnQuit( this );
     }
 
 }

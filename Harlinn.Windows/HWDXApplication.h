@@ -38,11 +38,11 @@ namespace Harlinn::Windows
     };
 
 
-    class DXPipelineState
+    class DXPipelineStateObject
     {
     public:
-        using RootSignature = Graphics::D3D12RootSignature;
-        using PipelineState = Graphics::D3D12PipelineState;
+        using RootSignature = Graphics::D3D12::RootSignature;
+        using PipelineState = Graphics::D3D12::PipelineState;
 
     };
 
@@ -60,6 +60,7 @@ namespace Harlinn::Windows
         };
     private:
         UINT frameIndex_ = 0;
+        Graphics::DXGI::Format format_ = Graphics::DXGI::Format::R8G8B8A8_UNORM;
         Graphics::DXGI::Factory4 dxgiFactory_;
         Graphics::DXGI::Adapter4 hardwareAdapter_;
         DX::Device device_;
@@ -67,6 +68,8 @@ namespace Harlinn::Windows
         DX::Fence fence_;
         DX::DescriptorHeap shaderResourceViewDescHeap_;
         DX::DescriptorHeap renderTargetViewDescHeap_;
+        DX::RootSignature rootSignature_;
+        DX::PipelineState pipelineState_;
         DX::GraphicsCommandList commandList_;
         DX::CommandQueue commandQueue_;
         std::array<FrameContext, FRAMES_IN_FLIGHT_COUNT> frameContexts_ = {};
@@ -81,12 +84,19 @@ namespace Harlinn::Windows
     public:
         boost::signals2::signal<void( DXContext* context )> OnInvalidateDeviceObjects;
         boost::signals2::signal<void( DXContext* context )> OnCreateDeviceObjects;
+        boost::signals2::signal<void( DXContext* context, Graphics::D3D12::RootSignature& rootSignature )> OnCreateRootSignature;
+        boost::signals2::signal<void( DXContext* context, Graphics::D3D12::PipelineState& pipelineState )> OnCreatePipelineState;
 
 
         DXContext()
             : fenceEvent_( false )
         { }
     
+        Graphics::DXGI::Format Format( ) const
+        {
+            return format_;
+        }
+
         UINT FrameIndex( ) const
         {
             return frameIndex_;
@@ -111,6 +121,16 @@ namespace Harlinn::Windows
         {
             return renderTargetViewDescHeap_;
         }
+
+        const DX::RootSignature& RootSignature( ) const
+        {
+            return rootSignature_;
+        }
+        const DX::PipelineState& PipelineState( ) const
+        {
+            return pipelineState_;
+        }
+
         const DX::GraphicsCommandList& CommandList( ) const
         {
             return commandList_;
@@ -194,6 +214,24 @@ namespace Harlinn::Windows
             OnCreateDeviceObjects( this );
         }
 
+        virtual Graphics::D3D12::RootSignature DoOnCreateRootSignature( )
+        {
+            DX::RootSignature rootSignature;
+            OnCreateRootSignature( this, rootSignature );
+            if ( !rootSignature )
+            {
+                rootSignature = device_.CreateRootSignature( DX::RootSignatureFlags::AllowInputAssemblerInputLayout );
+            }
+            return rootSignature;
+        }
+
+        virtual DX::PipelineState DoOnCreatePipelineState( )
+        {
+            DX::PipelineState pipelineState;
+            OnCreatePipelineState( this, pipelineState );
+            return pipelineState;
+        }
+
     };
 
 
@@ -246,6 +284,10 @@ namespace Harlinn::Windows
             return static_cast<DXApplication&>( Base::Instance( ) );
         }
 
+        HW_EXPORT virtual WideString GetAssetsDirectory( );
+        HW_EXPORT virtual WideString GetAssetPath( const WideString& assetName, bool checkExist = true );
+
+
         HW_EXPORT virtual int Run( Form& mainForm ) override;
         HW_EXPORT virtual int Run( Form& mainForm, MessageLoop& messageLoop ) override;
         HW_EXPORT virtual int Run( Form& mainForm, DXMessageLoop& messageLoop );
@@ -266,8 +308,15 @@ namespace Harlinn::Windows
         boost::signals2::connection onRenderConnection_;
         boost::signals2::connection onInvalidateDeviceObjectsConnection_;
         boost::signals2::connection onCreateDeviceObjectsConnection_;
+        boost::signals2::connection onCreateRootSignatureConnection_;
+        boost::signals2::connection onCreatePipelineStateConnection_;
     public:
+        HW_EXPORT virtual WideString GetAssetPath( const WideString& assetName, bool checkExist = true );
 
+        DXContext* Context( ) const
+        {
+            return context_;
+        }
     protected:
         virtual void DoOnHandleCreated( )
         {
@@ -284,6 +333,14 @@ namespace Harlinn::Windows
                 onCreateDeviceObjectsConnection_ = context->OnCreateDeviceObjects.connect( [ this ]( DXContext* sender )
                     {
                         this->DoOnCreateDeviceObjects( sender );
+                    } );
+                onCreateRootSignatureConnection_ = context->OnCreateRootSignature.connect( [ this ]( DXContext* sender, Graphics::D3D12::RootSignature& rootSignature )
+                    {
+                        this->DoOnCreateRootSignature( sender, rootSignature );
+                    } );
+                onCreatePipelineStateConnection_ = context->OnCreatePipelineState.connect( [ this ]( DXContext* sender, Graphics::D3D12::PipelineState& pipelineState )
+                    {
+                        this->DoOnCreatePipelineState( sender, pipelineState );
                     } );
                 context->CreateDeviceD3D( this->GetHandle( ) );
             }
@@ -310,6 +367,7 @@ namespace Harlinn::Windows
                         this->DoOnRenderFrame( );
                     } );
             }
+            Base::DoOnShown( );
             
         }
 
@@ -357,7 +415,14 @@ namespace Harlinn::Windows
 
         }
 
+        virtual void DoOnCreateRootSignature( DXContext* context, Graphics::D3D12::RootSignature& rootSignature )
+        {
 
+        }
+        virtual void DoOnCreatePipelineState( DXContext* context, Graphics::D3D12::PipelineState& pipelineState )
+        {
+
+        }
 
     };
 

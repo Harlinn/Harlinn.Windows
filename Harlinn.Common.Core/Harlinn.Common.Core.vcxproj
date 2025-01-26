@@ -213,7 +213,6 @@
     <ClInclude Include="HCCComImpl.h" />
     <ClInclude Include="HCCComInterfaces.h" />
     <ClInclude Include="HCCComModule.h" />
-    <ClInclude Include="HCCComRegistry.h" />
     <ClInclude Include="HCCConcepts.h" />
     <ClInclude Include="HCCConcurrentQueue.h" />
     <ClInclude Include="HCCData.h" />
@@ -412,7 +411,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HCCComInterfaces.xm" />
-    <None Include="HCCComRegistry.inl" />
     <None Include="HCCDemangle.m" />
     <None Include="Internal\Math\e_acos.inl" />
     <None Include="Internal\Math\e_acosf.inl" />

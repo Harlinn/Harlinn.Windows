@@ -42,8 +42,6 @@ namespace Harlinn::Windows
     {
         friend class Control;
 
-        static Application* currentApplication_;
-
         WindowClasses windowClasses_;
 
         std::unordered_map<HWND, Control*> controls_;
@@ -58,7 +56,10 @@ namespace Harlinn::Windows
         HW_EXPORT Application( );
         HW_EXPORT virtual ~Application( );
 
-        HW_EXPORT static Application* Current( );
+        static Application& Instance( )
+        {
+            return static_cast< Application& >( Base::Instance( ) );
+        }
 
         HW_EXPORT virtual int Run( Form& mainform );
         HW_EXPORT int Run( const std::unique_ptr<Form>& mainform );
@@ -82,12 +83,9 @@ namespace Harlinn::Windows
 
         static void RegisterWindowClass( std::unique_ptr<WindowClass>&& windowClass )
         {
-            auto currentApplication = Current( );
-            if ( currentApplication )
-            {
-                auto& windowClasses = currentApplication->GetWindowClasses( );
-                windowClasses.Register( std::move( windowClass ) );
-            }
+            auto& currentApplication = Instance( );
+            auto& windowClasses = currentApplication.GetWindowClasses( );
+            windowClasses.Register( std::move( windowClass ) );
         }
 
     };

@@ -621,7 +621,7 @@ namespace Harlinn::Common::Core::Com::Registry
     {
         using Internal::WriteKey;
         auto& module = classFactory.Module( );
-        auto classId = classFactory.ClassId( ).ToString();
+        auto classId = classFactory.ClassId( ).ToWideString();
         auto moduleName = module.ModuleFileName( );
 
         auto applicationName = module.ApplicationName( );
@@ -660,7 +660,7 @@ namespace Harlinn::Common::Core::Com::Registry
     {
         using Internal::DeleteKey;
         auto& module = classFactory.Module( );
-        auto classId = classFactory.ClassId( ).ToString( );
+        auto classId = classFactory.ClassId( ).ToWideString( );
         auto moduleName = module.ModuleFileName( );
 
         auto applicationName = module.ApplicationName( );

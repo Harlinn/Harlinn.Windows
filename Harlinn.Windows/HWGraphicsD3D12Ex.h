@@ -21,9 +21,29 @@
 #include <HWDXGIFormat.h>
 #include <HWDXGI.h>
 #include <HWCommon.h>
+#include "HWGraphicsD3Common.h"
 
 namespace Harlinn::Windows::Graphics::D3D12
 {
+#define HWD3D12_IMPLEMENT_CONVERSIONS_TO( name ) \
+    operator const name* ( ) const \
+    { \
+        return reinterpret_cast< const name* >( this ); \
+    } \
+    operator name* ( ) \
+    { \
+        return reinterpret_cast< name* >( this ); \
+    } \
+    operator const name& ( ) const \
+    { \
+        return *reinterpret_cast< const name* >( this ); \
+    } \
+    operator name& ( ) \
+    { \
+        return *reinterpret_cast< name* >( this ); \
+    } \
+    using D3D12Type = name
+
     using GPUVirtualAddress = UInt64;
 
     /// <summary>
@@ -123,6 +143,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         };
         CommandQueueFlags Flags = CommandQueueFlags::None;
         UInt32 NodeMask = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_COMMAND_QUEUE_DESC );
     };
 
     static_assert( sizeof( D3D12_COMMAND_QUEUE_DESC ) == sizeof( CommandQueueDesc ) );
@@ -206,7 +228,16 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// that contains per-vertex data (the slot class is set to the 
         /// PerVertexData member of InputClassification).
         /// </summary>
-        UINT InstanceDataStepRate = 0;
+        UInt32 InstanceDataStepRate = 0;
+
+        InputElementDesc( ) = default;
+
+        InputElementDesc( const char* semanticName, UInt32 semanticIndex, DXGI::Format format, UInt32 inputSlot, UInt32 alignedByteOffset, InputClassification inputSlotClass, UInt32 instanceDataStepRate )
+            : SemanticName( semanticName ), SemanticIndex( semanticIndex ), Format( format ), InputSlot( inputSlot ), AlignedByteOffset( alignedByteOffset ), InputSlotClass( inputSlotClass ), InstanceDataStepRate( instanceDataStepRate )
+        { }
+
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_INPUT_ELEMENT_DESC );
     }; 
     static_assert( sizeof( D3D12_INPUT_ELEMENT_DESC ) == sizeof( InputElementDesc ) );
 
@@ -284,6 +315,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// OutputSlot is 0 to 3.
         /// </summary>
         Byte OutputSlot = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SO_DECLARATION_ENTRY );
     };
     static_assert( sizeof( D3D12_SO_DECLARATION_ENTRY ) == sizeof( StreamOutputDeclarationEntry ) );
 
@@ -316,6 +349,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Maximum depth of the viewport. Ranges between 0 and 1.
         /// </summary>
         FLOAT MaxDepth = 0.0f;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_VIEWPORT );
     };
     static_assert( sizeof( D3D12_VIEWPORT ) == sizeof( Viewport ) );
 
@@ -350,6 +385,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// The z position of the back of the box, plus 1. This means that Back - Front equals the depth of the box.
         /// </summary>
         UInt32 Back = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BOX );
     };
     static_assert( sizeof( D3D12_BOX ) == sizeof( Box ) );
 
@@ -470,6 +507,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Identifies the function that compares stencil data against existing stencil data.
         /// </summary>
         ComparisonFunction StencilFunc = ComparisonFunction::Always;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEPTH_STENCILOP_DESC );
     };
     static_assert( sizeof( D3D12_DEPTH_STENCILOP_DESC ) == sizeof( StencilOperationsDesc ) );
 
@@ -513,6 +552,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// for pixels whose surface normal is facing away from the camera.
         /// </summary>
         StencilOperationsDesc BackFace;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEPTH_STENCIL_DESC );
     };
     static_assert( sizeof( D3D12_DEPTH_STENCIL_DESC ) == sizeof( DepthStencilDesc ) );
 
@@ -526,6 +567,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// TRUE to enable depth-bounds testing; otherwise, FALSE. The default value is FALSE.
         /// </summary>
         BOOL DepthBoundsTestEnable = FALSE;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEPTH_STENCIL_DESC1 );
     };
     static_assert( sizeof( D3D12_DEPTH_STENCIL_DESC1 ) == sizeof( DepthStencilDesc1 ) );
 
@@ -828,6 +871,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Specifies the write mask.
         /// </summary>
         ColorWriteEnable RenderTargetWriteMask = ColorWriteEnable::All;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_TARGET_BLEND_DESC );
     };
 
     static_assert( sizeof( D3D12_RENDER_TARGET_BLEND_DESC ) == sizeof( RenderTargetBlendDesc ) );
@@ -857,6 +902,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// eight render targets that can be bound to the output-merger stage at one time.
         /// </summary>
         RenderTargetBlendDesc RenderTarget[ 8 ];
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BLEND_DESC );
     };
     static_assert( sizeof( D3D12_BLEND_DESC ) == sizeof( BlendDesc ) );
 
@@ -891,6 +938,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         BOOL AntialiasedLineEnable = FALSE;
         UINT ForcedSampleCount = 0;
         ConservativeRasterizationMode ConservativeRaster = ConservativeRasterizationMode::Off;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RASTERIZER_DESC );
     };
     static_assert( sizeof( D3D12_RASTERIZER_DESC ) == sizeof( RasterizerDesc ) );
 
@@ -907,6 +956,19 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// The size, in bytes, of the shader data that the pShaderBytecode member points to.
         /// </summary>
         SIZE_T BytecodeLength = 0;
+
+        ShaderBytecode( ) = default;
+
+        ShaderBytecode& operator = ( const D3D10Blob& blob )
+        {
+            pShaderBytecode = blob.GetBufferPointer( );
+            BytecodeLength = blob.GetBufferSize( );
+            return *this;
+        }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SHADER_BYTECODE );
+
+
     };
     static_assert( sizeof( D3D12_SHADER_BYTECODE ) == sizeof( ShaderBytecode ) );
 
@@ -935,6 +997,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// The index number of the stream to be sent to the rasterizer stage.
         /// </summary>
         UINT RasterizedStream = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_STREAM_OUTPUT_DESC );
     };
     static_assert( sizeof( D3D12_STREAM_OUTPUT_DESC ) == sizeof( StreamOutputDesc ) );
 
@@ -951,6 +1015,33 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// The number of input-data types in the array of input elements that the pInputElementDescs member points to.
         /// </summary>
         UINT NumElements = 0;
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<InputElementDesc,T>
+        InputLayoutDesc& operator = ( const T& elements )
+        {
+            NumElements = static_cast< UInt32 >( elements.size() );
+            pInputElementDescs = elements.data( );
+            return *this;
+        }
+
+        template<size_t N>
+        InputLayoutDesc& operator = ( const std::array<InputElementDesc,N>& elements )
+        {
+            NumElements = static_cast< UInt32 >( N );
+            pInputElementDescs = elements.data( );
+            return *this;
+        }
+
+        template<size_t N>
+        InputLayoutDesc& operator = ( const InputElementDesc (&elements)[N] )
+        {
+            NumElements = static_cast< UInt32 >( N );
+            pInputElementDescs = elements;
+            return *this;
+        }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_INPUT_LAYOUT_DESC );
     };
     static_assert( sizeof( D3D12_INPUT_LAYOUT_DESC ) == sizeof( InputLayoutDesc ) );
 
@@ -1009,6 +1100,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Specifies the size of the cache in bytes.
         /// </summary>
         SIZE_T CachedBlobSizeInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_CACHED_PIPELINE_STATE );
     };
     static_assert( sizeof( D3D12_CACHED_PIPELINE_STATE ) == sizeof( CachedPipelineState ) );
 
@@ -1059,6 +1152,11 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT NodeMask = 0;
         CachedPipelineState CachedPSO;
         PipelineStateFlags Flags = PipelineStateFlags::None;
+
+        GraphicsPipelineStateDesc( ) = default;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GRAPHICS_PIPELINE_STATE_DESC );
+
     };
     static_assert( sizeof( D3D12_GRAPHICS_PIPELINE_STATE_DESC ) == sizeof( GraphicsPipelineStateDesc ) );
 
@@ -1070,6 +1168,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT NodeMask = 0;
         CachedPipelineState CachedPSO;
         PipelineStateFlags Flags = PipelineStateFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_COMPUTE_PIPELINE_STATE_DESC );
     };
     static_assert( sizeof( D3D12_COMPUTE_PIPELINE_STATE_DESC ) == sizeof( ComputePipelineStateDesc ) );
 
@@ -1091,6 +1191,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Specifies the number of render target formats stored in the array.
         /// </summary>
         UINT NumRenderTargets = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RT_FORMAT_ARRAY );
     };
     static_assert( sizeof( D3D12_RT_FORMAT_ARRAY ) == sizeof( RenderTargetFormatArray ) );
 
@@ -1110,6 +1212,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Specifies the address of a data structure that describes as a bytestream an arbitrary pipeline state subobject.
         /// </summary>
         _In_reads_( _Inexpressible_( "Dependent on size of subobjects" ) )  void* pPipelineStateSubobjectStream;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PIPELINE_STATE_STREAM_DESC );
     };
     static_assert( sizeof( D3D12_PIPELINE_STATE_STREAM_DESC ) == sizeof( PipelineStateStreamDesc ) );
 
@@ -1611,6 +1715,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  BOOL CrossAdapterRowMajorTextureSupported;
         _Out_  BOOL VPAndRTArrayIndexFromAnyShaderFeedingRasterizerSupportedWithoutGSEmulation;
         _Out_  D3D12::ResourceHeapTier ResourceHeapTier;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS );
     };
 
     /// <summary>
@@ -1626,6 +1732,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  UINT TotalLaneCount;
         _Out_  BOOL ExpandedComputeResourceStates;
         _Out_  BOOL Int64ShaderOps;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS1 );
     };
 
     /// <summary>
@@ -1637,6 +1745,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         _Out_  BOOL DepthBoundsTestSupported;
         _Out_  D3D12::ProgrammableSamplePositionsTier ProgrammableSamplePositionsTier;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS2 );
     };
 
     /// <summary>
@@ -1659,6 +1769,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataRootSignature
     {
         _Inout_ RootSignatureVersion HighestVersion;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_ROOT_SIGNATURE );
     };
 
     /// <summary>
@@ -1672,6 +1784,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  BOOL TileBasedRenderer;
         _Out_  BOOL UMA;
         _Out_  BOOL CacheCoherentUMA;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( FeatureDataArchitecture );
     };
 
     /// <summary>
@@ -1682,6 +1796,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataArchitecture1 : public FeatureDataArchitecture
     {
         _Out_  BOOL IsolatedMMU;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_ARCHITECTURE1 );
     };
 
     /// <summary>
@@ -1694,6 +1810,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _In_  UINT NumFeatureLevels;
         _In_reads_( NumFeatureLevels ) const D3D_FEATURE_LEVEL* pFeatureLevelsRequested;
         _Out_  D3D_FEATURE_LEVEL MaxSupportedFeatureLevel;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_FEATURE_LEVELS );
     };
 
     /// <summary>
@@ -1720,6 +1838,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _In_  DXGI::Format Format;
         _Out_  FormatSupport1 Support1;
         _Out_  FormatSupport2 Support2;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_FORMAT_SUPPORT );
     };
 
     /// <summary>
@@ -1733,6 +1853,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _In_  UINT SampleCount;
         _In_  MultisampleQualityLevelFlags Flags;
         _Out_  UINT NumQualityLevels;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS );
     };
 
     /// <summary>
@@ -1744,6 +1866,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         DXGI::Format Format;
         UINT8 PlaneCount;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_FORMAT_INFO );
     };
 
     /// <summary>
@@ -1755,6 +1879,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UINT MaxGPUVirtualAddressBitsPerResource;
         UINT MaxGPUVirtualAddressBitsPerProcess;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT );
     };
 
     /// <summary>
@@ -1783,6 +1909,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataShaderCache
     {
         _Out_  ShaderCacheSupportFlags SupportFlags;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_SHADER_CACHE );
     };
 
     /// <summary>
@@ -1795,6 +1923,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _In_  D3D12::CommandListType CommandListType;
         _In_  UINT Priority;
         _Out_  BOOL PriorityForTypeIsSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY );
     };
 
     /// <summary>
@@ -1827,6 +1957,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  CommandListSupportFlags WriteBufferImmediateSupportFlags;
         _Out_  D3D12::ViewInstancingTier ViewInstancingTier;
         _Out_  BOOL BarycentricsSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS3 );
     };
 
     /// <summary>
@@ -1837,6 +1969,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataExistingHeaps
     {
         _Out_  BOOL Supported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_EXISTING_HEAPS );
     };
 
     /// <summary>
@@ -1860,6 +1994,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         _Out_  BOOL DisplayableTexture;
         _Out_  D3D12::SharedResourceCompatibilityTier SharedResourceCompatibilityTier;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_DISPLAYABLE );
     };
 
     /// <summary>
@@ -1872,6 +2008,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  BOOL MSAA64KBAlignedTextureSupported;
         _Out_  D3D12::SharedResourceCompatibilityTier SharedResourceCompatibilityTier;
         _Out_  BOOL Native16BitShaderOpsSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS4 );
     };
 
     /// <summary>
@@ -1894,6 +2032,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         _In_  UINT NodeIndex;
         _Out_  D3D12::HeapSerializationTier HeapSerializationTier;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_SERIALIZATION );
     };
 
     /// <summary>
@@ -1905,6 +2045,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         CrossNodeSharingTier SharingTier;
         BOOL AtomicShaderInstructions;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_CROSS_NODE );
     };
 
     /// <summary>
@@ -1941,6 +2083,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  BOOL SRVOnlyTiledResourceTier3;
         _Out_  RenderPassTier RenderPassesTier;
         _Out_  RaytracingTier RaytracingTier;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS5 );
     };
 
     /// <summary>
@@ -1967,6 +2111,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  VariableShadingRateTier VariableShadingRateTier;
         _Out_  UINT ShadingRateImageTileSize;
         _Out_  BOOL BackgroundProcessingSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS6 );
     };
 
     /// <summary>
@@ -2001,6 +2147,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         _Out_  D3D12::MeshShaderTier MeshShaderTier;
         _Out_  D3D12::SamplerFeedbackTier SamplerFeedbackTier;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS7 );
     };
 
     /// <summary>
@@ -2016,6 +2164,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _In_  SIZE_T QueryInputDataSizeInBytes;
         _Field_size_bytes_full_( QueryOutputDataSizeInBytes )  void* pQueryOutputData;
         _In_  SIZE_T QueryOutputDataSizeInBytes;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_QUERY_META_COMMAND );
     };
 
     /// <summary>
@@ -2026,6 +2176,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataD3D12Options8
     {
         _Out_  BOOL UnalignedBlockTexturesSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS8 );
     };
 
     /// <summary>
@@ -2052,6 +2204,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  BOOL AtomicInt64OnGroupSharedSupported;
         _Out_  BOOL DerivativesInMeshAndAmplificationShadersSupported;
         _Out_  WaveMmaTier WaveMMATier;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS9 );
     };
 
     /// <summary>
@@ -2063,6 +2217,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         _Out_  BOOL VariableRateShadingSumCombinerSupported;
         _Out_  BOOL MeshShaderPerPrimitiveShadingRateSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS10 );
+
     };
 
     /// <summary>
@@ -2073,6 +2230,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataD3D12Options11
     {
         _Out_  BOOL AtomicInt64OnDescriptorHeapResourceSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS11 );
     };
 
     /// <summary>
@@ -2097,6 +2256,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  TriState MSPrimitivesPipelineStatisticIncludesCulledPrimitives;
         _Out_  BOOL EnhancedBarriersSupported;
         _Out_  BOOL RelaxedFormatCastingSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS12 );
     };
 
     /// <summary>
@@ -2112,6 +2273,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  BOOL InvertedViewportDepthFlipsZSupported;
         _Out_  BOOL TextureCopyBetweenDimensionsSupported;
         _Out_  BOOL AlphaBlendFactorSupported;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS13 );
     };
 
     /// <summary>
@@ -2123,6 +2286,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UINT64 SizeInBytes;
         UINT64 Alignment;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_ALLOCATION_INFO );
     };
 
     /// <summary>
@@ -2135,6 +2300,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT64 Offset;
         UINT64 Alignment;
         UINT64 SizeInBytes;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_ALLOCATION_INFO1 );
     };
 
     /// <summary>
@@ -2187,6 +2354,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         MemoryPool MemoryPoolPreference;
         UINT CreationNodeMask;
         UINT VisibleNodeMask;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_HEAP_PROPERTIES );
     };
 
     /// <summary>
@@ -2226,6 +2395,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         HeapProperties Properties;
         UINT64 Alignment;
         HeapFlags Flags;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_HEAP_DESC );
     };
 
     /// <summary>
@@ -2285,6 +2456,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT Width = 0;
         UINT Height = 0;
         UINT Depth = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_MIP_REGION );
     };
 
     /// <summary>
@@ -2304,16 +2477,20 @@ namespace Harlinn::Windows::Graphics::D3D12
         DXGI::SampleDesc SampleDesc;
         D3D12::TextureLayout Layout;
         D3D12::ResourceFlags Flags;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_DESC );
     };
 
     /// <summary>
     /// <para>
-    /// Alias for D3D12_RESOURCE_DESC
+    /// Alias for D3D12_RESOURCE_DESC1
     /// </para>
     /// </summary>
     struct ResourceDesc1 : public ResourceDesc
     {
         MipRegion SamplerFeedbackMipRegion;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_DESC1 );
     };
 
     /// <summary>
@@ -2325,6 +2502,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         FLOAT Depth;
         UINT8 Stencil;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEPTH_STENCIL_VALUE );
     };
 
     /// <summary>
@@ -2340,6 +2519,8 @@ namespace Harlinn::Windows::Graphics::D3D12
             FLOAT Color[ 4 ];
             DepthStencilValue DepthStencil;
         };
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_CLEAR_VALUE );
     };
 
     /// <summary>
@@ -2351,6 +2532,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         SIZE_T Begin;
         SIZE_T End;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RANGE );
     };
 
 
@@ -2363,6 +2546,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UINT64 Begin;
         UINT64 End;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RANGE_UINT64 );
     };
 
     /// <summary>
@@ -2374,6 +2559,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UINT Subresource;
         RangeUInt64 Range;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_RANGE_UINT64 );
     };
 
 
@@ -2387,6 +2574,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT64 Offset;
         UINT RowPitch;
         UINT DepthPitch;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_INFO );
     };
 
     /// <summary>
@@ -2400,6 +2589,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT Y;
         UINT Z;
         UINT Subresource;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TILED_RESOURCE_COORDINATE );
     };
 
     /// <summary>
@@ -2414,6 +2605,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT Width;
         UINT16 Height;
         UINT16 Depth;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TILE_REGION_SIZE );
     };
 
 
@@ -2441,6 +2634,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT16 HeightInTiles;
         UINT16 DepthInTiles;
         UINT StartTileIndexInOverallResource;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_TILING );
     };
 
     /// <summary>
@@ -2453,6 +2648,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT WidthInTexels;
         UINT HeightInTexels;
         UINT DepthInTexels;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TILE_SHAPE );
     };
 
 
@@ -2467,6 +2664,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT8 NumPackedMips;
         UINT NumTilesForPackedMips;
         UINT StartTileIndexInOverallResource;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PACKED_MIP_INFO );
     };
 
 
@@ -2558,6 +2757,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT Subresource;
         D3D12_RESOURCE_STATES StateBefore;
         D3D12_RESOURCE_STATES StateAfter;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_TRANSITION_BARRIER );
     };
 
     /// <summary>
@@ -2569,6 +2770,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         ID3D12Resource* pResourceBefore;
         ID3D12Resource* pResourceAfter;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_ALIASING_BARRIER );
     };
 
     /// <summary>
@@ -2579,6 +2782,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct ResourceUavBarrier
     {
         ID3D12Resource* pResource;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_UAV_BARRIER );
     };
 
     /// <summary>
@@ -2610,6 +2815,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             ResourceAliasingBarrier Aliasing;
             ResourceUavBarrier UAV;
         };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_BARRIER );
     };
 
     /// <summary>
@@ -2624,6 +2830,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT Height;
         UINT Depth;
         UINT RowPitch;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_FOOTPRINT );
     };
 
     /// <summary>
@@ -2635,6 +2843,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UINT64 Offset;
         SubresourceFootprint Footprint;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PLACED_SUBRESOURCE_FOOTPRINT );
     };
 
     /// <summary>
@@ -2662,6 +2872,8 @@ namespace Harlinn::Windows::Graphics::D3D12
             PlacedSubresourceFootprint PlacedFootprint;
             UINT SubresourceIndex;
         };
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEXTURE_COPY_LOCATION );
     };
 
 
@@ -2689,6 +2901,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         INT8 X;
         INT8 Y;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SAMPLE_POSITION );
     };
 
     /// <summary>
@@ -2700,6 +2914,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UINT ViewportArrayIndex;
         UINT RenderTargetArrayIndex;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_VIEW_INSTANCE_LOCATION );
     };
 
     /// <summary>
@@ -2724,6 +2940,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT ViewInstanceCount;
         _Field_size_full_( ViewInstanceCount )  const ViewInstanceLocation* pViewInstanceLocations;
         ViewInstancingFlags Flags;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_VIEW_INSTANCING_DESC );
     };
 
     /// <summary>
@@ -2855,6 +3073,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// to identify a raw view of the buffer. 
         /// </summary>
         BufferSRVFlags Flags = BufferSRVFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BUFFER_SRV );
     };
 
     static_assert( sizeof( D3D12_BUFFER_SRV ) == sizeof( BufferSRV ) );
@@ -2872,6 +3092,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MostDetailedMip = 0;
         UInt32 MipLevels = 0;
         float ResourceMinLODClamp = 0.f;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX1D_SRV );
     };
 
     /// <summary>
@@ -2886,6 +3108,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
         float ResourceMinLODClamp = 0.f;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX1D_ARRAY_SRV );
     };
 
     /// <summary>
@@ -2897,6 +3121,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MipLevels = 0;
         UInt32 PlaneSlice = 0;
         float ResourceMinLODClamp = 0.f;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2D_SRV );
     };
 
     /// <summary>
@@ -2912,6 +3138,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 ArraySize = 0;
         UInt32 PlaneSlice = 0;
         float ResourceMinLODClamp = 0.f;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2D_ARRAY_SRV );
     };
 
     /// <summary>
@@ -2924,6 +3152,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MostDetailedMip = 0;
         UInt32 MipLevels = 0;
         float ResourceMinLODClamp = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX3D_SRV );
     };
 
     /// <summary>
@@ -2936,6 +3166,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MostDetailedMip = 0;
         UInt32 MipLevels = 0;
         float ResourceMinLODClamp = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEXCUBE_SRV );
     };
 
     /// <summary>
@@ -2950,6 +3182,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 First2DArrayFace = 0;
         UInt32 NumCubes = 0;
         float ResourceMinLODClamp = 0.f;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEXCUBE_ARRAY_SRV );
     };
 
     /// <summary>
@@ -2958,6 +3192,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct Tex2DMSSRV
     {
         UInt32 UnusedField_NothingToDefine = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2DMS_SRV );
     };
 
     /// <summary>
@@ -2967,6 +3203,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2DMS_ARRAY_SRV );
     };
 
     /// <summary>
@@ -2975,6 +3213,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct RaytracingAccelerationStructureSRV
     {
         GPUVirtualAddress Location = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_ACCELERATION_STRUCTURE_SRV );
     };
 
     /// <summary>
@@ -3057,6 +3297,8 @@ namespace Harlinn::Windows::Graphics::D3D12
             TexCubeArraySRV TextureCubeArray;
             RaytracingAccelerationStructureSRV RaytracingAccelerationStructure;
         };
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SHADER_RESOURCE_VIEW_DESC );
     };
     static_assert( sizeof( ShaderResourceViewDesc ) == sizeof( D3D12_SHADER_RESOURCE_VIEW_DESC ) );
 
@@ -3067,6 +3309,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         GPUVirtualAddress BufferLocation = 0;
         UInt32 SizeInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_CONSTANT_BUFFER_VIEW_DESC );
     };
 
     /// <summary>
@@ -3279,7 +3523,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// Alias for D3D12_FILTER_REDUCTION_TYPE
     /// </para>
     /// </summary>
-    enum FilterReductionType
+    enum class FilterReductionType
     {
         /// <summary>
         /// The filter type is standard.
@@ -3490,6 +3734,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// limit on LOD, set this member to a large value.
         /// </summary>
         float MaxLOD = 0.f;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SAMPLER_DESC );
     };
 
     static_assert( sizeof( SamplerDesc ) == sizeof( D3D12_SAMPLER_DESC ) );
@@ -3575,6 +3821,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// </summary>
         float MaxLOD = 0.f;
         SamplerFlags Flags;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SAMPLER_DESC2 );
     };
     static_assert( sizeof( SamplerDesc2 ) == sizeof( D3D12_SAMPLER_DESC2 ) );
 
@@ -3643,6 +3891,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// BufferUAVFlags value that specifies the view options for the resource.
         /// </summary>
         BufferUAVFlags Flags = BufferUAVFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BUFFER_UAV );
     };
     static_assert( sizeof( BufferUAV ) == sizeof( D3D12_BUFFER_UAV ) );
 
@@ -3654,6 +3904,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct Tex1DUAV
     {
         UInt32 MipSlice = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX1D_UAV );
     };
 
     /// <summary>
@@ -3666,6 +3918,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MipSlice = 0;
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX1D_ARRAY_UAV );
     };
 
     /// <summary>
@@ -3677,6 +3931,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt32 MipSlice = 0;
         UInt32 PlaneSlice = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2D_UAV );
     };
 
     /// <summary>
@@ -3690,6 +3946,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
         UInt32 PlaneSlice = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2D_ARRAY_UAV );
     };
 
     /// <summary>
@@ -3700,6 +3958,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct Tex2DMSUAV
     {
         UInt32 UnusedField_NothingToDefine = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2DMS_UAV );
     };
 
     /// <summary>
@@ -3711,6 +3971,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2DMS_ARRAY_UAV );
     };
 
     /// <summary>
@@ -3723,6 +3985,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MipSlice = 0;
         UInt32 FirstWSlice = 0;
         UInt32 WSize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX3D_UAV );
     };
     
 
@@ -3766,6 +4030,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             D3D12_TEX2DMS_ARRAY_UAV Texture2DMSArray;
             D3D12_TEX3D_UAV Texture3D;
         };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_UNORDERED_ACCESS_VIEW_DESC );
     };
 
     /// <summary>
@@ -3777,6 +4042,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt64 FirstElemen = 0;
         UInt32 NumElements = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BUFFER_RTV );
     };
 
     /// <summary>
@@ -3787,6 +4054,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct Tex1DRTV
     {
         UInt32 MipSlice = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX1D_RTV );
     };
 
     /// <summary>
@@ -3799,6 +4068,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MipSlice = 0;
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX1D_ARRAY_RTV );
     };
 
     /// <summary>
@@ -3810,6 +4081,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt32 MipSlice = 0;
         UInt32 PlaneSlice = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2D_RTV );
     };
 
     /// <summary>
@@ -3820,6 +4093,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct Tex2DMSRTV
     {
         UInt32 UnusedField_NothingToDefine = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2DMS_RTV );
     };
 
     /// <summary>
@@ -3833,6 +4108,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
         UInt32 PlaneSlice = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2D_ARRAY_RTV );
     };
 
     /// <summary>
@@ -3844,6 +4121,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2DMS_ARRAY_RTV );
     };
 
     /// <summary>
@@ -3856,6 +4135,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MipSlice = 0;
         UInt32 FirstWSlice = 0;
         UInt32 WSize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX3D_RTV );
     };
 
 
@@ -3903,6 +4184,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             D3D12_TEX2DMS_ARRAY_RTV Texture2DMSArray;
             D3D12_TEX3D_RTV Texture3D;
         };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_TARGET_VIEW_DESC );
     };
 
     /// <summary>
@@ -3915,6 +4197,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct Tex1DDSV
     {
         UInt32 MipSlice = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX1D_DSV );
     };
 
     /// <summary>
@@ -3929,6 +4213,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MipSlice = 0;
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX1D_ARRAY_DSV );
     };
 
     /// <summary>
@@ -3941,6 +4227,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct Tex2DDSV
     {
         UInt32 MipSlice = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2D_DSV );
     };
 
     /// <summary>
@@ -3955,6 +4243,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 MipSlice = 0;
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2D_ARRAY_DSV );
     };
 
     /// <summary>
@@ -3967,6 +4257,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct Tex2DMSDSV
     {
         UInt32 UnusedField_NothingToDefine = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2DMS_DSV );
     };
 
     /// <summary>
@@ -3980,6 +4272,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt32 FirstArraySlice = 0;
         UInt32 ArraySize = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEX2DMS_ARRAY_DSV );
     };
 
     /// <summary>
@@ -4035,6 +4329,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             Tex2DMSDSV Texture2DMS;
             Tex2DMSArrayDSV Texture2DMSArray;
         };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEPTH_STENCIL_VIEW_DESC );
     };
 
     /// <summary>
@@ -4103,6 +4398,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 NumDescriptors = 0;
         DescriptorHeapFlags Flags = DescriptorHeapFlags::None;
         UInt32 NodeMask = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DESCRIPTOR_HEAP_DESC );
     };
 
     /// <summary>
@@ -4112,9 +4409,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     enum class DescriptorRangeType
     {
-        SRV = D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
-        UAV = D3D12_DESCRIPTOR_RANGE_TYPE_UAV,
-        CBV = D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
+        ShaderResourceView = D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
+        UnorderedAccessView = D3D12_DESCRIPTOR_RANGE_TYPE_UAV,
+        ConstantBufferView = D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
         Sampler = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER
     };
 
@@ -4125,11 +4422,13 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct DescriptorRange
     {
-        DescriptorRangeType RangeType = DescriptorRangeType::SRV;
+        DescriptorRangeType RangeType = DescriptorRangeType::ShaderResourceView;
         UInt32 NumDescriptors = 0;
         UInt32 BaseShaderRegister = 0;
         UInt32 RegisterSpace = 0;
         UInt32 OffsetInDescriptorsFromTableStart = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DESCRIPTOR_RANGE );
     };
 
     /// <summary>
@@ -4141,6 +4440,19 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt32 NumDescriptorRanges = 0;
         _Field_size_full_( NumDescriptorRanges )  const DescriptorRange* pDescriptorRanges = nullptr;
+
+        RootDescriptorTable( ) = default;
+        RootDescriptorTable( UInt32 numDescriptorRanges, _Field_size_full_( numDescriptorRanges )  const DescriptorRange* descriptorRanges )
+            : NumDescriptorRanges( numDescriptorRanges ), pDescriptorRanges( descriptorRanges )
+        { }
+
+        template<SimpleSpanLike T>
+        RootDescriptorTable( const T& descriptorRanges )
+            : NumDescriptorRanges( static_cast<UInt32>( descriptorRanges.size() ) ), pDescriptorRanges( descriptorRanges.data( ) )
+        { }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_DESCRIPTOR_TABLE );
+
     };
 
     /// <summary>
@@ -4153,6 +4465,13 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 ShaderRegister = 0;
         UInt32 RegisterSpace = 0;
         UInt32 Num32BitValues = 0;
+
+        RootConstants( ) = default;
+        explicit RootConstants( UInt32 shaderRegister, UInt32 registerSpace = 0, UInt32 num32BitValues = 0 )
+            : ShaderRegister( shaderRegister ), RegisterSpace( registerSpace ), Num32BitValues( num32BitValues )
+        { }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_CONSTANTS );
     };
 
     /// <summary>
@@ -4162,8 +4481,17 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct RootDescriptor
     {
-        UINT ShaderRegister = 0;
-        UINT RegisterSpace = 0;
+        UInt32 ShaderRegister = 0;
+        UInt32 RegisterSpace = 0;
+
+        RootDescriptor( ) = default;
+
+        explicit RootDescriptor( UInt32 shaderRegister, UInt32 registerSpace = 0 )
+            : ShaderRegister( shaderRegister ), RegisterSpace( registerSpace )
+        { }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_DESCRIPTOR );
+
     };
 
     /// <summary>
@@ -4192,9 +4520,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         DescriptorTable = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE,
         Constants = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS,
-        CBV = D3D12_ROOT_PARAMETER_TYPE_CBV,
-        SRV = D3D12_ROOT_PARAMETER_TYPE_SRV,
-        UAV = D3D12_ROOT_PARAMETER_TYPE_UAV
+        ConstantBufferView = D3D12_ROOT_PARAMETER_TYPE_CBV,
+        ShaderResourceView = D3D12_ROOT_PARAMETER_TYPE_SRV,
+        UnorderedAccessView = D3D12_ROOT_PARAMETER_TYPE_UAV
     };
 
     /// <summary>
@@ -4212,6 +4540,53 @@ namespace Harlinn::Windows::Graphics::D3D12
             RootDescriptor Descriptor;
         };
         D3D12::ShaderVisibility ShaderVisibility = D3D12::ShaderVisibility::All;
+
+        RootParameter( ) = default;
+
+        explicit RootParameter( const RootDescriptorTable& descriptorTable, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+            : DescriptorTable( descriptorTable ), ShaderVisibility( shaderVisibility )
+        { }
+
+        RootParameter( UInt32 numDescriptorRanges, _Field_size_full_( numDescriptorRanges )  const DescriptorRange* descriptorRanges, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+            : DescriptorTable( numDescriptorRanges, descriptorRanges), ShaderVisibility( shaderVisibility )
+        { }
+
+        template<SimpleSpanLike T>
+        explicit RootParameter( const T& descriptorRanges, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+            : DescriptorTable( descriptorRanges ), ShaderVisibility( shaderVisibility )
+        { }
+
+        explicit RootParameter( RootConstants& constants, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+            : ParameterType( RootParameterType::Constants ), Constants( constants ), ShaderVisibility( shaderVisibility )
+        { }
+
+        RootParameter( UInt32 shaderRegister, UInt32 registerSpace, UInt32 num32BitValues, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+            : ParameterType( RootParameterType::Constants ), Constants( shaderRegister, registerSpace, num32BitValues ), ShaderVisibility( shaderVisibility )
+        { }
+
+        
+        RootParameter( RootParameterType parameterType, const RootDescriptor& descriptor, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+            : ParameterType( parameterType ), Descriptor( descriptor ), ShaderVisibility( shaderVisibility )
+        { }
+
+        RootParameter( RootParameterType parameterType, UInt32 shaderRegister, UInt32 registerSpace, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+            : ParameterType( parameterType ), Descriptor( shaderRegister, registerSpace ), ShaderVisibility( shaderVisibility )
+        { }
+
+        static RootParameter AsConstantBufferView( UInt32 shaderRegister, UInt32 registerSpace, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+        {
+            return RootParameter( RootParameterType::ConstantBufferView, shaderRegister, registerSpace, shaderVisibility );
+        }
+        static RootParameter AsShaderResourceView( UInt32 shaderRegister, UInt32 registerSpace, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+        {
+            return RootParameter( RootParameterType::ShaderResourceView, shaderRegister, registerSpace, shaderVisibility );
+        }
+        static RootParameter AsUnorderedAccessView( UInt32 shaderRegister, UInt32 registerSpace, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+        {
+            return RootParameter( RootParameterType::UnorderedAccessView, shaderRegister, registerSpace, shaderVisibility );
+        }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_PARAMETER );
     };
 
     /// <summary>
@@ -4271,6 +4646,29 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 ShaderRegister = 0;
         UInt32 RegisterSpace = 0;
         D3D12::ShaderVisibility ShaderVisibility = D3D12::ShaderVisibility::All;
+
+        StaticSamplerDesc( ) = default;
+
+        StaticSamplerDesc( UInt32 shaderRegister,
+                D3D12::Filter filter = D3D12::Filter::Anisotropic,
+                TextureAddressMode addressU = TextureAddressMode::Wrap,
+                TextureAddressMode addressV = TextureAddressMode::Wrap,
+                TextureAddressMode addressW = TextureAddressMode::Wrap,
+                float mipLODBias = 0,
+                UInt32 maxAnisotropy = 16,
+                ComparisonFunction comparisonFunc = ComparisonFunction::LessOrEqual,
+                StaticBorderColor borderColor = StaticBorderColor::OpaqueWhite,
+                float minLOD = 0.f,
+                float maxLOD = D3D12_FLOAT32_MAX,
+                D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All,
+                UInt32 registerSpace = 0 ) noexcept
+            : Filter( filter ), AddressU( addressU ), AddressV( addressV ), AddressW( addressW ), MipLODBias( mipLODBias ), MaxAnisotropy( maxAnisotropy ),
+              ComparisonFunc( comparisonFunc ), BorderColor( borderColor ), MinLOD( minLOD ), MaxLOD( maxLOD ), ShaderRegister( shaderRegister ), RegisterSpace( registerSpace ),
+              ShaderVisibility( shaderVisibility )
+        { }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_STATIC_SAMPLER_DESC );
+
     };
 
     /// <summary>
@@ -4281,6 +4679,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct StaticSamplerDesc1 : public StaticSamplerDesc
     {
         SamplerFlags Flags = SamplerFlags::None;
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_STATIC_SAMPLER_DESC1 );
     };
 
     /// <summary>
@@ -4295,6 +4694,45 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 NumStaticSamplers = 0;
         _Field_size_full_( NumStaticSamplers )  const StaticSamplerDesc* pStaticSamplers = nullptr;
         RootSignatureFlags Flags = RootSignatureFlags::None;
+
+        RootSignatureDesc( ) = default;
+
+        RootSignatureDesc( UInt32 numParameters, _Field_size_full_( numParameters )  const RootParameter* parameters, RootSignatureFlags flags = RootSignatureFlags::None )
+            : NumParameters( numParameters ), pParameters( parameters ), Flags(flags)
+        { }
+
+        RootSignatureDesc( UInt32 numStaticSamplers, _Field_size_full_( numStaticSamplers )  const StaticSamplerDesc* staticSamplers, RootSignatureFlags flags = RootSignatureFlags::None )
+            : NumStaticSamplers( numStaticSamplers ), pStaticSamplers( staticSamplers ), Flags( flags )
+        { }
+
+        RootSignatureDesc( UInt32 numParameters, _Field_size_full_( numParameters )  const RootParameter* parameters, 
+                            UInt32 numStaticSamplers, _Field_size_full_( numStaticSamplers )  const StaticSamplerDesc* staticSamplers, 
+                            RootSignatureFlags flags = RootSignatureFlags::None )
+            : NumParameters( numParameters ), pParameters( parameters ), NumStaticSamplers( numStaticSamplers ), pStaticSamplers( staticSamplers ), Flags( flags )
+        { }
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<RootParameter,typename T::value_type>
+        RootSignatureDesc( const T& parameters, RootSignatureFlags flags = RootSignatureFlags::None )
+            : NumParameters( static_cast<UInt32>( parameters.size() ) ), pParameters( parameters.data( ) ), Flags( flags )
+        { }
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<StaticSamplerDesc, typename T::value_type>
+        RootSignatureDesc( const T& staticSamplers, RootSignatureFlags flags = RootSignatureFlags::None )
+            : NumStaticSamplers( static_cast< UInt32 >( staticSamplers.size( ) ) ), pStaticSamplers( staticSamplers.data( ) ), Flags( flags )
+        { }
+
+        template<SimpleSpanLike S, SimpleSpanLike T>
+            requires std::is_same_v<RootParameter, typename S::value_type> && std::is_same_v<StaticSamplerDesc, typename T::value_type>
+        RootSignatureDesc( const S& parameters, const T& staticSamplers, RootSignatureFlags flags = RootSignatureFlags::None )
+            : NumParameters( static_cast< UInt32 >( parameters.size( ) ) ), pParameters( parameters.data( ) ), 
+              NumStaticSamplers( static_cast< UInt32 >( staticSamplers.size( ) ) ), pStaticSamplers( staticSamplers.data( ) ), 
+              Flags( flags )
+        { }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_SIGNATURE_DESC );
+
     };
 
     /// <summary>
@@ -4320,12 +4758,14 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct DescriptorRange1
     {
-        DescriptorRangeType RangeType = DescriptorRangeType::CBV;
+        DescriptorRangeType RangeType = DescriptorRangeType::ConstantBufferView;
         UInt32 NumDescriptors = 0;
         UInt32 BaseShaderRegister = 0;
         UInt32 RegisterSpace = 0;
         DescriptorRangeFlags Flags = DescriptorRangeFlags::None;
         UInt32 OffsetInDescriptorsFromTableStart = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DESCRIPTOR_RANGE1 );
     };
 
     /// <summary>
@@ -4337,6 +4777,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UInt32 NumDescriptorRanges = 0;
         _Field_size_full_( NumDescriptorRanges )  const DescriptorRange1* pDescriptorRanges = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_DESCRIPTOR_TABLE1 );
     };
 
     /// <summary>
@@ -4364,6 +4806,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 ShaderRegister = 0;
         UInt32 RegisterSpace = 0;
         RootDescriptorFlags Flags = RootDescriptorFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_DESCRIPTOR1 );
     };
 
     /// <summary>
@@ -4381,6 +4825,8 @@ namespace Harlinn::Windows::Graphics::D3D12
             D3D12_ROOT_DESCRIPTOR1 Descriptor;
         };
         D3D12::ShaderVisibility ShaderVisibility = D3D12::ShaderVisibility::All;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_PARAMETER1 );
     };
 
     /// <summary>
@@ -4395,6 +4841,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 NumStaticSamplers = 0;
         _Field_size_full_( NumStaticSamplers )  const StaticSamplerDesc* pStaticSamplers = nullptr;
         RootSignatureFlags Flags = RootSignatureFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_SIGNATURE_DESC1 );
     };
 
     /// <summary>
@@ -4409,6 +4857,8 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 NumStaticSamplers = 0;
         _Field_size_full_( NumStaticSamplers )  const StaticSamplerDesc1* pStaticSamplers = nullptr;
         RootSignatureFlags Flags = RootSignatureFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_ROOT_SIGNATURE_DESC2 );
     };
 
     /// <summary>
@@ -4425,7 +4875,502 @@ namespace Harlinn::Windows::Graphics::D3D12
             RootSignatureDesc1 Desc_1_1;
             RootSignatureDesc2 Desc_1_2;
         };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_VERSIONED_ROOT_SIGNATURE_DESC );
     };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_CPU_DESCRIPTOR_HANDLE
+    /// </para>
+    /// </summary>
+    struct CPUDescriptorHandle
+    {
+        SIZE_T ptr = 0;
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_CPU_DESCRIPTOR_HANDLE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_GPU_DESCRIPTOR_HANDLE
+    /// </para>
+    /// </summary>
+    struct GPUDescriptorHandle
+    {
+        UInt64 ptr = 0;
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GPU_DESCRIPTOR_HANDLE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DISCARD_REGION
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// If rects are supplied in D3D12_DISCARD_REGION, below, the resource 
+    /// must have 2D subresources with all specified subresources the same dimension.
+    /// </remarks>
+    struct DiscardRegion
+    {
+        UInt32 NumRects;
+        _In_reads_( NumRects )  const D3D12::Rectangle* pRects;
+        UInt32 FirstSubresource;
+        UInt32 NumSubresources;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DISCARD_REGION );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_QUERY_HEAP_TYPE
+    /// </para>
+    /// </summary>
+    enum class QueryHeapType
+    {
+        D3D12_QUERY_HEAP_TYPE_OCCLUSION = 0,
+        D3D12_QUERY_HEAP_TYPE_TIMESTAMP = 1,
+        D3D12_QUERY_HEAP_TYPE_PIPELINE_STATISTICS = 2,
+        D3D12_QUERY_HEAP_TYPE_SO_STATISTICS = 3,
+        D3D12_QUERY_HEAP_TYPE_VIDEO_DECODE_STATISTICS = 4,
+        D3D12_QUERY_HEAP_TYPE_COPY_QUEUE_TIMESTAMP = 5,
+        D3D12_QUERY_HEAP_TYPE_PIPELINE_STATISTICS1 = 7
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_QUERY_HEAP_DESC
+    /// </para>
+    /// </summary>
+    struct QueryHeapDesc
+    {
+        QueryHeapType Type;
+        UInt32 Count;
+        UInt32 NodeMask;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_QUERY_HEAP_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_QUERY_TYPE
+    /// </para>
+    /// </summary>
+    enum class QueryType
+    {
+        Occlusion = D3D12_QUERY_TYPE_OCCLUSION,
+        BinaryOcclusion = D3D12_QUERY_TYPE_BINARY_OCCLUSION,
+        Timestamp = D3D12_QUERY_TYPE_TIMESTAMP,
+        PipelineStatistics = D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
+        StreamOutputStatisticsStream0 = D3D12_QUERY_TYPE_SO_STATISTICS_STREAM0,
+        StreamOutputStatisticsStream1 = D3D12_QUERY_TYPE_SO_STATISTICS_STREAM1,
+        StreamOutputStatisticsStream2 = D3D12_QUERY_TYPE_SO_STATISTICS_STREAM2,
+        StreamOutputStatisticsStream3 = D3D12_QUERY_TYPE_SO_STATISTICS_STREAM3,
+        VideoDecodeStatistics = D3D12_QUERY_TYPE_VIDEO_DECODE_STATISTICS,
+        PipelineStatistics1 = D3D12_QUERY_TYPE_PIPELINE_STATISTICS1
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PREDICATION_OP
+    /// </para>
+    /// </summary>
+    enum class PredicationOperation
+    {
+        EqualZero = D3D12_PREDICATION_OP_EQUAL_ZERO,
+        NotEqualZero = D3D12_PREDICATION_OP_NOT_EQUAL_ZERO,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_QUERY_DATA_PIPELINE_STATISTICS
+    /// </para>
+    /// </summary>
+    struct QueryDataPipelineStatistics
+    {
+        UINT64 IAVertices;
+        UINT64 IAPrimitives;
+        UINT64 VSInvocations;
+        UINT64 GSInvocations;
+        UINT64 GSPrimitives;
+        UINT64 CInvocations;
+        UINT64 CPrimitives;
+        UINT64 PSInvocations;
+        UINT64 HSInvocations;
+        UINT64 DSInvocations;
+        UINT64 CSInvocations;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_QUERY_DATA_PIPELINE_STATISTICS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_QUERY_DATA_PIPELINE_STATISTICS1
+    /// </para>
+    /// </summary>
+    struct QueryDataPipelineStatistics1 : public QueryDataPipelineStatistics
+    {
+        UINT64 ASInvocations;
+        UINT64 MSInvocations;
+        UINT64 MSPrimitives;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_QUERY_DATA_PIPELINE_STATISTICS1 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_QUERY_DATA_SO_STATISTICS
+    /// </para>
+    /// </summary>
+    struct QueryDataStreamOutputStatistics
+    {
+        UINT64 NumPrimitivesWritten;
+        UINT64 PrimitivesStorageNeeded;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_QUERY_DATA_SO_STATISTICS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STREAM_OUTPUT_BUFFER_VIEW
+    /// </para>
+    /// </summary>
+    struct StreamOutputBufferView
+    {
+        GPUVirtualAddress BufferLocation;
+        UInt64 SizeInBytes;
+        GPUVirtualAddress BufferFilledSizeLocation;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_STREAM_OUTPUT_BUFFER_VIEW );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRAW_ARGUMENTS
+    /// </para>
+    /// </summary>
+    struct DrawArguments
+    {
+        UINT VertexCountPerInstance;
+        UINT InstanceCount;
+        UINT StartVertexLocation;
+        UINT StartInstanceLocation;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRAW_ARGUMENTS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRAW_INDEXED_ARGUMENTS
+    /// </para>
+    /// </summary>
+    struct DrawIndexedArguments
+    {
+        UINT IndexCountPerInstance;
+        UINT InstanceCount;
+        UINT StartIndexLocation;
+        INT BaseVertexLocation;
+        UINT StartInstanceLocation;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRAW_INDEXED_ARGUMENTS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DISPATCH_ARGUMENTS
+    /// </para>
+    /// </summary>
+    struct DispatchArguments
+    {
+        UINT ThreadGroupCountX;
+        UINT ThreadGroupCountY;
+        UINT ThreadGroupCountZ;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DISPATCH_ARGUMENTS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_VERTEX_BUFFER_VIEW
+    /// </para>
+    /// </summary>
+    struct VertexBufferView
+    {
+        GPUVirtualAddress BufferLocation;
+        UINT SizeInBytes;
+        UINT StrideInBytes;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_VERTEX_BUFFER_VIEW );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_INDEX_BUFFER_VIEW
+    /// </para>
+    /// </summary>
+    struct IndexBufferView
+    {
+        GPUVirtualAddress BufferLocation;
+        UINT SizeInBytes;
+        DXGI::Format Format;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_INDEX_BUFFER_VIEW );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_INDIRECT_ARGUMENT_TYPE
+    /// </para>
+    /// </summary>
+    enum class IndirectArgumentType
+    {
+        Draw = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW,
+        DrawIndexed = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED,
+        Dispatch = D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH,
+        VertexBuffer_view = D3D12_INDIRECT_ARGUMENT_TYPE_VERTEX_BUFFER_VIEW,
+        IndexBuffer_view = D3D12_INDIRECT_ARGUMENT_TYPE_INDEX_BUFFER_VIEW,
+        Constant = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT,
+        ConstantBuffer_view = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW,
+        ShaderResourceView = D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW,
+        UnorderedAccessView = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW,
+        DispatchRays = D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH_RAYS,
+        DispatchMesh = D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH_MESH,
+        IncrementingConstant = D3D12_INDIRECT_ARGUMENT_TYPE_INCREMENTING_CONSTANT
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_INDIRECT_ARGUMENT_DESC
+    /// </para>
+    /// </summary>
+    struct IndirectArgumentDesc
+    {
+        IndirectArgumentType Type;
+        union
+        {
+            struct
+            {
+                UINT Slot;
+            } 	VertexBuffer;
+            struct
+            {
+                UINT RootParameterIndex;
+                UINT DestOffsetIn32BitValues;
+                UINT Num32BitValuesToSet;
+            } 	Constant;
+            struct
+            {
+                UINT RootParameterIndex;
+            } 	ConstantBufferView;
+            struct
+            {
+                UINT RootParameterIndex;
+            } 	ShaderResourceView;
+            struct
+            {
+                UINT RootParameterIndex;
+            } 	UnorderedAccessView;
+            struct
+            {
+                UINT RootParameterIndex;
+                UINT DestOffsetIn32BitValues;
+            } 	IncrementingConstant;
+        };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_INDIRECT_ARGUMENT_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_COMMAND_SIGNATURE_DESC
+    /// </para>
+    /// </summary>
+    struct CommandSignatureDesc
+    {
+        UINT ByteStride;
+        UINT NumArgumentDescs;
+        _Field_size_full_( NumArgumentDescs )  const D3D12_INDIRECT_ARGUMENT_DESC* pArgumentDescs;
+        UINT NodeMask;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_COMMAND_SIGNATURE_DESC );
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_WRITEBUFFERIMMEDIATE_PARAMETER
+    /// </para>
+    /// </summary>
+    struct WriteBufferImmediateParameter
+    {
+        GPUVirtualAddress Dest;
+        UINT32 Value;
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_WRITEBUFFERIMMEDIATE_PARAMETER );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_WRITEBUFFERIMMEDIATE_MODE
+    /// </para>
+    /// </summary>
+    enum class WritebufferimmediateMode
+    {
+        Default = D3D12_WRITEBUFFERIMMEDIATE_MODE_DEFAULT,
+        MarkerIn = D3D12_WRITEBUFFERIMMEDIATE_MODE_MARKER_IN,
+        MarkerOut = D3D12_WRITEBUFFERIMMEDIATE_MODE_MARKER_OUT,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MULTIPLE_FENCE_WAIT_FLAGS
+    /// </para>
+    /// </summary>
+    enum class MultipleFenceWaitFlags : UInt32
+    {
+        D3D12_MULTIPLE_FENCE_WAIT_FLAG_NONE = 0,
+        D3D12_MULTIPLE_FENCE_WAIT_FLAG_ANY = 0x1,
+        D3D12_MULTIPLE_FENCE_WAIT_FLAG_ALL = 0
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( MultipleFenceWaitFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESIDENCY_PRIORITY
+    /// </para>
+    /// </summary>
+    enum class ResidencyPriority
+    {
+        D3D12_RESIDENCY_PRIORITY_MINIMUM = D3D12_RESIDENCY_PRIORITY_MINIMUM,
+        D3D12_RESIDENCY_PRIORITY_LOW = D3D12_RESIDENCY_PRIORITY_LOW,
+        D3D12_RESIDENCY_PRIORITY_NORMAL = D3D12_RESIDENCY_PRIORITY_NORMAL,
+        D3D12_RESIDENCY_PRIORITY_HIGH = D3D12_RESIDENCY_PRIORITY_HIGH,
+        D3D12_RESIDENCY_PRIORITY_MAXIMUM = D3D12_RESIDENCY_PRIORITY_MAXIMUM
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESIDENCY_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ResidencyFlags : UInt32
+    {
+        None = D3D12_RESIDENCY_FLAG_NONE,
+        DenyOverbudget = D3D12_RESIDENCY_FLAG_DENY_OVERBUDGET,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ResidencyFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_COMMAND_LIST_FLAGS
+    /// </para>
+    /// </summary>
+    enum class CommandListFlags : UInt32
+    {
+        None = D3D12_COMMAND_LIST_FLAG_NONE
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( CommandListFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_COMMAND_POOL_FLAGS
+    /// </para>
+    /// </summary>
+    enum class CommandPoolFlags : UInt32
+    {
+        None = D3D12_COMMAND_POOL_FLAG_NONE
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( CommandPoolFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_COMMAND_RECORDER_FLAGS
+    /// </para>
+    /// </summary>
+    enum class CommandRecorderFlags : UInt32
+    {
+        None = D3D12_COMMAND_RECORDER_FLAG_NONE
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( CommandRecorderFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PROTECTED_SESSION_STATUS
+    /// </para>
+    /// </summary>
+    enum class ProtectedSessionStatus
+    {
+        Ok = D3D12_PROTECTED_SESSION_STATUS_OK,
+        Invalid = D3D12_PROTECTED_SESSION_STATUS_INVALID
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PROTECTED_RESOURCE_SESSION_SUPPORT_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ProtectedResourceSessionSupportFlags : UInt32
+    {
+        None = D3D12_PROTECTED_RESOURCE_SESSION_SUPPORT_FLAG_NONE,
+        Supported = D3D12_PROTECTED_RESOURCE_SESSION_SUPPORT_FLAG_SUPPORTED
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ProtectedResourceSessionSupportFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_SUPPORT
+    /// </para>
+    /// </summary>
+    struct FeatureDataProtectedResourceSessionSupport
+    {
+        UINT NodeIndex;
+        ProtectedResourceSessionSupportFlags Support;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_SUPPORT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PROTECTED_RESOURCE_SESSION_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ProtectedResourceSessionFlags : UInt32
+    {
+        None = D3D12_PROTECTED_RESOURCE_SESSION_FLAG_NONE
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ProtectedResourceSessionFlags, UInt32 );
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PROTECTED_RESOURCE_SESSION_DESC
+    /// </para>
+    /// </summary>
+    struct ProtectedResourceSessionDesc
+    {
+        UINT NodeMask;
+        ProtectedResourceSessionFlags Flags;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PROTECTED_RESOURCE_SESSION_DESC );
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_LIFETIME_STATE
+    /// </para>
+    /// </summary>
+    enum class LifetimeState
+    {
+        InUse = D3D12_LIFETIME_STATE_IN_USE,
+        NotInUse = D3D12_LIFETIME_STATE_NOT_IN_USE
+    };
+
+
+
+
 
 
 

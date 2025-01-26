@@ -336,9 +336,6 @@
     <ClInclude Include="HCCRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCComRegistry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCConcepts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -592,9 +589,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HCCComInterfaces.xm">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="HCCComRegistry.inl">
       <Filter>Header Files</Filter>
     </None>
     <None Include="HCCDemangle.m">

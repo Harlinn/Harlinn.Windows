@@ -17,11 +17,12 @@
    limitations under the License.
 */
 
-#include "HWGraphicsD3Common.h"
+
 #include "HWGraphicsD3D12Ex.h"
 #include <boost/container/small_vector.hpp>
 
 #pragma comment(lib,"D3D12.lib")
+#pragma comment(lib,"D3DCompiler.lib")
 
 namespace Harlinn::Windows::Graphics::D3D12
 {
@@ -2471,6 +2472,24 @@ namespace Harlinn::Windows::Graphics::D3D12
             return T( ptr );
         }
 
+        template <typename T = RootSignature>
+            requires std::is_base_of_v<RootSignature, T>
+        T CreateRootSignature( RootSignatureFlags flags ) const
+        {
+            Graphics::D3D12::RootSignatureDesc rootSignatureDesc;
+            rootSignatureDesc.Flags = flags;
+            ID3DBlob* signaturePtr = nullptr;
+            ID3DBlob* errorPtr = nullptr;
+
+            auto hr = D3D12SerializeRootSignature( rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signaturePtr, &errorPtr );
+            HCC_COM_CHECK_HRESULT( hr );
+            D3DBlob signature( signaturePtr );
+            D3DBlob error( errorPtr );
+
+            return CreateRootSignature( 0, signature.GetBufferPointer( ), signature.GetBufferSize( ) );
+        }
+
+
         void CreateConstantBufferView( _In_opt_ const D3D12_CONSTANT_BUFFER_VIEW_DESC* pDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -3704,6 +3723,86 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         return GetDevice<Device4>( );
     }
+
+
+    
+    inline D3DBlob CompileFromFile( _In_ LPCWSTR fileName,
+            _In_reads_opt_( _Inexpressible_( pDefines->Name != NULL ) ) CONST D3D_SHADER_MACRO* defines,
+            _In_opt_ ID3DInclude* include,
+            _In_ LPCSTR entrypoint,
+            _In_ LPCSTR target,
+            _In_ UINT flags1,
+            _In_ UINT flags2 = 0,
+            _Always_( _Outptr_opt_result_maybenull_ ) ID3DBlob** errorMessages = nullptr )
+    {
+        ID3DBlob* code = nullptr;
+        auto hr = D3DCompileFromFile( fileName,
+            defines,
+            include,
+            entrypoint,
+            target,
+            flags1,
+            flags2,
+            &code,
+            errorMessages );
+        HCC_COM_CHECK_HRESULT( hr );
+        return D3DBlob( code );
+    }
+
+    inline D3DBlob CompileFromFile( _In_ LPCWSTR fileName,
+        _In_ LPCSTR entrypoint,
+        _In_ LPCSTR target,
+        _In_ UINT flags1,
+        _In_ UINT flags2 = 0,
+        _Always_( _Outptr_opt_result_maybenull_ ) ID3DBlob** errorMessages = nullptr )
+    {
+        return CompileFromFile( fileName,
+            nullptr,
+            nullptr,
+            entrypoint,
+            target,
+            flags1,
+            flags2,
+            errorMessages );
+    }
+    template <SimpleWideStringLike T>
+    inline D3DBlob CompileFromFile( const T& fileName,
+        _In_reads_opt_( _Inexpressible_( pDefines->Name != NULL ) ) CONST D3D_SHADER_MACRO* defines,
+        _In_opt_ ID3DInclude* include,
+        _In_ LPCSTR entrypoint,
+        _In_ LPCSTR target,
+        _In_ UINT flags1,
+        _In_ UINT flags2 = 0,
+        _Always_( _Outptr_opt_result_maybenull_ ) ID3DBlob** errorMessages = nullptr )
+    {
+        return CompileFromFile( fileName.c_str(),
+            defines,
+            include,
+            entrypoint,
+            target,
+            flags1,
+            flags2,
+            errorMessages );
+    }
+
+    template <SimpleWideStringLike T>
+    inline D3DBlob CompileFromFile( const T& fileName,
+        _In_ LPCSTR entrypoint,
+        _In_ LPCSTR target,
+        _In_ UINT flags1,
+        _In_ UINT flags2 = 0,
+        _Always_( _Outptr_opt_result_maybenull_ ) ID3DBlob** errorMessages = nullptr )
+    {
+        return CompileFromFile( fileName.c_str( ),
+            nullptr,
+            nullptr,
+            entrypoint,
+            target,
+            flags1,
+            flags2,
+            errorMessages );
+    }
+
 
 }
 

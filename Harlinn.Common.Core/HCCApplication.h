@@ -108,11 +108,10 @@ namespace Harlinn::Common::Core
             return options_;
         }
 
-        static Application& Instance( ) noexcept
-        {
-            return *instance_;
-        }
+        HCC_EXPORT static Application& Instance( );
         
+        HCC_EXPORT WideString ExecutableFilename( );
+        HCC_EXPORT WideString ExecutableDirectory( );
 
         HCC_EXPORT static UInt64 MainThreadId( ) noexcept;
 

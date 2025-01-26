@@ -567,38 +567,23 @@ namespace Harlinn::Windows
         return result;
     }
 
-
-
-
-
     void Control::RegisterControl( HWND hWnd, Control* constrol )
     {
-        auto application = Application::Current( );
-        if ( application )
-        {
-            application->AddControl( hWnd, constrol );
-        }
-
+        auto& application = Application::Instance( );
+        application.AddControl( hWnd, constrol );
     }
 
     void Control::UnregisterControl( HWND hWnd )
     {
-        auto application = Application::Current( );
-        if ( application )
-        {
-            application->RemoveControl( hWnd );
-        }
+        auto& application = Application::Instance( );
+        application.RemoveControl( hWnd );
     }
 
     Control* Control::GetControlFromHWND( HWND hWnd )
     {
-        auto application = Application::Current( );
-        if ( application )
-        {
-            Control* result = application->GetControl( hWnd );
-            return result;
-        }
-        return nullptr;
+        auto& application = Application::Instance( );
+        Control* result = application.GetControl( hWnd );
+        return result;
     }
 
 

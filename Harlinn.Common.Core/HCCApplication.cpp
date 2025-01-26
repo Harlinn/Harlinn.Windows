@@ -18,6 +18,7 @@
 #include <HCCApplication.h>
 #include <HCCLoggerImpl.h>
 #include <HCCSync.h>
+#include <HCCProcess.h>
 
 namespace Harlinn::Common::Core
 {
@@ -43,6 +44,26 @@ namespace Harlinn::Common::Core
     Application::~Application( )
     {
         instance_ = nullptr;
+    }
+
+    Application& Application::Instance( )
+    {
+        if ( instance_ == nullptr )
+        {
+            HCC_THROW( InvalidOperationException, L"Application::instance_ is nullptr." );
+        }
+        return *instance_;
+    }
+
+    WideString Application::ExecutableFilename( )
+    {
+        return CurrentProcess::ExecutableFilename( );
+    }
+
+    WideString Application::ExecutableDirectory( )
+    {
+        auto executableFilename = ExecutableFilename( );
+        return IO::Path::GetParentDirectory( executableFilename );
     }
 
     UInt64 Application::MainThreadId( ) noexcept

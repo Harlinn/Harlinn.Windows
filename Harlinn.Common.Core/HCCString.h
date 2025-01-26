@@ -953,34 +953,34 @@ namespace Harlinn::Common::Core
         {
         }
 
-        explicit BasicString( const CharType* string )
+        BasicString( const CharType* string )
             : data_( Initialize( string ) )
         {
         }
 
-        explicit BasicString( const CharType* string, size_type size )
+        BasicString( const CharType* string, size_type size )
             : data_( Initialize( string, size ) )
         {
         }
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
-        explicit BasicString( const SpanT& span )
+        BasicString( const SpanT& span )
             : data_( Initialize( span.data(), span.size() ) )
         {
         }
 
-        explicit BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2 )
+        BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2 )
             : data_( Initialize( string1, size1, string2, size2 ) )
         {
         }
 
-        explicit BasicString( CharType value, size_type count, const CharType* string2, size_type size2 )
+        BasicString( CharType value, size_type count, const CharType* string2, size_type size2 )
             : data_( Initialize( value, count, string2, size2 ) )
         {
         }
 
-        explicit BasicString( const CharType* string1, size_type size1, CharType value, size_type count )
+        BasicString( const CharType* string1, size_type size1, CharType value, size_type count )
             : data_( Initialize( string1, size1, value, count ) )
         {
         }
@@ -988,86 +988,86 @@ namespace Harlinn::Common::Core
 
         template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
             requires (std::is_same_v<typename SpanT1::value_type, CharType> && std::is_same_v<typename SpanT2::value_type, CharType> )
-        explicit BasicString( const SpanT1& span1, const SpanT2& span2 )
+        BasicString( const SpanT1& span1, const SpanT2& span2 )
             : data_( Initialize( span1.data( ), span1.size( ), span2.data( ), span2.size( ) ) )
         {
         }
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
-        explicit BasicString( const SpanT& span1, const CharType* string2, size_type size2 )
+        BasicString( const SpanT& span1, const CharType* string2, size_type size2 )
             : data_( Initialize( span1.data( ), span1.size( ), string2, size2 ) )
         {
         }
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
-        explicit BasicString( const CharType* string1, size_type size1, const SpanT& span2 )
+        BasicString( const CharType* string1, size_type size1, const SpanT& span2 )
             : data_( Initialize( string1, size1, span2.data( ), span2.size( ) ) )
         {
         }
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
-        explicit BasicString( CharType value, size_type count, const SpanT& span )
+        BasicString( CharType value, size_type count, const SpanT& span )
             : data_( Initialize( value, count, span.data( ), span.size( ) ) )
         {
         }
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
-        explicit BasicString( CharType value, const SpanT& span )
+        BasicString( CharType value, const SpanT& span )
             : data_( Initialize( value, 1, span.data( ), span.size( ) ) )
         {
         }
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
-        explicit BasicString( const SpanT& span, CharType value, size_type count )
+        BasicString( const SpanT& span, CharType value, size_type count )
             : data_( Initialize( span.data( ), span.size( ), value, count ) )
         {
         }
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, CharType>
-        explicit BasicString( const SpanT& span, CharType value )
+        BasicString( const SpanT& span, CharType value )
             : data_( Initialize( span.data( ), span.size( ), value, 1 ) )
         {
         }
 
 
 
-        explicit BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
+        BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
             : data_( Initialize( string1, size1, string2, size2, string3, size3 ) )
         {
         }
 
-        explicit BasicString( CharType value, size_type count, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
+        BasicString( CharType value, size_type count, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
             : data_( Initialize( value, count, string2, size2, string3, size3 ) )
         {
         }
 
-        explicit BasicString( const CharType* string1, size_type size1, CharType value, size_type count, const CharType* string3, size_type size3 )
+        BasicString( const CharType* string1, size_type size1, CharType value, size_type count, const CharType* string3, size_type size3 )
             : data_( Initialize( string1, size1, value, count, string3, size3 ) )
         {
         }
 
-        explicit BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value, size_type count )
+        BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value, size_type count )
             : data_( Initialize( string1, size1, string2, size2, value, count ) )
         {
         }
 
-        explicit BasicString( CharType value, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
+        BasicString( CharType value, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
             : data_( Initialize( value, 1, string2, size2, string3, size3 ) )
         {
         }
 
-        explicit BasicString( const CharType* string1, size_type size1, CharType value, const CharType* string3, size_type size3 )
+        BasicString( const CharType* string1, size_type size1, CharType value, const CharType* string3, size_type size3 )
             : data_( Initialize( string1, size1, value, 1, string3, size3 ) )
         {
         }
 
-        explicit BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value )
+        BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value )
             : data_( Initialize( string1, size1, string2, size2, value, 1 ) )
         {
         }
@@ -1075,21 +1075,21 @@ namespace Harlinn::Common::Core
 
         template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
-        explicit BasicString( CharType value, size_type count, const SpanT1& span1, const SpanT2& span2 )
+        BasicString( CharType value, size_type count, const SpanT1& span1, const SpanT2& span2 )
             : data_( Initialize( value, count, span1.data( ), span1.size( ), span2.data( ), span2.size( ) ) )
         {
         }
 
         template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
-        explicit BasicString( const SpanT1& span1, CharType value, size_type count, const SpanT2& span2 )
+        BasicString( const SpanT1& span1, CharType value, size_type count, const SpanT2& span2 )
             : data_( Initialize( span1.data( ), span1.size( ), value, count, span2.data( ), span2.size( ) ) )
         {
         }
 
         template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
-        explicit BasicString( const SpanT1& span1, const SpanT2& span2, CharType value, size_type count )
+        BasicString( const SpanT1& span1, const SpanT2& span2, CharType value, size_type count )
             : data_( Initialize( span1.data( ), span1.size( ), span2.data( ), span2.size( ), value, count ) )
         {
         }
@@ -1097,21 +1097,21 @@ namespace Harlinn::Common::Core
 
         template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
-        explicit BasicString( CharType value, const SpanT1& span1, const SpanT2& span2 )
+        BasicString( CharType value, const SpanT1& span1, const SpanT2& span2 )
             : data_( Initialize( value, 1, span1.data( ), span1.size( ), span2.data( ), span2.size( ) ) )
         {
         }
 
         template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
-        explicit BasicString( const SpanT1& span1, CharType value, const SpanT2& span2 )
+        BasicString( const SpanT1& span1, CharType value, const SpanT2& span2 )
             : data_( Initialize( span1.data( ), span1.size( ), value, 1, span2.data( ), span2.size( ) ) )
         {
         }
 
         template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
-        explicit BasicString( const SpanT1& span1, const SpanT2& span2, CharType value )
+        BasicString( const SpanT1& span1, const SpanT2& span2, CharType value )
             : data_( Initialize( span1.data( ), span1.size( ), span2.data( ), span2.size( ), value, 1 ) )
         {
         }
@@ -1121,32 +1121,32 @@ namespace Harlinn::Common::Core
 
         template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2, SimpleSpanLike SpanT3>
             requires ( std::is_same_v<typename SpanT1::value_type, CharType> && std::is_same_v<typename SpanT2::value_type, CharType> && std::is_same_v<typename SpanT3::value_type, CharType> )
-        explicit BasicString( const SpanT1& span1, const SpanT2& span2, const SpanT3& span3 )
+        BasicString( const SpanT1& span1, const SpanT2& span2, const SpanT3& span3 )
             : data_( Initialize( span1.data( ), span1.size( ), span2.data( ), span2.size( ), span3.data( ), span3.size( ) ) )
         {
         }
 
 
-        explicit BasicString( const_iterator first, const_iterator last)
+        BasicString( const_iterator first, const_iterator last)
             : data_( Initialize( first.ptr_, first <= last ? static_cast<size_type>( last - first ) : 0 ) )
         {
         }
 
-        explicit BasicString( const_pointer first, const_pointer last )
+        BasicString( const_pointer first, const_pointer last )
             : data_( Initialize( first, first <= last ? static_cast< size_type >( last - first ) : 0 ) )
         {
         }
 
         template<std::input_iterator InputIt>
-        explicit BasicString( InputIt first, InputIt last )
+        BasicString( InputIt first, InputIt last )
             : data_( Initialize( first, last ) )
         {
         }
 
-        explicit BasicString( const BasicStringView<T>& v );
+        BasicString( const BasicStringView<T>& v );
 
 
-        explicit BasicString( size_type count, CharType value )
+        BasicString( size_type count, CharType value )
             : data_( Initialize( count, value ) )
         {
         }
