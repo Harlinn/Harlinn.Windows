@@ -936,7 +936,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         BOOL DepthClipEnable = TRUE;
         BOOL MultisampleEnable = FALSE;
         BOOL AntialiasedLineEnable = FALSE;
-        UINT ForcedSampleCount = 0;
+        UInt32 ForcedSampleCount = 0;
         ConservativeRasterizationMode ConservativeRaster = ConservativeRasterizationMode::Off;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RASTERIZER_DESC );
@@ -984,19 +984,19 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// <summary>
         /// The number of entries in the stream output declaration array that the pSODeclaration member points to.
         /// </summary>
-        UINT NumEntries = 0;
+        UInt32 NumEntries = 0;
         /// <summary>
         /// An array of buffer strides; each stride is the size of an element for that buffer.
         /// </summary>
-        _Field_size_full_( NumStrides )  const UINT* pBufferStrides = nullptr;
+        _Field_size_full_( NumStrides )  const UInt32* pBufferStrides = nullptr;
         /// <summary>
         /// The number of strides (or buffers) that the pBufferStrides member points to.
         /// </summary>
-        UINT NumStrides = 0;
+        UInt32 NumStrides = 0;
         /// <summary>
         /// The index number of the stream to be sent to the rasterizer stage.
         /// </summary>
-        UINT RasterizedStream = 0;
+        UInt32 RasterizedStream = 0;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_STREAM_OUTPUT_DESC );
     };
@@ -1014,7 +1014,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// <summary>
         /// The number of input-data types in the array of input elements that the pInputElementDescs member points to.
         /// </summary>
-        UINT NumElements = 0;
+        UInt32 NumElements = 0;
 
         template<SimpleSpanLike T>
             requires std::is_same_v<InputElementDesc,T>
@@ -1139,17 +1139,17 @@ namespace Harlinn::Windows::Graphics::D3D12
         ShaderBytecode GS;
         StreamOutputDesc StreamOutput;
         BlendDesc BlendState;
-        UINT SampleMask = 0;
+        UInt32 SampleMask = 0;
         RasterizerDesc RasterizerState;
         DepthStencilDesc DepthStencilState;
         InputLayoutDesc InputLayout;
         IndexBufferStripCutValue IBStripCutValue = IndexBufferStripCutValue::Disabled;
         PrimitiveTopologyType PrimitiveTopologyType = PrimitiveTopologyType::Undefined;
-        UINT NumRenderTargets = 0;
+        UInt32 NumRenderTargets = 0;
         DXGI::Format RTVFormats[ 8 ]{};
         DXGI::Format DSVFormat = DXGI::Format::Unknown;
         DXGI::SampleDesc SampleDesc;
-        UINT NodeMask = 0;
+        UInt32 NodeMask = 0;
         CachedPipelineState CachedPSO;
         PipelineStateFlags Flags = PipelineStateFlags::None;
 
@@ -1165,7 +1165,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         ID3D12RootSignature* pRootSignature = nullptr;
         ShaderBytecode CS;
-        UINT NodeMask = 0;
+        UInt32 NodeMask = 0;
         CachedPipelineState CachedPSO;
         PipelineStateFlags Flags = PipelineStateFlags::None;
 
@@ -1190,7 +1190,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// <summary>
         /// Specifies the number of render target formats stored in the array.
         /// </summary>
-        UINT NumRenderTargets = 0;
+        UInt32 NumRenderTargets = 0;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RT_FORMAT_ARRAY );
     };
@@ -1318,7 +1318,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Indicates a sample mask subobject type.
         /// </para>
         /// <para>
-        /// The corresponding subobject type is UINT.
+        /// The corresponding subobject type is UInt32.
         /// </para>
         /// </summary>
         SampleMask = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_SAMPLE_MASK,
@@ -1399,7 +1399,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Indicates a node mask subobject type.
         /// </para>
         /// <para>
-        /// The corresponding subobject type is D3D12_NODE_MASK or UINT.
+        /// The corresponding subobject type is D3D12_NODE_MASK or UInt32.
         /// </para>
         /// </summary>
         NodeMask = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_NODE_MASK,
@@ -1709,7 +1709,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  BOOL TypedUAVLoadAdditionalFormats;
         _Out_  BOOL ROVsSupported;
         _Out_  ConservativeRasterizationTier ConservativeRasterizationTier;
-        _Out_  UINT MaxGPUVirtualAddressBitsPerResource;
+        _Out_  UInt32 MaxGPUVirtualAddressBitsPerResource;
         _Out_  BOOL StandardSwizzle64KBSupported;
         _Out_  D3D12::CrossNodeSharingTier CrossNodeSharingTier;
         _Out_  BOOL CrossAdapterRowMajorTextureSupported;
@@ -1727,9 +1727,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataD3D12Options1
     {
         _Out_  BOOL WaveOps;
-        _Out_  UINT WaveLaneCountMin;
-        _Out_  UINT WaveLaneCountMax;
-        _Out_  UINT TotalLaneCount;
+        _Out_  UInt32 WaveLaneCountMin;
+        _Out_  UInt32 WaveLaneCountMax;
+        _Out_  UInt32 TotalLaneCount;
         _Out_  BOOL ExpandedComputeResourceStates;
         _Out_  BOOL Int64ShaderOps;
 
@@ -1780,7 +1780,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct FeatureDataArchitecture
     {
-        _In_  UINT NodeIndex;
+        _In_  UInt32 NodeIndex;
         _Out_  BOOL TileBasedRenderer;
         _Out_  BOOL UMA;
         _Out_  BOOL CacheCoherentUMA;
@@ -1807,7 +1807,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct FeatureDataFeatureLevels
     {
-        _In_  UINT NumFeatureLevels;
+        _In_  UInt32 NumFeatureLevels;
         _In_reads_( NumFeatureLevels ) const D3D_FEATURE_LEVEL* pFeatureLevelsRequested;
         _Out_  D3D_FEATURE_LEVEL MaxSupportedFeatureLevel;
 
@@ -1850,9 +1850,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataMultiSampleQualityLevels
     {
         _In_  DXGI::Format Format;
-        _In_  UINT SampleCount;
+        _In_  UInt32 SampleCount;
         _In_  MultisampleQualityLevelFlags Flags;
-        _Out_  UINT NumQualityLevels;
+        _Out_  UInt32 NumQualityLevels;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS );
     };
@@ -1877,8 +1877,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct FeatureDataGpuVirtualAddressSupport
     {
-        UINT MaxGPUVirtualAddressBitsPerResource;
-        UINT MaxGPUVirtualAddressBitsPerProcess;
+        UInt32 MaxGPUVirtualAddressBitsPerResource;
+        UInt32 MaxGPUVirtualAddressBitsPerProcess;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT );
     };
@@ -1921,7 +1921,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataCommandQueuePriority
     {
         _In_  D3D12::CommandListType CommandListType;
-        _In_  UINT Priority;
+        _In_  UInt32 Priority;
         _Out_  BOOL PriorityForTypeIsSupported;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY );
@@ -2030,7 +2030,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct FeatureDataSerialization
     {
-        _In_  UINT NodeIndex;
+        _In_  UInt32 NodeIndex;
         _Out_  D3D12::HeapSerializationTier HeapSerializationTier;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_SERIALIZATION );
@@ -2109,7 +2109,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         _Out_  BOOL AdditionalShadingRatesSupported;
         _Out_  BOOL PerPrimitiveShadingRateSupportedWithViewportIndexing;
         _Out_  VariableShadingRateTier VariableShadingRateTier;
-        _Out_  UINT ShadingRateImageTileSize;
+        _Out_  UInt32 ShadingRateImageTileSize;
         _Out_  BOOL BackgroundProcessingSupported;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_D3D12_OPTIONS6 );
@@ -2159,7 +2159,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct FeatureDataQueryMetaCommand
     {
         _In_  Guid CommandId;
-        _In_  UINT NodeMask;
+        _In_  UInt32 NodeMask;
         _Field_size_bytes_full_opt_( QueryInputDataSizeInBytes )  const void* pQueryInputData;
         _In_  SIZE_T QueryInputDataSizeInBytes;
         _Field_size_bytes_full_( QueryOutputDataSizeInBytes )  void* pQueryOutputData;
@@ -2284,8 +2284,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct ResourceAllocationInfo
     {
-        UINT64 SizeInBytes;
-        UINT64 Alignment;
+        UInt64 SizeInBytes;
+        UInt64 Alignment;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_ALLOCATION_INFO );
     };
@@ -2297,9 +2297,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct ResourceAllocationInfo1
     {
-        UINT64 Offset;
-        UINT64 Alignment;
-        UINT64 SizeInBytes;
+        UInt64 Offset;
+        UInt64 Alignment;
+        UInt64 SizeInBytes;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_ALLOCATION_INFO1 );
     };
@@ -2349,11 +2349,22 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct HeapProperties
     {
-        HeapType Type;
-        CpuPageProperty CPUPageProperty;
-        MemoryPool MemoryPoolPreference;
-        UINT CreationNodeMask;
-        UINT VisibleNodeMask;
+        HeapType Type = HeapType::Default;
+        CpuPageProperty CPUPageProperty = CpuPageProperty::Unknown;
+        MemoryPool MemoryPoolPreference = MemoryPool::Unknown;
+        UInt32 CreationNodeMask = 0;
+        UInt32 VisibleNodeMask = 0;
+
+        HeapProperties( ) = default;
+
+        HeapProperties( HeapType type, UInt32 creationNodeMask = 1, UInt32 visibleNodeMask = 1 )
+            : Type( type ), CreationNodeMask( creationNodeMask ), VisibleNodeMask( visibleNodeMask )
+        { }
+
+        HeapProperties( HeapType type, CpuPageProperty cpuPageProperty, MemoryPool memoryPoolPreference,UInt32 creationNodeMask = 1, UInt32 visibleNodeMask = 1 )
+            : Type( type ), CPUPageProperty( cpuPageProperty ), MemoryPoolPreference( memoryPoolPreference ), CreationNodeMask( creationNodeMask ), VisibleNodeMask( visibleNodeMask )
+        {
+        }
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_HEAP_PROPERTIES );
     };
@@ -2391,9 +2402,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct HeapDesc
     {
-        UINT64 SizeInBytes;
+        UInt64 SizeInBytes;
         HeapProperties Properties;
-        UINT64 Alignment;
+        UInt64 Alignment;
         HeapFlags Flags;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_HEAP_DESC );
@@ -2453,9 +2464,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct MipRegion
     {
-        UINT Width = 0;
-        UINT Height = 0;
-        UINT Depth = 0;
+        UInt32 Width = 0;
+        UInt32 Height = 0;
+        UInt32 Depth = 0;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_MIP_REGION );
     };
@@ -2467,16 +2478,48 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct ResourceDesc
     {
-        ResourceDimension Dimension;
-        UINT64 Alignment;
-        UINT64 Width;
-        UINT Height;
-        UINT16 DepthOrArraySize;
-        UINT16 MipLevels;
-        DXGI::Format Format;
+        ResourceDimension Dimension = ResourceDimension::Unknown;
+        UInt64 Alignment = 0;
+        UInt64 Width = 0;
+        UInt32 Height = 0;
+        UInt16 DepthOrArraySize = 0;
+        UInt16 MipLevels = 0;
+        DXGI::Format Format = DXGI::Format::Unknown;
         DXGI::SampleDesc SampleDesc;
-        D3D12::TextureLayout Layout;
-        D3D12::ResourceFlags Flags;
+        TextureLayout Layout = TextureLayout::Unknown;
+        ResourceFlags Flags = ResourceFlags::None;
+
+        ResourceDesc(
+            ResourceDimension dimension,
+            UInt64 alignment,
+            UInt64 width,
+            UInt32 height,
+            UInt16 depthOrArraySize,
+            UInt16 mipLevels,
+            DXGI::Format format,
+            UInt32 sampleCount,
+            UInt32 sampleQuality,
+            TextureLayout layout,
+            ResourceFlags flags ) noexcept
+            : Dimension( dimension ),
+              Alignment( alignment ),
+              Width( width ),
+              Height( height ),
+              DepthOrArraySize( depthOrArraySize ),
+              MipLevels( mipLevels ),
+              Format( format ),
+              SampleDesc( sampleCount, sampleQuality ),
+              Layout( layout ),
+              Flags( flags )
+        { }
+
+        ResourceDesc(
+            UInt64 width,
+            ResourceFlags flags = ResourceFlags::None,
+            UInt64 alignment = 0 ) noexcept
+            : ResourceDesc( ResourceDimension::Buffer, alignment, width, 1, 1, 1,
+                DXGI::Format::Unknown, 1, 0, TextureLayout::RowMajor, flags )
+        { }
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_DESC );
     };
@@ -2530,8 +2573,13 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct Range
     {
-        SIZE_T Begin;
-        SIZE_T End;
+        SIZE_T Begin = 0;
+        SIZE_T End = 0;
+
+        Range( ) = default;
+        Range( SIZE_T begin, SIZE_T end )
+            : Begin(begin), End(end)
+        { }
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RANGE );
     };
@@ -2544,8 +2592,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct RangeUInt64
     {
-        UINT64 Begin;
-        UINT64 End;
+        UInt64 Begin;
+        UInt64 End;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RANGE_UINT64 );
     };
@@ -2557,7 +2605,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct SubresourceRangeUInt64
     {
-        UINT Subresource;
+        UInt32 Subresource;
         RangeUInt64 Range;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_RANGE_UINT64 );
@@ -2571,9 +2619,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct SubresourceInfo
     {
-        UINT64 Offset;
-        UINT RowPitch;
-        UINT DepthPitch;
+        UInt64 Offset;
+        UInt32 RowPitch;
+        UInt32 DepthPitch;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_INFO );
     };
@@ -2585,10 +2633,10 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct TiledResourceCoordinate
     {
-        UINT X;
-        UINT Y;
-        UINT Z;
-        UINT Subresource;
+        UInt32 X;
+        UInt32 Y;
+        UInt32 Z;
+        UInt32 Subresource;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TILED_RESOURCE_COORDINATE );
     };
@@ -2600,9 +2648,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct TileRegionSize
     {
-        UINT NumTiles;
+        UInt32 NumTiles;
         BOOL UseBox;
-        UINT Width;
+        UInt32 Width;
         UINT16 Height;
         UINT16 Depth;
 
@@ -2630,10 +2678,10 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct SubresourceTiling
     {
-        UINT WidthInTiles;
+        UInt32 WidthInTiles;
         UINT16 HeightInTiles;
         UINT16 DepthInTiles;
-        UINT StartTileIndexInOverallResource;
+        UInt32 StartTileIndexInOverallResource;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_TILING );
     };
@@ -2645,9 +2693,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct TileShape
     {
-        UINT WidthInTexels;
-        UINT HeightInTexels;
-        UINT DepthInTexels;
+        UInt32 WidthInTexels;
+        UInt32 HeightInTexels;
+        UInt32 DepthInTexels;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TILE_SHAPE );
     };
@@ -2662,8 +2710,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         UINT8 NumStandardMips;
         UINT8 NumPackedMips;
-        UINT NumTilesForPackedMips;
-        UINT StartTileIndexInOverallResource;
+        UInt32 NumTilesForPackedMips;
+        UInt32 StartTileIndexInOverallResource;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PACKED_MIP_INFO );
     };
@@ -2754,7 +2802,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct ResourceTransitionBarrier
     {
         ID3D12Resource* pResource;
-        UINT Subresource;
+        UInt32 Subresource;
         D3D12_RESOURCE_STATES StateBefore;
         D3D12_RESOURCE_STATES StateAfter;
 
@@ -2826,10 +2874,10 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct SubresourceFootprint
     {
         DXGI::Format Format;
-        UINT Width;
-        UINT Height;
-        UINT Depth;
-        UINT RowPitch;
+        UInt32 Width;
+        UInt32 Height;
+        UInt32 Depth;
+        UInt32 RowPitch;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_FOOTPRINT );
     };
@@ -2841,7 +2889,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct PlacedSubresourceFootprint
     {
-        UINT64 Offset;
+        UInt64 Offset;
         SubresourceFootprint Footprint;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PLACED_SUBRESOURCE_FOOTPRINT );
@@ -2870,7 +2918,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         union
         {
             PlacedSubresourceFootprint PlacedFootprint;
-            UINT SubresourceIndex;
+            UInt32 SubresourceIndex;
         };
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEXTURE_COPY_LOCATION );
@@ -2912,8 +2960,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct ViewInstanceLocation
     {
-        UINT ViewportArrayIndex;
-        UINT RenderTargetArrayIndex;
+        UInt32 ViewportArrayIndex;
+        UInt32 RenderTargetArrayIndex;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_VIEW_INSTANCE_LOCATION );
     };
@@ -2937,7 +2985,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct ViewInstancingDesc
     {
-        UINT ViewInstanceCount;
+        UInt32 ViewInstanceCount;
         _Field_size_full_( ViewInstanceCount )  const ViewInstanceLocation* pViewInstanceLocations;
         ViewInstancingFlags Flags;
 
@@ -4986,17 +5034,17 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct QueryDataPipelineStatistics
     {
-        UINT64 IAVertices;
-        UINT64 IAPrimitives;
-        UINT64 VSInvocations;
-        UINT64 GSInvocations;
-        UINT64 GSPrimitives;
-        UINT64 CInvocations;
-        UINT64 CPrimitives;
-        UINT64 PSInvocations;
-        UINT64 HSInvocations;
-        UINT64 DSInvocations;
-        UINT64 CSInvocations;
+        UInt64 IAVertices;
+        UInt64 IAPrimitives;
+        UInt64 VSInvocations;
+        UInt64 GSInvocations;
+        UInt64 GSPrimitives;
+        UInt64 CInvocations;
+        UInt64 CPrimitives;
+        UInt64 PSInvocations;
+        UInt64 HSInvocations;
+        UInt64 DSInvocations;
+        UInt64 CSInvocations;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_QUERY_DATA_PIPELINE_STATISTICS );
     };
@@ -5008,9 +5056,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct QueryDataPipelineStatistics1 : public QueryDataPipelineStatistics
     {
-        UINT64 ASInvocations;
-        UINT64 MSInvocations;
-        UINT64 MSPrimitives;
+        UInt64 ASInvocations;
+        UInt64 MSInvocations;
+        UInt64 MSPrimitives;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_QUERY_DATA_PIPELINE_STATISTICS1 );
     };
@@ -5022,8 +5070,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct QueryDataStreamOutputStatistics
     {
-        UINT64 NumPrimitivesWritten;
-        UINT64 PrimitivesStorageNeeded;
+        UInt64 NumPrimitivesWritten;
+        UInt64 PrimitivesStorageNeeded;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_QUERY_DATA_SO_STATISTICS );
     };
@@ -5049,10 +5097,10 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct DrawArguments
     {
-        UINT VertexCountPerInstance;
-        UINT InstanceCount;
-        UINT StartVertexLocation;
-        UINT StartInstanceLocation;
+        UInt32 VertexCountPerInstance;
+        UInt32 InstanceCount;
+        UInt32 StartVertexLocation;
+        UInt32 StartInstanceLocation;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRAW_ARGUMENTS );
     };
@@ -5064,11 +5112,11 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct DrawIndexedArguments
     {
-        UINT IndexCountPerInstance;
-        UINT InstanceCount;
-        UINT StartIndexLocation;
+        UInt32 IndexCountPerInstance;
+        UInt32 InstanceCount;
+        UInt32 StartIndexLocation;
         INT BaseVertexLocation;
-        UINT StartInstanceLocation;
+        UInt32 StartInstanceLocation;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRAW_INDEXED_ARGUMENTS );
     };
@@ -5080,9 +5128,9 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct DispatchArguments
     {
-        UINT ThreadGroupCountX;
-        UINT ThreadGroupCountY;
-        UINT ThreadGroupCountZ;
+        UInt32 ThreadGroupCountX;
+        UInt32 ThreadGroupCountY;
+        UInt32 ThreadGroupCountZ;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DISPATCH_ARGUMENTS );
     };
@@ -5095,8 +5143,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct VertexBufferView
     {
         GPUVirtualAddress BufferLocation;
-        UINT SizeInBytes;
-        UINT StrideInBytes;
+        UInt32 SizeInBytes;
+        UInt32 StrideInBytes;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_VERTEX_BUFFER_VIEW );
     };
@@ -5109,7 +5157,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct IndexBufferView
     {
         GPUVirtualAddress BufferLocation;
-        UINT SizeInBytes;
+        UInt32 SizeInBytes;
         DXGI::Format Format;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_INDEX_BUFFER_VIEW );
@@ -5148,30 +5196,30 @@ namespace Harlinn::Windows::Graphics::D3D12
         {
             struct
             {
-                UINT Slot;
+                UInt32 Slot;
             } 	VertexBuffer;
             struct
             {
-                UINT RootParameterIndex;
-                UINT DestOffsetIn32BitValues;
-                UINT Num32BitValuesToSet;
+                UInt32 RootParameterIndex;
+                UInt32 DestOffsetIn32BitValues;
+                UInt32 Num32BitValuesToSet;
             } 	Constant;
             struct
             {
-                UINT RootParameterIndex;
+                UInt32 RootParameterIndex;
             } 	ConstantBufferView;
             struct
             {
-                UINT RootParameterIndex;
+                UInt32 RootParameterIndex;
             } 	ShaderResourceView;
             struct
             {
-                UINT RootParameterIndex;
+                UInt32 RootParameterIndex;
             } 	UnorderedAccessView;
             struct
             {
-                UINT RootParameterIndex;
-                UINT DestOffsetIn32BitValues;
+                UInt32 RootParameterIndex;
+                UInt32 DestOffsetIn32BitValues;
             } 	IncrementingConstant;
         };
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_INDIRECT_ARGUMENT_DESC );
@@ -5184,10 +5232,10 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct CommandSignatureDesc
     {
-        UINT ByteStride;
-        UINT NumArgumentDescs;
+        UInt32 ByteStride;
+        UInt32 NumArgumentDescs;
         _Field_size_full_( NumArgumentDescs )  const D3D12_INDIRECT_ARGUMENT_DESC* pArgumentDescs;
-        UINT NodeMask;
+        UInt32 NodeMask;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_COMMAND_SIGNATURE_DESC );
     };
@@ -5326,7 +5374,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct FeatureDataProtectedResourceSessionSupport
     {
-        UINT NodeIndex;
+        UInt32 NodeIndex;
         ProtectedResourceSessionSupportFlags Support;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_SUPPORT );
@@ -5350,7 +5398,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct ProtectedResourceSessionDesc
     {
-        UINT NodeMask;
+        UInt32 NodeMask;
         ProtectedResourceSessionFlags Flags;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PROTECTED_RESOURCE_SESSION_DESC );
@@ -5369,6 +5417,1126 @@ namespace Harlinn::Windows::Graphics::D3D12
     };
 
 
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_META_COMMAND_PARAMETER_TYPE
+    /// </para>
+    /// </summary>
+    enum class MetaCommandParameterType
+    {
+        Float = D3D12_META_COMMAND_PARAMETER_TYPE_FLOAT,
+        UInt64 = D3D12_META_COMMAND_PARAMETER_TYPE_UINT64,
+        GPUVirtualAddress = D3D12_META_COMMAND_PARAMETER_TYPE_GPU_VIRTUAL_ADDRESS,
+        CPUDescriptorHandleHeapTypeCBV_SRV_UAV = D3D12_META_COMMAND_PARAMETER_TYPE_CPU_DESCRIPTOR_HANDLE_HEAP_TYPE_CBV_SRV_UAV,
+        GPUDescriptorHandleHeapTypeCBV_SRV_UAV = D3D12_META_COMMAND_PARAMETER_TYPE_GPU_DESCRIPTOR_HANDLE_HEAP_TYPE_CBV_SRV_UAV
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_META_COMMAND_PARAMETER_FLAGS
+    /// </para>
+    /// </summary>
+    enum class MetaCommandParameterFlags : UInt32
+    {
+        None = 0,
+        Input = D3D12_META_COMMAND_PARAMETER_FLAG_INPUT,
+        Output = D3D12_META_COMMAND_PARAMETER_FLAG_OUTPUT
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( MetaCommandParameterFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_META_COMMAND_PARAMETER_STAGE
+    /// </para>
+    /// </summary>
+    enum class MetaCommandParameterStage
+    {
+        Creation = D3D12_META_COMMAND_PARAMETER_STAGE_CREATION,
+        Initialization = D3D12_META_COMMAND_PARAMETER_STAGE_INITIALIZATION,
+        Execution = D3D12_META_COMMAND_PARAMETER_STAGE_EXECUTION
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_META_COMMAND_PARAMETER_DESC
+    /// </para>
+    /// </summary>
+    struct MetaCommandParameterDesc
+    {
+        LPCWSTR Name = nullptr;
+        MetaCommandParameterType Type = MetaCommandParameterType::Float;
+        MetaCommandParameterFlags Flags = MetaCommandParameterFlags::None;
+        ResourceStates RequiredResourceState = ResourceStates::Common;
+        UInt32 StructureOffset = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_META_COMMAND_PARAMETER_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_GRAPHICS_STATES
+    /// </para>
+    /// </summary>
+    enum class GraphicsStates : UInt32
+    {
+        None = D3D12_GRAPHICS_STATE_NONE,
+        IAVertexBuffers = D3D12_GRAPHICS_STATE_IA_VERTEX_BUFFERS,
+        IAIndexBuffer = D3D12_GRAPHICS_STATE_IA_INDEX_BUFFER,
+        IAPrimitiveTopology = D3D12_GRAPHICS_STATE_IA_PRIMITIVE_TOPOLOGY,
+        DescriptorHeap = D3D12_GRAPHICS_STATE_DESCRIPTOR_HEAP,
+        GraphicsRootSignature = D3D12_GRAPHICS_STATE_GRAPHICS_ROOT_SIGNATURE,
+        ComputeRootSignature = D3D12_GRAPHICS_STATE_COMPUTE_ROOT_SIGNATURE,
+        RSViewports = D3D12_GRAPHICS_STATE_RS_VIEWPORTS,
+        RSScissorRects = D3D12_GRAPHICS_STATE_RS_SCISSOR_RECTS,
+        Predication = D3D12_GRAPHICS_STATE_PREDICATION,
+        OMRenderTargets = D3D12_GRAPHICS_STATE_OM_RENDER_TARGETS,
+        OMStencilRef = D3D12_GRAPHICS_STATE_OM_STENCIL_REF,
+        OMBlendFactor = D3D12_GRAPHICS_STATE_OM_BLEND_FACTOR,
+        PipelineState = D3D12_GRAPHICS_STATE_PIPELINE_STATE,
+        SOTargets = D3D12_GRAPHICS_STATE_SO_TARGETS,
+        OMDepthBounds = D3D12_GRAPHICS_STATE_OM_DEPTH_BOUNDS,
+        SamplePositions = D3D12_GRAPHICS_STATE_SAMPLE_POSITIONS,
+        ViewInstanceMask = D3D12_GRAPHICS_STATE_VIEW_INSTANCE_MASK
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( GraphicsStates, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_META_COMMAND_DESC
+    /// </para>
+    /// </summary>
+    struct MetaCommandDesc
+    {
+        Guid Id;
+        LPCWSTR Name = nullptr;
+        GraphicsStates InitializationDirtyState = GraphicsStates::None;
+        GraphicsStates ExecutionDirtyState = GraphicsStates::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_META_COMMAND_DESC );
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PROGRAM_IDENTIFIER
+    /// </para>
+    /// </summary>
+    struct ProgramIdentifier
+    {
+        UInt64 OpaqueData[ 4 ];
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PROGRAM_IDENTIFIER );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_NODE_ID
+    /// </para>
+    /// </summary>
+    struct NodeId
+    {
+        LPCWSTR Name = nullptr;
+        UInt32 ArrayIndex = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_NODE_ID );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_WORK_GRAPH_MEMORY_REQUIREMENTS
+    /// </para>
+    /// </summary>
+    struct WorkGraphMemoryRequirements
+    {
+        UInt64 MinSizeInBytes;
+        UInt64 MaxSizeInBytes;
+        UInt32 SizeGranularityInBytes;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_WORK_GRAPH_MEMORY_REQUIREMENTS );
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATE_SUBOBJECT_TYPE
+    /// </para>
+    /// </summary>
+    enum class StateSubobjectType
+    {
+        StateObjectConfig = D3D12_STATE_SUBOBJECT_TYPE_STATE_OBJECT_CONFIG,
+        GlobalRootSignature = D3D12_STATE_SUBOBJECT_TYPE_GLOBAL_ROOT_SIGNATURE,
+        LocalRootSignature = D3D12_STATE_SUBOBJECT_TYPE_LOCAL_ROOT_SIGNATURE,
+        NodeMask = D3D12_STATE_SUBOBJECT_TYPE_NODE_MASK,
+        DXILLibrary = D3D12_STATE_SUBOBJECT_TYPE_DXIL_LIBRARY,
+        ExistingCollection = D3D12_STATE_SUBOBJECT_TYPE_EXISTING_COLLECTION,
+        SubobjectToExportsAssociation = D3D12_STATE_SUBOBJECT_TYPE_SUBOBJECT_TO_EXPORTS_ASSOCIATION,
+        DXILSubobjectToExportsAssociation = D3D12_STATE_SUBOBJECT_TYPE_DXIL_SUBOBJECT_TO_EXPORTS_ASSOCIATION,
+        RaytracingShaderConfig = D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_SHADER_CONFIG,
+        RaytracingPipelineConfig = D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_PIPELINE_CONFIG,
+        HitGroup = D3D12_STATE_SUBOBJECT_TYPE_HIT_GROUP,
+        RaytracingPipelineConfig1 = D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_PIPELINE_CONFIG1,
+        WorkGraph = D3D12_STATE_SUBOBJECT_TYPE_WORK_GRAPH,
+        StreamOutput = D3D12_STATE_SUBOBJECT_TYPE_STREAM_OUTPUT,
+        Blend = D3D12_STATE_SUBOBJECT_TYPE_BLEND,
+        SampleMask = D3D12_STATE_SUBOBJECT_TYPE_SAMPLE_MASK,
+        Rasterizer = D3D12_STATE_SUBOBJECT_TYPE_RASTERIZER,
+        DepthStencil = D3D12_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL,
+        InputLayout = D3D12_STATE_SUBOBJECT_TYPE_INPUT_LAYOUT,
+        IBStripCutValue = D3D12_STATE_SUBOBJECT_TYPE_IB_STRIP_CUT_VALUE,
+        PrimitiveTopology = D3D12_STATE_SUBOBJECT_TYPE_PRIMITIVE_TOPOLOGY,
+        RenderTargetFormats = D3D12_STATE_SUBOBJECT_TYPE_RENDER_TARGET_FORMATS,
+        DepthStencilFormat = D3D12_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL_FORMAT,
+        SampleDesc = D3D12_STATE_SUBOBJECT_TYPE_SAMPLE_DESC,
+        Flags = D3D12_STATE_SUBOBJECT_TYPE_FLAGS,
+        DepthStencil1 = D3D12_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL1,
+        ViewInstancing = D3D12_STATE_SUBOBJECT_TYPE_VIEW_INSTANCING,
+        GenericProgram = D3D12_STATE_SUBOBJECT_TYPE_GENERIC_PROGRAM,
+        DepthStencil2 = D3D12_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL2,
+        MaxValid = D3D12_STATE_SUBOBJECT_TYPE_MAX_VALID
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATE_SUBOBJECT
+    /// </para>
+    /// </summary>
+    struct StateSubobject
+    {
+        StateSubobjectType Type = StateSubobjectType::StateObjectConfig;
+        const void* pDesc = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_STATE_SUBOBJECT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATE_OBJECT_FLAGS
+    /// </para>
+    /// </summary>
+    enum class StateObjectFlags : UInt32
+    {
+        None = D3D12_STATE_OBJECT_FLAG_NONE,
+        AllowLocalDependenciesOnExternalDefinitions = D3D12_STATE_OBJECT_FLAG_ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS,
+        AllowExternalDependenciesOnKocalDefinitions = D3D12_STATE_OBJECT_FLAG_ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS,
+        AllowStateObjectAdditions = D3D12_STATE_OBJECT_FLAG_ALLOW_STATE_OBJECT_ADDITIONS,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( StateObjectFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATE_OBJECT_CONFIG
+    /// </para>
+    /// </summary>
+    struct StateObjectConfig
+    {
+        StateObjectFlags Flags = StateObjectFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_STATE_OBJECT_CONFIG );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_GLOBAL_ROOT_SIGNATURE
+    /// </para>
+    /// </summary>
+    struct GlobalRootSignature
+    {
+        ID3D12RootSignature* pGlobalRootSignature = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GLOBAL_ROOT_SIGNATURE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_LOCAL_ROOT_SIGNATURE
+    /// </para>
+    /// </summary>
+    struct LocalRootSignature
+    {
+        ID3D12RootSignature* pLocalRootSignature = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_LOCAL_ROOT_SIGNATURE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_NODE_MASK
+    /// </para>
+    /// </summary>
+    struct NodeMask
+    {
+        UInt32 NodeMask_ = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_NODE_MASK );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SAMPLE_MASK
+    /// </para>
+    /// </summary>
+    struct SampleMask
+    {
+        UInt32 SampleMask_ = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SAMPLE_MASK );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_IB_STRIP_CUT_VALUE
+    /// </para>
+    /// </summary>
+    struct IBStripCutValue
+    {
+        D3D12::IndexBufferStripCutValue IndexBufferStripCutValue = D3D12::IndexBufferStripCutValue::Disabled;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_IB_STRIP_CUT_VALUE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PRIMITIVE_TOPOLOGY_DESC
+    /// </para>
+    /// </summary>
+    struct PrimitiveTopologyDesc
+    {
+        PrimitiveTopologyType PrimitiveTopology = PrimitiveTopologyType::Undefined;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PRIMITIVE_TOPOLOGY_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEPTH_STENCIL_FORMAT
+    /// </para>
+    /// </summary>
+    struct DepthStencilFormat
+    {
+        DXGI::Format DepthStencilFormat_ = DXGI::Format::Unknown;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEPTH_STENCIL_FORMAT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_EXPORT_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ExportFlags : UInt32
+    {
+        None = D3D12_EXPORT_FLAG_NONE
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ExportFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_EXPORT_DESC
+    /// </para>
+    /// </summary>
+    struct ExportDesc
+    {
+        LPCWSTR Name = nullptr;
+        _In_opt_  LPCWSTR ExportToRename = nullptr;
+        ExportFlags Flags = ExportFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_EXPORT_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DXIL_LIBRARY_DESC
+    /// </para>
+    /// </summary>
+    struct DXILLibraryDesc
+    {
+        ShaderBytecode DXILLibrary;
+        UInt32 NumExports = 0;
+        _In_reads_( NumExports )  const D3D12_EXPORT_DESC* pExports = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DXIL_LIBRARY_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_EXISTING_COLLECTION_DESC
+    /// </para>
+    /// </summary>
+    struct ExistingCollectionDesc
+    {
+        ID3D12StateObject* pExistingCollection = nullptr;
+        UInt32 NumExports = 0;
+        _In_reads_( NumExports )  const ExportDesc* pExports = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_EXISTING_COLLECTION_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SUBOBJECT_TO_EXPORTS_ASSOCIATION
+    /// </para>
+    /// </summary>
+    struct SubobjectToExportsAssociation
+    {
+        const StateSubobject* pSubobjectToAssociate = nullptr;
+        UInt32 NumExports = 0;
+        _In_reads_( NumExports )  LPCWSTR* pExports = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBOBJECT_TO_EXPORTS_ASSOCIATION );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DXIL_SUBOBJECT_TO_EXPORTS_ASSOCIATION
+    /// </para>
+    /// </summary>
+    struct DXILSubobjectToExportsAssociation
+    {
+        LPCWSTR SubobjectToAssociate = nullptr;
+        UInt32 NumExports = 0;
+        _In_reads_( NumExports )  LPCWSTR* pExports = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DXIL_SUBOBJECT_TO_EXPORTS_ASSOCIATION );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_HIT_GROUP_TYPE
+    /// </para>
+    /// </summary>
+    enum class HitGroupType
+    {
+        Triangles = D3D12_HIT_GROUP_TYPE_TRIANGLES,
+        ProceduralPrimitive = D3D12_HIT_GROUP_TYPE_PROCEDURAL_PRIMITIVE,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_HIT_GROUP_DESC
+    /// </para>
+    /// </summary>
+    struct HitGroupDesc
+    {
+        LPCWSTR HitGroupExport = nullptr;
+        HitGroupType Type = HitGroupType::Triangles;
+        _In_opt_  LPCWSTR AnyHitShaderImport = nullptr;
+        _In_opt_  LPCWSTR ClosestHitShaderImport = nullptr;
+        _In_opt_  LPCWSTR IntersectionShaderImport = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_HIT_GROUP_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_SHADER_CONFIG
+    /// </para>
+    /// </summary>
+    struct RaytracingShaderConfig
+    {
+        UInt32 MaxPayloadSizeInBytes = 0;
+        UInt32 MaxAttributeSizeInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_SHADER_CONFIG );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_PIPELINE_CONFIG
+    /// </para>
+    /// </summary>
+    struct RaytracingPipelineConfig
+    {
+        UInt32 MaxTraceRecursionDepth = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_PIPELINE_CONFIG );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_PIPELINE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class RaytracingPipelineFlags : UInt32
+    {
+        None = D3D12_RAYTRACING_PIPELINE_FLAG_NONE,
+        SkipTriangles = D3D12_RAYTRACING_PIPELINE_FLAG_SKIP_TRIANGLES,
+        SkipProceduralPrimitives = D3D12_RAYTRACING_PIPELINE_FLAG_SKIP_PROCEDURAL_PRIMITIVES,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( RaytracingPipelineFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_PIPELINE_CONFIG1
+    /// </para>
+    /// </summary>
+    struct RaytracingPipelineConfig1
+    {
+        UInt32 MaxTraceRecursionDepth;
+        RaytracingPipelineFlags Flags;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_PIPELINE_CONFIG1 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_NODE_OUTPUT_OVERRIDES
+    /// </para>
+    /// </summary>
+    struct NodeOutputOverrides
+    {
+        UInt32 OutputIndex = 0;
+        _In_opt_  const NodeId* pNewName = nullptr;
+        _In_opt_  const BOOL* pAllowSparseNodes = nullptr;
+        _In_opt_  const UInt32* pMaxRecords = nullptr;
+        _In_opt_  const UInt32* pMaxRecordsSharedWithOutputIndex = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_NODE_OUTPUT_OVERRIDES );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BROADCASTING_LAUNCH_OVERRIDES
+    /// </para>
+    /// </summary>
+    struct BroadcastingLaunchOverrides
+    {
+        _In_opt_  const UInt32* pLocalRootArgumentsTableIndex = nullptr;
+        _In_opt_  const BOOL* pProgramEntry = nullptr;
+        _In_opt_  const NodeId* pNewName = nullptr;
+        _In_opt_   const NodeId* pShareInputOf = nullptr;
+        _In_reads_opt_( 3 )  const UInt32* pDispatchGrid = nullptr;
+        _In_reads_opt_( 3 )  const UInt32* pMaxDispatchGrid = nullptr;
+        UInt32 NumOutputOverrides = 0;
+        _In_reads_opt_( NumOutputOverrides )  const NodeOutputOverrides* pOutputOverrides = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BROADCASTING_LAUNCH_OVERRIDES );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_COALESCING_LAUNCH_OVERRIDES
+    /// </para>
+    /// </summary>
+    struct CoalescingLaunchOverrides
+    {
+        _In_opt_  const UInt32* pLocalRootArgumentsTableIndex = nullptr;
+        _In_opt_  const BOOL* pProgramEntry = nullptr;
+        _In_opt_  const NodeId* pNewName = nullptr;
+        _In_opt_  const NodeId* pShareInputOf = nullptr;
+        UInt32 NumOutputOverrides = 0;
+        _In_reads_opt_( NumOutputOverrides )  const NodeOutputOverrides* pOutputOverrides = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_COALESCING_LAUNCH_OVERRIDES );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_THREAD_LAUNCH_OVERRIDES
+    /// </para>
+    /// </summary>
+    struct ThreadLaunchOverrides
+    {
+        _In_opt_  const UInt32* pLocalRootArgumentsTableIndex = nullptr;
+        _In_opt_  const BOOL* pProgramEntry = nullptr;
+        _In_opt_  const NodeId* pNewName = nullptr;
+        _In_opt_  const NodeId* pShareInputOf = nullptr;
+        UInt32 NumOutputOverrides = 0;
+        _In_reads_opt_( NumOutputOverrides )  const NodeOutputOverrides* pOutputOverrides = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_THREAD_LAUNCH_OVERRIDES );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_COMMON_COMPUTE_NODE_OVERRIDES
+    /// </para>
+    /// </summary>
+    struct CommonComputeNodeOverrides
+    {
+        _In_opt_  const UInt32* pLocalRootArgumentsTableIndex = nullptr;
+        _In_opt_  const BOOL* pProgramEntry = nullptr;
+        _In_opt_  const NodeId* pNewName = nullptr;
+        _In_opt_  const NodeId* pShareInputOf = nullptr;
+        UInt32 NumOutputOverrides = 0;
+        _In_reads_opt_( NumOutputOverrides )  const NodeOutputOverrides* pOutputOverrides = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_COMMON_COMPUTE_NODE_OVERRIDES );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_NODE_OVERRIDES_TYPE
+    /// </para>
+    /// </summary>
+    enum class NodeOverridesType
+    {
+        None = D3D12_NODE_OVERRIDES_TYPE_NONE,
+        BroadcastingLaunch = D3D12_NODE_OVERRIDES_TYPE_BROADCASTING_LAUNCH,
+        CoalescingLaunch = D3D12_NODE_OVERRIDES_TYPE_COALESCING_LAUNCH,
+        ThreadLaunch = D3D12_NODE_OVERRIDES_TYPE_THREAD_LAUNCH,
+        CommonCompute = D3D12_NODE_OVERRIDES_TYPE_COMMON_COMPUTE,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_NODE
+    /// </para>
+    /// </summary>
+    struct ShaderNode
+    {
+        LPCWSTR Shader = nullptr;
+        NodeOverridesType OverridesType = NodeOverridesType::None;
+        union
+        {
+            const BroadcastingLaunchOverrides* pBroadcastingLaunchOverrides;
+            const CoalescingLaunchOverrides* pCoalescingLaunchOverrides;
+            const ThreadLaunchOverrides* pThreadLaunchOverrides;
+            const CommonComputeNodeOverrides* pCommonComputeNodeOverrides;
+        };
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SHADER_NODE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_NODE_TYPE
+    /// </para>
+    /// </summary>
+    enum class NodeType
+    {
+        Shader = D3D12_NODE_TYPE_SHADER
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_NODE
+    /// </para>
+    /// </summary>
+    struct Node
+    {
+        D3D12::NodeType NodeType = D3D12::NodeType::Shader;
+        union
+        {
+            ShaderNode Shader;
+        };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_NODE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_WORK_GRAPH_FLAGS
+    /// </para>
+    /// </summary>
+    enum class WorkGraphFlags : UInt32
+    {
+        None = D3D12_WORK_GRAPH_FLAG_NONE,
+        IncludeAllAvailableNodes = D3D12_WORK_GRAPH_FLAG_INCLUDE_ALL_AVAILABLE_NODES,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( WorkGraphFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_WORK_GRAPH_DESC
+    /// </para>
+    /// </summary>
+    struct WorkGraphDesc
+    {
+        LPCWSTR ProgramName = nullptr;
+        WorkGraphFlags Flags = WorkGraphFlags::None;
+        UInt32 NumEntrypoints = 0;
+        _In_reads_opt_( NumEntrypoints )  const NodeId* pEntrypoints = nullptr;
+        UInt32 NumExplicitlyDefinedNodes = 0;
+        _In_reads_opt_( NumExplicitlyDefinedNodes )  const Node* pExplicitlyDefinedNodes = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_WORK_GRAPH_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_GENERIC_PROGRAM_DESC
+    /// </para>
+    /// </summary>
+    struct GenericProgramDesc
+    {
+        LPCWSTR ProgramName = nullptr;
+        UInt32 NumExports = 0;
+        _In_reads_( NumExports )  LPCWSTR* pExports = nullptr;
+        UInt32 NumSubobjects = 0;
+        _In_reads_opt_( NumSubobjects )  const StateSubobject* const* ppSubobjects = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GENERIC_PROGRAM_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATE_OBJECT_TYPE
+    /// </para>
+    /// </summary>
+    enum class StateObjectType
+    {
+        Collection = D3D12_STATE_OBJECT_TYPE_COLLECTION,
+        RaytracingPipeline = D3D12_STATE_OBJECT_TYPE_RAYTRACING_PIPELINE,
+        Executable = D3D12_STATE_OBJECT_TYPE_EXECUTABLE,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_STATE_OBJECT_DESC
+    /// </para>
+    /// </summary>
+    struct StateObjectDesc
+    {
+        StateObjectType Type = StateObjectType::Collection;
+        UInt32 NumSubobjects = 0;
+        _In_reads_( NumSubobjects )  const StateSubobject* pSubobjects = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_STATE_OBJECT_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_GEOMETRY_FLAGS
+    /// </para>
+    /// </summary>
+    enum class RaytracingGeometryFlags : UInt32
+    {
+        None = D3D12_RAYTRACING_GEOMETRY_FLAG_NONE,
+        Opaque = D3D12_RAYTRACING_GEOMETRY_FLAG_OPAQUE,
+        NoDuplicateAnyhitInvocation = D3D12_RAYTRACING_GEOMETRY_FLAG_NO_DUPLICATE_ANYHIT_INVOCATION,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( RaytracingGeometryFlags, UInt32 );
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_GEOMETRY_TYPE
+    /// </para>
+    /// </summary>
+    enum class RaytracingGeometryType
+    {
+        Triangles = D3D12_RAYTRACING_GEOMETRY_TYPE_TRIANGLES,
+        ProceduralPrimitiveAABBS = D3D12_RAYTRACING_GEOMETRY_TYPE_PROCEDURAL_PRIMITIVE_AABBS,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_INSTANCE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class RaytracingInstanceFlags : UInt32
+    {
+        None = D3D12_RAYTRACING_INSTANCE_FLAG_NONE,
+        TriangleCullDisable = D3D12_RAYTRACING_INSTANCE_FLAG_TRIANGLE_CULL_DISABLE,
+        TriangleFrontCounterclockwise = D3D12_RAYTRACING_INSTANCE_FLAG_TRIANGLE_FRONT_COUNTERCLOCKWISE,
+        ForceOpaque = D3D12_RAYTRACING_INSTANCE_FLAG_FORCE_OPAQUE,
+        ForceNonOpaque = D3D12_RAYTRACING_INSTANCE_FLAG_FORCE_NON_OPAQUE,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( RaytracingInstanceFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_GPU_VIRTUAL_ADDRESS_AND_STRIDE
+    /// </para>
+    /// </summary>
+    struct GPUVirtualAddressAndStride
+    {
+        GPUVirtualAddress StartAddress;
+        UInt64 StrideInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GPU_VIRTUAL_ADDRESS_AND_STRIDE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_GPU_VIRTUAL_ADDRESS_RANGE
+    /// </para>
+    /// </summary>
+    struct GPUVirtualAddressRange
+    {
+        GPUVirtualAddress StartAddress;
+        UInt64 SizeInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GPU_VIRTUAL_ADDRESS_RANGE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_GPU_VIRTUAL_ADDRESS_RANGE_AND_STRIDE
+    /// </para>
+    /// </summary>
+    struct GPUVirtualAddressRangeAndStride
+    {
+        GPUVirtualAddress StartAddress;
+        UInt64 SizeInBytes = 0;
+        UInt64 StrideInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GPU_VIRTUAL_ADDRESS_RANGE_AND_STRIDE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingGeometryTrianglesDesc
+    {
+        GPUVirtualAddress Transform3x4;
+        DXGI::Format IndexFormat = DXGI::Format::Unknown;
+        DXGI::Format VertexFormat = DXGI::Format::Unknown;
+        UInt32 IndexCount = 0;
+        UInt32 VertexCount = 0;
+        GPUVirtualAddress IndexBuffer;
+        GPUVirtualAddressRangeAndStride VertexBuffer;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_AABB
+    /// </para>
+    /// </summary>
+    struct RaytracingAABB
+    {
+        FLOAT MinX;
+        FLOAT MinY;
+        FLOAT MinZ;
+        FLOAT MaxX;
+        FLOAT MaxY;
+        FLOAT MaxZ;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_AABB );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_GEOMETRY_AABBS_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingGeometryAABBsDesc
+    {
+        UInt64 AABBCount = 0;
+        GPUVirtualAddressAndStride AABBs;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_GEOMETRY_AABBS_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAGS
+    /// </para>
+    /// </summary>
+    enum class RaytracingAccelerationStructureBuildFlags : UInt32
+    {
+        None = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_NONE,
+        AllowUpdate = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_ALLOW_UPDATE,
+        AllowCompaction = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_ALLOW_COMPACTION,
+        PreferFastTrace = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_PREFER_FAST_TRACE,
+        PreferFastBuild = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_PREFER_FAST_BUILD,
+        MinimizeMemory = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_MINIMIZE_MEMORY,
+        PerformUpdate = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_PERFORM_UPDATE,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( RaytracingAccelerationStructureBuildFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE
+    /// </para>
+    /// </summary>
+    enum class RaytracingAccelerationStructureCopyMode
+    {
+        Clone = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE_CLONE,
+        Compact = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE_COMPACT,
+        VisualizationDecodeForTools = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE_VISUALIZATION_DECODE_FOR_TOOLS,
+        Serialize = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE_SERIALIZE,
+        Deserialize = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE_DESERIALIZE,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE
+    /// </para>
+    /// </summary>
+    enum class RaytracingAccelerationStructureType
+    {
+        TopLevel = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL,
+        BottomLevel = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_ELEMENTS_LAYOUT
+    /// </para>
+    /// </summary>
+    enum class ElementsLayout
+    {
+        Array = D3D12_ELEMENTS_LAYOUT_ARRAY,
+        ArrayOfPointers = D3D12_ELEMENTS_LAYOUT_ARRAY_OF_POINTERS
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TYPE
+    /// </para>
+    /// </summary>
+    enum class RaytracingAccelerationStructurePostbuildInfoType
+    {
+        CompactedSize = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_COMPACTED_SIZE,
+        ToolsVisualization = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TOOLS_VISUALIZATION,
+        Serialization = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_SERIALIZATION,
+        CurrentSize = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_CURRENT_SIZE,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingAccelerationStructurePostbuildInfoDesc
+    {
+        GPUVirtualAddress DestBuffer;
+        RaytracingAccelerationStructurePostbuildInfoType InfoType = RaytracingAccelerationStructurePostbuildInfoType::CompactedSize;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_COMPACTED_SIZE_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingAccelerationStructurePostbuildInfoCompactedSizeDesc
+    {
+        UInt64 CompactedSizeInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_COMPACTED_SIZE_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TOOLS_VISUALIZATION_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingAccelerationStructurePostbuildInfoToolsVisualizationDesc
+    {
+        UInt64 DecodedSizeInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TOOLS_VISUALIZATION_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_TOOLS_VISUALIZATION_HEADER
+    /// </para>
+    /// </summary>
+    struct BuildRaytracingAccelerationStructureToolsVisualizationHeader
+    {
+        RaytracingAccelerationStructureType Type = RaytracingAccelerationStructureType::TopLevel;
+        UInt32 NumDescs = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_TOOLS_VISUALIZATION_HEADER );
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_SERIALIZATION_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingAccelerationStructurePostbuildInfoSerializationDesc
+    {
+        UInt64 SerializedSizeInBytes = 0;
+        UInt64 NumBottomLevelAccelerationStructurePointers = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_SERIALIZATION_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SERIALIZED_DATA_DRIVER_MATCHING_IDENTIFIER
+    /// </para>
+    /// </summary>
+    struct SerializedDataDriverMatchingIdentifier
+    {
+        Guid DriverOpaqueGUID;
+        std::array<BYTE, 16> DriverOpaqueVersioningData{};
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SERIALIZED_DATA_DRIVER_MATCHING_IDENTIFIER );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SERIALIZED_DATA_TYPE
+    /// </para>
+    /// </summary>
+    enum class SerializedDataType
+    {
+        RaytracingAccelerationStructure = D3D12_SERIALIZED_DATA_RAYTRACING_ACCELERATION_STRUCTURE
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRIVER_MATCHING_IDENTIFIER_STATUS
+    /// </para>
+    /// </summary>
+    enum class DriverMatchingIdentifierStatus
+    {
+        CompatibleWithDevice = D3D12_DRIVER_MATCHING_IDENTIFIER_COMPATIBLE_WITH_DEVICE,
+        UnsupportedType = D3D12_DRIVER_MATCHING_IDENTIFIER_UNSUPPORTED_TYPE,
+        Unrecognized = D3D12_DRIVER_MATCHING_IDENTIFIER_UNRECOGNIZED,
+        IncompatibleVersion = D3D12_DRIVER_MATCHING_IDENTIFIER_INCOMPATIBLE_VERSION,
+        IncompatibleType = D3D12_DRIVER_MATCHING_IDENTIFIER_INCOMPATIBLE_TYPE,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SERIALIZED_RAYTRACING_ACCELERATION_STRUCTURE_HEADER
+    /// </para>
+    /// </summary>
+    struct SerializedRaytracingAccelerationStructureHeader
+    {
+        SerializedDataDriverMatchingIdentifier DriverMatchingIdentifier;
+        UInt64 SerializedSizeInBytesIncludingHeader = 0;
+        UInt64 DeserializedSizeInBytes = 0;
+        UInt64 NumBottomLevelAccelerationStructurePointersAfterHeader = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SERIALIZED_RAYTRACING_ACCELERATION_STRUCTURE_HEADER );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_CURRENT_SIZE_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingAccelerationStructurePostbuildInfoCurrentSizeDesc
+    {
+        UInt64 CurrentSizeInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_CURRENT_SIZE_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_INSTANCE_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingInstanceDesc
+    {
+        FLOAT Transform[ 3 ][ 4 ]{};
+        UInt32 InstanceID : 24 = 0;
+        UInt32 InstanceMask : 8 = 0;
+        UInt32 InstanceContributionToHitGroupIndex : 24 = 0;
+        UInt32 Flags : 8 = 0;
+        GPUVirtualAddress AccelerationStructure;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_INSTANCE_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_GEOMETRY_DESC
+    /// </para>
+    /// </summary>
+    struct RaytracingGeometryDesc
+    {
+        RaytracingGeometryType Type;
+        RaytracingGeometryFlags Flags;
+        union
+        {
+            RaytracingGeometryTrianglesDesc Triangles;
+            RaytracingGeometryAABBsDesc AABBs;
+        };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_GEOMETRY_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS
+    /// </para>
+    /// </summary>
+    struct BuildRaytracingAccelerationStructureInputs
+    {
+        RaytracingAccelerationStructureType Type = RaytracingAccelerationStructureType::TopLevel;
+        RaytracingAccelerationStructureBuildFlags Flags = RaytracingAccelerationStructureBuildFlags::None;
+        UInt32 NumDescs = 0;
+        ElementsLayout DescsLayout;
+        union
+        {
+            GPUVirtualAddress InstanceDescs;
+            const RaytracingGeometryDesc* pGeometryDescs;
+            const RaytracingGeometryDesc* const* ppGeometryDescs;
+        };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC
+    /// </para>
+    /// </summary>
+    struct BuildRaytracingAccelerationStructureDesc
+    {
+        GPUVirtualAddress DestAccelerationStructureData;
+        BuildRaytracingAccelerationStructureInputs Inputs;
+        _In_opt_  GPUVirtualAddress SourceAccelerationStructureData;
+        GPUVirtualAddress ScratchAccelerationStructureData;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO
+    /// </para>
+    /// </summary>
+    struct RaytracingAccelerationStructurePrebuildInfo
+    {
+        UInt64 ResultDataMaxSizeInBytes = 0;
+        UInt64 ScratchDataSizeInBytes = 0;
+        UInt64 UpdateScratchDataSizeInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAY_FLAGS
+    /// </para>
+    /// </summary>
+    enum class RayFlags : UInt32
+    {
+        None = D3D12_RAY_FLAG_NONE,
+        ForceOpaque = D3D12_RAY_FLAG_FORCE_OPAQUE,
+        ForceNonOpaque = D3D12_RAY_FLAG_FORCE_NON_OPAQUE,
+        AcceptFirstHitAndEndSearch = D3D12_RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH,
+        SkipClosestHitShader = D3D12_RAY_FLAG_SKIP_CLOSEST_HIT_SHADER,
+        CullBackFacingTriangles = D3D12_RAY_FLAG_CULL_BACK_FACING_TRIANGLES,
+        CullFrontFacingTriangles = D3D12_RAY_FLAG_CULL_FRONT_FACING_TRIANGLES,
+        CullOpaque = D3D12_RAY_FLAG_CULL_OPAQUE,
+        CullNonOpaque = D3D12_RAY_FLAG_CULL_NON_OPAQUE,
+        SkipTriangles = D3D12_RAY_FLAG_SKIP_TRIANGLES,
+        SkipProceduralPrimitives = D3D12_RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( RayFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_HIT_KIND
+    /// </para>
+    /// </summary>
+    enum class D3D12_HIT_KIND
+    {
+        FrontFace = D3D12_HIT_KIND_TRIANGLE_FRONT_FACE,
+        BackFace = D3D12_HIT_KIND_TRIANGLE_BACK_FACE,
+    };
 
 
 
@@ -5377,3 +6545,4 @@ namespace Harlinn::Windows::Graphics::D3D12
 }
 
 #endif
+ 

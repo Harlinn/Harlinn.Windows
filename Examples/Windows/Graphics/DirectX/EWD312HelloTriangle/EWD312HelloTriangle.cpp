@@ -12,21 +12,22 @@ class HelloTriangleForm : public Windows::DXForm
 {
 public:
     using Base = Windows::DXForm;
+private:
     using DXContext = Windows::DXContext;
     using PipelineState = Windows::Graphics::D3D12::PipelineState;
     using Resource = Windows::Graphics::D3D12::Resource;
     using VertexBufferView = Windows::Graphics::D3D12::VertexBufferView;
-protected:
+
     float aspectRatio_ = 1.f;
-    ComPtr<ID3D12Resource> m_vertexBuffer;
-    D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
+    Resource vertexBuffer_;
+    VertexBufferView vertexBufferView_;
 
     struct Vertex
     {
         m::Point3f position;
         m::Vector<float, 4> color;
     };
-
+protected:
     virtual void DoOnSize( Windows::Message& message ) override
     {
         Base::DoOnSize( message );
@@ -40,7 +41,16 @@ protected:
 
     virtual void DoOnRender( ) override
     {
+        using namespace Windows::Graphics::D3D12;
+        using Format = Windows::Graphics::DXGI::Format;
+        DXContext* context = Context( );
 
+        const auto& commandList = context->CommandList( );
+
+        const float clearColor[ ] = { 0.0f, 0.2f, 0.4f, 1.0f };
+        commandList.IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+        commandList.IASetVertexBuffers( 0, 1, vertexBufferView_ );
+        commandList.DrawInstanced( 3, 1, 0, 0 );
     }
 
     virtual void DoOnCreatePipelineState( DXContext* context, PipelineState& pipelineState ) override
@@ -89,6 +99,19 @@ protected:
 
     
 
+    virtual void DoOnInvalidateDeviceObjects( DXContext* context ) override
+    {
+        vertexBuffer_.ResetPtr( );
+        Base::DoOnInvalidateDeviceObjects( context );
+    }
+
+    virtual void DoOnCreateDeviceObjects( DXContext* context ) override
+    {
+        Base::DoOnCreateDeviceObjects( context );
+        CreateResources( );
+
+    }
+private:
     std::vector<Vertex> GetVertices( )
     {
         std::vector<Vertex> vertices =
@@ -100,19 +123,32 @@ protected:
         return vertices;
     }
 
-    virtual void DoOnInvalidateDeviceObjects( DXContext* context ) override
+
+    void CreateResources( )
     {
-        Base::DoOnInvalidateDeviceObjects( context );
+        using namespace Windows::Graphics::D3D12;
+        using Format = Windows::Graphics::DXGI::Format;
+        DXContext* context = Context( );
+
+        auto vertices = GetVertices( );
+        const auto& device = context->Device( );
+
+        auto vertexBufferSize = vertices.size( ) * sizeof( Vertex );
+
+        vertexBuffer_ = device.CreateCommittedResource(
+            HeapProperties( HeapType::Upload ),
+            HeapFlags::None,
+            ResourceDesc( vertexBufferSize ),
+            ResourceStates::GenericRead );
+
+        // Copy the triangle data to the vertex buffer.
+        vertexBuffer_.Assign(0, vertices );
+
+        // Initialize the vertex buffer view.
+        vertexBufferView_.BufferLocation = vertexBuffer_.GetGPUVirtualAddress( );
+        vertexBufferView_.StrideInBytes = sizeof( Vertex );
+        vertexBufferView_.SizeInBytes = vertexBufferSize;
     }
-
-    virtual void DoOnCreateDeviceObjects( DXContext* context ) override
-    {
-        Base::DoOnCreateDeviceObjects( context );
-    }
-
-
-private:
-    
 
 };
 

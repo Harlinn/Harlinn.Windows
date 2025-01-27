@@ -64,6 +64,8 @@ namespace Harlinn::Windows
         Graphics::DXGI::Factory4 dxgiFactory_;
         Graphics::DXGI::Adapter4 hardwareAdapter_;
         DX::Device device_;
+        DX::Viewport viewport_;
+        DX::Rectangle scissorRect_;
         EventWaitHandle fenceEvent_;
         DX::Fence fence_;
         DX::DescriptorHeap shaderResourceViewDescHeap_;
@@ -190,6 +192,10 @@ namespace Harlinn::Windows
             this->DoOnInvalidateDeviceObjects( );
             this->CleanupRenderTarget( );
             this->ResizeSwapChain( hWnd, width, height );
+            viewport_.Width = static_cast< float >( width );
+            viewport_.Height = static_cast< float >( height );
+            scissorRect_.SetWidth( static_cast< UInt32 >( width ) );
+            scissorRect_.SetHeight( static_cast< UInt32 >( height ) );
             this->CreateRenderTargetViews( );
             this->DoOnCreateDeviceObjects( );
         }

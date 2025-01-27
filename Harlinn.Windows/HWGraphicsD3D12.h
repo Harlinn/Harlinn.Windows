@@ -627,6 +627,20 @@ namespace Harlinn::Windows::Graphics::D3D12
             return Map( Subresource, &readRange );
         }
 
+        void* Map( UINT Subresource, _In_opt_ const Range& readRange ) const
+        {
+            return Map( Subresource, reinterpret_cast< const D3D12_RANGE* >( &readRange ) );
+        }
+
+        template<SimpleSpanLike T>
+        void Assign( UINT Subresource, const T& resourceData )
+        {
+            auto bufferSize = resourceData.size( ) * sizeof( typename T::value_type );
+
+            auto dest = Map( Subresource, Range() );
+            memcpy( dest, resourceData.data( ), bufferSize );
+            Unmap( Subresource, nullptr );
+        }
 
         /// <summary>
         /// Invalidates the CPU pointer to the specified subresource in the resource.
@@ -1675,6 +1689,12 @@ namespace Harlinn::Windows::Graphics::D3D12
             pInterface->RSSetScissorRects( numberOfScissorRectangles, scissorRectangles );
         }
 
+        void RSSetScissorRects( _In_range_( 0, D3D12_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE )  UINT numberOfScissorRectangles, _In_reads_( numberOfScissorRectangles )  const Rectangle* scissorRectangles ) const
+        {
+            RSSetScissorRects( numberOfScissorRectangles, reinterpret_cast< const D3D12_RECT* >( scissorRectangles ) );
+        }
+
+
         template<SimpleSpanLike SpanT>
             requires std::is_convertible_v<typename SpanT::value_type, const D3D12_RECT>
         void RSSetViewports( const SpanT& scissorRectangles ) const
@@ -2621,11 +2641,16 @@ namespace Harlinn::Windows::Graphics::D3D12
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        Resource CreateCommittedResource( _In_ const D3D12_HEAP_PROPERTIES* pHeapProperties, D3D12_HEAP_FLAGS heapFlags, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
+        Resource CreateCommittedResource( _In_ const D3D12_HEAP_PROPERTIES* pHeapProperties, D3D12_HEAP_FLAGS heapFlags, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue = nullptr ) const
         {
             ID3D12Resource* itf = nullptr;
             CreateCommittedResource( pHeapProperties, heapFlags, pDesc, initialResourceState, pOptimizedClearValue, __uuidof( ID3D12Resource ), reinterpret_cast<void**>( &itf ) );
             return Resource(itf);
+        }
+
+        Resource CreateCommittedResource( _In_ const D3D12_HEAP_PROPERTIES* pHeapProperties, HeapFlags heapFlags, _In_ const D3D12_RESOURCE_DESC* pDesc, ResourceStates initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue = nullptr ) const
+        {
+            return CreateCommittedResource( pHeapProperties, static_cast< D3D12_HEAP_FLAGS >( heapFlags ), pDesc, static_cast< D3D12_RESOURCE_STATES>( initialResourceState ), pOptimizedClearValue );
         }
 
 

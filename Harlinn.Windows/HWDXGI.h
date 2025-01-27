@@ -93,7 +93,7 @@ namespace Harlinn::Windows::Graphics::DXGI
         /// <summary>
         /// The number of multisamples per pixel.
         /// </summary>
-        UINT Count = 0;
+        UInt32 Count = 0;
         /// <summary>
         /// <para>
         /// The image quality level. The higher the quality, the lower the performance. The valid range is between 
@@ -101,7 +101,14 @@ namespace Harlinn::Windows::Graphics::DXGI
         /// ID3D11Device::CheckMultisampleQualityLevels for Direct3D 11.
         /// </para>
         /// </summary>
-        UINT Quality = 0;
+        UInt32 Quality = 0;
+
+        SampleDesc( ) = default;
+
+        SampleDesc( UInt32 count, UInt32 quality )
+            : Count( count ), Quality( quality )
+        { }
+
     };
 
 

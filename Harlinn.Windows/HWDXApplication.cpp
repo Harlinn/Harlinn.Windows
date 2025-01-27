@@ -296,7 +296,12 @@ namespace Harlinn::Windows
         barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
         barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-        commandList_.Reset( commandAllocator );
+        commandList_.Reset( commandAllocator, pipelineState_ );
+
+        commandList_.SetGraphicsRootSignature( rootSignature_ );
+        commandList_.RSSetViewports( 1, viewport_ );
+        commandList_.RSSetScissorRects( 1, &scissorRect_ );
+
         commandList_.ResourceBarrier( 1, &barrier_ );
 
         
