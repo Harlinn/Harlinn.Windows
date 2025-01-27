@@ -47,7 +47,6 @@ protected:
 
         const auto& commandList = context->CommandList( );
 
-        const float clearColor[ ] = { 0.0f, 0.2f, 0.4f, 1.0f };
         commandList.IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
         commandList.IASetVertexBuffers( 0, 1, vertexBufferView_ );
         commandList.DrawInstanced( 3, 1, 0, 0 );

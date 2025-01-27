@@ -3226,6 +3226,141 @@ namespace Harlinn::Windows::Graphics::D3D12
     };
 
     /// <summary>
+    /// Provides methods for getting and setting the properties of an StateObject. 
+    /// To retrieve an instance of this type, call StateObject::As&lt;StateObjectProperties1&gt;().
+    /// </summary>
+    class StateObjectProperties1 : public StateObjectProperties
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( StateObjectProperties1, StateObjectProperties, ID3D12StateObjectProperties1, ID3D12StateObjectProperties )
+    public:
+        D3D12_PROGRAM_IDENTIFIER GetProgramIdentifier( LPCWSTR programName ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetProgramIdentifier( programName );
+        }
+        template<WideStringLike T>
+        D3D12_PROGRAM_IDENTIFIER GetProgramIdentifier( const T& programName ) const
+        {
+            return GetProgramIdentifier( programName.c_str( ) );
+        }
+    };
+
+    /// <summary>
+    /// Wraps ID3D12WorkGraphProperties, an interface exported by ID3D12StateObject/StateObject, 
+    /// focused on reflecting information about work graphs that might be relevant to the API user.
+    /// </summary>
+    class WorkGraphProperties : public Unknown
+    {
+    public:
+        using Base = Unknown;
+
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( WorkGraphProperties, Unknown, ID3D12WorkGraphProperties, IUnknown )
+    public:
+        UINT GetNumWorkGraphs( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetNumWorkGraphs( );
+        }
+
+        LPCWSTR GetProgramName( UINT WorkGraphIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetProgramName( WorkGraphIndex );
+        }
+
+        UINT GetWorkGraphIndex( LPCWSTR programName ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetWorkGraphIndex( programName );
+        }
+
+        UINT GetNumNodes( UINT WorkGraphIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetNumNodes( WorkGraphIndex );
+        }
+
+#if defined(_MSC_VER) || !defined(_WIN32)
+        D3D12_NODE_ID GetNodeID( UINT workGraphIndex, UINT nodeIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetNodeID( workGraphIndex, nodeIndex );
+        }
+#else
+        D3D12_NODE_ID* GetNodeID( D3D12_NODE_ID* retVal, UINT workGraphIndex, UINT nodeIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetNodeID( retVal, workGraphIndex, nodeIndex );
+        }
+        D3D12_NODE_ID GetNodeID( UINT workGraphIndex, UINT nodeIndex ) const
+        {
+            D3D12_NODE_ID result{};
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetNodeID( &result, workGraphIndex, nodeIndex );
+            return result;
+        }
+#endif
+
+        UINT GetNodeIndex( UINT workGraphIndex, const D3D12_NODE_ID& nodeID ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetNodeIndex( workGraphIndex, nodeID );
+        }
+
+        UINT GetNodeLocalRootArgumentsTableIndex( UINT workGraphIndex, UINT nodeIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetNodeLocalRootArgumentsTableIndex( workGraphIndex, nodeIndex );
+        }
+
+        UINT GetNumEntrypoints( UINT workGraphIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetNumEntrypoints( workGraphIndex );
+        }
+
+#if defined(_MSC_VER) || !defined(_WIN32)
+        D3D12_NODE_ID GetEntrypointID( UINT workGraphIndex, UINT entrypointIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetEntrypointID( workGraphIndex, entrypointIndex );
+        }
+#else
+        D3D12_NODE_ID* GetEntrypointID( D3D12_NODE_ID* retVal, UINT workGraphIndex, UINT entrypointIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetEntrypointID( retVal, workGraphIndex, entrypointIndex );
+        }
+        D3D12_NODE_ID GetEntrypointID( UINT workGraphIndex, UINT entrypointIndex ) const
+        {
+            D3D12_NODE_ID retVal{}
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetEntrypointID( &retVal, workGraphIndex, entrypointIndex );
+            return retVal;
+        }
+#endif
+
+        UINT GetEntrypointIndex( UINT workGraphIndex, const D3D12_NODE_ID& nodeID ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetEntrypointIndex( workGraphIndex, nodeID );
+        }
+
+        UINT GetEntrypointRecordSizeInBytes( UINT workGraphIndex, UINT entrypointIndex ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetEntrypointRecordSizeInBytes( workGraphIndex, entrypointIndex );
+        }
+
+        void GetWorkGraphMemoryRequirements( UINT workGraphIndex, _Out_  D3D12_WORK_GRAPH_MEMORY_REQUIREMENTS* workGraphMemoryRequirements ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetWorkGraphMemoryRequirements( workGraphIndex, workGraphMemoryRequirements );
+        }
+    };
+
+    /// <summary>
     /// Represents a virtual adapter.
     /// </summary>
     class Device5 : public Device4
@@ -3332,6 +3467,19 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    class DeviceRemovedExtendedDataSettings2 : public DeviceRemovedExtendedDataSettings1
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings2, DeviceRemovedExtendedDataSettings1, ID3D12DeviceRemovedExtendedDataSettings2, ID3D12DeviceRemovedExtendedDataSettings1 )
+    public:
+        void UseMarkersOnlyAutoBreadcrumbs( BOOL markersOnly = TRUE ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->UseMarkersOnlyAutoBreadcrumbs( markersOnly );
+        }
+    };
+
+
     /// <summary>
     /// Provides runtime access to Device Removed Extended Data (DRED) data.
     /// </summary>
@@ -3360,8 +3508,6 @@ namespace Harlinn::Windows::Graphics::D3D12
     class DeviceRemovedExtendedData1 : public DeviceRemovedExtendedData
     {
     public:
-        using Base = DeviceRemovedExtendedData;
-
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData1, DeviceRemovedExtendedData, ID3D12DeviceRemovedExtendedData1, ID3D12DeviceRemovedExtendedData )
     public:
         void GetAutoBreadcrumbsOutput1(_Out_  D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1* pOutput ) const
@@ -3376,6 +3522,26 @@ namespace Harlinn::Windows::Graphics::D3D12
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->GetPageFaultAllocationOutput1( pOutput );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+    };
+
+
+    class DeviceRemovedExtendedData2 : public DeviceRemovedExtendedData1
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData2, DeviceRemovedExtendedData1, ID3D12DeviceRemovedExtendedData2, ID3D12DeviceRemovedExtendedData1 )
+    public:
+        void GetPageFaultAllocationOutput2( _Out_  D3D12_DRED_PAGE_FAULT_OUTPUT2* pOutput ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetPageFaultAllocationOutput2( pOutput );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        D3D12_DRED_DEVICE_STATE GetDeviceState( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetDeviceState( );
         }
     };
 
@@ -3642,6 +3808,501 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    class ShaderCacheSession : public DeviceChild
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( ShaderCacheSession, DeviceChild, ID3D12ShaderCacheSession, ID3D12DeviceChild )
+    public:
+        /// <summary>
+        /// <para>
+        /// Looks up an entry in the cache whose key exactly matches the provided key.
+        /// </para>
+        /// </summary>
+        /// <param name="key">
+        /// The key of the entry to look up.
+        /// </param>
+        /// <param name="keySize">
+        /// The size of the key, in bytes.
+        /// </param>
+        /// <param name="value">
+        /// A pointer to a memory block that receives the cached entry.
+        /// </param>
+        /// <param name="valueSize">
+        /// A pointer to a UINT that receives the size of the cached entry, in bytes.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the requested value was found, otherwise <c>false</c>.
+        /// </returns>
+        bool FindValue( _In_reads_bytes_( leySize )  const void* key, UINT keySize, _Out_writes_bytes_( *valueSize )  void* value, _Inout_  UINT* valueSize ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->FindValue( key, keySize, value, valueSize );
+            if ( hr != DXGI_ERROR_NOT_FOUND )
+            {
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            }
+            return hr != DXGI_ERROR_NOT_FOUND;
+        }
+
+        Binary FindValue( _In_reads_bytes_( leySize )  const void* key, UINT keySize )
+        {
+            InterfaceType* pInterface = GetInterface( );
+            UINT valueSize = 0;
+            auto hr = pInterface->FindValue( key, keySize, nullptr, &valueSize );
+            if ( hr != DXGI_ERROR_NOT_FOUND )
+            {
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            }
+            if ( hr != DXGI_ERROR_NOT_FOUND )
+            {
+                Binary result;
+                result.resize( valueSize );
+                hr = pInterface->FindValue( key, keySize, result.data(), &valueSize );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return result;
+            }
+            return Binary( );
+        }
+
+        template<SimpleSpanLike T>
+        Binary FindValue( const T& key )
+        {
+            return FindValue( key.data( ), static_cast< UINT >( key.size( ) * sizeof( typename T::value_type ) ) );
+        }
+
+
+
+        /// <summary>
+        /// Adds an entry to the cache.
+        /// </summary>
+        /// <param name="key">
+        /// The key of the entry to add.
+        /// </param>
+        /// <param name="keySize">
+        /// The size of the key, in bytes.
+        /// </param>
+        /// <param name="value">
+        /// A pointer to a memory block containing the entry to add.
+        /// </param>
+        /// <param name="valueSize">
+        /// The size of the entry to add, in bytes.
+        /// </param>
+        /// <returns></returns>
+        HRESULT StoreValue( _In_reads_bytes_( keySize )  const void* key, UINT keySize, _In_reads_bytes_( valueSize )  const void* value, UINT valueSize ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->StoreValue( key, keySize, value, valueSize );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+
+        }
+
+        void SetDeleteOnDestroy( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->SetDeleteOnDestroy( );
+        }
+
+#if defined(_MSC_VER) || !defined(_WIN32)
+        D3D12_SHADER_CACHE_SESSION_DESC GetDesc( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetDesc( );
+        }
+#else
+        D3D12_SHADER_CACHE_SESSION_DESC* GetDesc( D3D12_SHADER_CACHE_SESSION_DESC* retVal ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetDesc( retVal );
+        }
+
+        D3D12_SHADER_CACHE_SESSION_DESC GetDesc( * retVal ) const
+        {
+            D3D12_SHADER_CACHE_SESSION_DESC retVal{};
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetDesc( &retVal );
+            return retVal;
+        }
+#endif
+    };
+
+    class Device9 : public Device8
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device9, Device8, ID3D12Device9, ID3D12Device8 )
+    public:
+
+        void CreateShaderCacheSession( _In_  const D3D12_SHADER_CACHE_SESSION_DESC* pDesc, REFIID riid, _COM_Outptr_opt_  void** ppvSession ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateShaderCacheSession( pDesc, riid, ppvSession );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        template<typename T= ShaderCacheSession>
+            requires std::is_base_of_v< ShaderCacheSession,T>
+        T CreateShaderCacheSession( _In_  const D3D12_SHADER_CACHE_SESSION_DESC* pDesc )
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreateShaderCacheSession( pDesc, __uuidof( ItfType ), ( void** )&itf );
+            return T( itf );
+        }
+
+
+        void ShaderCacheControl( D3D12_SHADER_CACHE_KIND_FLAGS kinds, D3D12_SHADER_CACHE_CONTROL_FLAGS control ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->ShaderCacheControl( kinds, control );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void ShaderCacheControl( ShaderCacheKindFlags kinds, ShaderCacheControlFlags control ) const
+        {
+            ShaderCacheControl( static_cast< D3D12_SHADER_CACHE_KIND_FLAGS >( kinds ), static_cast< D3D12_SHADER_CACHE_CONTROL_FLAGS >( control ) );
+        }
+
+
+        void CreateCommandQueue1( _In_  const D3D12_COMMAND_QUEUE_DESC* pDesc, REFIID CreatorID, REFIID riid, _COM_Outptr_  void** ppCommandQueue ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateCommandQueue1( pDesc, CreatorID, riid, ppCommandQueue );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<CommandQueue,T>
+        T CreateCommandQueue1( _In_  const D3D12_COMMAND_QUEUE_DESC* pDesc, REFIID CreatorID ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreateCommandQueue1( pDesc, CreatorID, __uuidof( ItfType ), ( void** )&itf );
+            return T( itf );
+        }
+    };
+
+    class Device10 : public Device9
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device10, Device9, ID3D12Device10, ID3D12Device9 )
+    public:
+        /// <summary>
+        /// Creates a committed resource with an initial layout rather than an initial state.
+        /// </summary>
+        /// <param name="heapProperties">
+        /// A pointer to a D3D12_HEAP_PROPERTIES structure that provides properties for the resource's heap.
+        /// </param>
+        /// <param name="heapFlags">
+        /// Heap options, as a bitwise-OR'd combination of D3D12_HEAP_FLAGS, or HeapFlags, enumeration constants.
+        /// </param>
+        /// <param name="pDesc">
+        /// A pointer to a D3D12_RESOURCE_DESC1 structure that describes the resource, including a mip region.
+        /// </param>
+        /// <param name="initialLayout">
+        /// The initial layout of the texture resource; 
+        /// D3D12_BARRIER_LAYOUT::D3D12_BARRIER_LAYOUT_UNDEFINED/BarrierLayout::Undefined for buffers.
+        /// </param>
+        /// <param name="optimizedClearValue">
+        /// Specifies a D3D12_CLEAR_VALUE structure that describes the default value for a clear color.
+        /// </param>
+        /// <param name="protectedSession">
+        /// An optional pointer to an object that represents a session for content protection.
+        /// </param>
+        /// <param name="numCastableFormats">
+        /// The number of elements in castableFormats.
+        /// </param>
+        /// <param name="castableFormats">
+        /// A contiguous array of DXGI_FORMAT/DXGI::Format structures that this resource can be cast to.
+        /// </param>
+        /// <param name="riidResource">
+        /// A reference to the globally unique identifier (GUID) of the resource interface to return in resource.
+        /// </param>
+        /// <param name="resource">
+        /// An optional pointer to a memory block that receives the requested interface pointer to the created resource object.
+        /// </param>
+        void CreateCommittedResource3(
+            _In_  const D3D12_HEAP_PROPERTIES* heapProperties,
+            D3D12_HEAP_FLAGS heapFlags,
+            _In_  const D3D12_RESOURCE_DESC1* pDesc,
+            D3D12_BARRIER_LAYOUT initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            _In_opt_  ID3D12ProtectedResourceSession* protectedSession,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI_FORMAT* castableFormats,
+            REFIID riidResource,
+            _COM_Outptr_opt_  void** resource ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateCommittedResource3( heapProperties, heapFlags, pDesc, initialLayout, optimizedClearValue, protectedSession, numCastableFormats, castableFormats, riidResource, resource );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void CreateCommittedResource3(
+            _In_  const D3D12_HEAP_PROPERTIES* heapProperties,
+            HeapFlags heapFlags,
+            _In_  const D3D12_RESOURCE_DESC1* pDesc,
+            BarrierLayout initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            _In_opt_  ID3D12ProtectedResourceSession* protectedSession,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI::Format* castableFormats,
+            REFIID riidResource,
+            _COM_Outptr_opt_  void** resource ) const
+        {
+            CreateCommittedResource3( heapProperties, static_cast< D3D12_HEAP_FLAGS >(heapFlags), pDesc, static_cast< D3D12_BARRIER_LAYOUT >(initialLayout), optimizedClearValue, protectedSession, numCastableFormats, reinterpret_cast< const DXGI_FORMAT* >( castableFormats ), riidResource, resource );
+        }
+
+
+        template<typename T>
+            requires std::is_base_of_v<Resource, T>
+        T CreateCommittedResource3( 
+            _In_  const D3D12_HEAP_PROPERTIES* heapProperties,
+            D3D12_HEAP_FLAGS heapFlags,
+            _In_  const D3D12_RESOURCE_DESC1* pDesc,
+            D3D12_BARRIER_LAYOUT initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            _In_opt_  ID3D12ProtectedResourceSession* protectedSession,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI_FORMAT* castableFormats ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreateCommittedResource3( heapProperties, static_cast< D3D12_HEAP_FLAGS >( heapFlags ), pDesc, static_cast< D3D12_BARRIER_LAYOUT >( initialLayout ), optimizedClearValue, protectedSession, numCastableFormats, reinterpret_cast< const DXGI_FORMAT* >( castableFormats ), __uuidof( ItfType ), ( void** )&itf );
+            return T( itf );
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<Resource, T>
+        T CreateCommittedResource3( 
+            _In_  const D3D12_HEAP_PROPERTIES* heapProperties,
+            HeapFlags heapFlags,
+            _In_  const D3D12_RESOURCE_DESC1* pDesc,
+            BarrierLayout initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            _In_opt_  ID3D12ProtectedResourceSession* protectedSession,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI::Format* castableFormats ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreateCommittedResource3( heapProperties, static_cast< D3D12_HEAP_FLAGS >( heapFlags ), pDesc, static_cast< D3D12_BARRIER_LAYOUT >( initialLayout ), optimizedClearValue, protectedSession, numCastableFormats, reinterpret_cast< const DXGI_FORMAT* >( castableFormats ), __uuidof( ItfType ), ( void** )&itf );
+            return T( itf );
+        }
+
+
+        void CreatePlacedResource2(
+            _In_  ID3D12Heap* heap,
+            UINT64 heapOffset,
+            _In_  const D3D12_RESOURCE_DESC1* pDesc,
+            D3D12_BARRIER_LAYOUT initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI_FORMAT* castableFormats,
+            REFIID riid,
+            _COM_Outptr_opt_  void** resource ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreatePlacedResource2( heap, heapOffset, pDesc, initialLayout, optimizedClearValue, numCastableFormats, castableFormats, riid, resource );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void CreatePlacedResource2(
+            _In_  ID3D12Heap* heap,
+            UINT64 heapOffset,
+            _In_  const D3D12_RESOURCE_DESC1* pDesc,
+            BarrierLayout initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI::Format* castableFormats,
+            REFIID riid,
+            _COM_Outptr_opt_  void** resource ) const
+        {
+            CreatePlacedResource2( heap, heapOffset, pDesc, static_cast< D3D12_BARRIER_LAYOUT >( initialLayout ), optimizedClearValue, numCastableFormats, reinterpret_cast< const DXGI_FORMAT* >( castableFormats ), riid, resource );
+        }
+
+
+        template<typename T>
+            requires std::is_base_of_v<Resource, T>
+        T CreatePlacedResource2(
+            _In_  ID3D12Heap* heap,
+            UINT64 heapOffset,
+            _In_  const D3D12_RESOURCE_DESC1* pDesc,
+            D3D12_BARRIER_LAYOUT initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI_FORMAT* castableFormats ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreatePlacedResource2( heap, heapOffset, pDesc, initialLayout, optimizedClearValue, numCastableFormats, castableFormats, __uuidof( ItfType ), ( void** )&itf );
+            return T( itf );
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<Resource, T>
+        T CreatePlacedResource2(
+            _In_  ID3D12Heap* heap,
+            UINT64 heapOffset,
+            _In_  const D3D12_RESOURCE_DESC1* pDesc,
+            BarrierLayout initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI::Format* castableFormats ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreatePlacedResource2( heap, heapOffset, pDesc, static_cast< D3D12_BARRIER_LAYOUT >( initialLayout ), optimizedClearValue, numCastableFormats, reinterpret_cast< const DXGI_FORMAT* >( castableFormats ), __uuidof( ItfType ), ( void** )&itf );
+            return T( itf );
+        }
+
+
+        void CreateReservedResource2(
+            _In_  const D3D12_RESOURCE_DESC* pDesc,
+            D3D12_BARRIER_LAYOUT initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            _In_opt_  ID3D12ProtectedResourceSession* protectedSession,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI_FORMAT* castableFormats,
+            REFIID riid,
+            _COM_Outptr_opt_  void** resource ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateReservedResource2( pDesc, initialLayout, optimizedClearValue, protectedSession, numCastableFormats, castableFormats, riid, resource );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void CreateReservedResource2(
+            _In_  const D3D12_RESOURCE_DESC* pDesc,
+            BarrierLayout initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            _In_opt_  ID3D12ProtectedResourceSession* protectedSession,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI::Format* castableFormats,
+            REFIID riid,
+            _COM_Outptr_opt_  void** resource ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateReservedResource2( pDesc, static_cast< D3D12_BARRIER_LAYOUT >(initialLayout), optimizedClearValue, protectedSession, numCastableFormats, reinterpret_cast< const DXGI_FORMAT* >( castableFormats ), riid, resource );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<Resource, T>
+        T CreateReservedResource2(
+            _In_  const D3D12_RESOURCE_DESC* pDesc,
+            D3D12_BARRIER_LAYOUT initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            _In_opt_  ID3D12ProtectedResourceSession* protectedSession,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI_FORMAT* castableFormats ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreateReservedResource2( pDesc, initialLayout, optimizedClearValue, protectedSession, numCastableFormats, castableFormats, __uuidof( ItfType ), ( void** )&itf );
+            return T( itf );
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<Resource, T>
+        T CreateReservedResource2(
+            _In_  const D3D12_RESOURCE_DESC* pDesc,
+            BarrierLayout initialLayout,
+            _In_opt_  const D3D12_CLEAR_VALUE* optimizedClearValue,
+            _In_opt_  ID3D12ProtectedResourceSession* protectedSession,
+            UINT32 numCastableFormats,
+            _In_opt_count_( numCastableFormats )  const DXGI::Format* castableFormats ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreateReservedResource2( pDesc, initialLayout, optimizedClearValue, protectedSession, numCastableFormats, castableFormats, __uuidof( ItfType ), ( void** )&itf );
+            return T( itf );
+        }
+
+
+    };
+
+
+    class Device11 : public Device10
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device11, Device10, ID3D12Device11, ID3D12Device10 )
+    public:
+        void CreateSampler2( _In_  const D3D12_SAMPLER_DESC2* pDesc, _In_  D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->CreateSampler2( pDesc, destDescriptor );
+        }
+    };
+
+    class Device12 : public Device11
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device12, Device11, ID3D12Device12, ID3D12Device11 )
+    public:
+        D3D12_RESOURCE_ALLOCATION_INFO GetResourceAllocationInfo3(
+            UINT visibleMask,
+            UINT numResourceDescs,
+            _In_reads_( numResourceDescs )  const D3D12_RESOURCE_DESC1* pResourceDescs,
+            _In_opt_count_( numResourceDescs )  const UINT32* pNumCastableFormats,
+            _In_opt_count_( numResourceDescs )  const DXGI_FORMAT* const* ppCastableFormats,
+            _Out_writes_opt_( numResourceDescs )  D3D12_RESOURCE_ALLOCATION_INFO1* pResourceAllocationInfo1 ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetResourceAllocationInfo3( visibleMask, numResourceDescs, pResourceDescs, pNumCastableFormats, ppCastableFormats, pResourceAllocationInfo1 );
+        }
+    };
+
+    class Device13 : public Device12
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device13, Device12, ID3D12Device13, ID3D12Device12 )
+    public:
+        HRESULT OpenExistingHeapFromAddress1( _In_  const void* pAddress, SIZE_T size, REFIID riid, _COM_Outptr_  void** ppvHeap ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->OpenExistingHeapFromAddress1( pAddress, size, riid, ppvHeap );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+    };
+
+    class Device14 : public Device13
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device14, Device13, ID3D12Device14, ID3D12Device13 )
+    public:
+        HRESULT CreateRootSignatureFromSubobjectInLibrary(
+            _In_  UINT nodeMask,
+            _In_reads_( blobLengthInBytes )  const void* pLibraryBlob,
+            _In_  SIZE_T blobLengthInBytes,
+            _In_opt_  LPCWSTR subobjectName,
+            REFIID riid,
+            _COM_Outptr_  void** ppvRootSignature ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateRootSignatureFromSubobjectInLibrary( nodeMask, pLibraryBlob, blobLengthInBytes, subobjectName, riid, ppvRootSignature );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+    };
+
+    class VirtualizationGuestDevice : public Unknown
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( VirtualizationGuestDevice, Unknown, ID3D12VirtualizationGuestDevice, IUnknown )
+    public:
+        void ShareWithHost( _In_  ID3D12DeviceChild* pObject, _Out_  HANDLE* pHandle ) CONST
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->ShareWithHost( pObject, pHandle );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void CreateFenceFd( _In_  ID3D12Fence* pFence, UINT64 FenceValue, _Out_  int* pFenceFd ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateFenceFd( pFence, FenceValue, pFenceFd );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+    };
+
+
+
 
     /// <summary>
     /// This class is used to configure the runtime for tools such as PIX. 
@@ -3666,6 +4327,139 @@ namespace Harlinn::Windows::Graphics::D3D12
             return pInterface->ShaderInstrumentationEnabled( );
         }
     };
+
+
+    class SDKConfiguration : public Unknown
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( SDKConfiguration, Unknown, ID3D12SDKConfiguration, IUnknown )
+    public:
+        void SetSDKVersion( UINT SDKVersion, _In_z_  LPCSTR SDKPath ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetSDKVersion( SDKVersion, SDKPath );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+    };
+
+    class SDKConfiguration1 : public SDKConfiguration
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( SDKConfiguration1, SDKConfiguration, ID3D12SDKConfiguration1, ID3D12SDKConfiguration )
+    public:
+        void CreateDeviceFactory( UINT SDKVersion, _In_  LPCSTR SDKPath, REFIID riid, _COM_Outptr_  void** ppvFactory ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateDeviceFactory( SDKVersion, SDKPath, riid, ppvFactory );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void FreeUnusedSDKs( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->FreeUnusedSDKs( );
+        }
+    };
+
+    class DeviceFactory : public Unknown
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceFactory, Unknown, ID3D12DeviceFactory, IUnknown )
+    public:
+        void InitializeFromGlobalState( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->InitializeFromGlobalState( );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void ApplyToGlobalState( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->ApplyToGlobalState( );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void SetFlags( D3D12_DEVICE_FACTORY_FLAGS flags ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetFlags( flags );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        D3D12_DEVICE_FACTORY_FLAGS GetFlags( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFlags( );
+        }
+
+        void GetConfigurationInterface( REFCLSID clsid, REFIID iid, _COM_Outptr_  void** ppv )
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetConfigurationInterface( clsid, iid, ppv );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void EnableExperimentalFeatures( UINT NumFeatures, _In_reads_( NumFeatures )  const IID* pIIDs, _In_reads_opt_( NumFeatures )  void* pConfigurationStructs, _In_reads_opt_( NumFeatures )  UINT* pConfigurationStructSizes ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->EnableExperimentalFeatures( NumFeatures, pIIDs, pConfigurationStructs, pConfigurationStructSizes );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void CreateDevice( _In_opt_  IUnknown* adapter, D3D_FEATURE_LEVEL FeatureLevel, REFIID riid, _COM_Outptr_opt_  void** ppvDevice ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateDevice( adapter, FeatureLevel, riid, ppvDevice );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+    };
+
+
+    class DeviceConfiguration : public Unknown
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceConfiguration, Unknown, ID3D12DeviceConfiguration, IUnknown )
+    public:
+        D3D12_DEVICE_CONFIGURATION_DESC STDMETHODCALLTYPE GetDesc( void ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetDesc( );
+        }
+        void GetEnabledExperimentalFeatures( _Out_writes_( NumGuids )  GUID* pGuids, UINT NumGuids ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetEnabledExperimentalFeatures( pGuids, NumGuids );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SerializeVersionedRootSignature( _In_  const D3D12_VERSIONED_ROOT_SIGNATURE_DESC* pDesc, _COM_Outptr_  ID3DBlob** ppResult, _Always_( _Outptr_opt_result_maybenull_ )  ID3DBlob** ppError ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SerializeVersionedRootSignature( pDesc, ppResult, ppError );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void CreateVersionedRootSignatureDeserializer( _In_reads_bytes_( Size )  const void* pBlob, SIZE_T Size, REFIID riid, _COM_Outptr_  void** ppvDeserializer ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateVersionedRootSignatureDeserializer( pBlob, Size, riid, ppvDeserializer );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+    };
+
+
+    class DeviceConfiguration1 : public DeviceConfiguration
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceConfiguration1, DeviceConfiguration, ID3D12DeviceConfiguration1, ID3D12DeviceConfiguration )
+    public:
+        void CreateVersionedRootSignatureDeserializerFromSubobjectInLibrary( _In_reads_bytes_( Size )  const void* pLibraryBlob, SIZE_T Size, LPCWSTR RootSignatureSubobjectName, REFIID riid, _COM_Outptr_  void** ppvDeserializer ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateVersionedRootSignatureDeserializerFromSubobjectInLibrary( pLibraryBlob, Size, RootSignatureSubobjectName, riid, ppvDeserializer );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+    };
+
 
     /// <summary>
     /// Encapsulates a list of graphics commands for rendering, extending 
@@ -3705,6 +4499,67 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
     };
 
+    class GraphicsCommandList7 : public GraphicsCommandList6
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList7, GraphicsCommandList6, ID3D12GraphicsCommandList7, ID3D12GraphicsCommandList6 )
+    public:
+        void Barrier( UINT32 NumBarrierGroups, _In_reads_( NumBarrierGroups )  const D3D12_BARRIER_GROUP* pBarrierGroups ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->Barrier( NumBarrierGroups, pBarrierGroups );
+        }
+    };
+
+
+    class GraphicsCommandList8 : public GraphicsCommandList7
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList8, GraphicsCommandList7, ID3D12GraphicsCommandList8, ID3D12GraphicsCommandList7 )
+    public:
+        void OMSetFrontAndBackStencilRef( _In_  UINT FrontStencilRef, _In_  UINT BackStencilRef ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->OMSetFrontAndBackStencilRef( FrontStencilRef, BackStencilRef );
+        }
+    };
+
+    class GraphicsCommandList9 : public GraphicsCommandList8
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList9, GraphicsCommandList8, ID3D12GraphicsCommandList9, ID3D12GraphicsCommandList8 )
+    public:
+        void RSSetDepthBias( _In_  FLOAT DepthBias, _In_  FLOAT DepthBiasClamp, _In_  FLOAT SlopeScaledDepthBias ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->RSSetDepthBias( DepthBias, DepthBiasClamp, SlopeScaledDepthBias );
+        }
+
+        void IASetIndexBufferStripCutValue( _In_  D3D12_INDEX_BUFFER_STRIP_CUT_VALUE IBStripCutValue ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->IASetIndexBufferStripCutValue( IBStripCutValue );
+
+        }
+    };
+
+    class GraphicsCommandList10 : public GraphicsCommandList9
+    {
+    public:
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList10, GraphicsCommandList9, ID3D12GraphicsCommandList10, ID3D12GraphicsCommandList9 )
+    public:
+        void SetProgram( _In_  const D3D12_SET_PROGRAM_DESC* pDesc ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->SetProgram( pDesc );
+        }
+
+        void DispatchGraph( _In_  const D3D12_DISPATCH_GRAPH_DESC* pDesc ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->DispatchGraph( pDesc );
+        }
+    };
 
     /// <summary>
     /// Creates a device that represents the display adapter.

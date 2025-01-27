@@ -7396,7 +7396,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// Alias for D3D12_SHADER_CACHE_SESSION_DESC
     /// </para>
     /// </summary>
-    struct D3D12_SHADER_CACHE_SESSION_DESC
+    struct ShaderCacheSessionDesc
     {
         Guid Identifier;
         ShaderCacheMode Mode = ShaderCacheMode::Memory;

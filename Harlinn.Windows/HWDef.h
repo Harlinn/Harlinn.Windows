@@ -22,6 +22,7 @@
 #include <HCCCom.h>
 #include <HCCDateTime.h>
 #include <HCCString.h>
+#include <HCCBinary.h>
 #include <HCCTraits.h>
 #include <HCCMath.h>
 #include <HCCSync.h>
