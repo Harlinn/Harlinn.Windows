@@ -147,7 +147,7 @@ private:
         // Initialize the vertex buffer view.
         vertexBufferView_.BufferLocation = vertexBuffer_.GetGPUVirtualAddress( );
         vertexBufferView_.StrideInBytes = sizeof( Vertex );
-        vertexBufferView_.SizeInBytes = vertexBufferSize;
+        vertexBufferView_.SizeInBytes = static_cast<UInt32>( vertexBufferSize );
     }
 
 };

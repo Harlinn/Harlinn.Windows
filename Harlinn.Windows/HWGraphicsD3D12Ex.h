@@ -6532,11 +6532,1288 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// Alias for D3D12_HIT_KIND
     /// </para>
     /// </summary>
-    enum class D3D12_HIT_KIND
+    enum class HitJind
     {
         FrontFace = D3D12_HIT_KIND_TRIANGLE_FRONT_FACE,
         BackFace = D3D12_HIT_KIND_TRIANGLE_BACK_FACE,
     };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_AUTO_BREADCRUMB_OP
+    /// </para>
+    /// </summary>
+    enum class AutoBreadcrumbOperation
+    {
+        SetMarker = D3D12_AUTO_BREADCRUMB_OP_SETMARKER,
+        BeginEvent = D3D12_AUTO_BREADCRUMB_OP_BEGINEVENT,
+        EndEvent = D3D12_AUTO_BREADCRUMB_OP_ENDEVENT,
+        DrawInstanced = D3D12_AUTO_BREADCRUMB_OP_DRAWINSTANCED,
+        DrawIndexedInstanced = D3D12_AUTO_BREADCRUMB_OP_DRAWINDEXEDINSTANCED,
+        ExecuteIndirect = D3D12_AUTO_BREADCRUMB_OP_EXECUTEINDIRECT,
+        Dispatch = D3D12_AUTO_BREADCRUMB_OP_DISPATCH,
+        CopyBufferRegion = D3D12_AUTO_BREADCRUMB_OP_COPYBUFFERREGION,
+        CopyTextureRegion = D3D12_AUTO_BREADCRUMB_OP_COPYTEXTUREREGION,
+        CopyResource = D3D12_AUTO_BREADCRUMB_OP_COPYRESOURCE,
+        CopyTiles = D3D12_AUTO_BREADCRUMB_OP_COPYTILES,
+        ResolveSubresource = D3D12_AUTO_BREADCRUMB_OP_RESOLVESUBRESOURCE,
+        ClearRenderTargetView = D3D12_AUTO_BREADCRUMB_OP_CLEARRENDERTARGETVIEW,
+        ClearUnorderedAccessView = D3D12_AUTO_BREADCRUMB_OP_CLEARUNORDEREDACCESSVIEW,
+        ClearDepthStencilView = D3D12_AUTO_BREADCRUMB_OP_CLEARDEPTHSTENCILVIEW,
+        ResourceBarrier = D3D12_AUTO_BREADCRUMB_OP_RESOURCEBARRIER,
+        ExecuteBundle = D3D12_AUTO_BREADCRUMB_OP_EXECUTEBUNDLE,
+        Present = D3D12_AUTO_BREADCRUMB_OP_PRESENT,
+        ResolveQueryData = D3D12_AUTO_BREADCRUMB_OP_RESOLVEQUERYDATA,
+        BeginSubmission = D3D12_AUTO_BREADCRUMB_OP_BEGINSUBMISSION,
+        EndSubmission = D3D12_AUTO_BREADCRUMB_OP_ENDSUBMISSION,
+        DecodeFrame = D3D12_AUTO_BREADCRUMB_OP_DECODEFRAME,
+        ProcessFrames = D3D12_AUTO_BREADCRUMB_OP_PROCESSFRAMES,
+        AtomiccopybufferUInt32 = D3D12_AUTO_BREADCRUMB_OP_ATOMICCOPYBUFFERUINT,
+        AtomiccopybufferUInt64 = D3D12_AUTO_BREADCRUMB_OP_ATOMICCOPYBUFFERUINT64,
+        ResolveSubresourceRegion = D3D12_AUTO_BREADCRUMB_OP_RESOLVESUBRESOURCEREGION,
+        WriteBufferImmediate = D3D12_AUTO_BREADCRUMB_OP_WRITEBUFFERIMMEDIATE,
+        DecodeFrame1 = D3D12_AUTO_BREADCRUMB_OP_DECODEFRAME1,
+        SetProtectedResourceSession = D3D12_AUTO_BREADCRUMB_OP_SETPROTECTEDRESOURCESESSION,
+        DecodeFrame2 = D3D12_AUTO_BREADCRUMB_OP_DECODEFRAME2,
+        ProcessFrames1 = D3D12_AUTO_BREADCRUMB_OP_PROCESSFRAMES1,
+        BuildRaytracingAccelerationStructure = D3D12_AUTO_BREADCRUMB_OP_BUILDRAYTRACINGACCELERATIONSTRUCTURE,
+        EmitRaytracingAccelerationStructurePostbuildInfo = D3D12_AUTO_BREADCRUMB_OP_EMITRAYTRACINGACCELERATIONSTRUCTUREPOSTBUILDINFO,
+        CopyRaytracingAccelerationStructure = D3D12_AUTO_BREADCRUMB_OP_COPYRAYTRACINGACCELERATIONSTRUCTURE,
+        DispatchRays = D3D12_AUTO_BREADCRUMB_OP_DISPATCHRAYS,
+        InitializeMetaCommand = D3D12_AUTO_BREADCRUMB_OP_INITIALIZEMETACOMMAND,
+        ExecuteMetaCommand = D3D12_AUTO_BREADCRUMB_OP_EXECUTEMETACOMMAND,
+        EstimateMotion = D3D12_AUTO_BREADCRUMB_OP_ESTIMATEMOTION,
+        ResolveMotionVectorHeap = D3D12_AUTO_BREADCRUMB_OP_RESOLVEMOTIONVECTORHEAP,
+        SetPipelineState1 = D3D12_AUTO_BREADCRUMB_OP_SETPIPELINESTATE1,
+        InitializeExtensionCommand = D3D12_AUTO_BREADCRUMB_OP_INITIALIZEEXTENSIONCOMMAND,
+        ExecuteExtensionCommand = D3D12_AUTO_BREADCRUMB_OP_EXECUTEEXTENSIONCOMMAND,
+        DispatchMesh = D3D12_AUTO_BREADCRUMB_OP_DISPATCHMESH,
+        EncodeFrame = D3D12_AUTO_BREADCRUMB_OP_ENCODEFRAME,
+        ResolveEncoderOutputMetadata = D3D12_AUTO_BREADCRUMB_OP_RESOLVEENCODEROUTPUTMETADATA,
+        Barrier = D3D12_AUTO_BREADCRUMB_OP_BARRIER,
+        BeginCommandList = D3D12_AUTO_BREADCRUMB_OP_BEGIN_COMMAND_LIST,
+        DispatchGraph = D3D12_AUTO_BREADCRUMB_OP_DISPATCHGRAPH,
+        SetProgram = D3D12_AUTO_BREADCRUMB_OP_SETPROGRAM,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_AUTO_BREADCRUMB_NODE
+    /// </para>
+    /// </summary>
+    struct AutoBreadcrumbNode
+    {
+        const char* pCommandListDebugNameA = nullptr;
+        const wchar_t* pCommandListDebugNameW = nullptr;
+        const char* pCommandQueueDebugNameA = nullptr;
+        const wchar_t* pCommandQueueDebugNameW = nullptr;
+        ID3D12GraphicsCommandList* pCommandList = nullptr;
+        ID3D12CommandQueue* pCommandQueue = nullptr;
+        UInt32 BreadcrumbCount = 0;
+        const UInt32* pLastBreadcrumbValue = nullptr;
+        const AutoBreadcrumbOperation* pCommandHistory = nullptr;
+        const struct AutoBreadcrumbNode* pNext = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_AUTO_BREADCRUMB_NODE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_BREADCRUMB_CONTEXT
+    /// </para>
+    /// </summary>
+    struct DREDBreadcrumbContext
+    {
+        UINT BreadcrumbIndex = 0;
+        const wchar_t* pContextString = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRED_BREADCRUMB_CONTEXT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_AUTO_BREADCRUMB_NODE1
+    /// </para>
+    /// </summary>
+    struct AutoBreadcrumbNode1
+    {
+        const char* pCommandListDebugNameA = nullptr;
+        const wchar_t* pCommandListDebugNameW = nullptr;
+        const char* pCommandQueueDebugNameA = nullptr;
+        const wchar_t* pCommandQueueDebugNameW = nullptr;
+        ID3D12GraphicsCommandList* pCommandList = nullptr;
+        ID3D12CommandQueue* pCommandQueue = nullptr;
+        UInt32 BreadcrumbCount = 0;
+        const UInt32* pLastBreadcrumbValue = nullptr;
+        const AutoBreadcrumbOperation* pCommandHistory = nullptr;
+        const struct AutoBreadcrumbNode1* pNext = nullptr;
+        UINT BreadcrumbContextsCount = 0;
+        DREDBreadcrumbContext* pBreadcrumbContexts = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_AUTO_BREADCRUMB_NODE1 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_VERSION
+    /// </para>
+    /// </summary>
+    enum class DREDVersion
+    {
+        _1_0 = D3D12_DRED_VERSION_1_0,
+        _1_1 = D3D12_DRED_VERSION_1_1,
+        _1_2 = D3D12_DRED_VERSION_1_2,
+        _1_3 = D3D12_DRED_VERSION_1_3,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_FLAGS
+    /// </para>
+    /// </summary>
+    enum class DREDFlags : UInt32
+    {
+        None = D3D12_DRED_FLAG_NONE,
+        ForceEnable = D3D12_DRED_FLAG_FORCE_ENABLE,
+        DisableAutoBreadcrumbs = D3D12_DRED_FLAG_DISABLE_AUTOBREADCRUMBS,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( DREDFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_ENABLEMENT
+    /// </para>
+    /// </summary>
+    enum class DREDEnablement
+    {
+        SystemControlled = D3D12_DRED_ENABLEMENT_SYSTEM_CONTROLLED,
+        ForcedOff = D3D12_DRED_ENABLEMENT_FORCED_OFF,
+        ForcedOn = D3D12_DRED_ENABLEMENT_FORCED_ON,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEVICE_REMOVED_EXTENDED_DATA
+    /// </para>
+    /// </summary>
+    struct DeviceRemovedExtendedData_
+    {
+        _In_  DREDFlags Flags = DREDFlags::None;
+        _Out_  AutoBreadcrumbNode* pHeadAutoBreadcrumbNode = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEVICE_REMOVED_EXTENDED_DATA );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_ALLOCATION_TYPE
+    /// </para>
+    /// </summary>
+    enum class DREDAllocationType
+    {
+        CommandQueue = D3D12_DRED_ALLOCATION_TYPE_COMMAND_QUEUE,
+        CommandAllocator = D3D12_DRED_ALLOCATION_TYPE_COMMAND_ALLOCATOR,
+        PipelineState = D3D12_DRED_ALLOCATION_TYPE_PIPELINE_STATE,
+        CommandList = D3D12_DRED_ALLOCATION_TYPE_COMMAND_LIST,
+        Fence = D3D12_DRED_ALLOCATION_TYPE_FENCE,
+        DescriptorHeap = D3D12_DRED_ALLOCATION_TYPE_DESCRIPTOR_HEAP,
+        Heap = D3D12_DRED_ALLOCATION_TYPE_HEAP,
+        QueryHeap = D3D12_DRED_ALLOCATION_TYPE_QUERY_HEAP,
+        CommandSignature = D3D12_DRED_ALLOCATION_TYPE_COMMAND_SIGNATURE,
+        PipelineLibrary = D3D12_DRED_ALLOCATION_TYPE_PIPELINE_LIBRARY,
+        VideoDecoder = D3D12_DRED_ALLOCATION_TYPE_VIDEO_DECODER,
+        VideoProcessor = D3D12_DRED_ALLOCATION_TYPE_VIDEO_PROCESSOR,
+        Resource = D3D12_DRED_ALLOCATION_TYPE_RESOURCE,
+        Pass = D3D12_DRED_ALLOCATION_TYPE_PASS,
+        Cryptosession = D3D12_DRED_ALLOCATION_TYPE_CRYPTOSESSION,
+        Cryptosessionpolicy = D3D12_DRED_ALLOCATION_TYPE_CRYPTOSESSIONPOLICY,
+        Protectedresourcesession = D3D12_DRED_ALLOCATION_TYPE_PROTECTEDRESOURCESESSION,
+        VideoDecoder_heap = D3D12_DRED_ALLOCATION_TYPE_VIDEO_DECODER_HEAP,
+        CommandPool = D3D12_DRED_ALLOCATION_TYPE_COMMAND_POOL,
+        CommandRecorder = D3D12_DRED_ALLOCATION_TYPE_COMMAND_RECORDER,
+        StateObject = D3D12_DRED_ALLOCATION_TYPE_STATE_OBJECT,
+        Metacommand = D3D12_DRED_ALLOCATION_TYPE_METACOMMAND,
+        Schedulinggroup = D3D12_DRED_ALLOCATION_TYPE_SCHEDULINGGROUP,
+        VideoMotionEstimator = D3D12_DRED_ALLOCATION_TYPE_VIDEO_MOTION_ESTIMATOR,
+        VideoMotionVectorHeap = D3D12_DRED_ALLOCATION_TYPE_VIDEO_MOTION_VECTOR_HEAP,
+        VideoExtension_command = D3D12_DRED_ALLOCATION_TYPE_VIDEO_EXTENSION_COMMAND,
+        VideoEncoder = D3D12_DRED_ALLOCATION_TYPE_VIDEO_ENCODER,
+        VideoEncoder_heap = D3D12_DRED_ALLOCATION_TYPE_VIDEO_ENCODER_HEAP,
+        Invalid = D3D12_DRED_ALLOCATION_TYPE_INVALID,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_ALLOCATION_NODE
+    /// </para>
+    /// </summary>
+    struct DREDAllocationNode
+    {
+        const char* ObjectNameA = nullptr;
+        const wchar_t* ObjectNameW = nullptr;
+        DREDAllocationType AllocationType = DREDAllocationType::CommandQueue;
+        const struct DREDAllocationNode* pNext = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRED_ALLOCATION_NODE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_ALLOCATION_NODE1
+    /// </para>
+    /// </summary>
+    struct DREDAllocationNode1
+    {
+        const char* ObjectNameA = nullptr;
+        const wchar_t* ObjectNameW = nullptr;
+        DREDAllocationType AllocationType = DREDAllocationType::CommandQueue;
+        const struct DREDAllocationNode1* pNext = nullptr;
+        const IUnknown* pObject = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRED_ALLOCATION_NODE1 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT
+    /// </para>
+    /// </summary>
+    struct DREDAutoBreadcrumbsOutput
+    {
+        _Out_  const AutoBreadcrumbNode* pHeadAutoBreadcrumbNode;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1
+    /// </para>
+    /// </summary>
+    struct DREDAutoBreadcrumbsOutput1
+    {
+        _Out_  const AutoBreadcrumbNode1* pHeadAutoBreadcrumbNode = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_PAGE_FAULT_OUTPUT
+    /// </para>
+    /// </summary>
+    struct DREDPageFaultOutput
+    {
+        GPUVirtualAddress PageFaultVA;
+        _Out_  const DREDAllocationNode* pHeadExistingAllocationNode = nullptr;
+        _Out_  const DREDAllocationNode* pHeadRecentFreedAllocationNode = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRED_PAGE_FAULT_OUTPUT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_PAGE_FAULT_OUTPUT1
+    /// </para>
+    /// </summary>
+    struct DREDPageFaultOutput1
+    {
+        GPUVirtualAddress PageFaultVA;
+        _Out_  const DREDAllocationNode1* pHeadExistingAllocationNode = nullptr;
+        _Out_  const DREDAllocationNode1* pHeadRecentFreedAllocationNode = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRED_PAGE_FAULT_OUTPUT1 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_PAGE_FAULT_FLAGS
+    /// </para>
+    /// </summary>
+    enum class DREDPageFaultFlags : UInt32
+    {
+        None = D3D12_DRED_PAGE_FAULT_FLAGS_NONE
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( DREDPageFaultFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_DEVICE_STATE
+    /// </para>
+    /// </summary>
+    enum class DREDDeviceState
+    {
+        Unknown = D3D12_DRED_DEVICE_STATE_UNKNOWN,
+        Hung = D3D12_DRED_DEVICE_STATE_HUNG,
+        Fault = D3D12_DRED_DEVICE_STATE_FAULT,
+        PageFault = D3D12_DRED_DEVICE_STATE_PAGEFAULT,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DRED_PAGE_FAULT_OUTPUT2
+    /// </para>
+    /// </summary>
+    struct DREDPageFaultOutput2
+    {
+        GPUVirtualAddress PageFaultVA;
+        _Out_  const DREDAllocationNode1* pHeadExistingAllocationNode = nullptr;
+        _Out_  const DREDAllocationNode1* pHeadRecentFreedAllocationNode = nullptr;
+        DREDPageFaultFlags PageFaultFlags = DREDPageFaultFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DRED_PAGE_FAULT_OUTPUT2 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEVICE_REMOVED_EXTENDED_DATA1
+    /// </para>
+    /// </summary>
+    struct DeviceRemovedExtendedData1_
+    {
+        HRESULT DeviceRemovedReason = 0;
+        DREDAutoBreadcrumbsOutput AutoBreadcrumbsOutput;
+        DREDPageFaultOutput PageFaultOutput;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEVICE_REMOVED_EXTENDED_DATA1 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEVICE_REMOVED_EXTENDED_DATA2
+    /// </para>
+    /// </summary>
+    struct DeviceRemovedExtendedData2_
+    {
+        HRESULT DeviceRemovedReason = 0;
+        DREDAutoBreadcrumbsOutput1 AutoBreadcrumbsOutput;
+        DREDPageFaultOutput1 PageFaultOutput;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEVICE_REMOVED_EXTENDED_DATA2 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEVICE_REMOVED_EXTENDED_DATA3
+    /// </para>
+    /// </summary>
+    struct DeviceRemovedExtendedData3_
+    {
+        HRESULT DeviceRemovedReason = 0;
+        DREDAutoBreadcrumbsOutput1 AutoBreadcrumbsOutput;
+        DREDPageFaultOutput2 PageFaultOutput;
+        DREDDeviceState DeviceState = DREDDeviceState::Unknown;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEVICE_REMOVED_EXTENDED_DATA3 );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_VERSIONED_DEVICE_REMOVED_EXTENDED_DATA
+    /// </para>
+    /// </summary>
+    struct VersionedDeviceRemovedExtendedData
+    {
+        DREDVersion Version;
+        union
+        {
+            DeviceRemovedExtendedData_ Dred_1_0;
+            DeviceRemovedExtendedData1_ Dred_1_1;
+            DeviceRemovedExtendedData2_ Dred_1_2;
+            DeviceRemovedExtendedData3_ Dred_1_3;
+        };
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BACKGROUND_PROCESSING_MODE
+    /// </para>
+    /// </summary>
+    enum class BackgroundProcessingMode
+    {
+        Allowed = D3D12_BACKGROUND_PROCESSING_MODE_ALLOWED,
+        AllowIntrusiveMeasurements = D3D12_BACKGROUND_PROCESSING_MODE_ALLOW_INTRUSIVE_MEASUREMENTS,
+        DisableBackgroundWork = D3D12_BACKGROUND_PROCESSING_MODE_DISABLE_BACKGROUND_WORK,
+        DisableProfilingBySystem = D3D12_BACKGROUND_PROCESSING_MODE_DISABLE_PROFILING_BY_SYSTEM,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MEASUREMENTS_ACTION
+    /// </para>
+    /// </summary>
+    enum class MeasurementsAction
+    {
+        KeepAll = D3D12_MEASUREMENTS_ACTION_KEEP_ALL,
+        CommitResults = D3D12_MEASUREMENTS_ACTION_COMMIT_RESULTS,
+        CommitResultsHighPriority = D3D12_MEASUREMENTS_ACTION_COMMIT_RESULTS_HIGH_PRIORITY,
+        DiscardPrevious = D3D12_MEASUREMENTS_ACTION_DISCARD_PREVIOUS,
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_TYPE_COUNT
+    /// </para>
+    /// </summary>
+    struct FeatureDataProtectedResourceSessionTypeCount
+    {
+        UINT NodeIndex = 0;
+        UINT Count = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_TYPE_COUNT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_TYPES
+    /// </para>
+    /// </summary>
+    struct FeatureDataProtectedResourceSessionTypes
+    {
+        UINT NodeIndex = 0;
+        UINT Count = 0;
+        Guid* pTypes = nullptr;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_TYPES );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PROTECTED_RESOURCE_SESSION_DESC1
+    /// </para>
+    /// </summary>
+    struct ProtectedResourceSessionDesc1
+    {
+        UINT NodeMask = 0;
+        ProtectedResourceSessionFlags Flags = ProtectedResourceSessionFlags::None;
+        Guid ProtectionType;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PROTECTED_RESOURCE_SESSION_DESC1 );
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE
+    /// </para>
+    /// </summary>
+    enum class RenderPassBeginningAccessType
+    {
+        Discard = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_DISCARD,
+        Preserve = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_PRESERVE,
+        Clear = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_CLEAR,
+        NoAccess = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_NO_ACCESS,
+        PreserveLocalRender = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_PRESERVE_LOCAL_RENDER,
+        PreserveLocalSRV = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_PRESERVE_LOCAL_SRV,
+        PreserveLocalUAV = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_PRESERVE_LOCAL_UAV,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS
+    /// </para>
+    /// </summary>
+    struct RenderPassBeginningAccessClearParameters
+    {
+        D3D12::ClearValue ClearValue;
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_BEGINNING_ACCESS_PRESERVE_LOCAL_PARAMETERS
+    /// </para>
+    /// </summary>
+    struct RenderPassBeginningAccessPreserveLocalParameters
+    {
+        UINT AdditionalWidth = 0;
+        UINT AdditionalHeight = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_BEGINNING_ACCESS_PRESERVE_LOCAL_PARAMETERS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_BEGINNING_ACCESS
+    /// </para>
+    /// </summary>
+    struct RenderPassBeginningAccess
+    {
+        RenderPassBeginningAccessType Type = RenderPassBeginningAccessType::Discard;
+        union
+        {
+            RenderPassBeginningAccessClearParameters Clear;
+            RenderPassBeginningAccessPreserveLocalParameters PreserveLocal;
+        };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_BEGINNING_ACCESS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_ENDING_ACCESS_TYPE
+    /// </para>
+    /// </summary>
+    enum class RenderPassEndingAccessType
+    {
+        Discard = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_DISCARD,
+        Preserve = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE,
+        Resolve = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_RESOLVE,
+        NoAccess = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_NO_ACCESS,
+        PreserveLocalRender = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE_LOCAL_RENDER,
+        PreserveLocalSRV = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE_LOCAL_SRV,
+        PreserveLocalUAV = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE_LOCAL_UAV,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS
+    /// </para>
+    /// </summary>
+    struct RenderPassEndingAccessResolveSubresourceParameters
+    {
+        UINT SrcSubresource = 0;
+        UINT DstSubresource = 0;
+        UINT DstX = 0;
+        UINT DstY = 0;
+        Rectangle SrcRect;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS
+    /// </para>
+    /// </summary>
+    struct RenderPassEndingAccessResolveParameters
+    {
+        ID3D12Resource* pSrcResource = nullptr;
+        ID3D12Resource* pDstResource = nullptr;
+        UINT SubresourceCount = 0;
+        _Field_size_full_( SubresourceCount )  const RenderPassEndingAccessResolveSubresourceParameters* pSubresourceParameters = nullptr;
+        DXGI::Format Format = DXGI::Format::Unknown;
+        D3D12::ResolveMode ResolveMode = D3D12::ResolveMode::Decompress;
+        BOOL PreserveResolveSource = FALSE;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_ENDING_ACCESS_PRESERVE_LOCAL_PARAMETERS
+    /// </para>
+    /// </summary>
+    struct RenderPassEndingAccessPreserveLocalParameters
+    {
+        UINT AdditionalWidth = 0;
+        UINT AdditionalHeight = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_ENDING_ACCESS_PRESERVE_LOCAL_PARAMETERS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_ENDING_ACCESS
+    /// </para>
+    /// </summary>
+    struct RenderPassEndingAccess
+    {
+        RenderPassEndingAccessType Type = RenderPassEndingAccessType::Discard;
+        union
+        {
+            D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS Resolve;
+            D3D12_RENDER_PASS_ENDING_ACCESS_PRESERVE_LOCAL_PARAMETERS PreserveLocal;
+        };
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_ENDING_ACCESS );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_RENDER_TARGET_DESC
+    /// </para>
+    /// </summary>
+    struct RenderPassRenderTargetDesc
+    {
+        CPUDescriptorHandle cpuDescriptor;
+        RenderPassBeginningAccess BeginningAccess;
+        RenderPassEndingAccess EndingAccess;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_RENDER_TARGET_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_DEPTH_STENCIL_DESC
+    /// </para>
+    /// </summary>
+    struct RenderPassDepthStencilDesc
+    {
+        CPUDescriptorHandle cpuDescriptor;
+        RenderPassBeginningAccess DepthBeginningAccess;
+        RenderPassBeginningAccess StencilBeginningAccess;
+        RenderPassEndingAccess DepthEndingAccess;
+        RenderPassEndingAccess StencilEndingAccess;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RENDER_PASS_DEPTH_STENCIL_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_FLAGS
+    /// </para>
+    /// </summary>
+    enum class RenderPassFlags : UInt32
+    {
+        None = D3D12_RENDER_PASS_FLAG_NONE,
+        AllowUAVWrites = D3D12_RENDER_PASS_FLAG_ALLOW_UAV_WRITES,
+        SuspendingPass = D3D12_RENDER_PASS_FLAG_SUSPENDING_PASS,
+        ResumingPass = D3D12_RENDER_PASS_FLAG_RESUMING_PASS,
+        BindReadOnlyDepth = D3D12_RENDER_PASS_FLAG_BIND_READ_ONLY_DEPTH,
+        BindReadOnlyStencil = D3D12_RENDER_PASS_FLAG_BIND_READ_ONLY_STENCIL,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( RenderPassFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DISPATCH_RAYS_DESC
+    /// </para>
+    /// </summary>
+    struct DispatchRaysDesc
+    {
+        GPUVirtualAddressRange RayGenerationShaderRecord;
+        GPUVirtualAddressRangeAndStride MissShaderTable;
+        GPUVirtualAddressRangeAndStride HitGroupTable;
+        GPUVirtualAddressRangeAndStride CallableShaderTable;
+        UINT Width = 0;
+        UINT Height = 0;
+        UINT Depth = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DISPATCH_RAYS_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SET_WORK_GRAPH_FLAGS
+    /// </para>
+    /// </summary>
+    enum class SetWorkGraphFlags : UInt32
+    {
+        None = D3D12_SET_WORK_GRAPH_FLAG_NONE,
+        Initialize = D3D12_SET_WORK_GRAPH_FLAG_INITIALIZE,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( SetWorkGraphFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SET_WORK_GRAPH_DESC
+    /// </para>
+    /// </summary>
+    struct SetWorkGraphDesc
+    {
+        ProgramIdentifier ProgramIdentifier;
+        SetWorkGraphFlags Flags = SetWorkGraphFlags::None;
+        GPUVirtualAddressRange BackingMemory;
+        GPUVirtualAddressRangeAndStride NodeLocalRootArgumentsTable;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SET_WORK_GRAPH_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SET_RAYTRACING_PIPELINE_DESC
+    /// </para>
+    /// </summary>
+    struct SetRaytracingPipelineDesc
+    {
+        D3D12_PROGRAM_IDENTIFIER ProgramIdentifier;
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SET_RAYTRACING_PIPELINE_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SET_GENERIC_PIPELINE_DESC
+    /// </para>
+    /// </summary>
+    struct SetGenericPipelineDesc
+    {
+        ProgramIdentifier ProgramIdentifier;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SET_GENERIC_PIPELINE_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PROGRAM_TYPE
+    /// </para>
+    /// </summary>
+    enum class ProgramType
+    {
+        GenericPipeline = D3D12_PROGRAM_TYPE_GENERIC_PIPELINE,
+        RaytracingPipeline = D3D12_PROGRAM_TYPE_RAYTRACING_PIPELINE,
+        WorkGraph = D3D12_PROGRAM_TYPE_WORK_GRAPH,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SET_PROGRAM_DESC
+    /// </para>
+    /// </summary>
+    struct SetProgramDesc
+    {
+        ProgramType Type = ProgramType::GenericPipeline;
+        union
+        {
+            SetGenericPipelineDesc GenericPipeline;
+            SetRaytracingPipelineDesc RaytracingPipeline;
+            SetWorkGraphDesc WorkGraph;
+        };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SET_PROGRAM_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DISPATCH_MODE
+    /// </para>
+    /// </summary>
+    enum class DispatchMode
+    {
+        NodeCPUInput = D3D12_DISPATCH_MODE_NODE_CPU_INPUT,
+        NodeGPUInput = D3D12_DISPATCH_MODE_NODE_GPU_INPUT,
+        MultiNodeCPUInput = D3D12_DISPATCH_MODE_MULTI_NODE_CPU_INPUT,
+        MultiNodeGPUInput = D3D12_DISPATCH_MODE_MULTI_NODE_GPU_INPUT,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_NODE_CPU_INPUT
+    /// </para>
+    /// </summary>
+    struct NodeCPUInput
+    {
+        UINT EntrypointIndex = 0;
+        UINT NumRecords = 0;
+        void* pRecords = nullptr;
+        UINT64 RecordStrideInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_NODE_CPU_INPUT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_NODE_GPU_INPUT
+    /// </para>
+    /// </summary>
+    struct NodeGPUInput
+    {
+        UINT EntrypointIndex = 0;
+        UINT NumRecords = 0;
+        GPUVirtualAddressAndStride Records;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_NODE_GPU_INPUT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MULTI_NODE_CPU_INPUT
+    /// </para>
+    /// </summary>
+    struct MultiNodeCPUInput
+    {
+        UINT NumNodeInputs = 0;
+        NodeCPUInput* pNodeInputs = nullptr;
+        UINT64 NodeInputStrideInBytes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_MULTI_NODE_CPU_INPUT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MULTI_NODE_GPU_INPUT
+    /// </para>
+    /// </summary>
+    struct MultiNodeGPUInput
+    {
+        UINT NumNodeInputs = 0;
+        GPUVirtualAddressAndStride NodeInputs;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_MULTI_NODE_GPU_INPUT );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DISPATCH_GRAPH_DESC
+    /// </para>
+    /// </summary>
+    struct DispatchGraphDesc
+    {
+        DispatchMode Mode = DispatchMode::NodeCPUInput;
+        union
+        {
+            NodeCPUInput NodeCPUInput;
+            GPUVirtualAddress NodeGPUInput;
+            MultiNodeCPUInput MultiNodeCPUInput;
+            GPUVirtualAddress MultiNodeGPUInput;
+        };
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DISPATCH_GRAPH_DESC );
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_CACHE_MODE
+    /// </para>
+    /// </summary>
+    enum class ShaderCacheMode
+    {
+        Memory = D3D12_SHADER_CACHE_MODE_MEMORY,
+        Disk = D3D12_SHADER_CACHE_MODE_DISK,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_CACHE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ShaderCacheFlags
+    {
+        None = D3D12_SHADER_CACHE_FLAG_NONE,
+        DriverVersioned = D3D12_SHADER_CACHE_FLAG_DRIVER_VERSIONED,
+        UseWorkingDir = D3D12_SHADER_CACHE_FLAG_USE_WORKING_DIR,
+    };
+
+    DEFINE_ENUM_FLAG_OPERATORS( D3D12_SHADER_CACHE_FLAGS );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_CACHE_SESSION_DESC
+    /// </para>
+    /// </summary>
+    struct D3D12_SHADER_CACHE_SESSION_DESC
+    {
+        Guid Identifier;
+        ShaderCacheMode Mode = ShaderCacheMode::Memory;
+        ShaderCacheFlags Flags = ShaderCacheFlags::None;
+        UINT MaximumInMemoryCacheSizeBytes = 0;
+        UINT MaximumInMemoryCacheEntries = 0;
+        UINT MaximumValueFileSizeBytes = 0;
+        UINT64 Version = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SHADER_CACHE_SESSION_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BARRIER_LAYOUT
+    /// </para>
+    /// </summary>
+    enum class BarrierLayout
+    {
+        Undefined = D3D12_BARRIER_LAYOUT_UNDEFINED,
+        Common = D3D12_BARRIER_LAYOUT_COMMON,
+        Present = D3D12_BARRIER_LAYOUT_PRESENT,
+        GenericRead = D3D12_BARRIER_LAYOUT_GENERIC_READ,
+        RenderTarget = D3D12_BARRIER_LAYOUT_RENDER_TARGET,
+        UnorderedAccess = D3D12_BARRIER_LAYOUT_UNORDERED_ACCESS,
+        DepthStencilWrite = D3D12_BARRIER_LAYOUT_DEPTH_STENCIL_WRITE,
+        DepthStencilRead = D3D12_BARRIER_LAYOUT_DEPTH_STENCIL_READ,
+        ShaderResource = D3D12_BARRIER_LAYOUT_SHADER_RESOURCE,
+        CopySource = D3D12_BARRIER_LAYOUT_COPY_SOURCE,
+        CopyDest = D3D12_BARRIER_LAYOUT_COPY_DEST,
+        ResolveSource = D3D12_BARRIER_LAYOUT_RESOLVE_SOURCE,
+        ResolveDest = D3D12_BARRIER_LAYOUT_RESOLVE_DEST,
+        ShadingRate_source = D3D12_BARRIER_LAYOUT_SHADING_RATE_SOURCE,
+        VideoDecodeRead = D3D12_BARRIER_LAYOUT_VIDEO_DECODE_READ,
+        VideoDecodeWrite = D3D12_BARRIER_LAYOUT_VIDEO_DECODE_WRITE,
+        VideoProcessRead = D3D12_BARRIER_LAYOUT_VIDEO_PROCESS_READ,
+        VideoProcessWrite = D3D12_BARRIER_LAYOUT_VIDEO_PROCESS_WRITE,
+        VideoEncodeRead = D3D12_BARRIER_LAYOUT_VIDEO_ENCODE_READ,
+        VideoEncodeErite = D3D12_BARRIER_LAYOUT_VIDEO_ENCODE_WRITE,
+        DirectQueueCommon = D3D12_BARRIER_LAYOUT_DIRECT_QUEUE_COMMON,
+        DirectQueueGenericRead = D3D12_BARRIER_LAYOUT_DIRECT_QUEUE_GENERIC_READ,
+        DirectQueueUnorderedAccess = D3D12_BARRIER_LAYOUT_DIRECT_QUEUE_UNORDERED_ACCESS,
+        DirectQueueShaderResource = D3D12_BARRIER_LAYOUT_DIRECT_QUEUE_SHADER_RESOURCE,
+        DirectQueueCopySource = D3D12_BARRIER_LAYOUT_DIRECT_QUEUE_COPY_SOURCE,
+        DirectQueueCopyDest = D3D12_BARRIER_LAYOUT_DIRECT_QUEUE_COPY_DEST,
+        ComputeQueueCommon = D3D12_BARRIER_LAYOUT_COMPUTE_QUEUE_COMMON,
+        ComputeQueueGenericRead = D3D12_BARRIER_LAYOUT_COMPUTE_QUEUE_GENERIC_READ,
+        ComputeQueueUnorderedAccess = D3D12_BARRIER_LAYOUT_COMPUTE_QUEUE_UNORDERED_ACCESS,
+        ComputeQueueShaderResource = D3D12_BARRIER_LAYOUT_COMPUTE_QUEUE_SHADER_RESOURCE,
+        ComputeQueueCopySource = D3D12_BARRIER_LAYOUT_COMPUTE_QUEUE_COPY_SOURCE,
+        ComputeQueueCopyDest = D3D12_BARRIER_LAYOUT_COMPUTE_QUEUE_COPY_DEST,
+        VideoQueueCommon = D3D12_BARRIER_LAYOUT_VIDEO_QUEUE_COMMON,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BARRIER_SYNC
+    /// </para>
+    /// </summary>
+    enum class BarrierSync : Int32
+    {
+        None = D3D12_BARRIER_SYNC_NONE,
+        All = D3D12_BARRIER_SYNC_ALL,
+        Draw = D3D12_BARRIER_SYNC_DRAW,
+        IndexInput = D3D12_BARRIER_SYNC_INDEX_INPUT,
+        VertexShading = D3D12_BARRIER_SYNC_VERTEX_SHADING,
+        PixelShading = D3D12_BARRIER_SYNC_PIXEL_SHADING,
+        DepthStencil = D3D12_BARRIER_SYNC_DEPTH_STENCIL,
+        RenderTarget = D3D12_BARRIER_SYNC_RENDER_TARGET,
+        ComputeShading = D3D12_BARRIER_SYNC_COMPUTE_SHADING,
+        Raytracing = D3D12_BARRIER_SYNC_RAYTRACING,
+        Copy = D3D12_BARRIER_SYNC_COPY,
+        Resolve = D3D12_BARRIER_SYNC_RESOLVE,
+        ExecuteIndirect = D3D12_BARRIER_SYNC_EXECUTE_INDIRECT,
+        Predication = D3D12_BARRIER_SYNC_PREDICATION,
+        AllShading = D3D12_BARRIER_SYNC_ALL_SHADING,
+        NonPixelShading = D3D12_BARRIER_SYNC_NON_PIXEL_SHADING,
+        EmitRaytracingAccelerationStructurePostbuildInfo = D3D12_BARRIER_SYNC_EMIT_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO,
+        ClearUnorderedAccessView = D3D12_BARRIER_SYNC_CLEAR_UNORDERED_ACCESS_VIEW,
+        VideoDecode = D3D12_BARRIER_SYNC_VIDEO_DECODE,
+        VideoProcess = D3D12_BARRIER_SYNC_VIDEO_PROCESS,
+        VideoEncode = D3D12_BARRIER_SYNC_VIDEO_ENCODE,
+        BuildRaytracingAccelerationStructure = D3D12_BARRIER_SYNC_BUILD_RAYTRACING_ACCELERATION_STRUCTURE,
+        CopyRaytracingAccelerationStructure = D3D12_BARRIER_SYNC_COPY_RAYTRACING_ACCELERATION_STRUCTURE,
+        Split = D3D12_BARRIER_SYNC_SPLIT,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( BarrierSync, Int32 );
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BARRIER_ACCESS
+    /// </para>
+    /// </summary>
+    enum class BarrierAccess : Int32
+    {
+        Common = D3D12_BARRIER_ACCESS_COMMON,
+        VertexBuffer = D3D12_BARRIER_ACCESS_VERTEX_BUFFER,
+        ConstantBuffer = D3D12_BARRIER_ACCESS_CONSTANT_BUFFER,
+        IndexBuffer = D3D12_BARRIER_ACCESS_INDEX_BUFFER,
+        RenderTarget = D3D12_BARRIER_ACCESS_RENDER_TARGET,
+        UnorderedAccess = D3D12_BARRIER_ACCESS_UNORDERED_ACCESS,
+        DepthStencilWrite = D3D12_BARRIER_ACCESS_DEPTH_STENCIL_WRITE,
+        DepthStencilRead = D3D12_BARRIER_ACCESS_DEPTH_STENCIL_READ,
+        ShaderResource = D3D12_BARRIER_ACCESS_SHADER_RESOURCE,
+        StreamOutput = D3D12_BARRIER_ACCESS_STREAM_OUTPUT,
+        IndirectArgument = D3D12_BARRIER_ACCESS_INDIRECT_ARGUMENT,
+        Predication = D3D12_BARRIER_ACCESS_PREDICATION,
+        CopyDest = D3D12_BARRIER_ACCESS_COPY_DEST,
+        CopySource = D3D12_BARRIER_ACCESS_COPY_SOURCE,
+        ResolveDest = D3D12_BARRIER_ACCESS_RESOLVE_DEST,
+        ResolveSource = D3D12_BARRIER_ACCESS_RESOLVE_SOURCE,
+        RaytracingAccelerationStructureRead = D3D12_BARRIER_ACCESS_RAYTRACING_ACCELERATION_STRUCTURE_READ,
+        RaytracingAccelerationStructureWrite = D3D12_BARRIER_ACCESS_RAYTRACING_ACCELERATION_STRUCTURE_WRITE,
+        ShadingRateSource = D3D12_BARRIER_ACCESS_SHADING_RATE_SOURCE,
+        VideoDecodeRead = D3D12_BARRIER_ACCESS_VIDEO_DECODE_READ,
+        VideoDecodeWrite = D3D12_BARRIER_ACCESS_VIDEO_DECODE_WRITE,
+        VideoProcessRead = D3D12_BARRIER_ACCESS_VIDEO_PROCESS_READ,
+        VideoProcessWrite = D3D12_BARRIER_ACCESS_VIDEO_PROCESS_WRITE,
+        VideoEncodeRead = D3D12_BARRIER_ACCESS_VIDEO_ENCODE_READ,
+        VideoEncodeWrite = D3D12_BARRIER_ACCESS_VIDEO_ENCODE_WRITE,
+        NoAccess = D3D12_BARRIER_ACCESS_NO_ACCESS,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( BarrierAccess, Int32 );
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BARRIER_TYPE
+    /// </para>
+    /// </summary>
+    enum class BarrierType
+    {
+        Global = D3D12_BARRIER_TYPE_GLOBAL,
+        Texture = D3D12_BARRIER_TYPE_TEXTURE,
+        Buffer = D3D12_BARRIER_TYPE_BUFFER,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEXTURE_BARRIER_FLAGS
+    /// </para>
+    /// </summary>
+    enum class TextureBarrierFlags : UInt32
+    {
+        None = D3D12_TEXTURE_BARRIER_FLAG_NONE,
+        Discard = D3D12_TEXTURE_BARRIER_FLAG_DISCARD,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( TextureBarrierFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BARRIER_SUBRESOURCE_RANGE
+    /// </para>
+    /// </summary>
+    struct BarrierSubresourceRange
+    {
+        UINT IndexOrFirstMipLevel = 0;
+        UINT NumMipLevels = 0;
+        UINT FirstArraySlice = 0;
+        UINT NumArraySlices = 0;
+        UINT FirstPlane = 0;
+        UINT NumPlanes = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BARRIER_SUBRESOURCE_RANGE );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_GLOBAL_BARRIER
+    /// </para>
+    /// </summary>
+    struct GlobalBarrier
+    {
+        BarrierSync SyncBefore = BarrierSync::None;
+        BarrierSync SyncAfter = BarrierSync::None;
+        BarrierAccess AccessBefore = BarrierAccess::Common;
+        BarrierAccess AccessAfter = BarrierAccess::Common;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GLOBAL_BARRIER );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEXTURE_BARRIER
+    /// </para>
+    /// </summary>
+    struct TextureBarrier
+    {
+        BarrierSync SyncBefore = BarrierSync::None;
+        BarrierSync SyncAfter = BarrierSync::None;
+        BarrierAccess AccessBefore = BarrierAccess::Common;
+        BarrierAccess AccessAfter = BarrierAccess::Common;
+        BarrierLayout LayoutBefore = BarrierLayout::Common;
+        BarrierLayout LayoutAfter = BarrierLayout::Common;
+        _In_  ID3D12Resource* pResource = nullptr;
+        BarrierSubresourceRange Subresources;
+        TextureBarrierFlags Flags = TextureBarrierFlags::None;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEXTURE_BARRIER );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BUFFER_BARRIER
+    /// </para>
+    /// </summary>
+    struct BufferBarrier
+    {
+        BarrierSync SyncBefore = BarrierSync::None;
+        BarrierSync SyncAfter = BarrierSync::None;
+        BarrierAccess AccessBefore = BarrierAccess::Common;
+        BarrierAccess AccessAfter = BarrierAccess::Common;
+        _In_  ID3D12Resource* pResource = nullptr;
+        UINT64 Offset = 0;
+        UINT64 Size = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BUFFER_BARRIER );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_BARRIER_GROUP
+    /// </para>
+    /// </summary>
+    struct BarrierGroup
+    {
+        BarrierType Type = BarrierType::Global;
+        UINT32 NumBarriers = 0;
+        union
+        {
+            _In_reads_( NumBarriers )  const GlobalBarrier* pGlobalBarriers;
+            _In_reads_( NumBarriers )  const TextureBarrier* pTextureBarriers;
+            _In_reads_( NumBarriers )  const BufferBarrier* pBufferBarriers;
+        };
+
+        BarrierGroup()
+            : pGlobalBarriers(nullptr)
+        { }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_BARRIER_GROUP );
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_CACHE_KIND_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ShaderCacheKindFlags : UInt32
+    {
+        ImplicitD3DCacheForDriver = D3D12_SHADER_CACHE_KIND_FLAG_IMPLICIT_D3D_CACHE_FOR_DRIVER,
+        ImplicitD3DConversions = D3D12_SHADER_CACHE_KIND_FLAG_IMPLICIT_D3D_CONVERSIONS,
+        ImplicitDriverManaged = D3D12_SHADER_CACHE_KIND_FLAG_IMPLICIT_DRIVER_MANAGED,
+        ApplicationManaged = D3D12_SHADER_CACHE_KIND_FLAG_APPLICATION_MANAGED,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ShaderCacheKindFlags,UInt32 );
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_CACHE_CONTROL_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ShaderCacheControlFlags : UInt32
+    {
+        Disable = D3D12_SHADER_CACHE_CONTROL_FLAG_DISABLE,
+        Enable = D3D12_SHADER_CACHE_CONTROL_FLAG_ENABLE,
+        Clear = D3D12_SHADER_CACHE_CONTROL_FLAG_CLEAR,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ShaderCacheControlFlags, UInt32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEVICE_FACTORY_FLAGS
+    /// </para>
+    /// </summary>
+    enum class DeviceFactoryFlags : UInt32
+    {
+        None = D3D12_DEVICE_FACTORY_FLAG_NONE,
+        AllowReturningExistingDevice = D3D12_DEVICE_FACTORY_FLAG_ALLOW_RETURNING_EXISTING_DEVICE,
+        AllowReturningIncompatibleExistingDevice = D3D12_DEVICE_FACTORY_FLAG_ALLOW_RETURNING_INCOMPATIBLE_EXISTING_DEVICE,
+        DisallowStoringNewDeviceAsSingleton = D3D12_DEVICE_FACTORY_FLAG_DISALLOW_STORING_NEW_DEVICE_AS_SINGLETON,
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( DeviceFactoryFlags, UInt32 );
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEVICE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class DeviceFlags : UInt32
+    {
+        None = D3D12_DEVICE_FLAG_NONE,
+        DebugLayerEnabled = D3D12_DEVICE_FLAG_DEBUG_LAYER_ENABLED,
+        GPUBasedValidationEnabled = D3D12_DEVICE_FLAG_GPU_BASED_VALIDATION_ENABLED,
+        SynchronizedCommandQueueValidationDisabled = D3D12_DEVICE_FLAG_SYNCHRONIZED_COMMAND_QUEUE_VALIDATION_DISABLED,
+        DREDAutoBreadcrumbsEnabled = D3D12_DEVICE_FLAG_DRED_AUTO_BREADCRUMBS_ENABLED,
+        DREDPageFaultReportingEnabled = D3D12_DEVICE_FLAG_DRED_PAGE_FAULT_REPORTING_ENABLED,
+        DREDWatsonReportingEnabled = D3D12_DEVICE_FLAG_DRED_WATSON_REPORTING_ENABLED,
+        DREDBreadcrumbContextEnabled = D3D12_DEVICE_FLAG_DRED_BREADCRUMB_CONTEXT_ENABLED,
+        DREDUseMarkersOnlyBreadcrumbs = D3D12_DEVICE_FLAG_DRED_USE_MARKERS_ONLY_BREADCRUMBS,
+        ShaderInstrumentationEnabled = D3D12_DEVICE_FLAG_SHADER_INSTRUMENTATION_ENABLED,
+        AutoDebugNameEnabled = D3D12_DEVICE_FLAG_AUTO_DEBUG_NAME_ENABLED,
+        ForceLegacyStateValidation = D3D12_DEVICE_FLAG_FORCE_LEGACY_STATE_VALIDATION,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( DeviceFlags, UInt32 );
+    
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEVICE_CONFIGURATION_DESC
+    /// </para>
+    /// </summary>
+    struct DeviceConfigurationDesc
+    {
+        DeviceFlags Flags;
+        UINT GpuBasedValidationFlags = 0;
+        UINT SDKVersion = 0;
+        UINT NumEnabledExperimentalFeatures = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DEVICE_CONFIGURATION_DESC );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_AXIS_SHADING_RATE
+    /// </para>
+    /// </summary>
+    enum class AxisShadingRate
+    {
+        X1 = D3D12_AXIS_SHADING_RATE_1X,
+        X2 = D3D12_AXIS_SHADING_RATE_2X,
+        X4 = D3D12_AXIS_SHADING_RATE_4X,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADING_RATE
+    /// </para>
+    /// </summary>
+    enum class ShadingRate
+    {
+        _1X1 = D3D12_SHADING_RATE_1X1,
+        _1X2 = D3D12_SHADING_RATE_1X2,
+        _2X1 = D3D12_SHADING_RATE_2X1,
+        _2X2 = D3D12_SHADING_RATE_2X2,
+        _2X4 = D3D12_SHADING_RATE_2X4,
+        _4X2 = D3D12_SHADING_RATE_4X2,
+        _4X4 = D3D12_SHADING_RATE_4X4,
+    };
+
+    constexpr int ShadingRateXAxisShift = 2;
+    constexpr int ShadingRateValidMask = 3;
+
+    constexpr Int32 MakeCoarseShadingRate( Int32 x, Int32 y )
+    {
+        return D3D12_MAKE_COARSE_SHADING_RATE( x, y );
+    }
+
+    constexpr ShadingRate MakeCoarseShadingRate( AxisShadingRate x, AxisShadingRate y )
+    {
+        return static_cast< ShadingRate >( MakeCoarseShadingRate( static_cast<int>( x ), static_cast< int >( y ) ) );
+    }
+
+
+    constexpr Int32 GetCoarseShadingRateXAxis( Int32 x )
+    {
+        return D3D12_GET_COARSE_SHADING_RATE_X_AXIS( x );
+    }
+
+    constexpr AxisShadingRate GetCoarseShadingRateXAxis( ShadingRate x )
+    {
+        return static_cast< AxisShadingRate >( GetCoarseShadingRateXAxis( static_cast<Int32>( x ) ) );
+    }
+
+    constexpr Int32 GetCoarseShadingRateYAxis( Int32 y )
+    {
+        return D3D12_GET_COARSE_SHADING_RATE_Y_AXIS( y );
+    }
+
+    constexpr AxisShadingRate GetCoarseShadingRateYAxis( ShadingRate y )
+    {
+        return static_cast< AxisShadingRate >( GetCoarseShadingRateYAxis( static_cast< Int32 >( y ) ) );
+    }
+
+    
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADING_RATE_COMBINER
+    /// </para>
+    /// </summary>
+    enum class ShadingRateCombiner
+    {
+        Passthrough = D3D12_SHADING_RATE_COMBINER_PASSTHROUGH,
+        Override = D3D12_SHADING_RATE_COMBINER_OVERRIDE,
+        Min = D3D12_SHADING_RATE_COMBINER_MIN,
+        Max = D3D12_SHADING_RATE_COMBINER_MAX,
+        Sum = D3D12_SHADING_RATE_COMBINER_SUM,
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DISPATCH_MESH_ARGUMENTS
+    /// </para>
+    /// </summary>
+    struct DispatchMeshArguments
+    {
+        UINT ThreadGroupCountX = 0;
+        UINT ThreadGroupCountY = 0;
+        UINT ThreadGroupCountZ = 0;
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DISPATCH_MESH_ARGUMENTS );
+    };
+
+    
 
 
 
