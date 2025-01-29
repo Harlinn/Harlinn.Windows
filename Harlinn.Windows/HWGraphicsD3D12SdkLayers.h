@@ -31,7 +31,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Debug, Unknown, ID3D12Debug, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12Debug, Unknown, ID3D12Debug, IUnknown )
 
     public:
         /// <summary>
@@ -58,7 +58,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Debug1, Unknown, ID3D12Debug1, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12Debug1, Unknown, ID3D12Debug1, IUnknown )
 
     public:
         /// <summary>
@@ -139,7 +139,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Debug2, Unknown, ID3D12Debug2, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12Debug2, Unknown, ID3D12Debug2, IUnknown )
 
     public:
         /// <summary>
@@ -171,7 +171,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = D3D12Debug;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Debug3, D3D12Debug, ID3D12Debug3, ID3D12Debug )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12Debug3, D3D12Debug, ID3D12Debug3, ID3D12Debug )
 
     public:
         /// <summary>
@@ -262,7 +262,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = D3D12Debug3;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Debug4, D3D12Debug3, ID3D12Debug4, ID3D12Debug3 )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12Debug4, D3D12Debug3, ID3D12Debug4, ID3D12Debug3 )
 
     public:
         /// <summary>
@@ -288,7 +288,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = D3D12Debug4;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Debug5, D3D12Debug4, ID3D12Debug5, ID3D12Debug4 )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12Debug5, D3D12Debug4, ID3D12Debug5, ID3D12Debug4 )
 
     public:
         /// <summary>
@@ -347,7 +347,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = D3D12Debug5;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Debug6, D3D12Debug5, ID3D12Debug6, ID3D12Debug5 )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12Debug6, D3D12Debug5, ID3D12Debug6, ID3D12Debug5 )
 
     public:
         /// <summary>
@@ -379,7 +379,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DebugDevice1, Unknown, ID3D12DebugDevice1, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12DebugDevice1, Unknown, ID3D12DebugDevice1, IUnknown )
 
     public:
         /// <summary>
@@ -489,7 +489,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DebugDevice, Unknown, ID3D12DebugDevice, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12DebugDevice, Unknown, ID3D12DebugDevice, IUnknown )
 
     public:
 
@@ -544,7 +544,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = D3D12DebugDevice;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DebugDevice2, D3D12DebugDevice, ID3D12DebugDevice2, ID3D12DebugDevice )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12DebugDevice2, D3D12DebugDevice, ID3D12DebugDevice2, ID3D12DebugDevice )
     public:
 
         /// <summary>
@@ -638,7 +638,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DebugCommandQueue, Unknown, ID3D12DebugCommandQueue, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12DebugCommandQueue, Unknown, ID3D12DebugCommandQueue, IUnknown )
     public:
 
         /// <summary>
@@ -698,7 +698,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DebugCommandList1, Unknown, ID3D12DebugCommandList1, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12DebugCommandList1, Unknown, ID3D12DebugCommandList1, IUnknown )
     public:
         /// <summary>
         /// Validates that the given state matches the state of the subresource, assuming 
@@ -866,7 +866,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DebugCommandList, Unknown, ID3D12DebugCommandList, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12DebugCommandList, Unknown, ID3D12DebugCommandList, IUnknown )
     public:
         /// <summary>
         /// Checks whether a resource, or subresource, is in a specified state, or not.
@@ -952,7 +952,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = D3D12DebugCommandList;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DebugCommandList2, D3D12DebugCommandList, ID3D12DebugCommandList2, ID3D12DebugCommandList )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12DebugCommandList2, D3D12DebugCommandList, ID3D12DebugCommandList2, ID3D12DebugCommandList )
     public:
         /// <summary>
         /// Modifies optional Debug Layer settings of a command list.
@@ -1042,7 +1042,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12SharingContract, Unknown, ID3D12SharingContract, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12SharingContract, Unknown, ID3D12SharingContract, IUnknown )
     public:
         /// <summary>
         /// Creates a new D3D12SharingContract object.
@@ -1194,7 +1194,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12InfoQueue, Unknown, ID3D12InfoQueue, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12InfoQueue, Unknown, ID3D12InfoQueue, IUnknown )
     public:
         /// <summary>
         /// Set the maximum number of messages that can be added to the message queue.
@@ -1690,7 +1690,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = D3D12InfoQueue;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12InfoQueue1, D3D12InfoQueue, ID3D12InfoQueue1, ID3D12InfoQueue )
+        HCC_COM_STANDARD_METHODS_IMPL( D3D12InfoQueue1, D3D12InfoQueue, ID3D12InfoQueue1, ID3D12InfoQueue )
     public:
         /// <summary>
         /// registers a callback that is called at the time a debug message is produced.

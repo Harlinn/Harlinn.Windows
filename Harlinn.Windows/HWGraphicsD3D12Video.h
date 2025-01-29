@@ -30,7 +30,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDecoderHeap : public D3D12Pageable
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDecoderHeap, D3D12Pageable, ID3D12VideoDecoderHeap, ID3D12Pageable)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDecoderHeap, D3D12Pageable, ID3D12VideoDecoderHeap, ID3D12Pageable)
     public:
         D3D12_VIDEO_DECODER_HEAP_DESC GetDesc() const
         {
@@ -43,7 +43,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDevice : public Unknown
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDevice, Unknown, ID3D12VideoDevice, IUnknown)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDevice, Unknown, ID3D12VideoDevice, IUnknown)
     public:
         bool CheckFeatureSupport(D3D12_FEATURE_VIDEO featureVideo, void* featureSupportData, UINT featureSupportDataSize) const
         {
@@ -77,7 +77,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDecoder : public D3D12Pageable
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDecoder, D3D12Pageable, ID3D12VideoDecoder, ID3D12Pageable)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDecoder, D3D12Pageable, ID3D12VideoDecoder, ID3D12Pageable)
     public:
         D3D12_VIDEO_DECODER_DESC GetDesc() const
         {
@@ -90,7 +90,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoProcessor : public D3D12Pageable
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoProcessor, D3D12Pageable, ID3D12VideoProcessor, ID3D12Pageable)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoProcessor, D3D12Pageable, ID3D12VideoProcessor, ID3D12Pageable)
     public:
         UINT GetNodeMask() const
         {
@@ -126,7 +126,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDecodeCommandList : public D3D12CommandList
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDecodeCommandList, D3D12CommandList, ID3D12VideoDecodeCommandList, ID3D12CommandList)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDecodeCommandList, D3D12CommandList, ID3D12VideoDecodeCommandList, ID3D12CommandList)
     public:
         /// <summary>
         /// Indicates that recording to the command list has finished.
@@ -392,7 +392,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoProcessCommandList : public D3D12CommandList
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoProcessCommandList, D3D12CommandList, ID3D12VideoProcessCommandList, ID3D12CommandList)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoProcessCommandList, D3D12CommandList, ID3D12VideoProcessCommandList, ID3D12CommandList)
     public:
         /// <summary>
         /// Indicates that recording to the command list has finished
@@ -667,7 +667,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDecodeCommandList1 : public D3D12VideoDecodeCommandList
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDecodeCommandList1, D3D12VideoDecodeCommandList, ID3D12VideoDecodeCommandList1, ID3D12VideoDecodeCommandList)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDecodeCommandList1, D3D12VideoDecodeCommandList, ID3D12VideoDecodeCommandList1, ID3D12VideoDecodeCommandList)
     public:
         /// <summary>
         /// Records a decode frame operation to the command list. Inputs, outputs, and parameters 
@@ -704,7 +704,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoProcessCommandList1 : public D3D12VideoProcessCommandList
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoProcessCommandList1, D3D12VideoProcessCommandList, ID3D12VideoProcessCommandList1, ID3D12VideoProcessCommandList)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoProcessCommandList1, D3D12VideoProcessCommandList, ID3D12VideoProcessCommandList1, ID3D12VideoProcessCommandList)
     public:
         /// <summary>
         /// Records a video processing operation to the command list, operating on one 
@@ -734,7 +734,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoMotionEstimator : public D3D12Pageable
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoMotionEstimator, D3D12Pageable, ID3D12VideoMotionEstimator, ID3D12Pageable)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoMotionEstimator, D3D12Pageable, ID3D12VideoMotionEstimator, ID3D12Pageable)
     public:
         /// <summary>
         /// Gets the D3D12_VIDEO_MOTION_ESTIMATOR_DESC structure that was 
@@ -784,7 +784,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoMotionVectorHeap : public D3D12Pageable
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoMotionVectorHeap, D3D12Pageable, ID3D12VideoMotionVectorHeap, ID3D12Pageable)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoMotionVectorHeap, D3D12Pageable, ID3D12VideoMotionVectorHeap, ID3D12Pageable)
     public:
 
         /// <summary>
@@ -830,7 +830,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDevice1 : public D3D12VideoDevice
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDevice1, D3D12VideoDevice, ID3D12VideoDevice1, ID3D12VideoDevice)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDevice1, D3D12VideoDevice, ID3D12VideoDevice1, ID3D12VideoDevice)
     public:
         /// <summary>
         /// Creates an ID3D12VideoMotionEstimator, which maintains context for video motion estimation operations.
@@ -910,7 +910,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoEncodeCommandList : public D3D12CommandList
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoEncodeCommandList, D3D12CommandList, ID3D12VideoEncodeCommandList, ID3D12CommandList)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoEncodeCommandList, D3D12CommandList, ID3D12VideoEncodeCommandList, ID3D12CommandList)
     public:
         /// <summary>
         /// Indicates that recording to the command list has finished.
@@ -1214,7 +1214,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDecoder1 : public D3D12VideoDecoder
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDecoder1, D3D12VideoDecoder, ID3D12VideoDecoder1, ID3D12VideoDecoder)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDecoder1, D3D12VideoDecoder, ID3D12VideoDecoder1, ID3D12VideoDecoder)
     public:
         /// <summary>
         /// Gets the ID3D12ProtectedResourceSession that was passed into D3D12VideoDevice2::CreateVideoDecoder1 
@@ -1249,7 +1249,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDecoderHeap1 : public D3D12VideoDecoderHeap
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDecoderHeap1, D3D12VideoDecoderHeap, ID3D12VideoDecoderHeap1, ID3D12VideoDecoderHeap)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDecoderHeap1, D3D12VideoDecoderHeap, ID3D12VideoDecoderHeap1, ID3D12VideoDecoderHeap)
     public:
         void GetProtectedResourceSession(REFIID riid, void** protectedSession) const
         {
@@ -1274,7 +1274,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoProcessor1 : public D3D12VideoProcessor
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoProcessor1, D3D12VideoProcessor, ID3D12VideoProcessor1, ID3D12VideoProcessor)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoProcessor1, D3D12VideoProcessor, ID3D12VideoProcessor1, ID3D12VideoProcessor)
     public:
         /// <summary>
         /// Gets the ID3D12ProtectedResourceSession that was passed into D3D12VideoDevice2::CreateVideoProcessor1 
@@ -1308,7 +1308,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoExtensionCommand : public D3D12Pageable
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoExtensionCommand, D3D12Pageable, ID3D12VideoExtensionCommand, ID3D12Pageable)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoExtensionCommand, D3D12Pageable, ID3D12VideoExtensionCommand, ID3D12Pageable)
     public:
         /// <summary>
         /// Gets the D3D12_VIDEO_EXTENSION_COMMAND_DESC provided when the interface was created.
@@ -1356,7 +1356,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDevice2 : public D3D12VideoDevice1
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDevice2, D3D12VideoDevice1, ID3D12VideoDevice2, ID3D12VideoDevice1)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDevice2, D3D12VideoDevice1, ID3D12VideoDevice2, ID3D12VideoDevice1)
     public:
         /// <summary>
         /// Creates a video decoder instance that contains the resolution-independent 
@@ -1561,7 +1561,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDecodeCommandList2 : public D3D12VideoDecodeCommandList1
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDecodeCommandList2, D3D12VideoDecodeCommandList1, ID3D12VideoDecodeCommandList2, ID3D12VideoDecodeCommandList1)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDecodeCommandList2, D3D12VideoDecodeCommandList1, ID3D12VideoDecodeCommandList2, ID3D12VideoDecodeCommandList1)
     public:
         /// <summary>
         /// Specifies whether or not protected resources can be accessed by subsequent 
@@ -1650,7 +1650,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoProcessCommandList2 : public D3D12VideoProcessCommandList1
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoProcessCommandList2, D3D12VideoProcessCommandList1, ID3D12VideoProcessCommandList2, ID3D12VideoProcessCommandList1)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoProcessCommandList2, D3D12VideoProcessCommandList1, ID3D12VideoProcessCommandList2, ID3D12VideoProcessCommandList1)
     public:
         /// <summary>
         /// Specifies whether or not protected resources can be accessed by subsequent commands 
@@ -1740,7 +1740,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoEncodeCommandList1 : public D3D12VideoEncodeCommandList
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoEncodeCommandList1, D3D12VideoEncodeCommandList, ID3D12VideoEncodeCommandList1, ID3D12VideoEncodeCommandList)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoEncodeCommandList1, D3D12VideoEncodeCommandList, ID3D12VideoEncodeCommandList1, ID3D12VideoEncodeCommandList)
     public:
 
         /// <summary>
@@ -1807,7 +1807,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoEncoder : public D3D12Pageable
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoEncoder, D3D12Pageable, ID3D12VideoEncoder, ID3D12Pageable)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoEncoder, D3D12Pageable, ID3D12VideoEncoder, ID3D12Pageable)
     public:
         /// <summary>
         /// Gets the node mask for the video encoder.
@@ -1897,7 +1897,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoEncoderHeap : public D3D12Pageable
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoEncoderHeap, D3D12Pageable, ID3D12VideoEncoderHeap, ID3D12Pageable)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoEncoderHeap, D3D12Pageable, ID3D12VideoEncoderHeap, ID3D12Pageable)
     public:
         /// <summary>
         /// Gets the node mask for the video encoder heap.
@@ -1989,7 +1989,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoDevice3 : public D3D12VideoDevice2
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoDevice3, D3D12VideoDevice2, ID3D12VideoDevice3, ID3D12VideoDevice2)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoDevice3, D3D12VideoDevice2, ID3D12VideoDevice3, ID3D12VideoDevice2)
     public:
         /// <summary>
         /// Creates a new instance of ID3D12VideoEncoder.
@@ -2052,7 +2052,7 @@ namespace Harlinn::Windows::Graphics::D3D12::Video
     class D3D12VideoEncodeCommandList2 : public D3D12VideoEncodeCommandList1
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL(D3D12VideoEncodeCommandList2, D3D12VideoEncodeCommandList1, ID3D12VideoEncodeCommandList2, ID3D12VideoEncodeCommandList1)
+        HCC_COM_STANDARD_METHODS_IMPL(D3D12VideoEncodeCommandList2, D3D12VideoEncodeCommandList1, ID3D12VideoEncodeCommandList2, ID3D12VideoEncodeCommandList1)
     public:
         /// <summary>
         /// Encodes a bitstream.

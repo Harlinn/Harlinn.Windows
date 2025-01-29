@@ -144,7 +144,7 @@ namespace Harlinn::Windows::Graphics::D3D12
 {
 
 
-#define COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( classType, baseClassType , interfaceType, baseInterfaceType )  HCC_COM_STANDARD_METHODS_IMPL(classType, baseClassType , interfaceType, baseInterfaceType)
+#define COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL_( classType, baseClassType , interfaceType, baseInterfaceType )  HCC_COM_STANDARD_METHODS_IMPL(classType, baseClassType , interfaceType, baseInterfaceType)
 
 
     /// <summary>
@@ -156,7 +156,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Object, Unknown, ID3D12Object, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( Object, Unknown, ID3D12Object, IUnknown )
 
     public:
         /// <summary>
@@ -277,7 +277,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Object;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceChild, Object, ID3D12DeviceChild, ID3D12Object )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceChild, Object, ID3D12DeviceChild, ID3D12Object )
 
     public:
         /// <summary>
@@ -336,7 +336,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( RootSignature, DeviceChild, ID3D12RootSignature, ID3D12DeviceChild )
+        HCC_COM_STANDARD_METHODS_IMPL( RootSignature, DeviceChild, ID3D12RootSignature, ID3D12DeviceChild )
     public:
     };
 
@@ -353,7 +353,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( RootSignatureDeserializer, Unknown, ID3D12RootSignatureDeserializer, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( RootSignatureDeserializer, Unknown, ID3D12RootSignatureDeserializer, IUnknown )
 
     public:
         /// <summary>
@@ -379,7 +379,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( VersionedRootSignatureDeserializer, Unknown, ID3D12VersionedRootSignatureDeserializer, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( VersionedRootSignatureDeserializer, Unknown, ID3D12VersionedRootSignatureDeserializer, IUnknown )
 
     public:
         /// <summary>
@@ -439,7 +439,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Pageable, DeviceChild, ID3D12Pageable, ID3D12DeviceChild )
+        HCC_COM_STANDARD_METHODS_IMPL( Pageable, DeviceChild, ID3D12Pageable, ID3D12DeviceChild )
     public:
     };
 
@@ -453,7 +453,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Heap, Pageable, ID3D12Heap, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( Heap, Pageable, ID3D12Heap, ID3D12Pageable )
     public:
         /// <summary>
         /// Gets the heap description.
@@ -479,7 +479,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Resource, Pageable, ID3D12Resource, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( Resource, Pageable, ID3D12Resource, ID3D12Pageable )
     public:
         /// <summary>
         /// Gets a CPU pointer to the specified subresource in the resource, but 
@@ -862,7 +862,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( CommandAllocator, Pageable, ID3D12CommandAllocator, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( CommandAllocator, Pageable, ID3D12CommandAllocator, ID3D12Pageable )
     public:
 
         /// <summary>
@@ -905,7 +905,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Fence, Pageable, ID3D12Fence, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( Fence, Pageable, ID3D12Fence, ID3D12Pageable )
     public:
 
         /// <summary>
@@ -971,7 +971,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Fence;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Fence1, Fence, ID3D12Fence1, ID3D12Fence )
+        HCC_COM_STANDARD_METHODS_IMPL( Fence1, Fence, ID3D12Fence1, ID3D12Fence )
     public:
 
         /// <summary>
@@ -996,7 +996,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( PipelineState, Pageable, ID3D12PipelineState, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( PipelineState, Pageable, ID3D12PipelineState, ID3D12Pageable )
     public:
         void GetCachedBlob( _COM_Outptr_  ID3DBlob** ppBlob ) const
         {
@@ -1026,7 +1026,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DescriptorHeap, Pageable, ID3D12DescriptorHeap, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( DescriptorHeap, Pageable, ID3D12DescriptorHeap, ID3D12Pageable )
     public:
 
         /// <summary>
@@ -1078,7 +1078,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( QueryHeap, Pageable, ID3D12QueryHeap, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( QueryHeap, Pageable, ID3D12QueryHeap, ID3D12Pageable )
     public:
     };
 
@@ -1091,7 +1091,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( CommandSignature, Pageable, ID3D12CommandSignature, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( CommandSignature, Pageable, ID3D12CommandSignature, ID3D12Pageable )
     public:
     };
 
@@ -1106,7 +1106,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( CommandList, DeviceChild, ID3D12CommandList, ID3D12DeviceChild )
+        HCC_COM_STANDARD_METHODS_IMPL( CommandList, DeviceChild, ID3D12CommandList, ID3D12DeviceChild )
     public:
         /// <summary>
         /// Gets the type of the command list, such as direct, bundle, compute, or copy.
@@ -1130,7 +1130,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = CommandList;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList, CommandList, ID3D12GraphicsCommandList, ID3D12CommandList )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList, CommandList, ID3D12GraphicsCommandList, ID3D12CommandList )
     public:
 
         /// <summary>
@@ -2089,7 +2089,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = GraphicsCommandList;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList1, GraphicsCommandList, ID3D12GraphicsCommandList1, ID3D12GraphicsCommandList )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList1, GraphicsCommandList, ID3D12GraphicsCommandList1, ID3D12GraphicsCommandList )
     public:
         void AtomicCopyBufferUINT(_In_ ID3D12Resource* pDstBuffer, UINT64 dstOffset, _In_ ID3D12Resource* pSrcBuffer, UINT64 srcOffset, UINT dependencies, _In_reads_( dependencies )  ID3D12Resource* const* ppDependentResources, _In_reads_( dependencies )  const D3D12_SUBRESOURCE_RANGE_UINT64* pDependentSubresourceRanges ) const
         {
@@ -2138,7 +2138,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = GraphicsCommandList1;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList2, GraphicsCommandList1, ID3D12GraphicsCommandList2, ID3D12GraphicsCommandList1 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList2, GraphicsCommandList1, ID3D12GraphicsCommandList2, ID3D12GraphicsCommandList1 )
     public:
         void WriteBufferImmediate( UINT count, _In_reads_( count ) const D3D12_WRITEBUFFERIMMEDIATE_PARAMETER* pParams, _In_reads_opt_( count ) const D3D12_WRITEBUFFERIMMEDIATE_MODE* pModes ) const
         {
@@ -2158,7 +2158,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( CommandQueue, Pageable, ID3D12CommandQueue, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( CommandQueue, Pageable, ID3D12CommandQueue, ID3D12Pageable )
     public:
         
         void UpdateTileMappings( _In_ ID3D12Resource* pResource, UINT numResourceRegions, _In_reads_opt_( numResourceRegions ) const D3D12_TILED_RESOURCE_COORDINATE* pResourceRegionStartCoordinates, _In_reads_opt_( numResourceRegions ) const D3D12_TILE_REGION_SIZE* pResourceRegionSizes, _In_opt_  ID3D12Heap* pHeap, UINT numRanges, _In_reads_opt_( numRanges ) const D3D12_TILE_RANGE_FLAGS* pRangeFlags, _In_reads_opt_( numRanges ) const UINT* pHeapRangeStartOffsets, _In_reads_opt_( numRanges ) const UINT* pRangeTileCounts, D3D12_TILE_MAPPING_FLAGS flags ) const
@@ -2260,7 +2260,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Object;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device, Object, ID3D12Device, ID3D12Object )
+        HCC_COM_STANDARD_METHODS_IMPL( Device, Object, ID3D12Device, ID3D12Object )
     public:
         UINT GetNodeCount( ) const
         {
@@ -2864,7 +2864,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( PipelineLibrary, DeviceChild, ID3D12PipelineLibrary, ID3D12DeviceChild )
+        HCC_COM_STANDARD_METHODS_IMPL( PipelineLibrary, DeviceChild, ID3D12PipelineLibrary, ID3D12DeviceChild )
     public:
         void StorePipeline( _In_opt_  LPCWSTR pName, _In_  ID3D12PipelineState* pPipeline ) const
         {
@@ -2910,7 +2910,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = PipelineLibrary;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( PipelineLibrary1, PipelineLibrary, ID3D12PipelineLibrary1, ID3D12PipelineLibrary )
+        HCC_COM_STANDARD_METHODS_IMPL( PipelineLibrary1, PipelineLibrary, ID3D12PipelineLibrary1, ID3D12PipelineLibrary )
     public:
         void LoadPipeline( _In_  LPCWSTR pName, _In_  const D3D12_PIPELINE_STATE_STREAM_DESC* pDesc, REFIID riid, _COM_Outptr_  void** ppPipelineState ) const
         {
@@ -2929,7 +2929,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Device;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device1, Device, ID3D12Device1, ID3D12Device )
+        HCC_COM_STANDARD_METHODS_IMPL( Device1, Device, ID3D12Device1, ID3D12Device )
     public:
         void CreatePipelineLibrary( _In_reads_( BlobLength )  const void* pLibraryBlob, SIZE_T BlobLength, REFIID riid, _COM_Outptr_  void** ppPipelineLibrary ) const
         {
@@ -2962,7 +2962,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Device1;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device2, Device1, ID3D12Device2, ID3D12Device1 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device2, Device1, ID3D12Device2, ID3D12Device1 )
     public:
         void CreatePipelineState( const D3D12_PIPELINE_STATE_STREAM_DESC* pDesc, REFIID riid, _COM_Outptr_  void** ppPipelineState ) const
         {
@@ -2982,7 +2982,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Device2;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device3, Device2, ID3D12Device3, ID3D12Device2 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device3, Device2, ID3D12Device3, ID3D12Device2 )
     public:
         void OpenExistingHeapFromAddress( _In_  const void* pAddress, REFIID riid, _COM_Outptr_  void** ppvHeap ) const
         {
@@ -3018,7 +3018,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( ProtectedSession, DeviceChild, ID3D12ProtectedSession, ID3D12DeviceChild )
+        HCC_COM_STANDARD_METHODS_IMPL( ProtectedSession, DeviceChild, ID3D12ProtectedSession, ID3D12DeviceChild )
     public:
         void GetStatusFence( REFIID riid, _COM_Outptr_opt_  void** ppFence ) const
         {
@@ -3042,7 +3042,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = ProtectedSession;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( ProtectedResourceSession, ProtectedSession, ID3D12ProtectedResourceSession, ID3D12ProtectedSession )
+        HCC_COM_STANDARD_METHODS_IMPL( ProtectedResourceSession, ProtectedSession, ID3D12ProtectedResourceSession, ID3D12ProtectedSession )
     public:
         D3D12_PROTECTED_RESOURCE_SESSION_DESC GetDesc( ) const
         {
@@ -3059,7 +3059,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Device3;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device4, Device3, ID3D12Device4, ID3D12Device3 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device4, Device3, ID3D12Device4, ID3D12Device3 )
     public:
         void CreateCommandList1( _In_  UINT nodeMask, _In_  D3D12_COMMAND_LIST_TYPE type, _In_  D3D12_COMMAND_LIST_FLAGS flags, REFIID riid, _COM_Outptr_  void** ppCommandList ) const
         {
@@ -3111,7 +3111,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( LifetimeOwner, Unknown, ID3D12LifetimeOwner, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( LifetimeOwner, Unknown, ID3D12LifetimeOwner, IUnknown )
     public:
         void LifetimeStateUpdated( D3D12_LIFETIME_STATE newState ) const
         {
@@ -3125,7 +3125,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( SwapChainAssistant, Unknown, ID3D12SwapChainAssistant, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( SwapChainAssistant, Unknown, ID3D12SwapChainAssistant, IUnknown )
     public:
         LUID GetLUID( ) const
         {
@@ -3163,7 +3163,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( LifetimeTracker, DeviceChild, ID3D12LifetimeTracker, ID3D12DeviceChild )
+        HCC_COM_STANDARD_METHODS_IMPL( LifetimeTracker, DeviceChild, ID3D12LifetimeTracker, ID3D12DeviceChild )
     public:
         void DestroyOwnedObject( _In_ ID3D12DeviceChild* pObject ) const
         {
@@ -3184,7 +3184,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( StateObject, Pageable, ID3D12StateObject, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( StateObject, Pageable, ID3D12StateObject, ID3D12Pageable )
     public:
 
     };
@@ -3198,7 +3198,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( StateObjectProperties, Unknown, ID3D12StateObjectProperties, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( StateObjectProperties, Unknown, ID3D12StateObjectProperties, IUnknown )
     public:
         void* GetShaderIdentifier( _In_  LPCWSTR pExportName ) const
         {
@@ -3232,7 +3232,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class StateObjectProperties1 : public StateObjectProperties
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( StateObjectProperties1, StateObjectProperties, ID3D12StateObjectProperties1, ID3D12StateObjectProperties )
+        HCC_COM_STANDARD_METHODS_IMPL( StateObjectProperties1, StateObjectProperties, ID3D12StateObjectProperties1, ID3D12StateObjectProperties )
     public:
         D3D12_PROGRAM_IDENTIFIER GetProgramIdentifier( LPCWSTR programName ) const
         {
@@ -3255,7 +3255,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( WorkGraphProperties, Unknown, ID3D12WorkGraphProperties, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( WorkGraphProperties, Unknown, ID3D12WorkGraphProperties, IUnknown )
     public:
         UINT GetNumWorkGraphs( ) const
         {
@@ -3368,7 +3368,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Device4;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device5, Device4, ID3D12Device5, ID3D12Device4 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device5, Device4, ID3D12Device5, ID3D12Device4 )
     public:
         HRESULT CreateLifetimeTracker( _In_  ID3D12LifetimeOwner* pOwner, REFIID riid, _COM_Outptr_  void** ppvTracker ) const
         {
@@ -3432,7 +3432,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings, Unknown, ID3D12DeviceRemovedExtendedDataSettings, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings, Unknown, ID3D12DeviceRemovedExtendedDataSettings, IUnknown )
     public:
         void SetAutoBreadcrumbsEnablement( D3D12_DRED_ENABLEMENT Enablement ) const
         {
@@ -3458,7 +3458,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = DeviceRemovedExtendedDataSettings;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings1, DeviceRemovedExtendedDataSettings, ID3D12DeviceRemovedExtendedDataSettings1, ID3D12DeviceRemovedExtendedDataSettings )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings1, DeviceRemovedExtendedDataSettings, ID3D12DeviceRemovedExtendedDataSettings1, ID3D12DeviceRemovedExtendedDataSettings )
     public:
         void SetBreadcrumbContextEnablement( D3D12_DRED_ENABLEMENT Enablement ) const
         {
@@ -3470,7 +3470,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class DeviceRemovedExtendedDataSettings2 : public DeviceRemovedExtendedDataSettings1
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings2, DeviceRemovedExtendedDataSettings1, ID3D12DeviceRemovedExtendedDataSettings2, ID3D12DeviceRemovedExtendedDataSettings1 )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings2, DeviceRemovedExtendedDataSettings1, ID3D12DeviceRemovedExtendedDataSettings2, ID3D12DeviceRemovedExtendedDataSettings1 )
     public:
         void UseMarkersOnlyAutoBreadcrumbs( BOOL markersOnly = TRUE ) const
         {
@@ -3488,7 +3488,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData, Unknown, ID3D12DeviceRemovedExtendedData, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData, Unknown, ID3D12DeviceRemovedExtendedData, IUnknown )
     public:
         void GetAutoBreadcrumbsOutput( _Out_  D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT* pOutput ) const
         {
@@ -3508,7 +3508,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class DeviceRemovedExtendedData1 : public DeviceRemovedExtendedData
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData1, DeviceRemovedExtendedData, ID3D12DeviceRemovedExtendedData1, ID3D12DeviceRemovedExtendedData )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData1, DeviceRemovedExtendedData, ID3D12DeviceRemovedExtendedData1, ID3D12DeviceRemovedExtendedData )
     public:
         void GetAutoBreadcrumbsOutput1(_Out_  D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1* pOutput ) const
         {
@@ -3529,7 +3529,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class DeviceRemovedExtendedData2 : public DeviceRemovedExtendedData1
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData2, DeviceRemovedExtendedData1, ID3D12DeviceRemovedExtendedData2, ID3D12DeviceRemovedExtendedData1 )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData2, DeviceRemovedExtendedData1, ID3D12DeviceRemovedExtendedData2, ID3D12DeviceRemovedExtendedData1 )
     public:
         void GetPageFaultAllocationOutput2( _Out_  D3D12_DRED_PAGE_FAULT_OUTPUT2* pOutput ) const
         {
@@ -3553,7 +3553,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Device5;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device6, Device5, ID3D12Device6, ID3D12Device5 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device6, Device5, ID3D12Device6, ID3D12Device5 )
     public:
         void SetBackgroundProcessingMode( D3D12_BACKGROUND_PROCESSING_MODE Mode, D3D12_MEASUREMENTS_ACTION MeasurementsAction, _In_opt_  HANDLE hEventToSignalUponCompletion, _Out_opt_  BOOL* pbFurtherMeasurementsDesired ) const
         {
@@ -3571,7 +3571,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = ProtectedResourceSession;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( ProtectedResourceSession1, ProtectedResourceSession, ID3D12ProtectedResourceSession1, ID3D12ProtectedResourceSession )
+        HCC_COM_STANDARD_METHODS_IMPL( ProtectedResourceSession1, ProtectedResourceSession, ID3D12ProtectedResourceSession1, ID3D12ProtectedResourceSession )
     public:
         D3D12_PROTECTED_RESOURCE_SESSION_DESC1 GetDesc1( ) const
         {
@@ -3588,7 +3588,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Device6;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device7, Device6, ID3D12Device7, ID3D12Device6 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device7, Device6, ID3D12Device7, ID3D12Device6 )
     public:
         void AddToStateObject( const D3D12_STATE_OBJECT_DESC* pAddition, ID3D12StateObject* pStateObjectToGrowFrom, REFIID riid, _COM_Outptr_  void** ppNewStateObject ) const
         {
@@ -3613,7 +3613,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Device7;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device8, Device7, ID3D12Device8, ID3D12Device7 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device8, Device7, ID3D12Device8, ID3D12Device7 )
     public:
         D3D12_RESOURCE_ALLOCATION_INFO GetResourceAllocationInfo2( UINT visibleMask, UINT numResourceDescs, _In_reads_( numResourceDescs )  const D3D12_RESOURCE_DESC1* pResourceDescs, _Out_writes_opt_( numResourceDescs )  D3D12_RESOURCE_ALLOCATION_INFO1* pResourceAllocationInfo1 ) const
         {
@@ -3653,7 +3653,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Resource;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Resource1, Resource, ID3D12Resource1, ID3D12Resource )
+        HCC_COM_STANDARD_METHODS_IMPL( Resource1, Resource, ID3D12Resource1, ID3D12Resource )
     public:
         void GetProtectedResourceSession( REFIID riid, _COM_Outptr_opt_  void** ppProtectedSession ) const
         {
@@ -3668,7 +3668,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Resource1;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Resource2, Resource1, ID3D12Resource2, ID3D12Resource1 )
+        HCC_COM_STANDARD_METHODS_IMPL( Resource2, Resource1, ID3D12Resource2, ID3D12Resource1 )
     public:
         D3D12_RESOURCE_DESC1 GetDesc1( ) const
         {
@@ -3682,7 +3682,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Heap;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Heap1, Heap, ID3D12Heap1, ID3D12Heap )
+        HCC_COM_STANDARD_METHODS_IMPL( Heap1, Heap, ID3D12Heap1, ID3D12Heap )
     public:
         void GetProtectedResourceSession( REFIID riid, _COM_Outptr_opt_  void** ppProtectedSession ) const
         {
@@ -3700,7 +3700,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = GraphicsCommandList2;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList3, GraphicsCommandList2, ID3D12GraphicsCommandList3, ID3D12GraphicsCommandList2 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList3, GraphicsCommandList2, ID3D12GraphicsCommandList3, ID3D12GraphicsCommandList2 )
     public:
         void SetProtectedResourceSession( _In_opt_  ID3D12ProtectedResourceSession* pProtectedResourceSession ) const
         {
@@ -3732,7 +3732,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( MetaCommand, Pageable, ID3D12MetaCommand, ID3D12Pageable )
+        HCC_COM_STANDARD_METHODS_IMPL( MetaCommand, Pageable, ID3D12MetaCommand, ID3D12Pageable )
     public:
         UINT64 GetRequiredParameterResourceSize(_In_  D3D12_META_COMMAND_PARAMETER_STAGE Stage, _In_  UINT ParameterIndex ) const
         {
@@ -3751,7 +3751,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = GraphicsCommandList3;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList4, GraphicsCommandList3, ID3D12GraphicsCommandList4, ID3D12GraphicsCommandList3 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList4, GraphicsCommandList3, ID3D12GraphicsCommandList4, ID3D12GraphicsCommandList3 )
     public:
         void BeginRenderPass( _In_  UINT NumRenderTargets, _In_reads_opt_( NumRenderTargets )  const D3D12_RENDER_PASS_RENDER_TARGET_DESC* pRenderTargets, _In_opt_  const D3D12_RENDER_PASS_DEPTH_STENCIL_DESC* pDepthStencil, D3D12_RENDER_PASS_FLAGS Flags ) const
         {
@@ -3811,7 +3811,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class ShaderCacheSession : public DeviceChild
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( ShaderCacheSession, DeviceChild, ID3D12ShaderCacheSession, ID3D12DeviceChild )
+        HCC_COM_STANDARD_METHODS_IMPL( ShaderCacheSession, DeviceChild, ID3D12ShaderCacheSession, ID3D12DeviceChild )
     public:
         /// <summary>
         /// <para>
@@ -3928,7 +3928,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class Device9 : public Device8
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device9, Device8, ID3D12Device9, ID3D12Device8 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device9, Device8, ID3D12Device9, ID3D12Device8 )
     public:
 
         void CreateShaderCacheSession( _In_  const D3D12_SHADER_CACHE_SESSION_DESC* pDesc, REFIID riid, _COM_Outptr_opt_  void** ppvSession ) const
@@ -3982,7 +3982,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class Device10 : public Device9
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device10, Device9, ID3D12Device10, ID3D12Device9 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device10, Device9, ID3D12Device10, ID3D12Device9 )
     public:
         /// <summary>
         /// Creates a committed resource with an initial layout rather than an initial state.
@@ -4222,7 +4222,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class Device11 : public Device10
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device11, Device10, ID3D12Device11, ID3D12Device10 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device11, Device10, ID3D12Device11, ID3D12Device10 )
     public:
         void CreateSampler2( _In_  const D3D12_SAMPLER_DESC2* pDesc, _In_  D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
@@ -4234,7 +4234,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class Device12 : public Device11
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device12, Device11, ID3D12Device12, ID3D12Device11 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device12, Device11, ID3D12Device12, ID3D12Device11 )
     public:
         D3D12_RESOURCE_ALLOCATION_INFO GetResourceAllocationInfo3(
             UINT visibleMask,
@@ -4252,7 +4252,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class Device13 : public Device12
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device13, Device12, ID3D12Device13, ID3D12Device12 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device13, Device12, ID3D12Device13, ID3D12Device12 )
     public:
         HRESULT OpenExistingHeapFromAddress1( _In_  const void* pAddress, SIZE_T size, REFIID riid, _COM_Outptr_  void** ppvHeap ) const
         {
@@ -4265,7 +4265,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class Device14 : public Device13
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device14, Device13, ID3D12Device14, ID3D12Device13 )
+        HCC_COM_STANDARD_METHODS_IMPL( Device14, Device13, ID3D12Device14, ID3D12Device13 )
     public:
         HRESULT CreateRootSignatureFromSubobjectInLibrary(
             _In_  UINT nodeMask,
@@ -4284,7 +4284,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class VirtualizationGuestDevice : public Unknown
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( VirtualizationGuestDevice, Unknown, ID3D12VirtualizationGuestDevice, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( VirtualizationGuestDevice, Unknown, ID3D12VirtualizationGuestDevice, IUnknown )
     public:
         void ShareWithHost( _In_  ID3D12DeviceChild* pObject, _Out_  HANDLE* pHandle ) CONST
         {
@@ -4313,7 +4313,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Tools, Unknown, ID3D12Tools, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( Tools, Unknown, ID3D12Tools, IUnknown )
     public:
         void EnableShaderInstrumentation( BOOL bEnable ) const
         {
@@ -4332,7 +4332,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class SDKConfiguration : public Unknown
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( SDKConfiguration, Unknown, ID3D12SDKConfiguration, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( SDKConfiguration, Unknown, ID3D12SDKConfiguration, IUnknown )
     public:
         void SetSDKVersion( UINT SDKVersion, _In_z_  LPCSTR SDKPath ) const
         {
@@ -4345,7 +4345,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class SDKConfiguration1 : public SDKConfiguration
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( SDKConfiguration1, SDKConfiguration, ID3D12SDKConfiguration1, ID3D12SDKConfiguration )
+        HCC_COM_STANDARD_METHODS_IMPL( SDKConfiguration1, SDKConfiguration, ID3D12SDKConfiguration1, ID3D12SDKConfiguration )
     public:
         void CreateDeviceFactory( UINT SDKVersion, _In_  LPCSTR SDKPath, REFIID riid, _COM_Outptr_  void** ppvFactory ) const
         {
@@ -4364,7 +4364,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class DeviceFactory : public Unknown
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceFactory, Unknown, ID3D12DeviceFactory, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceFactory, Unknown, ID3D12DeviceFactory, IUnknown )
     public:
         void InitializeFromGlobalState( ) const
         {
@@ -4419,7 +4419,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class DeviceConfiguration : public Unknown
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceConfiguration, Unknown, ID3D12DeviceConfiguration, IUnknown )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceConfiguration, Unknown, ID3D12DeviceConfiguration, IUnknown )
     public:
         D3D12_DEVICE_CONFIGURATION_DESC STDMETHODCALLTYPE GetDesc( void ) const
         {
@@ -4450,7 +4450,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class DeviceConfiguration1 : public DeviceConfiguration
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceConfiguration1, DeviceConfiguration, ID3D12DeviceConfiguration1, ID3D12DeviceConfiguration )
+        HCC_COM_STANDARD_METHODS_IMPL( DeviceConfiguration1, DeviceConfiguration, ID3D12DeviceConfiguration1, ID3D12DeviceConfiguration )
     public:
         void CreateVersionedRootSignatureDeserializerFromSubobjectInLibrary( _In_reads_bytes_( Size )  const void* pLibraryBlob, SIZE_T Size, LPCWSTR RootSignatureSubobjectName, REFIID riid, _COM_Outptr_  void** ppvDeserializer ) const
         {
@@ -4470,7 +4470,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = GraphicsCommandList4;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList5, GraphicsCommandList4, ID3D12GraphicsCommandList5, ID3D12GraphicsCommandList4 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList5, GraphicsCommandList4, ID3D12GraphicsCommandList5, ID3D12GraphicsCommandList4 )
     public:
         void RSSetShadingRate( _In_  D3D12_SHADING_RATE baseShadingRate, _In_reads_opt_( D3D12_RS_SET_SHADING_RATE_COMBINER_COUNT )  const D3D12_SHADING_RATE_COMBINER* combiners ) const
         {
@@ -4490,7 +4490,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     public:
         using Base = GraphicsCommandList5;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList6, GraphicsCommandList5, ID3D12GraphicsCommandList6, ID3D12GraphicsCommandList5 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList6, GraphicsCommandList5, ID3D12GraphicsCommandList6, ID3D12GraphicsCommandList5 )
     public:
         void DispatchMesh( _In_ UINT ThreadGroupCountX, _In_ UINT ThreadGroupCountY, _In_ UINT ThreadGroupCountZ ) const
         {
@@ -4502,7 +4502,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class GraphicsCommandList7 : public GraphicsCommandList6
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList7, GraphicsCommandList6, ID3D12GraphicsCommandList7, ID3D12GraphicsCommandList6 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList7, GraphicsCommandList6, ID3D12GraphicsCommandList7, ID3D12GraphicsCommandList6 )
     public:
         void Barrier( UINT32 NumBarrierGroups, _In_reads_( NumBarrierGroups )  const D3D12_BARRIER_GROUP* pBarrierGroups ) const
         {
@@ -4515,7 +4515,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class GraphicsCommandList8 : public GraphicsCommandList7
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList8, GraphicsCommandList7, ID3D12GraphicsCommandList8, ID3D12GraphicsCommandList7 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList8, GraphicsCommandList7, ID3D12GraphicsCommandList8, ID3D12GraphicsCommandList7 )
     public:
         void OMSetFrontAndBackStencilRef( _In_  UINT FrontStencilRef, _In_  UINT BackStencilRef ) const
         {
@@ -4527,7 +4527,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class GraphicsCommandList9 : public GraphicsCommandList8
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList9, GraphicsCommandList8, ID3D12GraphicsCommandList9, ID3D12GraphicsCommandList8 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList9, GraphicsCommandList8, ID3D12GraphicsCommandList9, ID3D12GraphicsCommandList8 )
     public:
         void RSSetDepthBias( _In_  FLOAT DepthBias, _In_  FLOAT DepthBiasClamp, _In_  FLOAT SlopeScaledDepthBias ) const
         {
@@ -4546,7 +4546,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     class GraphicsCommandList10 : public GraphicsCommandList9
     {
     public:
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList10, GraphicsCommandList9, ID3D12GraphicsCommandList10, ID3D12GraphicsCommandList9 )
+        HCC_COM_STANDARD_METHODS_IMPL( GraphicsCommandList10, GraphicsCommandList9, ID3D12GraphicsCommandList10, ID3D12GraphicsCommandList9 )
     public:
         void SetProgram( _In_  const D3D12_SET_PROGRAM_DESC* pDesc ) const
         {

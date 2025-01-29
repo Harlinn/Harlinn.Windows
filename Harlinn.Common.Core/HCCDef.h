@@ -110,6 +110,8 @@
 #include <DirectXMath.h>
 #include <directxcollision.h>
 #include <directxpackedvector.h>
+#define DML_TARGET_VERSION_USE_LATEST 1
+#include <DirectML.h>
 #include <Dmo.h>
 #include <mediaobj.h>
 #include <mfobjects.h>
