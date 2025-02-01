@@ -198,9 +198,11 @@
     <ClInclude Include="HWContainerControl.h" />
     <ClInclude Include="HWControl.h" />
     <ClInclude Include="HWDirectML.h" />
+    <ClInclude Include="HWDMLModel.h" />
     <ClInclude Include="HWDXGIFormat.h" />
     <ClInclude Include="HWGraphicsD3D12Ex.h" />
     <ClInclude Include="HWGraphicsD3D12SdkLayers.h" />
+    <ClInclude Include="HWMediaEngine.h" />
     <ClInclude Include="HWMFLive555.h" />
     <ClInclude Include="HWMFReadWrite.h" />
     <ClInclude Include="HWMFTransform.h" />
@@ -259,6 +261,7 @@
     <ClCompile Include="HWGraphicsD3D12.cpp" />
     <ClCompile Include="HWHandles.cpp" />
     <ClCompile Include="HWImaging.cpp" />
+    <ClCompile Include="HWMediaEngine.cpp" />
     <ClCompile Include="HWMediaFoundation.cpp" />
     <ClCompile Include="HWMediaObj.cpp" />
     <ClCompile Include="HWMenu.cpp" />

@@ -191,6 +191,39 @@ namespace Harlinn::Windows::Graphics
 
     using D3DBlob = D3D10Blob;
 
+    namespace D3D10
+    {
+        class Multithread : public Unknown
+        {
+        public:
+            HCC_COM_STANDARD_METHODS_IMPL( Multithread, Unknown, ID3D10Multithread, IUnknown )
+        public:
+            void Enter( ) const
+            {
+                InterfaceType* pInterface = GetInterface( );
+                return pInterface->Enter( );
+            }
+
+            void Leave( ) const
+            {
+                InterfaceType* pInterface = GetInterface( );
+                return pInterface->Leave( );
+            }
+
+            bool SetMultithreadProtected( _In_  BOOL bMTProtect ) const
+            {
+                InterfaceType* pInterface = GetInterface( );
+                return pInterface->SetMultithreadProtected( bMTProtect ) != FALSE;
+            }
+
+            bool GetMultithreadProtected( ) const
+            {
+                InterfaceType* pInterface = GetInterface( );
+                return pInterface->GetMultithreadProtected( ) != FALSE;
+            }
+        };
+    }
+
 }
 
 #endif

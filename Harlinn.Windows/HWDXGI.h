@@ -870,6 +870,25 @@ namespace Harlinn::Windows::Graphics::DXGI
             return result;
         }
 
+        Adapter1 FindAdapter( const LUID& luid ) const
+        {
+            auto* pInterface = GetInterface( );
+            for ( UINT adapterIndex = 0; ; ++adapterIndex )
+            {
+                auto adapter = EnumAdapters( adapterIndex );
+                if ( adapter )
+                {
+                    DXGI_ADAPTER_DESC1 desc = adapter.GetDesc1( );
+                    if( (desc.AdapterLuid.HighPart == luid.HighPart) && 
+                        (desc.AdapterLuid.LowPart == luid.LowPart) )
+                    {
+                        return adapter;
+                    }
+                }
+            }
+            return Adapter1( );
+        }
+
         Adapter1 FindAdapter( D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL_11_1 ) const
         {
             auto* pInterface = GetInterface( );

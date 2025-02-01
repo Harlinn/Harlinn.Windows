@@ -552,6 +552,12 @@ namespace Harlinn::Windows::Media
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        void SetUnknown( const Guid& key, const Unknown& unknown ) const
+        {
+            SetUnknown( key, unknown.GetInterfacePointer( ) );
+        }
+
+
         void LockStore( ) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -2933,6 +2939,15 @@ namespace Harlinn::Windows::Media
     public:
         HCC_COM_STANDARD_METHODS_IMPL(MFDXGIDeviceManager, Unknown, IMFDXGIDeviceManager, IUnknown)
     public:
+
+        static MFDXGIDeviceManager Create( _Out_ UINT* resetToken )
+        {
+            IMFDXGIDeviceManager* itf = nullptr;
+            HRESULT hr = MFCreateDXGIDeviceManager( resetToken, &itf );
+            HCC_COM_CHECK_HRESULT( hr );
+            return MFDXGIDeviceManager( itf );
+        }
+
         void CloseDeviceHandle(HANDLE hDevice) const
         {
             InterfaceType* pInterface = GetInterface();

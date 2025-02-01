@@ -119,6 +119,7 @@
 #include <mfapi.h>
 #include <mferror.h>
 #include <mfreadwrite.h>
+#include <mfmediaengine.h>
 #include <evr.h>
 #include <mmdeviceapi.h>
 #include <camerauicontrol.h>

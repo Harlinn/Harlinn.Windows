@@ -26,26 +26,6 @@ namespace Harlinn::Windows
 {
     namespace DX = Graphics::D3D12;
 
-
-    class DXRootParameter
-    {
-
-    };
-
-    class DXRootSignature
-    {
-
-    };
-
-
-    class DXPipelineStateObject
-    {
-    public:
-        using RootSignature = Graphics::D3D12::RootSignature;
-        using PipelineState = Graphics::D3D12::PipelineState;
-
-    };
-
     class DXContext
     {
     public:
@@ -211,10 +191,12 @@ namespace Harlinn::Windows
         HW_EXPORT virtual void FrameCompleted( );
 
     protected:
+
         virtual void DoOnInvalidateDeviceObjects( )
         {
             OnInvalidateDeviceObjects( this );
         }
+
         virtual void DoOnCreateDeviceObjects( )
         {
             OnCreateDeviceObjects( this );

@@ -3,6 +3,22 @@
 #ifndef HARLINN_WINDOWS_HWDIRECTML_H_
 #define HARLINN_WINDOWS_HWDIRECTML_H_
 
+/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 #include "HWGraphicsD3D12.h"
 
 #pragma comment(lib, "DirectML.lib")
@@ -432,8 +448,8 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct Size2D
     {
-        UINT Width;
-        UINT Height;
+        UInt32 Width;
+        UInt32 Height;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SIZE_2D );
     };
@@ -571,22 +587,44 @@ namespace Harlinn::Windows::DML
         DML_IMPLEMENT_CONVERSIONS_TO( DML_OPERATOR_DESC );
     };
 
-    struct UnaryOperatorDesc
+    struct BaseOperatorDesc abstract
+    { };
+
+    struct UnaryOperatorDesc  abstract : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
+
+        UnaryOperatorDesc( ) noexcept = default;
+        UnaryOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept 
+            : InputTensor( inputTensor ), OutputTensor( outputTensor )
+        { }
     };
 
-    struct BinaryOperatorDesc
+    struct BinaryOperatorDesc abstract : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         const TensorDesc* ATensor = nullptr;
         const TensorDesc* BTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
+
+        BinaryOperatorDesc( ) noexcept = default;
+        BinaryOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : ATensor( inputTensorA ), BTensor( inputTensorB ), OutputTensor( outputTensor )
+        { }
+
     };
 
-    struct UnaryOperatorWithScaleBiasDesc : public UnaryOperatorDesc
+    struct UnaryOperatorWithScaleBiasDesc abstract : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         _Maybenull_ const ScaleBias* ScaleBias = nullptr;
+
+        UnaryOperatorWithScaleBiasDesc( ) noexcept = default;
+        UnaryOperatorWithScaleBiasDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor ), ScaleBias( scaleBias )
+        { }
     };
 
 
@@ -597,9 +635,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseIdentityOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseIdentity;
+
+        ElementWiseIdentityOperatorDesc( ) noexcept = default;
+        ElementWiseIdentityOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_IDENTITY_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseIdentityOperatorDesc ) == sizeof( DML_ELEMENT_WISE_IDENTITY_OPERATOR_DESC ) );
+
 
     /// <summary>
     /// <para>
@@ -608,9 +655,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseAbsOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseAbs;
+
+        ElementWiseAbsOperatorDesc( ) noexcept = default;
+        ElementWiseAbsOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ABS_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseAbsOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ABS_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -619,9 +674,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseACosOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseACos;
+
+        ElementWiseACosOperatorDesc( ) noexcept = default;
+        ElementWiseACosOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ACOS_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseACosOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ACOS_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -630,9 +693,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseAddOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseAdd;
+
+        ElementWiseAddOperatorDesc( ) noexcept = default;
+        ElementWiseAddOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor = nullptr ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ADD_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseAddOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ADD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -641,11 +712,19 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseAdd1OperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseAdd1;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
+        ElementWiseAdd1OperatorDesc( ) noexcept = default;
+        ElementWiseAdd1OperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor = nullptr, const OperatorDesc* fusedActivation = nullptr ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor ), FusedActivation( fusedActivation )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ADD1_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseAdd1OperatorDesc ) == sizeof( DML_ELEMENT_WISE_ADD1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -654,9 +733,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseASinOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseASin;
+
+        ElementWiseASinOperatorDesc( ) noexcept = default;
+        ElementWiseASinOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ASIN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseASinOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ASIN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -665,9 +752,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseATanOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseATan;
+
+        ElementWiseATanOperatorDesc( ) noexcept = default;
+        ElementWiseATanOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ATAN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseATanOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ATAN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -676,9 +771,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseCeilOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseCeil;
+
+        ElementWiseCeilOperatorDesc( ) noexcept = default;
+        ElementWiseCeilOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CEIL_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseCeilOperatorDesc ) == sizeof( DML_ELEMENT_WISE_CEIL_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -687,12 +790,19 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseClipOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseClip;
         FLOAT Min = 0.f;
         FLOAT Max = 0.f;
 
+        ElementWiseClipOperatorDesc( ) noexcept = default;
+        ElementWiseClipOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr, float min = 0.f, float max = 0.f ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias ), Min(min), Max( max )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CLIP_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseClipOperatorDesc ) == sizeof( DML_ELEMENT_WISE_CLIP_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -701,9 +811,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseCosOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseCos;
+
+        ElementWiseCosOperatorDesc( ) noexcept = default;
+        ElementWiseCosOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_COS_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseCosOperatorDesc ) == sizeof( DML_ELEMENT_WISE_COS_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -712,9 +831,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseDivideOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseDivide;
+
+        ElementWiseDivideOperatorDesc( ) noexcept = default;
+        ElementWiseDivideOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_DIVIDE_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseDivideOperatorDesc ) == sizeof( DML_ELEMENT_WISE_DIVIDE_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -723,9 +851,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseExpOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseExp;
+
+        ElementWiseExpOperatorDesc( ) noexcept = default;
+        ElementWiseExpOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_EXP_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseExpOperatorDesc ) == sizeof( DML_ELEMENT_WISE_EXP_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -734,9 +871,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseFloorOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseFloor;
+
+        ElementWiseFloorOperatorDesc( ) noexcept = default;
+        ElementWiseFloorOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_FLOOR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseFloorOperatorDesc ) == sizeof( DML_ELEMENT_WISE_FLOOR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -745,20 +891,36 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLog;
+
+        ElementWiseLogOperatorDesc( ) noexcept = default;
+        ElementWiseLogOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOG_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOG_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_LOGICAL_AND_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct DML_ELEMENT_WISE_LOGICAL_AND_OPERATOR_DESC : public BinaryOperatorDesc
+    struct ElementWiseLogicalAndOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalAnd;
+
+        ElementWiseLogicalAndOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalAndOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_AND_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalAndOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_AND_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -767,9 +929,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogicalEqualsOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalEquals;
+
+        ElementWiseLogicalEqualsOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalEqualsOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_EQUALS_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalEqualsOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_EQUALS_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -778,9 +949,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogicalGreaterThanOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalGreaterThan;
+
+        ElementWiseLogicalGreaterThanOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalGreaterThanOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_GREATER_THAN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalGreaterThanOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_GREATER_THAN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -789,9 +968,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogicalLessThanOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalLessThan;
+
+        ElementWiseLogicalLessThanOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalLessThanOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_LESS_THAN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalLessThanOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_LESS_THAN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -800,9 +987,11 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogicalNotOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalNot;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_NOT_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalNotOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_NOT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -811,9 +1000,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogicalOrOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalOr;
+
+        ElementWiseLogicalOrOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalOrOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_OR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalOrOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_OR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -822,9 +1019,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogicalXorOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalXor;
+
+        ElementWiseLogicalXorOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalXorOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_XOR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalXorOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_XOR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -833,9 +1039,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseMaxOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseMax;
+
+        ElementWiseMaxOperatorDesc( ) noexcept = default;
+        ElementWiseMaxOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_MAX_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseMaxOperatorDesc ) == sizeof( DML_ELEMENT_WISE_MAX_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -844,9 +1058,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseMeanOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseMean;
+
+        ElementWiseMeanOperatorDesc( ) noexcept = default;
+        ElementWiseMeanOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_MEAN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseMeanOperatorDesc ) == sizeof( DML_ELEMENT_WISE_MEAN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -855,9 +1077,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseMinOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseMin;
+
+        ElementWiseMinOperatorDesc( ) noexcept = default;
+        ElementWiseMinOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_MIN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseMinOperatorDesc ) == sizeof( DML_ELEMENT_WISE_MIN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -866,17 +1096,26 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseMultiplyOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseMultiply;
+
+        ElementWiseMultiplyOperatorDesc( ) noexcept = default;
+        ElementWiseMultiplyOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_MULTIPLY_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseMultiplyOperatorDesc ) == sizeof( DML_ELEMENT_WISE_MULTIPLY_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_POW_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ElementWisePowOperatorDesc
+    struct ElementWisePowOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWisePow;
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* ExponentTensor = nullptr;
@@ -885,6 +1124,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_POW_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWisePowOperatorDesc ) == sizeof( DML_ELEMENT_WISE_POW_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -893,12 +1133,14 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseConstantPowOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseConstantPow;
 
         FLOAT Exponent = 0.f;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CONSTANT_POW_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseConstantPowOperatorDesc ) == sizeof( DML_ELEMENT_WISE_CONSTANT_POW_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -907,9 +1149,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseReciprocalOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseReciprocal;
+
+        ElementWiseReciprocalOperatorDesc( ) noexcept = default;
+        ElementWiseReciprocalOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_RECIP_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseReciprocalOperatorDesc ) == sizeof( DML_ELEMENT_WISE_RECIP_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -918,9 +1168,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseSinOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseSin;
+
+        ElementWiseSinOperatorDesc( ) noexcept = default;
+        ElementWiseSinOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_SIN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseSinOperatorDesc ) == sizeof( DML_ELEMENT_WISE_SIN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -929,9 +1187,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseSqrtOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseSqrt;
+
+        ElementWiseSqrtOperatorDesc( ) noexcept = default;
+        ElementWiseSqrtOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_SQRT_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseSqrtOperatorDesc ) == sizeof( DML_ELEMENT_WISE_SQRT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -940,9 +1206,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseSubtractOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseSubtract;
+
+        ElementWiseSubtractOperatorDesc( ) noexcept = default;
+        ElementWiseSubtractOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_SUBTRACT_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseSubtractOperatorDesc ) == sizeof( DML_ELEMENT_WISE_SUBTRACT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -951,9 +1225,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseTanOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseTan;
+
+        ElementWiseTanOperatorDesc( ) noexcept = default;
+        ElementWiseTanOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_TAN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseTanOperatorDesc ) == sizeof( DML_ELEMENT_WISE_TAN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -962,19 +1244,22 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseThresholdOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseThreshold;
         FLOAT Min = 0.f;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_THRESHOLD_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseThresholdOperatorDesc ) == sizeof( DML_ELEMENT_WISE_THRESHOLD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_QUANTIZE_LINEAR_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ElementWiseQuantizeLinearOperatorDesc
+    struct ElementWiseQuantizeLinearOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseQuantizeLinear;
 
         const TensorDesc* InputTensor = nullptr;
@@ -984,14 +1269,16 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_QUANTIZE_LINEAR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseQuantizeLinearOperatorDesc ) == sizeof( DML_ELEMENT_WISE_QUANTIZE_LINEAR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_DEQUANTIZE_LINEAR_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ElementWiseDequantizeLinearOperatorDesc
+    struct ElementWiseDequantizeLinearOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseDequantizeLinear;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1001,6 +1288,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_DEQUANTIZE_LINEAR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseDequantizeLinearOperatorDesc ) == sizeof( DML_ELEMENT_WISE_DEQUANTIZE_LINEAR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1009,12 +1297,20 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationELUOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationELU;
         
         FLOAT Alpha = 0.f;
 
+        ActivationELUOperatorDesc( ) noexcept = default;
+        ActivationELUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 1.f ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_ELU_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationELUOperatorDesc ) == sizeof( DML_ACTIVATION_ELU_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1023,10 +1319,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationHardMaxOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationHardMax;
+
+        ActivationHardMaxOperatorDesc( ) noexcept = default;
+        ActivationHardMaxOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_HARDMAX_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationHardMaxOperatorDesc ) == sizeof( DML_ACTIVATION_HARDMAX_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1035,12 +1338,20 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationHardSigmoidOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationHardSigmoid;
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
 
+        ActivationHardSigmoidOperatorDesc( ) noexcept = default;
+        ActivationHardSigmoidOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 0.2f, float beta = 0.5f ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_HARD_SIGMOID_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationHardSigmoidOperatorDesc ) == sizeof( DML_ACTIVATION_HARD_SIGMOID_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1049,9 +1360,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationIdentityOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationIdentity;
+
+        ActivationIdentityOperatorDesc( ) noexcept = default;
+        ActivationIdentityOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_IDENTITY_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationIdentityOperatorDesc ) == sizeof( DML_ACTIVATION_IDENTITY_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1060,10 +1379,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationLeakyReLUOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationLeakyReLU;
         FLOAT Alpha = 0.f;
+
+        ActivationLeakyReLUOperatorDesc( ) noexcept = default;
+        ActivationLeakyReLUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 0.01f ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_LEAKY_RELU_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationLeakyReLUOperatorDesc ) == sizeof( DML_ACTIVATION_LEAKY_RELU_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1072,13 +1399,20 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationLinearOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationLinear;
         
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
+        ActivationLinearOperatorDesc( ) noexcept = default;
+        ActivationLinearOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha, float beta ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
+        {
+        }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_LINEAR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationLinearOperatorDesc ) == sizeof( DML_ACTIVATION_LINEAR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1087,17 +1421,25 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationLogSoftMaxOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationLogSoftMax;
+
+        ActivationLogSoftMaxOperatorDesc( ) noexcept = default;
+        ActivationLogSoftMaxOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_LOG_SOFTMAX_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationLogSoftMaxOperatorDesc ) == sizeof( DML_ACTIVATION_LOG_SOFTMAX_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ACTIVATION_PARAMETERIZED_RELU_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ActivationParameterizedReLUOperatorDesc
+    struct ActivationParameterizedReLUOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationParameterizedReLU;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1106,21 +1448,29 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_PARAMETERIZED_RELU_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationParameterizedReLUOperatorDesc ) == sizeof( DML_ACTIVATION_PARAMETERIZED_RELU_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ACTIVATION_PARAMETRIC_SOFTPLUS_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct DML_ACTIVATION_PARAMETRIC_SOFTPLUS_OPERATOR_DESC : public UnaryOperatorDesc
+    struct ActivationParametricSoftPlusOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationParametricSoftPlus;
 
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
 
+        ActivationParametricSoftPlusOperatorDesc( ) noexcept = default;
+        ActivationParametricSoftPlusOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha, float beta ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_PARAMETRIC_SOFTPLUS_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationParametricSoftPlusOperatorDesc ) == sizeof( DML_ACTIVATION_PARAMETRIC_SOFTPLUS_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1129,9 +1479,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationReLUOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationReLU;
+
+        ActivationReLUOperatorDesc( ) noexcept = default;
+        ActivationReLUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_RELU_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationReLUOperatorDesc ) == sizeof( DML_ACTIVATION_RELU_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1140,13 +1499,20 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationScaledELUOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationScaledELU;
 
         FLOAT Alpha = 0.f;
         FLOAT Gamma = 0.f;
 
+        ActivationScaledELUOperatorDesc( ) noexcept = default;
+        ActivationScaledELUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 1.67326319217681884765625f, float gamma = 1.05070102214813232421875f ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha ), Gamma( gamma )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SCALED_ELU_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationScaledELUOperatorDesc ) == sizeof( DML_ACTIVATION_SCALED_ELU_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1155,13 +1521,20 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationScaledTanHOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationScaledTanH;
         
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
 
+        ActivationScaledTanHOperatorDesc( ) noexcept = default;
+        ActivationScaledTanHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha, float beta ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SCALED_TANH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationScaledTanHOperatorDesc ) == sizeof( DML_ACTIVATION_SCALED_TANH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1170,9 +1543,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationSigmoidOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationSigmoid;
+
+        ActivationSigmoidOperatorDesc( ) noexcept = default;
+        ActivationSigmoidOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SIGMOID_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationSigmoidOperatorDesc ) == sizeof( DML_ACTIVATION_SIGMOID_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1181,9 +1562,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationSoftMaxOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationSoftMax;
+
+        ActivationSoftMaxOperatorDesc( ) noexcept = default;
+        ActivationSoftMaxOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SOFTMAX_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationSoftMaxOperatorDesc ) == sizeof( DML_ACTIVATION_SOFTMAX_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1192,12 +1581,20 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationSoftPlusOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationSoftPlus;
         
         FLOAT Steepness = 0.f;
 
+        ActivationSoftPlusOperatorDesc( ) noexcept = default;
+        ActivationSoftPlusOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float steepness = 0.f ) noexcept
+            : Base( inputTensor, outputTensor ), Steepness( steepness )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SOFTPLUS_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationSoftPlusOperatorDesc ) == sizeof( DML_ACTIVATION_SOFTPLUS_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1206,9 +1603,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationSoftSignOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationSoftSign;
+
+        ActivationSoftSignOperatorDesc( ) noexcept = default;
+        ActivationSoftSignOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SOFTSIGN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationSoftSignOperatorDesc ) == sizeof( DML_ACTIVATION_SOFTSIGN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1217,9 +1623,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationTanHOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationTanH;
+
+        ActivationTanHOperatorDesc( ) noexcept = default;
+        ActivationTanHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_TANH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationTanHOperatorDesc ) == sizeof( DML_ACTIVATION_TANH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1228,18 +1642,28 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationThresholdedReLUOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationThresholdedReLU;
-        FLOAT Alpha;
+        FLOAT Alpha = 1.f;
+
+        ActivationThresholdedReLUOperatorDesc( ) noexcept = default;
+        ActivationThresholdedReLUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 1.0f ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_THRESHOLDED_RELU_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationThresholdedReLUOperatorDesc ) == sizeof( DML_ACTIVATION_THRESHOLDED_RELU_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_CONVOLUTION_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ConvolutionOperatorDesc
+    struct ConvolutionOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Convolution;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1248,25 +1672,27 @@ namespace Harlinn::Windows::DML
         const TensorDesc* OutputTensor = nullptr;
         ConvolutionMode Mode = ConvolutionMode::Convolution;
         ConvolutionDirection Direction = ConvolutionDirection::Forward;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Dilations = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* OutputPadding = nullptr;
-        UINT GroupCount = 0;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* OutputPadding = nullptr;
+        UInt32 GroupCount = 0;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CONVOLUTION_OPERATOR_DESC );
     };
+    static_assert( sizeof( ConvolutionOperatorDesc ) == sizeof( DML_CONVOLUTION_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_GEMM_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct GEMMOperatorDesc
+    struct GEMMOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::GEMM;
 
         const TensorDesc* ATensor = nullptr;
@@ -1281,24 +1707,27 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GEMM_OPERATOR_DESC );
     };
+    static_assert( sizeof( GEMMOperatorDesc ) == sizeof( DML_GEMM_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_REDUCE_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ReduceOperatorDesc
+    struct ReduceOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Reduce;
 
         ReduceFunction Function = ReduceFunction::ArgMax;
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT AxisCount = 0;
-        _Field_size_( AxisCount ) const UINT* Axes = nullptr;
+        UInt32 AxisCount = 0;
+        _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_REDUCE_OPERATOR_DESC );
     };
+    static_assert( sizeof( ReduceOperatorDesc ) == sizeof( DML_REDUCE_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1307,17 +1736,19 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct AveragePoolingOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::AveragePooling;
 
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         BOOL IncludePadding = FALSE;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_AVERAGE_POOLING_OPERATOR_DESC );
     };
+    static_assert( sizeof( AveragePoolingOperatorDesc ) == sizeof( DML_AVERAGE_POOLING_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1326,16 +1757,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct LPPoolingOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::LPPooling;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        UINT P = 0;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        UInt32 P = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LP_POOLING_OPERATOR_DESC );
     };
+    static_assert( sizeof( LPPoolingOperatorDesc ) == sizeof( DML_LP_POOLING_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1344,23 +1777,26 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct MaxPoolingOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MaxPooling;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_POOLING_OPERATOR_DESC );
     };
+    static_assert( sizeof( MaxPoolingOperatorDesc ) == sizeof( DML_MAX_POOLING_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ROI_POOLING_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ROIPoolingOperatorDesc
+    struct ROIPoolingOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ROIPooling;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1371,6 +1807,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ROI_POOLING_OPERATOR_DESC );
     };
+    static_assert( sizeof( ROIPoolingOperatorDesc ) == sizeof( DML_ROI_POOLING_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1379,15 +1816,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct SliceOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Slice;
 
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Offsets = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Sizes = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Offsets = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Sizes = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SLICE_OPERATOR_DESC );
     };
+    static_assert( sizeof( SliceOperatorDesc ) == sizeof( DML_SLICE_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1396,43 +1835,49 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct CastOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Cast;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CAST_OPERATOR_DESC );
     };
+    static_assert( sizeof( CastOperatorDesc ) == sizeof( DML_CAST_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_SPLIT_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct SplitOperatorDesc
+    struct SplitOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Split;
 
         const TensorDesc* InputTensor = nullptr;
-        UINT OutputCount = 0;
+        UInt32 OutputCount = 0;
         _Field_size_( OutputCount ) const TensorDesc* OutputTensors = nullptr;
-        UINT Axis = 0;
+        UInt32 Axis = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SPLIT_OPERATOR_DESC );
     };
+    static_assert( sizeof( SplitOperatorDesc ) == sizeof( DML_SPLIT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_JOIN_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct JoinOperatorDesc
+    struct JoinOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Join;
 
-        UINT InputCount = 0;
+        UInt32 InputCount = 0;
         _Field_size_( InputCount ) const TensorDesc* InputTensors = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT Axis = 0;
+        UInt32 Axis = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_JOIN_OPERATOR_DESC );
     };
+    static_assert( sizeof( JoinOperatorDesc ) == sizeof( DML_JOIN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1441,16 +1886,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct PaddingOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Padding;
         
         DML::PaddingMode PaddingMode = DML::PaddingMode::Constant;
         FLOAT PaddingValue = 0.f;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_PADDING_OPERATOR_DESC );
     };
+    static_assert( sizeof( PaddingOperatorDesc ) == sizeof( DML_PADDING_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1459,14 +1906,16 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ValueScale2DOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ValueScale2D;
 
         FLOAT Scale = 0.f;
-        UINT ChannelCount = 0;
+        UInt32 ChannelCount = 0;
         _Field_size_( ChannelCount ) const FLOAT* Bias = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_VALUE_SCALE_2D_OPERATOR_DESC );
     };
+    static_assert( sizeof( ValueScale2DOperatorDesc ) == sizeof( DML_VALUE_SCALE_2D_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1475,6 +1924,7 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct UpSample2DOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::UpSample2D;
 
         Size2D ScaleSize;
@@ -1482,24 +1932,28 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_UPSAMPLE_2D_OPERATOR_DESC );
     };
+    static_assert( sizeof( UpSample2DOperatorDesc ) == sizeof( DML_UPSAMPLE_2D_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_GATHER_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct GatherOperatorDesc
+    struct GatherOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Gather;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT Axis = 0;
-        UINT IndexDimensions = 0;
+        UInt32 Axis = 0;
+        UInt32 IndexDimensions = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GATHER_OPERATOR_DESC );
     };
+    static_assert( sizeof( GatherOperatorDesc ) == sizeof( DML_GATHER_OPERATOR_DESC ) );
+
 
     /// <summary>
     /// <para>
@@ -1508,10 +1962,12 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct SpaceToDepthOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::SpaceToDepth;
-        UINT BlockSize = 0;
+        UInt32 BlockSize = 0;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SPACE_TO_DEPTH_OPERATOR_DESC );
     };
+    static_assert( sizeof( SpaceToDepthOperatorDesc ) == sizeof( DML_SPACE_TO_DEPTH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1520,10 +1976,12 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct DepthToSpaceOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::DepthToSpace;
-        UINT BlockSize = 0;
+        UInt32 BlockSize = 0;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DEPTH_TO_SPACE_OPERATOR_DESC );
     };
+    static_assert( sizeof( DepthToSpaceOperatorDesc ) == sizeof( DML_DEPTH_TO_SPACE_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1532,35 +1990,40 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct TileOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Tile;
-        UINT RepeatsCount = 0;
-        _Field_size_( RepeatsCount ) const UINT* Repeats = nullptr;
+        UInt32 RepeatsCount = 0;
+        _Field_size_( RepeatsCount ) const UInt32* Repeats = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_TILE_OPERATOR_DESC );
     };
+    static_assert( sizeof( TileOperatorDesc ) == sizeof( DML_TILE_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_TOP_K_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct TopKOperatorDesc
+    struct TopKOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::TopK;
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* OutputValueTensor = nullptr;
         const TensorDesc* OutputIndexTensor = nullptr;
-        UINT Axis = 0;
-        UINT K = 0;
+        UInt32 Axis = 0;
+        UInt32 K = 0;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_TOP_K_OPERATOR_DESC );
     };
+    static_assert( sizeof( TopKOperatorDesc ) == sizeof( DML_TOP_K_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_BATCH_NORMALIZATION_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct BatchNormalizationOperatorDesc
+    struct BatchNormalizationOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::BatchNormalization;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1575,14 +2038,17 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BATCH_NORMALIZATION_OPERATOR_DESC );
     };
+    static_assert( sizeof( BatchNormalizationOperatorDesc ) == sizeof( DML_BATCH_NORMALIZATION_OPERATOR_DESC ) );
+
 
     /// <summary>
     /// <para>
     /// Alias for DML_MEAN_VARIANCE_NORMALIZATION_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct MeanVarianceNormalizationOperatorDesc
+    struct MeanVarianceNormalizationOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MeanVarianceNormalization;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1596,6 +2062,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MEAN_VARIANCE_NORMALIZATION_OPERATOR_DESC );
     };
+    static_assert( sizeof( MeanVarianceNormalizationOperatorDesc ) == sizeof( DML_MEAN_VARIANCE_NORMALIZATION_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1604,16 +2071,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct LocalResponseNormalizationOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::LocalResponseNormalization;
 
         BOOL CrossChannel = FALSE;
-        UINT LocalSize = 0;
+        UInt32 LocalSize = 0;
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
         FLOAT Bias = 0.f;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LOCAL_RESPONSE_NORMALIZATION_OPERATOR_DESC );
     };
+    static_assert( sizeof( LocalResponseNormalizationOperatorDesc ) == sizeof( DML_LOCAL_RESPONSE_NORMALIZATION_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1622,22 +2091,25 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct LPNormalizationOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::LPNormalization;
 
-        UINT Axis = 0;
+        UInt32 Axis = 0;
         FLOAT Epsilon = 0.f;
-        UINT P = 0;
+        UInt32 P = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LP_NORMALIZATION_OPERATOR_DESC );
     };
+    static_assert( sizeof( LPNormalizationOperatorDesc ) == sizeof( DML_LP_NORMALIZATION_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_RNN_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct RNNOperatorDesc
+    struct RNNOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::RNN;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1648,20 +2120,22 @@ namespace Harlinn::Windows::DML
         _Maybenull_ const TensorDesc* SequenceLengthsTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputSequenceTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputSingleTensor = nullptr;
-        UINT ActivationDescCount = 0;
+        UInt32 ActivationDescCount = 0;
         _Field_size_( ActivationDescCount ) const OperatorDesc* ActivationDescs = nullptr;
         RecurrentNetworkDirection Direction = RecurrentNetworkDirection::Forward;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RNN_OPERATOR_DESC );
     };
+    static_assert( sizeof( RNNOperatorDesc ) == sizeof( DML_RNN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_LSTM_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct LSTMOperatorDesc
+    struct LSTMOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::LSTM;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1675,7 +2149,7 @@ namespace Harlinn::Windows::DML
         _Maybenull_ const TensorDesc* OutputSequenceTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputSingleTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputCellSingleTensor = nullptr;
-        UINT ActivationDescCount = 0;
+        UInt32 ActivationDescCount = 0;
         _Field_size_( ActivationDescCount ) const OperatorDesc* ActivationDescs = nullptr;
         RecurrentNetworkDirection Direction = RecurrentNetworkDirection::Forward;
         float ClipThreshold = 0.f;
@@ -1684,14 +2158,16 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LSTM_OPERATOR_DESC );
     };
+    static_assert( sizeof( LSTMOperatorDesc ) == sizeof( DML_LSTM_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_GRU_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct GRUOperatorDesc
+    struct GRUOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::GRU;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1702,13 +2178,14 @@ namespace Harlinn::Windows::DML
         _Maybenull_ const TensorDesc* SequenceLengthsTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputSequenceTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputSingleTensor = nullptr;
-        UINT ActivationDescCount = 0;
+        UInt32 ActivationDescCount = 0;
         _Field_size_( ActivationDescCount ) const OperatorDesc* ActivationDescs = nullptr;
         RecurrentNetworkDirection Direction = RecurrentNetworkDirection::Forward;
         BOOL LinearBeforeReset = FALSE;
 
-        DML_IMPLEMENT_CONVERSIONS_TO( DML_LSTM_OPERATOR_DESC );
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_GRU_OPERATOR_DESC );
     };
+    static_assert( sizeof( GRUOperatorDesc ) == sizeof( DML_GRU_OPERATOR_DESC ) );
 
 #if DML_TARGET_VERSION >= 0x2000
 
@@ -1719,9 +2196,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseSignOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseSign;
+
+        ElementWiseSignOperatorDesc( ) noexcept = default;
+        ElementWiseSignOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_SIGN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseSignOperatorDesc ) == sizeof( DML_ELEMENT_WISE_SIGN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1730,9 +2215,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseIsNaNOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseIsNaN;
+
+        ElementWiseIsNaNOperatorDesc( ) noexcept = default;
+        ElementWiseIsNaNOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_IS_NAN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseIsNaNOperatorDesc ) == sizeof( DML_ELEMENT_WISE_IS_NAN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1741,9 +2234,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseErfOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseErf;
+
+        ElementWiseErfOperatorDesc( ) noexcept = default;
+        ElementWiseErfOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ERF_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseErfOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ERF_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1752,9 +2253,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseSinHOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseSinH;
+
+        ElementWiseSinHOperatorDesc( ) noexcept = default;
+        ElementWiseSinHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_SINH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseSinHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_SINH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1763,9 +2272,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseCosHOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseCosH;
+
+        ElementWiseCosHOperatorDesc( ) noexcept = default;
+        ElementWiseCosHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_COSH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseCosHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_COSH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1774,9 +2291,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseTanHOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseTanH;
+
+        ElementWiseTanHOperatorDesc( ) noexcept = default;
+        ElementWiseTanHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_TANH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseTanHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_TANH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1785,9 +2310,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseASinHOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseASinH;
+
+        ElementWiseASinHOperatorDesc( ) noexcept = default;
+        ElementWiseASinHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ASINH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseASinHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ASINH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1796,9 +2329,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseACosHOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseACosH;
+
+        ElementWiseACosHOperatorDesc( ) noexcept = default;
+        ElementWiseACosHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ACOSH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseACosHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ACOSH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1807,17 +2348,26 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseATanHOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseATanH;
+
+        ElementWiseATanHOperatorDesc( ) noexcept = default;
+        ElementWiseATanHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ATANH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseATanHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ATANH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_IF_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ElementWiseIfOperatorDesc
+    struct ElementWiseIfOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseIf;
 
         const TensorDesc* ConditionTensor = nullptr;
@@ -1827,6 +2377,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_IF_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseIfOperatorDesc ) == sizeof( DML_ELEMENT_WISE_IF_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1835,13 +2386,20 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationShrinkOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationShrink;
 
         FLOAT Bias = 0.f;
         FLOAT Threshold = 0.f;
 
+        ActivationShrinkOperatorDesc( ) noexcept = default;
+        ActivationShrinkOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float bias = 0.0f, float threshold = 0.5f ) noexcept
+            : Base( inputTensor, outputTensor ), Bias( bias ), Threshold( threshold )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SHRINK_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationShrinkOperatorDesc ) == sizeof( DML_ACTIVATION_SHRINK_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1850,24 +2408,27 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct MaxPooling1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MaxPooling1;
         _Maybenull_ const TensorDesc* OutputIndicesTensor = nullptr;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_POOLING1_OPERATOR_DESC );
     };
+    static_assert( sizeof( MaxPooling1OperatorDesc ) == sizeof( DML_MAX_POOLING1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_MAX_UNPOOLING_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct MaxUnpoolingOperatorDesc
+    struct MaxUnpoolingOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MaxUnpooling;
 
         const TensorDesc* InputTensor = nullptr;
@@ -1876,14 +2437,16 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_UNPOOLING_OPERATOR_DESC );
     };
+    static_assert( sizeof( MaxUnpoolingOperatorDesc ) == sizeof( DML_MAX_UNPOOLING_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_DIAGONAL_MATRIX_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct DiagonalMatrixOperatorDesc
+    struct DiagonalMatrixOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::DiagonalMatrix;
 
         const TensorDesc* OutputTensor = nullptr;
@@ -1892,41 +2455,46 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DIAGONAL_MATRIX_OPERATOR_DESC );
     };
+    static_assert( sizeof( DiagonalMatrixOperatorDesc ) == sizeof( DML_DIAGONAL_MATRIX_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_SCATTER_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ScatterElementsOperatorDesc
+    struct ScatterElementsOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ScatterElements;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* UpdatesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT Axis = 0;
+        UInt32 Axis = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SCATTER_OPERATOR_DESC );
     };
+    static_assert( sizeof( ScatterElementsOperatorDesc ) == sizeof( DML_SCATTER_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ONE_HOT_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct OneHotOperatorDesc
+    struct OneHotOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::OneHot;
 
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* ValuesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT Axis = 0;
+        UInt32 Axis = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ONE_HOT_OPERATOR_DESC );
     };
+    static_assert( sizeof( OneHotOperatorDesc ) == sizeof( DML_ONE_HOT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1935,14 +2503,16 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ResampleOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Resample;
 
         DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
-        UINT ScaleCount = 0;
+        UInt32 ScaleCount = 0;
         _Field_size_( ScaleCount ) const FLOAT* Scales = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE_OPERATOR_DESC );
     };
+    static_assert( sizeof( ResampleOperatorDesc ) == sizeof( DML_RESAMPLE_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x2000
 
@@ -1955,9 +2525,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseBitShiftLeftOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseBitShiftLeft;
+
+        ElementWiseBitShiftLeftOperatorDesc( ) noexcept = default;
+        ElementWiseBitShiftLeftOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_SHIFT_LEFT_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseBitShiftLeftOperatorDesc ) == sizeof( DML_ELEMENT_WISE_BIT_SHIFT_LEFT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1966,9 +2544,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseBitShiftRightOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseBitShiftRight;
+
+        ElementWiseBitShiftRightOperatorDesc( ) noexcept = default;
+        ElementWiseBitShiftRightOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_SHIFT_RIGHT_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseBitShiftRightOperatorDesc ) == sizeof( DML_ELEMENT_WISE_BIT_SHIFT_RIGHT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1977,10 +2563,12 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseRoundOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseRound;
         DML::RoundingMode RoundingMode = DML::RoundingMode::HalvesToNearestEven;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ROUND_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseRoundOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ROUND_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -1989,12 +2577,14 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseIsInfinityOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseIsInfinity;
 
         IsInfinityMode InfinityMode = IsInfinityMode::Either;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_IS_INFINITY_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseIsInfinityOperatorDesc ) == sizeof( DML_ELEMENT_WISE_IS_INFINITY_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2003,9 +2593,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseModulusTruncateOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseModulusTruncate;
+
+        ElementWiseModulusTruncateOperatorDesc( ) noexcept = default;
+        ElementWiseModulusTruncateOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_MODULUS_TRUNCATE_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseModulusTruncateOperatorDesc ) == sizeof( DML_ELEMENT_WISE_MODULUS_TRUNCATE_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2014,31 +2612,42 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseModulusFloorOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseModulusFloor;
+
+        ElementWiseModulusFloorOperatorDesc( ) noexcept = default;
+        ElementWiseModulusFloorOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_MODULUS_FLOOR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseModulusFloorOperatorDesc ) == sizeof( DML_ELEMENT_WISE_MODULUS_FLOOR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_FILL_VALUE_CONSTANT_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct FillValueConstantOperatorDesc
+    struct FillValueConstantOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::FillValueConstant;
         const TensorDesc* OutputTensor = nullptr;
         TensorDataType ValueDataType = TensorDataType::Unknown;
         ScalarUnion Value{};
         DML_IMPLEMENT_CONVERSIONS_TO( DML_FILL_VALUE_CONSTANT_OPERATOR_DESC );
     };
+    static_assert( sizeof( FillValueConstantOperatorDesc ) == sizeof( DML_FILL_VALUE_CONSTANT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_FILL_VALUE_SEQUENCE_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct FillValueSequenceOperatorDesc
+    struct FillValueSequenceOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::FillValueSequence;
         const TensorDesc* OutputTensor = nullptr;
         TensorDataType ValueDataType = TensorDataType::Unknown;
@@ -2046,56 +2655,63 @@ namespace Harlinn::Windows::DML
         ScalarUnion ValueDelta{};
         DML_IMPLEMENT_CONVERSIONS_TO( DML_FILL_VALUE_SEQUENCE_OPERATOR_DESC );
     };
+    static_assert( sizeof( FillValueSequenceOperatorDesc ) == sizeof( DML_FILL_VALUE_SEQUENCE_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_CUMULATIVE_SUMMATION_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct DML_CUMULATIVE_SUMMATION_OPERATOR_DESC : public UnaryOperatorDesc
+    struct CumulativeSummationOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::CumulativeSummation;
 
-        UINT Axis = 0;
+        UInt32 Axis = 0;
         AxisDirection AxisDirection = AxisDirection::Increasing;
         BOOL HasExclusiveSum = FALSE;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CUMULATIVE_SUMMATION_OPERATOR_DESC );
     };
+    static_assert( sizeof( CumulativeSummationOperatorDesc ) == sizeof( DML_CUMULATIVE_SUMMATION_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_REVERSE_SUBSEQUENCES_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ReverseSubsequencesOperatorDesc
+    struct ReverseSubsequencesOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ReverseSubsequences;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* SequenceLengthsTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT Axis = 0;
+        UInt32 Axis = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_REVERSE_SUBSEQUENCES_OPERATOR_DESC );
     };
+    static_assert( sizeof( ReverseSubsequencesOperatorDesc ) == sizeof( DML_REVERSE_SUBSEQUENCES_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_GATHER_ELEMENTS_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct GatherElementsOperatorDesc
+    struct GatherElementsOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::GatherElements;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT Axis = 0;
+        UInt32 Axis = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GATHER_ELEMENTS_OPERATOR_DESC );
     };
+    static_assert( sizeof( GatherElementsOperatorDesc ) == sizeof( DML_GATHER_ELEMENTS_OPERATOR_DESC ) );
 
     // Alias existing operator, symmetric with ScatterOperatorDesc.
     using ScatterOperatorDesc = ScatterElementsOperatorDesc;
@@ -2105,37 +2721,41 @@ namespace Harlinn::Windows::DML
     /// Alias for DML_GATHER_ND_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct GatherNDOperatorDesc
+    struct GatherNDOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::GatherND;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT InputDimensionCount = 0;
-        UINT IndicesDimensionCount = 0;
+        UInt32 InputDimensionCount = 0;
+        UInt32 IndicesDimensionCount = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GATHER_ND_OPERATOR_DESC );
     };
+    static_assert( sizeof( GatherNDOperatorDesc ) == sizeof( DML_GATHER_ND_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_SCATTER_ND_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ScatterNDOperatorDesc
+    struct ScatterNDOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ScatterND;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* UpdatesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT InputDimensionCount = 0;
-        UINT IndicesDimensionCount = 0;
+        UInt32 InputDimensionCount = 0;
+        UInt32 IndicesDimensionCount = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SCATTER_ND_OPERATOR_DESC );
     };
+    static_assert( sizeof( ScatterNDOperatorDesc ) == sizeof( DML_SCATTER_ND_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2144,18 +2764,20 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct MaxPooling2OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MaxPooling2;
 
         _Maybenull_ const TensorDesc* OutputIndicesTensor = nullptr;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Dilations = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_POOLING2_OPERATOR_DESC );
     };
+    static_assert( sizeof( MaxPooling2OperatorDesc ) == sizeof( DML_MAX_POOLING2_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2164,31 +2786,35 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct Slice1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Slice1;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* InputWindowOffsets = nullptr;
-        _Field_size_( DimensionCount ) const UINT* InputWindowSizes = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* InputWindowOffsets = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* InputWindowSizes = nullptr;
         _Field_size_( DimensionCount ) const INT* InputWindowStrides = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SLICE1_OPERATOR_DESC );
     };
+    static_assert( sizeof( Slice1OperatorDesc ) == sizeof( DML_SLICE1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_TOP_K1_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct TopK1OperatorDesc
+    struct TopK1OperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::TopK1;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* OutputValueTensor = nullptr;
         const TensorDesc* OutputIndexTensor = nullptr;
-        UINT Axis = 0;
-        UINT K = 0;
+        UInt32 Axis = 0;
+        UInt32 K = 0;
         AxisDirection AxisDirection = AxisDirection::Increasing;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_TOP_K1_OPERATOR_DESC );
     };
+    static_assert( sizeof( TopK1OperatorDesc ) == sizeof( DML_TOP_K1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2197,11 +2823,13 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct DepthToSpace1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::DepthToSpace1;
-        UINT BlockSize = 0;
+        UInt32 BlockSize = 0;
         DepthSpaceOrder Order = DepthSpaceOrder::DepthColumnRow;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DEPTH_TO_SPACE1_OPERATOR_DESC );
     };
+    static_assert( sizeof( DepthToSpace1OperatorDesc ) == sizeof( DML_DEPTH_TO_SPACE1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2210,33 +2838,37 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct SpaceToDepth1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::SpaceToDepth1;
-        UINT BlockSize = 0;
+        UInt32 BlockSize = 0;
         DepthSpaceOrder Order = DepthSpaceOrder::DepthColumnRow;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SPACE_TO_DEPTH1_OPERATOR_DESC );
     };
+    static_assert( sizeof( SpaceToDepth1OperatorDesc ) == sizeof( DML_SPACE_TO_DEPTH1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_MEAN_VARIANCE_NORMALIZATION1_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct MeanVarianceNormalization1OperatorDesc
+    struct MeanVarianceNormalization1OperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MeanVarianceNormalization1;
 
         const TensorDesc* InputTensor = nullptr;
         _Maybenull_ const TensorDesc* ScaleTensor = nullptr;
         _Maybenull_ const TensorDesc* BiasTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT AxisCount = 0;
-        _Field_size_( AxisCount ) const UINT* Axes = nullptr;
+        UInt32 AxisCount = 0;
+        _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
         BOOL NormalizeVariance = FALSE;
         FLOAT Epsilon = 0.f;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MEAN_VARIANCE_NORMALIZATION1_OPERATOR_DESC );
     };
+    static_assert( sizeof( MeanVarianceNormalization1OperatorDesc ) == sizeof( DML_MEAN_VARIANCE_NORMALIZATION1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2245,23 +2877,26 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct Resample1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Resample1;
         DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
-        UINT DimensionCount = 0;
+        UInt32 DimensionCount = 0;
         _Field_size_( DimensionCount ) const FLOAT* Scales = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE1_OPERATOR_DESC );
     };
+    static_assert( sizeof( Resample1OperatorDesc ) == sizeof( DML_RESAMPLE1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_MATRIX_MULTIPLY_INTEGER_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct MatrixMultiplyIntegerOperatorDesc
+    struct MatrixMultiplyIntegerOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MatrixMultiplyInteger;
 
         const TensorDesc* ATensor = nullptr;
@@ -2272,14 +2907,16 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MATRIX_MULTIPLY_INTEGER_OPERATOR_DESC );
     };
+    static_assert( sizeof( MatrixMultiplyIntegerOperatorDesc ) == sizeof( DML_MATRIX_MULTIPLY_INTEGER_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_QUANTIZED_LINEAR_MATRIX_MULTIPLY_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct QuantizedLinearMatrixMultiplyOperatorDesc
+    struct QuantizedLinearMatrixMultiplyOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::QuantizedLinearMatrixMultiply;
 
         const TensorDesc* ATensor = nullptr;
@@ -2294,14 +2931,16 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_QUANTIZED_LINEAR_MATRIX_MULTIPLY_OPERATOR_DESC );
     };
+    static_assert( sizeof( QuantizedLinearMatrixMultiplyOperatorDesc ) == sizeof( DML_QUANTIZED_LINEAR_MATRIX_MULTIPLY_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_CONVOLUTION_INTEGER_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ConvolutionIntegerOperatorDesc
+    struct ConvolutionIntegerOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ConvolutionInteger;
 
         const TensorDesc* InputTensor = nullptr;
@@ -2309,23 +2948,25 @@ namespace Harlinn::Windows::DML
         const TensorDesc* FilterTensor = nullptr;
         _Maybenull_ const TensorDesc* FilterZeroPointTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Dilations = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        UINT GroupCount = 0;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        UInt32 GroupCount = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CONVOLUTION_INTEGER_OPERATOR_DESC );
     };
+    static_assert( sizeof( ConvolutionIntegerOperatorDesc ) == sizeof( DML_CONVOLUTION_INTEGER_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_QUANTIZED_LINEAR_CONVOLUTION_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct QuantizedLinearConvolutionOperatorDesc
+    struct QuantizedLinearConvolutionOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::QuantizedLinearConvolution;
 
         const TensorDesc* InputTensor = nullptr;
@@ -2338,15 +2979,16 @@ namespace Harlinn::Windows::DML
         const TensorDesc* OutputScaleTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputZeroPointTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Dilations = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        UINT GroupCount = 0;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        UInt32 GroupCount = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_QUANTIZED_LINEAR_CONVOLUTION_OPERATOR_DESC );
     };
+    static_assert( sizeof( QuantizedLinearConvolutionOperatorDesc ) == sizeof( DML_QUANTIZED_LINEAR_CONVOLUTION_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x2100
 
@@ -2359,9 +3001,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseBitAndOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseBitAnd;
+
+        ElementWiseBitAndOperatorDesc( ) noexcept = default;
+        ElementWiseBitAndOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_AND_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseBitAndOperatorDesc ) == sizeof( DML_ELEMENT_WISE_BIT_AND_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2370,9 +3020,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseBitOrOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseBitOr;
+
+        ElementWiseBitOrOperatorDesc( ) noexcept = default;
+        ElementWiseBitOrOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_OR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseBitOrOperatorDesc ) == sizeof( DML_ELEMENT_WISE_BIT_OR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2381,9 +3039,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseBitXorOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseBitXor;
+
+        ElementWiseBitXorOperatorDesc( ) noexcept = default;
+        ElementWiseBitXorOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_XOR_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseBitXorOperatorDesc ) == sizeof( DML_ELEMENT_WISE_BIT_XOR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2392,9 +3058,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseBitNotOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseBitNot;
+
+        ElementWiseBitNotOperatorDesc( ) noexcept = default;
+        ElementWiseBitNotOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_NOT_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseBitNotOperatorDesc ) == sizeof( DML_ELEMENT_WISE_BIT_NOT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2403,9 +3077,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseBitCountOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseBitCount;
+
+        ElementWiseBitCountOperatorDesc( ) noexcept = default;
+        ElementWiseBitCountOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_COUNT_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseBitCountOperatorDesc ) == sizeof( DML_ELEMENT_WISE_BIT_COUNT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2414,9 +3096,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogicalGreaterThanOrEqualOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalGreaterThanOrEqual;
+
+        ElementWiseLogicalGreaterThanOrEqualOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalGreaterThanOrEqualOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_GREATER_THAN_OR_EQUAL_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalGreaterThanOrEqualOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_GREATER_THAN_OR_EQUAL_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2425,9 +3115,18 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseLogicalLessThanOrEqualOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalLessThanOrEqual;
+
+        ElementWiseLogicalLessThanOrEqualOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalLessThanOrEqualOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_LESS_THAN_OR_EQUAL_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseLogicalLessThanOrEqualOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_LESS_THAN_OR_EQUAL_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2436,71 +3135,86 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationCeLUOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationCeLU;
         FLOAT Alpha = 0.f;
+
+        ActivationCeLUOperatorDesc( ) noexcept = default;
+        ActivationCeLUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 1.0f ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_CELU_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationCeLUOperatorDesc ) == sizeof( DML_ACTIVATION_CELU_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ACTIVATION_RELU_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ActivationReLUGradOperatorDesc
+    struct ActivationReLUGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationReLUGrad;
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_RELU_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationReLUGradOperatorDesc ) == sizeof( DML_ACTIVATION_RELU_GRAD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_AVERAGE_POOLING_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct AveragePoolingGradOperatorDesc
+    struct AveragePoolingGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::AveragePoolingGrad;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         BOOL IncludePadding = FALSE;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_AVERAGE_POOLING_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( AveragePoolingGradOperatorDesc ) == sizeof( DML_AVERAGE_POOLING_GRAD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_MAX_POOLING_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct MaxPoolingGradOperatorDesc
+    struct MaxPoolingGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MaxPoolingGrad;
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Dilations = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_POOLING_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( MaxPoolingGradOperatorDesc ) == sizeof( DML_MAX_POOLING_GRAD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_RANDOM_GENERATOR_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct RandomGeneratorOperatorDesc
+    struct RandomGeneratorOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::RandomGenerator;
         const TensorDesc* InputStateTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
@@ -2508,63 +3222,71 @@ namespace Harlinn::Windows::DML
         RandomGeneratorType Type = RandomGeneratorType::Philox4x32_10;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RANDOM_GENERATOR_OPERATOR_DESC );
     };
+    static_assert( sizeof( RandomGeneratorOperatorDesc ) == sizeof( DML_RANDOM_GENERATOR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_NONZERO_COORDINATES_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct NonZeroCoordinatesOperatorDesc
+    struct NonZeroCoordinatesOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::NonZeroCoordinates;
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* OutputCountTensor = nullptr;
         const TensorDesc* OutputCoordinatesTensor = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_NONZERO_COORDINATES_OPERATOR_DESC );
     };
+    static_assert( sizeof( NonZeroCoordinatesOperatorDesc ) == sizeof( DML_NONZERO_COORDINATES_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_RESAMPLE_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ResampleGradOperatorDesc
+    struct ResampleGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ResampleGrad;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
         DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
-        UINT DimensionCount = 0;
+        UInt32 DimensionCount = 0;
         _Field_size_( DimensionCount ) const FLOAT* Scales = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( ResampleGradOperatorDesc ) == sizeof( DML_RESAMPLE_GRAD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_SLICE_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct SliceGradOperatorDesc
+    struct SliceGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::SliceGrad;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* InputWindowOffsets = nullptr;
-        _Field_size_( DimensionCount ) const UINT* InputWindowSizes = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* InputWindowOffsets = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* InputWindowSizes = nullptr;
         _Field_size_( DimensionCount ) const INT* InputWindowStrides = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SLICE_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( SliceGradOperatorDesc ) == sizeof( DML_SLICE_GRAD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ADAM_OPTIMIZER_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct AdamOptimizerOperatorDesc
+    struct AdamOptimizerOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::AdamOptimizer;
 
         const TensorDesc* InputParametersTensor = nullptr;
@@ -2581,6 +3303,7 @@ namespace Harlinn::Windows::DML
         FLOAT Epsilon = 0.f;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ADAM_OPTIMIZER_OPERATOR_DESC );
     };
+    static_assert( sizeof( AdamOptimizerOperatorDesc ) == sizeof( DML_ADAM_OPTIMIZER_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2589,12 +3312,14 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ArgMinOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ArgMin;
-        UINT AxisCount = 0;
-        _Field_size_( AxisCount ) const UINT* Axes = nullptr;
+        UInt32 AxisCount = 0;
+        _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
         DML::AxisDirection AxisDirection = DML::AxisDirection::Increasing;
-        DML_IMPLEMENT_CONVERSIONS_TO( DML_ADAM_OPTIMIZER_OPERATOR_DESC );
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_ARGMIN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ArgMinOperatorDesc ) == sizeof( DML_ARGMIN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2603,21 +3328,24 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ArgMaxOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ArgMax;
 
-        UINT AxisCount = 0;
-        _Field_size_( AxisCount ) const UINT* Axes = nullptr;
+        UInt32 AxisCount = 0;
+        _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
         DML::AxisDirection AxisDirection = DML::AxisDirection::Increasing;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ARGMAX_OPERATOR_DESC );
     };
+    static_assert( sizeof( ArgMaxOperatorDesc ) == sizeof( DML_ARGMAX_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ROI_ALIGN_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ROIAlignOperatorDesc
+    struct ROIAlignOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ROIAlign;
 
         const TensorDesc* InputTensor = nullptr;
@@ -2629,30 +3357,33 @@ namespace Harlinn::Windows::DML
         FLOAT SpatialScaleX = 0.f;
         FLOAT SpatialScaleY = 0.f;
         FLOAT OutOfBoundsInputValue = 0.f;
-        UINT MinimumSamplesPerOutput = 0;
-        UINT MaximumSamplesPerOutput = 0;
+        UInt32 MinimumSamplesPerOutput = 0;
+        UInt32 MaximumSamplesPerOutput = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ROI_ALIGN_OPERATOR_DESC );
     };
+    static_assert( sizeof( ROIAlignOperatorDesc ) == sizeof( DML_ROI_ALIGN_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_GATHER_ND1_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct GatherND1OperatorDesc
+    struct GatherND1OperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::GatherND1;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT InputDimensionCount = 0;
-        UINT IndicesDimensionCount = 0;
-        UINT BatchDimensionCount = 0;
+        UInt32 InputDimensionCount = 0;
+        UInt32 IndicesDimensionCount = 0;
+        UInt32 BatchDimensionCount = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GATHER_ND1_OPERATOR_DESC );
     };
+    static_assert( sizeof( GatherND1OperatorDesc ) == sizeof( DML_GATHER_ND1_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x3000
 
@@ -2665,17 +3396,26 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseATanYXOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseATanYX;
+
+        ElementWiseATanYXOperatorDesc( ) noexcept = default;
+        ElementWiseATanYXOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ATAN_YX_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseATanYXOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ATAN_YX_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_CLIP_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ElementWiseClipGradOperatorDesc
+    struct ElementWiseClipGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseClipGrad;
 
         const TensorDesc* InputTensor = nullptr;
@@ -2685,6 +3425,7 @@ namespace Harlinn::Windows::DML
         FLOAT Max = 0.f;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CLIP_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseClipGradOperatorDesc ) == sizeof( DML_ELEMENT_WISE_CLIP_GRAD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2693,29 +3434,39 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseDifferenceSquareOperatorDesc : public BinaryOperatorDesc
     {
+        using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseDifferenceSquare;
+
+        ElementWiseDifferenceSquareOperatorDesc( ) noexcept = default;
+        ElementWiseDifferenceSquareOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensorA, inputTensorB, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_DIFFERENCE_SQUARE_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseDifferenceSquareOperatorDesc ) == sizeof( DML_ELEMENT_WISE_DIFFERENCE_SQUARE_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_LOCAL_RESPONSE_NORMALIZATION_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct LocalResponseNormalizationGradOperatorDesc
+    struct LocalResponseNormalizationGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::LocalResponseNormalizationGrad;
 
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
         BOOL CrossChannel = FALSE;
-        UINT LocalSize = 0;
+        UInt32 LocalSize = 0;
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
         FLOAT Bias = 0.f;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LOCAL_RESPONSE_NORMALIZATION_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( LocalResponseNormalizationGradOperatorDesc ) == sizeof( DML_LOCAL_RESPONSE_NORMALIZATION_GRAD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2724,20 +3475,23 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct CumulativeProductOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::CumulativeProduct;
-        UINT Axis = 0;
+        UInt32 Axis = 0;
         DML::AxisDirection AxisDirection = DML::AxisDirection::Increasing;
         BOOL HasExclusiveProduct = FALSE;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CUMULATIVE_PRODUCT_OPERATOR_DESC );
     };
+    static_assert( sizeof( CumulativeProductOperatorDesc ) == sizeof( DML_CUMULATIVE_PRODUCT_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_BATCH_NORMALIZATION_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct BatchNormalizationGradOperatorDesc
+    struct BatchNormalizationGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::BatchNormalizationGrad;
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* InputGradientTensor = nullptr;
@@ -2753,6 +3507,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BATCH_NORMALIZATION_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( BatchNormalizationGradOperatorDesc ) == sizeof( DML_BATCH_NORMALIZATION_GRAD_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x3100
 
@@ -2763,8 +3518,9 @@ namespace Harlinn::Windows::DML
     /// Alias for DML_ELEMENT_WISE_QUANTIZED_LINEAR_ADD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ElementWiseQuantizedLinearAddOperatorDesc
+    struct ElementWiseQuantizedLinearAddOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseQuantizedLinearAdd;
 
         const TensorDesc* ATensor = nullptr;
@@ -2779,6 +3535,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_QUANTIZED_LINEAR_ADD_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseQuantizedLinearAddOperatorDesc ) == sizeof( DML_ELEMENT_WISE_QUANTIZED_LINEAR_ADD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2787,20 +3544,23 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct DynamicQuantizeLinearOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::DynamicQuantizeLinear;
         const TensorDesc* OutputScaleTensor = nullptr;                   // This is an output tensor
         const TensorDesc* OutputZeroPointTensor = nullptr;               // This is an output tensor
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DYNAMIC_QUANTIZE_LINEAR_OPERATOR_DESC );
     };
+    static_assert( sizeof( DynamicQuantizeLinearOperatorDesc ) == sizeof( DML_DYNAMIC_QUANTIZE_LINEAR_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ROI_ALIGN1_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ROIAlign1OperatorDesc
+    struct ROIAlign1OperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ROIAlign1;
 
         const TensorDesc* InputTensor = nullptr;
@@ -2814,12 +3574,13 @@ namespace Harlinn::Windows::DML
         FLOAT InputPixelOffset = 0.f;
         FLOAT OutputPixelOffset = 0.f;
         FLOAT OutOfBoundsInputValue = 0.f;
-        UINT MinimumSamplesPerOutput = 0;
-        UINT MaximumSamplesPerOutput = 0;
+        UInt32 MinimumSamplesPerOutput = 0;
+        UInt32 MaximumSamplesPerOutput = 0;
         BOOL AlignRegionsToCorners = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ROI_ALIGN1_OPERATOR_DESC );
     };
+    static_assert( sizeof( ROIAlign1OperatorDesc ) == sizeof( DML_ROI_ALIGN1_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x4000
 
@@ -2830,8 +3591,9 @@ namespace Harlinn::Windows::DML
     /// Alias for DML_ROI_ALIGN_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ROIAlignGradOperatorDesc
+    struct ROIAlignGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ROIAlignGrad;
 
         _Maybenull_ const TensorDesc* InputTensor = nullptr;
@@ -2846,20 +3608,22 @@ namespace Harlinn::Windows::DML
         FLOAT SpatialScaleY = 0.f;
         FLOAT InputPixelOffset = 0.f;
         FLOAT OutputPixelOffset = 0.f;
-        UINT MinimumSamplesPerOutput = 0;
-        UINT MaximumSamplesPerOutput = 0;
+        UInt32 MinimumSamplesPerOutput = 0;
+        UInt32 MaximumSamplesPerOutput = 0;
         BOOL AlignRegionsToCorners = FALSE;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ROI_ALIGN_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( ROIAlignGradOperatorDesc ) == sizeof( DML_ROI_ALIGN_GRAD_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_BATCH_NORMALIZATION_TRAINING_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct BatchNormalizationTrainingOperatorDesc
+    struct BatchNormalizationTrainingOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::BatchNormalizationTraining;
 
         const TensorDesc* InputTensor = nullptr;
@@ -2874,14 +3638,16 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BATCH_NORMALIZATION_TRAINING_OPERATOR_DESC );
     };
+    static_assert( sizeof( BatchNormalizationTrainingOperatorDesc ) == sizeof( DML_BATCH_NORMALIZATION_TRAINING_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_BATCH_NORMALIZATION_TRAINING_GRAD_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct BatchNormalizationTrainingGradOperatorDesc
+    struct BatchNormalizationTrainingGradOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::BatchNormalizationTrainingGrad;
 
         const TensorDesc* InputTensor = nullptr;
@@ -2896,6 +3662,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BATCH_NORMALIZATION_TRAINING_GRAD_OPERATOR_DESC );
     };
+    static_assert( sizeof( BatchNormalizationTrainingGradOperatorDesc ) == sizeof( DML_BATCH_NORMALIZATION_TRAINING_GRAD_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x4100
 
@@ -2908,6 +3675,7 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseClip1OperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
+        using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseClip1;
 
         TensorDataType MinMaxDataType = TensorDataType::Unknown;
@@ -2916,14 +3684,16 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CLIP1_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseClip1OperatorDesc ) == sizeof( DML_ELEMENT_WISE_CLIP1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_CLIP_GRAD1_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ElementWiseClipGrad1OperatorDesc
+    struct ElementWiseClipGrad1OperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseClipGrad1;
 
         const TensorDesc* InputTensor = nullptr;
@@ -2935,6 +3705,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CLIP_GRAD1_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseClipGrad1OperatorDesc ) == sizeof( DML_ELEMENT_WISE_CLIP_GRAD1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2943,17 +3714,19 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct Padding1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Padding1;
 
         DML::PaddingMode PaddingMode = DML::PaddingMode::Constant;
         TensorDataType PaddingValueDataType = TensorDataType::Unknown;
         ScalarUnion PaddingValue{};
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_PADDING1_OPERATOR_DESC );
     };
+    static_assert( sizeof( Padding1OperatorDesc ) == sizeof( DML_PADDING1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2962,9 +3735,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ElementWiseNegateOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseNegate;
+
+        ElementWiseNegateOperatorDesc( ) noexcept = default;
+        ElementWiseNegateOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_NEGATE_OPERATOR_DESC );
     };
+    static_assert( sizeof( ElementWiseNegateOperatorDesc ) == sizeof( DML_ELEMENT_WISE_NEGATE_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x5000
 
@@ -2977,9 +3758,17 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationGeLUOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationGeLU;
+
+        ActivationGeLUOperatorDesc( ) noexcept = default;
+        ActivationGeLUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_GELU_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationGeLUOperatorDesc ) == sizeof( DML_ACTIVATION_GELU_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -2988,12 +3777,24 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationSoftMax1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationSoftMax1;
-        UINT AxisCount = 0;
-        _Field_size_( AxisCount ) const UINT* Axes = nullptr;
-        DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SOFTMAX1_OPERATOR_DESC );
+        UInt32 AxisCount = 0;
+        _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
 
+        ActivationSoftMax1OperatorDesc( ) noexcept = default;
+        ActivationSoftMax1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 axisCount, const UInt32* axes ) noexcept
+            : Base( inputTensor, outputTensor ), AxisCount( axisCount ), Axes( axes )
+        { }
+        template<SimpleSpanLike T>
+        requires std::is_same_v<UInt32, typename T::value_type>
+        ActivationSoftMax1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const T& axes ) noexcept
+            : Base( inputTensor, outputTensor ), AxisCount( static_cast<UInt32>( axes.size() ) ), Axes( axes.data() )
+        { }
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SOFTMAX1_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationSoftMax1OperatorDesc ) == sizeof( DML_ACTIVATION_SOFTMAX1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -3002,11 +3803,13 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationLogSoftMax1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationLogSoftMax1;
-        UINT AxisCount = 0;
-        _Field_size_( AxisCount ) const UINT* Axes = nullptr;
+        UInt32 AxisCount = 0;
+        _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_LOG_SOFTMAX1_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationLogSoftMax1OperatorDesc ) == sizeof( DML_ACTIVATION_LOG_SOFTMAX1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -3015,11 +3818,13 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationHardMax1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationHardMax1;
-        UINT AxisCount = 0;
-        _Field_size_( AxisCount ) const UINT* Axes = nullptr;
+        UInt32 AxisCount = 0;
+        _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_HARDMAX1_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationHardMax1OperatorDesc ) == sizeof( DML_ACTIVATION_HARDMAX1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -3028,46 +3833,51 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct Resample2OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Resample2;
 
         DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
         AxisDirection RoundingDirection = AxisDirection::Increasing;
-        UINT DimensionCount = 0;
+        UInt32 DimensionCount = 0;
         _Field_size_( DimensionCount ) const FLOAT* Scales = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE2_OPERATOR_DESC );
     };
+    static_assert( sizeof( Resample2OperatorDesc ) == sizeof( DML_RESAMPLE2_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_RESAMPLE_GRAD1_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct ResampleGrad1OperatorDesc
+    struct ResampleGrad1OperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ResampleGrad1;
 
         const TensorDesc* InputGradientTensor;
         const TensorDesc* OutputGradientTensor;
         DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
         AxisDirection RoundingDirection = AxisDirection::Increasing;
-        UINT DimensionCount = 0;
+        UInt32 DimensionCount = 0;
         _Field_size_( DimensionCount ) const FLOAT* Scales = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE_GRAD1_OPERATOR_DESC );
     };
+    static_assert( sizeof( ResampleGrad1OperatorDesc ) == sizeof( DML_RESAMPLE_GRAD1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_DIAGONAL_MATRIX1_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct DiagonalMatrix1OperatorDesc
+    struct DiagonalMatrix1OperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::DiagonalMatrix1;
 
         _Maybenull_ const TensorDesc* InputTensor = nullptr;
@@ -3079,6 +3889,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DIAGONAL_MATRIX1_OPERATOR_DESC );
     };
+    static_assert( sizeof( DiagonalMatrix1OperatorDesc ) == sizeof( DML_DIAGONAL_MATRIX1_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x5100
 
@@ -3089,8 +3900,9 @@ namespace Harlinn::Windows::DML
     /// Alias for DML_MULTIHEAD_ATTENTION_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct MultiheadAttentionOperatorDesc
+    struct MultiheadAttentionOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MultiheadAttention;
 
         _Maybenull_ const TensorDesc* QueryTensor = nullptr;
@@ -3109,11 +3921,12 @@ namespace Harlinn::Windows::DML
         _Maybenull_ const TensorDesc* OutputPresentValueTensor = nullptr;
         FLOAT Scale = 0.f;
         FLOAT MaskFilterValue = 0.f;
-        UINT HeadCount = 0;
+        UInt32 HeadCount = 0;
         MultiheadAttentionMaskType MaskType = MultiheadAttentionMaskType::None;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MULTIHEAD_ATTENTION_OPERATOR_DESC );
     };
+    static_assert( sizeof( MultiheadAttentionOperatorDesc ) == sizeof( DML_MULTIHEAD_ATTENTION_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x6100
 
@@ -3126,38 +3939,42 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct LPPooling1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::LPPooling1;
 
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Dilations = nullptr;
-        UINT P = 0;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
+        UInt32 P = 0;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LP_POOLING1_OPERATOR_DESC );
     };
+    static_assert( sizeof( LPPooling1OperatorDesc ) == sizeof( DML_LP_POOLING1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_AVERAGE_POOLING1_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct DML_AVERAGE_POOLING1_OPERATOR_DESC : public UnaryOperatorDesc
+    struct AveragePooling1OperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::AveragePooling1;
 
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Dilations = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
         BOOL IncludePadding = FALSE;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_AVERAGE_POOLING1_OPERATOR_DESC );
     };
+    static_assert( sizeof( AveragePooling1OperatorDesc ) == sizeof( DML_AVERAGE_POOLING1_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -3166,12 +3983,14 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationSwishOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationSwish;
 
         FLOAT SigmoidInputScale = 0.f;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SWISH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationSwishOperatorDesc ) == sizeof( DML_ACTIVATION_SWISH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
@@ -3180,6 +3999,7 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ActivationHardSwishOperatorDesc : public UnaryOperatorDesc
     {
+        using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationHardSwish;
 
         FLOAT Alpha = 0.f;
@@ -3187,14 +4007,16 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_HARD_SWISH_OPERATOR_DESC );
     };
+    static_assert( sizeof( ActivationHardSwishOperatorDesc ) == sizeof( DML_ACTIVATION_HARD_SWISH_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_QUANTIZED_LINEAR_AVERAGE_POOLING_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct QuantizedLinearAveragePoolingOperatorDesc
+    struct QuantizedLinearAveragePoolingOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::QuantizedLinearAveragePooling;
 
         const TensorDesc* InputTensor = nullptr;
@@ -3203,24 +4025,26 @@ namespace Harlinn::Windows::DML
         const TensorDesc* OutputScaleTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputZeroPointTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
-        UINT DimensionCount = 0;
-        _Field_size_( DimensionCount ) const UINT* Strides = nullptr;
-        _Field_size_( DimensionCount ) const UINT* WindowSize = nullptr;
-        _Field_size_( DimensionCount ) const UINT* StartPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* EndPadding = nullptr;
-        _Field_size_( DimensionCount ) const UINT* Dilations = nullptr;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
         BOOL IncludePadding = FALSE;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_QUANTIZED_LINEAR_AVERAGE_POOLING_OPERATOR_DESC );
     };
+    static_assert( sizeof( QuantizedLinearAveragePoolingOperatorDesc ) == sizeof( DML_QUANTIZED_LINEAR_AVERAGE_POOLING_OPERATOR_DESC ) );
 
     /// <summary>
     /// <para>
     /// Alias for DML_MATRIX_MULTIPLY_INTEGER_TO_FLOAT_OPERATOR_DESC
     /// </para>
     /// </summary>
-    struct MatrixMultiplyIntegerToFloatOperatorDesc
+    struct MatrixMultiplyIntegerToFloatOperatorDesc : public BaseOperatorDesc
     {
+        using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MatrixMultiplyIntegerToFloat;
 
         const TensorDesc* ATensor = nullptr;
@@ -3234,6 +4058,7 @@ namespace Harlinn::Windows::DML
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MATRIX_MULTIPLY_INTEGER_TO_FLOAT_OPERATOR_DESC );
     };
+    static_assert( sizeof( MatrixMultiplyIntegerToFloatOperatorDesc ) == sizeof( DML_MATRIX_MULTIPLY_INTEGER_TO_FLOAT_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x6200
 
@@ -3314,7 +4139,7 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct FeatureQueryFeatureLevels
     {
-        UINT RequestedFeatureLevelCount = 0;
+        UInt32 RequestedFeatureLevelCount = 0;
         _Field_size_( RequestedFeatureLevelCount ) const FeatureLevel* RequestedFeatureLevels = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_FEATURE_QUERY_FEATURE_LEVELS );
@@ -3389,14 +4214,14 @@ namespace Harlinn::Windows::DML
         HCC_COM_STANDARD_METHODS_IMPL( Object, Unknown, IDMLObject, IUnknown )
 
     public:
-        void GetPrivateData( REFGUID guid, _Inout_ UINT* dataSize, _Out_writes_bytes_opt_( *dataSize ) void* data ) const
+        void GetPrivateData( REFGUID guid, _Inout_ UInt32* dataSize, _Out_writes_bytes_opt_( *dataSize ) void* data ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetPrivateData( guid, dataSize, data );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void SetPrivateData( REFGUID guid, UINT dataSize, _In_reads_bytes_opt_( dataSize ) const void* data ) const
+        void SetPrivateData( REFGUID guid, UInt32 dataSize, _In_reads_bytes_opt_( dataSize ) const void* data ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetPrivateData( guid, dataSize, data );
@@ -3425,7 +4250,7 @@ namespace Harlinn::Windows::DML
         HCC_COM_STANDARD_METHODS_IMPL( Device, Object, IDMLDevice, IDMLObject )
 
     public:
-        void CheckFeatureSupport( DML_FEATURE feature, UINT featureQueryDataSize, _In_reads_bytes_opt_( featureQueryDataSize ) const void* featureQueryData, UINT featureSupportDataSize, _Out_writes_bytes_( featureSupportDataSize ) void* featureSupportData ) const
+        void CheckFeatureSupport( DML_FEATURE feature, UInt32 featureQueryDataSize, _In_reads_bytes_opt_( featureQueryDataSize ) const void* featureQueryData, UInt32 featureSupportDataSize, _Out_writes_bytes_( featureSupportDataSize ) void* featureSupportData ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->CheckFeatureSupport( feature, featureQueryDataSize, featureQueryData, featureSupportDataSize, featureSupportData );
@@ -3439,6 +4264,8 @@ namespace Harlinn::Windows::DML
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        Operator CreateOperator( const OperatorDesc* desc ) const;
+
         void CompileOperator( IDMLOperator* op, DML_EXECUTION_FLAGS flags, REFIID riid, _COM_Outptr_opt_ void** ppv ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -3446,7 +4273,10 @@ namespace Harlinn::Windows::DML
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void CreateOperatorInitializer( UINT operatorCount, _In_reads_opt_( operatorCount ) IDMLCompiledOperator* const* operators, REFIID riid, _COM_Outptr_ void** ppv ) const
+        CompiledOperator CompileOperator( const Operator& op, DML::ExecutionFlags flags ) const;
+
+
+        void CreateOperatorInitializer( UInt32 operatorCount, _In_reads_opt_( operatorCount ) IDMLCompiledOperator* const* operators, REFIID riid, _COM_Outptr_ void** ppv ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->CreateOperatorInitializer( operatorCount, operators, riid, ppv );
@@ -3467,14 +4297,14 @@ namespace Harlinn::Windows::DML
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void Evict( UINT count, _In_reads_( count ) IDMLPageable* const* ppObjects ) const
+        void Evict( UInt32 count, _In_reads_( count ) IDMLPageable* const* ppObjects ) const
         { 
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->Evict( count, ppObjects );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void MakeResident( UINT count, _In_reads_( count ) IDMLPageable* const* ppObjects ) const
+        void MakeResident( UInt32 count, _In_reads_( count ) IDMLPageable* const* ppObjects ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->MakeResident( count, ppObjects );
@@ -3531,6 +4361,14 @@ namespace Harlinn::Windows::DML
 
     };
 
+    inline Operator Device::CreateOperator( const OperatorDesc* desc ) const
+    {
+        IDMLOperator* itf = nullptr;
+        CreateOperator( reinterpret_cast< const DML_OPERATOR_DESC* >( desc ), __uuidof( IDMLOperator ), reinterpret_cast< void** >( &itf ) );
+        return Operator( itf );
+    }
+
+
     /// <summary>
     /// <para>
     /// Alias for DML_EXECUTION_FLAGS
@@ -3538,7 +4376,7 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct BindingProperties
     {
-        UINT RequiredDescriptorCount = 0;
+        UInt32 RequiredDescriptorCount = 0;
         UINT64 TemporaryResourceSize = 0;
         UINT64 PersistentResourceSize = 0;
 
@@ -3570,6 +4408,13 @@ namespace Harlinn::Windows::DML
 
     };
 
+    inline CompiledOperator Device::CompileOperator( const Operator& op, DML::ExecutionFlags flags ) const
+    {
+        IDMLCompiledOperator* itf = nullptr;
+        CompileOperator( op.GetInterfacePointer<IDMLOperator>( ), static_cast< DML_EXECUTION_FLAGS >( flags ), __uuidof( IDMLCompiledOperator ), reinterpret_cast< void** >( &itf ) );
+        return CompiledOperator( itf );
+    }
+
     class OperatorInitializer : public Dispatchable
     {
     public:
@@ -3577,7 +4422,7 @@ namespace Harlinn::Windows::DML
         HCC_COM_STANDARD_METHODS_IMPL( OperatorInitializer, Dispatchable, IDMLOperatorInitializer, IDMLDispatchable )
 
     public:
-        void Reset( UINT operatorCount, _In_reads_opt_( operatorCount ) IDMLCompiledOperator* const* operators ) const
+        void Reset( UInt32 operatorCount, _In_reads_opt_( operatorCount ) IDMLCompiledOperator* const* operators ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->Reset( operatorCount, operators );
@@ -3632,7 +4477,7 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct BufferArrayBinding
     {
-        UINT BindingCount = 0;
+        UInt32 BindingCount = 0;
         _Field_size_( BindingCount ) const BufferBinding* Bindings = nullptr;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BUFFER_ARRAY_BINDING );
@@ -3646,13 +4491,13 @@ namespace Harlinn::Windows::DML
         HCC_COM_STANDARD_METHODS_IMPL( BindingTable, DeviceChild, IDMLBindingTable, IDMLDeviceChild )
 
     public:
-        void BindInputs( UINT bindingCount, _In_reads_opt_( bindingCount ) const DML_BINDING_DESC* bindings ) const
+        void BindInputs( UInt32 bindingCount, _In_reads_opt_( bindingCount ) const DML_BINDING_DESC* bindings ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->BindInputs( bindingCount, bindings );
         }
 
-        void BindOutputs( UINT bindingCount, _In_reads_opt_( bindingCount ) const DML_BINDING_DESC* bindings ) const
+        void BindOutputs( UInt32 bindingCount, _In_reads_opt_( bindingCount ) const DML_BINDING_DESC* bindings ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->BindOutputs( bindingCount, bindings );
@@ -3740,9 +4585,9 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct InputGraphEdgeDesc
     {
-        UINT GraphInputIndex;
-        UINT ToNodeIndex;
-        UINT ToNodeInputIndex;
+        UInt32 GraphInputIndex;
+        UInt32 ToNodeIndex;
+        UInt32 ToNodeInputIndex;
         _Field_z_ _Maybenull_ const char* Name;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_INPUT_GRAPH_EDGE_DESC );
@@ -3755,9 +4600,9 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct OutputGraphEdgeDesc
     {
-        UINT FromNodeIndex;
-        UINT FromNodeOutputIndex;
-        UINT GraphOutputIndex;
+        UInt32 FromNodeIndex;
+        UInt32 FromNodeOutputIndex;
+        UInt32 GraphOutputIndex;
         _Field_z_ _Maybenull_ const char* Name;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_OUTPUT_GRAPH_EDGE_DESC );
@@ -3770,10 +4615,10 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct IntermediateGraphEdgeDesc
     {
-        UINT FromNodeIndex;
-        UINT FromNodeOutputIndex;
-        UINT ToNodeIndex;
-        UINT ToNodeInputIndex;
+        UInt32 FromNodeIndex;
+        UInt32 FromNodeOutputIndex;
+        UInt32 ToNodeIndex;
+        UInt32 ToNodeInputIndex;
         _Field_z_ _Maybenull_ const char* Name;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_INTERMEDIATE_GRAPH_EDGE_DESC );
@@ -3784,7 +4629,7 @@ namespace Harlinn::Windows::DML
     /// Alias for DML_GRAPH_NODE_TYPE
     /// </para>
     /// </summary>
-    enum GraphNodeType
+    enum class GraphNodeType
     {
         Invalid = DML_GRAPH_NODE_TYPE_INVALID,
         Operator = DML_GRAPH_NODE_TYPE_OPERATOR,
@@ -3838,19 +4683,19 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct GraphDesc
     {
-        UINT InputCount;
-        UINT OutputCount;
+        UInt32 InputCount;
+        UInt32 OutputCount;
 
-        UINT NodeCount;
+        UInt32 NodeCount;
         _Field_size_( NodeCount ) const GraphNodeDesc* Nodes;
 
-        UINT InputEdgeCount;
+        UInt32 InputEdgeCount;
         _Field_size_opt_( InputEdgeCount ) const GraphEdgeDesc* InputEdges;
 
-        UINT OutputEdgeCount;
+        UInt32 OutputEdgeCount;
         _Field_size_( OutputEdgeCount ) const GraphEdgeDesc* OutputEdges;
 
-        UINT IntermediateEdgeCount;
+        UInt32 IntermediateEdgeCount;
         _Field_size_opt_( IntermediateEdgeCount ) const GraphEdgeDesc* IntermediateEdges;
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GRAPH_DESC );
@@ -3870,6 +4715,13 @@ namespace Harlinn::Windows::DML
             HRESULT hr = pInterface->CompileGraph( desc, flags, riid, ppv );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        CompiledOperator CompileGraph( const GraphDesc& desc, ExecutionFlags flags ) const
+        {
+            IDMLCompiledOperator* itf = nullptr;
+            CompileGraph( desc, static_cast< DML_EXECUTION_FLAGS >( flags ), __uuidof( IDMLCompiledOperator ), reinterpret_cast< void** >( &itf ) );
+            return CompiledOperator( itf );
+        }
+
     };
 
 
@@ -3889,6 +4741,79 @@ namespace Harlinn::Windows::DML
         HCC_COM_CHECK_HRESULT( hr );
     }
 #endif
+
+    inline constexpr UInt64 CalcBufferTensorSize( TensorDataType dataType, UInt32 dimensionCount, _In_reads_( dimensionCount ) const UInt32* sizes, _In_reads_opt_( dimensionCount ) const UInt32* strides )
+    {
+        UInt32 elementSizeInBits = 0;
+        switch ( dataType )
+        {
+            case TensorDataType::Float64:
+            case TensorDataType::UInt64:
+            case TensorDataType::Int64:
+                elementSizeInBits = 64;
+                break;
+            case TensorDataType::Float32:
+            case TensorDataType::UInt32:
+            case TensorDataType::Int32:
+                elementSizeInBits = 32;
+                break;
+
+            case TensorDataType::Float16:
+            case TensorDataType::UInt16:
+            case TensorDataType::Int16:
+                elementSizeInBits = 16;
+                break;
+
+            case TensorDataType::UInt8:
+            case TensorDataType::Int8:
+                elementSizeInBits = 8;
+                break;
+
+#if DML_TARGET_VERSION >= 0x6300
+            case TensorDataType::UInt4:
+            case TensorDataType::Int4:
+                elementSizeInBits = 4;
+                break;
+#endif
+            default:
+                return 0; // Invalid data type
+        }
+
+        UInt64 minimumImpliedSizeInBits = 0;
+        if ( !strides )
+        {
+            minimumImpliedSizeInBits = sizes[ 0 ];
+            for ( UInt32 i = 1; i < dimensionCount; ++i )
+            {
+                minimumImpliedSizeInBits *= sizes[ i ];
+            }
+            minimumImpliedSizeInBits *= elementSizeInBits;
+        }
+        else
+        {
+            UInt32 indexOfLastElement = 0;
+            for ( UInt32 i = 0; i < dimensionCount; ++i )
+            {
+                indexOfLastElement += ( sizes[ i ] - 1 ) * strides[ i ];
+            }
+
+            minimumImpliedSizeInBits = ( static_cast< UINT64 >( indexOfLastElement ) + 1 ) * elementSizeInBits;
+        }
+
+        UInt64 minimumImpliedSizeInBytes = ( minimumImpliedSizeInBits + 7 ) / 8;
+
+        // Round up to the nearest 4 bytes.
+        minimumImpliedSizeInBytes = ( minimumImpliedSizeInBytes + 3 ) & ~3ull;
+
+        return minimumImpliedSizeInBytes;
+    }
+
+    namespace Model
+    {
+        
+
+    }
+
 
 }
 

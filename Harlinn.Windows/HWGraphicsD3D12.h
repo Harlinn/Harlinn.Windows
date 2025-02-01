@@ -2408,6 +2408,13 @@ namespace Harlinn::Windows::Graphics::D3D12
             return SUCCEEDED( hr );
         }
 
+        bool CheckFeatureSupport( D3D12_FEATURE_DATA_FEATURE_LEVELS& options ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CheckFeatureSupport( D3D12_FEATURE_FEATURE_LEVELS, &options, sizeof( D3D12_FEATURE_DATA_FEATURE_LEVELS ) );
+            return SUCCEEDED( hr );
+        }
+
         
         bool CheckFeatureSupport( D3D12_FEATURE_DATA_FORMAT_SUPPORT& formatSupport ) const
         {

@@ -285,6 +285,14 @@ namespace Harlinn::Common::Core::Com
         {
         }
 
+
+        template<typename ...Args>
+        static auto CreateObject( Args&&... args )
+        {
+            ComPtr ptr( new HeapObject<BaseT>( std::forward<Args>( args )... ), false );
+            return ptr;
+        }
+
         template<typename ...Args>
         static HRESULT CreateInstance( void** result, Args&&... args )
         {

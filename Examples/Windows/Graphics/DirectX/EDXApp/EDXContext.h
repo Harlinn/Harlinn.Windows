@@ -1,5 +1,9 @@
+#pragma once
+#ifndef EDXCONTEXT_H_
+#define EDXCONTEXT_H_
+
 /*
-   Copyright 2024 Espen Harlinn
+   Copyright 2024-2025 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,9 +18,19 @@
    limitations under the License.
 */
 
-#include "pch.h"
 
-#include "HWGraphicsD3D12.h"
-#include "HWGraphicsD3D12Video.h"
-#include "HWDirectML.h"
-#include "HWDMLModel.h"
+#include <HWDXApplication.h>
+
+using namespace Harlinn::Windows;
+
+
+class EDXContext : public DXContext
+{
+
+};
+
+
+
+#endif
+
+

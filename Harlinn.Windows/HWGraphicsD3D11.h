@@ -2603,6 +2603,17 @@ namespace Harlinn::Windows::Graphics::D3D11
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        template<typename T>
+            requires std::is_base_of_v<Resource,T>
+        T OpenSharedResource( HANDLE resourceHandle ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            OpenSharedResource1( resourceHandle, __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+            return T( itf );
+        }
+
+
         void OpenSharedResourceByName( LPCWSTR name, DWORD desiredAccess, const Guid& returnedInterface, void** resource) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -3186,6 +3197,25 @@ namespace Harlinn::Windows::Graphics::D3D11
     };
 
 
+    template<typename T = Device>
+        requires std::is_base_of_v<Device,T>
+    T CreateDevice( _In_opt_ IDXGIAdapter* adapter,
+        D3D_DRIVER_TYPE driverType,
+        UINT flags,
+        _In_reads_opt_( numberOfFeatureLevels ) CONST D3D_FEATURE_LEVEL* featureLevels,
+        UINT numberOfFeatureLevels,
+        _COM_Outptr_opt_ ID3D11DeviceContext** immediateContext = nullptr, _Out_opt_ D3D_FEATURE_LEVEL* selectedFeatureLevel = nullptr, HMODULE software = nullptr, UINT sdkVersion = D3D11_SDK_VERSION )
+    {
+        ID3D11Device* deviceItf = nullptr;
+        auto hr = D3D11CreateDevice( adapter, driverType, software, flags, featureLevels, numberOfFeatureLevels, sdkVersion, &deviceItf, selectedFeatureLevel, immediateContext );
+        HCC_COM_CHECK_HRESULT( hr );
+        Device device( deviceItf );
+        if constexpr ( std::is_same_v<Device, T > == false )
+        {
+            return device.As<T>( );
+        }
+        return device;
+    }
 
 }
 
