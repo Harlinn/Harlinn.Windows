@@ -75,5 +75,14 @@
     <ClInclude Include="EDXContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TensorExtents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TensorUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TensorView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -202,7 +202,6 @@ namespace Harlinn::Common::Core
             {
                 return {};
             }
-            return static_cast< ValueType >( value );
         }
         static VariantValueType Convert( const ValueType& value )
         {
@@ -631,7 +630,7 @@ namespace Harlinn::Common::Core
             if ( bstr_ )
             {
                 auto len = SysStringLen( bstr_ );
-                return len > 0;
+                return len == 0;
             }
             return true;
         }

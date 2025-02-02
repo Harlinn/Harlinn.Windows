@@ -231,6 +231,9 @@
   <ItemGroup>
     <ClInclude Include="EDXContext.h" />
     <ClInclude Include="MediaEnginePlayer.h" />
+    <ClInclude Include="TensorExtents.h" />
+    <ClInclude Include="TensorUtil.h" />
+    <ClInclude Include="TensorView.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

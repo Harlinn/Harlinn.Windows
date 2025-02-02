@@ -25,6 +25,8 @@
 
 namespace Harlinn::Windows::Graphics::D3D12
 {
+    class Resource;
+
 #define HWD3D12_IMPLEMENT_CONVERSIONS_TO( name ) \
     operator const name* ( ) const \
     { \
@@ -2489,6 +2491,12 @@ namespace Harlinn::Windows::Graphics::D3D12
         TextureLayout Layout = TextureLayout::Unknown;
         ResourceFlags Flags = ResourceFlags::None;
 
+        ResourceDesc( ) noexcept = default;
+
+        ResourceDesc( const D3D12_RESOURCE_DESC& other ) noexcept
+            : ResourceDesc( reinterpret_cast<const ResourceDesc& >( other ) )
+        { }
+
         ResourceDesc(
             ResourceDimension dimension,
             UInt64 alignment,
@@ -2750,7 +2758,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// Alias for D3D12_RESOURCE_STATES
     /// </para>
     /// </summary>
-    enum class ResourceStates : Int32
+    enum class ResourceStates : UInt32
     {
         Common = D3D12_RESOURCE_STATE_COMMON,
         VertexAndConstantBuffer = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
@@ -2780,7 +2788,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         VideoEncodeRead = D3D12_RESOURCE_STATE_VIDEO_ENCODE_READ,
         VideoEncodeWrite = D3D12_RESOURCE_STATE_VIDEO_ENCODE_WRITE
     };
-
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ResourceStates, UInt32 );
 
     /// <summary>
     /// <para>
@@ -2791,7 +2799,8 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         Transition = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
         Aliasing = D3D12_RESOURCE_BARRIER_TYPE_ALIASING,
-        Uav = D3D12_RESOURCE_BARRIER_TYPE_UAV
+        UAV = D3D12_RESOURCE_BARRIER_TYPE_UAV,
+        UnorderedAccessView = UAV
     };
 
     /// <summary>
@@ -2801,10 +2810,19 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct ResourceTransitionBarrier
     {
-        ID3D12Resource* pResource;
-        UInt32 Subresource;
-        D3D12_RESOURCE_STATES StateBefore;
-        D3D12_RESOURCE_STATES StateAfter;
+        ID3D12Resource* pResource = nullptr;
+        UInt32 Subresource = 0;
+        ResourceStates StateBefore = ResourceStates::Common;
+        ResourceStates StateAfter = ResourceStates::Common;
+
+        ResourceTransitionBarrier( ) noexcept = default;
+
+        ResourceTransitionBarrier( ID3D12Resource* resource, UInt32 subresource, ResourceStates stateBefore, ResourceStates stateAfter ) noexcept
+            : pResource( resource ), Subresource( subresource ), StateBefore( stateBefore ), StateAfter( stateAfter )
+        { }
+
+        ResourceTransitionBarrier( const Resource& resource, UInt32 subresource, ResourceStates stateBefore, ResourceStates stateAfter ) noexcept;
+
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_TRANSITION_BARRIER );
     };
@@ -2816,8 +2834,16 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct ResourceAliasingBarrier
     {
-        ID3D12Resource* pResourceBefore;
-        ID3D12Resource* pResourceAfter;
+        ID3D12Resource* pResourceBefore = nullptr;
+        ID3D12Resource* pResourceAfter = nullptr;
+
+        ResourceAliasingBarrier( ) noexcept = default;
+
+        ResourceAliasingBarrier( ID3D12Resource* resourceBefore, ID3D12Resource* resourceAfter ) noexcept
+            : pResourceBefore( resourceBefore ), pResourceAfter( resourceAfter )
+        { }
+
+        ResourceAliasingBarrier( const Resource& resourceBefore, const Resource& resourceAfter ) noexcept;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_ALIASING_BARRIER );
     };
@@ -2827,9 +2853,16 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// Alias for D3D12_RESOURCE_UAV_BARRIER
     /// </para>
     /// </summary>
-    struct ResourceUavBarrier
+    struct ResourceUAVBarrier
     {
-        ID3D12Resource* pResource;
+        ID3D12Resource* pResource = nullptr;
+
+        ResourceUAVBarrier( ) noexcept = default;
+
+        explicit ResourceUAVBarrier( ID3D12Resource* resource ) noexcept
+            : pResource( resource )
+        { }
+        explicit ResourceUAVBarrier( const Resource& resource ) noexcept;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_UAV_BARRIER );
     };
@@ -2850,19 +2883,150 @@ namespace Harlinn::Windows::Graphics::D3D12
 
     /// <summary>
     /// <para>
+    /// Describes a resource barrier (transition in resource use).
+    /// </para>
+    /// <para>
     /// Alias for D3D12_RESOURCE_BARRIER
     /// </para>
     /// </summary>
     struct ResourceBarrier
     {
-        ResourceBarrierType Type;
-        ResourceBarrierFlags Flags;
+        ResourceBarrierType Type = ResourceBarrierType::Transition;
+        ResourceBarrierFlags Flags = ResourceBarrierFlags::None;
         union
         {
             ResourceTransitionBarrier Transition;
             ResourceAliasingBarrier Aliasing;
-            ResourceUavBarrier UAV;
+            ResourceUAVBarrier UAV;
         };
+
+        ResourceBarrier() noexcept
+            : Transition{}
+        { }
+
+        /// <summary>
+        /// Creates a ResourceBarrier that describes the transition of subresources between different usages.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource used in the transition.
+        /// </param>
+        /// <param name="stateBefore">
+        /// The "before" usages of the subresources, as a bitwise-OR'd combination of <c>ResourceStates</c> enumeration constants.
+        /// </param>
+        /// <param name="stateAfter">
+        /// The "after" usages of the subresources, as a bitwise-OR'd combination of <c>ResourceStates</c> enumeration constants.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        /// <param name="subresource">
+        /// The index of the subresource for the transition. Defaults to the 
+        /// D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES flag ( 0xffffffff ) which 
+        /// transitions all subresources in a resource at the same time.
+        /// </param>
+        ResourceBarrier( ID3D12Resource* resource, ResourceStates stateBefore, ResourceStates stateAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None, UInt32 subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES ) noexcept
+            : Type( ResourceBarrierType::Transition ), Flags( flags ), Transition( resource, subresource, stateBefore, stateAfter )
+        { }
+
+        /// <summary>
+        /// Creates a ResourceBarrier that describes the transition of subresources between different usages.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource used in the transition.
+        /// </param>
+        /// <param name="stateBefore">
+        /// The "before" usages of the subresources, as a bitwise-OR'd combination of <c>ResourceStates</c> enumeration constants.
+        /// </param>
+        /// <param name="stateAfter">
+        /// The "after" usages of the subresources, as a bitwise-OR'd combination of <c>ResourceStates</c> enumeration constants.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        /// <param name="subresource">
+        /// The index of the subresource for the transition. Defaults to the 
+        /// D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES flag ( 0xffffffff ) which 
+        /// transitions all subresources in a resource at the same time.
+        /// </param>
+        ResourceBarrier( const Resource& resource, ResourceStates stateBefore, ResourceStates stateAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None, UInt32 subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES ) noexcept
+            : Type( ResourceBarrierType::Transition ), Flags( flags ), Transition( resource, subresource, stateBefore, stateAfter )
+        { }
+
+        /// <summary>
+        /// Creates a ResourceBarrier that describes the transition 
+        /// between usages of two different resources that have 
+        /// mappings into the same heap.
+        /// </summary>
+        /// <param name="resourceBefore">
+        /// Represents the before resource used in the transition.
+        /// </param>
+        /// <param name="resourceAfter">
+        /// Represents the after resource used in the transition.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        /// <remarks>
+        /// Both the before and the after resources can be specified 
+        /// or one or both resources can be NULL, which indicates that 
+        /// any placed or reserved resource could cause aliasing.
+        /// </remarks>
+        ResourceBarrier( ID3D12Resource* resourceBefore, ID3D12Resource* resourceAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+            : Type( ResourceBarrierType::Aliasing ), Flags( flags ), Aliasing( resourceBefore, resourceAfter )
+        { }
+        
+        /// <summary>
+        /// Creates a ResourceBarrier that describes the transition 
+        /// between usages of two different resources that have 
+        /// mappings into the same heap.
+        /// </summary>
+        /// <param name="resourceBefore">
+        /// Represents the before resource used in the transition.
+        /// </param>
+        /// <param name="resourceAfter">
+        /// Represents the after resource used in the transition.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        /// <remarks>
+        /// Both the before and the after resources can be specified 
+        /// or one or both resources can be NULL, which indicates that 
+        /// any placed or reserved resource could cause aliasing.
+        /// </remarks>
+        ResourceBarrier( const Resource& resourceBefore, const Resource& resourceAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+            : Type( ResourceBarrierType::Aliasing ), Flags( flags ), Aliasing( resourceBefore, resourceAfter )
+        { }
+
+        /// <summary>
+        /// Creates a ResourceBarrier representing a resource for 
+        /// which all UAV accesses must complete before any future UAV accesses can begin.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource used in the transition.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        explicit ResourceBarrier( ID3D12Resource* resource, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+            : Type( ResourceBarrierType::UAV ), Flags( flags ), UAV( resource )
+        { }
+        /// <summary>
+        /// Creates a ResourceBarrier representing a resource for 
+        /// which all UAV accesses must complete before any future UAV accesses can begin.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource used in the transition.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        explicit ResourceBarrier( const Resource& resource, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+            : Type( ResourceBarrierType::UAV ), Flags( flags ), UAV( resource )
+        { }
+        
+
+
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_BARRIER );
     };
 
@@ -2873,11 +3037,11 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct SubresourceFootprint
     {
-        DXGI::Format Format;
-        UInt32 Width;
-        UInt32 Height;
-        UInt32 Depth;
-        UInt32 RowPitch;
+        DXGI::Format Format = DXGI::Format::Unknown;
+        UInt32 Width = 0;
+        UInt32 Height = 0;
+        UInt32 Depth = 0;
+        UInt32 RowPitch = 0;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_FOOTPRINT );
     };
@@ -2889,7 +3053,7 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct PlacedSubresourceFootprint
     {
-        UInt64 Offset;
+        UInt64 Offset = 0;
         SubresourceFootprint Footprint;
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_PLACED_SUBRESOURCE_FOOTPRINT );
@@ -2913,13 +3077,43 @@ namespace Harlinn::Windows::Graphics::D3D12
     /// </summary>
     struct TextureCopyLocation
     {
-        ID3D12Resource* pResource;
-        TextureCopyType Type;
+        ID3D12Resource* pResource = nullptr;
+        TextureCopyType Type = TextureCopyType::SubresourceIndex;
         union
         {
             PlacedSubresourceFootprint PlacedFootprint;
             UInt32 SubresourceIndex;
         };
+
+        TextureCopyLocation( )
+            : PlacedFootprint{}
+        { }
+
+        explicit TextureCopyLocation( const TextureCopyLocation& other ) 
+            : pResource( other.pResource ), Type( other.Type ), PlacedFootprint( other.PlacedFootprint )
+        { }
+        TextureCopyLocation( _In_ ID3D12Resource* resource )
+            : pResource( resource ), PlacedFootprint{}
+        { }
+        TextureCopyLocation( const Resource& resource );
+
+        TextureCopyLocation( _In_ ID3D12Resource* resource, const D3D12_PLACED_SUBRESOURCE_FOOTPRINT& footprint )
+            : pResource( resource ), Type(TextureCopyType::PlacedFootprint), PlacedFootprint( reinterpret_cast< const PlacedSubresourceFootprint& >( footprint ) )
+        { }
+
+        TextureCopyLocation( _In_ ID3D12Resource* resource, const PlacedSubresourceFootprint& footprint )
+            : pResource( resource ), Type( TextureCopyType::PlacedFootprint ), PlacedFootprint( footprint )
+        { }
+
+        TextureCopyLocation( const Resource& resource, const D3D12_PLACED_SUBRESOURCE_FOOTPRINT& footprint );
+
+        TextureCopyLocation( const Resource& resource, const PlacedSubresourceFootprint& footprint );
+
+        TextureCopyLocation( _In_ ID3D12Resource* resource, UINT subresourceIndex )
+            : pResource( resource ), SubresourceIndex( subresourceIndex )
+        { }
+
+        TextureCopyLocation( const Resource& resource, UINT subresourceIndex );
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_TEXTURE_COPY_LOCATION );
     };
@@ -4446,6 +4640,16 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 NumDescriptors = 0;
         DescriptorHeapFlags Flags = DescriptorHeapFlags::None;
         UInt32 NodeMask = 0;
+
+        DescriptorHeapDesc( ) noexcept = default;
+
+        DescriptorHeapDesc( UInt32 numDescriptors, DescriptorHeapFlags flags, UInt32 nodeMask = 0 ) noexcept
+            : NumDescriptors( numDescriptors ), Flags( flags ), NodeMask( nodeMask )
+        { }
+
+        DescriptorHeapDesc( DescriptorHeapType type, UInt32 numDescriptors, DescriptorHeapFlags flags, UInt32 nodeMask = 0 ) noexcept
+            : Type( type ), NumDescriptors( numDescriptors ), Flags( flags ), NodeMask( nodeMask )
+        { }
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DESCRIPTOR_HEAP_DESC );
     };
@@ -7814,6 +8018,52 @@ namespace Harlinn::Windows::Graphics::D3D12
     };
 
     
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SUBRESOURCE_DATA
+    /// </para>
+    /// </summary>
+    struct SubResourceData
+    {
+        const void* pData = nullptr;
+        LONG_PTR RowPitch = 0;
+        LONG_PTR SlicePitch = 0;
+
+        SubResourceData( ) noexcept = default;
+        SubResourceData( const void* data, LONG_PTR rowPitch ) noexcept
+            : pData( data ), RowPitch( rowPitch ), SlicePitch( rowPitch )
+        { }
+        SubResourceData( const void* data, LONG_PTR rowPitch, LONG_PTR slicePitch ) noexcept
+            : pData( data ), RowPitch( rowPitch ), SlicePitch( slicePitch )
+        { }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_SUBRESOURCE_DATA );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MEMCPY_DEST
+    /// </para>
+    /// </summary>
+    struct MemCopyDest
+    {
+        void* pData = nullptr;
+        SIZE_T RowPitch = 0;
+        SIZE_T SlicePitch = 0;
+
+        MemCopyDest( ) noexcept = default;
+
+        MemCopyDest( void* data, SIZE_T rowPitch ) noexcept
+            : pData( data ), RowPitch( rowPitch ), SlicePitch( rowPitch )
+        {
+        }
+        MemCopyDest( void* data, SIZE_T rowPitch, SIZE_T slicePitch ) noexcept
+            : pData( data ), RowPitch( rowPitch ), SlicePitch( slicePitch )
+        {
+        }
+
+        HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_MEMCPY_DEST );
+    };
 
 
 

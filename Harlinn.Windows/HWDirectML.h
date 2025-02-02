@@ -98,6 +98,74 @@ namespace Harlinn::Windows::DML
 
     HCC_DEFINE_ENUM_FLAG_OPERATORS( TensorFlags, UInt32 );
 
+    inline constexpr UInt64 CalcBufferTensorSize( TensorDataType dataType, UInt32 dimensionCount, _In_reads_( dimensionCount ) const UInt32* sizes, _In_reads_opt_( dimensionCount ) const UInt32* strides )
+    {
+        UInt32 elementSizeInBits = 0;
+        switch ( dataType )
+        {
+            case TensorDataType::Float64:
+            case TensorDataType::UInt64:
+            case TensorDataType::Int64:
+                elementSizeInBits = 64;
+                break;
+            case TensorDataType::Float32:
+            case TensorDataType::UInt32:
+            case TensorDataType::Int32:
+                elementSizeInBits = 32;
+                break;
+
+            case TensorDataType::Float16:
+            case TensorDataType::UInt16:
+            case TensorDataType::Int16:
+                elementSizeInBits = 16;
+                break;
+
+            case TensorDataType::UInt8:
+            case TensorDataType::Int8:
+                elementSizeInBits = 8;
+                break;
+
+#if DML_TARGET_VERSION >= 0x6300
+            case TensorDataType::UInt4:
+            case TensorDataType::Int4:
+                elementSizeInBits = 4;
+                break;
+#endif
+            default:
+                return 0; // Invalid data type
+        }
+
+        UInt64 minimumImpliedSizeInBits = 0;
+        if ( !strides )
+        {
+            minimumImpliedSizeInBits = sizes[ 0 ];
+            for ( UInt32 i = 1; i < dimensionCount; ++i )
+            {
+                minimumImpliedSizeInBits *= sizes[ i ];
+            }
+            minimumImpliedSizeInBits *= elementSizeInBits;
+        }
+        else
+        {
+            UInt32 indexOfLastElement = 0;
+            for ( UInt32 i = 0; i < dimensionCount; ++i )
+            {
+                indexOfLastElement += ( sizes[ i ] - 1 ) * strides[ i ];
+            }
+
+            minimumImpliedSizeInBits = ( static_cast< UINT64 >( indexOfLastElement ) + 1 ) * elementSizeInBits;
+        }
+
+        UInt64 minimumImpliedSizeInBytes = ( minimumImpliedSizeInBits + 7 ) / 8;
+
+        // Round up to the nearest 4 bytes.
+        minimumImpliedSizeInBytes = ( minimumImpliedSizeInBytes + 3 ) & ~3ull;
+
+        return minimumImpliedSizeInBytes;
+    }
+
+
+
     /// <summary>
     /// <para>
     /// Alias for DML_BUFFER_TENSOR_DESC
@@ -105,13 +173,25 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct BufferTensorDesc
     {
-        TensorDataType DataType;
-        TensorFlags Flags;
-        UInt32 DimensionCount;
-        _Field_size_( DimensionCount ) const UInt32* Sizes;
-        _Field_size_opt_( DimensionCount ) const UInt32* Strides;
-        UInt64 TotalTensorSizeInBytes;
-        UInt32 GuaranteedBaseOffsetAlignment;
+        TensorDataType DataType = TensorDataType::Unknown;
+        TensorFlags Flags = TensorFlags::None;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const UInt32* Sizes = nullptr;
+        _Field_size_opt_( DimensionCount ) const UInt32* Strides = nullptr;
+        UInt64 TotalTensorSizeInBytes = 0;
+        UInt32 GuaranteedBaseOffsetAlignment = 0;
+
+        BufferTensorDesc( ) noexcept = default;
+
+        BufferTensorDesc( TensorDataType dataType, TensorFlags flags, UInt32 dimensionCount = 0, const UInt32* sizes = nullptr, const UInt32* strides = nullptr)
+            : DataType( dataType ), Flags( flags ), DimensionCount( dimensionCount ), Sizes( sizes ), Strides( strides )
+        { 
+            TotalTensorSizeInBytes = CalcBufferTensorSize( dataType, dimensionCount, sizes, strides );
+        }
+
+        BufferTensorDesc( TensorDataType dataType, TensorFlags flags, UInt32 dimensionCount, const UInt32* sizes, const UInt32* strides, UInt64 totalTensorSizeInBytes, UInt32 guaranteedBaseOffsetAlignment = 0 )
+            : DataType( dataType ), Flags( flags ), DimensionCount( dimensionCount ), Sizes( sizes ), Strides( strides ), TotalTensorSizeInBytes( totalTensorSizeInBytes ), GuaranteedBaseOffsetAlignment( guaranteedBaseOffsetAlignment )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BUFFER_TENSOR_DESC );
     };
@@ -123,8 +203,24 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct TensorDesc
     {
-        TensorType Type;
-        _Field_size_( _Inexpressible_( "Dependent on tensor type" ) ) const void* Desc;
+        TensorType Type = TensorType::Invalid;
+        _Field_size_( _Inexpressible_( "Dependent on tensor type" ) ) const void* Desc = nullptr;
+
+        TensorDesc( ) noexcept = default;
+        TensorDesc( TensorType type, const void* desc )
+            : Type( type ), Desc( desc )
+        { }
+
+        TensorDesc( const BufferTensorDesc* desc )
+            : Type( TensorType::Buffer ), Desc( reinterpret_cast<const void*>( desc ) )
+        { }
+
+        TensorDesc& operator = ( const BufferTensorDesc* desc )
+        {
+            Type = TensorType::Buffer;
+            Desc = reinterpret_cast< const void* >( desc );
+            return *this;
+        }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_TENSOR_DESC );
     };
@@ -436,8 +532,14 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct ScaleBias
     {
-        FLOAT Scale;
-        FLOAT Bias;
+        FLOAT Scale = 0;
+        FLOAT Bias = 0;
+
+        ScaleBias( ) noexcept = default;
+        ScaleBias( FLOAT scale, FLOAT bias ) noexcept
+            : Scale( scale ), Bias( bias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SCALE_BIAS );
     };
 
@@ -448,8 +550,13 @@ namespace Harlinn::Windows::DML
     /// </summary>
     struct Size2D
     {
-        UInt32 Width;
-        UInt32 Height;
+        UInt32 Width = 0;
+        UInt32 Height = 0;
+
+        Size2D( ) noexcept = default;
+        Size2D( UInt32 width, UInt32 height ) noexcept
+            : Width( width ), Height( height )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SIZE_2D );
     };
@@ -533,6 +640,10 @@ namespace Harlinn::Windows::DML
         FLOAT  Float32;
         DOUBLE Float64;
 
+        ScalarUnion()
+            : UInt64( 0 )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SCALAR_UNION );
     };
 
@@ -574,21 +685,9 @@ namespace Harlinn::Windows::DML
     //   Operator descriptions
     // ===================================================================================================================
 
-    /// <summary>
-    /// <para>
-    /// Alias for DML_OPERATOR_DESC
-    /// </para>
-    /// </summary>
-    struct OperatorDesc
-    {
-        OperatorType Type;
-        _Field_size_( _Inexpressible_( "Dependent on operator type" ) ) const void* Desc;
-
-        DML_IMPLEMENT_CONVERSIONS_TO( DML_OPERATOR_DESC );
-    };
-
     struct BaseOperatorDesc abstract
-    { };
+    {
+    };
 
     struct UnaryOperatorDesc  abstract : public BaseOperatorDesc
     {
@@ -597,9 +696,10 @@ namespace Harlinn::Windows::DML
         const TensorDesc* OutputTensor = nullptr;
 
         UnaryOperatorDesc( ) noexcept = default;
-        UnaryOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept 
+        UnaryOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
             : InputTensor( inputTensor ), OutputTensor( outputTensor )
-        { }
+        {
+        }
     };
 
     struct BinaryOperatorDesc abstract : public BaseOperatorDesc
@@ -612,7 +712,8 @@ namespace Harlinn::Windows::DML
         BinaryOperatorDesc( ) noexcept = default;
         BinaryOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
             : ATensor( inputTensorA ), BTensor( inputTensorB ), OutputTensor( outputTensor )
-        { }
+        {
+        }
 
     };
 
@@ -624,8 +725,45 @@ namespace Harlinn::Windows::DML
         UnaryOperatorWithScaleBiasDesc( ) noexcept = default;
         UnaryOperatorWithScaleBiasDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
             : Base( inputTensor, outputTensor ), ScaleBias( scaleBias )
-        { }
+        {
+        }
     };
+
+    /// <summary>
+    /// <para>
+    /// Alias for DML_OPERATOR_DESC
+    /// </para>
+    /// </summary>
+    struct OperatorDesc
+    {
+        OperatorType Type = OperatorType::Invalid;
+        _Field_size_( _Inexpressible_( "Dependent on operator type" ) ) const void* Desc = nullptr;
+
+        OperatorDesc( ) noexcept = default;
+
+        OperatorDesc( OperatorType type, const void* desc ) noexcept
+            : Type( type ), Desc( desc )
+        { }
+
+        template<typename T>
+            requires std::is_base_of_v<BaseOperatorDesc, T>
+        OperatorDesc( const T* desc ) noexcept
+            : Type( T::OperatorType ), Desc( reinterpret_cast<const void*>( desc ) )
+        { }
+
+        template<typename T>
+            requires std::is_base_of_v<BaseOperatorDesc, T>
+        OperatorDesc& operator = ( const T* desc ) noexcept
+        {
+            Type = T::OperatorType; 
+            Desc = reinterpret_cast< const void* >( desc );
+            return *this;
+        }
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_OPERATOR_DESC );
+    };
+
+    
 
 
     /// <summary>
@@ -989,6 +1127,12 @@ namespace Harlinn::Windows::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseLogicalNot;
+
+        ElementWiseLogicalNotOperatorDesc( ) noexcept = default;
+        ElementWiseLogicalNotOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_LOGICAL_NOT_OPERATOR_DESC );
     };
     static_assert( sizeof( ElementWiseLogicalNotOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_NOT_OPERATOR_DESC ) );
@@ -1117,10 +1261,16 @@ namespace Harlinn::Windows::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWisePow;
+
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* ExponentTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
         _Maybenull_ const ScaleBias* ScaleBias = nullptr;
+
+        ElementWisePowOperatorDesc( ) noexcept = default;
+        ElementWisePowOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* exponentTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr )
+            : InputTensor( inputTensor ), ExponentTensor( exponentTensor ), OutputTensor( outputTensor ), ScaleBias( scaleBias )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_POW_OPERATOR_DESC );
     };
@@ -1137,6 +1287,11 @@ namespace Harlinn::Windows::DML
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseConstantPow;
 
         FLOAT Exponent = 0.f;
+
+        ElementWiseConstantPowOperatorDesc( ) noexcept = default;
+        ElementWiseConstantPowOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr, FLOAT exponent = 0.f ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias ), Exponent( exponent )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CONSTANT_POW_OPERATOR_DESC );
     };
@@ -1248,6 +1403,11 @@ namespace Harlinn::Windows::DML
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseThreshold;
         FLOAT Min = 0.f;
 
+        ElementWiseThresholdOperatorDesc( ) noexcept = default;
+        ElementWiseThresholdOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr, FLOAT min = 0.f  ) noexcept
+            : Base( inputTensor, outputTensor, scaleBias ), Min( min )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_THRESHOLD_OPERATOR_DESC );
     };
     static_assert( sizeof( ElementWiseThresholdOperatorDesc ) == sizeof( DML_ELEMENT_WISE_THRESHOLD_OPERATOR_DESC ) );
@@ -1266,6 +1426,11 @@ namespace Harlinn::Windows::DML
         const TensorDesc* ScaleTensor = nullptr;
         _Maybenull_ const TensorDesc* ZeroPointTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
+
+        ElementWiseQuantizeLinearOperatorDesc( ) noexcept = default;
+        ElementWiseQuantizeLinearOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* scaleTensor = nullptr, const TensorDesc* zeroPointTensor = nullptr ) noexcept
+            : InputTensor( inputTensor ), ScaleTensor( scaleTensor ), ZeroPointTensor( zeroPointTensor ), OutputTensor( outputTensor )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_QUANTIZE_LINEAR_OPERATOR_DESC );
     };
@@ -1286,6 +1451,11 @@ namespace Harlinn::Windows::DML
         _Maybenull_ const TensorDesc* ZeroPointTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
 
+        ElementWiseDequantizeLinearOperatorDesc( ) noexcept = default;
+        ElementWiseDequantizeLinearOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* scaleTensor = nullptr, const TensorDesc* zeroPointTensor = nullptr ) noexcept
+            : InputTensor( inputTensor ), ScaleTensor( scaleTensor ), ZeroPointTensor( zeroPointTensor ), OutputTensor( outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_DEQUANTIZE_LINEAR_OPERATOR_DESC );
     };
     static_assert( sizeof( ElementWiseDequantizeLinearOperatorDesc ) == sizeof( DML_ELEMENT_WISE_DEQUANTIZE_LINEAR_OPERATOR_DESC ) );
@@ -1305,8 +1475,7 @@ namespace Harlinn::Windows::DML
         ActivationELUOperatorDesc( ) noexcept = default;
         ActivationELUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 1.f ) noexcept
             : Base( inputTensor, outputTensor ), Alpha( alpha )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_ELU_OPERATOR_DESC );
     };
@@ -1346,8 +1515,7 @@ namespace Harlinn::Windows::DML
         ActivationHardSigmoidOperatorDesc( ) noexcept = default;
         ActivationHardSigmoidOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 0.2f, float beta = 0.5f ) noexcept
             : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_HARD_SIGMOID_OPERATOR_DESC );
     };
@@ -1407,8 +1575,7 @@ namespace Harlinn::Windows::DML
         ActivationLinearOperatorDesc( ) noexcept = default;
         ActivationLinearOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha, float beta ) noexcept
             : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_LINEAR_OPERATOR_DESC );
     };
@@ -1445,6 +1612,11 @@ namespace Harlinn::Windows::DML
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* SlopeTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
+
+        ActivationParameterizedReLUOperatorDesc( ) noexcept = default;
+        ActivationParameterizedReLUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* slopeTensor = nullptr ) noexcept
+            : InputTensor( inputTensor ), SlopeTensor( slopeTensor ), OutputTensor( outputTensor )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_PARAMETERIZED_RELU_OPERATOR_DESC );
     };
@@ -1485,8 +1657,7 @@ namespace Harlinn::Windows::DML
         ActivationReLUOperatorDesc( ) noexcept = default;
         ActivationReLUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
             : Base( inputTensor, outputTensor )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_RELU_OPERATOR_DESC );
     };
@@ -1589,8 +1760,7 @@ namespace Harlinn::Windows::DML
         ActivationSoftPlusOperatorDesc( ) noexcept = default;
         ActivationSoftPlusOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float steepness = 0.f ) noexcept
             : Base( inputTensor, outputTensor ), Steepness( steepness )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SOFTPLUS_OPERATOR_DESC );
     };
@@ -1649,8 +1819,7 @@ namespace Harlinn::Windows::DML
         ActivationThresholdedReLUOperatorDesc( ) noexcept = default;
         ActivationThresholdedReLUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 1.0f ) noexcept
             : Base( inputTensor, outputTensor ), Alpha( alpha )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_THRESHOLDED_RELU_OPERATOR_DESC );
     };
@@ -1681,6 +1850,17 @@ namespace Harlinn::Windows::DML
         UInt32 GroupCount = 0;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
+        ConvolutionOperatorDesc( ) noexcept = default;
+        ConvolutionOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* filterTensor, const TensorDesc* biasTensor = nullptr,
+            ConvolutionMode mode = ConvolutionMode::Convolution, ConvolutionDirection direction = ConvolutionDirection::Forward, UInt32 dimensionCount = 0,
+            const UInt32* strides = nullptr, const UInt32* dilations = nullptr, const UInt32* startPadding = nullptr, const UInt32* endPadding = nullptr, const UInt32* outputPadding = nullptr,
+            UInt32 groupCount = 0, const OperatorDesc* fusedActivation = nullptr ) noexcept
+            : InputTensor( inputTensor ), OutputTensor( outputTensor ), FilterTensor( filterTensor ), BiasTensor( biasTensor ),
+              Mode( mode ), Direction( direction ), DimensionCount( dimensionCount ),
+              Strides( strides ), Dilations( dilations ), StartPadding( startPadding ), EndPadding( endPadding ), OutputPadding( outputPadding ),
+              GroupCount( groupCount ), FusedActivation( fusedActivation )
+        {}
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CONVOLUTION_OPERATOR_DESC );
     };
     static_assert( sizeof( ConvolutionOperatorDesc ) == sizeof( DML_CONVOLUTION_OPERATOR_DESC ) );
@@ -1705,6 +1885,12 @@ namespace Harlinn::Windows::DML
         FLOAT Beta = 0.f;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
+        GEMMOperatorDesc( ) noexcept = default;
+        GEMMOperatorDesc( const TensorDesc* aTensor, const TensorDesc* bTensor, const TensorDesc* outputTensor, const TensorDesc* cTensor, FLOAT alpha = 0.f, FLOAT beta = 0.f,
+            MatrixTransform transA = MatrixTransform::None, MatrixTransform transB = MatrixTransform::None, const OperatorDesc* fusedActivation = nullptr ) noexcept
+            : ATensor( aTensor ), BTensor( bTensor ), CTensor( cTensor ), OutputTensor( outputTensor ), TransA( transA ), TransB( transB ), Alpha( alpha ), Beta( beta ), FusedActivation( fusedActivation )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GEMM_OPERATOR_DESC );
     };
     static_assert( sizeof( GEMMOperatorDesc ) == sizeof( DML_GEMM_OPERATOR_DESC ) );
@@ -1724,6 +1910,11 @@ namespace Harlinn::Windows::DML
         const TensorDesc* OutputTensor = nullptr;
         UInt32 AxisCount = 0;
         _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
+
+        ReduceOperatorDesc( ) noexcept = default;
+        ReduceOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, ReduceFunction function = ReduceFunction::ArgMax, UInt32 axisCount = 0, const UInt32* axes = nullptr ) noexcept
+            : Function( function ), InputTensor( inputTensor ), OutputTensor( outputTensor ), AxisCount( axisCount ), Axes( axes )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_REDUCE_OPERATOR_DESC );
     };
@@ -1746,6 +1937,12 @@ namespace Harlinn::Windows::DML
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         BOOL IncludePadding = FALSE;
 
+        AveragePoolingOperatorDesc( ) noexcept = default;
+        AveragePoolingOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount = 0, 
+              const UInt32* strides = nullptr, const UInt32* windowSize = nullptr, const UInt32* startPadding = nullptr, const UInt32* endPadding = nullptr, bool includePadding = false ) noexcept
+            : Base( inputTensor, outputTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding ), IncludePadding( includePadding )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_AVERAGE_POOLING_OPERATOR_DESC );
     };
     static_assert( sizeof( AveragePoolingOperatorDesc ) == sizeof( DML_AVERAGE_POOLING_OPERATOR_DESC ) );
@@ -1766,6 +1963,12 @@ namespace Harlinn::Windows::DML
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         UInt32 P = 0;
 
+        LPPoolingOperatorDesc( ) noexcept = default;
+        LPPoolingOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount = 0,
+              const UInt32* strides = nullptr, const UInt32* windowSize = nullptr, const UInt32* startPadding = nullptr, const UInt32* endPadding = nullptr, UInt32 p = 0 ) noexcept
+            : Base( inputTensor, outputTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding ), P( p )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LP_POOLING_OPERATOR_DESC );
     };
     static_assert( sizeof( LPPoolingOperatorDesc ) == sizeof( DML_LP_POOLING_OPERATOR_DESC ) );
@@ -1784,6 +1987,12 @@ namespace Harlinn::Windows::DML
         _Field_size_( DimensionCount ) const UInt32* WindowSize = nullptr;
         _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
+
+        MaxPoolingOperatorDesc( ) noexcept = default;
+        MaxPoolingOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount = 0,
+            const UInt32* strides = nullptr, const UInt32* windowSize = nullptr, const UInt32* startPadding = nullptr, const UInt32* endPadding = nullptr ) noexcept
+            : Base( inputTensor, outputTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_POOLING_OPERATOR_DESC );
     };
@@ -1805,6 +2014,11 @@ namespace Harlinn::Windows::DML
         FLOAT SpatialScale = 0.f;
         Size2D PooledSize;
 
+        ROIPoolingOperatorDesc( ) noexcept = default;
+        ROIPoolingOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* roiTensor = nullptr, FLOAT spatialScale = 0.f, Size2D pooledSize = {} ) noexcept
+            : InputTensor( inputTensor ), ROITensor( roiTensor ), OutputTensor( outputTensor ), SpatialScale( spatialScale ), PooledSize( pooledSize )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ROI_POOLING_OPERATOR_DESC );
     };
     static_assert( sizeof( ROIPoolingOperatorDesc ) == sizeof( DML_ROI_POOLING_OPERATOR_DESC ) );
@@ -1824,6 +2038,11 @@ namespace Harlinn::Windows::DML
         _Field_size_( DimensionCount ) const UInt32* Sizes = nullptr;
         _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
 
+        SliceOperatorDesc( ) noexcept = default;
+        SliceOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount = 0, const UInt32* offsets = nullptr, const UInt32* sizes = nullptr, const UInt32* strides = nullptr ) noexcept
+            : Base( inputTensor, outputTensor ), DimensionCount( dimensionCount ), Offsets( offsets ), Sizes( sizes ), Strides( strides )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SLICE_OPERATOR_DESC );
     };
     static_assert( sizeof( SliceOperatorDesc ) == sizeof( DML_SLICE_OPERATOR_DESC ) );
@@ -1837,6 +2056,12 @@ namespace Harlinn::Windows::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Cast;
+
+        CastOperatorDesc( ) noexcept = default;
+        CastOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
+            : Base( inputTensor, outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CAST_OPERATOR_DESC );
     };
     static_assert( sizeof( CastOperatorDesc ) == sizeof( DML_CAST_OPERATOR_DESC ) );
@@ -1856,6 +2081,11 @@ namespace Harlinn::Windows::DML
         _Field_size_( OutputCount ) const TensorDesc* OutputTensors = nullptr;
         UInt32 Axis = 0;
 
+        SplitOperatorDesc( ) noexcept = default;
+        SplitOperatorDesc( const TensorDesc* inputTensor, UInt32 outputCount, const TensorDesc* outputTensors, UInt32 axis = 0 ) noexcept
+            : InputTensor( inputTensor ), OutputCount( outputCount ), OutputTensors( outputTensors ), Axis( axis )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SPLIT_OPERATOR_DESC );
     };
     static_assert( sizeof( SplitOperatorDesc ) == sizeof( DML_SPLIT_OPERATOR_DESC ) );
@@ -1874,6 +2104,11 @@ namespace Harlinn::Windows::DML
         _Field_size_( InputCount ) const TensorDesc* InputTensors = nullptr;
         const TensorDesc* OutputTensor = nullptr;
         UInt32 Axis = 0;
+
+        JoinOperatorDesc( ) noexcept = default;
+        JoinOperatorDesc( UInt32 inputCount, const TensorDesc* inputTensors, const TensorDesc* outputTensor, UInt32 axis = 0 ) noexcept
+            : InputCount( inputCount ), InputTensors( inputTensors ), OutputTensor( outputTensor ), Axis( axis )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_JOIN_OPERATOR_DESC );
     };
@@ -1895,6 +2130,11 @@ namespace Harlinn::Windows::DML
         _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
 
+        PaddingOperatorDesc( ) noexcept = default;
+        PaddingOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount = 0, const UInt32* startPadding = nullptr, const UInt32* endPadding = nullptr, FLOAT paddingValue = 0.f, DML::PaddingMode paddingMode = DML::PaddingMode::Constant ) noexcept
+            : Base( inputTensor, outputTensor ), PaddingMode( paddingMode ), PaddingValue( paddingValue ), DimensionCount( dimensionCount ), StartPadding( startPadding ), EndPadding( endPadding )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_PADDING_OPERATOR_DESC );
     };
     static_assert( sizeof( PaddingOperatorDesc ) == sizeof( DML_PADDING_OPERATOR_DESC ) );
@@ -1913,6 +2153,11 @@ namespace Harlinn::Windows::DML
         UInt32 ChannelCount = 0;
         _Field_size_( ChannelCount ) const FLOAT* Bias = nullptr;
 
+        ValueScale2DOperatorDesc( ) noexcept = default;
+        ValueScale2DOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, FLOAT scale = 0.f, UInt32 channelCount = 0, const FLOAT* bias = nullptr ) noexcept
+            : Base( inputTensor, outputTensor ), Scale( scale ), ChannelCount( channelCount ), Bias( bias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_VALUE_SCALE_2D_OPERATOR_DESC );
     };
     static_assert( sizeof( ValueScale2DOperatorDesc ) == sizeof( DML_VALUE_SCALE_2D_OPERATOR_DESC ) );
@@ -1928,7 +2173,12 @@ namespace Harlinn::Windows::DML
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::UpSample2D;
 
         Size2D ScaleSize;
-        InterpolationMode InterpolationMode;
+        DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
+
+        UpSample2DOperatorDesc( ) noexcept = default;
+        UpSample2DOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, Size2D scaleSize = {}, DML::InterpolationMode interpolationMode = DML::InterpolationMode::NearestNeighbor ) noexcept
+            : Base( inputTensor, outputTensor ), ScaleSize( scaleSize ), InterpolationMode( interpolationMode )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_UPSAMPLE_2D_OPERATOR_DESC );
     };
@@ -1950,6 +2200,11 @@ namespace Harlinn::Windows::DML
         UInt32 Axis = 0;
         UInt32 IndexDimensions = 0;
 
+        GatherOperatorDesc( ) noexcept = default;
+        GatherOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* indicesTensor = nullptr, UInt32 axis = 0, UInt32 indexDimensions = 0 ) noexcept
+            : InputTensor( inputTensor ), IndicesTensor( indicesTensor ), OutputTensor( outputTensor ), Axis( axis ), IndexDimensions( indexDimensions )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GATHER_OPERATOR_DESC );
     };
     static_assert( sizeof( GatherOperatorDesc ) == sizeof( DML_GATHER_OPERATOR_DESC ) );
@@ -1965,6 +2220,12 @@ namespace Harlinn::Windows::DML
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::SpaceToDepth;
         UInt32 BlockSize = 0;
+
+        SpaceToDepthOperatorDesc( ) noexcept = default;
+        SpaceToDepthOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 blockSize = 0 ) noexcept
+            : Base( inputTensor, outputTensor ), BlockSize( blockSize )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SPACE_TO_DEPTH_OPERATOR_DESC );
     };
     static_assert( sizeof( SpaceToDepthOperatorDesc ) == sizeof( DML_SPACE_TO_DEPTH_OPERATOR_DESC ) );
@@ -1979,6 +2240,12 @@ namespace Harlinn::Windows::DML
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::DepthToSpace;
         UInt32 BlockSize = 0;
+
+        DepthToSpaceOperatorDesc( ) noexcept = default;
+        DepthToSpaceOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 blockSize = 0 ) noexcept
+            : Base( inputTensor, outputTensor ), BlockSize( blockSize )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DEPTH_TO_SPACE_OPERATOR_DESC );
     };
     static_assert( sizeof( DepthToSpaceOperatorDesc ) == sizeof( DML_DEPTH_TO_SPACE_OPERATOR_DESC ) );
@@ -1994,6 +2261,12 @@ namespace Harlinn::Windows::DML
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Tile;
         UInt32 RepeatsCount = 0;
         _Field_size_( RepeatsCount ) const UInt32* Repeats = nullptr;
+
+        TileOperatorDesc( ) noexcept = default;
+        TileOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 repeatsCount = 0, const UInt32* repeats = nullptr ) noexcept
+            : Base( inputTensor, outputTensor ), RepeatsCount( repeatsCount ), Repeats( repeats )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_TILE_OPERATOR_DESC );
     };
     static_assert( sizeof( TileOperatorDesc ) == sizeof( DML_TILE_OPERATOR_DESC ) );
@@ -2012,6 +2285,12 @@ namespace Harlinn::Windows::DML
         const TensorDesc* OutputIndexTensor = nullptr;
         UInt32 Axis = 0;
         UInt32 K = 0;
+
+        TopKOperatorDesc( ) noexcept = default;
+        TopKOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputValueTensor, const TensorDesc* outputIndexTensor, UInt32 axis = 0, UInt32 k = 0 ) noexcept
+            : InputTensor( inputTensor ), OutputValueTensor( outputValueTensor ), OutputIndexTensor( outputIndexTensor ), Axis( axis ), K(k)
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_TOP_K_OPERATOR_DESC );
     };
     static_assert( sizeof( TopKOperatorDesc ) == sizeof( DML_TOP_K_OPERATOR_DESC ) );
@@ -2036,6 +2315,14 @@ namespace Harlinn::Windows::DML
         FLOAT Epsilon = 0.f;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
+        BatchNormalizationOperatorDesc( ) noexcept = default;
+        BatchNormalizationOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, 
+            const TensorDesc* meanTensor = nullptr, const TensorDesc* varianceTensor = nullptr, const TensorDesc* scaleTensor = nullptr, 
+            const TensorDesc* biasTensor = nullptr, bool spatial = false, float epsilon = 0.f, const OperatorDesc* fusedActivation = nullptr ) noexcept
+            : InputTensor( inputTensor ), MeanTensor( meanTensor ), VarianceTensor( varianceTensor ), ScaleTensor( scaleTensor ), 
+              BiasTensor( biasTensor ), OutputTensor( outputTensor ), Spatial( spatial ), Epsilon( epsilon ), FusedActivation( fusedActivation )
+        {}
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BATCH_NORMALIZATION_OPERATOR_DESC );
     };
     static_assert( sizeof( BatchNormalizationOperatorDesc ) == sizeof( DML_BATCH_NORMALIZATION_OPERATOR_DESC ) );
@@ -2059,6 +2346,12 @@ namespace Harlinn::Windows::DML
         BOOL NormalizeVariance = FALSE;
         FLOAT Epsilon = 0.f;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
+
+        MeanVarianceNormalizationOperatorDesc( ) noexcept = default;
+        
+        MeanVarianceNormalizationOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* scaleTensor = nullptr, const TensorDesc* biasTensor = nullptr, bool crossChannel = false, bool normalizeVariance = false, float epsilon = 0.f, const OperatorDesc* fusedActivation = nullptr ) noexcept
+            : InputTensor( inputTensor ), ScaleTensor( scaleTensor ), BiasTensor( biasTensor ), OutputTensor( outputTensor ), CrossChannel( crossChannel ), NormalizeVariance( normalizeVariance ), Epsilon( epsilon ), FusedActivation( fusedActivation )
+        {}
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MEAN_VARIANCE_NORMALIZATION_OPERATOR_DESC );
     };
@@ -3423,6 +3716,12 @@ namespace Harlinn::Windows::DML
         const TensorDesc* OutputGradientTensor = nullptr;
         FLOAT Min = 0.f;
         FLOAT Max = 0.f;
+
+        ElementWiseClipGradOperatorDesc( ) noexcept = default;
+        ElementWiseClipGradOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputGradientTensor, const TensorDesc* inputGradientTensor, FLOAT min = 0.f, FLOAT max = 0.f ) noexcept
+            : InputTensor( inputTensor ), InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor ), Min(min), Max(max)
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CLIP_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( ElementWiseClipGradOperatorDesc ) == sizeof( DML_ELEMENT_WISE_CLIP_GRAD_OPERATOR_DESC ) );
@@ -4175,6 +4474,14 @@ namespace Harlinn::Windows::DML
         Graphics::D3D12::GPUDescriptorHandle GPUDescriptorHandle;
         UInt32 SizeInDescriptors = 0;
 
+        BindingTableDesc( ) noexcept = default;
+
+        BindingTableDesc( IDMLDispatchable* dispatchable, const Graphics::D3D12::CPUDescriptorHandle& cpuDescriptorHandle, const Graphics::D3D12::GPUDescriptorHandle& gpuDescriptorHandle, UInt32 sizeInDescriptors ) noexcept
+            : Dispatchable( dispatchable ), CPUDescriptorHandle( cpuDescriptorHandle ), GPUDescriptorHandle( gpuDescriptorHandle ), SizeInDescriptors( sizeInDescriptors )
+        { }
+
+        BindingTableDesc( const DML::Dispatchable& dispatchable, const Graphics::D3D12::CPUDescriptorHandle& cpuDescriptorHandle, const Graphics::D3D12::GPUDescriptorHandle& gpuDescriptorHandle, UInt32 sizeInDescriptors ) noexcept;
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BINDING_TABLE_DESC );
     };
 
@@ -4266,6 +4573,10 @@ namespace Harlinn::Windows::DML
 
         Operator CreateOperator( const OperatorDesc* desc ) const;
 
+        template<typename T>
+            requires std::is_base_of_v<BaseOperatorDesc, T>
+        inline Operator CreateOperator( const T& desc ) const;
+
         void CompileOperator( IDMLOperator* op, DML_EXECUTION_FLAGS flags, REFIID riid, _COM_Outptr_opt_ void** ppv ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -4273,7 +4584,7 @@ namespace Harlinn::Windows::DML
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        CompiledOperator CompileOperator( const Operator& op, DML::ExecutionFlags flags ) const;
+        CompiledOperator CompileOperator( const Operator& op, DML::ExecutionFlags flags = DML::ExecutionFlags::None ) const;
 
 
         void CreateOperatorInitializer( UInt32 operatorCount, _In_reads_opt_( operatorCount ) IDMLCompiledOperator* const* operators, REFIID riid, _COM_Outptr_ void** ppv ) const
@@ -4283,6 +4594,14 @@ namespace Harlinn::Windows::DML
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        template<typename T= OperatorInitializer>
+            requires std::is_base_of_v<OperatorInitializer,T>
+        T CreateOperatorInitializer( const CompiledOperator& compiledOperator ) const;
+
+        template<typename T = OperatorInitializer, SimpleSpanLike S>
+            requires std::is_base_of_v<OperatorInitializer, T> && std::is_base_of_v<CompiledOperator, typename S::value_type>
+        T CreateOperatorInitializer( const S& compiledOperators ) const;
+
         void CreateCommandRecorder( REFIID riid, _COM_Outptr_ void** ppv ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -4290,12 +4609,20 @@ namespace Harlinn::Windows::DML
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        template<typename T = CommandRecorder>
+            requires std::is_base_of_v<CommandRecorder, T>
+        T CreateCommandRecorder( ) const;
+
         void CreateBindingTable( _In_opt_ const DML_BINDING_TABLE_DESC* desc, REFIID riid, _COM_Outptr_ void** ppv ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->CreateBindingTable( desc, riid, ppv );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        template<typename T = BindingTable>
+            requires std::is_base_of_v<BindingTable, T>
+        T CreateBindingTable( _In_opt_ const DML::BindingTableDesc* desc ) const;
 
         void Evict( UInt32 count, _In_reads_( count ) IDMLPageable* const* ppObjects ) const
         { 
@@ -4367,6 +4694,14 @@ namespace Harlinn::Windows::DML
         CreateOperator( reinterpret_cast< const DML_OPERATOR_DESC* >( desc ), __uuidof( IDMLOperator ), reinterpret_cast< void** >( &itf ) );
         return Operator( itf );
     }
+    template<typename T>
+        requires std::is_base_of_v<BaseOperatorDesc,T> 
+    inline Operator Device::CreateOperator( const T& desc ) const
+    {
+        OperatorDesc operatorDesc( &desc );
+        return CreateOperator( &operatorDesc );
+    }
+
 
 
     /// <summary>
@@ -4391,12 +4726,21 @@ namespace Harlinn::Windows::DML
         HCC_COM_STANDARD_METHODS_IMPL( Dispatchable, Pageable, IDMLDispatchable, IDMLPageable )
 
     public:
-        DML_BINDING_PROPERTIES GetBindingProperties( ) const
+        DML_BINDING_PROPERTIES GetBindingProperties_( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetBindingProperties( );
         }
+        DML::BindingProperties GetBindingProperties( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return std::bit_cast< DML::BindingProperties >(  pInterface->GetBindingProperties( ) );
+        }
     };
+
+    inline BindingTableDesc::BindingTableDesc( const DML::Dispatchable& dispatchable, const Graphics::D3D12::CPUDescriptorHandle& cpuDescriptorHandle, const Graphics::D3D12::GPUDescriptorHandle& gpuDescriptorHandle, UInt32 sizeInDescriptors ) noexcept
+        : Dispatchable( dispatchable.GetInterfacePointer<IDMLDispatchable>() ), CPUDescriptorHandle( cpuDescriptorHandle ), GPUDescriptorHandle( gpuDescriptorHandle ), SizeInDescriptors( sizeInDescriptors )
+    { }
 
     class CompiledOperator : public Dispatchable
     {
@@ -4430,6 +4774,28 @@ namespace Harlinn::Windows::DML
         }
     };
 
+    template<typename T>
+        requires std::is_base_of_v<OperatorInitializer, T>
+    inline T Device::CreateOperatorInitializer( const CompiledOperator& compiledOperator ) const
+    {
+        using ItfType = typename T::InterfaceType;
+        IDMLCompiledOperator* compiledOperators[ ] = { compiledOperator.GetInterfacePointer<IDMLCompiledOperator>()};
+        ItfType* itf = nullptr;
+        CreateOperatorInitializer( 1, compiledOperators, __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+        return T( itf );
+    }
+
+    template<typename T, SimpleSpanLike S>
+        requires std::is_base_of_v<OperatorInitializer, T>&& std::is_base_of_v<CompiledOperator, typename S::value_type>
+    inline T Device::CreateOperatorInitializer( const S& compiledOperators ) const
+    {
+        using ItfType = typename T::InterfaceType;
+        ItfType* itf = nullptr;
+        CreateOperatorInitializer( static_cast<UInt32>( compiledOperators.size( ) ), reinterpret_cast< IDMLCompiledOperator* const* >( compiledOperators.data( ) ), __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+        return T( itf );
+    }
+
+
 
     /// <summary>
     /// <para>
@@ -4443,18 +4809,7 @@ namespace Harlinn::Windows::DML
         BufferArray,
     };
 
-    /// <summary>
-    /// <para>
-    /// Alias for DML_BINDING_DESC
-    /// </para>
-    /// </summary>
-    struct BindingDesc
-    {
-        BindingType Type = BindingType::None;
-        _Field_size_opt_( _Inexpressible_( "Dependent on binding type" ) ) const void* Desc = nullptr;
-
-        DML_IMPLEMENT_CONVERSIONS_TO( DML_BINDING_DESC );
-    };
+    
 
     /// <summary>
     /// <para>
@@ -4466,6 +4821,14 @@ namespace Harlinn::Windows::DML
         _Maybenull_ ID3D12Resource* Buffer = nullptr;
         UINT64 Offset = 0;
         UINT64 SizeInBytes = 0;
+
+        BufferBinding( ) = default;
+        BufferBinding( ID3D12Resource* buffer, UINT64 sizeInBytes, UINT64 offset = 0)
+            : Buffer( buffer ), Offset( offset ), SizeInBytes( sizeInBytes )
+        { }
+        BufferBinding( const Graphics::D3D12::Resource& buffer, UINT64 sizeInBytes, UINT64 offset = 0 )
+            : Buffer( buffer.GetInterfacePointer<ID3D12Resource>() ), Offset( offset ), SizeInBytes( sizeInBytes )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BUFFER_BINDING );
     };
@@ -4480,7 +4843,46 @@ namespace Harlinn::Windows::DML
         UInt32 BindingCount = 0;
         _Field_size_( BindingCount ) const BufferBinding* Bindings = nullptr;
 
+        BufferArrayBinding( ) noexcept = default;
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BUFFER_ARRAY_BINDING );
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for DML_BINDING_DESC
+    /// </para>
+    /// </summary>
+    struct BindingDesc
+    {
+        BindingType Type = BindingType::None;
+        _Field_size_opt_( _Inexpressible_( "Dependent on binding type" ) ) const void* Desc = nullptr;
+
+        BindingDesc( ) noexcept = default;
+
+        BindingDesc( const BufferBinding* desc ) noexcept
+            : Type( BindingType::Buffer ), Desc( reinterpret_cast< const void* >( desc ) )
+        { }
+        BindingDesc( const BufferArrayBinding* desc ) noexcept
+            : Type( BindingType::BufferArray ), Desc( reinterpret_cast< const void* >( desc ) )
+        { }
+
+        BindingDesc& operator = ( const BufferBinding* desc ) noexcept
+        {
+            Type = BindingType::Buffer; 
+            Desc = reinterpret_cast< const void* >( desc );
+            return *this;
+        }
+
+        BindingDesc& operator = ( const BufferArrayBinding* desc ) noexcept
+        {
+            Type = BindingType::BufferArray;
+            Desc = reinterpret_cast< const void* >( desc );
+            return *this;
+        }
+
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_BINDING_DESC );
     };
 
 
@@ -4497,10 +4899,24 @@ namespace Harlinn::Windows::DML
             pInterface->BindInputs( bindingCount, bindings );
         }
 
+        void BindInputs( const Graphics::D3D12::Resource& buffer, size_t bufferSize, UINT64 offset = 0 ) const
+        {
+            DML::BufferBinding bufferBinding( buffer, bufferSize, offset );
+            DML::BindingDesc bindingDesc( &bufferBinding );
+            BindInputs( 1, bindingDesc );
+        }
+
         void BindOutputs( UInt32 bindingCount, _In_reads_opt_( bindingCount ) const DML_BINDING_DESC* bindings ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->BindOutputs( bindingCount, bindings );
+        }
+
+        void BindOutputs( const Graphics::D3D12::Resource& buffer, size_t bufferSize, UINT64 offset = 0 ) const
+        {
+            DML::BufferBinding bufferBinding( buffer, bufferSize, offset );
+            DML::BindingDesc bindingDesc( &bufferBinding );
+            BindOutputs( 1, bindingDesc );
         }
 
         void BindTemporaryResource( _In_opt_ const DML_BINDING_DESC* binding ) const
@@ -4509,10 +4925,25 @@ namespace Harlinn::Windows::DML
             pInterface->BindTemporaryResource( binding );
         }
 
+        void BindTemporaryResource( const Graphics::D3D12::Resource& buffer, size_t bufferSize, UINT64 offset = 0 ) const
+        {
+            DML::BufferBinding bufferBinding( buffer, bufferSize, offset );
+            DML::BindingDesc bindingDesc( &bufferBinding );
+            BindTemporaryResource( bindingDesc );
+        }
+
+
         void BindPersistentResource( _In_opt_ const DML_BINDING_DESC* binding ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->BindPersistentResource( binding );
+        }
+
+        void BindPersistentResource( const Graphics::D3D12::Resource& buffer, size_t bufferSize, UINT64 offset = 0 ) const
+        {
+            DML::BufferBinding bufferBinding( buffer, bufferSize, offset );
+            DML::BindingDesc bindingDesc( &bufferBinding );
+            BindPersistentResource( bindingDesc );
         }
 
         void Reset( _In_opt_ const DML_BINDING_TABLE_DESC* desc ) const
@@ -4521,7 +4952,23 @@ namespace Harlinn::Windows::DML
             HRESULT hr = pInterface->Reset( desc );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        void Reset( _In_opt_ const DML::BindingTableDesc* desc ) const
+        {
+            Reset( reinterpret_cast< const DML_BINDING_TABLE_DESC* >( desc ) );
+        }
+
     };
+
+
+    template<typename T>
+        requires std::is_base_of_v<BindingTable, T>
+    T Device::CreateBindingTable( _In_opt_ const DML::BindingTableDesc* desc ) const
+    {
+        using ItfType = typename T::InterfaceType;
+        ItfType* itf = nullptr;
+        CreateBindingTable( reinterpret_cast< const DML_BINDING_TABLE_DESC* >( desc ), __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+        return T( itf );
+    }
 
     class CommandRecorder : public DeviceChild
     {
@@ -4535,7 +4982,25 @@ namespace Harlinn::Windows::DML
             InterfaceType* pInterface = GetInterface( );
             pInterface->RecordDispatch( commandList, dispatchable, bindings );
         }
+        void RecordDispatch( const Graphics::D3D12::CommandList& commandList, const DML::Dispatchable& dispatchable, const DML::BindingTable& bindings ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->RecordDispatch( commandList.GetInterfacePointer<ID3D12CommandList>( ), dispatchable.GetInterfacePointer<IDMLDispatchable>( ), bindings.GetInterfacePointer<IDMLBindingTable>( ) );
+        }
+
     };
+
+
+    template<typename T>
+        requires std::is_base_of_v<CommandRecorder, T>
+    inline T Device::CreateCommandRecorder( ) const
+    {
+        using ItfType = T::InterfaceType;
+        ItfType* itf = nullptr;
+        CreateCommandRecorder( __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+        return T( itf );
+    }
+
 
     class DebugDevice : public Unknown
     {
@@ -4732,6 +5197,24 @@ namespace Harlinn::Windows::DML
         HCC_COM_CHECK_HRESULT( hr );
     }
 
+    template<typename T = Device>
+        requires std::is_base_of_v<Device,T>
+    T CreateDevice( ID3D12Device* d3d12Device, CreateDeviceFlags flags = CreateDeviceFlags::None )
+    {
+        using ItfType = typename T::InterfaceType;
+        ItfType* itf = nullptr;
+        CreateDevice( d3d12Device, static_cast< DML_CREATE_DEVICE_FLAGS >( flags ), __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+        return T( itf );
+    }
+
+    template<typename T = Device>
+        requires std::is_base_of_v<Device, T>
+    T CreateDevice( const Graphics::D3D12::Device& d3d12Device, CreateDeviceFlags flags = CreateDeviceFlags::None )
+    {
+        return CreateDevice<T>( d3d12Device.GetInterfacePointer<ID3D12Device>( ), flags );
+    }
+
+
 #if DML_TARGET_VERSION >= 0x2000
 
     // Expected: IDMLDevice
@@ -4742,77 +5225,7 @@ namespace Harlinn::Windows::DML
     }
 #endif
 
-    inline constexpr UInt64 CalcBufferTensorSize( TensorDataType dataType, UInt32 dimensionCount, _In_reads_( dimensionCount ) const UInt32* sizes, _In_reads_opt_( dimensionCount ) const UInt32* strides )
-    {
-        UInt32 elementSizeInBits = 0;
-        switch ( dataType )
-        {
-            case TensorDataType::Float64:
-            case TensorDataType::UInt64:
-            case TensorDataType::Int64:
-                elementSizeInBits = 64;
-                break;
-            case TensorDataType::Float32:
-            case TensorDataType::UInt32:
-            case TensorDataType::Int32:
-                elementSizeInBits = 32;
-                break;
 
-            case TensorDataType::Float16:
-            case TensorDataType::UInt16:
-            case TensorDataType::Int16:
-                elementSizeInBits = 16;
-                break;
-
-            case TensorDataType::UInt8:
-            case TensorDataType::Int8:
-                elementSizeInBits = 8;
-                break;
-
-#if DML_TARGET_VERSION >= 0x6300
-            case TensorDataType::UInt4:
-            case TensorDataType::Int4:
-                elementSizeInBits = 4;
-                break;
-#endif
-            default:
-                return 0; // Invalid data type
-        }
-
-        UInt64 minimumImpliedSizeInBits = 0;
-        if ( !strides )
-        {
-            minimumImpliedSizeInBits = sizes[ 0 ];
-            for ( UInt32 i = 1; i < dimensionCount; ++i )
-            {
-                minimumImpliedSizeInBits *= sizes[ i ];
-            }
-            minimumImpliedSizeInBits *= elementSizeInBits;
-        }
-        else
-        {
-            UInt32 indexOfLastElement = 0;
-            for ( UInt32 i = 0; i < dimensionCount; ++i )
-            {
-                indexOfLastElement += ( sizes[ i ] - 1 ) * strides[ i ];
-            }
-
-            minimumImpliedSizeInBits = ( static_cast< UINT64 >( indexOfLastElement ) + 1 ) * elementSizeInBits;
-        }
-
-        UInt64 minimumImpliedSizeInBytes = ( minimumImpliedSizeInBits + 7 ) / 8;
-
-        // Round up to the nearest 4 bytes.
-        minimumImpliedSizeInBytes = ( minimumImpliedSizeInBytes + 3 ) & ~3ull;
-
-        return minimumImpliedSizeInBytes;
-    }
-
-    namespace Model
-    {
-        
-
-    }
 
 
 }

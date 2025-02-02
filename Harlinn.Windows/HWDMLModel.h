@@ -16,7 +16,26 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+   This file contains a rewrite of DirectMLX.h from
+   https://github.com/microsoft/DirectML/blob/master/Libraries/DirectMLX.h
+
+
+
+
 */
+
+//*********************************************************
+//
+// Copyright (c) Microsoft. All rights reserved.
+// This code is licensed under the MIT License (MIT).
+// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
+// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
+// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
+// PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
+//
+//*********************************************************
+
 
 #include "HWDirectML.h"
 
@@ -246,7 +265,7 @@ namespace Harlinn::Windows::DML::Model
         // A node in the graph which represents a graph input.
         struct InputNode
         {
-            UInt32 inputIndex;
+            UInt32 inputIndex = 0;
         };
 
         // A node in the graph which represents a DML operator.
@@ -263,7 +282,7 @@ namespace Harlinn::Windows::DML::Model
         // Used for representing reshapes and type punning
         struct ReinterpretNode
         {
-            NodeOutput* input;
+            NodeOutput* input = nullptr;
         };
 
         // A node in the graph that represents data available during graph compilation.
@@ -287,19 +306,20 @@ namespace Harlinn::Windows::DML::Model
         // Identifies a node in the graph.
         struct NodeID
         {
-            NodeType type;
-            UInt32 index; // The index of this node in the GraphBuilder
+            NodeType type = NodeType::Invalid;
+            // The index of this node in the GraphBuilder
+            UInt32 index = 0;
         };
 
         // Represents one of the outputs of a node.
         class NodeOutput
         {
-            GraphBuilder* owner_;
+            GraphBuilder* owner_ = nullptr;
             NodeID node_;
 
             // An operator can have multiple outputs; this index identifies which one of the operator's  outputs this
             // NodeOutput represents.
-            UInt32 outputIndex_;
+            UInt32 outputIndex_ = 0;
 
             TensorDesc tensorDesc_;
         public:
@@ -333,8 +353,8 @@ namespace Harlinn::Windows::DML::Model
 
         struct GraphDesc
         {
-            UInt32 inputCount;
-            UInt32 outputCount;
+            UInt32 inputCount = 0;
+            UInt32 outputCount = 0;
             
             std::vector<DML::OperatorGraphNodeDesc> operatorNodes;
 #if DML_TARGET_VERSION >= 0x6200
@@ -522,8 +542,9 @@ namespace Harlinn::Windows::DML::Model
 
     class NameScope
     {
-    public:
         Internal::GraphBuilder* m_builder = nullptr;
+    public:
+        
 
         NameScope( Internal::GraphBuilder* builder, std::string_view name ) 
             : m_builder( builder )
@@ -545,30 +566,51 @@ namespace Harlinn::Windows::DML::Model
 
     class Graph
     {
-        std::unique_ptr<Internal::GraphBuilder> m_graphBuilder;
+        std::unique_ptr<Internal::GraphBuilder> graphBuilder_;
     public:
         explicit Graph( const DML::Device1& device, TensorPolicy tensorPolicy = {} )
-            : m_graphBuilder( std::make_unique<Internal::GraphBuilder>( device, tensorPolicy ) )
+            : graphBuilder_( std::make_unique<Internal::GraphBuilder>( device, tensorPolicy ) )
         {
         }
 
         // For internal use only
-        Internal::GraphBuilder* Impl( ) { return m_graphBuilder.get( ); }
+        Internal::GraphBuilder* Impl( ) 
+        { 
+            return graphBuilder_.get( );
+        }
 
         // Sets/gets the tensor policy. If not set, defaults to TensorPolicy::Default(). Tensor policies can be used
         // to control properties (such as strides) on output tensors produced by this Graph.
-        void SetTensorPolicy( TensorPolicy policy ) { m_graphBuilder->SetTensorPolicy( std::move( policy ) ); }
-        const TensorPolicy& GetTensorPolicy( ) const { return m_graphBuilder->GetTensorPolicy( ); }
-        TensorPolicy& GetTensorPolicy( ) { return m_graphBuilder->GetTensorPolicy( ); }
+        void SetTensorPolicy( TensorPolicy policy ) 
+        { 
+            graphBuilder_->SetTensorPolicy( std::move( policy ) );
+        }
+        const TensorPolicy& GetTensorPolicy( ) const 
+        { 
+            return graphBuilder_->GetTensorPolicy( );
+        }
+        TensorPolicy& GetTensorPolicy( ) 
+        { 
+            return graphBuilder_->GetTensorPolicy( );
+        }
 
-        NameScope CreateNameScope( std::string_view name ) { return NameScope( m_graphBuilder.get( ), name ); }
+        NameScope CreateNameScope( std::string_view name ) 
+        { 
+            return NameScope( graphBuilder_.get( ), name );
+        }
 
-        void PushName( std::string_view name ) { m_graphBuilder->PushName( name ); }
-        void PopName( ) { m_graphBuilder->PopName( ); }
+        void PushName( std::string_view name ) 
+        { 
+            graphBuilder_->PushName( name );
+        }
+        void PopName( ) 
+        { 
+            graphBuilder_->PopName( );
+        }
 
         DML::CompiledOperator Compile( DML::ExecutionFlags flags, std::span<const Expression> outputs, UInt32 inputCount = 0 ) const
         {
-            Internal::GraphDesc graph = m_graphBuilder->GetGraphDesc( outputs );
+            Internal::GraphDesc graph = graphBuilder_->GetGraphDesc( outputs );
 
             // If supplied, the requested number of inputs to the compiled operator can be larger than the actual
             // number of input nodes on the graph (e.g. in the case of unused empty inputs), but never smaller.
@@ -591,7 +633,7 @@ namespace Harlinn::Windows::DML::Model
             graphDesc.IntermediateEdgeCount = static_cast< UINT >( intermediateEdges.size( ) );
             graphDesc.IntermediateEdges = intermediateEdges.data( );
 
-            auto device = m_graphBuilder->GetDevice( );
+            auto device = graphBuilder_->GetDevice( );
             auto compiledGraph = device.CompileGraph( graphDesc, flags );
             return compiledGraph;
         }
@@ -627,7 +669,7 @@ namespace Harlinn::Windows::DML::Model
             return FusedActivation( );
         }
 
-        static FusedActivation Elu( float alpha = 1.0f )
+        static FusedActivation ELU( float alpha = 1.0f )
         {
             return FusedActivation( DML::OperatorType::ActivationELU, alpha );
         }
@@ -642,7 +684,7 @@ namespace Harlinn::Windows::DML::Model
             return FusedActivation( DML::OperatorType::ActivationIdentity );
         }
 
-        static FusedActivation LeakyRelu( float alpha = 0.01f )
+        static FusedActivation LeakyReLU( float alpha = 0.01f )
         {
             return FusedActivation( DML::OperatorType::ActivationLeakyReLU, alpha );
         }
@@ -652,22 +694,22 @@ namespace Harlinn::Windows::DML::Model
             return FusedActivation( DML::OperatorType::ActivationLinear, alpha, beta );
         }
 
-        static FusedActivation ParametricSoftplus( float alpha, float beta )
+        static FusedActivation ParametricSoftPlus( float alpha, float beta )
         {
             return FusedActivation( DML::OperatorType::ActivationParametricSoftPlus, alpha, beta );
         }
 
-        static FusedActivation Relu( )
+        static FusedActivation ReLU( )
         {
             return FusedActivation( DML::OperatorType::ActivationReLU );
         }
 
-        static FusedActivation ScaledElu( float alpha = 1.67326319217681884765625f, float gamma = 1.05070102214813232421875f )
+        static FusedActivation ScaledELU( float alpha = 1.67326319217681884765625f, float gamma = 1.05070102214813232421875f )
         {
             return FusedActivation( DML::OperatorType::ActivationScaledELU, alpha, gamma );
         }
 
-        static FusedActivation ScaledTanh( float alpha = 1.0f, float beta = 0.5f )
+        static FusedActivation ScaledTanH( float alpha = 1.0f, float beta = 0.5f )
         {
             return FusedActivation( DML::OperatorType::ActivationScaledTanH, alpha, beta );
         }
@@ -677,22 +719,22 @@ namespace Harlinn::Windows::DML::Model
             return FusedActivation( DML::OperatorType::ActivationSigmoid );
         }
 
-        static FusedActivation Softplus( float steepness = 1.0f )
+        static FusedActivation SoftPlus( float steepness = 1.0f )
         {
             return FusedActivation( DML::OperatorType::ActivationSoftPlus, steepness );
         }
 
-        static FusedActivation Softsign( )
+        static FusedActivation SoftSign( )
         {
             return FusedActivation( DML::OperatorType::ActivationSoftSign );
         }
 
-        static FusedActivation Tanh( )
+        static FusedActivation TanH( )
         {
             return FusedActivation( DML::OperatorType::ActivationTanH );
         }
 
-        static FusedActivation ThresholdedRelu( float alpha = 1.0f )
+        static FusedActivation ThresholdedReLU( float alpha = 1.0f )
         {
             return FusedActivation( DML::OperatorType::ActivationThresholdedReLU, alpha );
         }
@@ -702,13 +744,13 @@ namespace Harlinn::Windows::DML::Model
             return FusedActivation( DML::OperatorType::ActivationShrink, bias, threshold );
         }
 
-        static FusedActivation Celu( float alpha = 1.0f )
+        static FusedActivation CeLU( float alpha = 1.0f )
         {
             return FusedActivation( DML::OperatorType::ActivationCeLU, alpha );
         }
 
 #if DML_TARGET_VERSION >= 0x5100
-        static FusedActivation Gelu( )
+        static FusedActivation GeLU( )
         {
             return FusedActivation( DML::OperatorType::ActivationGeLU );
         }
@@ -774,110 +816,6 @@ namespace Harlinn::Windows::DML::Model
     // Expression implementation helpers
     namespace Internal
     {
-        template <typename TDesc>
-        Expression UnaryImpl( Expression input, const std::optional<DML::ScaleBias>& scaleBias )
-        {
-            Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
-
-            TensorDesc inputTensor = input.Impl( )->GetOutputDesc( );
-            TensorDesc outputTensor( inputTensor.DataType, inputTensor.Sizes, builder->GetTensorPolicy( ) ); // Same as input
-
-            const DML::ScaleBias* sb = scaleBias.has_value( ) ? &scaleBias.value( ) : nullptr;
-
-            TDesc desc( inputTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), sb );
-
-            Internal::NodeOutput* const inputs[ ] = { input.Impl( ) };
-            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
-            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
-
-            return output;
-        }
-
-        template <typename TDesc>
-        Expression UnaryImpl( DML::TensorDataType outputDataType, Expression input )
-        {
-            auto* builder = input.Impl( )->GetGraphBuilder( );
-
-            const TensorDesc& inputTensor = input.Impl( )->GetOutputDesc( );
-
-            if ( outputDataType == DML::TensorDataType::Unknown )
-            {
-                outputDataType = inputTensor.DataType;
-            }
-            TensorDesc outputTensor( outputDataType, inputTensor.Sizes, builder->GetTensorPolicy( ) );
-
-            TDesc desc = {};
-            desc.InputTensor = inputTensor.As<DML::TensorDesc>( );
-            desc.OutputTensor = outputTensor.As<DML::TensorDesc>( );
-
-            Internal::NodeOutput* const inputs[ ] = { input.Impl( ) };
-            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
-            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
-
-            return output;
-        }
-
-        template <typename TDesc>
-        Expression UnaryImpl( Expression input )
-        {
-            auto* builder = input.Impl( )->GetGraphBuilder( );
-
-            const TensorDesc& inputTensor = input.Impl( )->GetOutputDesc( );
-            TensorDesc outputTensor( inputTensor.DataType, inputTensor.Sizes, builder->GetTensorPolicy( ) );
-
-            TDesc desc = {};
-            desc.InputTensor = inputTensor.As<DML::TensorDesc>( );
-            desc.OutputTensor = outputTensor.As<DML::TensorDesc>( );
-
-            Internal::NodeOutput* const inputs[ ] = { input.Impl( ) };
-            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
-            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
-
-            return output;
-        }
-
-
-        template <typename TDesc, typename ...Args>
-        Expression BinaryImpl( Expression a, Expression b, Args&& ... args )
-        {
-            assert( Internal::HasSameOwner( { a, b } ) );
-            Internal::GraphBuilder* builder = a.Impl( )->GetGraphBuilder( );
-
-            TensorDesc aTensor = a.Impl( )->GetOutputDesc( );
-            TensorDesc bTensor = b.Impl( )->GetOutputDesc( );
-            TensorDesc outputTensor( aTensor.DataType, aTensor.Sizes, builder->GetTensorPolicy( ) ); // Same as input
-
-            TDesc desc( aTensor.As<DML::TensorDesc>( ), bTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), std::forward<Args>( args )... );
-
-            Internal::NodeOutput* const inputs[ ] = { a.Impl( ), b.Impl( ) };
-            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
-            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
-
-            return output;
-        }
-
-        template <typename TDesc>
-        Expression CompareImpl( DML::TensorDataType outputDataType, Expression a, Expression b )
-        {
-            assert( Internal::HasSameOwner( { a, b } ) );
-            Internal::GraphBuilder* builder = a.Impl( )->GetGraphBuilder( );
-
-            TensorDesc aTensor = a.Impl( )->GetOutputDesc( );
-            TensorDesc bTensor = b.Impl( )->GetOutputDesc( );
-            TensorDesc outputTensor( outputDataType, aTensor.Sizes, builder->GetTensorPolicy( ) );
-
-            TDesc desc;
-            desc.ATensor = aTensor.As<DML::TensorDesc>( );
-            desc.BTensor = bTensor.As<DML::TensorDesc>( );
-            desc.OutputTensor = outputTensor.As<DML::TensorDesc>( );
-
-            Internal::NodeOutput* const inputs[ ] = { a.Impl( ), b.Impl( ) };
-            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
-            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
-
-            return output;
-        }
-
         // Used to reserve some space on the stack for setting up fused activation operator descs.
         struct FusedActivationStorage
         {
@@ -908,6 +846,149 @@ namespace Harlinn::Windows::DML::Model
 
             return &storage->opDesc;
         }
+
+        template <typename TDesc, typename ...Args>
+        Expression UnaryImpl( const std::optional<DML::ScaleBias>& scaleBias, Expression input, Args&& ... args )
+        {
+            Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
+
+            TensorDesc inputTensor = input.Impl( )->GetOutputDesc( );
+            TensorDesc outputTensor( inputTensor.DataType, inputTensor.Sizes, builder->GetTensorPolicy( ) ); // Same as input
+
+            const DML::ScaleBias* sb = scaleBias.has_value( ) ? &scaleBias.value( ) : nullptr;
+
+            TDesc desc( inputTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), sb, std::forward<Args>( args )... );
+
+            Internal::NodeOutput* const inputs[ ] = { input.Impl( ) };
+            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
+            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
+
+            return output;
+        }
+
+        template <typename TDesc, typename ...Args>
+        Expression UnaryImpl( DML::TensorDataType outputDataType, Expression input, Args&& ... args )
+        {
+            auto* builder = input.Impl( )->GetGraphBuilder( );
+
+            const TensorDesc& inputTensor = input.Impl( )->GetOutputDesc( );
+
+            if ( outputDataType == DML::TensorDataType::Unknown )
+            {
+                outputDataType = inputTensor.DataType;
+            }
+            TensorDesc outputTensor( outputDataType, inputTensor.Sizes, builder->GetTensorPolicy( ) );
+
+            TDesc desc( inputTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), std::forward<Args>( args )... );
+
+            Internal::NodeOutput* const inputs[ ] = { input.Impl( ) };
+            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
+            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
+
+            return output;
+        }
+
+        template <typename TDesc, typename ...Args>
+        Expression UnaryImpl( Expression input, Args&& ... args )
+        {
+            auto* builder = input.Impl( )->GetGraphBuilder( );
+
+            const TensorDesc& inputTensor = input.Impl( )->GetOutputDesc( );
+            TensorDesc outputTensor( inputTensor.DataType, inputTensor.Sizes, builder->GetTensorPolicy( ) );
+
+            TDesc desc( inputTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), std::forward<Args>( args )... );
+
+            Internal::NodeOutput* const inputs[ ] = { input.Impl( ) };
+            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
+            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
+
+            return output;
+        }
+
+
+        template <typename TDesc, typename ...Args>
+        Expression BinaryImpl( Expression a, Expression b, Args&& ... args )
+        {
+            assert( Internal::HasSameOwner( { a, b } ) );
+            Internal::GraphBuilder* builder = a.Impl( )->GetGraphBuilder( );
+
+            TensorDesc aTensor = a.Impl( )->GetOutputDesc( );
+            TensorDesc bTensor = b.Impl( )->GetOutputDesc( );
+            TensorDesc outputTensor( aTensor.DataType, aTensor.Sizes, builder->GetTensorPolicy( ) ); // Same as input
+
+            TDesc desc( aTensor.As<DML::TensorDesc>( ), bTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), std::forward<Args>( args )... );
+
+            Internal::NodeOutput* const inputs[ ] = { a.Impl( ), b.Impl( ) };
+            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
+            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
+
+            return output;
+        }
+
+        template <typename TDesc, typename ...Args>
+        Expression BinaryImpl( const std::optional<DML::ScaleBias>& scaleBias, Expression a, Expression b, Args&& ... args )
+        {
+            assert( Internal::HasSameOwner( { a, b } ) );
+            Internal::GraphBuilder* builder = a.Impl( )->GetGraphBuilder( );
+
+            TensorDesc aTensor = a.Impl( )->GetOutputDesc( );
+            TensorDesc bTensor = b.Impl( )->GetOutputDesc( );
+            TensorDesc outputTensor( aTensor.DataType, aTensor.Sizes, builder->GetTensorPolicy( ) ); // Same as input
+
+            const DML::ScaleBias* sb = scaleBias.has_value( ) ? &scaleBias.value( ) : nullptr;
+
+            TDesc desc( aTensor.As<DML::TensorDesc>( ), bTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), sb, std::forward<Args>( args )... );
+
+            Internal::NodeOutput* const inputs[ ] = { a.Impl( ), b.Impl( ) };
+            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
+            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
+
+            return output;
+        }
+
+        template <typename TDesc, typename ...Args>
+        Expression BinaryImpl( FusedActivation fusedActivation, Expression a, Expression b, Args&& ... args )
+        {
+            assert( Internal::HasSameOwner( { a, b } ) );
+            Internal::GraphBuilder* builder = a.Impl( )->GetGraphBuilder( );
+
+            TensorDesc aTensor = a.Impl( )->GetOutputDesc( );
+            TensorDesc bTensor = b.Impl( )->GetOutputDesc( );
+            TensorDesc outputTensor( aTensor.DataType, aTensor.Sizes, builder->GetTensorPolicy( ) ); // Same as input
+            Internal::FusedActivationStorage storage;
+
+            TDesc desc( aTensor.As<DML::TensorDesc>( ), bTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), std::forward<Args>( args )... );
+
+            desc.FusedActivation = Internal::GetFusedActivationPtr( fusedActivation, &storage );
+
+            Internal::NodeOutput* const inputs[ ] = { a.Impl( ), b.Impl( ) };
+            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
+            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
+
+            return output;
+        }
+
+
+        template <typename TDesc, typename ...Args>
+        Expression CompareImpl( DML::TensorDataType outputDataType, Expression a, Expression b, Args&& ... args )
+        {
+            assert( Internal::HasSameOwner( { a, b } ) );
+            Internal::GraphBuilder* builder = a.Impl( )->GetGraphBuilder( );
+
+            TensorDesc aTensor = a.Impl( )->GetOutputDesc( );
+            TensorDesc bTensor = b.Impl( )->GetOutputDesc( );
+            TensorDesc outputTensor( outputDataType, aTensor.Sizes, builder->GetTensorPolicy( ) );
+
+            TDesc desc( aTensor.As<DML::TensorDesc>( ), bTensor.As<DML::TensorDesc>( ), outputTensor.As<DML::TensorDesc>( ), std::forward<Args>( args )... );
+
+            Internal::NodeOutput* const inputs[ ] = { a.Impl( ), b.Impl( ) };
+            Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
+            Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
+
+            return output;
+        }
+
+        
 
         const DML::ScaleBias* ToScaleBias( const std::optional<DML::ScaleBias>& scaleBias )
         {
@@ -942,71 +1023,37 @@ namespace Harlinn::Windows::DML::Model
 
     inline Expression Identity( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseIdentityOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseIdentityOperatorDesc>( scaleBias, input  );
     }
 
     inline Expression Abs( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseAbsOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseAbsOperatorDesc>( scaleBias, input );
     }
 
     inline Expression ACos( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseACosOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseACosOperatorDesc>( scaleBias, input  );
     }
 
     inline Expression Add( Expression a, Expression b )
     {
-        assert( Internal::HasSameOwner( { a, b } ) );
-        Internal::GraphBuilder* builder = a.Impl( )->GetGraphBuilder( );
-
-        TensorDesc aTensor = a.Impl( )->GetOutputDesc( );
-        TensorDesc bTensor = b.Impl( )->GetOutputDesc( );
-        TensorDesc outputTensor( aTensor.DataType, aTensor.Sizes, builder->GetTensorPolicy( ) ); // Same as input
-
-        ElementWiseAddOperatorDesc desc = {};
-        desc.ATensor = aTensor.As<DML::TensorDesc>( );
-        desc.BTensor = bTensor.As<DML::TensorDesc>( );
-        desc.OutputTensor = outputTensor.As<DML::TensorDesc>( );
-
-        Internal::NodeOutput* const inputs[ ] = { a.Impl( ), b.Impl( ) };
-        Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
-        Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
-
-        return output;
+        return Internal::BinaryImpl<ElementWiseAddOperatorDesc>( a, b );
     }
 
     inline Expression Add( Expression a, Expression b, FusedActivation fusedActivation )
     {
-        assert( Internal::HasSameOwner( { a, b } ) );
-        Internal::GraphBuilder* builder = a.Impl( )->GetGraphBuilder( );
-
-        TensorDesc aTensor = a.Impl( )->GetOutputDesc( );
-        TensorDesc bTensor = b.Impl( )->GetOutputDesc( );
-        TensorDesc outputTensor( aTensor.DataType, aTensor.Sizes, builder->GetTensorPolicy( ) ); // Same as input
-        Internal::FusedActivationStorage storage;
-
-        ElementWiseAdd1OperatorDesc desc = {};
-        desc.ATensor = aTensor.As<DML::TensorDesc>( );
-        desc.BTensor = bTensor.As<DML::TensorDesc>( );
-        desc.OutputTensor = outputTensor.As<DML::TensorDesc>( );
-        desc.FusedActivation = Internal::GetFusedActivationPtr( fusedActivation, &storage );
-
-        Internal::NodeOutput* const inputs[ ] = { a.Impl( ), b.Impl( ) };
-        Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
-        Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
-
-        return output;
+        return Internal::BinaryImpl<ElementWiseAdd1OperatorDesc>( fusedActivation, a, b );
     }
 
     inline Expression ASin( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseASinOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseASinOperatorDesc>( scaleBias, input );
     }
 
     inline Expression ATan( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseATanOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseATanOperatorDesc>( scaleBias, input );
     }
 
 #if DML_TARGET_VERSION >= 0x3100
@@ -1020,11 +1067,14 @@ namespace Harlinn::Windows::DML::Model
 
     inline Expression Ceil( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseCeilOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseCeilOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Clip( Expression input, float min, float max, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
+        return Internal::UnaryImpl<ElementWiseClipOperatorDesc>( input, Internal::ToScaleBias( scaleBias ), min, max );
+
+        /*
         Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
 
         TensorDesc inputTensor = input.Impl( )->GetOutputDesc( );
@@ -1042,12 +1092,17 @@ namespace Harlinn::Windows::DML::Model
         Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
 
         return output;
+        */
     }
 
 #if DML_TARGET_VERSION >= 0x3100
 
     inline Expression ClipGrad( Expression input, Expression inputGradient, float min, float max )
     {
+        TensorDesc inputGradientTensor = inputGradient.Impl( )->GetOutputDesc( );
+        return Internal::UnaryImpl<ElementWiseClipGradOperatorDesc>( input, inputGradientTensor.As<DML::TensorDesc>( ), min, max );
+
+        /*
         Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
 
         TensorDesc inputTensor = input.Impl( )->GetOutputDesc( );
@@ -1066,13 +1121,14 @@ namespace Harlinn::Windows::DML::Model
         Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputGradientTensor ) );
 
         return output;
+        */
     }
 
 #endif // DML_TARGET_VERSION >= 0x3100
 
     inline Expression Cos( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseCosOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseCosOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Divide( Expression a, Expression b )
@@ -1082,17 +1138,17 @@ namespace Harlinn::Windows::DML::Model
 
     inline Expression Exp( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseExpOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseExpOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Floor( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseFloorOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseFloorOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Log( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseLogOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseLogOperatorDesc>( scaleBias, input );
     }
 
     inline Expression LogicalAnd( Expression a, Expression b )
@@ -1127,6 +1183,8 @@ namespace Harlinn::Windows::DML::Model
 
     inline Expression LogicalNot( Expression input )
     {
+        return Internal::UnaryImpl<ElementWiseLogicalNotOperatorDesc>( input );
+        /*
         Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
 
         TensorDesc inputTensor = input.Impl( )->GetOutputDesc( );
@@ -1141,6 +1199,7 @@ namespace Harlinn::Windows::DML::Model
         Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
 
         return output;
+        */
     }
 
     inline Expression LogicalOr( Expression a, Expression b )
@@ -1175,6 +1234,8 @@ namespace Harlinn::Windows::DML::Model
 
     inline Expression Pow( Expression input, Expression exponent, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
+        return Internal::BinaryImpl<ElementWisePowOperatorDesc>( scaleBias, input, exponent );
+        /*
         assert( Internal::HasSameOwner( { input, exponent } ) );
         Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
 
@@ -1193,10 +1254,13 @@ namespace Harlinn::Windows::DML::Model
         Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
 
         return output;
+        */
     }
 
     inline Expression Pow( Expression input, float exponent, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
+        return Internal::UnaryImpl<ElementWiseConstantPowOperatorDesc>( scaleBias, input, exponent );
+        /*
         Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
 
         TensorDesc inputTensor = input.Impl( )->GetOutputDesc( );
@@ -1213,21 +1277,22 @@ namespace Harlinn::Windows::DML::Model
         Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
 
         return output;
+        */
     }
 
     inline Expression Reciprocal( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseReciprocalOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseReciprocalOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Sin( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseSinOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseSinOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Sqrt( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseSqrtOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseSqrtOperatorDesc>( scaleBias, input );
     }
 
 #if DML_TARGET_VERSION >= 0x3100
@@ -1246,11 +1311,13 @@ namespace Harlinn::Windows::DML::Model
 
     inline Expression Tan( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseTanOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseTanOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Threshold( Expression input, float min, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
+        return Internal::UnaryImpl<ElementWiseThresholdOperatorDesc>( scaleBias, input, min );
+        /*
         Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
 
         TensorDesc inputTensor = input.Impl( )->GetOutputDesc( );
@@ -1267,6 +1334,7 @@ namespace Harlinn::Windows::DML::Model
         Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
 
         return output;
+        */
     }
 
     inline Expression QuantizeLinear( Expression input, Expression scale, Expression zeroPoint, DML::TensorDataType outputDataType = DML::TensorDataType::UInt8 )
@@ -1330,37 +1398,37 @@ namespace Harlinn::Windows::DML::Model
 
     inline Expression Erf( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseErfOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseErfOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Sinh( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseSinHOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseSinHOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Cosh( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseCosHOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseCosHOperatorDesc>( scaleBias, input );
     }
 
     inline Expression Tanh( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseTanHOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseTanHOperatorDesc>( scaleBias, input );
     }
 
     inline Expression ASinh( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseASinHOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseASinHOperatorDesc>( scaleBias, input );
     }
 
     inline Expression ACosh( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseACosHOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseACosHOperatorDesc>( scaleBias, input );
     }
 
     inline Expression ATanh( Expression input, const std::optional<DML::ScaleBias>& scaleBias = std::nullopt )
     {
-        return Internal::UnaryImpl<ElementWiseATanHOperatorDesc>( input, scaleBias );
+        return Internal::UnaryImpl<ElementWiseATanHOperatorDesc>( scaleBias, input );
     }
 
     inline Expression If( Expression condition, Expression a, Expression b )

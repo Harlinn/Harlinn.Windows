@@ -674,13 +674,30 @@ namespace Harlinn::Windows::Graphics::D3D12
             Unmap( Subresource, &writtenRange );
         }
 
+        void Unmap( UINT Subresource, const D3D12::Range& writtenRange ) const
+        {
+            Unmap( Subresource, reinterpret_cast< const D3D12_RANGE* >( &writtenRange ) );
+        }
+
         /// <summary>
         /// Gets the resource description.
         /// </summary>
         /// <returns>
         /// A Direct3D 12 resource description structure.
         /// </returns>
-        D3D12_RESOURCE_DESC GetDesc( ) const
+        D3D12_RESOURCE_DESC GetDesc_( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetDesc( );
+        }
+
+        /// <summary>
+        /// Gets the resource description.
+        /// </summary>
+        /// <returns>
+        /// A Direct3D 12 resource description structure.
+        /// </returns>
+        ResourceDesc GetDesc( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetDesc( );
@@ -1049,10 +1066,16 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// <returns>
         /// Returns the CPU descriptor handle that represents the start of the heap.
         /// </returns>
-        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandleForHeapStart( ) const
+        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandleForHeapStart_( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetCPUDescriptorHandleForHeapStart( );
+        }
+
+        D3D12::CPUDescriptorHandle GetCPUDescriptorHandleForHeapStart( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return std::bit_cast< D3D12::CPUDescriptorHandle >( pInterface->GetCPUDescriptorHandleForHeapStart( ) );
         }
 
         /// <summary>
@@ -1062,10 +1085,16 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// Returns the GPU descriptor handle that represents the start of the heap. 
         /// If the descriptor heap is not shader-visible, a null handle is returned.
         /// </returns>
-        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandleForHeapStart( ) const
+        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandleForHeapStart_( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetGPUDescriptorHandleForHeapStart( );
+        }
+
+        D3D12::GPUDescriptorHandle GetGPUDescriptorHandleForHeapStart( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return std::bit_cast< D3D12::GPUDescriptorHandle >( pInterface->GetGPUDescriptorHandleForHeapStart( ) );
         }
     };
 
@@ -1415,6 +1444,78 @@ namespace Harlinn::Windows::Graphics::D3D12
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->CopyTextureRegion( destination, destinationX, destinationY, destinationZ, source, sourceBox );
+        }
+
+        /// <summary>
+        /// This function uses the GPU to copy texture data between two locations. Both 
+        /// the source and the destination may reference texture data located within either 
+        /// a buffer resource or a texture resource.
+        /// </summary>
+        /// <param name="destination">
+        /// Specifies the destination <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_texture_copy_location">D3D12_TEXTURE_COPY_LOCATION</see>. 
+        /// The subresource referred to must be in the D3D12_RESOURCE_STATE_COPY_DEST state.
+        /// </param>
+        /// <param name="destinationX">
+        /// The x-coordinate of the upper left corner of the destination region.
+        /// </param>
+        /// <param name="destinationY">
+        /// The y-coordinate of the upper left corner of the destination region. For a 1D subresource, this must be zero.
+        /// </param>
+        /// <param name="destinationZ">
+        /// The z-coordinate of the upper left corner of the destination region. For a 1D or 2D subresource, this must be zero.
+        /// </param>
+        /// <param name="source">
+        /// Specifies the source <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_texture_copy_location">D3D12_TEXTURE_COPY_LOCATION</see>. 
+        /// The subresource referred to must be in the D3D12_RESOURCE_STATE_COPY_SOURCE state.
+        /// </param>
+        /// <param name="sourceBox">
+        /// Specifies an optional <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_box">D3D12_BOX</see> that sets the size of the source texture to copy.
+        /// </param>
+        /// <remarks>
+        /// <p>
+        /// The source box must be within the size of the source resource. The destination offsets, 
+        /// (x, y, and z), allow the source box to be offset when writing into the destination resource; 
+        /// however, the dimensions of the source box and the offsets must be within the size of the 
+        /// resource. If you try and copy outside the destination resource or specify a source box that 
+        /// is larger than the source resource, the behavior of CopyTextureRegion is undefined. If you 
+        /// created a device that supports the debug layer, the debug output reports an error on this 
+        /// invalid CopyTextureRegion call. Invalid parameters to CopyTextureRegion cause undefined 
+        /// behavior and might result in incorrect rendering, clipping, no copy, or even the removal 
+        /// of the rendering device.
+        /// </p>
+        /// <p>
+        /// If the resources are buffers, all coordinates are in bytes; if the resources are textures, 
+        /// all coordinates are in texels.
+        /// </p>
+        /// <p>
+        /// CopyTextureRegion performs the copy on the GPU (similar to a memcpy by the CPU). As a consequence, the source and destination resources:
+        /// <list type="bullet">
+        ///     <item>
+        ///     Must be different subresources (although they can be from the same resource).
+        ///     </item>
+        ///     <item>
+        ///     Must have compatible DXGI_FORMATs (identical or from the same type group). For example, 
+        ///     a DXGI_FORMAT_R32G32B32_FLOAT texture can be copied to a DXGI_FORMAT_R32G32B32_UINT 
+        ///     texture since both of these formats are in the DXGI_FORMAT_R32G32B32_TYPELESS group. 
+        ///     CopyTextureRegion can copy between a few format types. For more info, 
+        ///     see <see href="https://learn.microsoft.com/en-us/windows/desktop/direct3d10/d3d10-graphics-programming-guide-resources-block-compression">Format Conversion using Direct3D 10.1</see>.
+        ///     </item>
+        /// </list>
+        /// </p>
+        /// <p>
+        /// CopyTextureRegion only supports copy; it does not support any stretch, color key, or blend. 
+        /// CopyTextureRegion can reinterpret the resource data between a few format types.
+        /// </p>
+        /// <p>
+        /// Note that for a depth-stencil buffer, the depth and stencil planes are separate subresources within the buffer.
+        /// </p>
+        /// <p>
+        /// To copy an entire resource, rather than just a region of a subresource, we recommend to use CopyResource instead.
+        /// </p>
+        /// </remarks>
+        void CopyTextureRegion( _In_ const TextureCopyLocation* destination, UINT destinationX, UINT destinationY, UINT destinationZ, _In_ const TextureCopyLocation* source, _In_opt_ const Box* sourceBox ) const
+        {
+            CopyTextureRegion( reinterpret_cast<const D3D12_TEXTURE_COPY_LOCATION *>( destination ), destinationX, destinationY, destinationZ, reinterpret_cast< const D3D12_TEXTURE_COPY_LOCATION* >( source ), reinterpret_cast< const D3D12_BOX* >( sourceBox ) );
         }
 
         /// <summary>
@@ -1769,12 +1870,152 @@ namespace Harlinn::Windows::Graphics::D3D12
             pInterface->ResourceBarrier( numberOfBarriers, barriers );
         }
 
+        void ResourceBarrier( _In_ UINT numberOfBarriers, _In_reads_( numberOfBarriers )  const D3D12::ResourceBarrier* barriers ) const
+        {
+            ResourceBarrier( numberOfBarriers, reinterpret_cast< const D3D12_RESOURCE_BARRIER* >( barriers ) );
+        }
+
+
         template<SimpleSpanLike SpanT>
-            requires std::is_convertible_v<typename SpanT::value_type, const D3D12_RESOURCE_BARRIER>
+            requires ( std::is_convertible_v<typename SpanT::value_type, const D3D12_RESOURCE_BARRIER> || std::is_convertible_v<typename SpanT::value_type, const D3D12::ResourceBarrier> )
         void ResourceBarrier( const SpanT& barriers ) const
         {
             ResourceBarrier( static_cast< UINT >( barriers.size( ) ), barriers.data( ) );
         }
+
+        /// <summary>
+        /// Creates a ResourceBarrier that describes the transition of subresources between different usages.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource used in the transition.
+        /// </param>
+        /// <param name="stateBefore">
+        /// The "before" usages of the subresources, as a bitwise-OR'd combination of <c>ResourceStates</c> enumeration constants.
+        /// </param>
+        /// <param name="stateAfter">
+        /// The "after" usages of the subresources, as a bitwise-OR'd combination of <c>ResourceStates</c> enumeration constants.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        /// <param name="subresource">
+        /// The index of the subresource for the transition. Defaults to the 
+        /// D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES flag ( 0xffffffff ) which 
+        /// transitions all subresources in a resource at the same time.
+        /// </param>
+        void ResourceBarrier( ID3D12Resource* resource, ResourceStates stateBefore, ResourceStates stateAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None, UInt32 subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES ) noexcept
+        {
+            D3D12::ResourceBarrier resourceBarrier( resource, stateBefore, stateAfter, flags, subresource );
+            ResourceBarrier( 1, &resourceBarrier );
+        }
+
+        /// <summary>
+        /// Creates a ResourceBarrier that describes the transition of subresources between different usages.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource used in the transition.
+        /// </param>
+        /// <param name="stateBefore">
+        /// The "before" usages of the subresources, as a bitwise-OR'd combination of <c>ResourceStates</c> enumeration constants.
+        /// </param>
+        /// <param name="stateAfter">
+        /// The "after" usages of the subresources, as a bitwise-OR'd combination of <c>ResourceStates</c> enumeration constants.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        /// <param name="subresource">
+        /// The index of the subresource for the transition. Defaults to the 
+        /// D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES flag ( 0xffffffff ) which 
+        /// transitions all subresources in a resource at the same time.
+        /// </param>
+        void ResourceBarrier( const Resource& resource, ResourceStates stateBefore, ResourceStates stateAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None, UInt32 subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES ) noexcept
+        {
+            D3D12::ResourceBarrier resourceBarrier( resource, stateBefore, stateAfter, flags, subresource );
+            ResourceBarrier( 1, &resourceBarrier );
+        }
+
+        /// <summary>
+        /// Creates a ResourceBarrier that describes the transition 
+        /// between usages of two different resources that have 
+        /// mappings into the same heap.
+        /// </summary>
+        /// <param name="resourceBefore">
+        /// Represents the before resource used in the transition.
+        /// </param>
+        /// <param name="resourceAfter">
+        /// Represents the after resource used in the transition.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        /// <remarks>
+        /// Both the before and the after resources can be specified 
+        /// or one or both resources can be NULL, which indicates that 
+        /// any placed or reserved resource could cause aliasing.
+        /// </remarks>
+        void ResourceBarrier( ID3D12Resource* resourceBefore, ID3D12Resource* resourceAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+        {
+            D3D12::ResourceBarrier resourceBarrier( resourceBefore, resourceAfter, flags );
+            ResourceBarrier( 1, &resourceBarrier );
+        }
+
+        /// <summary>
+        /// Creates a ResourceBarrier that describes the transition 
+        /// between usages of two different resources that have 
+        /// mappings into the same heap.
+        /// </summary>
+        /// <param name="resourceBefore">
+        /// Represents the before resource used in the transition.
+        /// </param>
+        /// <param name="resourceAfter">
+        /// Represents the after resource used in the transition.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        /// <remarks>
+        /// Both the before and the after resources can be specified 
+        /// or one or both resources can be NULL, which indicates that 
+        /// any placed or reserved resource could cause aliasing.
+        /// </remarks>
+        void ResourceBarrier( const Resource& resourceBefore, const Resource& resourceAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+        {
+            D3D12::ResourceBarrier resourceBarrier( resourceBefore, resourceAfter, flags );
+            ResourceBarrier( 1, &resourceBarrier );
+        }
+
+        /// <summary>
+        /// Creates a ResourceBarrier representing a resource for 
+        /// which all UAV accesses must complete before any future UAV accesses can begin.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource used in the transition.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        void ResourceBarrier( ID3D12Resource* resource, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+        {
+            D3D12::ResourceBarrier resourceBarrier( resource, flags );
+            ResourceBarrier( 1, &resourceBarrier );
+        }
+        /// <summary>
+        /// Creates a ResourceBarrier representing a resource for 
+        /// which all UAV accesses must complete before any future UAV accesses can begin.
+        /// </summary>
+        /// <param name="resource">
+        /// The resource used in the transition.
+        /// </param>
+        /// <param name="flags">
+        /// Specifies a value from the ResourceBarrierFlags enumeration.
+        /// </param>
+        void ResourceBarrier( const Resource& resource, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+        {
+            D3D12::ResourceBarrier resourceBarrier( resource, flags );
+            ResourceBarrier( 1, &resourceBarrier );
+        }
+
 
 
         void ExecuteBundle( _In_ ID3D12GraphicsCommandList* commandList ) const
@@ -2660,6 +2901,12 @@ namespace Harlinn::Windows::Graphics::D3D12
             return CreateCommittedResource( pHeapProperties, static_cast< D3D12_HEAP_FLAGS >( heapFlags ), pDesc, static_cast< D3D12_RESOURCE_STATES>( initialResourceState ), pOptimizedClearValue );
         }
 
+        Resource CreateCommittedResource( _In_ const HeapProperties& heapProperties, HeapFlags heapFlags, _In_ const ResourceDesc& desc, ResourceStates initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue = nullptr ) const
+        {
+            return CreateCommittedResource( reinterpret_cast< const D3D12_HEAP_PROPERTIES* >( &heapProperties ), static_cast< D3D12_HEAP_FLAGS >( heapFlags ), reinterpret_cast< const D3D12_RESOURCE_DESC*>(&desc), static_cast< D3D12_RESOURCE_STATES >( initialResourceState ), pOptimizedClearValue );
+        }
+
+
 
         void CreateHeap( _In_ const D3D12_HEAP_DESC* pDesc, REFIID riid, _COM_Outptr_opt_  void** ppvHeap ) const
         {
@@ -2781,6 +3028,11 @@ namespace Harlinn::Windows::Graphics::D3D12
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->GetCopyableFootprints( pResourceDesc, FirstSubresource, NumSubresources, BaseOffset, pLayouts, pNumRows, pRowSizeInBytes, pTotalBytes );
+        }
+
+        void GetCopyableFootprints( _In_ const ResourceDesc* pResourceDesc, _In_range_( 0, D3D12_REQ_SUBRESOURCES ) UINT FirstSubresource, _In_range_( 0, D3D12_REQ_SUBRESOURCES - FirstSubresource ) UINT NumSubresources, UINT64 BaseOffset, _Out_writes_opt_( NumSubresources ) PlacedSubresourceFootprint* pLayouts, _Out_writes_opt_( NumSubresources ) UINT* pNumRows, _Out_writes_opt_( NumSubresources ) UINT64* pRowSizeInBytes, _Out_opt_  UINT64* pTotalBytes ) const
+        {
+            GetCopyableFootprints( reinterpret_cast< const D3D12_RESOURCE_DESC* >( pResourceDesc ), FirstSubresource, NumSubresources, BaseOffset, reinterpret_cast< D3D12_PLACED_SUBRESOURCE_FOOTPRINT* >( pLayouts ), pNumRows, pRowSizeInBytes, pTotalBytes );
         }
 
         void CreateQueryHeap( _In_ const D3D12_QUERY_HEAP_DESC* pDesc, REFIID riid, _COM_Outptr_opt_  void** ppvHeap ) const
@@ -4690,8 +4942,159 @@ namespace Harlinn::Windows::Graphics::D3D12
             errorMessages );
     }
 
+    
+
+    //------------------------------------------------------------------------------------------------
+    // Row-by-row memcpy
+    inline void MemcpySubresource(
+        _In_ const MemCopyDest* pDest,
+        _In_ const SubResourceData* pSrc,
+        SIZE_T RowSizeInBytes,
+        UINT NumRows,
+        UINT NumSlices )
+    {
+        for ( UINT z = 0; z < NumSlices; ++z )
+        {
+            BYTE* pDestSlice = reinterpret_cast< BYTE* >( pDest->pData ) + pDest->SlicePitch * z;
+            const BYTE* pSrcSlice = reinterpret_cast< const BYTE* >( pSrc->pData ) + pSrc->SlicePitch * z;
+            for ( UINT y = 0; y < NumRows; ++y )
+            {
+                memcpy( pDestSlice + pDest->RowPitch * y,
+                    pSrcSlice + pSrc->RowPitch * y,
+                    RowSizeInBytes );
+            }
+        }
+    }
+
+
+    //------------------------------------------------------------------------------------------------
+    // All arrays must be populated (e.g. by calling GetCopyableFootprints)
+    inline UINT64 UpdateSubResources(
+        const GraphicsCommandList& cmdList,
+        const Resource& destinationResource,
+        const Resource& intermediate,
+        _In_range_( 0, D3D12_REQ_SUBRESOURCES ) UInt32 firstSubResource,
+        _In_range_( 0, D3D12_REQ_SUBRESOURCES - firstSubResource ) UInt32 numSubResources,
+        UInt64 requiredSize,
+        _In_reads_( numSubResources ) const PlacedSubresourceFootprint* layouts,
+        _In_reads_( numSubResources ) const UInt32* numRows,
+        _In_reads_( numSubResources ) const UInt64* rowSizesInBytes,
+        _In_reads_( numSubResources ) const SubResourceData* srcData )
+    {
+        // Minor validation
+        auto intermediateDesc = intermediate.GetDesc( );
+        auto destinationDesc = destinationResource.GetDesc( );
+        if ( intermediateDesc.Dimension != ResourceDimension::Buffer ||
+            intermediateDesc.Width < requiredSize + layouts[ 0 ].Offset ||
+            requiredSize > SIZE_T( -1 ) ||
+            ( destinationDesc.Dimension == ResourceDimension::Buffer &&
+                ( firstSubResource != 0 || numSubResources != 1 ) ) )
+        {
+            return 0;
+        }
+
+        BYTE* pData = reinterpret_cast< BYTE* >( intermediate.Map( 0 ) );
+        
+
+        for ( UINT i = 0; i < numSubResources; ++i )
+        {
+            if ( rowSizesInBytes[ i ] > SIZE_T( -1 ) )
+            {
+                return 0;
+            }
+            MemCopyDest DestData 
+            ( 
+                pData + layouts[ i ].Offset, 
+                layouts[ i ].Footprint.RowPitch, 
+                SIZE_T( layouts[ i ].Footprint.RowPitch ) * SIZE_T( numRows[ i ] ) 
+            );
+            MemcpySubresource( &DestData, &srcData[ i ], static_cast< SIZE_T >( rowSizesInBytes[ i ] ), numRows[ i ], layouts[ i ].Footprint.Depth );
+        }
+        intermediate.Unmap( 0, nullptr );
+
+        if ( destinationDesc.Dimension == ResourceDimension::Buffer )
+        {
+            cmdList.CopyBufferRegion( destinationResource, 0, intermediate, layouts[ 0 ].Offset, layouts[ 0 ].Footprint.Width );
+        }
+        else
+        {
+            for ( UINT i = 0; i < numSubResources; ++i )
+            {
+                TextureCopyLocation Dst( destinationResource, i + firstSubResource );
+                TextureCopyLocation Src( intermediate, layouts[ i ] );
+
+                cmdList.CopyTextureRegion( &Dst, 0, 0, 0, &Src, nullptr );
+            }
+        }
+        return requiredSize;
+    }
+
+    //------------------------------------------------------------------------------------------------
+    // Heap-allocating UpdateSubresources implementation
+    inline UInt64 UpdateSubResources(
+        const GraphicsCommandList& cmdList,
+        const Resource& destinationResource,
+        const Resource& intermediate,
+        UINT64 intermediateOffset,
+        _In_range_( 0, D3D12_REQ_SUBRESOURCES ) UINT firstSubResource,
+        _In_range_( 0, D3D12_REQ_SUBRESOURCES - firstSubResource ) UINT numSubResources,
+        _In_reads_( numSubResources ) SubResourceData* srcData )
+    {
+        UInt64 RequiredSize = 0;
+        UInt64 MemToAlloc = static_cast< UInt64 >( sizeof( PlacedSubresourceFootprint ) + sizeof( UInt32 ) + sizeof( UInt64 ) ) * numSubResources;
+        if ( MemToAlloc > SIZE_MAX )
+        {
+            return 0;
+        }
+        void* pMem = HeapAlloc( GetProcessHeap( ), 0, static_cast< SIZE_T >( MemToAlloc ) );
+        if ( pMem == nullptr )
+        {
+            return 0;
+        }
+        auto pLayouts = reinterpret_cast< PlacedSubresourceFootprint* >( pMem );
+        UInt64* pRowSizesInBytes = reinterpret_cast< UInt64* >( pLayouts + numSubResources );
+        UInt32* pNumRows = reinterpret_cast< UInt32* >( pRowSizesInBytes + numSubResources );
+
+        auto Desc = destinationResource.GetDesc( );
+        auto device = destinationResource.GetDevice( );
+        
+        device.GetCopyableFootprints( &Desc, firstSubResource, numSubResources, intermediateOffset, pLayouts, pNumRows, pRowSizesInBytes, &RequiredSize );
+
+        UInt64 Result = UpdateSubResources( cmdList, destinationResource, intermediate, firstSubResource, numSubResources, RequiredSize, pLayouts, pNumRows, pRowSizesInBytes, srcData );
+        HeapFree( GetProcessHeap( ), 0, pMem );
+        return Result;
+    }
+
+    //------------------------------------------------------------------------------------------------
+    // Stack-allocating UpdateSubresources implementation
+    template <UINT MaxSubresources>
+    inline UINT64 UpdateSubResources(
+        const GraphicsCommandList& cmdList,
+        const Resource& destinationResource,
+        const Resource& intermediate,
+        UInt64 intermediateOffset,
+        _In_range_( 0, MaxSubresources ) UINT firstSubResource,
+        _In_range_( 1, MaxSubresources - firstSubResource ) UInt32 numSubResources,
+        _In_reads_( numSubResources ) SubResourceData* srcData )
+    {
+        UInt64 RequiredSize = 0;
+        PlacedSubresourceFootprint Layouts[ MaxSubresources ];
+        UINT NumRows[ MaxSubresources ];
+        UINT64 RowSizesInBytes[ MaxSubresources ];
+
+        auto Desc = destinationResource.GetDesc( );
+        auto device = destinationResource.GetDevice( );
+        
+        device.GetCopyableFootprints( &Desc, firstSubResource, numSubResources, intermediateOffset, Layouts, NumRows, RowSizesInBytes, &RequiredSize );
+
+        return UpdateSubresources( cmdList, destinationResource, intermediate, firstSubResource, numSubResources, RequiredSize, Layouts, NumRows, RowSizesInBytes, srcData );
+    }
 
 }
+
+#ifndef HARLINN_WINDOWS_HWGRAPHICSD3D12EX_INL_
+#include "HWGraphicsD3D12Ex.inl"
+#endif
 
 
 #endif
