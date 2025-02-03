@@ -174,13 +174,7 @@
     <ClInclude Include="HWColor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HWDirectML.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HWMediaEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HWDMLModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,7 +20,9 @@
    This file contains a rewrite of DirectMLX.h from
    https://github.com/microsoft/DirectML/blob/master/Libraries/DirectMLX.h
 
-
+   It uses the DirectML classes implemented in 
+   HAIDirectML.h, making it easier to create 
+   the operator implementations.
 
 
 */
@@ -514,10 +516,10 @@ namespace Harlinn::AI::DML::X
     class Expression
     {
         // Owned by GraphBuilder
-        Internal::NodeOutput* m_nodeOutput; 
+        Internal::NodeOutput* nodeOutput_;
     public:
         Expression( Internal::NodeOutput* nodeOutput = nullptr )
-            : m_nodeOutput( nodeOutput )
+            : nodeOutput_( nodeOutput )
         {
         }
 
@@ -529,37 +531,37 @@ namespace Harlinn::AI::DML::X
         }
 
         // For internal use only
-        Internal::NodeOutput* Impl( ) const { return m_nodeOutput; }
+        Internal::NodeOutput* Impl( ) const 
+        { 
+            return nodeOutput_; 
+        }
 
         explicit operator bool( ) const
         {
-            return m_nodeOutput != nullptr;
+            return nodeOutput_ != nullptr;
         }
-
-    private:
-        
     };
 
     class NameScope
     {
-        Internal::GraphBuilder* m_builder = nullptr;
+        Internal::GraphBuilder* builder_ = nullptr;
     public:
         
 
         NameScope( Internal::GraphBuilder* builder, std::string_view name ) 
-            : m_builder( builder )
+            : builder_( builder )
         {
-            if ( m_builder )
+            if ( builder_ )
             {
-                m_builder->PushName( name );
+                builder_->PushName( name );
             }
         }
 
         ~NameScope( )
         {
-            if ( m_builder )
+            if ( builder_ )
             {
-                m_builder->PopName( );
+                builder_->PopName( );
             }
         }
     };

@@ -573,7 +573,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         uint64_t CopySize = 0;
 
         // The footprint may depend on the device of the resource, but we assume there is only one device.
-        D3D12_PLACED_SUBRESOURCE_FOOTPRINT PlacedFootprint;
+        ::Harlinn::Windows::Graphics::D3D12::PlacedSubresourceFootprint PlacedFootprint;
         auto resourceDesc = SrcBuffer.GetResource( ).GetDesc( );
         g_Device.GetCopyableFootprints( &resourceDesc, 0, 1, 0,
             &PlacedFootprint, nullptr, nullptr, &CopySize );
