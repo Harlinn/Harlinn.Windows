@@ -2528,7 +2528,12 @@ namespace Harlinn::Windows::Graphics::D3D12
             T result( intf );
             return result;
         }
-
+        template<typename T = CommandQueue>
+            requires std::is_base_of_v< CommandQueue, T>
+        T CreateCommandQueue( _In_ const D3D12::CommandQueueDesc& desc = {} ) const
+        {
+            return CreateCommandQueue( reinterpret_cast< const D3D12_COMMAND_QUEUE_DESC& >( desc ) );
+        }
 
         void CreateCommandAllocator( _In_ D3D12_COMMAND_LIST_TYPE type, REFIID riid, _COM_Outptr_ void** ppCommandAllocator ) const
         {
@@ -2699,6 +2704,22 @@ namespace Harlinn::Windows::Graphics::D3D12
             ItfT* ptr = nullptr;
             CreateDescriptorHeap( &descriptorHeapDesc, refiid, (void**)&ptr );
             return T( ptr, false );
+        }
+
+        template <typename T = DescriptorHeap>
+            requires std::is_base_of_v<DescriptorHeap, T>
+        T CreateDescriptorHeap( UInt32 numDescriptors, DescriptorHeapFlags flags = DescriptorHeapFlags::None, UInt32 nodeMask = 0 ) const
+        {
+            DescriptorHeapDesc desc( numDescriptors, flags, nodeMask );
+            return CreateDescriptorHeap<T>( desc );
+        }
+
+        template <typename T = DescriptorHeap>
+            requires std::is_base_of_v<DescriptorHeap, T>
+        T CreateDescriptorHeap( DescriptorHeapType type, UInt32 numDescriptors, DescriptorHeapFlags flags = DescriptorHeapFlags::None, UInt32 nodeMask = 0 ) const
+        {
+            DescriptorHeapDesc desc( type, numDescriptors, flags, nodeMask );
+            return CreateDescriptorHeap<T>( desc );
         }
 
 

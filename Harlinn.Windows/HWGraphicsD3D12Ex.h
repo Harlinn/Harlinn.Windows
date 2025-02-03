@@ -146,6 +146,15 @@ namespace Harlinn::Windows::Graphics::D3D12
         CommandQueueFlags Flags = CommandQueueFlags::None;
         UInt32 NodeMask = 0;
 
+        constexpr CommandQueueDesc( ) noexcept
+            : Priority( CommandQueuePriority::Normal )
+        { }
+
+        constexpr CommandQueueDesc( CommandListType type, CommandQueuePriority priority = CommandQueuePriority::Normal, CommandQueueFlags flags = CommandQueueFlags::None, UInt32 nodeMask = 0 ) noexcept
+            : Type( type ), Priority( priority ), Flags( flags ), NodeMask( nodeMask )
+        { }
+
+
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_COMMAND_QUEUE_DESC );
     };
 

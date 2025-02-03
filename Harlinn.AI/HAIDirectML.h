@@ -882,15 +882,45 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the identity for each element of InputTensor, placing 
+    /// the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_IDENTITY_OPERATOR_DESC
     /// </para>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The identity operation is often used to copy a tensor.
+    /// </para>
+    /// <para>
+    /// It can also be used to transform the layout of tensors by manipulating strides
+    /// </para>
+    /// </remarks>
     struct ElementWiseIdentityOperatorDesc : public UnaryOperatorWithScaleBiasDesc
     {
         using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseIdentity;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         ElementWiseIdentityOperatorDesc( ) noexcept = default;
+        /// <summary>
+        /// Initializes the ElementWiseIdentityOperatorDesc
+        /// </summary>
+        /// <param name="inputTensor">
+        /// The input tensor to read from.
+        /// </param>
+        /// <param name="outputTensor">
+        /// The output tensor to write the results to.
+        /// </param>
+        /// <param name="scaleBias">
+        /// An optional scale and bias to apply to the input. If present, 
+        /// this has the effect of applying the function 
+        /// $$g(x) = x * scale + bias$$ to each input element 
+        /// prior to computing this operator.
+        /// </param>
         ElementWiseIdentityOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
             : Base( inputTensor, outputTensor, scaleBias )
         {
@@ -902,6 +932,9 @@ namespace Harlinn::AI::DML
 
 
     /// <summary>
+    /// <para>
+    /// 
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_ABS_OPERATOR_DESC
     /// </para>
@@ -5394,6 +5427,8 @@ namespace Harlinn::AI::DML
             HRESULT hr = pInterface->CompileGraph( desc, flags, riid, ppv );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+
         CompiledOperator CompileGraph( const GraphDesc& desc, ExecutionFlags flags ) const
         {
             IDMLCompiledOperator* itf = nullptr;

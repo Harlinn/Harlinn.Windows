@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
 #include <HAIDirectML.h>
 
 using namespace Harlinn::AI;
@@ -23,9 +22,7 @@ using namespace Harlinn::Windows::Graphics;
 // This only applies to the DirectMLX API that builds a graph.
 #define MULTIPLY_WITH_SCALAR_CONSTANT 0
 
-
-void InitializeDirect3D12(
-    D3D12::Device& d3D12Device,
+void InitializeDirect3D12( D3D12::Device& d3D12Device,
     D3D12::CommandQueue& commandQueue,
     D3D12::CommandAllocator& commandAllocator,
     D3D12::GraphicsCommandList& commandList )
@@ -34,17 +31,12 @@ void InitializeDirect3D12(
     auto dxgiAdapter = dxgiFactory.FindAdapter( D3D_FEATURE_LEVEL_12_1 );
     d3D12Device = D3D12::CreateDevice< D3D12::Device>( dxgiAdapter, D3D_FEATURE_LEVEL_12_1 );
     
-    D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
-    commandQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-    commandQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    
-    commandQueue = d3D12Device.CreateCommandQueue( commandQueueDesc );
+    commandQueue = d3D12Device.CreateCommandQueue( );
     commandAllocator = d3D12Device.CreateCommandAllocator( );
     commandList = d3D12Device.CreateCommandList( 0, D3D12::CommandListType::Direct, commandAllocator );
 }
 
-void CloseExecuteResetWait(
-    D3D12::Device& d3D12Device,
+void CloseExecuteResetWait( D3D12::Device& d3D12Device,
     D3D12::CommandQueue& commandQueue,
     D3D12::CommandAllocator& commandAllocator,
     D3D12::GraphicsCommandList& commandList )
@@ -103,7 +95,7 @@ int main( )
     auto dmlCompiledOperator = dmlDevice.CompileOperator( dmlOperator );
 
     // 24 elements * 4 == 96 bytes.
-    UINT64 tensorBufferSize{ dmlBufferTensorDesc.TotalTensorSizeInBytes };
+    UInt64 tensorBufferSize = dmlBufferTensorDesc.TotalTensorSizeInBytes;
 
     auto dmlOperatorInitializer = dmlDevice.CreateOperatorInitializer( dmlCompiledOperator );
 
@@ -116,14 +108,16 @@ int main( )
     UINT descriptorCount = std::max( initializeBindingProperties.RequiredDescriptorCount, executeBindingProperties.RequiredDescriptorCount );
 
     // Create descriptor heaps.
-    D3D12::DescriptorHeapDesc descriptorHeapDesc( descriptorCount, D3D12::DescriptorHeapFlags::ShaderVisible );
-    auto descriptorHeap = d3D12Device.CreateDescriptorHeap( descriptorHeapDesc );
+    auto descriptorHeap = d3D12Device.CreateDescriptorHeap( descriptorCount, D3D12::DescriptorHeapFlags::ShaderVisible );
 
     // Set the descriptor heap(s).
     commandList.SetDescriptorHeaps( descriptorHeap );
 
     // Create a binding table over the descriptor heap we just created.
-    DML::BindingTableDesc dmlBindingTableDesc( dmlOperatorInitializer, descriptorHeap.GetCPUDescriptorHandleForHeapStart( ), descriptorHeap.GetGPUDescriptorHandleForHeapStart( ), descriptorCount );
+    DML::BindingTableDesc dmlBindingTableDesc( dmlOperatorInitializer, 
+                                                descriptorHeap.GetCPUDescriptorHandleForHeapStart( ), 
+                                                descriptorHeap.GetGPUDescriptorHandleForHeapStart( ), 
+                                                descriptorCount );
     auto dmlBindingTable = dmlDevice.CreateBindingTable( &dmlBindingTableDesc );
 
     // Create the temporary and persistent resources that are necessary for executing an operator.
@@ -137,8 +131,7 @@ int main( )
     D3D12::Resource temporaryBuffer;
     if ( temporaryResourceSize != 0 )
     {
-        temporaryBuffer = d3D12Device.CreateCommittedResource(
-                                            D3D12::HeapProperties( D3D12::HeapType::Default ),
+        temporaryBuffer = d3D12Device.CreateCommittedResource( D3D12::HeapProperties( D3D12::HeapType::Default ),
                                             D3D12::HeapFlags::None,
                                             D3D12::ResourceDesc( temporaryResourceSize, D3D12::ResourceFlags::AllowUnorderedAccess ),
                                             D3D12::ResourceStates::Common );
@@ -152,8 +145,7 @@ int main( )
     D3D12::Resource persistentBuffer;
     if ( persistentResourceSize != 0 )
     {
-        persistentBuffer = d3D12Device.CreateCommittedResource(
-                                            D3D12::HeapProperties( D3D12::HeapType::Default ),
+        persistentBuffer = d3D12Device.CreateCommittedResource( D3D12::HeapProperties( D3D12::HeapType::Default ),
                                             D3D12::HeapFlags::None,
                                             D3D12::ResourceDesc( persistentResourceSize, D3D12::ResourceFlags::AllowUnorderedAccess ),
                                             D3D12::ResourceStates::Common );
@@ -173,9 +165,7 @@ int main( )
     // once, and typically you want to Execute an operator more frequently than that.
     CloseExecuteResetWait( d3D12Device, commandQueue, commandAllocator, commandList );
 
-    // 
     // Bind and execute the operator on the GPU.
-    // 
     commandList.SetDescriptorHeaps( descriptorHeap );
 
     // Reset the binding table to bind for the operator we want to execute (it was previously used to bind for the
@@ -194,18 +184,15 @@ int main( )
     }
 
     // Create tensor buffers for upload/input/output/readback of the tensor elements.
-    auto uploadBuffer = d3D12Device.CreateCommittedResource(
-                                            D3D12::HeapProperties( D3D12::HeapType::Upload ),
+    auto uploadBuffer = d3D12Device.CreateCommittedResource( D3D12::HeapProperties( D3D12::HeapType::Upload ),
                                             D3D12::HeapFlags::None,
                                             D3D12::ResourceDesc( tensorBufferSize ),
                                             D3D12::ResourceStates::GenericRead );
 
-    auto inputBuffer = d3D12Device.CreateCommittedResource(
-                                            D3D12::HeapProperties( D3D12::HeapType::Default ),
+    auto inputBuffer = d3D12Device.CreateCommittedResource( D3D12::HeapProperties( D3D12::HeapType::Default ),
                                             D3D12::HeapFlags::None,
                                             D3D12::ResourceDesc( tensorBufferSize, D3D12::ResourceFlags::AllowUnorderedAccess ),
                                             D3D12::ResourceStates::CopyDest );
-
 
     std::wcout << std::fixed; std::wcout.precision( 4 );
     std::array<FLOAT, tensorElementCount> inputTensorElementArray;
@@ -218,20 +205,16 @@ int main( )
         };
         std::wcout << std::endl;
 
-        D3D12::SubResourceData tensorSubresourceData{};
-        tensorSubresourceData.pData = inputTensorElementArray.data( );
-        tensorSubresourceData.RowPitch = static_cast< LONG_PTR >( tensorBufferSize );
-        tensorSubresourceData.SlicePitch = tensorSubresourceData.RowPitch;
+        D3D12::SubResourceData tensorSubResourceData( inputTensorElementArray.data( ), tensorBufferSize );
 
         // Upload the input tensor to the GPU.
-        D3D12::UpdateSubResources( commandList, inputBuffer, uploadBuffer, 0, 0, 1, &tensorSubresourceData );
+        D3D12::UpdateSubResources( commandList, inputBuffer, uploadBuffer, 0, 0, 1, &tensorSubResourceData );
         commandList.ResourceBarrier( inputBuffer, D3D12::ResourceStates::CopyDest, D3D12::ResourceStates::UnorderedAccess );
     }
 
     dmlBindingTable.BindInputs( inputBuffer, tensorBufferSize );
 
-    auto outputBuffer = d3D12Device.CreateCommittedResource(
-                                            D3D12::HeapProperties( D3D12::HeapType::Default ),
+    auto outputBuffer = d3D12Device.CreateCommittedResource( D3D12::HeapProperties( D3D12::HeapType::Default ),
                                             D3D12::HeapFlags::None,
                                             D3D12::ResourceDesc( tensorBufferSize, D3D12::ResourceFlags::AllowUnorderedAccess ),
                                             D3D12::ResourceStates::UnorderedAccess );
@@ -244,8 +227,7 @@ int main( )
 
     // The output buffer now contains the result of the identity operator,
     // so read it back if you want the CPU to access it.
-    auto readbackBuffer = d3D12Device.CreateCommittedResource(
-                                            D3D12::HeapProperties( D3D12::HeapType::ReadBack ),
+    auto readbackBuffer = d3D12Device.CreateCommittedResource( D3D12::HeapProperties( D3D12::HeapType::ReadBack ),
                                             D3D12::HeapFlags::None,
                                             D3D12::ResourceDesc( tensorBufferSize ),
                                             D3D12::ResourceStates::CopyDest );
