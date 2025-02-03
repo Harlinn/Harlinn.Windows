@@ -81,7 +81,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -99,7 +99,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,7 +118,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,7 +136,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.AI;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

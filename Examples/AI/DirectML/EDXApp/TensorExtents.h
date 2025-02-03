@@ -9,7 +9,7 @@
 //-----------------------------------------------------------------------------
 
 
-#include "HWDef.h"
+#include "HAIDef.h"
 
 using namespace Harlinn::Windows;
 

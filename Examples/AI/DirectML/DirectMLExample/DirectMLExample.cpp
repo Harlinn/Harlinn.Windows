@@ -14,11 +14,9 @@
    limitations under the License.
 */
 
-#include <HWGraphicsD3D12.h>
-#include <HWDXGI.h>
-#include <HWDirectML.h>
+#include <HAIDirectML.h>
 
-using namespace Harlinn::Windows;
+using namespace Harlinn::AI;
 using namespace Harlinn::Windows::Graphics;
 
 // Enable this to show element-wise identity multiplied by a scalar placed in a constant node.
@@ -81,7 +79,7 @@ int main( )
     constexpr UINT tensorSizes[ 4 ] = { 1, 2, 3, 4 };
     constexpr UINT tensorElementCount = tensorSizes[ 0 ] * tensorSizes[ 1 ] * tensorSizes[ 2 ] * tensorSizes[ 3 ];
 
-    DML::BufferTensorDesc dmlBufferTensorDesc( DML::TensorDataType::Float32, DML::TensorFlags::None, ARRAYSIZE( tensorSizes ), tensorSizes );
+    DML::BufferTensorDesc dmlBufferTensorDesc( DML::TensorDataType::Float32, tensorSizes );
 
     DML::Operator dmlOperator;
     {

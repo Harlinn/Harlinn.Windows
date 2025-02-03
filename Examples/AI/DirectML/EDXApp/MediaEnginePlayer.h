@@ -39,7 +39,7 @@ public:
     IMFNotify( IMFNotify&& ) = delete;
     IMFNotify& operator=( IMFNotify&& ) = delete;
 
-    virtual void OnMediaEngineEvent( uint32_t meEvent ) = 0;
+    virtual void OnMediaEngineEvent( uint32_t meEvent, DWORD_PTR param1, DWORD param2 ) = 0;
 
 protected:
     IMFNotify( ) = default;
@@ -82,7 +82,7 @@ public:
     bool TransferFrame( HANDLE textureHandle, MFVideoNormalizedRect rect, RECT rcTarget );
 
     // Callbacks
-    void OnMediaEngineEvent( uint32_t meEvent ) override;
+    void OnMediaEngineEvent( uint32_t meEvent, DWORD_PTR param1, DWORD param2 ) override;
 
     // Properties
     void GetNativeVideoSize( uint32_t& cx, uint32_t& cy );

@@ -24,32 +24,36 @@ namespace
     {
         IMFNotify* callback_ = nullptr;
     public:
-        MediaEngineNotifyImpl( ) noexcept = default;
+        MediaEngineNotifyImpl( IMFNotify* callback ) noexcept
+            : callback_( callback )
+        { }
 
-        void SetCallback( IMFNotify* callback )
+        HRESULT __stdcall EventNotify( DWORD meEvent, DWORD_PTR param1, DWORD param2 )
         {
-            callback_ = callback;
-        }
-
-        // EventNotify is called when the Media Engine sends an event.
-        STDMETHODIMP EventNotify( DWORD meEvent, DWORD_PTR param1, DWORD )
-        {
+            HRESULT result = S_OK;
+            try
+            {
+                callback_->OnMediaEngineEvent( meEvent, param1, param2 );
+            }
+            catch ( ... )
+            {
+                result = E_UNEXPECTED;
+            }
             if ( meEvent == MF_MEDIA_ENGINE_EVENT_NOTIFYSTABLESTATE )
             {
                 SetEvent( reinterpret_cast< HANDLE >( param1 ) );
             }
-            else
-            {
-                callback_->OnMediaEngineEvent( meEvent );
-            }
-            return S_OK;
+            return result;
         }
     };
 
     class MediaEngineNotify : public Com::HeapObject<MediaEngineNotifyImpl<MediaEngineNotify>>
     {
     public:
-        MediaEngineNotify( ) noexcept = default;
+        using Base = Com::HeapObject<MediaEngineNotifyImpl<MediaEngineNotify>>;
+        MediaEngineNotify( IMFNotify* callback ) noexcept
+            : Base( callback )
+        { }
     };
 }
 
@@ -96,13 +100,11 @@ void MediaEnginePlayer::Initialize( const Graphics::DXGI::Factory4& dxgiFactory,
     auto dxgiManager = Media::MFDXGIDeviceManager::Create( &resetToken );
     dxgiManager.ResetDevice( device_, resetToken );
 
-    auto spNotify = new Com::HeapObject<MediaEngineNotify>( );
-    ComPtr<IUnknown> notifyPtr( static_cast< IUnknown* >( spNotify ) );
-    spNotify->SetCallback( this );
+    Media::MFMediaEngineNotify mediaEngineNotify( new MediaEngineNotify( this ) );
 
     auto attributes = Media::MFAttributes::Create( 3 );
     attributes.SetUnknown( MF_MEDIA_ENGINE_DXGI_MANAGER, dxgiManager );
-    attributes.SetUnknown( MF_MEDIA_ENGINE_CALLBACK, notifyPtr );
+    attributes.SetUnknown( MF_MEDIA_ENGINE_CALLBACK, mediaEngineNotify );
     attributes.SetUINT32( MF_MEDIA_ENGINE_VIDEO_OUTPUT_FORMAT, format );
     
     // Create MediaEngine.
@@ -186,7 +188,7 @@ bool MediaEnginePlayer::TransferFrame( HANDLE textureHandle, MFVideoNormalizedRe
     return false;
 }
 
-void MediaEnginePlayer::OnMediaEngineEvent( uint32_t meEvent )
+void MediaEnginePlayer::OnMediaEngineEvent( uint32_t meEvent, DWORD_PTR param1, DWORD param2 )
 {
     switch ( meEvent )
     {
