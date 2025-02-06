@@ -798,7 +798,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     };
 }
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::D2D
 {
     inline void DrawingStateBlock::SetTextRenderingParams( const DirectWrite::RenderingParams& textRenderingParams ) const
     {

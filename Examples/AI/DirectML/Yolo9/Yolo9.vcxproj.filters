@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{11d6d15f-0c7c-47e7-8d68-c8dbf3450830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Media">
+      <UniqueIdentifier>{c4af3834-1fdc-4f3a-8c64-2566c5f016b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Media\Fonts">
+      <UniqueIdentifier>{e2512106-2f1f-4ee7-a074-5dea8c89c30f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ATGTK">
+      <UniqueIdentifier>{9d649ca9-7ca0-482c-8fce-305d94fff82f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DeviceResources.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaEnginePlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="polypartition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ssd_anchors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TensorHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Yolo9.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Yolo9ResourceBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Assets\PixelShader.hlsl">
+      <Filter>Assets</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\VertexShader.hlsl">
+      <Filter>Assets</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="depixelator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="earcut.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="half.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaEnginePlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Polyline2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="polypartition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ssd_anchors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StepTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TensorExtents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TensorHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Yolo9.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ATGTK\ATGColors.h">
+      <Filter>ATGTK</Filter>
+    </ClInclude>
+    <ClInclude Include="ATGTK\ControllerFont.h">
+      <Filter>ATGTK</Filter>
+    </ClInclude>
+    <ClInclude Include="ATGTK\d3dx12.h">
+      <Filter>ATGTK</Filter>
+    </ClInclude>
+    <ClInclude Include="ATGTK\FindMedia.h">
+      <Filter>ATGTK</Filter>
+    </ClInclude>
+    <ClInclude Include="ATGTK\ReadData.h">
+      <Filter>ATGTK</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Media\Fonts\SegoeUI_18.spritefont">
+      <Filter>Media\Fonts</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Media\Fonts\SegoeUI_30.spritefont">
+      <Filter>Media\Fonts</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Media\Fonts\SegoeUI_30_Bold.spritefont">
+      <Filter>Media\Fonts</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Media\Fonts\XboxOneControllerLegendSmall.spritefont">
+      <Filter>Media\Fonts</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+</Project>

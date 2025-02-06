@@ -5440,7 +5440,7 @@ namespace Harlinn::AI::DML
 
 
     // Expected: IDMLDevice
-    void CreateDevice( ID3D12Device* d3d12Device, DML_CREATE_DEVICE_FLAGS flags, REFIID riid, _COM_Outptr_opt_ void** ppv )
+    inline void CreateDevice( ID3D12Device* d3d12Device, DML_CREATE_DEVICE_FLAGS flags, REFIID riid, _COM_Outptr_opt_ void** ppv )
     {
         auto hr = DMLCreateDevice( d3d12Device, flags, riid, ppv );
         HCC_COM_CHECK_HRESULT( hr );
@@ -5448,7 +5448,7 @@ namespace Harlinn::AI::DML
 
     template<typename T = Device>
         requires std::is_base_of_v<Device, T>
-    T CreateDevice( ID3D12Device* d3d12Device, CreateDeviceFlags flags = CreateDeviceFlags::None )
+    inline T CreateDevice( ID3D12Device* d3d12Device, CreateDeviceFlags flags = CreateDeviceFlags::None )
     {
         using ItfType = typename T::InterfaceType;
         ItfType* itf = nullptr;
@@ -5458,7 +5458,7 @@ namespace Harlinn::AI::DML
 
     template<typename T = Device>
         requires std::is_base_of_v<Device, T>
-    T CreateDevice( const Graphics::D3D12::Device& d3d12Device, CreateDeviceFlags flags = CreateDeviceFlags::None )
+    inline T CreateDevice( const Graphics::D3D12::Device& d3d12Device, CreateDeviceFlags flags = CreateDeviceFlags::None )
     {
         return CreateDevice<T>( d3d12Device.GetInterfacePointer<ID3D12Device>( ), flags );
     }
@@ -5467,11 +5467,29 @@ namespace Harlinn::AI::DML
 #if DML_TARGET_VERSION >= 0x2000
 
     // Expected: IDMLDevice
-    void CreateDevice1( ID3D12Device* d3d12Device, DML_CREATE_DEVICE_FLAGS flags, DML_FEATURE_LEVEL minimumFeatureLevel, REFIID riid, _COM_Outptr_opt_ void** ppv )
+    inline void CreateDevice1( ID3D12Device* d3d12Device, DML_CREATE_DEVICE_FLAGS flags, DML_FEATURE_LEVEL minimumFeatureLevel, REFIID riid, _COM_Outptr_opt_ void** ppv )
     {
         auto hr = DMLCreateDevice1( d3d12Device, flags, minimumFeatureLevel, riid, ppv );
         HCC_COM_CHECK_HRESULT( hr );
     }
+
+    template<typename T = Device>
+        requires std::is_base_of_v<Device, T>
+    inline T CreateDevice1( ID3D12Device* d3d12Device, DML::FeatureLevel minimumFeatureLevel, CreateDeviceFlags flags = CreateDeviceFlags::None )
+    {
+        using ItfType = typename T::InterfaceType;
+        ItfType* itf = nullptr;
+        CreateDevice1( d3d12Device, static_cast< DML_CREATE_DEVICE_FLAGS >( flags ), static_cast< DML_FEATURE_LEVEL >( minimumFeatureLevel ), __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+        return T( itf );
+    }
+
+    template<typename T = Device>
+        requires std::is_base_of_v<Device, T>
+    inline T CreateDevice1( const Graphics::D3D12::Device& d3d12Device, DML::FeatureLevel minimumFeatureLevel, CreateDeviceFlags flags = CreateDeviceFlags::None )
+    {
+        return CreateDevice1<T>( d3d12Device.GetInterfacePointer<ID3D12Device>( ), minimumFeatureLevel, flags );
+    }
+
 #endif
 
 }

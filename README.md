@@ -273,6 +273,29 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 **Project:** Harlinn.DirectXTex
 
+### [DirectXTK](https://github.com/microsoft/DirectXTK)
+**Version:** October 2024
+
+**Description:**
+> This package contains the "DirectX Tool Kit", a collection of helper classes for writing 
+> Direct3D 11 C++ code for Universal Windows Platform (UWP) apps for Windows 11, Windows 10, 
+> Xbox One, and Win32 desktop applications for Windows 7 Service Pack 1 or later..
+
+**Project:** Harlinn.DirectXTK
+
+### [DirectXTK12](https://github.com/microsoft/DirectXTK12)
+**Version:** October 2024
+
+**Description:**
+> This package contains the "DirectX Tool Kit", a collection of helper classes for writing 
+> Direct3D 12 C++ code for Universal Windows Platform (UWP) apps for Windows 11 and Windows 10, 
+> game titles for Xbox Series X|S and Xbox One, and Win32 desktop applications for Windows 
+> 11 and Windows 10.
+
+**Project:** Harlinn.DirectXTK12
+
+
+
 
 ### [Adobe Digital Negative (DNG) SDK](https://helpx.adobe.com/camera-raw/digital-negative.html)
 **Version:** 1.5.1

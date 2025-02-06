@@ -381,6 +381,13 @@ namespace Harlinn::Windows::Graphics::DXGI
             CheckHRESULT( hr );
         }
 
+        DXGI_ADAPTER_DESC GetDesc( ) const
+        {
+            DXGI_ADAPTER_DESC result{};
+            GetDesc( &result );
+            return result;
+        }
+
         void CheckInterfaceSupport( REFGUID InterfaceName, LARGE_INTEGER* pUMDVersion ) const
         {
             auto* pInterface = GetInterface( );
@@ -626,6 +633,10 @@ namespace Harlinn::Windows::Graphics::DXGI
             auto hr = pInterface->ResizeBuffers( BufferCount, Width, Height, NewFormat, SwapChainFlags );
             CheckHRESULT( hr );
         }
+        void ResizeBuffers( UINT BufferCount, UINT Width, UINT Height, DXGI::Format NewFormat, UINT SwapChainFlags ) const
+        {
+            ResizeBuffers( BufferCount, Width, Height, static_cast< DXGI_FORMAT >( NewFormat ), SwapChainFlags );
+        }
 
         void ResizeTarget( const DXGI_MODE_DESC* pNewTargetParameters ) const
         {
@@ -641,12 +652,21 @@ namespace Harlinn::Windows::Graphics::DXGI
             CheckHRESULT( hr );
         }
 
-        Output GetContainingOutput( ) const
+        template<typename T = Output>
+            requires std::is_base_of_v<Output,T>
+        T GetContainingOutput( ) const
         {
             IDXGIOutput* itf = nullptr;
             GetContainingOutput( &itf );
             Output result( itf );
-            return result;
+            if constexpr ( std::is_same_v<Output, T> )
+            {
+                return result;
+            }
+            else
+            {
+                return result.As<T>( );
+            }
         }
 
 
@@ -1356,6 +1376,13 @@ namespace Harlinn::Windows::Graphics::DXGI
             auto hr = pInterface->GetDesc2( pDesc );
             CheckHRESULT( hr );
         }
+
+        DXGI_ADAPTER_DESC2 GetDesc2( ) const
+        {
+            DXGI_ADAPTER_DESC2 result{};
+            GetDesc2( &result );
+            return result;
+        }
     };
 
     /// <summary>
@@ -1698,11 +1725,11 @@ namespace Harlinn::Windows::Graphics::DXGI
             return pInterface->GetCurrentBackBufferIndex( );
         }
 
-        void CheckColorSpaceSupport( DXGI_COLOR_SPACE_TYPE colorSpace, UINT* pColorSpaceSupport ) const
+        bool CheckColorSpaceSupport( DXGI_COLOR_SPACE_TYPE colorSpace, UINT* pColorSpaceSupport ) const
         {
             auto* pInterface = GetInterface( );
             auto hr = pInterface->CheckColorSpaceSupport( colorSpace, pColorSpaceSupport );
-            CheckHRESULT( hr );
+            return SUCCEEDED( hr );
         }
 
         UINT CheckColorSpaceSupport( DXGI_COLOR_SPACE_TYPE colorSpace )
@@ -1946,11 +1973,15 @@ namespace Harlinn::Windows::Graphics::DXGI
             return result;
         }
     public:
-        void CheckFeatureSupport( DXGI_FEATURE Feature, void* pFeatureSupportData, UINT FeatureSupportDataSize ) const
+        bool CheckFeatureSupport( DXGI_FEATURE Feature, void* pFeatureSupportData, UINT FeatureSupportDataSize ) const
         {
             auto* pInterface = GetInterface( );
             auto hr = pInterface->CheckFeatureSupport( Feature, pFeatureSupportData, FeatureSupportDataSize );
-            CheckHRESULT( hr );
+            if ( hr != S_FALSE )
+            {
+                CheckHRESULT( hr );
+            }
+            return hr != S_FALSE;
         }
     };
 
@@ -1972,6 +2003,14 @@ namespace Harlinn::Windows::Graphics::DXGI
             auto hr = pInterface->GetDesc3( pDesc );
             CheckHRESULT( hr );
         }
+
+        DXGI_ADAPTER_DESC3 GetDesc3( ) const
+        {
+            DXGI_ADAPTER_DESC3 result{};
+            GetDesc3( &result );
+            return result;
+        }
+
     };
 
     /// <summary>
@@ -1991,6 +2030,14 @@ namespace Harlinn::Windows::Graphics::DXGI
             auto hr = pInterface->GetDesc1( pDesc );
             CheckHRESULT( hr );
         }
+        DXGI_OUTPUT_DESC1 GetDesc1( ) const
+        {
+            DXGI_OUTPUT_DESC1 desc;
+            GetDesc1( &desc );
+            return desc;
+        }
+
+
         void CheckHardwareCompositionSupport( UINT* pFlags ) const
         {
             auto* pInterface = GetInterface( );
@@ -2033,8 +2080,46 @@ namespace Harlinn::Windows::Graphics::DXGI
         {
             auto* pInterface = GetInterface( );
             auto hr = pInterface->EnumAdapterByGpuPreference( Adapter, GpuPreference, riid, ppvAdapter );
-            CheckHRESULT( hr );
+            if ( hr == DXGI_ERROR_NOT_FOUND )
+            {
+                *ppvAdapter = nullptr;
+            }
+            else
+            {
+                CheckHRESULT( hr );
+            }
         }
+
+        template<typename T = Adapter4>
+            requires std::is_base_of_v<Adapter,T>
+        T EnumAdapterByGpuPreference( UInt32 adapter, DXGI_GPU_PREFERENCE gpuPreference ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            EnumAdapterByGpuPreference( adapter, gpuPreference, __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+            return T( itf );
+        }
+
+        using Base::FindAdapter;
+
+        Adapter4 FindAdapter( DXGI_GPU_PREFERENCE gpuPreference, D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL_11_1 ) const
+        {
+            auto* pInterface = GetInterface( );
+            for ( UINT adapterIndex = 0; ; ++adapterIndex )
+            {
+                auto adapter = EnumAdapterByGpuPreference( adapterIndex, gpuPreference );
+                if ( adapter )
+                {
+                    if ( adapter.CanCreateD3D12Device( minimumFeatureLevel ) )
+                    {
+                        return adapter;
+                    }
+                }
+            }
+            return Adapter4( );
+        }
+
+
     };
 
     /// <summary>

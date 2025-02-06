@@ -10,6 +10,16 @@
 namespace Harlinn::Windows::Graphics::D3D12
 {
 
+    inline UInt8 GetFormatPlaneCount( const Device& device, DXGI::Format format )
+    {
+        FeatureDataFormatInfo formatInfo = { format, 0 };
+        if ( device.CheckFeatureSupport( formatInfo ) )
+        {
+            return formatInfo.PlaneCount;
+        }
+        return 0;
+    }
+
     //
     // TextureCopyLocation
     //

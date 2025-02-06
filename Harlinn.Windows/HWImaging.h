@@ -1013,6 +1013,7 @@ namespace Harlinn::Windows::Graphics
             HW_EXPORT BitmapEncoder& SetPreview( const BitmapSource& thePreview );
 
             HW_EXPORT BitmapFrameEncode CreateNewFrame( IPropertyBag2** ppIEncoderOptions );
+            HW_EXPORT BitmapFrameEncode CreateNewFrame( PropertyBag2& encoderOptions );
             HW_EXPORT BitmapFrameEncode CreateNewFrame( );
 
             HW_EXPORT BitmapEncoder& Commit( );

@@ -56,7 +56,7 @@ namespace Harlinn::Windows::DocumentTarget
     class PrintDocumentPackageTarget;
 }
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::D2D
 {
     namespace hcc = Harlinn::Common::Core;
 
@@ -14161,6 +14161,58 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
+
+    class DeviceContext7 : public DeviceContext6
+    {
+    public:
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( DeviceContext7, DeviceContext6, ID2D1DeviceContext7, ID2D1DeviceContext6 )
+    public:
+        /// <summary>
+    /// Get the maximum paint feature level supported by DrawPaintGlyphRun.
+    /// </summary>
+        DWRITE_PAINT_FEATURE_LEVEL GetPaintFeatureLevel( ) const
+        {
+            auto* pInterface = GetInterface( );
+            return pInterface->GetPaintFeatureLevel( );
+        }
+
+        /// <summary>
+        /// Draws a color glyph run that has the format of
+        /// DWRITE_GLYPH_IMAGE_FORMATS_COLR_PAINT_TREE.
+        /// </summary>
+        /// <param name="colorPaletteIndex">The index used to select a color palette within
+        /// a color font. Note that this not the same as the paletteIndex in the
+        /// DWRITE_COLOR_GLYPH_RUN struct, which is not relevant for paint glyphs.</param>
+        void DrawPaintGlyphRun(
+            D2D1_POINT_2F baselineOrigin,
+            _In_ CONST DWRITE_GLYPH_RUN* glyphRun,
+            _In_opt_ ID2D1Brush* defaultFillBrush = NULL,
+            UINT32 colorPaletteIndex = 0,
+            DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL ) const
+        {
+            auto* pInterface = GetInterface( );
+            pInterface->DrawPaintGlyphRun(baselineOrigin, glyphRun, defaultFillBrush, colorPaletteIndex, measuringMode);
+        }
+
+        /// <summary>
+        /// Draws a glyph run, using color representations of glyphs if available.
+        /// </summary>
+        void DrawGlyphRunWithColorSupport(
+            D2D1_POINT_2F baselineOrigin,
+            _In_ CONST DWRITE_GLYPH_RUN* glyphRun,
+            _In_opt_ CONST DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            _In_opt_ ID2D1Brush* foregroundBrush,
+            _In_opt_ ID2D1SvgGlyphStyle* svgGlyphStyle,
+            UINT32 colorPaletteIndex = 0,
+            DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL,
+            D2D1_COLOR_BITMAP_GLYPH_SNAP_OPTION bitmapSnapOption = D2D1_COLOR_BITMAP_GLYPH_SNAP_OPTION_DEFAULT ) const
+        {
+            auto* pInterface = GetInterface( );
+            pInterface->DrawGlyphRunWithColorSupport( baselineOrigin, glyphRun, glyphRunDescription, foregroundBrush, svgGlyphStyle, colorPaletteIndex, measuringMode, bitmapSnapOption );
+        }
+    };
+
+
     /// <summary>
     /// Represents a resource domain whose objects and device contexts can be 
     /// used together. This class performs all the same functions as the Device5 
@@ -14198,8 +14250,34 @@ namespace Harlinn::Windows::Graphics
         {
             return CreateDeviceContext( options );
         }
+    };
+
+    class Device7 : public Device6
+    {
+    public:
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Device7, Device6, ID2D1Device7, ID2D1Device6 )
+    public:
+        void CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS options, _COM_Outptr_ ID2D1DeviceContext7** deviceContext ) const
+        {
+            auto* pInterface = GetInterface( );
+            auto hr = pInterface->CreateDeviceContext( options, deviceContext );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        DeviceContext7 CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS options = D2D1_DEVICE_CONTEXT_OPTIONS_NONE ) const
+        {
+            ID2D1DeviceContext7* ptr = nullptr;
+            CreateDeviceContext( options, &ptr );
+            return DeviceContext7( ptr );
+        }
+
+        DeviceContext7 CreateDeviceContext7( D2D1_DEVICE_CONTEXT_OPTIONS options = D2D1_DEVICE_CONTEXT_OPTIONS_NONE ) const
+        {
+            return CreateDeviceContext( options );
+        }
 
     };
+
 
     /// <summary>
     /// Creates Direct2D resources. This class performs all the same 
@@ -14267,7 +14345,64 @@ namespace Harlinn::Windows::Graphics
     };
 
 
+    class Factory8 : public Factory7
+    {
+    public:
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Factory8, Factory7, ID2D1Factory8, ID2D1Factory7 )
+    public:
+        Factory8( D2D1_FACTORY_TYPE factoryType )
+        {
+            ID2D1Factory8* d2d1Factory8 = nullptr;
+            auto hr = D2D1CreateFactory( factoryType, __uuidof( ID2D1Factory8 ), ( void** )&d2d1Factory8 );
+            HCC_COM_CHECK_HRESULT( hr );
+            unknown_ = d2d1Factory8;
+        }
 
+        static Factory8 Create( D2D1_FACTORY_TYPE factoryType = D2D1_FACTORY_TYPE::D2D1_FACTORY_TYPE_SINGLE_THREADED )
+        {
+            return Factory8( factoryType );
+        }
+
+
+        /// <summary>
+        /// This creates a new Direct2D device from the given IDXGIDevice.
+        /// </summary>
+        /// <param name="dxgiDevice">
+        /// The IDXGIDevice from which to create the Direct2D device.
+        /// </param>
+        /// <param name="d2dDevice6">
+        /// The created device.
+        /// </param>
+        void CreateDevice( _In_ IDXGIDevice* dxgiDevice, ID2D1Device7** d2dDevice7 ) const
+        {
+            auto* pInterface = GetInterface( );
+            auto hr = pInterface->CreateDevice( dxgiDevice, d2dDevice7 );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void CreateDevice( const DXGI::Device& dxgiDevice, ID2D1Device7** d2dDevice7 ) const
+        {
+            CreateDevice( dxgiDevice.GetInterfacePointer<IDXGIDevice>( ), d2dDevice7 );
+        }
+        Device7 CreateDevice( _In_ IDXGIDevice* dxgiDevice ) const
+        {
+            ID2D1Device7* ptr = nullptr;
+            CreateDevice( dxgiDevice, &ptr );
+            return Device7( ptr );
+        }
+        Device7 CreateDevice( const DXGI::Device& dxgiDevice ) const
+        {
+            return CreateDevice( dxgiDevice.GetInterfacePointer<IDXGIDevice>( ) );
+        }
+
+        Device7 CreateDevice7( _In_ IDXGIDevice* dxgiDevice ) const
+        {
+            return CreateDevice( dxgiDevice );
+        }
+        Device7 CreateDevice7( const DXGI::Device& dxgiDevice ) const
+        {
+            return CreateDevice( dxgiDevice );
+        }
+    };
 
 
 
@@ -14288,6 +14423,17 @@ namespace Harlinn::Windows::Graphics
         HCC_COM_CHECK_HRESULT( hr );
         DeviceContext result( d2dDeviceContext );
         return result;
+    }
+
+    template<typename T = Factory8>
+        requires std::is_base_of_v<Factory,T>
+    T CreateFactory( D2D1_FACTORY_TYPE factoryType )
+    {
+        using ItfType = typename T::InterfaceType;
+        ItfType* itf = nullptr;
+        auto hr = D2D1CreateFactory( factoryType, __uuidof( ItfType ), reinterpret_cast<void**>( &itf ) );
+        HCC_COM_CHECK_HRESULT( hr );
+        return Factory( itf );
     }
 
     [[nodiscard]] inline D2D1_COLOR_F ConvertColorSpace( D2D1_COLOR_SPACE sourceColorSpace, D2D1_COLOR_SPACE destinationColorSpace, const D2D1_COLOR_F* color )

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{84228224-fe41-48a9-addd-0cfab7d0bdb0}</ProjectGuid>
+    <RootNamespace>HarlinnDirectXTK</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_DIRECTXTK=1;WIN32;_DEBUG;HARLINNDIRECTXTK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Inc;$(ProjectDir)Src;$(ProjectDir)Src\Shaders\Compiled;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PreBuildEvent>
+      <Command>cd $(ProjectDir)Src\Shaders
+$(ProjectDir)Src\Shaders\CompileShaders.cmd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_DIRECTXTK=1;WIN32;NDEBUG;HARLINNDIRECTXTK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Inc;$(ProjectDir)Src;$(ProjectDir)Src\Shaders\Compiled;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PreBuildEvent>
+      <Command>cd $(ProjectDir)Src\Shaders
+$(ProjectDir)Src\Shaders\CompileShaders.cmd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_DIRECTXTK=1;_DEBUG;HARLINNDIRECTXTK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Inc;$(ProjectDir)Src;$(ProjectDir)Src\Shaders\Compiled;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
+    </Link>
+    <PreBuildEvent>
+      <Command>cd $(ProjectDir)Src\Shaders
+$(ProjectDir)Src\Shaders\CompileShaders.cmd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_DIRECTXTK=1;NDEBUG;HARLINNDIRECTXTK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Inc;$(ProjectDir)Src;$(ProjectDir)Src\Shaders\Compiled;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
+    </Link>
+    <PreBuildEvent>
+      <Command>cd $(ProjectDir)Src\Shaders
+$(ProjectDir)Src\Shaders\CompileShaders.cmd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Audio\SoundCommon.h" />
+    <ClInclude Include="Audio\WaveBankReader.h" />
+    <ClInclude Include="Audio\WAVFileReader.h" />
+    <ClInclude Include="Inc\Audio.h" />
+    <ClInclude Include="Inc\BufferHelpers.h" />
+    <ClInclude Include="Inc\CommonStates.h" />
+    <ClInclude Include="Inc\DDSTextureLoader.h" />
+    <ClInclude Include="Inc\DirectXHelpers.h" />
+    <ClInclude Include="Inc\Effects.h" />
+    <ClInclude Include="Inc\GamePad.h" />
+    <ClInclude Include="Inc\GeometricPrimitive.h" />
+    <ClInclude Include="Inc\GraphicsMemory.h" />
+    <ClInclude Include="Inc\HDirectXTKDef.h" />
+    <ClInclude Include="Inc\Keyboard.h" />
+    <ClInclude Include="Inc\Model.h" />
+    <ClInclude Include="Inc\Mouse.h" />
+    <ClInclude Include="Inc\PostProcess.h" />
+    <ClInclude Include="Inc\PrimitiveBatch.h" />
+    <ClInclude Include="Inc\ScreenGrab.h" />
+    <ClInclude Include="Inc\SimpleMath.h" />
+    <ClInclude Include="Inc\SpriteBatch.h" />
+    <ClInclude Include="Inc\SpriteFont.h" />
+    <ClInclude Include="Inc\VertexTypes.h" />
+    <ClInclude Include="Inc\WICTextureLoader.h" />
+    <ClInclude Include="Inc\XboxDDSTextureLoader.h" />
+    <ClInclude Include="Src\AlignedNew.h" />
+    <ClInclude Include="Src\Bezier.h" />
+    <ClInclude Include="Src\BinaryReader.h" />
+    <ClInclude Include="Src\CMO.h" />
+    <ClInclude Include="Src\DDS.h" />
+    <ClInclude Include="Src\DemandCreate.h" />
+    <ClInclude Include="Src\EffectCommon.h" />
+    <ClInclude Include="Src\Geometry.h" />
+    <ClInclude Include="Src\LoaderHelpers.h" />
+    <ClInclude Include="Src\pch.h" />
+    <ClInclude Include="Src\PlatformHelpers.h" />
+    <ClInclude Include="Src\SDKMesh.h" />
+    <ClInclude Include="Src\SharedResourcePool.h" />
+    <ClInclude Include="Src\vbo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Audio\AudioEngine.cpp" />
+    <ClCompile Include="Audio\DynamicSoundEffectInstance.cpp" />
+    <ClCompile Include="Audio\SoundCommon.cpp" />
+    <ClCompile Include="Audio\SoundEffect.cpp" />
+    <ClCompile Include="Audio\SoundEffectInstance.cpp" />
+    <ClCompile Include="Audio\SoundStreamInstance.cpp" />
+    <ClCompile Include="Audio\WaveBank.cpp" />
+    <ClCompile Include="Audio\WaveBankReader.cpp" />
+    <ClCompile Include="Audio\WAVFileReader.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Src\AlphaTestEffect.cpp" />
+    <ClCompile Include="Src\BasicEffect.cpp" />
+    <ClCompile Include="Src\BasicPostProcess.cpp" />
+    <ClCompile Include="Src\BinaryReader.cpp" />
+    <ClCompile Include="Src\BufferHelpers.cpp" />
+    <ClCompile Include="Src\CommonStates.cpp" />
+    <ClCompile Include="Src\DDSTextureLoader.cpp" />
+    <ClCompile Include="Src\DebugEffect.cpp" />
+    <ClCompile Include="Src\DGSLEffect.cpp" />
+    <ClCompile Include="Src\DGSLEffectFactory.cpp" />
+    <ClCompile Include="Src\DirectXHelpers.cpp" />
+    <ClCompile Include="Src\DualPostProcess.cpp" />
+    <ClCompile Include="Src\DualTextureEffect.cpp" />
+    <ClCompile Include="Src\EffectCommon.cpp" />
+    <ClCompile Include="Src\EffectFactory.cpp" />
+    <ClCompile Include="Src\EnvironmentMapEffect.cpp" />
+    <ClCompile Include="Src\GamePad.cpp" />
+    <ClCompile Include="Src\GeometricPrimitive.cpp" />
+    <ClCompile Include="Src\Geometry.cpp" />
+    <ClCompile Include="Src\GraphicsMemory.cpp" />
+    <ClCompile Include="Src\Keyboard.cpp" />
+    <ClCompile Include="Src\Model.cpp" />
+    <ClCompile Include="Src\ModelLoadCMO.cpp" />
+    <ClCompile Include="Src\ModelLoadSDKMESH.cpp" />
+    <ClCompile Include="Src\ModelLoadVBO.cpp" />
+    <ClCompile Include="Src\Mouse.cpp" />
+    <ClCompile Include="Src\NormalMapEffect.cpp" />
+    <ClCompile Include="Src\PBREffect.cpp" />
+    <ClCompile Include="Src\PBREffectFactory.cpp" />
+    <ClCompile Include="Src\pch.cpp" />
+    <ClCompile Include="Src\PrimitiveBatch.cpp" />
+    <ClCompile Include="Src\ScreenGrab.cpp" />
+    <ClCompile Include="Src\SimpleMath.cpp" />
+    <ClCompile Include="Src\SkinnedEffect.cpp" />
+    <ClCompile Include="Src\SpriteBatch.cpp" />
+    <ClCompile Include="Src\SpriteFont.cpp" />
+    <ClCompile Include="Src\ToneMapPostProcess.cpp" />
+    <ClCompile Include="Src\VertexTypes.cpp" />
+    <ClCompile Include="Src\WICTextureLoader.cpp" />
+    <ClCompile Include="Src\XboxDDSTextureLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Inc\SimpleMath.inl" />
+    <None Include="Src\Shaders\Common.fxh" />
+    <None Include="Src\Shaders\CompileShaders.cmd" />
+    <None Include="Src\Shaders\Lighting.fxh" />
+    <None Include="Src\Shaders\PBRCommon.fxh" />
+    <None Include="Src\Shaders\PixelPacking_Velocity.hlsli" />
+    <None Include="Src\Shaders\Skinning.fxh" />
+    <None Include="Src\Shaders\Structures.fxh" />
+    <None Include="Src\Shaders\Utilities.fxh" />
+    <None Include="Src\TeapotData.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Src\Shaders\AlphaTestEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\BasicEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\DebugEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\DGSLEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\DGSLLambert.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\DGSLPhong.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\DGSLUnlit.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\DualTextureEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\EnvironmentMapEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\NormalMapEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\PBREffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\PostProcess.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\SkinnedEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\SpriteEffect.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Src\Shaders\ToneMap.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

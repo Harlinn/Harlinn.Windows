@@ -20,7 +20,7 @@
 #include <HWControl.h>
 #include <HWDocumentTarget.h>
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::D2D
 {
 
     // ================================================================
@@ -64,12 +64,12 @@ namespace Harlinn::Windows::Graphics
         RECT rect;
         control.GetClientRect( rect );
 
-        auto size = D2D1::SizeU( rect.right - rect.left, rect.bottom - rect.top );
+        auto size = ::D2D1::SizeU( rect.right - rect.left, rect.bottom - rect.top );
 
         ID2D1HwndRenderTarget* pRenderTarget = nullptr;
         HRESULT hr = pInterface->CreateHwndRenderTarget(
-            D2D1::RenderTargetProperties( ),
-            D2D1::HwndRenderTargetProperties( hwnd, size ), &pRenderTarget );
+            ::D2D1::RenderTargetProperties( ),
+            ::D2D1::HwndRenderTargetProperties( hwnd, size ), &pRenderTarget );
         HCC_COM_CHECK_HRESULT2( hr, pInterface );
 
         ControlRenderTarget result( pRenderTarget );
@@ -88,8 +88,8 @@ namespace Harlinn::Windows::Graphics
 
         ID2D1HwndRenderTarget* pRenderTarget = nullptr;
         HRESULT hr = pInterface->CreateHwndRenderTarget(
-            D2D1::RenderTargetProperties( ),
-            D2D1::HwndRenderTargetProperties( hwnd, D2D1::SizeU( rect.right - rect.left, rect.bottom - rect.top ) ), &pRenderTarget );
+            ::D2D1::RenderTargetProperties( ),
+            ::D2D1::HwndRenderTargetProperties( hwnd, ::D2D1::SizeU( rect.right - rect.left, rect.bottom - rect.top ) ), &pRenderTarget );
         HCC_COM_CHECK_HRESULT2( hr, pInterface );
 
         ControlRenderTarget result( pRenderTarget );

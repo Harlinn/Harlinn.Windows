@@ -836,8 +836,11 @@ X( ID3DDestructionNotifier, IUnknown )
 // dxcore_interface.h ( usually pulled in via dxcore.h )
 // ========================================================
 X( IDXCoreAdapter, IUnknown )
+X( IDXCoreAdapter1, IDXCoreAdapter )
 X( IDXCoreAdapterList, IUnknown )
 X( IDXCoreAdapterFactory, IUnknown )
+X( IDXCoreAdapterFactory1, IDXCoreAdapterFactory )
+
 // ========================================================
 // d3d12.h
 // ========================================================

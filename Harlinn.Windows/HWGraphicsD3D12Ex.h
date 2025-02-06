@@ -26,6 +26,7 @@
 namespace Harlinn::Windows::Graphics::D3D12
 {
     class Resource;
+    class Device;
 
 #define HWD3D12_IMPLEMENT_CONVERSIONS_TO( name ) \
     operator const name* ( ) const \
@@ -47,6 +48,20 @@ namespace Harlinn::Windows::Graphics::D3D12
     using D3D12Type = name
 
     using GPUVirtualAddress = UInt64;
+
+    inline UInt8 GetFormatPlaneCount( const Device& device, DXGI::Format format );
+    inline UINT CalcSubResource( UInt32 mipSlice, UInt32 arraySlice, UInt32 planeSlice, UInt32 mipLevels, UInt32 arraySize )
+    {
+        return mipSlice + arraySlice * mipLevels + planeSlice * mipLevels * arraySize;
+    }
+
+    template <typename T, typename U, typename V>
+    inline void DecomposeSubresource( UInt32 subResource, UInt32 mipLevels, UInt32 arraySize, _Out_ T& mipSlice, _Out_ U& arraySlice, _Out_ V& planeSlice )
+    {
+        mipSlice = static_cast< T >( subResource % mipLevels );
+        arraySlice = static_cast< U >( ( subResource / mipLevels ) % arraySize );
+        planeSlice = static_cast< V >( subResource / ( mipLevels * arraySize ) );
+    }
 
     /// <summary>
     /// Specifies the type of a command list.
@@ -970,10 +985,34 @@ namespace Harlinn::Windows::Graphics::D3D12
 
         ShaderBytecode( ) = default;
 
+        ShaderBytecode( const D3D12_SHADER_BYTECODE& other )
+            : pShaderBytecode( other.pShaderBytecode ), BytecodeLength( other.BytecodeLength )
+        { }
+
+        template<SimpleSpanLike T>
+        ShaderBytecode( const T& buffer )
+            : pShaderBytecode( buffer.data( ) ), BytecodeLength( static_cast< SIZE_T >( buffer.size()*sizeof(typename T::value_type) ) )
+        { }
+
         ShaderBytecode& operator = ( const D3D10Blob& blob )
         {
             pShaderBytecode = blob.GetBufferPointer( );
             BytecodeLength = blob.GetBufferSize( );
+            return *this;
+        }
+
+        ShaderBytecode& operator = ( const D3D12_SHADER_BYTECODE& other )
+        {
+            pShaderBytecode = other.pShaderBytecode; 
+            BytecodeLength = other.BytecodeLength;
+            return *this;
+        }
+
+        template<SimpleSpanLike T>
+        ShaderBytecode& operator = ( const T& buffer )
+        {
+            pShaderBytecode = buffer.data( ); 
+            BytecodeLength = static_cast<SIZE_T>(buffer.size( ) * sizeof( typename T::value_type ));
             return *this;
         }
 
@@ -2537,6 +2576,48 @@ namespace Harlinn::Windows::Graphics::D3D12
             : ResourceDesc( ResourceDimension::Buffer, alignment, width, 1, 1, 1,
                 DXGI::Format::Unknown, 1, 0, TextureLayout::RowMajor, flags )
         { }
+
+        static inline ResourceDesc Buffer( const D3D12::ResourceAllocationInfo& resAllocInfo, D3D12::ResourceFlags flags = D3D12::ResourceFlags::None )
+        {
+            return ResourceDesc( D3D12::ResourceDimension::Buffer, resAllocInfo.Alignment, resAllocInfo.SizeInBytes, 1, 1, 1, DXGI::Format::Unknown, 1, 0, D3D12::TextureLayout::RowMajor, flags );
+        }
+        static inline ResourceDesc Buffer( UInt64 width, D3D12::ResourceFlags flags = D3D12::ResourceFlags::None, UInt64 alignment = 0 )
+        {
+            return ResourceDesc( D3D12::ResourceDimension::Buffer, alignment, width, 1, 1, 1, DXGI::Format::Unknown, 1, 0, D3D12::TextureLayout::RowMajor, flags );
+        }
+        static inline ResourceDesc Tex1D( DXGI::Format format, UInt64 width, UInt16 arraySize = 1, UInt16 mipLevels = 0, ResourceFlags flags = ResourceFlags::None, D3D12::TextureLayout layout = D3D12::TextureLayout::Unknown, UInt64 alignment = 0 )
+        {
+            return ResourceDesc( D3D12::ResourceDimension::Texture1D, alignment, width, 1, arraySize, mipLevels, format, 1, 0, layout, flags );
+        }
+        static inline ResourceDesc Tex2D( DXGI::Format format, UInt64 width, UInt32 height, UInt16 arraySize = 1, UInt16 mipLevels = 0, UInt32 sampleCount = 1, UInt32 sampleQuality = 0, ResourceFlags flags = ResourceFlags::None, D3D12::TextureLayout layout = D3D12::TextureLayout::Unknown, UInt64 alignment = 0 )
+        {
+            return ResourceDesc( D3D12::ResourceDimension::Texture2D, alignment, width, height, arraySize, mipLevels, format, sampleCount, sampleQuality, layout, flags );
+        }
+        static inline ResourceDesc Tex3D( DXGI::Format format, UInt64 width, UInt32 height, UInt16 depth, UInt16 mipLevels = 0, ResourceFlags flags = ResourceFlags::None, D3D12::TextureLayout layout = D3D12::TextureLayout::Unknown, UInt64 alignment = 0 )
+        {
+            return ResourceDesc( D3D12::ResourceDimension::Texture3D, alignment, width, height, depth, mipLevels, format, 1, 0, layout, flags );
+        }
+
+        inline UInt16 Depth( ) const
+        {
+            return ( Dimension == D3D12::ResourceDimension::Texture3D ? DepthOrArraySize : 1 );
+        }
+        inline UInt16 ArraySize( ) const
+        {
+            return ( Dimension != D3D12::ResourceDimension::Texture3D ? DepthOrArraySize : 1 );
+        }
+        inline UInt8 PlaneCount( _In_ const Device& device ) const
+        {
+            return GetFormatPlaneCount( device, Format );
+        }
+        inline UInt32 SubResources( _In_ const Device& device ) const
+        {
+            return MipLevels * ArraySize( ) * PlaneCount( device );
+        }
+        inline UInt32 CalcSubResource( UInt32 mipSlice, UInt32 arraySlice, UInt32 planeSlice )
+        {
+            return D3D12::CalcSubResource( mipSlice, arraySlice, planeSlice, MipLevels, ArraySize( ) );
+        }
 
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_RESOURCE_DESC );
     };
@@ -4689,6 +4770,16 @@ namespace Harlinn::Windows::Graphics::D3D12
         UInt32 RegisterSpace = 0;
         UInt32 OffsetInDescriptorsFromTableStart = 0;
 
+        DescriptorRange( ) = default;
+
+        DescriptorRange( DescriptorRangeType rangeType,
+            UInt32 numDescriptors,
+            UInt32 baseShaderRegister,
+            UInt32 registerSpace = 0,
+            UInt32 offsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND )
+            : RangeType( rangeType ), NumDescriptors( numDescriptors ), BaseShaderRegister( baseShaderRegister ), RegisterSpace( registerSpace ), OffsetInDescriptorsFromTableStart( offsetInDescriptorsFromTableStart )
+        { }
+
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_DESCRIPTOR_RANGE );
     };
 
@@ -4833,6 +4924,11 @@ namespace Harlinn::Windows::Graphics::D3D12
         RootParameter( RootParameterType parameterType, UInt32 shaderRegister, UInt32 registerSpace, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
             : ParameterType( parameterType ), Descriptor( shaderRegister, registerSpace ), ShaderVisibility( shaderVisibility )
         { }
+
+        static RootParameter AsDescriptorTable( UInt32 numDescriptorRanges, _Field_size_full_( numDescriptorRanges )  const DescriptorRange* descriptorRanges, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
+        {
+            return RootParameter( RootDescriptorTable( numDescriptorRanges, descriptorRanges ), shaderVisibility );
+        }
 
         static RootParameter AsConstantBufferView( UInt32 shaderRegister, UInt32 registerSpace, D3D12::ShaderVisibility shaderVisibility = D3D12::ShaderVisibility::All )
         {
@@ -5147,6 +5243,66 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct CPUDescriptorHandle
     {
         SIZE_T ptr = 0;
+
+        CPUDescriptorHandle( ) noexcept = default;
+
+        CPUDescriptorHandle( _In_ const D3D12_CPU_DESCRIPTOR_HANDLE& other ) noexcept
+            : ptr( other.ptr )
+        { }
+
+        CPUDescriptorHandle( _In_ const CPUDescriptorHandle& base, Int32 offsetScaledByIncrementSize )
+            : ptr( CalculateOffset( base, offsetScaledByIncrementSize ) )
+        { }
+
+        CPUDescriptorHandle( _In_ const CPUDescriptorHandle& base, Int32 offsetInDescriptors, UInt32 descriptorIncrementSize )
+            : ptr( CalculateOffset( base, offsetInDescriptors, descriptorIncrementSize ) )
+        { }
+
+        CPUDescriptorHandle& operator = ( _In_ const D3D12_CPU_DESCRIPTOR_HANDLE& other ) noexcept
+        {
+            ptr = other.ptr;
+            return *this;
+        }
+
+        bool operator==( _In_ const CPUDescriptorHandle& other ) const
+        {
+            return ( ptr == other.ptr );
+        }
+        bool operator!=( _In_ const CPUDescriptorHandle& other ) const
+        {
+            return ( ptr != other.ptr );
+        }
+
+        bool operator==( _In_ const D3D12_CPU_DESCRIPTOR_HANDLE& other ) const
+        {
+            return ( ptr == other.ptr );
+        }
+        bool operator!=( _In_ const D3D12_CPU_DESCRIPTOR_HANDLE& other ) const
+        {
+            return ( ptr != other.ptr );
+        }
+
+
+        inline void Offset( _In_ const CPUDescriptorHandle& base, Int32 offsetScaledByIncrementSize )
+        {
+            ptr = CalculateOffset( base, offsetScaledByIncrementSize );
+        }
+
+        inline void Offset( _In_ const CPUDescriptorHandle& base, Int32 offsetInDescriptors, UInt32 descriptorIncrementSize )
+        {
+            ptr = CalculateOffset( base, offsetInDescriptors, descriptorIncrementSize );
+        }
+
+        static inline SIZE_T CalculateOffset( _In_ const CPUDescriptorHandle& base, Int32 offsetScaledByIncrementSize )
+        {
+            return  SIZE_T( Int64( base.ptr ) + Int64( offsetScaledByIncrementSize ) );
+        }
+
+        static inline SIZE_T CalculateOffset( _In_ const CPUDescriptorHandle& base, Int32 offsetInDescriptors, UInt32 descriptorIncrementSize )
+        {
+            return SIZE_T( Int64( base.ptr ) + Int64( offsetInDescriptors ) * Int64( descriptorIncrementSize ) );
+        }
+
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_CPU_DESCRIPTOR_HANDLE );
     };
 
@@ -5158,6 +5314,63 @@ namespace Harlinn::Windows::Graphics::D3D12
     struct GPUDescriptorHandle
     {
         UInt64 ptr = 0;
+
+        GPUDescriptorHandle( ) noexcept = default;
+
+        GPUDescriptorHandle( _In_ const D3D12_GPU_DESCRIPTOR_HANDLE& other ) noexcept
+            : ptr( other.ptr )
+        { }
+        GPUDescriptorHandle( _In_ const GPUDescriptorHandle& other, INT offsetScaledByIncrementSize ) noexcept
+            : ptr( CalculateOffset( other, offsetScaledByIncrementSize ) )
+        { }
+        GPUDescriptorHandle( _In_ const GPUDescriptorHandle& other, INT offsetInDescriptors, UINT descriptorIncrementSize ) noexcept
+            : ptr( CalculateOffset( other, offsetInDescriptors, descriptorIncrementSize ) )
+        { }
+
+        GPUDescriptorHandle& operator = ( _In_ const D3D12_GPU_DESCRIPTOR_HANDLE& other ) noexcept
+        {
+            ptr = other.ptr;
+            return *this;
+        }
+
+        inline bool operator==( _In_ const GPUDescriptorHandle& other ) const
+        {
+            return ( ptr == other.ptr );
+        }
+        inline bool operator!=( _In_ const GPUDescriptorHandle& other ) const
+        {
+            return ( ptr != other.ptr );
+        }
+
+        inline bool operator==( _In_ const D3D12_GPU_DESCRIPTOR_HANDLE& other ) const
+        {
+            return ( ptr == other.ptr );
+        }
+        inline bool operator!=( _In_ const D3D12_GPU_DESCRIPTOR_HANDLE& other ) const
+        {
+            return ( ptr != other.ptr );
+        }
+
+        inline void Offset( _In_ const GPUDescriptorHandle& base, Int32 offsetScaledByIncrementSize )
+        {
+            ptr = CalculateOffset( base, offsetScaledByIncrementSize );
+        }
+
+        inline void Offset( _In_ const GPUDescriptorHandle& base, Int32 offsetInDescriptors, UInt32 descriptorIncrementSize )
+        {
+            ptr = CalculateOffset( base, offsetInDescriptors, descriptorIncrementSize );
+        }
+
+        static inline UInt64 CalculateOffset( _In_ const GPUDescriptorHandle& base, Int32 offsetScaledByIncrementSize )
+        {
+            return UInt64( Int64( base.ptr ) + Int64( offsetScaledByIncrementSize ) );
+        }
+
+        static inline UInt64 CalculateOffset( _In_ const GPUDescriptorHandle& base, Int32 offsetInDescriptors, UInt32  descriptorIncrementSize )
+        {
+            return UInt64( Int64( base.ptr ) + Int64( offsetInDescriptors ) * Int64( descriptorIncrementSize ) );
+        }
+
         HWD3D12_IMPLEMENT_CONVERSIONS_TO( D3D12_GPU_DESCRIPTOR_HANDLE );
     };
 

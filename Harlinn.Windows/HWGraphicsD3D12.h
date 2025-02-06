@@ -1760,6 +1760,11 @@ namespace Harlinn::Windows::Graphics::D3D12
             RSSetViewports( static_cast<UINT>( viewports.size() ), viewports.data() );
         }
 
+        void RSSetViewports( const Viewport& viewport ) const
+        {
+            RSSetViewports( 1, reinterpret_cast< const D3D12_VIEWPORT* >( &viewport ) );
+        }
+
         /// <summary>
         /// Binds an array of scissor rectangles to the rasterizer stage.
         /// </summary>
@@ -1795,13 +1800,32 @@ namespace Harlinn::Windows::Graphics::D3D12
             RSSetScissorRects( numberOfScissorRectangles, reinterpret_cast< const D3D12_RECT* >( scissorRectangles ) );
         }
 
-
         template<SimpleSpanLike SpanT>
             requires std::is_convertible_v<typename SpanT::value_type, const D3D12_RECT>
-        void RSSetViewports( const SpanT& scissorRectangles ) const
+        void RSSetScissorRects( const SpanT& scissorRectangles ) const
         {
-            RSSetViewports( static_cast< UINT >( scissorRectangles.size( ) ), scissorRectangles.data( ) );
+            RSSetScissorRects( static_cast< UINT >( scissorRectangles.size( ) ), scissorRectangles.data( ) );
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_convertible_v<typename SpanT::value_type, const D3D12::Rectangle >
+        void RSSetScissorRects( const SpanT& scissorRectangles ) const
+        {
+            RSSetScissorRects( static_cast< UINT >( scissorRectangles.size( ) ), scissorRectangles.data( ) );
+        }
+
+        void RSSetScissorRects( const D3D12_RECT& scissorRectangle ) const
+        {
+            RSSetScissorRects( 1, &scissorRectangle );
+        }
+
+        void RSSetScissorRects( const Rectangle& scissorRectangle ) const
+        {
+            RSSetScissorRects( 1, &scissorRectangle );
+        }
+
+
+        
 
         /// <summary>
         /// Sets the blend factors that modulate values for a pixel shader, render target, or both.
@@ -1903,7 +1927,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES flag ( 0xffffffff ) which 
         /// transitions all subresources in a resource at the same time.
         /// </param>
-        void ResourceBarrier( ID3D12Resource* resource, ResourceStates stateBefore, ResourceStates stateAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None, UInt32 subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES ) noexcept
+        void ResourceBarrier( ID3D12Resource* resource, ResourceStates stateBefore, ResourceStates stateAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None, UInt32 subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES ) const noexcept
         {
             D3D12::ResourceBarrier resourceBarrier( resource, stateBefore, stateAfter, flags, subresource );
             ResourceBarrier( 1, &resourceBarrier );
@@ -1929,7 +1953,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES flag ( 0xffffffff ) which 
         /// transitions all subresources in a resource at the same time.
         /// </param>
-        void ResourceBarrier( const Resource& resource, ResourceStates stateBefore, ResourceStates stateAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None, UInt32 subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES ) noexcept
+        void ResourceBarrier( const Resource& resource, ResourceStates stateBefore, ResourceStates stateAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None, UInt32 subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES ) const noexcept
         {
             D3D12::ResourceBarrier resourceBarrier( resource, stateBefore, stateAfter, flags, subresource );
             ResourceBarrier( 1, &resourceBarrier );
@@ -1954,7 +1978,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// or one or both resources can be NULL, which indicates that 
         /// any placed or reserved resource could cause aliasing.
         /// </remarks>
-        void ResourceBarrier( ID3D12Resource* resourceBefore, ID3D12Resource* resourceAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+        void ResourceBarrier( ID3D12Resource* resourceBefore, ID3D12Resource* resourceAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) const noexcept
         {
             D3D12::ResourceBarrier resourceBarrier( resourceBefore, resourceAfter, flags );
             ResourceBarrier( 1, &resourceBarrier );
@@ -1979,7 +2003,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// or one or both resources can be NULL, which indicates that 
         /// any placed or reserved resource could cause aliasing.
         /// </remarks>
-        void ResourceBarrier( const Resource& resourceBefore, const Resource& resourceAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+        void ResourceBarrier( const Resource& resourceBefore, const Resource& resourceAfter, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) const noexcept
         {
             D3D12::ResourceBarrier resourceBarrier( resourceBefore, resourceAfter, flags );
             ResourceBarrier( 1, &resourceBarrier );
@@ -1995,7 +2019,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// <param name="flags">
         /// Specifies a value from the ResourceBarrierFlags enumeration.
         /// </param>
-        void ResourceBarrier( ID3D12Resource* resource, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+        void ResourceBarrier( ID3D12Resource* resource, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) const noexcept
         {
             D3D12::ResourceBarrier resourceBarrier( resource, flags );
             ResourceBarrier( 1, &resourceBarrier );
@@ -2010,7 +2034,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         /// <param name="flags">
         /// Specifies a value from the ResourceBarrierFlags enumeration.
         /// </param>
-        void ResourceBarrier( const Resource& resource, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) noexcept
+        void ResourceBarrier( const Resource& resource, ResourceBarrierFlags flags = ResourceBarrierFlags::None ) const noexcept
         {
             D3D12::ResourceBarrier resourceBarrier( resource, flags );
             ResourceBarrier( 1, &resourceBarrier );
@@ -2183,6 +2207,12 @@ namespace Harlinn::Windows::Graphics::D3D12
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->OMSetRenderTargets( numRenderTargetDescriptors, pRenderTargetDescriptors, rtsSingleHandleToDescriptorRange, pDepthStencilDescriptor );
+        }
+
+        void OMSetRenderTargets( _In_ UINT numRenderTargetDescriptors, _In_opt_ const CPUDescriptorHandle* pRenderTargetDescriptors, _In_ bool rtsSingleHandleToDescriptorRange = false, _In_opt_ const CPUDescriptorHandle* pDepthStencilDescriptor = nullptr ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->OMSetRenderTargets( numRenderTargetDescriptors, reinterpret_cast< const D3D12_CPU_DESCRIPTOR_HANDLE* >( pRenderTargetDescriptors ) , rtsSingleHandleToDescriptorRange, reinterpret_cast< const D3D12_CPU_DESCRIPTOR_HANDLE* >( pDepthStencilDescriptor ) );
         }
 
         void ClearDepthStencilView( _In_ D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView, _In_ D3D12_CLEAR_FLAGS clearFlags, _In_ FLOAT depth, _In_ UINT8 stencil, _In_ UINT numRects, _In_reads_( numRects ) const D3D12_RECT* pRects ) const
@@ -2640,11 +2670,11 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
 
 
-        void CheckFeatureSupport( D3D12_FEATURE feature, _Inout_updates_bytes_( featureSupportDataSize )  void* pFeatureSupportData, UINT featureSupportDataSize ) const
+        bool CheckFeatureSupport( D3D12_FEATURE feature, _Inout_updates_bytes_( featureSupportDataSize )  void* pFeatureSupportData, UINT featureSupportDataSize ) const
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->CheckFeatureSupport( feature, pFeatureSupportData, featureSupportDataSize );
-            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return SUCCEEDED( hr );
         }
 
         bool CheckFeatureSupport( D3D12_FEATURE_DATA_D3D12_OPTIONS& options ) const
@@ -2666,6 +2696,20 @@ namespace Harlinn::Windows::Graphics::D3D12
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->CheckFeatureSupport( D3D12_FEATURE_FORMAT_SUPPORT, &formatSupport, sizeof( D3D12_FEATURE_DATA_FORMAT_SUPPORT ) );
+            return SUCCEEDED( hr );
+        }
+
+        bool CheckFeatureSupport( D3D12_FEATURE_DATA_FORMAT_INFO& featureDataFormatInfo ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CheckFeatureSupport( D3D12_FEATURE_FORMAT_INFO, &featureDataFormatInfo, sizeof( D3D12_FEATURE_DATA_FORMAT_INFO ) );
+            return SUCCEEDED( hr );
+        }
+
+        bool CheckFeatureSupport( FeatureDataFormatInfo& featureDataFormatInfo ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CheckFeatureSupport( D3D12_FEATURE_FORMAT_INFO, &featureDataFormatInfo, sizeof( D3D12_FEATURE_DATA_FORMAT_INFO ) );
             return SUCCEEDED( hr );
         }
 
@@ -2771,11 +2815,25 @@ namespace Harlinn::Windows::Graphics::D3D12
             ID3DBlob* errorPtr = nullptr;
 
             auto hr = D3D12SerializeRootSignature( rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signaturePtr, &errorPtr );
-            HCC_COM_CHECK_HRESULT( hr );
             D3DBlob signature( signaturePtr );
             D3DBlob error( errorPtr );
+            HCC_COM_CHECK_HRESULT( hr );
 
-            return CreateRootSignature( 0, signature.GetBufferPointer( ), signature.GetBufferSize( ) );
+            return CreateRootSignature<T>( 0, signature.GetBufferPointer( ), signature.GetBufferSize( ) );
+        }
+
+        template <typename T = RootSignature>
+            requires std::is_base_of_v<RootSignature, T>
+        T CreateRootSignature( _In_ UINT nodeMask, const D3D12::RootSignatureDesc& rootSignatureDesc ) const
+        {
+            ID3DBlob* signaturePtr = nullptr;
+            ID3DBlob* errorPtr = nullptr;
+            auto hr = D3D12SerializeRootSignature( rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signaturePtr, &errorPtr );
+            D3DBlob signature( signaturePtr );
+            D3DBlob error( errorPtr );
+            HCC_COM_CHECK_HRESULT( hr );
+
+            return CreateRootSignature<T>( nodeMask, signature.GetBufferPointer( ), signature.GetBufferSize( ) );
         }
 
 
@@ -2800,6 +2858,28 @@ namespace Harlinn::Windows::Graphics::D3D12
             CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), &shaderResourceViewDesc, destDescriptor );
         }
         void CreateShaderResourceView( const Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
+        }
+
+        void CreateShaderResourceView( const Resource& resource, _In_opt_ const D3D12::ShaderResourceViewDesc* shaderResourceViewDesc, _In_ D3D12::CPUDescriptorHandle destDescriptor ) const
+        {
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), reinterpret_cast< const D3D12_SHADER_RESOURCE_VIEW_DESC* >( shaderResourceViewDesc ), std::bit_cast< D3D12_CPU_DESCRIPTOR_HANDLE >( destDescriptor ) );
+        }
+        void CreateShaderResourceView( const Resource& resource, _In_opt_ const D3D12::ShaderResourceViewDesc& shaderResourceViewDesc, _In_ D3D12::CPUDescriptorHandle destDescriptor ) const
+        {
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), reinterpret_cast< const D3D12_SHADER_RESOURCE_VIEW_DESC* >( &shaderResourceViewDesc ), std::bit_cast< D3D12_CPU_DESCRIPTOR_HANDLE >( destDescriptor ) );
+        }
+
+        void CreateShaderResourceView( const Resource& resource, _In_opt_ const D3D12::ShaderResourceViewDesc* shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), reinterpret_cast< const D3D12_SHADER_RESOURCE_VIEW_DESC* >( shaderResourceViewDesc ), destDescriptor );
+        }
+        void CreateShaderResourceView( const Resource& resource, _In_opt_ const D3D12::ShaderResourceViewDesc& shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), reinterpret_cast< const D3D12_SHADER_RESOURCE_VIEW_DESC* >( &shaderResourceViewDesc ), destDescriptor );
+        }
+        void CreateShaderResourceView( const Resource& resource, _In_ D3D12::CPUDescriptorHandle destDescriptor ) const
         {
             CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
         }
@@ -2848,9 +2928,18 @@ namespace Harlinn::Windows::Graphics::D3D12
         {
             CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>(), &renderTargetViewDesc, destDescriptor );
         }
+        void CreateRenderTargetView( const Resource& resource, const D3D12::RenderTargetViewDesc& renderTargetViewDesc, _In_ const D3D12::CPUDescriptorHandle& destDescriptor ) const
+        {
+            CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>( ), reinterpret_cast< const D3D12_RENDER_TARGET_VIEW_DESC* >( &renderTargetViewDesc ), std::bit_cast< D3D12_CPU_DESCRIPTOR_HANDLE >( destDescriptor ) );
+        }
+
         void CreateRenderTargetView( const Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
+        }
+        void CreateRenderTargetView( const Resource& resource, const D3D12::CPUDescriptorHandle& destDescriptor ) const
+        {
+            CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, std::bit_cast< D3D12_CPU_DESCRIPTOR_HANDLE >( destDescriptor ) );
         }
 
 
@@ -2864,13 +2953,27 @@ namespace Harlinn::Windows::Graphics::D3D12
         {
             CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), depthStencilViewDesc, destDescriptor );
         }
+        void CreateDepthStencilView( const Resource& resource, _In_opt_ const D3D12::DepthStencilViewDesc* depthStencilViewDesc, _In_ D3D12::CPUDescriptorHandle destDescriptor ) const
+        {
+            CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), reinterpret_cast< const D3D12_DEPTH_STENCIL_VIEW_DESC* >( depthStencilViewDesc ), std::bit_cast< D3D12_CPU_DESCRIPTOR_HANDLE >( destDescriptor ) );
+        }
         void CreateDepthStencilView( const Resource& resource, const D3D12_DEPTH_STENCIL_VIEW_DESC& depthStencilViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), &depthStencilViewDesc, destDescriptor );
         }
+
+        void CreateDepthStencilView( const Resource& resource, const D3D12::DepthStencilViewDesc& depthStencilViewDesc, _In_ D3D12::CPUDescriptorHandle destDescriptor ) const
+        {
+            CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), reinterpret_cast< const D3D12_DEPTH_STENCIL_VIEW_DESC* >( &depthStencilViewDesc ), std::bit_cast< D3D12_CPU_DESCRIPTOR_HANDLE >( destDescriptor ) );
+        }
+
         void CreateDepthStencilView( const Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
+        }
+        void CreateDepthStencilView( const Resource& resource, _In_ D3D12::CPUDescriptorHandle destDescriptor ) const
+        {
+            CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, std::bit_cast< D3D12_CPU_DESCRIPTOR_HANDLE >( destDescriptor ) );
         }
 
         void CreateSampler( _In_ const D3D12_SAMPLER_DESC* pDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
@@ -2988,6 +3091,13 @@ namespace Harlinn::Windows::Graphics::D3D12
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        HANDLE CreateSharedHandle( _In_ const D3D12::DeviceChild& deviceChild, _In_opt_ const SECURITY_ATTRIBUTES* pAttributes, DWORD access, _In_opt_ LPCWSTR name = nullptr ) const
+        {
+            HANDLE result = nullptr;
+            CreateSharedHandle( deviceChild.GetInterfacePointer<ID3D12DeviceChild>( ), pAttributes, access, name, &result );
+            return result;
+        }
+
         void OpenSharedHandle( _In_ HANDLE NTHandle, REFIID riid, _COM_Outptr_opt_  void** ppvObj ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -3038,11 +3148,11 @@ namespace Harlinn::Windows::Graphics::D3D12
         }
 
 
-        void GetDeviceRemovedReason( ) const
+        HRESULT GetDeviceRemovedReason( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->GetDeviceRemovedReason( );
-            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return hr;
         }
 
         void GetCopyableFootprints( _In_ const D3D12_RESOURCE_DESC* pResourceDesc, _In_range_( 0, D3D12_REQ_SUBRESOURCES ) UINT FirstSubresource, _In_range_( 0, D3D12_REQ_SUBRESOURCES - FirstSubresource ) UINT NumSubresources, UINT64 BaseOffset, _Out_writes_opt_( NumSubresources ) D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts, _Out_writes_opt_( NumSubresources ) UINT* pNumRows, _Out_writes_opt_( NumSubresources ) UINT64* pRowSizeInBytes, _Out_opt_  UINT64* pTotalBytes ) const
@@ -4863,7 +4973,7 @@ namespace Harlinn::Windows::Graphics::D3D12
         requires std::is_base_of_v<Device, T>
     inline T CreateDevice( IUnknown* adapter, D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 )
     {
-        using InterfaceType = T::InterfaceType;
+        using InterfaceType = typename T::InterfaceType;
         auto InterfaceId = __uuidof( InterfaceType );
         InterfaceType* intf = nullptr;
         auto hr = D3D12CreateDevice( adapter, minimumFeatureLevel, InterfaceId, ( void** )&intf );
@@ -4883,6 +4993,28 @@ namespace Harlinn::Windows::Graphics::D3D12
     {
         return GetDevice<Device4>( );
     }
+
+    template<typename T>
+    inline T GetDebugInterface( )
+    {
+        using InterfaceType = typename T::InterfaceType;
+        auto InterfaceId = __uuidof( InterfaceType );
+        InterfaceType* intf = nullptr;
+        auto hr = D3D12GetDebugInterface( InterfaceId, ( void** )&intf );
+        HCC_COM_CHECK_HRESULT( hr );
+        T result( intf );
+        return result;
+    }
+
+    inline void EnableExperimentalFeatures( UInt32 numFeatures,
+        _In_count_( numFeatures ) const IID* pIIDs,
+        _In_opt_count_( numFeatures ) void* configurationStructs,
+        _In_opt_count_( numFeatures ) UInt32* configurationStructSizes )
+    {
+        auto hr = D3D12EnableExperimentalFeatures( numFeatures, pIIDs, configurationStructs, configurationStructSizes );
+        HCC_COM_CHECK_HRESULT( hr );
+    }
+
 
 
     

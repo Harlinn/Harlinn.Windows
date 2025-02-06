@@ -1233,7 +1233,7 @@ static DDS_ALPHA_MODE GetAlphaMode( _In_ const DDS_HEADER* header )
 
 
 _Use_decl_annotations_
-D3D12Resource CreateDDSTextureFromMemory(
+HDXTK_EXPORT D3D12Resource CreateDDSTextureFromMemory(
     const D3D12Device& d3dDevice,
     const uint8_t* ddsData,
     size_t ddsDataSize,
@@ -1309,7 +1309,7 @@ D3D12Resource CreateDDSTextureFromMemory(
 
 
 _Use_decl_annotations_
-D3D12Resource CreateDDSTextureFromFile(
+HDXTK_EXPORT D3D12Resource CreateDDSTextureFromFile(
     const D3D12Device& d3dDevice,
     const wchar_t* fileName,
     size_t maxsize,

@@ -841,6 +841,15 @@ namespace Harlinn::Windows::Graphics
             CheckHRESULT( hr );
             return BitmapFrameEncode( factory, result );
         }
+
+        BitmapFrameEncode BitmapEncoder::CreateNewFrame( PropertyBag2& encoderOptions )
+        {
+            IPropertyBag2* itf = nullptr;
+            auto result = CreateNewFrame( &itf );
+            encoderOptions = itf;
+            return result;
+        }
+
         BitmapFrameEncode BitmapEncoder::CreateNewFrame( )
         {
             ImagingFactory* factory = Factory( );

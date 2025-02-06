@@ -35,14 +35,14 @@ using namespace Harlinn::Windows::Graphics;
 
 class MyForm : public Form
 {
-    Graphics::Factory7 factory_;
+    Graphics::D2D::Factory7 factory_;
     DirectWrite::Factory writeFactory_;
     DirectWrite::TextFormat textFormat_;
     DirectWrite::TextLayout textLayout_;
-    Graphics::ControlRenderTarget renderTarget_;
-    Graphics::SolidColorBrush blackBrush_;
+    Graphics::D2D::ControlRenderTarget renderTarget_;
+    Graphics::D2D::SolidColorBrush blackBrush_;
     DirectWrite::Typography typography_;
-    Graphics::LinearGradientBrush backgroundBrush_;
+    Graphics::D2D::LinearGradientBrush backgroundBrush_;
 
     WideString text_;
     WideString titleText_;
@@ -211,7 +211,7 @@ void MyForm::DoOnShown( )
     gradientStops[1].position = 1.0f;
 
 
-    Graphics::GradientStopCollection gradientStopCollection = renderTarget_.CreateGradientStopCollection( gradientStops, 2, D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_MIRROR );
+    Graphics::D2D::GradientStopCollection gradientStopCollection = renderTarget_.CreateGradientStopCollection( gradientStops, 2, D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_MIRROR );
 
 
     backgroundBrush_ = renderTarget_.CreateLinearGradientBrush( D2D1::LinearGradientBrushProperties( { .0f, .0f }, { 150.0f, 150.0f } ), gradientStopCollection );

@@ -304,6 +304,7 @@ namespace Harlinn::Windows::Graphics::DXGI
         /// A single-component, 16-bit unsigned-integer format that supports 16 bits for the red channel.
         /// </summary>
         RUInt16 = DXGI_FORMAT_R16_UINT,
+        R16_UINT = DXGI_FORMAT_R16_UINT,
         /// <summary>
         /// A single-component, 16-bit signed-normalized-integer format that supports 16 bits for the red channel.
         /// </summary>
@@ -454,10 +455,12 @@ namespace Harlinn::Windows::Graphics::DXGI
         /// A four-component, 32-bit unsigned-normalized-integer format that supports 8 bits for each color channel and 8-bit alpha.
         /// </summary>
         BNUInt8GNUInt8RNUInt8ANUInt8 = DXGI_FORMAT_B8G8R8A8_UNORM,
+        B8G8R8A8_UNORM = DXGI_FORMAT_B8G8R8A8_UNORM,
         /// <summary>
         /// A four-component, 32-bit unsigned-normalized-integer format that supports 8 bits for each color channel and 8 bits unused.
         /// </summary>
         BNUInt8GNUInt8RNUInt8X8_unorm = DXGI_FORMAT_B8G8R8X8_UNORM,
+        B8G8R8X8_UNORM = DXGI_FORMAT_B8G8R8X8_UNORM,
         /// <summary>
         /// A four-component, 32-bit 2.8-biased fixed-point format that supports 10 bits for each color channel and 2-bit alpha.
         /// </summary>

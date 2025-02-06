@@ -1965,11 +1965,26 @@ namespace Harlinn::Windows::Graphics::D3D11
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        Buffer CreateBuffer( const D3D11_BUFFER_DESC* bufferDesc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr ) const
+        {
+            ID3D11Buffer* itf = nullptr;
+            CreateBuffer( bufferDesc, initialData, &itf );
+            return Buffer( itf );
+        }
+
+
         void CreateTexture1D( const D3D11_TEXTURE1D_DESC* texture1dDesc, const D3D11_SUBRESOURCE_DATA* initialData, ID3D11Texture1D** texture1D) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->CreateTexture1D(texture1dDesc, initialData, texture1D);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
+        }
+
+        Texture1D CreateTexture1D( const D3D11_TEXTURE1D_DESC* texture1dDesc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr ) const
+        {
+            ID3D11Texture1D* itf = nullptr;
+            CreateTexture1D( texture1dDesc, initialData, &itf );
+            return Texture1D( itf );
         }
 
         void CreateTexture2D( const D3D11_TEXTURE2D_DESC* texture2dDesc, const D3D11_SUBRESOURCE_DATA* initialData, ID3D11Texture2D** texture2D) const
@@ -1979,12 +1994,28 @@ namespace Harlinn::Windows::Graphics::D3D11
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        Texture2D CreateTexture2D( const D3D11_TEXTURE2D_DESC* texture2dDesc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr ) const
+        {
+            ID3D11Texture2D* itf = nullptr;
+            CreateTexture2D( texture2dDesc, initialData, &itf );
+            return Texture2D( itf );
+        }
+
+
         void CreateTexture3D( const D3D11_TEXTURE3D_DESC* texture3dDesc, const D3D11_SUBRESOURCE_DATA* initialData, ID3D11Texture3D** texture3D) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->CreateTexture3D(texture3dDesc, initialData, texture3D);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
+
+        Texture3D CreateTexture3D( const D3D11_TEXTURE3D_DESC* texture3dDesc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr ) const
+        {
+            ID3D11Texture3D* itf = nullptr;
+            CreateTexture3D( texture3dDesc, initialData, &itf );
+            return Texture3D( itf );
+        }
+
 
         void CreateShaderResourceView( ID3D11Resource* resource, const D3D11_SHADER_RESOURCE_VIEW_DESC* shaderResourceViewDesc, ID3D11ShaderResourceView** shaderResourceView) const
         {
@@ -1993,12 +2024,28 @@ namespace Harlinn::Windows::Graphics::D3D11
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        ShaderResourceView CreateShaderResourceView( const Resource& resource, const D3D11_SHADER_RESOURCE_VIEW_DESC* shaderResourceViewDesc ) const
+        {
+            ID3D11ShaderResourceView* itf = nullptr;
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D11Resource>(), shaderResourceViewDesc, &itf );
+            return ShaderResourceView( itf );
+        }
+
+
         void CreateUnorderedAccessView( ID3D11Resource* resource, const D3D11_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc, ID3D11UnorderedAccessView** unorderedAccessView) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->CreateUnorderedAccessView(resource, unorderedAccessViewDesc, unorderedAccessView);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
+
+        UnorderedAccessView CreateUnorderedAccessView( const Resource& resource, const D3D11_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc ) const
+        {
+            ID3D11UnorderedAccessView* itf = nullptr;
+            CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D11Resource>( ), unorderedAccessViewDesc, &itf );
+            return UnorderedAccessView( itf );
+        }
+
 
         void CreateRenderTargetView( ID3D11Resource* resource, const D3D11_RENDER_TARGET_VIEW_DESC* renderTargetViewDesc, ID3D11RenderTargetView** renderTargetView) const
         {
@@ -2007,11 +2054,26 @@ namespace Harlinn::Windows::Graphics::D3D11
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        RenderTargetView CreateRenderTargetView( const Resource& resource, const D3D11_RENDER_TARGET_VIEW_DESC* renderTargetViewDesc ) const
+        {
+            ID3D11RenderTargetView* itf = nullptr;
+            CreateRenderTargetView( resource.GetInterfacePointer<ID3D11Resource>( ), renderTargetViewDesc, &itf );
+            return RenderTargetView( itf );
+        }
+
+
         void CreateDepthStencilView( ID3D11Resource* resource, const D3D11_DEPTH_STENCIL_VIEW_DESC* depthStencilViewDesc, ID3D11DepthStencilView** depthStencilView) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->CreateDepthStencilView(resource, depthStencilViewDesc, depthStencilView);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
+        }
+
+        DepthStencilView CreateDepthStencilView( const Resource& resource, const D3D11_DEPTH_STENCIL_VIEW_DESC* depthStencilViewDesc ) const
+        {
+            ID3D11DepthStencilView* itf = nullptr;
+            CreateDepthStencilView( resource.GetInterfacePointer<ID3D11Resource>( ), depthStencilViewDesc, &itf );
+            return DepthStencilView( itf );
         }
 
         void CreateInputLayout( const D3D11_INPUT_ELEMENT_DESC* inputElementDescs, UINT numElements, const void* shaderBytecodeWithInputSignature, SIZE_T bytecodeLength, ID3D11InputLayout** inputLayout) const
@@ -2021,11 +2083,25 @@ namespace Harlinn::Windows::Graphics::D3D11
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        InputLayout CreateInputLayout( const D3D11_INPUT_ELEMENT_DESC* inputElementDescs, UINT numElements, const void* shaderBytecodeWithInputSignature, SIZE_T bytecodeLength ) const
+        {
+            ID3D11InputLayout* itf = nullptr;
+            CreateInputLayout( inputElementDescs, numElements, shaderBytecodeWithInputSignature, bytecodeLength, &itf );
+            return InputLayout( itf );
+        }
+
         void CreateVertexShader( const void* shaderBytecode, SIZE_T bytecodeLength, ID3D11ClassLinkage* classLinkage, ID3D11VertexShader** vertexShader) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->CreateVertexShader(shaderBytecode, bytecodeLength, classLinkage, vertexShader);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
+        }
+
+        VertexShader CreateVertexShader( const void* shaderBytecode, SIZE_T bytecodeLength, const ClassLinkage& classLinkage ) const
+        {
+            ID3D11VertexShader* vertexShader = nullptr;
+            CreateVertexShader( shaderBytecode, bytecodeLength, classLinkage.GetInterfacePointer<ID3D11ClassLinkage>( ), &vertexShader );
+            return VertexShader( vertexShader );
         }
 
         void CreateGeometryShader( const void* shaderBytecode, SIZE_T bytecodeLength, ID3D11ClassLinkage* classLinkage, ID3D11GeometryShader** geometryShader) const
@@ -2035,6 +2111,13 @@ namespace Harlinn::Windows::Graphics::D3D11
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        GeometryShader CreateGeometryShader( const void* shaderBytecode, SIZE_T bytecodeLength, const ClassLinkage& classLinkage ) const
+        {
+            ID3D11GeometryShader* geometryShader = nullptr;
+            CreateGeometryShader( shaderBytecode, bytecodeLength, classLinkage.GetInterfacePointer<ID3D11ClassLinkage>(), &geometryShader );
+            return GeometryShader( geometryShader );
+        }
+
         void CreateGeometryShaderWithStreamOutput( const void* shaderBytecode, SIZE_T bytecodeLength, const D3D11_SO_DECLARATION_ENTRY* streamOutputDeclarationEntry, UINT numEntries, const UINT* bufferStrides, UINT numStrides, UINT rasterizedStream, ID3D11ClassLinkage* classLinkage, ID3D11GeometryShader** geometryShader) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -2042,11 +2125,25 @@ namespace Harlinn::Windows::Graphics::D3D11
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        GeometryShader CreateGeometryShaderWithStreamOutput( const void* shaderBytecode, SIZE_T bytecodeLength, const D3D11_SO_DECLARATION_ENTRY* streamOutputDeclarationEntry, UINT numEntries, const UINT* bufferStrides, UINT numStrides, UINT rasterizedStream, const ClassLinkage& classLinkage ) const
+        {
+            ID3D11GeometryShader* geometryShader = nullptr;
+            CreateGeometryShaderWithStreamOutput( shaderBytecode, bytecodeLength, streamOutputDeclarationEntry, numEntries, bufferStrides, numStrides, rasterizedStream, classLinkage.GetInterfacePointer<ID3D11ClassLinkage>( ), &geometryShader );
+            return GeometryShader( geometryShader );
+        }
+
         void CreatePixelShader( const void* shaderBytecode, SIZE_T bytecodeLength, ID3D11ClassLinkage* classLinkage, ID3D11PixelShader** pixelShader) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->CreatePixelShader(shaderBytecode, bytecodeLength, classLinkage, pixelShader);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
+        }
+
+        PixelShader CreatePixelShader( const void* shaderBytecode, SIZE_T bytecodeLength, const ClassLinkage& classLinkage ) const
+        {
+            ID3D11PixelShader* pixelShader = nullptr;
+            CreatePixelShader( shaderBytecode, bytecodeLength, classLinkage.GetInterfacePointer<ID3D11ClassLinkage>( ), &pixelShader );
+            return PixelShader( pixelShader );
         }
 
         void CreateHullShader( const void* shaderBytecode, SIZE_T bytecodeLength, ID3D11ClassLinkage* classLinkage, ID3D11HullShader** hullShader) const
@@ -2218,6 +2315,13 @@ namespace Harlinn::Windows::Graphics::D3D11
         {
             InterfaceType* pInterface = GetInterface();
             pInterface->GetImmediateContext(immediateContext);
+        }
+
+        DeviceContext GetImmediateContext( ) const
+        {
+            ID3D11DeviceContext* itf = nullptr;
+            GetImmediateContext( &itf );
+            return DeviceContext( itf );
         }
 
         void SetExceptionMode( UINT raiseFlags) const

@@ -31,8 +31,8 @@ class Direct2D
     D3D_FEATURE_LEVEL featureLevel_ = D3D_FEATURE_LEVEL_9_2;
     using DX3DDevice = ID3D11Device;
     ComPtr<DX3DDevice> d3dDevice_;
-    Graphics::Factory7 factory_;
-    Graphics::Device6 device_;
+    Graphics::D2D::Factory7 factory_;
+    Graphics::D2D::Device6 device_;
 
     
 public:
@@ -91,7 +91,7 @@ public:
     }
 
 
-    Graphics::DeviceContext6 CreateDeviceContext( )
+    Graphics::D2D::DeviceContext6 CreateDeviceContext( )
     {
         return device_.CreateDeviceContext( );
     }
@@ -125,7 +125,7 @@ class Direct2DControl
     Control* control_;
     Direct2D& direct2D_;
     Graphics::DXGI::SwapChain1 dxgiSwapChain_;
-    Graphics::DeviceContext6 deviceContext_;
+    Graphics::D2D::DeviceContext6 deviceContext_;
 public:
     Direct2DControl( Direct2D& direct2D, Control* control )
         : direct2D_( direct2D ), control_( control )
@@ -133,7 +133,7 @@ public:
 
     }
 
-    const Graphics::DeviceContext6& DeviceContext( )
+    const Graphics::D2D::DeviceContext6& DeviceContext( )
     {
         return deviceContext_;
     }
@@ -196,8 +196,8 @@ namespace Primitives
 class MyForm : public Form
 {
 
-    Graphics::SolidColorBrush blackBrush_;
-    Graphics::LinearGradientBrush backgroundBrush_;
+    Graphics::D2D::SolidColorBrush blackBrush_;
+    Graphics::D2D::LinearGradientBrush backgroundBrush_;
 
     Direct2D direct2D_;
     Direct2DControl direct2DControl_;
@@ -240,7 +240,7 @@ namespace Primitives
             : title_( title )
         {
         }
-        virtual void Render( const Graphics::DeviceContext6& deviceContext6, const Graphics::RectangleF& rect, const Graphics::Brush& brush ) = 0;
+        virtual void Render( const Graphics::D2D::DeviceContext6& deviceContext6, const Graphics::RectangleF& rect, const Graphics::D2D::Brush& brush ) = 0;
     };
 
     struct Rectangle : Primitive
@@ -249,7 +249,7 @@ namespace Primitives
             : Primitive( L"Rectangle" )
         {
         }
-        void Render( const Graphics::DeviceContext6& deviceContext6, const Graphics::RectangleF& rect, const Graphics::Brush& brush ) override
+        void Render( const Graphics::D2D::DeviceContext6& deviceContext6, const Graphics::RectangleF& rect, const Graphics::D2D::Brush& brush ) override
         {
             float margin = 80;
             auto left = rect.Left() + margin;
@@ -269,7 +269,7 @@ namespace Primitives
             : Primitive( L"Rounded Rectangle" )
         {
         }
-        void Render( const Graphics::DeviceContext6& deviceContext6, const Graphics::RectangleF& rect, const Graphics::Brush& brush ) override
+        void Render( const Graphics::D2D::DeviceContext6& deviceContext6, const Graphics::RectangleF& rect, const Graphics::D2D::Brush& brush ) override
         {
             float margin = 80;
             auto left = rect.Left( ) + margin;
@@ -362,7 +362,7 @@ void MyForm::DoOnShown( )
     gradientStops[1].color = D2D1::ColorF( D2D1::ColorF::DeepSkyBlue, 1 );
     gradientStops[1].position = 1.0f;
 
-    Graphics::GradientStopCollection gradientStopCollection = deviceContext.CreateGradientStopCollection( gradientStops, 2, D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_MIRROR );
+    Graphics::D2D::GradientStopCollection gradientStopCollection = deviceContext.CreateGradientStopCollection( gradientStops, 2, D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_MIRROR );
 
     backgroundBrush_ = deviceContext.CreateLinearGradientBrush( D2D1::LinearGradientBrushProperties( Graphics::PointF( 0, 0 ), Graphics::PointF( 300, 300 ) ), gradientStopCollection );
 }

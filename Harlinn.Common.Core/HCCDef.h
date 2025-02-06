@@ -83,6 +83,7 @@
 #include <Windowsx.h>
 #include <CommCtrl.h>
 #include <Security.h>
+#include <DXCore.h>
 #include <dxgi1_6.h>
 #include <dxgidebug.h>
 #include <d2d1_3.h>
