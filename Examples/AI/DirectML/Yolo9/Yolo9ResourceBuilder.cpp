@@ -1,3 +1,19 @@
+/*
+   Copyright 2024 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 #include "pch.h"
 
 #include "yolo9.h"
@@ -19,6 +35,30 @@
 using Microsoft::WRL::ComPtr;
 
 using namespace DirectX;
+
+void Sample::CheckDevice( std::source_location caller )
+{
+    auto hr = m_d3dDevice.GetDeviceRemovedReason( );
+    if ( FAILED( hr ) )
+    {
+        auto error = FormatHRESULT( hr );
+        auto function = ToWideString( caller.function_name( ) ); 
+        auto fileName = ToWideString( caller.file_name( ) ); 
+        PrintLn( L"Device {} - {}:{}({})", error, function, fileName, caller.line( ) );
+    }
+}
+void Sample::CheckDeviceResources( std::source_location caller )
+{
+    const auto& device = m_deviceResources->GetD3DDevice( );
+    auto hr = device.GetDeviceRemovedReason( );
+    if ( FAILED( hr ) )
+    {
+        auto error = FormatHRESULT( hr );
+        auto function = ToWideString( caller.function_name( ) );
+        auto fileName = ToWideString( caller.file_name( ) );
+        PrintLn( L"R Device {} - {}:{}({})", error, function, fileName, caller.line( ) );
+    }
+}
 
 static bool TryGetProperty(const DXCore::Adapter1& adapter, DXCoreAdapterProperty prop, std::string& outputValue)
 {
@@ -69,47 +109,8 @@ DXCore::Adapter1 Sample::GetNonGraphicsAdapter( const DXCore::AdapterList& adapt
     return {};
 }
 
-void Sample::InitializeDirectML(/*ID3D12Device1** d3dDeviceOut, ID3D12CommandQueue** commandQueueOut, IDMLDevice** dmlDeviceOut,
-    ID3D12CommandAllocator** commandAllocatorOut,
-    ID3D12GraphicsCommandList** commandListOut*/ )
+void Sample::InitializeDirectML( )
 {
-#if 0
-    // is extermely slow when createing the ort::Session
-#if defined(_DEBUG)
-    // Enable the debug layer (requires the Graphics Tools "optional feature").
-    //
-    // NOTE: Enabling the debug layer after device creation will invalidate the active device.
-    {
-        ComPtr<ID3D12Debug> debugController;
-        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetAddressOf()))))
-        {
-            debugController->EnableDebugLayer();
-        }
-        else
-        {
-            OutputDebugStringA("WARNING: Direct3D Debug Device is not available\n");
-        }
-
-        ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
-        if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
-        {
-            m_dxgiFactoryFlags = DXGI_CREATE_FACTORY_DEBUG;
-
-            dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true);
-            dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true);
-
-            DXGI_INFO_QUEUE_MESSAGE_ID hide[] =
-            {
-                80 /* IDXGISwapChain::GetContainingOutput: The swapchain's adapter does not control the output on which the swapchain's window resides. */,
-            };
-            DXGI_INFO_QUEUE_FILTER filter = {};
-            filter.DenyList.NumIDs = _countof(hide);
-            filter.DenyList.pIDList = hide;
-            dxgiInfoQueue->AddStorageFilterEntries(DXGI_DEBUG_DXGI, &filter);
-        }
-    }
-#endif
-#endif
 
     // Create Adapter Factory
     auto factory = DXCore::CreateAdapterFactory( );
@@ -117,7 +118,7 @@ void Sample::InitializeDirectML(/*ID3D12Device1** d3dDeviceOut, ID3D12CommandQue
     // Create the DXCore Adapter, for the purposes of selecting NPU we look for (!GRAPHICS && (GENERIC_ML || CORE_COMPUTE))
     DXCore::Adapter1 adapter;
     DXCore::AdapterList adapterList;
-    D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_1_0_GENERIC;
+    D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_1;
 
     m_run_on_gpu = true;
 
@@ -136,7 +137,7 @@ void Sample::InitializeDirectML(/*ID3D12Device1** d3dDeviceOut, ID3D12CommandQue
         if (!adapter)
         {
             
-            featureLevel = D3D_FEATURE_LEVEL_1_0_CORE;
+            featureLevel = D3D_FEATURE_LEVEL_12_1;
             adapterList = factory.CreateAdapterList( 1, &DXCORE_ADAPTER_ATTRIBUTE_D3D12_CORE_COMPUTE );
             adapter = GetNonGraphicsAdapter(adapterList);
         }
@@ -153,8 +154,6 @@ void Sample::InitializeDirectML(/*ID3D12Device1** d3dDeviceOut, ID3D12CommandQue
         {
             printf("Failed to get adapter description.\n");
         }
-        adapter_ = adapter;
-        m_deviceResources->SetAdapter( adapter_ );
     }
 
     // Create the D3D12 Device
@@ -183,7 +182,6 @@ void Sample::InitializeDirectML(/*ID3D12Device1** d3dDeviceOut, ID3D12CommandQue
     m_dmlDevice = std::move( dmlDevice );
     m_commandAllocator = std::move( commandAllocator );
     m_commandList = std::move( commandList );
-    m_deviceResources->SetDevice( m_d3dDevice );
 }
 
 
@@ -244,7 +242,14 @@ void Sample::InitializeDirectMLResources(const wchar_t * model_path, bool bAddMo
             auto yoloModel = IO::Path::Combine( yoloDir, m_models.back( )->m_modelfile.c_str() );
 
             std::wstring model_path = yoloModel.c_str();
-             m_models.back()->m_session = Ort::Session(s_OrtEnv, model_path.c_str(), sessionOptions);
+            
+            auto stopwatch = Stopwatch::StartNew();
+            m_models.back()->m_session = Ort::Session(s_OrtEnv, model_path.c_str(), sessionOptions);
+            stopwatch.Stop( );
+            auto duration = stopwatch.TotalSeconds( );
+            PrintLn( L"Loaded {} in {} seconds.", modelfile, duration );
+            
+
         }
         else
         {
@@ -384,4 +389,5 @@ void Sample::InitializeDirectMLResources(const wchar_t * model_path, bool bAddMo
         m_anchors.push_back(anchors);
 
     }
+    CheckDevice( );
 }

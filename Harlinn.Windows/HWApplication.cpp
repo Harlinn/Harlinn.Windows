@@ -56,6 +56,46 @@ namespace Harlinn::Windows
         return result;
     }
 
+    // ------------------------------------------------------------------------
+    // MessageLoop
+    // ------------------------------------------------------------------------
+    PeekMessageLoop::PeekMessageLoop( )
+    { }
+    PeekMessageLoop::~PeekMessageLoop( )
+    { }
+    int PeekMessageLoop::Run( )
+    {
+        Message message;
+        bool done = false;
+        while ( !done )
+        {
+            while ( this->GetMessage( message ) )
+            {
+                this->TranslateMessage( message );
+                this->DispatchMessage( message );
+                if ( message.message == WM_QUIT )
+                {
+                    done = true;
+                }
+            }
+            if ( !done )
+            {
+                this->DoOnIdle( );
+            }
+        }
+        return ( int )message.wParam;
+    }
+
+    int PeekMessageLoop::GetMessage( Message& message )
+    {
+        return ::PeekMessage( &message, NULL, 0U, 0U, PM_REMOVE );
+    }
+
+    void PeekMessageLoop::DoOnIdle( )
+    {
+        OnIdle( this );
+    }
+
 
     // ------------------------------------------------------------------------
     // Application

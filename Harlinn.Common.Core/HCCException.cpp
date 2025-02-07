@@ -1837,6 +1837,28 @@ namespace Harlinn::Common::Core
         }
     }
 
+    WideString FormatHRESULT( HRESULT hresult )
+    {
+        if ( hresult )
+        {
+            int length = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, hresult, 0, ( wchar_t* )buffer, 512, nullptr );
+            if ( length )
+            {
+                wchar_t* ptr = ( wchar_t* )buffer;
+                return Format( L"Error: {} ({:x})", ptr, hresult );
+            }
+            else
+            {
+                return Format( L"Unknown error: ({:x})", hresult );
+            }
+        }
+        else
+        {
+            return L"No error";
+        }
+    }
+
+
     void CheckHRESULT( HRESULT hresult, IUnknown* itf )
     {
         CheckHRESULT( hresult );

@@ -1,7 +1,18 @@
-//--------------------------------------------------------------------------------------
-// yolov4.cpp
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//--------------------------------------------------------------------------------------
+/*
+   Copyright 2024 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 #include "pch.h"
 
@@ -14,8 +25,6 @@
 
 #include "TensorExtents.h"
 #include "TensorHelper.h"
-#include "depixelator.h"
-#include "polypartition.h"
 #include "earcut.hpp"
 #include "Polyline2D.h"
 
@@ -45,52 +54,13 @@ namespace
     {
         width = 520;
         height = 520;
-#if 0
-        ComPtr<IWICImagingFactory> wicFactory;
-        DX::ThrowIfFailed(CoCreateInstance(CLSID_WICImagingFactory2, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&wicFactory)));
-
-        ComPtr<IWICBitmapDecoder> decoder;
-        DX::ThrowIfFailed(wicFactory->CreateDecoderFromFilename(filename, nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand, decoder.GetAddressOf()));
-
-        ComPtr<IWICBitmapFrameDecode> frame;
-        DX::ThrowIfFailed(decoder->GetFrame(0, frame.GetAddressOf()));
-
-        DX::ThrowIfFailed(frame->GetSize(&width, &height));
-
-        WICPixelFormatGUID pixelFormat;
-        DX::ThrowIfFailed(frame->GetPixelFormat(&pixelFormat));
-#else
         WICPixelFormatGUID pixelFormat = GUID_WICPixelFormat32bppBGRA;
-#endif
 
         uint32_t rowPitch = width * sizeof(uint32_t);
         uint32_t imageSize = rowPitch * height;
 
         std::vector<uint8_t> image;
         image.resize(size_t(imageSize));
-#if 0
-        if (memcmp(&pixelFormat, &GUID_WICPixelFormat32bppBGRA, sizeof(GUID)) == 0)
-        {
-            DX::ThrowIfFailed(frame->CopyPixels(nullptr, rowPitch, imageSize, reinterpret_cast<BYTE*>(image.data())));
-        }
-        else
-        {
-            ComPtr<IWICFormatConverter> formatConverter;
-            DX::ThrowIfFailed(wicFactory->CreateFormatConverter(formatConverter.GetAddressOf()));
-
-            BOOL canConvert = FALSE;
-            DX::ThrowIfFailed(formatConverter->CanConvert(pixelFormat, GUID_WICPixelFormat32bppBGRA, &canConvert));
-            if (!canConvert)
-            {
-                throw std::exception("CanConvert");
-            }
-
-            DX::ThrowIfFailed(formatConverter->Initialize(frame.Get(), GUID_WICPixelFormat32bppBGRA,
-                WICBitmapDitherTypeErrorDiffusion, nullptr, 0, WICBitmapPaletteTypeMedianCut));
-
-            DX::ThrowIfFailed(formatConverter->CopyPixels(nullptr, rowPitch, imageSize, reinterpret_cast<BYTE*>(image.data())));
-        }
-#endif
         
         BYTE* p = (BYTE *) image.data();
         for (int i = 0; i < imageSize/4; i++)
@@ -193,20 +163,6 @@ namespace
         return selected;
     }
 
-    // Helper function for fomatting strings. Format(os, a, b, c) is equivalent to os << a << b << c.
-    // Helper function for fomatting strings. Format(os, aresizeer, b, c) is equivalent to os << a << b << c.
-    template <typename T>
-    std::ostream& Format(std::ostream& os, T&& arg)
-    {
-        return (os << std::forward<T>(arg));
-    }
-
-    template <typename T, typename... Ts>
-    std::ostream& Format(std::ostream& os, T&& arg, Ts&&... args)
-    {
-        os << std::forward<T>(arg);
-        return Format(os, std::forward<Ts>(args)...);
-    }
     enum class ChannelOrder
     {
         RGB,
@@ -239,12 +195,7 @@ namespace
 // Source: buffer of RGB planes (CHW) using float32/float16 components.
 // Target: buffer of RGB pixels (HWC) using uint8 components.
     template <typename T>
-    void CopyTensorToPixels(
-        const uint8_t * src,
-        uint8_t * dst,
-        uint32_t height,
-        uint32_t width,
-        uint32_t channels)
+    void CopyTensorToPixels( const uint8_t * src, uint8_t * dst, uint32_t height, uint32_t width, uint32_t channels)
     {
         std::span<const T> srcT(reinterpret_cast<const T*>(src), (height*width) / sizeof(T));
 
@@ -260,190 +211,6 @@ namespace
             dst[pixelIndex * channels + 3] = 128;
         }
     }
-
-    void SaveNCHWBufferToImageFilename(
-        std::wstring_view filename,
-        uint8_t * tensorBuffer,
-        uint32_t bufferHeight,
-        uint32_t bufferWidth,
-        ONNXTensorElementDataType bufferDataType,
-        ChannelOrder bufferChannelOrder)
-    {
-        using Microsoft::WRL::ComPtr;
-
-        uint32_t bufferChannels = 0;
-        WICPixelFormatGUID desiredImagePixelFormat = GUID_WICPixelFormatDontCare;
-        switch (bufferChannelOrder)
-        {
-        case ChannelOrder::RGB:
-            bufferChannels = 3;
-            desiredImagePixelFormat = GUID_WICPixelFormat24bppRGB;
-            break;
-
-        case ChannelOrder::BGR:
-            bufferChannels = 3;
-            desiredImagePixelFormat = GUID_WICPixelFormat24bppBGR;
-            break;
-
-        case ChannelOrder::M:
-            bufferChannels = 1;
-            desiredImagePixelFormat = GUID_WICPixelFormat8bppGray;
-            break;
-
-        default:
-            throw std::invalid_argument("Unsupported channel order");
-        }
-
-        uint32_t outputBufferSizeInBytes = bufferChannels * bufferHeight * bufferWidth;
-        switch (bufferDataType)
-        {
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
-            outputBufferSizeInBytes *= sizeof(float);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
-            outputBufferSizeInBytes *= sizeof(half_float::half);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
-            outputBufferSizeInBytes *= 1;
-            break;
-
-        default:
-            throw std::invalid_argument("Unsupported data type");
-        }
-
-        std::vector<BYTE> pixelBuffer(outputBufferSizeInBytes);
-
-        switch (bufferDataType)
-        {
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
-            CopyTensorToPixels<float>(tensorBuffer, pixelBuffer.data(), bufferHeight, bufferWidth, bufferChannels);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
-            CopyTensorToPixels<half_float::half>(tensorBuffer, pixelBuffer.data(), bufferHeight, bufferWidth, bufferChannels);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
-            CopyTensorToPixelsByte<std::byte>(tensorBuffer, pixelBuffer.data(), bufferHeight, bufferWidth, bufferChannels);
-            break;
-
-        default:
-            throw std::invalid_argument("Unsupported data type");
-        }
-
-        auto wicFactory = Graphics::Imaging::ImagingFactory::Create( );
-        auto bitmap = wicFactory.CreateBitmapFromMemory(
-            bufferWidth,
-            bufferHeight,
-            desiredImagePixelFormat,
-            bufferWidth * bufferChannels,
-            pixelBuffer.size( ),
-            pixelBuffer.data( ));
-        
-        auto stream = wicFactory.CreateStream( );
-        stream.InitializeFromFilename( filename.data( ), GENERIC_WRITE );
-
-        auto encoder = wicFactory.CreateEncoder( GUID_ContainerFormatPng, nullptr );
-        encoder.Initialize( stream, Imaging::BitmapEncoderCacheOption::NoCache );
-
-        PropertyBag2 propertyBag;
-
-        auto frame = encoder.CreateNewFrame( propertyBag );
-        frame.Initialize( propertyBag );
-        frame.WriteSource( bitmap );
-        frame.Commit( );
-        encoder.Commit( );
-
-    }
-
-    void SaveNCHWBufferToWICTexture(
-        uint8_t* tensorBuffer,
-        uint32_t bufferHeight,
-        uint32_t bufferWidth,
-        ONNXTensorElementDataType bufferDataType,
-        ChannelOrder bufferChannelOrder,
-        Imaging::Bitmap& bitmap )
-    {
-        
-
-        uint32_t bufferChannels = 0;
-        WICPixelFormatGUID desiredImagePixelFormat = GUID_WICPixelFormatDontCare;
-        switch (bufferChannelOrder)
-        {
-        case ChannelOrder::RGB:
-            bufferChannels = 3;
-            desiredImagePixelFormat = GUID_WICPixelFormat24bppRGB;
-            break;
-
-        case ChannelOrder::BGR:
-            bufferChannels = 3;
-            desiredImagePixelFormat = GUID_WICPixelFormat24bppBGR;
-            break;
-
-        case ChannelOrder::M:
-            bufferChannels = 1;
-            desiredImagePixelFormat = GUID_WICPixelFormat8bppGray;
-            break;
-
-        default:
-            throw std::invalid_argument("Unsupported channel order");
-        }
-
-        uint32_t outputBufferSizeInBytes = bufferChannels * bufferHeight * bufferWidth;
-        switch (bufferDataType)
-        {
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
-            outputBufferSizeInBytes *= sizeof(float);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
-            outputBufferSizeInBytes *= sizeof(half_float::half);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
-            outputBufferSizeInBytes *= 1;
-            break;
-
-        default:
-            throw std::invalid_argument("Unsupported data type");
-        }
-
-        std::vector<BYTE> pixelBuffer(outputBufferSizeInBytes);
-
-        switch (bufferDataType)
-        {
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
-            CopyTensorToPixels<float>(tensorBuffer, pixelBuffer.data(), bufferHeight, bufferWidth, bufferChannels);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
-            CopyTensorToPixels<half_float::half>(tensorBuffer, pixelBuffer.data(), bufferHeight, bufferWidth, bufferChannels);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
-            CopyTensorToPixelsByte<std::byte>(tensorBuffer, pixelBuffer.data(), bufferHeight, bufferWidth, bufferChannels);
-            break;
-
-        default:
-            throw std::invalid_argument("Unsupported data type");
-        }
-
-        auto wicFactory = Imaging::ImagingFactory::Create( );
-        bitmap = wicFactory.CreateBitmapFromMemory(
-            bufferWidth,
-            bufferHeight,
-            desiredImagePixelFormat,
-            bufferWidth * bufferChannels,
-            pixelBuffer.size( ),
-            pixelBuffer.data( ) );
-    }
-
 
     inline unsigned char* pixel(unsigned char* Img, int i, int j, int width, int height, int bpp)
     {
@@ -593,21 +360,14 @@ bool Sample::CopySharedVideoTextureTensor(std::vector<std::byte> & inputBuffer, 
 
         // map the texture
         D3D11::Texture2D mappedTexture;
-        D3D11_MAPPED_SUBRESOURCE mapInfo;
+        D3D11_MAPPED_SUBRESOURCE mapInfo{};
         
-        HRESULT hr = S_OK;
-        try
-        {
-            d3dContext.Map( mediaTexture,
+        HRESULT hr = d3dContext.Map<true>( mediaTexture,
                 0,  // Subresource
                 D3D11_MAP_READ,
                 0,  // MapFlags
                 &mapInfo );
-        }
-        catch ( const Exception& exc )
-        {
-            hr = exc.GetHRESULT( );
-        }
+
         if (FAILED(hr)) 
         {
             // If we failed to map the texture, copy it to a staging resource
@@ -772,15 +532,6 @@ bool Sample::CopySharedVideoTextureTensor(std::vector<std::byte> & inputBuffer, 
         auto end = std::chrono::high_resolution_clock::now();
         m_copypixels_tensor_duration += (end - start);
 
-#if 0
-        SaveNCHWBufferToImageFilename(
-            L"input.png",
-            (uint8_t*)(inputBuffer.data()),
-            inputHeight,
-            inputWidth,
-            model->m_inputDataType,
-            ChannelOrder::RGB);
-#endif
         return true;
     }
     return false;
@@ -1561,8 +1312,10 @@ bool Sample::Initialize(HWND window, int width, int height, bool run_on_gpu)
 
     // Add the DML execution provider to ORT using the DML Device and D3D12 Command Queue created above.
     InitializeDirectMLResources();
+    CheckDevice( );
 
     m_deviceResources->CreateDeviceResources();  	
+    CheckDevice( );
     CreateDeviceDependentResources();
    
     m_deviceResources->CreateWindowSizeDependentResources();
@@ -1686,7 +1439,7 @@ void Sample::Update(DX::StepTimer const& timer)
 }
 #pragma endregion
 
-void Sample::OnNewMopdel(const wchar_t* modelfile, bool bAddModel)
+void Sample::OnNewModel(const wchar_t* modelfile, bool bAddModel)
 {
 
     if (m_player->IsPlaying())
@@ -1756,6 +1509,197 @@ void Sample::OnNewFile(const wchar_t* filename)
 
 
 #pragma region Frame Render
+
+
+void Sample::BeginCompute( )
+{
+    // Get the latest video frame
+    RECT r = { 0, 0, static_cast< LONG >( m_origTextureWidth ), static_cast< LONG >( m_origTextureHeight ) };
+    MFVideoNormalizedRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };
+
+    m_player->TransferFrame( m_sharedVideoTexture, rect, r, m_pts );
+    
+    m_copypixels_tensor_duration = std::chrono::duration<double, std::milli>( 0 );
+    m_inference_duration = std::chrono::duration<double, std::milli>( 0 );
+    m_output_duration = std::chrono::duration<double, std::milli>( 0 );
+    m_preds.clear( );
+    //m_output_texture.Reset();
+
+    for ( auto& model : m_models )
+    {
+
+        // Convert image to tensor format (original texture -> model input)
+        const size_t inputChannels = model->m_inputShape[ model->m_inputShape.size( ) - 3 ];
+        const size_t inputHeight = model->m_inputHeight;
+        const size_t inputWidth = model->m_inputWidth;
+        const size_t inputElementSize = model->m_inputDataType == ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT ? sizeof( float ) : sizeof( uint16_t );
+
+        if ( model->m_inputBuffer.size( ) != inputChannels * inputHeight * inputWidth * inputElementSize )
+            model->m_inputBuffer.resize( inputChannels * inputHeight * inputWidth * inputElementSize );
+
+        if ( CopySharedVideoTextureTensor( model->m_inputBuffer, model.get( ) ) )
+        {
+
+            // Record start
+            auto start = std::chrono::high_resolution_clock::now( );
+
+            // Create input tensor
+            Ort::MemoryInfo memoryInfo2 = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
+            auto inputTensor = Ort::Value::CreateTensor(
+                memoryInfo2,
+                model->m_inputBuffer.data( ),
+                model->m_inputBuffer.size( ),
+                model->m_inputShape.data( ),
+                model->m_inputShape.size( ),
+                model->m_inputDataType
+            );
+
+            // Bind tensors
+            Ort::MemoryInfo memoryInfo0 = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
+            Ort::Allocator allocator0( model->m_session, memoryInfo0 );
+            auto inputName = model->m_session.GetInputNameAllocated( 0, allocator0 );
+            auto bindings = Ort::IoBinding::IoBinding( model->m_session );
+            try
+            {
+                bindings.BindInput( inputName.get( ), inputTensor );
+            }
+            catch ( const std::runtime_error& re )
+            {
+                const char* err = re.what( );
+                MessageBoxA( 0, err, "Error loading model", MB_YESNO );
+                std::cerr << "Runtime error: " << re.what( ) << std::endl;
+                exit( 1 );
+            }
+            // Create output tensor(s) and bind
+            auto tensors = model->m_session.GetOutputCount( );
+            std::vector<std::string> output_names;
+            std::vector<std::vector<int64_t>> output_shapes;
+            std::vector<ONNXTensorElementDataType> output_datatypes;
+            for ( int i = 0; i < tensors; i++ )
+            {
+                auto output_name = model->m_session.GetOutputNameAllocated( i, allocator0 );
+                output_names.push_back( output_name.get( ) );
+                auto type_info = model->m_session.GetOutputTypeInfo( i );
+                auto tensor_info = type_info.GetTensorTypeAndShapeInfo( );
+                auto shape = tensor_info.GetShape( );
+
+                for ( int i = 0; i < shape.size( ); i++ )
+                {
+                    if ( i == 0 && shape[ i ] == -1 )
+                        shape[ i ] = 1;
+                    if ( i > 0 && shape[ i ] == -1 )
+                        shape[ i ] = 640;
+                }
+
+                output_shapes.push_back( shape );
+
+
+
+                output_datatypes.push_back( tensor_info.GetElementType( ) );
+
+                bindings.BindOutput( output_names.back( ).c_str( ), memoryInfo2 );
+            }
+            HRESULT hr0;
+            try
+            {
+                // Record start
+                //auto start = std::chrono::high_   resolution_clock::now();
+
+                // Run the session to get inference results.
+                Ort::RunOptions runOpts;
+                model->m_session.Run( runOpts, bindings );
+
+                hr0 = m_d3dDevice.GetDeviceRemovedReason( );
+                
+
+                bindings.SynchronizeOutputs( );
+            }
+            catch ( const std::runtime_error& re )
+            {
+                const char* err = re.what( );
+                MessageBoxA( 0, err, "Error loading model", MB_YESNO );
+                std::cerr << "Runtime error: " << re.what( ) << std::endl;
+                exit( 1 );
+            }
+            catch ( const std::exception& ex )
+            {
+                const char* err = ex.what( );
+                MessageBoxA( 0, err, "Error loading model", MB_YESNO );
+                std::cerr << "Error occurred: " << ex.what( ) << std::endl;
+                exit( 1 );
+            }
+
+
+            try
+            {
+
+                m_d3dDevice.GetDeviceRemovedReason( );
+            }
+            catch ( const std::exception& ex )
+            {
+                const char* err = ex.what( );
+                MessageBoxA( 0, err, "Error loading model", MB_YESNO );
+                std::cerr << "Error occurred: " << ex.what( ) << std::endl;
+                exit( 1 );
+                //extern void MyDeviceRemovedHandler(ID3D12Device * pDevice);
+                //MyDeviceRemovedHandler(m_d3dDevice.Get());
+            }
+
+            std::vector<const std::byte*> outputData;
+            int  i = 0;
+            for ( int i = 0; i < tensors; i++ )
+            {
+                const std::byte* outputBuffer = reinterpret_cast< const std::byte* >( bindings.GetOutputValues( )[ i ].GetTensorRawData( ) );
+                outputData.push_back( outputBuffer );
+            }
+
+            auto end = std::chrono::high_resolution_clock::now( );
+            m_inference_duration += ( end - start );
+
+            if ( outputData.size( ) > 0 )
+            {
+                // Record start
+                auto start = std::chrono::high_resolution_clock::now( );
+
+
+                if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 3 && output_datatypes[ 0 ] != ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8 )
+                    GetPredictions( outputData[ 0 ], output_shapes[ 0 ], output_names, model.get( ) );
+                else  if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 4 )
+                    GetImage( outputData[ 0 ], output_shapes[ 0 ], model.get( ), output_datatypes[ 0 ] );
+                else  if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 3 && output_datatypes[ 0 ] == ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8 )
+                    GetMask( outputData[ 0 ], output_shapes[ 0 ], model.get( ), output_datatypes[ 0 ] );
+                else if ( outputData.size( ) == 2 && output_names[ 0 ] == "box_coords" && output_names[ 1 ] == "box_scores" )
+                {
+                    // mediapipe onnx model?
+                    GetFaces( outputData, output_shapes, model.get( ) );
+                }
+                else if ( outputData.size( ) == 2 )
+                    GetPredictions2( outputData, output_shapes, output_names, model.get( ) );
+                else if ( outputData.size( ) >= 3 )
+                    GetPredictions( outputData, output_shapes, output_names, model.get( ) );
+
+                if ( !m_mask_ready )
+                    m_mask.clear( );
+
+                auto end = std::chrono::high_resolution_clock::now( );
+                m_output_duration += ( end - start );
+            }
+        }
+    }
+    
+    if ( m_mask_ready )
+    {
+        m_mask_ready = false;
+        //auto viewport = m_deviceResources->GetScreenViewport();
+        //m_sprite.get()->SetViewport(viewport);
+
+        //auto device = m_deviceResources->GetD3DDevice();
+        NewTexture( m_mask.data( ), m_mask_width, m_mask_height );
+        //auto b = LoadTextureFromMemory(&m_mask[0], m_mask_width, m_mask_height,
+        //    device, m_SRVDescriptorHeap->GetCpuHandle(e_outputTensor), m_texture.ReleaseAndGetAddressOf());
+    }
+}
+
 // Draws the scene.
 void Sample::Render()
 {
@@ -1767,198 +1711,15 @@ void Sample::Render()
     }
 
     // 
- // Kick off the compute work that will be used to render the next frame. We do this now so that the data will be
- // ready by the time the next frame comes around.
- // 
-
- // Get the latest video frame
-    RECT r = { 0, 0, static_cast<LONG>(m_origTextureWidth), static_cast<LONG>(m_origTextureHeight) };
-    MFVideoNormalizedRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };
-
-    m_player->TransferFrame(m_sharedVideoTexture, rect, r, m_pts);
-    if (true)
-    {
-        m_copypixels_tensor_duration = std::chrono::duration<double, std::milli>(0);
-        m_inference_duration = std::chrono::duration<double, std::milli>(0);
-        m_output_duration = std::chrono::duration<double, std::milli>(0);
-        m_preds.clear();
-        //m_output_texture.Reset();
-
-        for (auto& model : m_models)
-        {
-
-            // Convert image to tensor format (original texture -> model input)
-            const size_t inputChannels = model->m_inputShape[model->m_inputShape.size() - 3];
-            const size_t inputHeight = model->m_inputHeight;
-            const size_t inputWidth = model->m_inputWidth;
-            const size_t inputElementSize = model->m_inputDataType == ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT ? sizeof(float) : sizeof(uint16_t);
-
-            if (model->m_inputBuffer.size() != inputChannels * inputHeight * inputWidth * inputElementSize)
-                model->m_inputBuffer.resize(inputChannels * inputHeight * inputWidth * inputElementSize);
-
-            if (CopySharedVideoTextureTensor(model->m_inputBuffer, model.get()))
-            {
-
-                // Record start
-                auto start = std::chrono::high_resolution_clock::now();
-
-                // Create input tensor
-                Ort::MemoryInfo memoryInfo2 = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-                auto inputTensor = Ort::Value::CreateTensor(
-                    memoryInfo2,
-                    model->m_inputBuffer.data(),
-                    model->m_inputBuffer.size(),
-                    model->m_inputShape.data(),
-                    model->m_inputShape.size(),
-                    model->m_inputDataType
-                );
-
-                // Bind tensors
-                Ort::MemoryInfo memoryInfo0 = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-                Ort::Allocator allocator0(model->m_session, memoryInfo0);
-                auto inputName = model->m_session.GetInputNameAllocated(0, allocator0);
-                auto bindings = Ort::IoBinding::IoBinding(model->m_session);
-                try {
-
-                    bindings.BindInput(inputName.get(), inputTensor);
-                }
-                catch (const std::runtime_error& re) {
-                    const char* err = re.what();
-                    MessageBoxA(0, err, "Error loading model", MB_YESNO);
-                    std::cerr << "Runtime error: " << re.what() << std::endl;
-                    exit(1);
-                }
-                // Create output tensor(s) and bind
-                auto tensors = model->m_session.GetOutputCount();
-                std::vector<std::string> output_names;
-                std::vector<std::vector<int64_t>> output_shapes;
-                std::vector<ONNXTensorElementDataType> output_datatypes;
-                for (int i = 0; i < tensors; i++)
-                {
-                    auto output_name = model->m_session.GetOutputNameAllocated(i, allocator0);
-                    output_names.push_back(output_name.get());
-                    auto type_info = model->m_session.GetOutputTypeInfo(i);
-                    auto tensor_info = type_info.GetTensorTypeAndShapeInfo();
-                    auto shape = tensor_info.GetShape();
-
-                    for (int i = 0; i < shape.size(); i++)
-                    {
-                        if (i == 0 && shape[i] == -1)
-                            shape[i] = 1;
-                        if (i > 0 && shape[i] == -1)
-                            shape[i] = 640;
-                    }
-
-                    output_shapes.push_back(shape);
-
-
-
-                    output_datatypes.push_back(tensor_info.GetElementType());
-
-                    bindings.BindOutput(output_names.back().c_str(), memoryInfo2);
-                }
-                HRESULT hr0;
-                try {
-                    // Record start
-                    //auto start = std::chrono::high_   resolution_clock::now();
-
-                    // Run the session to get inference results.
-                    Ort::RunOptions runOpts;
-                    model->m_session.Run(runOpts, bindings);
-
-                    hr0 = m_d3dDevice.GetDeviceRemovedReason();
-
-                    bindings.SynchronizeOutputs();
-                }
-                catch (const std::runtime_error& re) {
-                    const char* err = re.what();
-                    MessageBoxA(0, err, "Error loading model", MB_YESNO);
-                    std::cerr << "Runtime error: " << re.what() << std::endl;
-                    exit(1);
-                }
-                catch (const std::exception& ex)
-                {
-                    const char* err = ex.what();
-                    MessageBoxA(0, err, "Error loading model", MB_YESNO);
-                    std::cerr << "Error occurred: " << ex.what() << std::endl;
-                    exit(1);
-                }
-
-
-                try {
-
-                    m_d3dDevice.GetDeviceRemovedReason();
-                }
-                catch (const std::exception& ex)
-                {
-                    const char* err = ex.what();
-                    MessageBoxA(0, err, "Error loading model", MB_YESNO);
-                    std::cerr << "Error occurred: " << ex.what() << std::endl;
-                    exit(1);
-                    //extern void MyDeviceRemovedHandler(ID3D12Device * pDevice);
-                    //MyDeviceRemovedHandler(m_d3dDevice.Get());
-                }
-
-                std::vector<const std::byte*> outputData;
-                int  i = 0;
-                for (int i = 0; i < tensors; i++)
-                {
-                    const std::byte* outputBuffer = reinterpret_cast<const std::byte*>(bindings.GetOutputValues()[i].GetTensorRawData());
-                    outputData.push_back(outputBuffer);
-                }
-
-                auto end = std::chrono::high_resolution_clock::now();
-                m_inference_duration += (end - start);
-
-                if (outputData.size() > 0)
-                {
-                    // Record start
-                    auto start = std::chrono::high_resolution_clock::now();
-
-
-                    if (outputData.size() == 1 && output_shapes[0].size() == 3 && output_datatypes[0] != ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8)
-                        GetPredictions(outputData[0], output_shapes[0], output_names, model.get());
-                    else  if (outputData.size() == 1 && output_shapes[0].size() == 4)
-                        GetImage(outputData[0], output_shapes[0], model.get(), output_datatypes[0]);
-                    else  if (outputData.size() == 1 && output_shapes[0].size() == 3 && output_datatypes[0] == ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8)
-                        GetMask(outputData[0], output_shapes[0], model.get(), output_datatypes[0]);
-                    else if (outputData.size() == 2 && output_names[0] == "box_coords" && output_names[1] == "box_scores")
-                    {
-                        // mediapipe onnx model?
-                        GetFaces(outputData, output_shapes, model.get());
-                    }
-                    else if (outputData.size() == 2)
-                        GetPredictions2(outputData, output_shapes, output_names, model.get());
-                    else if (outputData.size() >= 3)
-                        GetPredictions(outputData, output_shapes, output_names, model.get());
-
-                    if (!m_mask_ready)
-                        m_mask.clear();
-
-                    auto end = std::chrono::high_resolution_clock::now();
-                    m_output_duration += (end - start);
-                }
-            }
-        }
-    }
-    if (m_mask_ready)
-    {
-        m_mask_ready = false;
-        //auto viewport = m_deviceResources->GetScreenViewport();
-        //m_sprite.get()->SetViewport(viewport);
-
-        //auto device = m_deviceResources->GetD3DDevice();
-        NewTexture(m_mask.data(), m_mask_width, m_mask_height);
-        //auto b = LoadTextureFromMemory(&m_mask[0], m_mask_width, m_mask_height,
-        //    device, m_SRVDescriptorHeap->GetCpuHandle(e_outputTensor), m_texture.ReleaseAndGetAddressOf());
-    }
-
-
+    // Kick off the compute work that will be used to render the next frame. We do this now so that the data will be
+    // ready by the time the next frame comes around.
+    // 
+    BeginCompute( );
     // Prepare the command list to render a new frame.
     m_deviceResources->Prepare();
     Clear();
 
-    auto commandList = m_deviceResources->GetCommandList();
+    const auto& commandList = m_deviceResources->GetCommandList();
 
     // Render the result to the screen
 
@@ -2020,23 +1781,6 @@ void Sample::Render()
     {
         PIXBeginEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ), PIX_COLOR_DEFAULT, L"Render predictions");
 
-        // Print some debug information about the predictions
-#if 0
-        std::stringstream ss;
-        Format(ss, "# of predictions: ", m_preds.size(), "\n");
-
-        for (const auto& pred : m_preds)
-        {
-            const char* className = YoloV4Constants::c_classes[pred.predictedClass];
-            int xmin = static_cast<int>(std::round(pred.xmin));
-            int ymin = static_cast<int>(std::round(pred.ymin));
-            int xmax = static_cast<int>(std::round(pred.xmax));
-            int ymax = static_cast<int>(std::round(pred.ymax));
-
-            Format(ss, "  ", className, ": score ", pred.score, ", box (", xmin, ",", ymin, "),(", xmax, ",", ymax, ")\n");
-        }
-        OutputDebugStringA(ss.str().c_str());
-#endif
         commandList.RSSetViewports(viewport);
         commandList.RSSetScissorRects(scissorRect);
 
@@ -2764,7 +2508,7 @@ void Sample::CreateTextureResources()
             D3D12::TextureLayout::Unknown,
             D3D12::ResourceFlags::AllowRenderTarget | D3D12::ResourceFlags::AllowSimultaneousAccess);
 
-        D3D12::HeapProperties defaultHeapProperties;
+        D3D12::HeapProperties defaultHeapProperties( D3D12::HeapType::Default );
 
         m_videoTexture = device.CreateCommittedResource(
                 defaultHeapProperties,

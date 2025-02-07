@@ -1,4 +1,20 @@
-﻿//
+﻿/*
+   Copyright 2024 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+//
 // DeviceResources.cpp - A wrapper for the Direct3D 12 device and swapchain
 //
 
@@ -84,11 +100,13 @@ void MyDeviceRemovedHandler(const D3D12::Device& device)
 void DeviceResources::CreateDeviceResources()
 {
 #ifdef _DEBUG
+    /*
     auto debugController = D3D12::GetDebugInterface<D3D12::D3D12Debug>( );
     if ( debugController )
     {
         debugController.EnableDebugLayer( );
     }
+    */
 #endif
 
     m_dxgiFactory = DXGI::CreateFactory( );
@@ -111,27 +129,20 @@ void DeviceResources::CreateDeviceResources()
     }
 
 #ifdef _DEBUG
+    /*
     auto dredSettings = D3D12::GetDebugInterface<D3D12::DeviceRemovedExtendedDataSettings>( );
     if ( dredSettings )
     {
         dredSettings.SetAutoBreadcrumbsEnablement( D3D12_DRED_ENABLEMENT_FORCED_ON );
         dredSettings.SetPageFaultEnablement( D3D12_DRED_ENABLEMENT_FORCED_ON );
     }
+    */
 #endif
 
     if ( !m_d3dDevice )
     {
-        if ( adapter_ )
-        {
-            PrintLn( "Shared adapter" );
-            m_d3dDevice = D3D12::CreateDevice( adapter_, m_d3dMinFeatureLevel );
-        }
-        else
-        {
-            DXGI::Adapter1 adapter = GetAdapter( );
-            m_d3dDevice = D3D12::CreateDevice( adapter, m_d3dMinFeatureLevel );
-
-        }
+        DXGI::Adapter1 adapter = GetAdapter( );
+        m_d3dDevice = D3D12::CreateDevice( adapter, m_d3dMinFeatureLevel );
     }
 
 
@@ -602,19 +613,8 @@ void DeviceResources::MoveToNextFrame()
 // If no such adapter can be found, try WARP. Otherwise throw an exception.
 DXGI::Adapter4 DeviceResources::GetAdapter( )
 {
-    DXGI::Adapter4 adapter;
-    if ( adapter_ )
-    {
-        auto tmp = adapter_.As<DXGI::Adapter4>( );
-        if ( tmp )
-        {
-            adapter = std::move( tmp );
-        }
-    }
-    if ( !adapter )
-    {
-        adapter = m_dxgiFactory.FindAdapter( DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, m_d3dMinFeatureLevel );
-    }
+    DXGI::Adapter4 adapter = m_dxgiFactory.FindAdapter( DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, m_d3dMinFeatureLevel );
+    
     if ( !adapter )
     {
         adapter = m_dxgiFactory.EnumWarpAdapter<DXGI::Adapter4>( );

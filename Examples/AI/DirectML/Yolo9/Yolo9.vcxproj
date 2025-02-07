@@ -167,7 +167,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="polypartition.cpp" />
     <ClCompile Include="ssd_anchors.cpp" />
     <ClCompile Include="TensorHelper.cpp" />
     <ClCompile Include="Yolo9.cpp" />
@@ -225,7 +224,6 @@
     <ClInclude Include="MediaEnginePlayer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Polyline2D.h" />
-    <ClInclude Include="polypartition.h" />
     <ClInclude Include="ssd_anchors.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="TensorExtents.h" />

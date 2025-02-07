@@ -629,11 +629,6 @@ namespace Harlinn::Common::Core::Math
         }
 
 
-
-        
-
-
-
         template<typename T>
             requires IsFloatingPoint<std::remove_cvref_t<T>>
         inline constexpr bool IsInfImpl( T val ) noexcept
@@ -953,6 +948,9 @@ namespace Harlinn::Common::Core::Math
         return false;
     }
 
+
+
+
     /// <summary>
     /// <para>
     /// Determines if the given floating point number, val, 
@@ -981,6 +979,19 @@ namespace Harlinn::Common::Core::Math
             return std::isnan( val );
         }
     }
+
+    template<typename T, typename ... Args>
+        requires (IsInteger<T> || IsFloatingPoint<T>) //&& std::conjunction_v< std::disjunction< std::is_integral<Args>, std::is_floating_point<Args> >... >
+    constexpr inline bool IsNaN( T val, Args&& ... args ) noexcept
+    {
+        if ( IsNaN( val ) )
+        {
+            return true;
+        }
+        return IsNaN( args ... );
+    }
+
+
 
     /// <summary>
     /// Integers cannot represent infinite, so this function

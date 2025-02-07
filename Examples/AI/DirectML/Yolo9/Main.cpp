@@ -1,3 +1,19 @@
+/*
+   Copyright 2024 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 //--------------------------------------------------------------------------------------
 // Main.cpp
 //
@@ -32,11 +48,18 @@ public:
         sample_ = std::make_unique<Sample>( );
     }
 
+    void OnIdle( )
+    {
+        sample_->Tick( );
+    }
+
     virtual void DoOnHandleCreated() override
     {
         Base::DoOnHandleCreated( );
-        auto rect = Base::GetClientRect( );
+        
         auto run_on_gpu = false;
+
+        auto rect = GetClientRect( );
 
         sample_->Initialize( GetHandle( ), rect.right - rect.left, rect.bottom - rect.top, run_on_gpu );
             
@@ -219,7 +242,7 @@ public:
 
                     if ( !bVideo )
                     {
-                        sample_->OnNewMopdel( filename.c_str( ), bAddModel );
+                        sample_->OnNewModel( filename.c_str( ), bAddModel );
                     }
                     else
                     {
@@ -316,9 +339,14 @@ int main( int argc, char* argv [] )
         MyForm form;
         form.SetText( L"Yolo9 example app" );
 
+        PeekMessageLoop messageLoop;
 
+        messageLoop.OnIdle.connect( [ &form ]( auto* sender )
+            {
+                form.OnIdle( );
+            } );
 
-        auto result = application->Run( form );
+        auto result = application->Run( form, messageLoop );
 
         application->Stop( );
 

@@ -593,6 +593,15 @@ BOOST_AUTO_TEST_CASE( IsNaNDoubleTest1 )
     BOOST_CHECK( success );
 }
 
+// --run_test=MathTests/IsNaNTest1
+BOOST_AUTO_TEST_CASE( IsNaNTest1 )
+{
+    constexpr float nanValue = std::numeric_limits<float>::quiet_NaN( );
+    constexpr bool result = IsNaN( 1, nanValue );
+    BOOST_CHECK( result );
+}
+
+
 
 // --run_test=MathTests/OpenLibMIsNaNDoubleTest1
 BOOST_AUTO_TEST_CASE( OpenLibMIsNaNDoubleTest1 )

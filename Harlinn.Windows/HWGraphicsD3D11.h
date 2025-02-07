@@ -630,11 +630,20 @@ namespace Harlinn::Windows::Graphics::D3D11
             pInterface->Draw(vertexCount, startVertexLocation);
         }
 
-        void Map( ID3D11Resource* resource, UINT subresource, D3D11_MAP mapType, UINT mapFlags, D3D11_MAPPED_SUBRESOURCE* mappedResource) const
+        template<bool NoExeptionOnInvalidArg = false>
+        HRESULT Map( ID3D11Resource* resource, UINT subresource, D3D11_MAP mapType, UINT mapFlags, D3D11_MAPPED_SUBRESOURCE* mappedResource) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->Map(resource, subresource, mapType, mapFlags, mappedResource);
+            if constexpr ( NoExeptionOnInvalidArg )
+            {
+                if ( hr == E_INVALIDARG )
+                {
+                    return E_INVALIDARG;
+                }
+            }
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
+            return hr;
         }
 
         void Unmap( ID3D11Resource* resource, UINT subresource) const

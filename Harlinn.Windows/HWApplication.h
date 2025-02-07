@@ -38,6 +38,20 @@ namespace Harlinn::Windows
         HW_EXPORT virtual Message::Result DispatchMessage( const Message& message );
     };
 
+    class PeekMessageLoop : public MessageLoop
+    {
+    public:
+        boost::signals2::signal<void( PeekMessageLoop* sender )> OnIdle;
+
+        HW_EXPORT PeekMessageLoop( );
+        HW_EXPORT virtual ~PeekMessageLoop( );
+        HW_EXPORT virtual int Run( );
+    protected:
+        HW_EXPORT virtual int GetMessage( Message& message );
+        HW_EXPORT virtual void DoOnIdle( );
+    };
+
+
     class Application : public Common::Core::Application
     {
         friend class Control;

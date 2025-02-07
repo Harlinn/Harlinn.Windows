@@ -39,9 +39,6 @@
     <ClCompile Include="MediaEnginePlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="polypartition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ssd_anchors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,9 +89,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Polyline2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="polypartition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ssd_anchors.h">
