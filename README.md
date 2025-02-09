@@ -2,7 +2,7 @@
 
 This is the repository for Harlinn.Windows, a Visual Studio 2022 Solution with a wide range of useful C and C++ libraries for 64-bit Windows software development. 
 
-<img src="./Readme/Images/AI/DirectML/Yolo9/ObjectDetection3.png" alt="Yolo v9" />
+<img src="./Readme/Images/AI/DirectML/Yolo9/ObjectDetection.png" alt="Yolo v9" />
 
 ## Documentation
 
