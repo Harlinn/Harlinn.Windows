@@ -69,8 +69,9 @@ MediaEnginePlayer::~MediaEnginePlayer( )
     Shutdown( );
 }
 
-void MediaEnginePlayer::Initialize( const Graphics::DXGI::Factory4& dxgiFactory, Graphics::D3D12::Device& device, Graphics::DXGI::Format format )
+void MediaEnginePlayer::Initialize( const Graphics::DXGI::Factory4& dxgiFactory, Graphics::D3D12::Device14& device, Graphics::DXGI::Format format )
 {
+    device12_ = device;
     // Create our own device to avoid threading issues
     auto adapterLuid = device.GetAdapterLuid( );
     auto adapter = dxgiFactory.FindAdapter( adapterLuid );
@@ -191,11 +192,22 @@ bool MediaEnginePlayer::TransferFrame( HANDLE textureHandle, MFVideoNormalizedRe
             return true;
         }
     }
-
-
-
     return false;
 }
+
+bool MediaEnginePlayer::TransferFrame( const D3D12::Resource& videoTexture, MFVideoNormalizedRect rect, RECT rcTarget, LONGLONG& pts )
+{
+    if ( mediaEngine_ && isPlaying_ )
+    {
+        if ( mediaEngine_.OnVideoStreamTick( &pts ) )
+        {
+            mediaEngine_.TransferVideoFrame( videoTexture, &rect, &rcTarget, &bkgColor_ );
+            return true;
+        }
+    }
+    return false;
+}
+
 
 void MediaEnginePlayer::OnMediaEngineEvent( uint32_t meEvent, DWORD_PTR param1, DWORD param2 )
 {

@@ -31,7 +31,10 @@
 
 double threshold = .45;
 
-const wchar_t* c_videoPath = L"grca-grand-canyon-association-park-store_1280x720.mp4";
+//const wchar_t* c_videoPath = L"grca-grand-canyon-association-park-store_1280x720.mp4";
+const wchar_t* c_videoPath = L"175876-854230219_tiny.mp4";
+//const wchar_t* c_videoPath = L"216619_large.mp4";
+//const wchar_t* c_videoPath = L"6387-191695740_large.mp4";
 const wchar_t* c_imagePath = L"grca-BA-bike-shop_1280x720.jpg";
 
 extern void ExitSample();
@@ -132,8 +135,8 @@ namespace
             while (!proposals.empty())
             {
                 // Find the proposal with the highest score
-                auto max_iter = std::max_element(proposals.begin(), proposals.end(),
-                    [](const Prediction& lhs, const Prediction& rhs) {
+                auto max_iter = std::max_element(proposals.begin(), proposals.end(), [](const Prediction& lhs, const Prediction& rhs) 
+                    {
                         return lhs.score < rhs.score;
                     });
 
@@ -260,21 +263,21 @@ namespace
                         (OriginalPosWidth + 1) >= rowWidth ? OriginalPosWidth : (OriginalPosWidth + 1), rowWidth, srcHeight, srcChannels);
 
                     float b =
-                        (*(temp1 + 0) * (1 - deltaheight) * (1 - deltawidth) \
-                        + *(temp2 + 0) * (deltaheight) * (1 - deltawidth) \
-                        + *(temp3 + 0) * (1 - deltaheight) * (deltawidth) \
+                        ( *(temp1 + 0) * (1 - deltaheight) * (1 - deltawidth) 
+                        + *(temp2 + 0) * (deltaheight) * (1 - deltawidth) 
+                        + *(temp3 + 0) * (1 - deltaheight) * (deltawidth) 
                         + *(temp4 + 0) * (deltaheight) * (deltawidth)) / 255.0f;
 
                     float g =
-                        (*(temp1 + 1) * (1 - deltaheight) * (1 - deltawidth) \
-                        + *(temp2 + 1) * (deltaheight) * (1 - deltawidth) \
-                        + *(temp3 + 1) * (1 - deltaheight) * (deltawidth) \
+                        ( *(temp1 + 1) * (1 - deltaheight) * (1 - deltawidth) 
+                        + *(temp2 + 1) * (deltaheight) * (1 - deltawidth) 
+                        + *(temp3 + 1) * (1 - deltaheight) * (deltawidth) 
                         + *(temp4 + 1) * (deltaheight) * (deltawidth)) / 255.0f;
 
                     float r =
-                        (*(temp1 + 2) * (1 - deltaheight) * (1 - deltawidth) \
-                        + *(temp2 + 2) * (deltaheight) * (1 - deltawidth) \
-                        + *(temp3 + 2) * (1 - deltaheight) * (deltawidth) \
+                        (*(temp1 + 2) * (1 - deltaheight) * (1 - deltawidth) 
+                        + *(temp2 + 2) * (deltaheight) * (1 - deltawidth) 
+                        + *(temp3 + 2) * (1 - deltaheight) * (deltawidth) 
                         + *(temp4 + 2) * (deltaheight) * (deltawidth)) / 255.0f;
 
 
@@ -287,8 +290,6 @@ namespace
         }
         else
         {
-            double rs, gs, bs;
-            rs = gs = bs = 0.0;
             size_t pixelIndex = 0;
             for (size_t line = 0; line < height; line++)
             {
@@ -299,26 +300,13 @@ namespace
                     float g = static_cast<float>(_src[x * srcChannels + 1]) / 255.0f;
                     float r = static_cast<float>(_src[x * srcChannels + 2]) / 255.0f;
 
-                    //rs += r;
-                    //gs += g;
-                    //bs += b;
-
-
                     dstT[pixelIndex + 0 * height * width] = r;
                     dstT[pixelIndex + 1 * height * width] = g;
                     dstT[pixelIndex + 2 * height * width] = b;
 
                     pixelIndex++;
-
                 }
             }
-
-            //rs /= height * width;
-            //gs /= height * width;
-            //bs /= height * width;
-            //std::stringstream ss;
-            //Format(ss, "red: ", rs, ", green: ", gs, ", blue: ", bs,  "\n");
-            //OutputDebugStringA(ss.str().c_str());
         }
     }
 
@@ -328,11 +316,13 @@ namespace
 
 bool Sample::CopySharedVideoTextureTensor(std::vector<std::byte> & inputBuffer, Model_t * model)
 {
+
     // Record start
     auto start = std::chrono::high_resolution_clock::now();
+
     const auto& device = m_player->GetDevice( );
 
-    D3D11::Texture2D mediaTexture = device.OpenSharedResource<D3D11::Texture2D>( m_sharedVideoTexture ) ;
+    D3D11::Texture2D mediaTexture = device.OpenSharedResource<D3D11::Texture2D>( m_sharedVideoTexture );
 
     if ( mediaTexture )
     {
@@ -423,12 +413,20 @@ bool Sample::CopySharedVideoTextureTensor(std::vector<std::byte> & inputBuffer, 
                 m_d2d1_factory = D2D::CreateFactory( D2D1_FACTORY_TYPE::D2D1_FACTORY_TYPE_MULTI_THREADED );
                 
                 // Create D2Device 
-                auto device = m_deviceResources->GetD3DDevice();
+                //auto device = m_deviceResources->GetD3DDevice();
+                // DXGI::Device3 dxgiDevice = device.As<DXGI::Device3>( );
 
-                DXGI::Device3 dxgiDevice = device.As<DXGI::Device3>();
-                m_d2d1_device = m_d2d1_factory.CreateDevice( dxgiDevice );
-                // Get Direct2D device's corresponding device context object.
-                m_d2dContext = m_d2d1_device.CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE );
+                const auto& swapChain = m_deviceResources->GetSwapChain( );
+                if ( swapChain )
+                {
+                    auto dxgiDevice = swapChain.GetDevice<DXGI::Device>( );
+                    if ( dxgiDevice )
+                    {
+                        m_d2d1_device = m_d2d1_factory.CreateDevice( dxgiDevice );
+                        // Get Direct2D device's corresponding device context object.
+                        m_d2dContext = m_d2d1_device.CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE );
+                    }
+                }
             }
             if (m_d2dContext)
             {
@@ -750,15 +748,6 @@ void Sample::GetFaces(std::vector<const std::byte*>& outputData, std::vector<std
     m_preds = ApplyNonMaximalSuppression(m_preds, YoloV4Constants::c_nmsThreshold);
 }
 
-void transpose(float* src, float* dst, const int N, const int M) {
-//#pragma omp parallel for
-    for (int n = 0; n < N * M; n++) {
-        int i = n / N;
-        int j = n % N;
-        dst[n] = src[M * j + i];
-    }
-};
-
 void Sample::GetPredictions2(std::vector<const std::byte*>& outputData, std::vector<std::vector<int64_t>>& shapes, const std::vector<std::string>& output_names, Model_t* model)
 {
     if (outputData.size() != 2)
@@ -768,13 +757,12 @@ void Sample::GetPredictions2(std::vector<const std::byte*>& outputData, std::vec
     int output1_i = 1;
    
     int i = 0;
-    for (auto name : output_names)
+    for (const auto& name : output_names)
     {
         if (name == "output0")
             output0_i = i;
         else if (name == "output0")
             output0_i = i;
-       
         i++;
     }
     if (output0_i == -1 || output1_i == -1)
@@ -785,7 +773,6 @@ void Sample::GetPredictions2(std::vector<const std::byte*>& outputData, std::vec
     std::vector<float> out;
     out.resize(value1.x * value1.y);
 
-    //transpose((float*)outputData[0], (float*)out.data(), value1.y, value1.x);
 
     // Scale the boxes to be relative to the original image size
     auto viewport = m_deviceResources->GetScreenViewport();
@@ -1268,8 +1255,12 @@ void Sample::GetPredictions(const std::byte *  outputData, std::vector<int64_t> 
 }
 
 Sample::Sample()
-    : m_ctrlConnected(false), m_run_on_gpu(false)
+    : io_( GetImGuiIO( ) ), m_ctrlConnected(false), m_run_on_gpu(false)
 {
+    io_.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    //::ImGui::StyleColorsClassic( );
+    ::ImGui::StyleColorsLight( );
+
     // Use gamma-correct rendering.
     // Renders only 2D, so no need for a depth buffer.
     m_deviceResources = std::make_unique<DX::DeviceResources>(DXGI::Format::B8G8R8A8_UNORM, DXGI::Format::Unknown,
@@ -1283,11 +1274,16 @@ Sample::~Sample()
     {
         m_deviceResources->WaitForGpu();
     }
+    ImGui_ImplDX12_Shutdown( );
+    ImGui_ImplWin32_Shutdown( );
+    ::ImPlot::DestroyContext( );
+    ::ImGui::DestroyContext( );
 }
 
 // Initialize the Direct3D resources required to run.
 bool Sample::Initialize(HWND window, int width, int height, bool run_on_gpu)
 {
+
     m_run_on_gpu = run_on_gpu;
 
     m_gamePad = std::make_unique<GamePad>();
@@ -1316,6 +1312,19 @@ bool Sample::Initialize(HWND window, int width, int height, bool run_on_gpu)
 
     m_deviceResources->CreateDeviceResources();  	
     CheckDevice( );
+
+    const auto& d3dDevice = m_deviceResources->GetD3DDevice( );
+    auto& shaderResourceViewDescHeap = m_deviceResources->ShaderResourceViewDescHeap( );
+    ImGui_ImplWin32_Init( window );
+    ImGui_ImplDX12_Init( static_cast< ID3D12Device* >( d3dDevice.GetInterfacePointer( ) ),
+        DX::DeviceResources::MAX_BACK_BUFFER_COUNT,
+        DXGI_FORMAT_R8G8B8A8_UNORM,
+        static_cast< ID3D12DescriptorHeap* >( shaderResourceViewDescHeap.GetInterfacePointer( ) ),
+        shaderResourceViewDescHeap.GetCPUDescriptorHandleForHeapStart( ),
+        shaderResourceViewDescHeap.GetGPUDescriptorHandleForHeapStart( ) );
+
+    ImGui_ImplDX12_CreateDeviceObjects( );
+
     CreateDeviceDependentResources();
    
     m_deviceResources->CreateWindowSizeDependentResources();
@@ -1477,29 +1486,29 @@ void Sample::OnNewFile(const wchar_t* filename)
     m_player->SetLoop(true);
 
     // Create texture to receive video frames.
-    CD3DX12_RESOURCE_DESC desc(
-        D3D12_RESOURCE_DIMENSION_TEXTURE2D,
+    D3D12::ResourceDesc desc(
+        D3D12::ResourceDimension::Texture2D,
         0,
         m_origTextureWidth,
         m_origTextureHeight,
         1,
         1,
-        DXGI_FORMAT_B8G8R8A8_UNORM,
+        DXGI::Format::B8G8R8A8_UNORM,
         1,
         0,
-        D3D12_TEXTURE_LAYOUT_UNKNOWN,
-        D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET | D3D12_RESOURCE_FLAG_ALLOW_SIMULTANEOUS_ACCESS);
+        D3D12::TextureLayout::Unknown,
+        D3D12::ResourceFlags::AllowRenderTarget | D3D12::ResourceFlags::AllowSimultaneousAccess );
 
-    CD3DX12_HEAP_PROPERTIES defaultHeapProperties(D3D12_HEAP_TYPE_DEFAULT);
+    D3D12::HeapProperties defaultHeapProperties( D3D12::HeapType::Default );
     auto device = m_deviceResources->GetD3DDevice();
 
     m_videoTexture = device.CreateCommittedResource(
-            &defaultHeapProperties,
-            D3D12_HEAP_FLAG_SHARED,
-            &desc,
-            D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+        defaultHeapProperties,
+        D3D12::HeapFlags::Shared,
+        desc,
+        D3D12::ResourceStates::NonPixelShaderResource );
 
-    m_sharedVideoTexture = device.CreateSharedHandle( m_videoTexture, nullptr, GENERIC_ALL);
+    m_sharedVideoTexture = device.CreateSharedHandle( m_videoTexture );
 
     CreateShaderResourceView(device, m_videoTexture, m_SRVDescriptorHeap->GetCpuHandle(e_descTexture));
 
@@ -1513,11 +1522,8 @@ void Sample::OnNewFile(const wchar_t* filename)
 
 void Sample::BeginCompute( )
 {
-    // Get the latest video frame
-    RECT r = { 0, 0, static_cast< LONG >( m_origTextureWidth ), static_cast< LONG >( m_origTextureHeight ) };
-    MFVideoNormalizedRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };
-
-    m_player->TransferFrame( m_sharedVideoTexture, rect, r, m_pts );
+    
+    
     
     m_copypixels_tensor_duration = std::chrono::duration<double, std::milli>( 0 );
     m_inference_duration = std::chrono::duration<double, std::milli>( 0 );
@@ -1527,7 +1533,6 @@ void Sample::BeginCompute( )
 
     for ( auto& model : m_models )
     {
-
         // Convert image to tensor format (original texture -> model input)
         const size_t inputChannels = model->m_inputShape[ model->m_inputShape.size( ) - 3 ];
         const size_t inputHeight = model->m_inputHeight;
@@ -1535,11 +1540,11 @@ void Sample::BeginCompute( )
         const size_t inputElementSize = model->m_inputDataType == ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT ? sizeof( float ) : sizeof( uint16_t );
 
         if ( model->m_inputBuffer.size( ) != inputChannels * inputHeight * inputWidth * inputElementSize )
+        {
             model->m_inputBuffer.resize( inputChannels * inputHeight * inputWidth * inputElementSize );
-
+        }
         if ( CopySharedVideoTextureTensor( model->m_inputBuffer, model.get( ) ) )
         {
-
             // Record start
             auto start = std::chrono::high_resolution_clock::now( );
 
@@ -1593,33 +1598,21 @@ void Sample::BeginCompute( )
 
                 output_shapes.push_back( shape );
 
-
-
                 output_datatypes.push_back( tensor_info.GetElementType( ) );
 
                 bindings.BindOutput( output_names.back( ).c_str( ), memoryInfo2 );
             }
-            HRESULT hr0;
             try
             {
-                // Record start
-                //auto start = std::chrono::high_   resolution_clock::now();
-
                 // Run the session to get inference results.
                 Ort::RunOptions runOpts;
                 model->m_session.Run( runOpts, bindings );
 
-                hr0 = m_d3dDevice.GetDeviceRemovedReason( );
-                
+                CheckDevice( );
 
                 bindings.SynchronizeOutputs( );
-            }
-            catch ( const std::runtime_error& re )
-            {
-                const char* err = re.what( );
-                MessageBoxA( 0, err, "Error loading model", MB_YESNO );
-                std::cerr << "Runtime error: " << re.what( ) << std::endl;
-                exit( 1 );
+
+                CheckDevice( );
             }
             catch ( const std::exception& ex )
             {
@@ -1629,21 +1622,6 @@ void Sample::BeginCompute( )
                 exit( 1 );
             }
 
-
-            try
-            {
-
-                m_d3dDevice.GetDeviceRemovedReason( );
-            }
-            catch ( const std::exception& ex )
-            {
-                const char* err = ex.what( );
-                MessageBoxA( 0, err, "Error loading model", MB_YESNO );
-                std::cerr << "Error occurred: " << ex.what( ) << std::endl;
-                exit( 1 );
-                //extern void MyDeviceRemovedHandler(ID3D12Device * pDevice);
-                //MyDeviceRemovedHandler(m_d3dDevice.Get());
-            }
 
             std::vector<const std::byte*> outputData;
             int  i = 0;
@@ -1661,25 +1639,35 @@ void Sample::BeginCompute( )
                 // Record start
                 auto start = std::chrono::high_resolution_clock::now( );
 
-
                 if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 3 && output_datatypes[ 0 ] != ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8 )
+                {
                     GetPredictions( outputData[ 0 ], output_shapes[ 0 ], output_names, model.get( ) );
+                }
                 else  if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 4 )
+                {
                     GetImage( outputData[ 0 ], output_shapes[ 0 ], model.get( ), output_datatypes[ 0 ] );
+                }
                 else  if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 3 && output_datatypes[ 0 ] == ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8 )
+                {
                     GetMask( outputData[ 0 ], output_shapes[ 0 ], model.get( ), output_datatypes[ 0 ] );
+                }
                 else if ( outputData.size( ) == 2 && output_names[ 0 ] == "box_coords" && output_names[ 1 ] == "box_scores" )
                 {
-                    // mediapipe onnx model?
                     GetFaces( outputData, output_shapes, model.get( ) );
                 }
                 else if ( outputData.size( ) == 2 )
+                {
                     GetPredictions2( outputData, output_shapes, output_names, model.get( ) );
+                }
                 else if ( outputData.size( ) >= 3 )
+                {
                     GetPredictions( outputData, output_shapes, output_names, model.get( ) );
+                }
 
                 if ( !m_mask_ready )
+                {
                     m_mask.clear( );
+                }
 
                 auto end = std::chrono::high_resolution_clock::now( );
                 m_output_duration += ( end - start );
@@ -1690,31 +1678,38 @@ void Sample::BeginCompute( )
     if ( m_mask_ready )
     {
         m_mask_ready = false;
-        //auto viewport = m_deviceResources->GetScreenViewport();
-        //m_sprite.get()->SetViewport(viewport);
-
-        //auto device = m_deviceResources->GetD3DDevice();
         NewTexture( m_mask.data( ), m_mask_width, m_mask_height );
-        //auto b = LoadTextureFromMemory(&m_mask[0], m_mask_width, m_mask_height,
-        //    device, m_SRVDescriptorHeap->GetCpuHandle(e_outputTensor), m_texture.ReleaseAndGetAddressOf());
     }
 }
 
 // Draws the scene.
 void Sample::Render()
 {
-   
+    auto frameCount = m_timer.GetFrameCount( );
     // Don't try to render anything before the first Update.
-    if (m_timer.GetFrameCount() == 0)
+    if ( frameCount == 0)
     {
         return;
     }
+
+    ImGui_ImplDX12_NewFrame( );
+    ImGui_ImplWin32_NewFrame( );
+    ::ImGui::NewFrame( );
+
+    // Get the latest video frame
+    RECT r = { 0, 0, static_cast< LONG >( m_origTextureWidth ), static_cast< LONG >( m_origTextureHeight ) };
+    MFVideoNormalizedRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };
+
+    m_player->TransferFrame( m_sharedVideoTexture, rect, r, m_pts );
 
     // 
     // Kick off the compute work that will be used to render the next frame. We do this now so that the data will be
     // ready by the time the next frame comes around.
     // 
-    BeginCompute( );
+    if ( ( frameCount % 100 ) == 0 )
+    {
+        BeginCompute( );
+    }
     // Prepare the command list to render a new frame.
     m_deviceResources->Prepare();
     Clear();
@@ -1723,19 +1718,19 @@ void Sample::Render()
 
     // Render the result to the screen
 
-    auto viewport = m_deviceResources->GetScreenViewport();
-    auto scissorRect = m_deviceResources->GetScissorRect();
+    const auto& viewport = m_deviceResources->GetScreenViewport();
+    const auto& scissorRect = m_deviceResources->GetScissorRect();
 
     {
         PIXBeginEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ), PIX_COLOR_DEFAULT, L"Render to screen" );
 
-        commandList.OMSetRenderTargets(1, m_deviceResources->GetRenderTargetView(), FALSE, nullptr);
+        commandList.OMSetRenderTargets(1, m_deviceResources->GetRenderTargetView());
 
         commandList.SetGraphicsRootSignature(m_texRootSignatureLinear);
         commandList.SetPipelineState(m_texPipelineStateLinear);
 
         auto heap = m_SRVDescriptorHeap->Heap();
-        commandList.SetDescriptorHeaps(1, &heap);
+        commandList.SetDescriptorHeaps(heap);
 
         commandList.SetGraphicsRootDescriptorTable(0, m_SRVDescriptorHeap->GetGpuHandle(e_descTexture));
 
@@ -1866,19 +1861,6 @@ void Sample::Render()
 
 
             }
-            /*
-                VertexPositionColor upperLeft(SimpleMath::Vector3(pred.xmin, pred.ymin, 0.f), White);
-                VertexPositionColor upperRight(SimpleMath::Vector3(pred.xmax, pred.ymin, 0.f), White);
-                VertexPositionColor lowerLeft(SimpleMath::Vector3(pred.xmin, pred.ymax, 0.f), White);
-                VertexPositionColor lowerRight(SimpleMath::Vector3(pred.xmax, pred.ymax, 0.f), White);
-                m_lineBatch->DrawQuad(upperLeft, upperRight, lowerRight, lowerLeft);
-                */
-                //m_lineBatch->DrawLine(upperLeft, upperRight);
-                //m_lineBatch->DrawLine(upperRight, lowerRight);
-                //m_lineBatch->DrawLine(lowerRight, lowerLeft);
-                //m_lineBatch->DrawLine(lowerLeft, upperLeft);
-
-            // fill polylines
 
             for (auto& polyline : pred.m_polylines)
             {
@@ -1911,30 +1893,6 @@ void Sample::Render()
                 }
                 m_lineBatch->Draw(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertices.data(), size);
 
-#if 0
-                std::vector<crushedpixel::Vec2> points;
-
-                for (auto& p : polyline)
-                {
-                    points.push_back(crushedpixel::Vec2{ p.x, p.y });
-                }
-
-                auto thickness = 30.0f;
-                auto thick_line_vertices = crushedpixel::Polyline2D::create(points, thickness,
-                    crushedpixel::Polyline2D::JointStyle::MITER,
-                    crushedpixel::Polyline2D::EndCapStyle::SQUARE);
-
-                vertices.clear();
-                vertices.reserve(thick_line_vertices.size());
-
-                //White.f[0] = 1.0f;
-                for (auto p : thick_line_vertices)
-                {
-                    VertexPositionColor e(SimpleMath::Vector3(p.x, p.y, 0.f), White);
-                   vertices.push_back(e);
-                }
-                m_lineBatch->Draw(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertices.data(), vertices.size());
-#endif
             }
         }
         m_lineBatch->End();
@@ -1947,8 +1905,6 @@ void Sample::Render()
         m_lineEffect2->SetAlpha(0.9f /*pred.score / 5.0*/);
         for (auto& pred : m_preds)
         {
-            //DirectX::XMVECTORF32 White = { { { 0.980392158f, 0.980392158f, 0.980392158f, 1.0f} } }; // #fafafa
-            //DirectX::XMVECTORF32 White = { { { .0f, 0.980392158f, .0f, 1.0f} } }; // #fafafa
             int col = colors[((pred.predictedClass < 0) ? 0 : pred.predictedClass) % 20];
             DirectX::XMVECTORF32 White = { { { (col >> 16) / 255.0f, ((col >> 8) & 0xff) / 255.0f, (col & 0xff) / 255.0f, 1.0f} } }; // #fafafa
 
@@ -1978,9 +1934,6 @@ void Sample::Render()
                 m_lineBatch2->Draw(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertices.data(), vertices.size());
 
             }
-
-
-          
         }
 
 
@@ -2025,112 +1978,11 @@ void Sample::Render()
         m_spriteBatch->End();
 
         // Render the UI
-        {
-            PIXBeginEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ), PIX_COLOR_DEFAULT, L"Render UI" );
-
-            commandList.RSSetViewports(viewport);
-            commandList.RSSetScissorRects(scissorRect);
-
-            auto size = m_deviceResources->GetOutputSize();
-            auto safe = SimpleMath::Viewport::ComputeTitleSafeArea(size.right, size.bottom);
-
-            // Draw the text HUD.
-            ID3D12DescriptorHeap* fontHeaps[] = { m_fontDescriptorHeap->Heap() };
-            commandList.SetDescriptorHeaps(_countof(fontHeaps), fontHeaps);
-
-            m_spriteBatch->Begin(commandList);
-
-            float xCenter = static_cast<float>(safe.left + (safe.right - safe.left) / 2);
-
-            const wchar_t* mainLegend = m_ctrlConnected ?
-                L"[View] Exit   [X] Play/Pause"
-                : L"ESC - Exit     ENTER - Play/Pause   Context Menu - Open new Video (click above) / <Add> Onnx-Model (<Ctrl> click on this line)   (Shift) < or (Shift) > - back- forward";
-            SimpleMath::Vector2 mainLegendSize = m_legendFont->MeasureString(mainLegend);
-            auto mainLegendPos = SimpleMath::Vector2(xCenter - mainLegendSize.x / 2, static_cast<float>(safe.bottom) - m_legendFont->GetLineSpacing());
-
-            // Render a drop shadow by drawing the text twice with a slight offset.
-            DX::DrawControllerString(m_spriteBatch.get(), m_legendFont.get(), m_ctrlFont.get(),
-                mainLegend, mainLegendPos + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.0f, 0.0f, 0.0f, 0.25f));
-            DX::DrawControllerString(m_spriteBatch.get(), m_legendFont.get(), m_ctrlFont.get(),
-                mainLegend, mainLegendPos, ATG::Colors::White);
-
-            const wchar_t* modeLabel = L"Object detection model:";
-            if (m_models.size() > 1)
-                modeLabel = L"Object detection models:";
-            SimpleMath::Vector2 modeLabelSize = m_labelFontBold->MeasureString(modeLabel);
-            auto modeLabelPos = SimpleMath::Vector2(safe.right - modeLabelSize.x, static_cast<float>(safe.top));
-
-            m_labelFontBold->DrawString(m_spriteBatch.get(), modeLabel, modeLabelPos + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f));
-            m_labelFontBold->DrawString(m_spriteBatch.get(), modeLabel, modeLabelPos, ATG::Colors::White);
-
-            int line = 1;
-            for (auto& _model : m_models)
-            {
-                wchar_t model[128];
-                swprintf_s(model, 128, L"%s %s", _model->m_modelfile.c_str(), m_device_name.c_str());
-                SimpleMath::Vector2 modelSize = m_labelFont->MeasureString(model);
-                auto modelPos = SimpleMath::Vector2(safe.right - modelSize.x, static_cast<float>(safe.top) + m_labelFontBold->GetLineSpacing() * line++);
-
-                m_labelFont->DrawString(m_spriteBatch.get(), model, modelPos + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f));
-                m_labelFont->DrawString(m_spriteBatch.get(), model, modelPos, ATG::Colors::White);
-            }
-            line++;
-            if (m_pts > 0)
-            {
-                double seconds = (double)m_pts * 0.0000001;
-                int h = (int)(seconds / 3600.0);
-                double restm = fmod(seconds, 3600.0);
-                int m = (int)(restm / 60.0);
-                double sec = fmod(restm, 60.0);
-                int s = (int)sec;
-                double f = sec - (double)s;
-                int frames = (int)(25 * f);
-                wchar_t _pts[32];
-                swprintf_s(_pts, 32, L"%d:%d:%d.%02d PTS", h, m, s, frames);
-                SimpleMath::Vector2 _ptsSize = m_labelFont->MeasureString(_pts);
-                auto _ptsPos = SimpleMath::Vector2(safe.right - _ptsSize.x, static_cast<float>(safe.top) + m_labelFont->GetLineSpacing() * line++);
-
-                m_labelFont->DrawString(m_spriteBatch.get(), _pts, _ptsPos + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f));
-                m_labelFont->DrawString(m_spriteBatch.get(), _pts, _ptsPos, ATG::Colors::White);
-            }
-            else
-                line++;
-            wchar_t fps[16];
-            swprintf_s(fps, 16, L"%0.2f FPS", m_fps.GetFPS());
-            SimpleMath::Vector2 fpsSize = m_labelFont->MeasureString(fps);
-            auto fpsPos = SimpleMath::Vector2(safe.right - fpsSize.x, static_cast<float>(safe.top) + m_labelFont->GetLineSpacing() * line++);
-
-            m_labelFont->DrawString(m_spriteBatch.get(), fps, fpsPos + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f));
-            m_labelFont->DrawString(m_spriteBatch.get(), fps, fpsPos, ATG::Colors::White);
-
-            wchar_t cpt[32];
-            swprintf_s(cpt, 32, L"scale/copy: %0.2f ms", m_copypixels_tensor_duration.count());
-            SimpleMath::Vector2 cptySize = m_labelFont->MeasureString(cpt);
-            auto cptyPos = SimpleMath::Vector2(safe.right - cptySize.x, static_cast<float>(safe.top) + m_labelFont->GetLineSpacing() * line++);
-
-            m_labelFont->DrawString(m_spriteBatch.get(), cpt, cptyPos + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f));
-            m_labelFont->DrawString(m_spriteBatch.get(), cpt, cptyPos, ATG::Colors::White);
-
-            wchar_t inf[32];
-            swprintf_s(inf, 32, L"inference: %0.2f ms", m_inference_duration.count());
-            SimpleMath::Vector2 infySize = m_labelFont->MeasureString(inf);
-            auto infyPos = SimpleMath::Vector2(safe.right - infySize.x, static_cast<float>(safe.top) + m_labelFont->GetLineSpacing() * line++);
-
-            m_labelFont->DrawString(m_spriteBatch.get(), inf, infyPos + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f));
-            m_labelFont->DrawString(m_spriteBatch.get(), inf, infyPos, ATG::Colors::White);
-
-            wchar_t out[32];
-            swprintf_s(out, 32, L"output: %0.2f ms", m_output_duration.count());
-            SimpleMath::Vector2 outySize = m_labelFont->MeasureString(out);
-            auto outyPos = SimpleMath::Vector2(safe.right - outySize.x, static_cast<float>(safe.top) + m_labelFont->GetLineSpacing() * line++);
-
-            m_labelFont->DrawString(m_spriteBatch.get(), out, outyPos + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f));
-            m_labelFont->DrawString(m_spriteBatch.get(), out, outyPos, ATG::Colors::White);
-
-            m_spriteBatch->End();
-
-            PIXEndEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ) );
-        }
+        RenderUI( );
+        
+        ::ImGui::Render( );
+        ID3D12GraphicsCommandList* commandListPtr = static_cast< ID3D12GraphicsCommandList* >( commandList.GetInterfacePointer( ) );
+        ImGui_ImplDX12_RenderDrawData( ::ImGui::GetDrawData( ), commandListPtr );
 
 
         PIXEndEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ) );
@@ -2147,6 +1999,36 @@ void Sample::Render()
 
     
 }
+
+
+void Sample::RenderUI( )
+{
+    ImGui::Begin( "Yolo 9" );
+
+    const char* modelLabel = "Object detection model:";
+    if ( m_models.size( ) > 1 )
+        modelLabel = "Object detection models:";
+    ImGui::Text( modelLabel );
+
+    for ( auto& _model : m_models )
+    {
+        auto modelFile = ToAnsiString( _model->m_modelfile );
+        auto deviceName = ToAnsiString( m_device_name );
+        auto model = Format("{} {}", modelFile, deviceName );
+        ImGui::Text( model.c_str() );
+    }
+
+    auto fps = Format( "{:0.2f} FPS", m_fps.GetFPS( ) );
+    ImGui::Text( fps.c_str( ) );
+    auto scaleCopy = Format( "Scale/copy: {:0.2f} ms", m_copypixels_tensor_duration.count( ) );
+    ImGui::Text( scaleCopy.c_str( ) );
+    auto inference = Format( "Inference: {:0.2f} ms", m_inference_duration.count( ) );
+    ImGui::Text( inference.c_str( ) );
+    auto output = Format( "Output: {:0.2f} ms", m_output_duration.count( ) );
+    ImGui::Text( output.c_str( ) );
+    ImGui::End( );
+}
+
 
 
 void Sample::NewTexture(const uint8_t* image_data, uint32_t width, uint32_t height)
@@ -2516,7 +2398,7 @@ void Sample::CreateTextureResources()
                 desc,
                 D3D12::ResourceStates::NonPixelShaderResource);
 
-        m_sharedVideoTexture = device.CreateSharedHandle( m_videoTexture, nullptr, GENERIC_ALL);
+        m_sharedVideoTexture = device.CreateSharedHandle( m_videoTexture);
 
         CreateShaderResourceView(device.GetInterfacePointer<ID3D12Device>(), m_videoTexture.GetInterfacePointer<ID3D12Resource>( ), m_SRVDescriptorHeap->GetCpuHandle( e_descTexture ) );
     }
@@ -2663,6 +2545,7 @@ void Sample::CreateWindowSizeDependentResources()
 
 void Sample::OnDeviceLost()
 {
+    
     m_lineEffect.reset();
     m_lineBatch.reset();
     m_lineBatch2.reset();

@@ -575,7 +575,7 @@ BOOST_AUTO_TEST_CASE( IsNaNDoubleTest1 )
     using FloatT = double;
     Generators::RandomGenerator<FloatT, 20000> generator;
     NumericTest test( "IsNaNDoubleTest1" );
-    auto success = test.Run( generator, std::isnan<FloatT>, IsNaN<FloatT>,
+    auto success = test.Run( generator, []( double v ) { return std::isnan( v ); }, []( double v ) { return IsNaN( v ); },
         {
             std::numeric_limits<FloatT>::quiet_NaN( ),
             -std::numeric_limits<FloatT>::infinity( ),

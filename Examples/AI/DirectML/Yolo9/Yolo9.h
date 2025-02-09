@@ -233,10 +233,19 @@ struct Model_t
     std::vector<std::byte> m_inputBuffer;
 };
 
+#define USE_VIDEOTEXTURE 1
+
 // A basic sample implementation that creates a D3D12 device and
 // provides a render loop.
 class Sample final : public DX::IDeviceNotify
 {
+    ImGuiIO& io_;
+    static ImGuiIO& GetImGuiIO( )
+    {
+        ::ImGui::CreateContext( );
+        ::ImPlot::CreateContext( );
+        return ::ImGui::GetIO( );
+    }
 public:
 
     Sample() noexcept(false);
@@ -271,6 +280,8 @@ private:
     void Update(const DX::StepTimer& timer);
     void Render();
     void BeginCompute( );
+    void RenderUI( );
+
 
     void Clear();
 
@@ -360,14 +371,19 @@ private:
     LONGLONG                                        m_pts = 0;
 
     // Direct3D 12 objects for rendering texture to screen
-    D3D12::RootSignature m_texRootSignatureNN;           // Nearest-neighbor texture upscale
+    // Nearest-neighbor texture upscale
+    D3D12::RootSignature m_texRootSignatureNN;
     D3D12::PipelineState m_texPipelineStateNN;
-    D3D12::RootSignature m_texRootSignatureLinear;       // Bilinear texture upscale
+    // Bilinear texture upscale
+    D3D12::RootSignature m_texRootSignatureLinear;
     D3D12::PipelineState m_texPipelineStateLinear;
-    D3D12::RootSignature m_tensorRenderRootSignature;    // Render from DML tensor format to texture
+    // Render from DML tensor format to texture
+    D3D12::RootSignature m_tensorRenderRootSignature;
     D3D12::PipelineState m_tensorRenderPipelineState;
-    D3D12::Resource m_texture;                      // Static input texture to render, if USE_VIDEO == 0
-    D3D12::Resource m_videoTexture;                 // Input video frame to render, if USE_VIDEO == 1
+    // Static input texture to render, if USE_VIDEO == 0
+    D3D12::Resource m_texture;
+    // Input video frame to render, if USE_VIDEO == 1
+    D3D12::Resource m_videoTexture;
     uint32_t m_origTextureHeight;
     uint32_t m_origTextureWidth;
     D3D12::Resource m_vertexBuffer;

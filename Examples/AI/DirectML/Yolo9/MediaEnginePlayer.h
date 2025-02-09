@@ -24,20 +24,6 @@
 #pragma once
 
 
-template <typename Fn>
-struct _Finally : public Fn
-{
-    _Finally(Fn&& Func) : Fn(std::forward<Fn>(Func)) {}
-    _Finally(const _Finally&); // generate link error if copy constructor is called
-    ~_Finally() { this->operator()(); }
-};
-
-template <typename Fn>
-inline _Finally<Fn> Finally(Fn&& Func)
-{
-    return { std::forward<Fn>(Func) };
-}
-
 #if 0
 // Media Foundation needs this, but it seems to be compiled out (of wingdi.h) on Desktop.
 // Not sure why; MF should support Desktop fine.
@@ -80,6 +66,7 @@ protected:
 class MediaEnginePlayer : public IMFNotify
 {
     Graphics::D3D11::Device1 device_;
+    Graphics::D3D12::Device14 device12_;
     Media::MFMediaEngine mediaEngine_;
     Media::MFMediaEngineEx engineEx_;
 
@@ -99,7 +86,7 @@ public:
     MediaEnginePlayer( MediaEnginePlayer&& ) = default;
     MediaEnginePlayer& operator=( MediaEnginePlayer&& ) = default;
 
-    void Initialize( const Graphics::DXGI::Factory4& dxgiFactory, Graphics::D3D12::Device& device, Graphics::DXGI::Format format );
+    void Initialize( const Graphics::DXGI::Factory4& dxgiFactory, Graphics::D3D12::Device14& device, Graphics::DXGI::Format format );
     void Shutdown( );
 
     const Graphics::D3D11::Device1& GetDevice( ) const
@@ -116,6 +103,7 @@ public:
     void SetSource( _In_z_ const wchar_t* sourceUri );
 
     bool TransferFrame( HANDLE textureHandle, MFVideoNormalizedRect rect, RECT rcTarget, LONGLONG& pts );
+    bool TransferFrame( const D3D12::Resource& videoTexture, MFVideoNormalizedRect rect, RECT rcTarget, LONGLONG& pts );
 
     // Callbacks
     void OnMediaEngineEvent( uint32_t meEvent, DWORD_PTR param1, DWORD param2 ) override;

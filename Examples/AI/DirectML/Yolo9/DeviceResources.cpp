@@ -205,6 +205,14 @@ void DeviceResources::CreateDeviceResources()
 
     m_commandQueue.SetName(L"DeviceResources");
 
+    D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
+    srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    srvDescriptorHeapDesc.NumDescriptors = 1;
+    srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    m_srvDescriptorHeap = m_d3dDevice.CreateDescriptorHeap( srvDescriptorHeapDesc );
+
+    
+
     // Create descriptor heaps for render target views and depth stencil views.
     D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc = {};
     rtvDescriptorHeapDesc.NumDescriptors = m_backBufferCount;
@@ -347,6 +355,10 @@ void DeviceResources::CreateWindowSizeDependentResources()
 
         // This class does not support exclusive full-screen mode and prevents DXGI from responding to the ALT+ENTER shortcut
         m_dxgiFactory.MakeWindowAssociation(m_window, DXGI_MWA_NO_ALT_ENTER);
+
+        d3d11DeviceContext_.ResetPtr( );
+        d3d11device_ = D3D11On12::CreateDevice( m_d3dDevice, D3D11_CREATE_DEVICE_VIDEO_SUPPORT | D3D11_CREATE_DEVICE_BGRA_SUPPORT, m_commandQueue, d3d11DeviceContext_ );
+
     }
 
     // Handle color space settings for HDR

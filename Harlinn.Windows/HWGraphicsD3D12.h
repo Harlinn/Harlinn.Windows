@@ -2059,6 +2059,12 @@ namespace Harlinn::Windows::Graphics::D3D12
             pInterface->SetDescriptorHeaps( numDescriptorHeaps, descriptorHeapsPtr );
         }
 
+        void SetDescriptorHeaps( ID3D12DescriptorHeap* descriptorHeap ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->SetDescriptorHeaps( 1, &descriptorHeap );
+        }
+
         void SetDescriptorHeaps( _In_  UINT numDescriptorHeaps, _In_reads_( numDescriptorHeaps ) const DescriptorHeap* descriptorHeapsPtr ) const
         {
             SetDescriptorHeaps( numDescriptorHeaps, reinterpret_cast< ID3D12DescriptorHeap* const* >(descriptorHeapsPtr) );
@@ -2994,11 +3000,27 @@ namespace Harlinn::Windows::Graphics::D3D12
             pInterface->CopyDescriptorsSimple( numDescriptors, destDescriptorRangeStart, srcDescriptorRangeStart, descriptorHeapsType );
         }
 
-        D3D12_RESOURCE_ALLOCATION_INFO GetResourceAllocationInfo( _In_ UINT visibleMask, _In_ UINT numResourceDescs, _In_reads_( numResourceDescs )  const D3D12_RESOURCE_DESC* pResourceDescs ) const
+        D3D12_RESOURCE_ALLOCATION_INFO GetResourceAllocationInfo( _In_ UINT visibleMask, _In_ UINT numResourceDescs, _In_reads_( numResourceDescs )  const D3D12_RESOURCE_DESC* resourceDescs ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            return pInterface->GetResourceAllocationInfo( visibleMask, numResourceDescs, pResourceDescs );
+            return pInterface->GetResourceAllocationInfo( visibleMask, numResourceDescs, resourceDescs );
         }
+
+        D3D12::ResourceAllocationInfo GetResourceAllocationInfo( _In_ UINT visibleMask, _In_ UINT numResourceDescs, _In_reads_( numResourceDescs )  const D3D12::ResourceDesc* resourceDescs ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return std::bit_cast< D3D12::ResourceAllocationInfo >( pInterface->GetResourceAllocationInfo( visibleMask, numResourceDescs, reinterpret_cast< const D3D12_RESOURCE_DESC* >( resourceDescs ) ) );
+        }
+
+        D3D12::ResourceAllocationInfo GetResourceAllocationInfo( _In_ UINT visibleMask, const D3D12::ResourceDesc& resourceDescs ) const
+        {
+            return GetResourceAllocationInfo( visibleMask, 1, &resourceDescs );
+        }
+        D3D12::ResourceAllocationInfo GetResourceAllocationInfo( const D3D12::ResourceDesc& resourceDescs ) const
+        {
+            return GetResourceAllocationInfo( 0, 1, &resourceDescs );
+        }
+
 
         D3D12_HEAP_PROPERTIES GetCustomHeapProperties(_In_ UINT nodeMask, D3D12_HEAP_TYPE heapType ) const
         {
@@ -3091,7 +3113,7 @@ namespace Harlinn::Windows::Graphics::D3D12
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        HANDLE CreateSharedHandle( _In_ const D3D12::DeviceChild& deviceChild, _In_opt_ const SECURITY_ATTRIBUTES* pAttributes, DWORD access, _In_opt_ LPCWSTR name = nullptr ) const
+        HANDLE CreateSharedHandle( _In_ const D3D12::DeviceChild& deviceChild, _In_opt_ const SECURITY_ATTRIBUTES* pAttributes = nullptr, DWORD access = GENERIC_ALL, _In_opt_ LPCWSTR name = nullptr ) const
         {
             HANDLE result = nullptr;
             CreateSharedHandle( deviceChild.GetInterfacePointer<ID3D12DeviceChild>( ), pAttributes, access, name, &result );

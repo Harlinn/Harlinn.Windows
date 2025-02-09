@@ -224,6 +224,23 @@ namespace Harlinn::Windows::Graphics::DXGI
                 return nullptr;
             }
         }
+
+        template <typename T>
+            requires std::is_base_of_v<Unknown, T>
+        [[nodiscard]] T GetDevice( ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* device = nullptr;
+            if ( GetDevice( __uuidof( ItfType ), ( void** )&device ) )
+            {
+                return T(device);
+            }
+            else
+            {
+                return T();
+            }
+        }
+
     };
 
     /// <summary>

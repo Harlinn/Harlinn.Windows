@@ -2124,7 +2124,28 @@ namespace Harlinn::Common::Core
         };
     };
 
+    namespace Internal
+    {
+        template <typename Fn>
+        struct FinallyImpl : public Fn
+        {
+            FinallyImpl( Fn&& Func ) 
+                : Fn( std::forward<Fn>( Func ) ) 
+            { }
+            FinallyImpl( const FinallyImpl& ) = delete;
+            FinallyImpl( FinallyImpl&& ) = delete;
+            ~FinallyImpl( ) 
+            { 
+                this->operator()( ); 
+            }
+        };
+    }
 
+    template <typename Fn>
+    inline Internal::FinallyImpl<Fn> Finally( Fn&& Func )
+    {
+        return { std::forward<Fn>( Func ) };
+    }
 
     
 }

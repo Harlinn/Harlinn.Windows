@@ -36,8 +36,9 @@ namespace DX
     // Controls all the DirectX device resources.
     class DeviceResources
     {
+    public:
         static const size_t MAX_BACK_BUFFER_COUNT = 3;
-
+    private:
         UInt32 m_backBufferIndex;
 
         // Direct3D objects.
@@ -45,6 +46,10 @@ namespace DX
         D3D12::CommandQueue m_commandQueue;
         D3D12::GraphicsCommandList m_commandList;
         D3D12::CommandAllocator m_commandAllocators[ MAX_BACK_BUFFER_COUNT ];
+
+        D3D11::Device5 d3d11device_;
+        D3D11::DeviceContext d3d11DeviceContext_;
+
 
         // Swap chain objects.
         DXGI::Factory7 m_dxgiFactory;
@@ -59,6 +64,7 @@ namespace DX
         EventWaitHandle m_fenceEvent;
 
         // Direct3D rendering objects.
+        D3D12::DescriptorHeap m_srvDescriptorHeap;
         D3D12::DescriptorHeap m_rtvDescriptorHeap;
         D3D12::DescriptorHeap m_dsvDescriptorHeap;
         UINT m_rtvDescriptorSize;
@@ -111,7 +117,7 @@ namespace DX
         RECT GetOutputSize() const { return m_outputSize; }
 
         // Direct3D Accessors.
-        const D3D12::Device& GetD3DDevice() const
+        const D3D12::Device14& GetD3DDevice() const
         { 
             return m_d3dDevice; 
         }
@@ -178,6 +184,11 @@ namespace DX
         unsigned int GetDeviceOptions() const 
         { 
             return m_options; 
+        }
+
+        const D3D12::DescriptorHeap& ShaderResourceViewDescHeap( ) const
+        {
+            return m_srvDescriptorHeap;
         }
 
         D3D12::CPUDescriptorHandle GetRenderTargetView() const

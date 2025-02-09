@@ -85,6 +85,57 @@ namespace Harlinn::Windows::Graphics::D3D11On12
     };
 
 
+    inline void CreateDevice( _In_ const Unknown& d3d12device,
+        UINT flags,
+        _In_reads_opt_( numberOfFeatureLevels ) CONST D3D_FEATURE_LEVEL* featureLevels,
+        UINT numberOfFeatureLevels,
+        _In_reads_opt_( nomberOfCommandQueues ) IUnknown* CONST* commandQueues,
+        UINT numberOfCommandQueues,
+        UINT nodeMask,
+        _COM_Outptr_opt_ ID3D11Device** d3d11Device,
+        _COM_Outptr_opt_ ID3D11DeviceContext** d3d11DeviceContext,
+        _Out_opt_ D3D_FEATURE_LEVEL* chosenFeatureLevel )
+    {
+        auto hr = D3D11On12CreateDevice( d3d12device.GetInterfacePointer(), flags, featureLevels, numberOfCommandQueues, commandQueues, numberOfCommandQueues, nodeMask, d3d11Device, d3d11DeviceContext, chosenFeatureLevel );
+        HCC_COM_CHECK_HRESULT( hr );
+    }
+
+    template<typename T= D3D11::Device5>
+        requires std::is_base_of_v<D3D11::Device,T>
+    inline T CreateDevice( _In_ const Unknown& d3d12device,
+        UINT flags, 
+        _In_reads_opt_( numberOfFeatureLevels ) CONST D3D_FEATURE_LEVEL* featureLevels, 
+        UINT numberOfFeatureLevels, 
+        _In_reads_opt_( nomberOfCommandQueues ) IUnknown* CONST* commandQueues, 
+        UINT numberOfCommandQueues, 
+        UINT nodeMask, 
+        D3D11::DeviceContext& d3d11DeviceContext, 
+        _Out_opt_ D3D_FEATURE_LEVEL* chosenFeatureLevel = nullptr )
+    {
+        ID3D11Device* d3d11DeviceItf = nullptr;
+        ID3D11DeviceContext* d3d11DeviceContextItf = nullptr;
+        CreateDevice( d3d12device, flags, featureLevels, numberOfFeatureLevels, commandQueues, numberOfCommandQueues, nodeMask, &d3d11DeviceItf, &d3d11DeviceContextItf, chosenFeatureLevel );
+        D3D11::Device result( d3d11DeviceItf );
+        d3d11DeviceContext = d3d11DeviceContextItf;
+        
+        if constexpr ( std::is_same_v<typename T::InterfaceType, ID3D11Device> )
+        {
+            return result;
+        }
+        else
+        {
+            return result.As<T>( );
+        }
+    }
+
+    template<typename T = D3D11::Device5>
+        requires std::is_base_of_v<D3D11::Device, T>
+    inline T CreateDevice( _In_ const Unknown& d3d12device, UINT flags, const Unknown& commandQueue, D3D11::DeviceContext& d3d11DeviceContext, UINT nodeMask = 0, _Out_opt_ D3D_FEATURE_LEVEL* chosenFeatureLevel = nullptr )
+    {
+        IUnknown* commandQueuePtr = commandQueue.GetInterfacePointer( );
+        return CreateDevice<T>( d3d12device, flags, nullptr, 0, &commandQueuePtr, 1, nodeMask, d3d11DeviceContext, chosenFeatureLevel );
+    }
+
 }
 
 #endif

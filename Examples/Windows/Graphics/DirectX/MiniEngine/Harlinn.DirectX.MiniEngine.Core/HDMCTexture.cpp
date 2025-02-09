@@ -78,7 +78,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         if ( m_hCpuDescriptorHandle.ptr == D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN )
             m_hCpuDescriptorHandle = AllocateDescriptor( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
-        g_Device.CreateShaderResourceView( m_pResource, nullptr, m_hCpuDescriptorHandle );
+        g_Device.CreateShaderResourceView( m_pResource, nullptr, std::bit_cast<D3D12::CPUDescriptorHandle>( m_hCpuDescriptorHandle ) );
     }
 
     void Texture::CreateCube( size_t RowPitchBytes, size_t Width, size_t Height, DXGI_FORMAT Format, const void* InitialData )

@@ -46,6 +46,7 @@
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
+    namespace D3D12 = ::Harlinn::Windows::Graphics::D3D12;
 #ifdef HDMC_USES_HCC_MATH
     namespace Math
     {

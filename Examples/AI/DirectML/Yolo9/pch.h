@@ -31,6 +31,7 @@
 #include <HWGraphics.h>
 #include <HWGraphicsD3D11.h>
 #include <HWGraphicsD3D12SdkLayers.h>
+#include <HWGraphicsD3D11On12.h>
 #include <HWMediaEngine.h>
 #include <HWMediaFoundation.h>
 #include <HWImaging.h>
@@ -40,6 +41,13 @@
 #include <HCCEnvironment.h>
 #include <HCCIO.h>
 #include <HCCVectorMath.h>
+
+#include "imgui.h"
+#include "implot.h"
+#include "backends/imgui_impl_win32.h"
+#include "backends/imgui_impl_dx12.h"
+
+
 using namespace Harlinn::AI;
 using namespace Harlinn::Windows::Graphics;
 

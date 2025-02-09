@@ -25,6 +25,9 @@
 
 namespace Harlinn::Windows
 {
+    /// <summary>
+    /// The standard message loop
+    /// </summary>
     class MessageLoop
     {
     public:
@@ -38,6 +41,17 @@ namespace Harlinn::Windows
         HW_EXPORT virtual Message::Result DispatchMessage( const Message& message );
     };
 
+    /// <summary>
+    /// <para>
+    /// A message loop based on PeekMessage
+    /// that fires the OnIdle event when there
+    /// are no messages in the message queue.
+    /// </para>
+    /// <para>
+    /// This message loop is suitable for implementing
+    /// a render loop in a 3D application.
+    /// </para>
+    /// </summary>
     class PeekMessageLoop : public MessageLoop
     {
     public:
