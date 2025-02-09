@@ -145,7 +145,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{E11D38
 	ProjectSection(SolutionItems) = preProject
 		Readme\Articles.md = Readme\Articles.md
 		Readme\Build.md = Readme\Build.md
-		Readme\Changes.md = Readme\Changes.md
 		LICENSE.txt = LICENSE.txt
 		Readme\Overview.md = Readme\Overview.md
 		README.md = README.md
