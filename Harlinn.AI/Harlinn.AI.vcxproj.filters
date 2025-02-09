@@ -27,6 +27,12 @@
     <ClInclude Include="HAIDirectMLX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HAIONNXCompute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HAIONNX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

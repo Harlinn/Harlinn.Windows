@@ -27,6 +27,10 @@
     <RootNamespace>HarlinnAI</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
+  <PropertyGroup Label="Globals" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+  <PropertyGroup Label="Globals" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  <PropertyGroup Label="Globals" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <PropertyGroup Label="Globals" Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -86,13 +90,13 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\bin\x64-win;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\runtimes\win-x64\_native;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -107,7 +111,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,7 +119,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\bin\x64-win;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\runtimes\win-x64\_native;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,13 +134,13 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\bin\x64-win;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\runtimes\win-x64\_native;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,7 +155,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\build\native\include;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -159,13 +163,15 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;;$(SolutionDir)packages\Microsoft.AI.DirectML.1.15.4\bin\x64-win;$(SolutionDir)packages\Microsoft.AI.MachineLearning.1.20.1\runtimes\win-x64\_native;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="HAIDef.h" />
     <ClInclude Include="HAIDirectML.h" />
     <ClInclude Include="HAIDirectMLX.h" />
+    <ClInclude Include="HAIONNX.h" />
+    <ClInclude Include="HAIONNXCompute.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

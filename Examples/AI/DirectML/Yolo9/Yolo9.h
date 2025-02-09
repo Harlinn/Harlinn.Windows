@@ -217,6 +217,12 @@ struct Prediction
     int i, j;
     std::vector<float> mask_weights;
     depixelator::Polylines m_polylines;
+
+    D2D::RectangleGeometry Heading;
+    
+    D2D::RectangleGeometry BoundingBox;
+
+
 };
 
 struct Model_t
@@ -232,6 +238,13 @@ struct Model_t
     size_t m_inputHeight;
     std::vector<std::byte> m_inputBuffer;
 };
+
+
+class Compute
+{
+
+};
+
 
 #define USE_VIDEOTEXTURE 1
 
@@ -280,6 +293,7 @@ private:
     void Update(const DX::StepTimer& timer);
     void Render();
     void BeginCompute( );
+    void RenderPredictions( );
     void RenderUI( );
 
 
@@ -298,17 +312,6 @@ private:
 
     void InitializeDirectML( );
 
-    struct ModelOutput
-    {
-        // DEFAULT buffer containing the output contents
-        D3D12::Resource output;
-
-        // READBACK buffer for retrieving the output contents from the GPU
-        D3D12::Resource readback;
-
-        // Int64, format, etc. of the output data
-        DML::X::TensorDesc desc;
-    };
 
     // Given a raw output of the model, retrieves the predictions (a bounding box, detected class, and score) of the
     // model.
@@ -373,7 +376,7 @@ private:
     // Direct3D 12 objects for rendering texture to screen
     // Nearest-neighbor texture upscale
     D3D12::RootSignature m_texRootSignatureNN;
-    D3D12::PipelineState m_texPipelineStateNN;
+    //D3D12::PipelineState m_texPipelineStateNN;
     // Bilinear texture upscale
     D3D12::RootSignature m_texRootSignatureLinear;
     D3D12::PipelineState m_texPipelineStateLinear;
@@ -391,14 +394,10 @@ private:
     D3D12::VertexBufferView m_vertexBufferView;
     D3D12::IndexBufferView m_indexBufferView;
 
-    // Compute objects for converting texture to DML tensor format
-    D3D12::PipelineState m_computePSO;
-    D3D12::RootSignature m_computeRootSignature;
 
     // DirectML objects
     std::wstring m_device_name;
     DML::Device m_dmlDevice;
-    DML::CommandRecorder m_dmlCommandRecorder;
 
 
     D3D12::Device1 m_d3dDevice;
@@ -406,23 +405,6 @@ private:
     D3D12::CommandAllocator m_commandAllocator;
     D3D12::GraphicsCommandList m_commandList;
 
-    // Shared Resources
-    std::unique_ptr<DirectX::DescriptorHeap>        m_dmlDescriptorHeap;
-
-    D3D12::Resource m_modelInput;
-    ModelOutput m_modelSOutput;
-    ModelOutput m_modelMOutput;
-    ModelOutput m_modelLOutput;
-
-    
-
-    D3D12::Resource m_modelPersistentResource;
-    D3D12::Resource m_modelTemporaryResource;
-
-    // DirectMLX operations
-    DML::CompiledOperator m_dmlGraph;
-    DML::BindingTable m_dmlBindingTable;
-    DML::OperatorInitializer m_dmlOpInitializer;
 
 
     const OrtDmlApi* m_ortDmlApi{ nullptr };
@@ -443,7 +425,7 @@ private:
     D2D::Device7 m_d2d1_device;
     D2D::DeviceContext m_d2dContext;
 
-    std::unique_ptr<DirectX::SpriteBatch> m_sprite; // output tensor image
+    //std::unique_ptr<DirectX::SpriteBatch> m_sprite; // output tensor image
     D3D12::Resource m_output_texture;
     std::vector<uint8_t> m_mask;
     std::vector<uint8_t> m_pred_mask;

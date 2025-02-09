@@ -47,7 +47,6 @@ DeviceResources::DeviceResources( DXGI::Format backBufferFormat,
                         D3D_FEATURE_LEVEL minFeatureLevel,
                         unsigned int flags) noexcept(false) 
     : m_backBufferIndex(0),
-      m_fenceValues{},
       m_rtvDescriptorSize(0),
       m_screenViewport{},
       m_scissorRect{},
@@ -237,22 +236,22 @@ void DeviceResources::CreateDeviceResources()
     // Create a command allocator for each back buffer that will be rendered to.
     for (UINT n = 0; n < m_backBufferCount; n++)
     {
-        m_commandAllocators[ n ] = m_d3dDevice.CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT );
+        frameResources_[ n ].SetCommandAllocator( m_d3dDevice.CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT ) );
 
         wchar_t name[25] = {};
         swprintf_s(name, L"Render target %u", n);
-        m_commandAllocators[n].SetName(name);
+        frameResources_[ n ].CommandAllocator().SetName(name);
     }
 
     // Create a command list for recording graphics commands.
 
-    m_commandList = m_d3dDevice.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_commandAllocators[ 0 ] );
+    m_commandList = m_d3dDevice.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameResources_[ 0 ].CommandAllocator( ) );
     m_commandList.Close( );
     m_commandList.SetName(L"DeviceResources");
 
     // Create a fence for tracking GPU execution progress.
-    m_fence = m_d3dDevice.CreateFence( m_fenceValues[ m_backBufferIndex ] );
-    m_fenceValues[m_backBufferIndex]++;
+    m_fence = m_d3dDevice.CreateFence( frameResources_[ m_backBufferIndex ].FenceValue() );
+    frameResources_[ m_backBufferIndex ].Increment( );
 
     m_fence.SetName(L"DeviceResources");
 
@@ -275,10 +274,10 @@ void DeviceResources::CreateWindowSizeDependentResources()
     WaitForGpu();
 
     // Release resources that are tied to the swap chain and update fence values.
+    auto fenceValue = frameResources_[ m_backBufferIndex ].FenceValue( );
     for (UINT n = 0; n < m_backBufferCount; n++)
     {
-        m_renderTargets[n].ResetPtr();
-        m_fenceValues[n] = m_fenceValues[m_backBufferIndex];
+        frameResources_[ n ].ResetSizeDependentResources( fenceValue );
     }
 
     // Determine the render target size in pixels.
@@ -357,22 +356,44 @@ void DeviceResources::CreateWindowSizeDependentResources()
         m_dxgiFactory.MakeWindowAssociation(m_window, DXGI_MWA_NO_ALT_ENTER);
 
         d3d11DeviceContext_.ResetPtr( );
-        d3d11device_ = D3D11On12::CreateDevice( m_d3dDevice, D3D11_CREATE_DEVICE_VIDEO_SUPPORT | D3D11_CREATE_DEVICE_BGRA_SUPPORT, m_commandQueue, d3d11DeviceContext_ );
+        d3d11Device_ = D3D11On12::CreateDevice( m_d3dDevice, D3D11_CREATE_DEVICE_VIDEO_SUPPORT | D3D11_CREATE_DEVICE_BGRA_SUPPORT, m_commandQueue, d3d11DeviceContext_ );
+        d3d11On12Device_ = d3d11Device_.As<D3D11On12::Device2>( );
+
+        // Create D2D and DirectWrite objects
+        {
+            D2D1_FACTORY_OPTIONS d2dFactoryOptions = {};
+
+
+            auto dxgiDevice = d3d11On12Device_.As<DXGI::Device>( );
+
+            D2D1_DEVICE_CONTEXT_OPTIONS deviceOptions = D2D1_DEVICE_CONTEXT_OPTIONS_NONE;
+
+            d2dFactory_ = D2D::CreateFactory<D2D::Factory8>( D2D1_FACTORY_TYPE_SINGLE_THREADED );
+            d2dDevice_ = d2dFactory_.CreateDevice( dxgiDevice );
+            d2dDeviceContext_ = d2dDevice_.CreateDeviceContext( deviceOptions );
+            dwriteFactory_ = DirectWrite::Factory( DWRITE_FACTORY_TYPE_SHARED );
+
+        }
 
     }
 
     // Handle color space settings for HDR
     UpdateColorSpace();
 
+
+    float dpi = GetDpiForWindow( m_window );
+    D2D1_BITMAP_PROPERTIES1 bitmapProperties = D2D1::BitmapProperties1( D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW, D2D1::PixelFormat( DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED ), dpi, dpi );
+
     // Obtain the back buffers for this window which will be the final render targets
     // and create render target views for each of them.
     for (UINT n = 0; n < m_backBufferCount; n++)
     {
-        m_renderTargets[ n ] = m_swapChain.GetBuffer<D3D12::Resource>( n );
+        frameResources_[ n ].SetRenderTarget( m_swapChain.GetBuffer<D3D12::Resource>( n ) );
+        const auto& renderTarget = frameResources_[ n ].RenderTarget( );
 
         wchar_t name[25] = {};
         swprintf_s(name, L"Render target %u", n);
-        m_renderTargets[n].SetName(name);
+        frameResources_[ n ].RenderTarget( ).SetName( name );
 
         D3D12::RenderTargetViewDesc rtvDesc = {};
         rtvDesc.Format = m_backBufferFormat;
@@ -380,7 +401,21 @@ void DeviceResources::CreateWindowSizeDependentResources()
 
         D3D12::CPUDescriptorHandle rtvDescriptor( m_rtvDescriptorHeap.GetCPUDescriptorHandleForHeapStart( ), static_cast< INT >( n ), m_rtvDescriptorSize );
         
-        m_d3dDevice.CreateRenderTargetView(m_renderTargets[n], rtvDesc, rtvDescriptor);
+        m_d3dDevice.CreateRenderTargetView( frameResources_[ n ].RenderTarget( ), rtvDesc, rtvDescriptor);
+
+        auto dxgiDevice = d3d11On12Device_.As<DXGI::Device>( );
+
+
+        D3D11_RESOURCE_FLAGS d3d11Flags = { D3D11_BIND_RENDER_TARGET };
+        auto wrappedRenderTarget = d3d11On12Device_.CreateWrappedResource( renderTarget, d3d11Flags, D3D12::ResourceStates::RenderTarget, D3D12::ResourceStates::Present );
+        frameResources_[ n ].SetWrappedRenderTarget( wrappedRenderTarget );
+
+        DXGI::Surface surface = wrappedRenderTarget.As<DXGI::Surface>( );
+        
+        auto d2dRenderTarget = d2dDeviceContext_.CreateBitmapFromDxgiSurface( surface, &bitmapProperties );
+        frameResources_[ n ].SetD2DRenderTarget( d2dRenderTarget );
+
+
     }
 
     // Reset the index to the current back buffer.
@@ -476,8 +511,7 @@ void DeviceResources::HandleDeviceLost()
 
     for (UINT n = 0; n < m_backBufferCount; n++)
     {
-        m_commandAllocators[n].ResetPtr();
-        m_renderTargets[n].ResetPtr();
+        frameResources_[ n ].Reset( );
     }
 
     m_depthStencil.ResetPtr();
@@ -514,13 +548,15 @@ void DeviceResources::HandleDeviceLost()
 void DeviceResources::Prepare( D3D12::ResourceStates beforeState)
 {
     // Reset command list and allocator.
-    m_commandAllocators[m_backBufferIndex].Reset();
-    m_commandList.Reset(m_commandAllocators[m_backBufferIndex], nullptr);
+    const auto& commandAllocator = GetCommandAllocator( );
+    commandAllocator.Reset( );
+    m_commandList.Reset( commandAllocator, nullptr);
 
     if (beforeState != D3D12_RESOURCE_STATE_RENDER_TARGET)
     {
         // Transition the render target into the correct state to allow for drawing into it.
-        m_commandList.ResourceBarrier( m_renderTargets[ m_backBufferIndex ], beforeState, D3D12::ResourceStates::RenderTarget );
+        const auto& renderTarget = GetRenderTarget( );
+        m_commandList.ResourceBarrier( renderTarget, beforeState, D3D12::ResourceStates::RenderTarget );
     }
 }
 
@@ -529,8 +565,9 @@ void DeviceResources::Present( D3D12::ResourceStates beforeState)
 {
     if (beforeState != D3D12::ResourceStates::Present)
     {
+        const auto& renderTarget = GetRenderTarget( );
         // Transition the render target to the state that allows it to be presented to the display.
-        m_commandList.ResourceBarrier( m_renderTargets[ m_backBufferIndex ], beforeState, D3D12::ResourceStates::Present );
+        m_commandList.ResourceBarrier( renderTarget, beforeState, D3D12::ResourceStates::Present );
     }
 
     // Send the command list off to the GPU for processing.
@@ -589,12 +626,13 @@ void DeviceResources::WaitForGpu() noexcept
     if (m_commandQueue && m_fence && m_fenceEvent)
     {
         // Schedule a Signal command in the GPU queue.
-        UINT64 fenceValue = m_fenceValues[m_backBufferIndex];
+        UINT64 fenceValue = frameResources_[m_backBufferIndex].FenceValue( );
         m_commandQueue.Signal( m_fence, fenceValue );
         m_fence.SetEventOnCompletion( fenceValue, m_fenceEvent );
         m_fenceEvent.Wait( );
+
         // Increment the fence value for the current frame.
-        m_fenceValues[ m_backBufferIndex ]++;
+        frameResources_[ m_backBufferIndex ].Increment( );
         m_fenceEvent.ResetEvent( );
     }
 }
@@ -603,22 +641,22 @@ void DeviceResources::WaitForGpu() noexcept
 void DeviceResources::MoveToNextFrame()
 {
     // Schedule a Signal command in the queue.
-    const UINT64 currentFenceValue = m_fenceValues[m_backBufferIndex];
+    const UINT64 currentFenceValue = frameResources_[ m_backBufferIndex ].FenceValue( );
     m_commandQueue.Signal(m_fence, currentFenceValue);
 
     // Update the back buffer index.
     m_backBufferIndex = m_swapChain.GetCurrentBackBufferIndex();
 
     // If the next frame is not ready to be rendered yet, wait until it is ready.
-    if (m_fence.GetCompletedValue() < m_fenceValues[m_backBufferIndex])
+    if (m_fence.GetCompletedValue() < frameResources_[ m_backBufferIndex ].FenceValue( ) )
     {
-        m_fence.SetEventOnCompletion(m_fenceValues[m_backBufferIndex], m_fenceEvent);
+        m_fence.SetEventOnCompletion( frameResources_[ m_backBufferIndex ].FenceValue( ), m_fenceEvent);
         m_fenceEvent.Wait( );
         m_fenceEvent.ResetEvent( );
     }
 
     // Set the fence value for the next frame.
-    m_fenceValues[m_backBufferIndex] = currentFenceValue + 1;
+    frameResources_[ m_backBufferIndex ].SetFenceValue( currentFenceValue + 1 );
 }
 
 // This method acquires the first available hardware adapter that supports Direct3D 12.
@@ -653,41 +691,43 @@ void DeviceResources::UpdateColorSpace()
 
     if (m_swapChain)
     {
-        auto output = m_swapChain.GetContainingOutput<DXGI::Output6>( );
-        auto desc = output.GetDesc1( );
-        if ( desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 )
+        if ( m_options & c_EnableHDR )
         {
-            // Display output is HDR10.
-            isDisplayHDR10 = true;
+            UINT colorSpaceSupport = 0;
+            if ( m_swapChain.CheckColorSpaceSupport( colorSpace, &colorSpaceSupport )
+                && ( colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT ) )
+            {
+                auto output = m_swapChain.GetContainingOutput<DXGI::Output6>( );
+                auto desc = output.GetDesc1( );
+                if ( desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 )
+                {
+                    // Display output is HDR10.
+                    isDisplayHDR10 = true;
+                }
+
+                if ( isDisplayHDR10 )
+                {
+                    switch ( m_backBufferFormat )
+                    {
+                        case DXGI_FORMAT_R10G10B10A2_UNORM:
+                            // The application creates the HDR10 signal.
+                            colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+                            break;
+
+                        case DXGI_FORMAT_R16G16B16A16_FLOAT:
+                            // The system creates the HDR10 signal; application uses linear values.
+                            colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                m_colorSpace = colorSpace;
+                m_swapChain.SetColorSpace1( colorSpace );
+            }
         }
-    
-    if ((m_options & c_EnableHDR) && isDisplayHDR10)
-    {
-        switch (m_backBufferFormat)
-        {
-        case DXGI_FORMAT_R10G10B10A2_UNORM:
-            // The application creates the HDR10 signal.
-            colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-            break;
-
-        case DXGI_FORMAT_R16G16B16A16_FLOAT:
-            // The system creates the HDR10 signal; application uses linear values.
-            colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    m_colorSpace = colorSpace;
-
-    UINT colorSpaceSupport = 0;
-    if ( m_swapChain.CheckColorSpaceSupport( colorSpace, &colorSpaceSupport )
-        && ( colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT ) )
-    {
-        m_swapChain.SetColorSpace1( colorSpace );
-    }
     }
 
 }

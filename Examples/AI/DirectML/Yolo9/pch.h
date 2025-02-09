@@ -29,6 +29,7 @@
 
 #include <HAIDirectMLX.h>
 #include <HWGraphics.h>
+#include <HWDWrite.h>
 #include <HWGraphicsD3D11.h>
 #include <HWGraphicsD3D12SdkLayers.h>
 #include <HWGraphicsD3D11On12.h>

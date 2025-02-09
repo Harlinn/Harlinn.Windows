@@ -72,6 +72,10 @@ namespace Harlinn::AI::DML
         Double = Float64,
         UInt64 = DML_TENSOR_DATA_TYPE_UINT64,
         Int64 = DML_TENSOR_DATA_TYPE_INT64,
+#if DML_TARGET_VERSION >= 0x6300
+        UInt4 = DML_TENSOR_DATA_TYPE_UINT4,
+        Int4 = DML_TENSOR_DATA_TYPE_INT4,
+#endif
     };
 
     namespace Internal
@@ -547,6 +551,19 @@ namespace Harlinn::AI::DML
         QuantizedLinearAveragePooling = DML_OPERATOR_QUANTIZED_LINEAR_AVERAGE_POOLING,
         MatrixMultiplyIntegerToFloat = DML_OPERATOR_MATRIX_MULTIPLY_INTEGER_TO_FLOAT,
 #endif // DML_TARGET_VERSION >= 0x6200
+#if DML_TARGET_VERSION >= 0x6300
+        MeanVarianceNormalization2 = DML_OPERATOR_MEAN_VARIANCE_NORMALIZATION2,
+        MultiheadAttention1 = DML_OPERATOR_MULTIHEAD_ATTENTION1,
+        Quantize = DML_OPERATOR_QUANTIZE,
+        Dequantize = DML_OPERATOR_DEQUANTIZE,
+#endif // DML_TARGET_VERSION >= 0x6300
+
+#if DML_TARGET_VERSION >= 0x6400
+        Resample3 = DML_OPERATOR_RESAMPLE3,
+        Fold = DML_OPERATOR_FOLD,
+        Unfold = DML_OPERATOR_UNFOLD,
+#endif // DML_TARGET_VERSION >= 0x6400
+
     };
 
     // ===================================================================================================================
@@ -620,6 +637,9 @@ namespace Harlinn::AI::DML
 
 #if DML_TARGET_VERSION >= 0x3000
         Symmetric,
+#endif
+#if DML_TARGET_VERSION >= 0x6400
+        Wrap = DML_PADDING_MODE_WRAP,
 #endif
     };
 
@@ -792,6 +812,17 @@ namespace Harlinn::AI::DML
     };
 
 #endif // DML_TARGET_VERSION >= 0x6100
+
+#if DML_TARGET_VERSION >= 0x6300
+
+    enum class QuantizationType
+    {
+        None = DML_QUANTIZATION_TYPE_NONE,
+        Scale = DML_QUANTIZATION_TYPE_SCALE,
+        ScaleZeroPoint = DML_QUANTIZATION_TYPE_SCALE_ZERO_POINT,
+    };
+
+#endif // DML_TARGET_VERSION >= 0x6300
 
     // ===================================================================================================================
     //   Operator descriptions
@@ -4601,6 +4632,199 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( MatrixMultiplyIntegerToFloatOperatorDesc ) == sizeof( DML_MATRIX_MULTIPLY_INTEGER_TO_FLOAT_OPERATOR_DESC ) );
 
 #endif // DML_TARGET_VERSION >= 0x6200
+
+#if DML_TARGET_VERSION >= 0x6300
+
+    struct MeanVarianceNormalization2OperatorDesc : public BaseOperatorDesc
+    {
+        using Base = BaseOperatorDesc;
+        static constexpr DML::OperatorType OperatorType = DML::OperatorType::MeanVarianceNormalization2;
+
+        const TensorDesc* InputTensor = nullptr;
+        _Maybenull_ const TensorDesc* ScaleTensor = nullptr;
+        _Maybenull_ const TensorDesc* BiasTensor = nullptr;
+        const TensorDesc* OutputTensor = nullptr;
+        UInt32 AxisCount = 0;
+        _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
+        BOOL UseMean = FALSE;
+        BOOL UseVariance = FALSE;
+        FLOAT Epsilon = 0.f;
+        _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
+
+        MeanVarianceNormalization2OperatorDesc( ) noexcept = default;
+
+        MeanVarianceNormalization2OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* scaleTensor, const TensorDesc* biasTensor, UInt32 axisCount, const UInt32* axes, BOOL useMean, BOOL useVariance, FLOAT epsilon, const OperatorDesc* fusedActivation) noexcept
+            : InputTensor( inputTensor ), OutputTensor( outputTensor ), ScaleTensor( scaleTensor ), BiasTensor( biasTensor ), AxisCount( axisCount ), Axes( axes ), UseMean( useMean ), UseVariance( useVariance ), Epsilon( epsilon ), FusedActivation( fusedActivation )
+        { }
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_MEAN_VARIANCE_NORMALIZATION2_OPERATOR_DESC );
+    };
+
+    static_assert( sizeof( MeanVarianceNormalization2OperatorDesc ) == sizeof( DML_MEAN_VARIANCE_NORMALIZATION2_OPERATOR_DESC ) );
+
+    struct MultiheadAttention1OperatorDesc : public BaseOperatorDesc
+    {
+        using Base = BaseOperatorDesc;
+        static constexpr DML::OperatorType OperatorType = DML::OperatorType::MultiheadAttention1;
+
+        _Maybenull_ const TensorDesc* QueryTensor = nullptr;
+        _Maybenull_ const TensorDesc* KeyTensor = nullptr;
+        _Maybenull_ const TensorDesc* ValueTensor = nullptr;
+        _Maybenull_ const TensorDesc* StackedQueryKeyTensor = nullptr;
+        _Maybenull_ const TensorDesc* StackedKeyValueTensor = nullptr;
+        _Maybenull_ const TensorDesc* StackedQueryKeyValueTensor = nullptr;
+        _Maybenull_ const TensorDesc* BiasTensor = nullptr;
+        _Maybenull_ const TensorDesc* MaskTensor = nullptr;
+        _Maybenull_ const TensorDesc* RelativePositionBiasTensor = nullptr;
+        _Maybenull_ const TensorDesc* PastKeyTensor = nullptr;
+        _Maybenull_ const TensorDesc* PastValueTensor = nullptr;
+        _Maybenull_ const TensorDesc* PastSequenceLengthsTensor = nullptr;
+        const TensorDesc* OutputTensor = nullptr;
+        _Maybenull_ const TensorDesc* OutputPresentKeyTensor = nullptr;
+        _Maybenull_ const TensorDesc* OutputPresentValueTensor = nullptr;
+        FLOAT Scale = 0.f;
+        FLOAT MaskFilterValue = 0.f;
+        UInt32 QueryHeadCount = 0;
+        UInt32 KeyValueHeadCount = 0;
+        
+        MultiheadAttentionMaskType MaskType = MultiheadAttentionMaskType::None;
+
+        MultiheadAttention1OperatorDesc( ) noexcept = default;
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_MULTIHEAD_ATTENTION1_OPERATOR_DESC );
+    };
+
+    static_assert( sizeof( MultiheadAttention1OperatorDesc ) == sizeof( DML_MULTIHEAD_ATTENTION1_OPERATOR_DESC ) );
+
+    struct QuantizeOperatorDesc : public BaseOperatorDesc
+    {
+        using Base = BaseOperatorDesc;
+        static constexpr DML::OperatorType OperatorType = DML::OperatorType::Quantize;
+
+        const TensorDesc* InputTensor = nullptr;
+        DML::QuantizationType QuantizationType = DML::QuantizationType::None;
+        UInt32 QuantizationTensorCount = 0;
+        _Field_size_( QuantizationTensorCount ) const TensorDesc* QuantizationTensors = nullptr;
+        const TensorDesc* OutputTensor = nullptr;
+
+        QuantizeOperatorDesc( ) noexcept = default;
+
+        QuantizeOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, DML::QuantizationType quantizationType, UInt32 quantizationTensorCount, const TensorDesc* quantizationTensors ) noexcept
+            : InputTensor( inputTensor ), OutputTensor( outputTensor ), QuantizationType( quantizationType ), QuantizationTensorCount( quantizationTensorCount ), QuantizationTensors( quantizationTensors )
+        { }
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_QUANTIZE_OPERATOR_DESC );
+    };
+
+    static_assert( sizeof( QuantizeOperatorDesc ) == sizeof( DML_QUANTIZE_OPERATOR_DESC ) );
+
+    struct DequantizeOperatorDesc : public BaseOperatorDesc
+    {
+        using Base = BaseOperatorDesc;
+        static constexpr DML::OperatorType OperatorType = DML::OperatorType::Dequantize;
+
+        const TensorDesc* InputTensor = nullptr;
+        DML::QuantizationType QuantizationType = DML::QuantizationType::None;
+        UInt32 QuantizationTensorCount = 0;
+        _Field_size_( QuantizationTensorCount ) const TensorDesc* QuantizationTensors = nullptr;
+        const TensorDesc* OutputTensor = nullptr;
+
+        DequantizeOperatorDesc( ) noexcept = default;
+
+        DequantizeOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, DML::QuantizationType quantizationType, UInt32 quantizationTensorCount, const TensorDesc* quantizationTensors ) noexcept
+            : InputTensor( inputTensor ), OutputTensor( outputTensor ), QuantizationType( quantizationType ), QuantizationTensorCount( quantizationTensorCount ), QuantizationTensors( quantizationTensors )
+        {
+        }
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_DEQUANTIZE_OPERATOR_DESC );
+    };
+
+    static_assert( sizeof( DequantizeOperatorDesc ) == sizeof( DML_DEQUANTIZE_OPERATOR_DESC ) );
+
+#endif // DML_TARGET_VERSION >= 0x6300
+
+#if DML_TARGET_VERSION >= 0x6400
+
+    struct Resample3OperatorDesc : public UnaryOperatorDesc
+    {
+        using Base = UnaryOperatorDesc;
+        static constexpr DML::OperatorType OperatorType = DML::OperatorType::Resample3;
+
+        DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
+        AxisDirection RoundingDirection = AxisDirection::Increasing;
+        UInt32 DimensionCount = 0;
+        _Field_size_( DimensionCount ) const FLOAT* Scales = nullptr;
+        _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
+        _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
+        BOOL Antialiased = FALSE;
+
+        Resample3OperatorDesc( ) noexcept = default;
+        Resample3OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, DML::InterpolationMode interpolationMode, AxisDirection roundingDirection, UInt32 dimensionCount, const float* scales, const float* inputPixelOffsets, const float* outputPixelOffsets ) noexcept
+            : Base( inputTensor, outputTensor ), InterpolationMode( interpolationMode ), RoundingDirection( roundingDirection ), DimensionCount( dimensionCount ), Scales( scales ), InputPixelOffsets( inputPixelOffsets ), OutputPixelOffsets( outputPixelOffsets )
+        { }
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE3_OPERATOR_DESC );
+    };
+
+    static_assert( sizeof( Resample3OperatorDesc ) == sizeof( DML_RESAMPLE3_OPERATOR_DESC ) );
+
+    struct FoldOperatorDesc : public UnaryOperatorDesc
+    {
+        using Base = UnaryOperatorDesc;
+        static constexpr DML::OperatorType OperatorType = DML::OperatorType::Fold;
+
+        UInt32 DimensionCount = 0;
+        // Size of the extracted patch
+        _Field_size_( DimensionCount ) const UInt32* WindowSizes = nullptr; 
+        // Step size of the extracted patches
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr; 
+        // Dialations of the extracted patch
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr; 
+        // Start padding of the "source tensor"
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr; 
+        // End padding of the "source tensor"
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr; 
+
+        FoldOperatorDesc( ) noexcept = default;
+        FoldOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount, const UInt32* windowSizes, const UInt32* strides, const UInt32* dilations, const UInt32* startPadding, const UInt32* endPadding ) noexcept
+            : Base( inputTensor, outputTensor ), DimensionCount( dimensionCount ), WindowSizes( windowSizes ), Strides( strides ), Dilations( dilations ), StartPadding( startPadding ), EndPadding( endPadding )
+        { }
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_FOLD_OPERATOR_DESC );
+    };
+
+    static_assert( sizeof( FoldOperatorDesc ) == sizeof( DML_FOLD_OPERATOR_DESC ) );
+
+    struct UnfoldOperatorDesc : public UnaryOperatorDesc
+    {
+        using Base = UnaryOperatorDesc;
+        static constexpr DML::OperatorType OperatorType = DML::OperatorType::Unfold;
+
+        UInt32 DimensionCount = 0;
+        // Size of the extracted patch
+        _Field_size_( DimensionCount ) const UInt32* WindowSizes = nullptr; 
+        // Step size of the extracted patches
+        _Field_size_( DimensionCount ) const UInt32* Strides = nullptr; 
+        // Dialations of the extracted patch
+        _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr; 
+        // Start padding of the "source tensor"
+        _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr; 
+        // End padding of the "source tensor"
+        _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr; 
+
+        UnfoldOperatorDesc( ) noexcept = default;
+        UnfoldOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount, const UInt32* windowSizes, const UInt32* strides, const UInt32* dilations, const UInt32* startPadding, const UInt32* endPadding ) noexcept
+            : Base( inputTensor, outputTensor), DimensionCount( dimensionCount ), WindowSizes( windowSizes ), Strides( strides ), Dilations( dilations ), StartPadding( startPadding ), EndPadding( endPadding ) 
+        { }
+
+        DML_IMPLEMENT_CONVERSIONS_TO( DML_UNFOLD_OPERATOR_DESC );
+    };
+
+    static_assert( sizeof( UnfoldOperatorDesc ) == sizeof( DML_UNFOLD_OPERATOR_DESC ) );
+
+#endif // DML_TARGET_VERSION >= 0x6400
+
+
 
     // ===================================================================================================================
     //   DML feature support queries

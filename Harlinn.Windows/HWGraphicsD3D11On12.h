@@ -38,10 +38,32 @@ namespace Harlinn::Windows::Graphics::D3D11On12
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        template<typename T = D3D11::Resource>
+            requires std::is_base_of_v<D3D11::Resource,T>
+        T CreateWrappedResource( const Unknown& d3d12Resource, const D3D11_RESOURCE_FLAGS& flags11, D3D12::ResourceStates inState, D3D12::ResourceStates outState ) const
+        {
+            using ItfType = typename T::InterfaceType;
+            ItfType* itf = nullptr;
+            CreateWrappedResource( d3d12Resource.GetInterfacePointer( ), &flags11, static_cast< D3D12_RESOURCE_STATES >( inState ), static_cast< D3D12_RESOURCE_STATES >( outState ), __uuidof( ItfType ), reinterpret_cast< void** >( &itf ) );
+            return T( itf );
+        }
+
+
         void ReleaseWrappedResources(ID3D11Resource* const* resources, UINT numResources) const
         {
             InterfaceType* pInterface = GetInterface();
             pInterface->ReleaseWrappedResources(resources, numResources);
+        }
+
+        void ReleaseWrappedResources( const D3D11::Resource const* resources, UINT numResources ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->ReleaseWrappedResources( reinterpret_cast< ID3D11Resource* const* >( resources ), numResources );
+        }
+
+        void ReleaseWrappedResources( const D3D11::Resource& resource ) const
+        {
+            ReleaseWrappedResources( &resource, 1 );
         }
 
         void AcquireWrappedResources( ID3D11Resource* const* ppResources, UINT numResources) const
@@ -49,6 +71,18 @@ namespace Harlinn::Windows::Graphics::D3D11On12
             InterfaceType* pInterface = GetInterface();
             pInterface->AcquireWrappedResources(ppResources, numResources);
         }
+
+        void AcquireWrappedResources( const D3D11::Resource* resources, UINT numResources ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->AcquireWrappedResources( reinterpret_cast< ID3D11Resource* const* >( resources ), numResources );
+        }
+        void AcquireWrappedResources( const D3D11::Resource& resource ) const
+        {
+            AcquireWrappedResources( &resource, 1 );
+        }
+
+
     };
 
     class Device1 : public Device

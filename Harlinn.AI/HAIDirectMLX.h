@@ -4087,7 +4087,7 @@ namespace Harlinn::AI::DML::X
     inline Expression Dequantize(
         Expression input,
         std::span<const Expression> quantizationParameters,
-        DML_QUANTIZATION_TYPE quantizationType )
+        DML::QuantizationType quantizationType )
     {
 #ifdef _DEBUG
         for ( const auto& quantizationParameter : quantizationParameters )
@@ -4095,7 +4095,7 @@ namespace Harlinn::AI::DML::X
             assert( Internal::HasSameOwner( { quantizationParameter, input } ) );
         }
 #endif
-        assert( quantizationType != DML_QUANTIZATION_TYPE_NONE );
+        assert( quantizationType != DML::QuantizationType::None );
         assert( !quantizationParameters.empty( ) );
 
         Internal::GraphBuilder* builder = input.Impl( )->GetGraphBuilder( );
@@ -4113,8 +4113,8 @@ namespace Harlinn::AI::DML::X
         quantizationParametersDescs.reserve( quantizationParameters.size( ) );
 
         // The output data type is always the same as the data type of the scale
-        assert( quantizationType == DML_QUANTIZATION_TYPE_SCALE || quantizationType == DML_QUANTIZATION_TYPE_SCALE_ZERO_POINT );
-        DML::TensorDataType outputDataType = quantizationParameters[ 0 ].GetOutputDesc( ).dataType;
+        assert( quantizationType == DML::QuantizationType::Scale || quantizationType == DML::QuantizationType::ScaleZeroPoint );
+        DML::TensorDataType outputDataType = quantizationParameters[ 0 ].GetOutputDesc( ).DataType;
 
         for ( const auto& quantizationParameter : quantizationParameters )
         {
@@ -4124,16 +4124,16 @@ namespace Harlinn::AI::DML::X
             inputs.push_back( quantizationParameter.Impl( ) );
         }
 
-        TensorDesc outputTensor( outputDataType, inputTensor.sizes, builder->GetTensorPolicy( ) );
+        TensorDesc outputTensor( outputDataType, inputTensor.Sizes, builder->GetTensorPolicy( ) );
 
-        DML_DEQUANTIZE_OPERATOR_DESC desc = {};
+        DequantizeOperatorDesc desc = {};
         desc.InputTensor = inputTensor.As<DML::TensorDesc>( );
         desc.QuantizationTensors = quantizationParametersDescs.data( );
         desc.QuantizationTensorCount = static_cast< UInt32 >( quantizationParametersDescs.size( ) );
         desc.OutputTensor = outputTensor.As<DML::TensorDesc>( );
         desc.QuantizationType = quantizationType;
 
-        Internal::NodeID node = builder->CreateOperatorNode( DML_OPERATOR_DEQUANTIZE, &desc, inputs );
+        Internal::NodeID node = builder->CreateOperatorNode( desc, inputs );
         Internal::NodeOutput* output = builder->CreateNodeOutput( node, 0, std::move( outputTensor ) );
 
         return output;

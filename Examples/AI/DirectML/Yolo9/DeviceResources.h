@@ -33,6 +33,87 @@ namespace DX
         ~IDeviceNotify() = default;
     };
 
+    class FrameResources
+    {
+        D3D12::CommandAllocator commandAllocator_;
+        D3D12::Resource renderTarget_;
+        D3D11::Resource wrappedRenderTarget_;
+        D2D::Bitmap1 d2dRenderTarget_;
+        UInt64 fenceValue_ = 0;
+    public:
+        FrameResources( ) = default;
+        FrameResources( const FrameResources& ) = delete;
+        FrameResources( FrameResources&& ) = delete;
+        FrameResources& operator = ( const FrameResources& ) = delete;
+        FrameResources& operator = ( FrameResources&& ) = delete;
+
+        const D3D12::CommandAllocator& CommandAllocator( ) const noexcept
+        {
+            return commandAllocator_;
+        }
+        void SetCommandAllocator( const D3D12::CommandAllocator& commandAllocator )
+        {
+            commandAllocator_ = commandAllocator;
+        }
+        const D3D12::Resource& RenderTarget( ) const noexcept
+        {
+            return renderTarget_;
+        }
+        void SetRenderTarget( const D3D12::Resource& renderTarget )
+        {
+            renderTarget_ = renderTarget;
+        }
+
+        const D3D11::Resource& WrappedRenderTarget( ) const
+        {
+            return wrappedRenderTarget_;
+        }
+
+        void SetWrappedRenderTarget( const D3D11::Resource& wrappedRenderTarget )
+        {
+            wrappedRenderTarget_ = wrappedRenderTarget;
+        }
+
+        const D2D::Bitmap1& D2DRenderTarget( ) const noexcept
+        {
+            return d2dRenderTarget_;
+        }
+
+        void SetD2DRenderTarget( const D2D::Bitmap1& d2dRenderTarget )
+        {
+            d2dRenderTarget_ = d2dRenderTarget;
+        }
+
+        UInt64 FenceValue( ) const noexcept
+        {
+            return fenceValue_;
+        }
+        void Increment( )
+        {
+            fenceValue_++;
+        }
+        void SetFenceValue( UInt64 fenceValue )
+        {
+            fenceValue_ = fenceValue;
+        }
+        void Reset( )
+        {
+            d2dRenderTarget_.ResetPtr( );
+            wrappedRenderTarget_.ResetPtr( );
+            renderTarget_.ResetPtr( );
+            commandAllocator_.ResetPtr( );
+        }
+
+        void ResetSizeDependentResources( UInt64 fenceValue )
+        {
+            d2dRenderTarget_.ResetPtr( );
+            wrappedRenderTarget_.ResetPtr( );
+            renderTarget_.ResetPtr( );
+            fenceValue_ = fenceValue;
+        }
+
+    };
+
     // Controls all the DirectX device resources.
     class DeviceResources
     {
@@ -45,23 +126,33 @@ namespace DX
         D3D12::Device14 m_d3dDevice;
         D3D12::CommandQueue m_commandQueue;
         D3D12::GraphicsCommandList m_commandList;
-        D3D12::CommandAllocator m_commandAllocators[ MAX_BACK_BUFFER_COUNT ];
 
-        D3D11::Device5 d3d11device_;
+        std::array<FrameResources, MAX_BACK_BUFFER_COUNT> frameResources_;
+        //D3D12::CommandAllocator m_commandAllocators[ MAX_BACK_BUFFER_COUNT ];
+
+        D3D11::Device5 d3d11Device_;
         D3D11::DeviceContext d3d11DeviceContext_;
+        D3D11On12::Device2 d3d11On12Device_;
 
 
         // Swap chain objects.
         DXGI::Factory7 m_dxgiFactory;
         DXGI::SwapChain3 m_swapChain;
-        D3D12::Resource m_renderTargets[ MAX_BACK_BUFFER_COUNT ];
+        //D3D12::Resource m_renderTargets[ MAX_BACK_BUFFER_COUNT ];
         D3D12::Resource m_depthStencil;
 
         // Presentation fence objects.
         D3D12::Fence m_fence;
-        UInt64 m_fenceValues[ MAX_BACK_BUFFER_COUNT ];
+        //UInt64 m_fenceValues[ MAX_BACK_BUFFER_COUNT ];
 
         EventWaitHandle m_fenceEvent;
+
+        D2D::Factory8 d2dFactory_;
+        D2D::Device7 d2dDevice_;
+        D2D::DeviceContext d2dDeviceContext_;
+        DirectWrite::Factory dwriteFactory_;
+
+
 
         // Direct3D rendering objects.
         D3D12::DescriptorHeap m_srvDescriptorHeap;
@@ -129,13 +220,40 @@ namespace DX
         { 
             return m_dxgiFactory; 
         }
+
+        const D2D::Factory8& D2DFactory( ) const
+        {
+            return d2dFactory_;
+        }
+        const D2D::Device7& D2DDevice( ) const
+        {
+            return d2dDevice_;
+        }
+        const D2D::DeviceContext& D2DDeviceContext( ) const
+        {
+            return d2dDeviceContext_;
+        }
+        const DirectWrite::Factory& DirectWriteFactory( ) const
+        {
+            return dwriteFactory_;
+        }
+
+        void AcquireRenderTarget( ) const
+        {
+            d3d11On12Device_.AcquireWrappedResources( frameResources_[ m_backBufferIndex ].WrappedRenderTarget( ) );
+        }
+        void ReleaseRenderTarget( ) const
+        {
+            d3d11On12Device_.ReleaseWrappedResources( frameResources_[ m_backBufferIndex ].WrappedRenderTarget( ) );
+        }
+
         D3D_FEATURE_LEVEL GetDeviceFeatureLevel() const
         { 
             return m_d3dFeatureLevel;
         }
         const D3D12::Resource& GetRenderTarget() const 
         { 
-            return m_renderTargets[m_backBufferIndex]; 
+            return frameResources_[m_backBufferIndex].RenderTarget( );
         }
         const D3D12::Resource& GetDepthStencil() const 
         { 
@@ -147,12 +265,26 @@ namespace DX
         }
         const D3D12::CommandAllocator& GetCommandAllocator() const
         { 
-            return m_commandAllocators[m_backBufferIndex]; 
+            return frameResources_[ m_backBufferIndex ].CommandAllocator( );
         }
         const D3D12::GraphicsCommandList& GetCommandList() const 
         { 
             return m_commandList; 
         }
+
+        const D3D11::Device5& D3D11Device( ) const
+        {
+            return d3d11Device_;
+        }
+        const D3D11::DeviceContext& D3D11DeviceContext( ) const
+        {
+            return d3d11DeviceContext_;
+        }
+        const D3D11On12::Device2& D3D11On12Device( ) const
+        {
+            return d3d11On12Device_;
+        }
+
         DXGI::Format GetBackBufferFormat() const
         { 
             return m_backBufferFormat; 

@@ -1692,21 +1692,27 @@ void Sample::Render()
         return;
     }
 
-    ImGui_ImplDX12_NewFrame( );
-    ImGui_ImplWin32_NewFrame( );
-    ::ImGui::NewFrame( );
 
     // Get the latest video frame
     RECT r = { 0, 0, static_cast< LONG >( m_origTextureWidth ), static_cast< LONG >( m_origTextureHeight ) };
     MFVideoNormalizedRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };
 
-    m_player->TransferFrame( m_sharedVideoTexture, rect, r, m_pts );
+    if ( !m_player->TransferFrame( m_sharedVideoTexture, rect, r, m_pts ) )
+    {
+        return;
+    }
+
+    ImGui_ImplDX12_NewFrame( );
+    ImGui_ImplWin32_NewFrame( );
+    ::ImGui::NewFrame( );
+
+    
 
     // 
     // Kick off the compute work that will be used to render the next frame. We do this now so that the data will be
     // ready by the time the next frame comes around.
     // 
-    if ( ( frameCount % 100 ) == 0 )
+    if ( ( frameCount % 3 ) == 0 )
     {
         BeginCompute( );
     }
@@ -2000,6 +2006,26 @@ void Sample::Render()
     
 }
 
+void Sample::RenderPredictions( )
+{
+    const auto& d2dFactory = m_deviceResources->D2DFactory( );
+    const auto& d2dDevice = m_deviceResources->D2DDevice( );
+    const auto& d2dDeviceContext = m_deviceResources->D2DDeviceContext( );
+    const auto& directWriteFactory = m_deviceResources->DirectWriteFactory( );
+
+    m_deviceResources->AcquireRenderTarget( );
+    auto releaseRenderTarget = Finally( [ & ]( ) 
+        { 
+            m_deviceResources->ReleaseRenderTarget( ); 
+            m_deviceResources->D3D11DeviceContext( ).Flush( );
+        } );
+    
+    for ( const auto& pred : m_preds )
+    {
+
+    }
+
+}
 
 void Sample::RenderUI( )
 {
@@ -2231,7 +2257,7 @@ void Sample::CreateTextureResources()
             | D3D12::RootSignatureFlags::DenyGeometryShaderRootAccess
             | D3D12::RootSignatureFlags::DenyHullShaderRootAccess);
 
-        m_texRootSignatureNN = device.CreateRootSignature( 0, rootSignatureDesc );
+        //m_texRootSignatureNN = device.CreateRootSignature( 0, rootSignatureDesc );
 
         m_texRootSignatureLinear = device.CreateRootSignature( 0, rootSignatureDesc );
     }
@@ -2279,7 +2305,7 @@ void Sample::CreateTextureResources()
         psoDesc.BlendState  = blendDesc;
 
 
-        m_texPipelineStateNN = device.CreateGraphicsPipelineState(psoDesc);
+        //m_texPipelineStateNN = device.CreateGraphicsPipelineState(psoDesc);
 
         psoDesc.pRootSignature = m_texRootSignatureLinear;
         m_texPipelineStateLinear = device.CreateGraphicsPipelineState(psoDesc);
@@ -2496,7 +2522,7 @@ void Sample::CreateUIResources()
     uploadBatch.Begin();
 
     m_spriteBatch = std::make_unique<SpriteBatch>(device, uploadBatch, spd);
-    m_sprite = std::make_unique<SpriteBatch>(device, uploadBatch, spd);
+    //m_sprite = std::make_unique<SpriteBatch>(device, uploadBatch, spd);
 
     wchar_t strFilePath[MAX_PATH] = {};
     DX::FindMediaFile(strFilePath, MAX_PATH, L"SegoeUI_30.spritefont");
@@ -2558,7 +2584,7 @@ void Sample::OnDeviceLost()
 
     m_player.reset();
 
-    m_texPipelineStateNN.ResetPtr();
+    //m_texPipelineStateNN.ResetPtr();
     m_texPipelineStateLinear.ResetPtr();
     m_texRootSignatureNN.ResetPtr();
     m_texRootSignatureLinear.ResetPtr();
@@ -2571,22 +2597,8 @@ void Sample::OnDeviceLost()
 
     m_SRVDescriptorHeap.reset();
 
-    m_computePSO.ResetPtr();
-    m_computeRootSignature.ResetPtr();
 
     m_dmlDevice.ResetPtr();
-    m_dmlCommandRecorder.ResetPtr();
-
-    m_modelInput.ResetPtr();
-    m_modelSOutput = {};
-    m_modelMOutput = {};
-    m_modelLOutput = {};
-    m_dmlOpInitializer.ResetPtr();
-    m_dmlGraph.ResetPtr();
-    m_modelTemporaryResource.ResetPtr();
-    m_modelPersistentResource.ResetPtr();
-
-    m_dmlDescriptorHeap.reset();
 
     m_graphicsMemory.reset();
 }
