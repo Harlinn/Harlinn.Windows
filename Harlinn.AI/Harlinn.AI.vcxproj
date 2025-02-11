@@ -171,12 +171,14 @@
     <ClInclude Include="HAIDirectML.h" />
     <ClInclude Include="HAIDirectMLX.h" />
     <ClInclude Include="HAIONNX.h" />
-    <ClInclude Include="HAIONNXCompute.h" />
+    <ClInclude Include="HAIONNXDirectML.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HAIDirectML.cpp" />
+    <ClCompile Include="HAIONNXDirectML.cpp" />
+    <ClCompile Include="HAIONNXModel.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

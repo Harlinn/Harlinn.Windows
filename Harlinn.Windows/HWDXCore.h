@@ -15,6 +15,27 @@ namespace Harlinn::Windows::Graphics::DXCore
     class AdapterFactory1;
 
 
+    enum class GraphicsPreemptionGranularity
+    {
+        None = 0,
+        DmaBufferBoundary = 100,
+        PrimitiveBoundary = 200,
+        TriangleBoundary = 300,
+        PixelBoundary = 400,
+        ShaderBoundary = 500,
+    };
+
+    enum class ComputePreemptionGranularity
+    {
+        None = 0,
+        DmaBufferBoundary = 100,
+        DispatchBoundary = 200,
+        ThreadGroupBoundary = 300,
+        ThreadBoundary = 400,
+        ShaderBoundary = 500,
+    };
+
+
     class Adapter : public Unknown
     {
     public:
@@ -31,6 +52,54 @@ namespace Harlinn::Windows::Graphics::DXCore
             auto* pInterface = GetInterface( );
             return pInterface->IsAttributeSupported( attributeGUID );
         }
+
+        bool IsD3D11Supported( ) const
+        {
+            return IsAttributeSupported( DXCORE_ADAPTER_ATTRIBUTE_D3D11_GRAPHICS );
+        }
+
+        bool IsD3D12Supported( ) const
+        {
+            return IsAttributeSupported( DXCORE_ADAPTER_ATTRIBUTE_D3D12_GRAPHICS );
+        }
+
+        bool IsCoreComputeSupported( ) const
+        {
+            return IsAttributeSupported( DXCORE_ADAPTER_ATTRIBUTE_D3D12_CORE_COMPUTE );
+        }
+
+        bool IsMachineLearningSupported( ) const
+        {
+            return IsAttributeSupported( DXCORE_ADAPTER_ATTRIBUTE_D3D12_GENERIC_ML );
+        }
+
+        bool IsVideoProcessingSupported( ) const
+        {
+            return IsAttributeSupported( DXCORE_ADAPTER_ATTRIBUTE_D3D12_GENERIC_MEDIA );
+        }
+
+        bool IsNPU( ) const
+        {
+            return IsAttributeSupported( DXCORE_HARDWARE_TYPE_ATTRIBUTE_NPU );
+        }
+
+        bool IsGPU( ) const
+        {
+            return IsAttributeSupported( DXCORE_HARDWARE_TYPE_ATTRIBUTE_GPU );
+        }
+
+        bool IsComputeAccelerator( ) const
+        {
+            return IsAttributeSupported( DXCORE_HARDWARE_TYPE_ATTRIBUTE_COMPUTE_ACCELERATOR );
+        }
+
+        bool IsMediaAccelerator( ) const
+        {
+            return IsAttributeSupported( DXCORE_HARDWARE_TYPE_ATTRIBUTE_MEDIA_ACCELERATOR );
+        }
+
+
+
 
         bool IsPropertySupported( DXCoreAdapterProperty property ) const
         {
@@ -133,6 +202,209 @@ namespace Harlinn::Windows::Graphics::DXCore
             GetFactory( &itf );
             return T( itf );
         }
+
+        LUID InstanceLUID( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::InstanceLuid ) )
+            {
+                LUID result;
+                GetProperty( DXCoreAdapterProperty::InstanceLuid, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"InstanceLuid not supported" );
+            }
+        }
+
+        UInt64 DriverVersion( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::DriverVersion ) )
+            {
+                UInt64 result;
+                GetProperty( DXCoreAdapterProperty::DriverVersion, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"DriverVersion not supported" );
+            }
+        }
+
+        WideString DriverDescription( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::DriverDescription ) )
+            {
+                auto propertySize = GetPropertySize( DXCoreAdapterProperty::DriverDescription );
+                boost::container::small_vector<char,512> tmp;
+                tmp.resize( propertySize );
+                
+                GetProperty( DXCoreAdapterProperty::DriverVersion, tmp.size(),  tmp.data() );
+                WideString result;
+                ToWideString( tmp.data( ), tmp.size( ) - 1, CP_UTF8, 0, result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"DriverDescription not supported" );
+            }
+        }
+
+        DXCoreHardwareID HardwareID( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::HardwareID ) )
+            {
+                DXCoreHardwareID result{};
+                GetProperty( DXCoreAdapterProperty::HardwareID, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"HardwareID not supported" );
+            }
+        }
+
+        Int32 KmdModelVersion( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::KmdModelVersion ) )
+            {
+                Int32 result{};
+                GetProperty( DXCoreAdapterProperty::KmdModelVersion, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"KmdModelVersion not supported" );
+            }
+        }
+
+        DXCore::ComputePreemptionGranularity ComputePreemptionGranularity( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::ComputePreemptionGranularity ) )
+            {
+                DXCore::ComputePreemptionGranularity result{};
+                GetProperty( DXCoreAdapterProperty::ComputePreemptionGranularity, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"ComputePreemptionGranularity not supported" );
+            }
+        }
+
+        DXCore::GraphicsPreemptionGranularity GraphicsPreemptionGranularity( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::GraphicsPreemptionGranularity ) )
+            {
+                DXCore::GraphicsPreemptionGranularity result{};
+                GetProperty( DXCoreAdapterProperty::GraphicsPreemptionGranularity, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"GraphicsPreemptionGranularity not supported" );
+            }
+        }
+
+        UInt64 DedicatedAdapterMemory( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::DedicatedAdapterMemory ) )
+            {
+                UInt64 result{};
+                GetProperty( DXCoreAdapterProperty::DedicatedAdapterMemory, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"DedicatedAdapterMemory not supported" );
+            }
+        }
+
+        UInt64 DedicatedSystemMemory( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::DedicatedSystemMemory ) )
+            {
+                UInt64 result{};
+                GetProperty( DXCoreAdapterProperty::DedicatedSystemMemory, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"DedicatedSystemMemory not supported" );
+            }
+        }
+
+        UInt64 SharedSystemMemory( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::SharedSystemMemory ) )
+            {
+                UInt64 result{};
+                GetProperty( DXCoreAdapterProperty::SharedSystemMemory, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"SharedSystemMemory not supported" );
+            }
+        }
+
+        bool AcgCompatible( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::AcgCompatible ) )
+            {
+                bool result{};
+                GetProperty( DXCoreAdapterProperty::AcgCompatible, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"AcgCompatible not supported" );
+            }
+        }
+
+        bool IsHardware( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::IsHardware ) )
+            {
+                bool result{};
+                GetProperty( DXCoreAdapterProperty::IsHardware, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"IsHardware not supported" );
+            }
+        }
+
+        bool IsIntegrated( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::IsIntegrated ) )
+            {
+                bool result{};
+                GetProperty( DXCoreAdapterProperty::IsIntegrated, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"IsIntegrated not supported" );
+            }
+        }
+
+        bool IsDetachable( ) const
+        {
+            if ( IsPropertySupported( DXCoreAdapterProperty::IsDetachable ) )
+            {
+                bool result{};
+                GetProperty( DXCoreAdapterProperty::IsDetachable, &result );
+                return result;
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"IsDetachable not supported" );
+            }
+        }
+
+
     };
 
     class Adapter1 : public Adapter

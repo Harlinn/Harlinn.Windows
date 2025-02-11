@@ -27,7 +27,7 @@
     <ClInclude Include="HAIDirectMLX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HAIONNXCompute.h">
+    <ClInclude Include="HAIONNXDirectML.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HAIONNX.h">
@@ -42,6 +42,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HAIDirectML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HAIONNXDirectML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HAIONNXModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

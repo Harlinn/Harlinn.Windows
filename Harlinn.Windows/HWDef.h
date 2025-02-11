@@ -26,6 +26,7 @@
 #include <HCCTraits.h>
 #include <HCCMath.h>
 #include <HCCSync.h>
+#include <HCCLogging.h>
 
 #ifdef BUILDING_HARLINN_WINDOWS
 #define HW_EXPORT __declspec(dllexport)
