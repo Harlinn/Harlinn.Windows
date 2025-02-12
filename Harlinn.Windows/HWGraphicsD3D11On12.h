@@ -55,7 +55,7 @@ namespace Harlinn::Windows::Graphics::D3D11On12
             pInterface->ReleaseWrappedResources(resources, numResources);
         }
 
-        void ReleaseWrappedResources( const D3D11::Resource const* resources, UINT numResources ) const
+        void ReleaseWrappedResources( const D3D11::Resource* resources, UINT numResources ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->ReleaseWrappedResources( reinterpret_cast< ID3D11Resource* const* >( resources ), numResources );

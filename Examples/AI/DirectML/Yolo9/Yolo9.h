@@ -24,6 +24,8 @@
 #include "depixelator.h"
 
 
+
+
 using UniqueNativePtr = std::unique_ptr<void, void (*)(void*)>;
 
 template <typename T>
@@ -87,20 +89,20 @@ using Detections = std::vector<Detection>;
 
 
 
-namespace YoloV4Constants
+namespace YoloConstants
 {
-
+    constexpr int colors[ ] = { 0xf0fafa, 0x3588d1, 0x4ad59b, 0x399283, 0x97f989, 0x57b230, 0xd8e9b2, 0xff1c5d, 0xf1bb99, 0xf7794f, 0x987d7b, 0xf4f961, 0x1dfee1, 0x9382e9, 0xc052e4, 0xf3c5fa, 0xd6709b, 0xfe16f4, 0x34f50e, 0xab7b05, 0xfbbd13 };
     
     // The classes of objects that yolov4 can detect
     static const char* const c_classes[] =
     {
-        "person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat", "traffic light",
+        "person", "bicycle", "car", "motorbike", "airplane", "bus", "train", "truck", "boat", "traffic light",
         "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
         "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
         "skis", "snowboard", "ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
         "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
         "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa",
-        "potted plant", "bed", "dining table", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard",
+        "potted plant", "bed", "dining table", "toilet", "monitor", "laptop", "mouse", "remote", "keyboard",
         "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
         "teddy bear", "hair drier", "toothbrush",
     };
@@ -204,6 +206,9 @@ enum class TensorLayout
     NHWC
 };
 
+#ifdef USE_COMPUTE_ENGINE 
+using Prediction = ONNX::Prediction;
+#else
 struct Prediction
 {
     // Bounding box coordinates
@@ -238,13 +243,105 @@ struct Model_t
     size_t m_inputHeight;
     std::vector<std::byte> m_inputBuffer;
 };
+#endif
 
+#ifdef USE_COMPUTE_ENGINE
 
-class Compute
+struct PredictionData
 {
+    D2D::RectangleGeometry heading;
+    D2D::RectangleGeometry frame;
+
+    PredictionData( )
+    {
+    }
+};
+
+class D2DWindowSizeDependentResources
+{
+    using PredictionMap = std::unordered_map<Prediction, std::unique_ptr<PredictionData>, ONNX::PositionHash, ONNX::PositionEqual>;
+    DX::DeviceResources* deviceResources_;
+    PredictionMap predictions_;
+public:
+    D2DWindowSizeDependentResources( DX::DeviceResources* deviceResources )
+        : deviceResources_( deviceResources )
+    { }
+    void AddPredictions( const std::vector<Prediction>& newPredictions )
+    {
+        PredictionMap newPredictionMap;
+
+        for ( const auto& prediction : newPredictions )
+        {
+            auto it = predictions_.find( prediction );
+            if ( it != predictions_.end( ) )
+            {
+                newPredictionMap.emplace( prediction, std::move( it->second ) );
+            }
+            else
+            {
+                newPredictionMap.emplace( prediction, std::make_unique<PredictionData>( ) );
+            }
+        }
+        predictions_ = std::move( newPredictionMap );
+    }
+
+    PredictionData* Find( const Prediction& prediction ) const
+    {
+        auto it = predictions_.find( prediction );
+        if ( it != predictions_.end( ) )
+        {
+            return it->second.get( );
+        }
+        return nullptr;
+    }
+
+    void CreateWindowSizeDependentResources( );
 
 };
 
+class D2DResources
+{
+public:
+    
+private:
+    
+
+
+    DX::DeviceResources* deviceResources_;
+    DirectWrite::TextFormat headingTextFormat_;
+    D2D::SolidColorBrush headingBrush_;
+    std::vector<D2D::SolidColorBrush> frameBrushes_;
+    
+    std::unique_ptr<D2DWindowSizeDependentResources> windowSizeDependentResources_;
+    
+public:
+    D2DResources( DX::DeviceResources* deviceResources )
+        : deviceResources_( deviceResources )
+    {  }
+
+    void AddPredictions( const std::vector<Prediction>& newPredictions )
+    {
+        if ( windowSizeDependentResources_ )
+        {
+            windowSizeDependentResources_->AddPredictions( newPredictions );
+        }
+    }
+
+    PredictionData* Find( const Prediction& prediction ) const
+    {
+        if ( windowSizeDependentResources_ )
+        {
+            return windowSizeDependentResources_->Find( prediction );
+        }
+        return nullptr;
+    }
+
+    void CreateDeviceDependentResources( );
+    void CreateWindowSizeDependentResources( );
+
+};
+
+#endif
 
 #define USE_VIDEOTEXTURE 1
 
@@ -259,6 +356,15 @@ class Sample final : public DX::IDeviceNotify
         ::ImPlot::CreateContext( );
         return ::ImGui::GetIO( );
     }
+#ifdef USE_COMPUTE_ENGINE 
+    std::shared_ptr<ONNX::DirectML::ComputeEngine > computeEngine_;
+    std::shared_ptr<ONNX::DirectML::ComputeNode > computeNode_;
+    std::shared_ptr<ONNX::DirectML::Model > model_;
+    DateTime frameTime_;
+    DateTime nextCompute_;
+    TimeSpan computeInterval_{ TimeSpan::TicksPerSecond / 3 };
+    std::unique_ptr<D2DResources> d2dResources_;
+#endif
 public:
 
     Sample() noexcept(false);
@@ -305,7 +411,11 @@ private:
     void CreateUIResources();
     void CreateWindowSizeDependentResources();
 
+#ifdef USE_COMPUTE_ENGINE
+    bool CopySharedVideoTextureTensor( Binary& inputbuffer );
+#else
     bool CopySharedVideoTextureTensor(std::vector<std::byte>& inputbuffer, Model_t* model);
+#endif
 
 
     DXCore::Adapter1 GetNonGraphicsAdapter(const DXCore::AdapterList& adapterList);
@@ -317,6 +427,9 @@ private:
     // model.
 
     // objects
+#ifdef USE_COMPUTE_ENGINE
+
+#else
     void GetPredictions(const std::byte* outputData, std::vector<int64_t> & shape, const  std::vector<std::string>& output_names, Model_t* model);
     void GetPredictions(std::vector<const std::byte*>& outputData, std::vector<std::vector<int64_t>>& shapes, const  std::vector<std::string>& output_names, Model_t* model);
     void GetPredictions2(std::vector<const std::byte*>& outputData, std::vector<std::vector<int64_t>>& shapes, const  std::vector<std::string>& output_names, Model_t* model);
@@ -329,7 +442,7 @@ private:
     // image
     void GetImage(const std::byte* outputData, std::vector<int64_t>& shape, Model_t* model, ONNXTensorElementDataType datatype);
     void GetMask(const std::byte* outputData, std::vector<int64_t>& shape, Model_t* model, ONNXTensorElementDataType datatype);
-   
+#endif   
     
     void NewTexture(const uint8_t * image_data, uint32_t width, uint32_t height);
     // 
@@ -396,6 +509,9 @@ private:
 
 
     // DirectML objects
+#ifdef USE_COMPUTE_ENGINE
+
+#else
     std::wstring m_device_name;
     DML::Device m_dmlDevice;
 
@@ -414,6 +530,7 @@ private:
     DWORD m_dxgiFactoryFlags;
 
     std::vector<Detections> m_detections;
+#endif
     std::vector<Prediction> m_preds;
 
     std::vector<byte> m_Out;

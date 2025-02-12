@@ -41,7 +41,7 @@ namespace Harlinn::AI::ONNX::DirectML
         Stop,
         Load,
         Execute,
-        
+        Compute
     };
 
     using ComputeNodeMesasge = Concurrency::Messages::Message<ComputeNodeMesasgeType>;
@@ -54,7 +54,51 @@ namespace Harlinn::AI::ONNX::DirectML
 
     using ComputeNodeStopMessage = SimpleComputeNodeMesasge<ComputeNodeMesasgeType::Stop>;
 
-    using ComputeNodeLoadMessage = ComputeNodeValueMessage<WideString, ComputeNodeMesasgeType::Load>;
+    class Model;
+    class ComputeNodeLoadMessage : public ComputeNodeValueMessage<WideString, ComputeNodeMesasgeType::Load>
+    {
+        std::promise<std::shared_ptr<Model>> promise_;
+    public:
+        using Base = ComputeNodeValueMessage<WideString, ComputeNodeMesasgeType::Load>;
+        ComputeNodeLoadMessage( const WideString& modelFilename )
+            : Base( modelFilename )
+        { }
+
+        std::future<std::shared_ptr<Model>> GetFuture( )
+        {
+            return promise_.get_future( );
+        }
+        void SetResult( const std::shared_ptr<Model>& model )
+        {
+            promise_.set_value( model );
+        }
+
+        void SetException( )
+        {
+            try
+            {
+                promise_.set_exception( std::current_exception( ) );
+            }
+            catch(...)
+            { }
+        }
+    };
+
+    class ComputeNodeComputeMessage : public ComputeNodeValueMessage<Binary, ComputeNodeMesasgeType::Compute>
+    {
+        const Math::Vector2f viewportSize_;
+    public:
+        using Base = ComputeNodeValueMessage<Binary, ComputeNodeMesasgeType::Compute>;
+        ComputeNodeComputeMessage( const Binary& buffer, const Math::Vector2f& viewportSize )
+            : Base( buffer ), viewportSize_( viewportSize )
+        {
+        }
+
+        const Math::Vector2f& ViewportSize( ) const
+        {
+            return viewportSize_;
+        }
+    };
 
 
     class ComputeNode;
@@ -95,8 +139,15 @@ namespace Harlinn::AI::ONNX::DirectML
         };
     }
 
-    
-
+    class ComputeNode;
+    class Model : public ONNX::Model
+    {
+        std::weak_ptr<ComputeNode> computeNode_;
+    public:
+        using Base = ONNX::Model;
+        HAI_EXPORT Model( const std::shared_ptr<ComputeNode>& computeNode, const std::shared_ptr<ONNX::Session>& session );
+        HAI_EXPORT virtual void Compute( const Binary& inputTensorData, const Math::Vector2f& viewportSize ) override;
+    };
 
     class ComputeEngine;
     class ComputeNode : public Concurrency::ActiveObject< std::shared_ptr<ComputeNodeMesasge>>
@@ -120,9 +171,16 @@ namespace Harlinn::AI::ONNX::DirectML
         std::shared_ptr<ONNX::SessionOptions> sessionOptions_;
         std::shared_ptr<ONNX::Session> session_;
         const OrtDmlApi* ortDmlApi_ = nullptr;
-
+        std::shared_ptr<Model> model_;
     public:
+        boost::signals2::signal<void( ComputeNode* sender, Model* model )> OnComputeDone;
+
         HAI_EXPORT ComputeNode( const std::shared_ptr<ComputeEngine>& engine, const WideString& computeNodeName, const DXCore::Adapter1& adapter, const std::shared_ptr<ONNX::SessionOptions>& sessionOptions, D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_1 );
+
+        void DoOnComputeDone( Model* model )
+        {
+            OnComputeDone( this, model );
+        }
 
         
         const WideString& ComputeNodeName( ) const
@@ -182,8 +240,10 @@ namespace Harlinn::AI::ONNX::DirectML
             return engine_.lock();
         }
 
-        HAI_EXPORT void Load( const WideString& modelPath );
-
+        HAI_EXPORT std::future<std::shared_ptr<Model>> Load( const WideString& modelPath );
+    protected:
+        HAI_EXPORT virtual void OnLoad( const WideString& modelPath );
+    public:
         template<typename T>
             requires std::is_invocable_v<T, ONNX::DirectML::ComputeNode*>
         void Run( T&& invocable )
@@ -192,6 +252,10 @@ namespace Harlinn::AI::ONNX::DirectML
             PostMessage( message );
         }
 
+        HAI_EXPORT void Compute( const Binary& tensorData, const Math::Vector2f& viewportSize );
+    protected:
+        HAI_EXPORT virtual void OnCompute( const Binary& tensorData, const Math::Vector2f& viewportSize );
+    
     protected:
     
         HAI_EXPORT virtual void ProcessMessage( const MessageType& message ) override;
@@ -207,7 +271,7 @@ namespace Harlinn::AI::ONNX::DirectML
             PostMessage( message );
         }
 
-        HAI_EXPORT virtual void OnLoad( const WideString& modelPath );
+        
 
     private:
         HAI_EXPORT void Initialize( );
@@ -224,6 +288,7 @@ namespace Harlinn::AI::ONNX::DirectML
         HAI_EXPORT ComputeEngine( const std::shared_ptr<SessionOptions>& defaultSessionOptions = std::make_shared<SessionOptions>( ), const Ort::ThreadingOptions& threadingOptions = {} );
         HAI_EXPORT virtual ~ComputeEngine( );
 
+        HAI_EXPORT std::shared_ptr<ComputeNode> AddComputeNode( const WideString& computeNodeName );
         HAI_EXPORT std::shared_ptr<ComputeNode> AddComputeNode( const WideString& computeNodeName, const DXCore::Adapter1& adapter, D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_1 );
         HAI_EXPORT std::shared_ptr<ComputeNode> AddComputeNode( const WideString& computeNodeName, const DXCore::Adapter1& adapter, const std::shared_ptr<SessionOptions>& sessionOptions, D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_1 );
 
@@ -231,6 +296,9 @@ namespace Harlinn::AI::ONNX::DirectML
         {
             return environment_;
         }
+
+        HAI_EXPORT static DXCore::Adapter1 FindAdapter( );
+
     };
 
 }

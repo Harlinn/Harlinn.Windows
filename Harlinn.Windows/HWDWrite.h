@@ -32,8 +32,8 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileLoader, Unknown, IDWriteFontFileLoader, IUnknown )
 
-        HW_EXPORT FontFileLoader& CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileStream** fontFileStream );
-        HW_EXPORT FontFileStream CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
+        HW_EXPORT void CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileStream** fontFileStream ) const;
+        HW_EXPORT FontFileStream CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
     };
 
     /// <summary>
@@ -49,14 +49,14 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( LocalFontFileLoader, FontFileLoader, IDWriteLocalFontFileLoader, IDWriteFontFileLoader )
 
-        HW_EXPORT LocalFontFileLoader& GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, UINT32* filePathLength );
-        HW_EXPORT UINT32 GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
+        HW_EXPORT void GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, UINT32* filePathLength ) const;
+        HW_EXPORT UINT32 GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
 
-        HW_EXPORT LocalFontFileLoader& GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, WCHAR* filePath, UINT32 filePathSize );
-        HW_EXPORT std::shared_ptr<WideString> GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
+        HW_EXPORT void GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, WCHAR* filePath, UINT32 filePathSize ) const;
+        HW_EXPORT WideString GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
 
-        HW_EXPORT LocalFontFileLoader& GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, FILETIME* lastWriteTime );
-        HW_EXPORT FILETIME GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
+        HW_EXPORT void GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, FILETIME* lastWriteTime ) const;
+        HW_EXPORT FILETIME GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
     };
 
     /// <summary>
@@ -69,14 +69,14 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileStream, Unknown, IDWriteFontFileStream, IUnknown )
 
-        HW_EXPORT FontFileStream& ReadFileFragment( void const** fragmentStart, UINT64 fileOffset, UINT64 fragmentSize, void** fragmentContext );
-        HW_EXPORT FontFileStream& ReleaseFileFragment( void* fragmentContext );
+        HW_EXPORT void ReadFileFragment( void const** fragmentStart, UINT64 fileOffset, UINT64 fragmentSize, void** fragmentContext ) const;
+        HW_EXPORT void ReleaseFileFragment( void* fragmentContext ) const;
 
-        HW_EXPORT FontFileStream& GetFileSize( UINT64* fileSize );
-        HW_EXPORT UINT64 GetFileSize( );
+        HW_EXPORT void GetFileSize( UINT64* fileSize ) const;
+        HW_EXPORT UINT64 GetFileSize( ) const;
 
-        HW_EXPORT FontFileStream& GetLastWriteTime( UINT64* lastWriteTime );
-        HW_EXPORT UINT64 GetLastWriteTime( );
+        HW_EXPORT void GetLastWriteTime( UINT64* lastWriteTime ) const;
+        HW_EXPORT UINT64 GetLastWriteTime( ) const;
     };
 
     /// <summary>
@@ -91,12 +91,12 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFile, Unknown, IDWriteFontFile, IUnknown )
 
-        HW_EXPORT FontFile& GetReferenceKey( void const** fontFileReferenceKey, UINT32* fontFileReferenceKeySize );
-        HW_EXPORT FontFile& GetLoader( IDWriteFontFileLoader** fontFileLoader );
-        HW_EXPORT FontFileLoader GetLoader( );
-        HW_EXPORT FontFile& Analyze( BOOL* isSupportedFontType, DWRITE_FONT_FILE_TYPE* fontFileType, DWRITE_FONT_FACE_TYPE* fontFaceType, UINT32* numberOfFaces );
-        HW_EXPORT FontFile& Analyze( BOOL& isSupportedFontType, DWRITE_FONT_FILE_TYPE& fontFileType, DWRITE_FONT_FACE_TYPE& fontFaceType, UINT32& numberOfFaces );
-        HW_EXPORT FontFile& Analyze( BOOL& isSupportedFontType, DWRITE_FONT_FILE_TYPE& fontFileType, UINT32& numberOfFaces );
+        HW_EXPORT void GetReferenceKey( void const** fontFileReferenceKey, UINT32* fontFileReferenceKeySize ) const;
+        HW_EXPORT void GetLoader( IDWriteFontFileLoader** fontFileLoader ) const;
+        HW_EXPORT FontFileLoader GetLoader( ) const;
+        HW_EXPORT void Analyze( BOOL* isSupportedFontType, DWRITE_FONT_FILE_TYPE* fontFileType, DWRITE_FONT_FACE_TYPE* fontFaceType, UINT32* numberOfFaces ) const;
+        HW_EXPORT void Analyze( BOOL& isSupportedFontType, DWRITE_FONT_FILE_TYPE& fontFileType, DWRITE_FONT_FACE_TYPE& fontFaceType, UINT32& numberOfFaces ) const;
+        HW_EXPORT void Analyze( BOOL& isSupportedFontType, DWRITE_FONT_FILE_TYPE& fontFileType, UINT32& numberOfFaces ) const;
     };
 
 
@@ -111,11 +111,11 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( RenderingParams, Unknown, IDWriteRenderingParams, IUnknown )
 
-        HW_EXPORT FLOAT GetGamma( );
-        HW_EXPORT FLOAT GetEnhancedContrast( );
-        HW_EXPORT FLOAT GetClearTypeLevel( );
-        HW_EXPORT DWRITE_PIXEL_GEOMETRY GetPixelGeometry( );
-        HW_EXPORT DWRITE_RENDERING_MODE GetRenderingMode( );
+        HW_EXPORT FLOAT GetGamma( ) const;
+        HW_EXPORT FLOAT GetEnhancedContrast( ) const;
+        HW_EXPORT FLOAT GetClearTypeLevel( ) const;
+        HW_EXPORT DWRITE_PIXEL_GEOMETRY GetPixelGeometry( ) const;
+        HW_EXPORT DWRITE_RENDERING_MODE GetRenderingMode( ) const;
     };
 
     
@@ -133,27 +133,27 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFace, Unknown, IDWriteFontFace, IUnknown )
 
-        HW_EXPORT DWRITE_FONT_FACE_TYPE GetType( );
-        HW_EXPORT FontFace& GetFiles( _Inout_ UINT32* numberOfFiles, IDWriteFontFile** fontFiles );
-        HW_EXPORT UINT32 GetNumberOfFiles( );
-        HW_EXPORT std::shared_ptr< std::vector<FontFile> > GetFiles( );
+        HW_EXPORT DWRITE_FONT_FACE_TYPE GetType( ) const;
+        HW_EXPORT void GetFiles( _Inout_ UINT32* numberOfFiles, IDWriteFontFile** fontFiles ) const;
+        HW_EXPORT UINT32 GetNumberOfFiles( ) const;
+        HW_EXPORT std::shared_ptr< std::vector<FontFile> > GetFiles( ) const;
 
-        HW_EXPORT UINT32 GetIndex( );
-        HW_EXPORT DWRITE_FONT_SIMULATIONS GetSimulations( );
-        HW_EXPORT BOOL IsSymbolFont( );
-        HW_EXPORT FontFace& GetMetrics( DWRITE_FONT_METRICS* fontFaceMetrics );
-        HW_EXPORT FontFace& GetMetrics( DWRITE_FONT_METRICS& fontFaceMetrics );
-        HW_EXPORT UINT16 GetGlyphCount( );
-        HW_EXPORT FontFace& GetDesignGlyphMetrics( UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways = FALSE );
-        HW_EXPORT FontFace& GetGlyphIndices( UINT32 const* codePoints, UINT32 codePointCount, UINT16* glyphIndices );
-        HW_EXPORT FontFace& TryGetFontTable( UINT32 openTypeTableTag, const void** tableData, UINT32* tableSize, void** tableContext, BOOL* exists );
-        HW_EXPORT FontFace& ReleaseFontTable( void* tableContext );
-        HW_EXPORT FontFace& GetGlyphRunOutline( FLOAT emSize, UINT16 const* glyphIndices, FLOAT const* glyphAdvances, DWRITE_GLYPH_OFFSET const* glyphOffsets, UINT32 glyphCount, BOOL isSideways, BOOL isRightToLeft, IDWriteGeometrySink* geometrySink );
-        HW_EXPORT FontFace& GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams, DWRITE_RENDERING_MODE* renderingMode );
-        HW_EXPORT DWRITE_RENDERING_MODE GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams );
+        HW_EXPORT UINT32 GetIndex( ) const;
+        HW_EXPORT DWRITE_FONT_SIMULATIONS GetSimulations( ) const;
+        HW_EXPORT BOOL IsSymbolFont( ) const;
+        HW_EXPORT void GetMetrics( DWRITE_FONT_METRICS* fontFaceMetrics ) const;
+        HW_EXPORT void GetMetrics( DWRITE_FONT_METRICS& fontFaceMetrics ) const;
+        HW_EXPORT UINT16 GetGlyphCount( ) const;
+        HW_EXPORT void GetDesignGlyphMetrics( UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways = FALSE ) const;
+        HW_EXPORT void GetGlyphIndices( UINT32 const* codePoints, UINT32 codePointCount, UINT16* glyphIndices ) const;
+        HW_EXPORT void TryGetFontTable( UINT32 openTypeTableTag, const void** tableData, UINT32* tableSize, void** tableContext, BOOL* exists ) const;
+        HW_EXPORT void ReleaseFontTable( void* tableContext ) const;
+        HW_EXPORT void GetGlyphRunOutline( FLOAT emSize, UINT16 const* glyphIndices, FLOAT const* glyphAdvances, DWRITE_GLYPH_OFFSET const* glyphOffsets, UINT32 glyphCount, BOOL isSideways, BOOL isRightToLeft, IDWriteGeometrySink* geometrySink ) const;
+        HW_EXPORT void GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams, DWRITE_RENDERING_MODE* renderingMode ) const;
+        HW_EXPORT DWRITE_RENDERING_MODE GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams ) const;
 
-        HW_EXPORT FontFace& GetGdiCompatibleMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_FONT_METRICS* fontFaceMetrics );
-        HW_EXPORT FontFace& GetGdiCompatibleGlyphMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways = FALSE );
+        HW_EXPORT void GetGdiCompatibleMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_FONT_METRICS* fontFaceMetrics ) const;
+        HW_EXPORT void GetGdiCompatibleGlyphMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways = FALSE ) const;
     };
 
     class FontFileEnumerator;
@@ -167,8 +167,8 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontCollectionLoader, Unknown, IDWriteFontCollectionLoader, IUnknown )
 
-        HW_EXPORT FontCollectionLoader& CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontFileEnumerator** fontFileEnumerator );
-        HW_EXPORT FontFileEnumerator CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize );
+        HW_EXPORT void CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontFileEnumerator** fontFileEnumerator ) const;
+        HW_EXPORT FontFileEnumerator CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize ) const;
     };
 
     /// <summary>
@@ -182,11 +182,11 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileEnumerator, Unknown, IDWriteFontFileEnumerator, IUnknown )
 
-        HW_EXPORT FontFileEnumerator& MoveNext( BOOL* hasCurrentFile );
-        HW_EXPORT bool MoveNext( );
+        HW_EXPORT void MoveNext( BOOL* hasCurrentFile ) const;
+        HW_EXPORT bool MoveNext( ) const;
 
-        HW_EXPORT FontFileEnumerator& GetCurrentFontFile( IDWriteFontFile** fontFile );
-        HW_EXPORT FontFile GetCurrentFontFile( );
+        HW_EXPORT void GetCurrentFontFile( IDWriteFontFile** fontFile ) const;
+        HW_EXPORT FontFile GetCurrentFontFile( ) const;
     };
 
 
@@ -200,21 +200,21 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( LocalizedStrings, Unknown, IDWriteLocalizedStrings, IUnknown )
 
-        HW_EXPORT UINT32 GetCount( );
-        HW_EXPORT LocalizedStrings& FindLocaleName( WCHAR const* localeName, UINT32* index, BOOL* exists );
-        HW_EXPORT bool FindLocaleName( WCHAR const* localeName, UINT32* index );
+        HW_EXPORT UINT32 GetCount( ) const;
+        HW_EXPORT void FindLocaleName( WCHAR const* localeName, UINT32* index, BOOL* exists ) const;
+        HW_EXPORT bool FindLocaleName( WCHAR const* localeName, UINT32* index ) const;
 
-        HW_EXPORT LocalizedStrings& GetLocaleNameLength( UINT32 index, UINT32* length );
-        HW_EXPORT UINT32 GetLocaleNameLength( UINT32 index );
+        HW_EXPORT void GetLocaleNameLength( UINT32 index, UINT32* length ) const;
+        HW_EXPORT UINT32 GetLocaleNameLength( UINT32 index ) const;
 
-        HW_EXPORT LocalizedStrings& GetLocaleName( UINT32 index, WCHAR* localeName, UINT32 size );
-        HW_EXPORT std::shared_ptr<WideString> GetLocaleName( UINT32 index );
+        HW_EXPORT void GetLocaleName( UINT32 index, WCHAR* localeName, UINT32 size ) const;
+        HW_EXPORT WideString GetLocaleName( UINT32 index ) const;
 
-        HW_EXPORT LocalizedStrings& GetStringLength( UINT32 index, UINT32* length );
-        HW_EXPORT UINT32 GetStringLength( UINT32 index );
+        HW_EXPORT void GetStringLength( UINT32 index, UINT32* length ) const;
+        HW_EXPORT UINT32 GetStringLength( UINT32 index ) const;
 
-        HW_EXPORT LocalizedStrings& GetString( UINT32 index, WCHAR* stringBuffer, UINT32 size );
-        HW_EXPORT std::shared_ptr<WideString> GetString( UINT32 index );
+        HW_EXPORT void GetString( UINT32 index, WCHAR* stringBuffer, UINT32 size ) const;
+        HW_EXPORT WideString GetString( UINT32 index ) const;
     };
 
     class FontFamily;
@@ -232,16 +232,16 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontCollection, Unknown, IDWriteFontCollection, IUnknown )
 
-        HW_EXPORT UINT32 GetFontFamilyCount( );
-        HW_EXPORT FontCollection& GetFontFamily( UINT32 index, IDWriteFontFamily** fontFamily );
-        HW_EXPORT FontFamily GetFontFamily( UINT32 index );
-        HW_EXPORT std::shared_ptr< std::vector<FontFamily> > GetFontFamilies( );
+        HW_EXPORT UINT32 GetFontFamilyCount( ) const;
+        HW_EXPORT void GetFontFamily( UINT32 index, IDWriteFontFamily** fontFamily ) const;
+        HW_EXPORT FontFamily GetFontFamily( UINT32 index ) const;
+        HW_EXPORT std::vector<FontFamily> GetFontFamilies( ) const;
 
-        HW_EXPORT FontCollection& FindFamilyName( WCHAR const* familyName, UINT32* index, BOOL* exists );
-        HW_EXPORT bool FindFamilyName( WCHAR const* familyName, UINT32* index );
+        HW_EXPORT void FindFamilyName( WCHAR const* familyName, UINT32* index, BOOL* exists ) const;
+        HW_EXPORT bool FindFamilyName( WCHAR const* familyName, UINT32* index ) const;
 
-        HW_EXPORT FontCollection& GetFontFromFontFace( IDWriteFontFace* fontFace, IDWriteFont** font );
-        HW_EXPORT Font GetFontFromFontFace( IDWriteFontFace* fontFace );
+        HW_EXPORT void GetFontFromFontFace( IDWriteFontFace* fontFace, IDWriteFont** font ) const;
+        HW_EXPORT Font GetFontFromFontFace( IDWriteFontFace* fontFace ) const;
     };
 
     /// <summary>
@@ -254,11 +254,11 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontList, Unknown, IDWriteFontList, IUnknown )
 
-        HW_EXPORT FontList& GetFontCollection( IDWriteFontCollection** fontCollection );
-        HW_EXPORT FontCollection GetFontCollection( );
-        HW_EXPORT UINT32 GetFontCount( );
-        HW_EXPORT FontList& GetFont( UINT32 index, IDWriteFont** font );
-        HW_EXPORT Font GetFont( UINT32 index );
+        HW_EXPORT void GetFontCollection( IDWriteFontCollection** fontCollection ) const;
+        HW_EXPORT FontCollection GetFontCollection( ) const;
+        HW_EXPORT UINT32 GetFontCount( ) const;
+        HW_EXPORT void GetFont( UINT32 index, IDWriteFont** font ) const;
+        HW_EXPORT Font GetFont( UINT32 index ) const;
     };
 
     /// <summary>
@@ -271,14 +271,14 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFamily, FontList, IDWriteFontFamily, IDWriteFontList )
 
-        HW_EXPORT FontFamily& GetFamilyNames( IDWriteLocalizedStrings** names );
-        HW_EXPORT LocalizedStrings GetFamilyNames( );
+        HW_EXPORT void GetFamilyNames( IDWriteLocalizedStrings** names ) const;
+        HW_EXPORT LocalizedStrings GetFamilyNames( ) const;
 
-        HW_EXPORT FontFamily& GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFont** matchingFont );
-        HW_EXPORT Font GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style );
+        HW_EXPORT void GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFont** matchingFont ) const;
+        HW_EXPORT Font GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const;
 
-        HW_EXPORT FontFamily& GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFontList** matchingFonts );
-        HW_EXPORT FontList GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style );
+        HW_EXPORT void GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFontList** matchingFonts ) const;
+        HW_EXPORT FontList GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const;
     };
 
     /// <summary>
@@ -293,21 +293,21 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Font, Unknown, IDWriteFont, IUnknown )
 
-        HW_EXPORT Font& GetFontFamily( IDWriteFontFamily** fontFamily );
-        HW_EXPORT FontFamily GetFontFamily( );
-        HW_EXPORT DWRITE_FONT_WEIGHT GetWeight( );
-        HW_EXPORT DWRITE_FONT_STRETCH GetStretch( );
-        HW_EXPORT DWRITE_FONT_STYLE GetStyle( );
-        HW_EXPORT bool IsSymbolFont( );
-        HW_EXPORT Font& GetFaceNames( IDWriteLocalizedStrings** names );
-        HW_EXPORT LocalizedStrings GetFaceNames( );
-        HW_EXPORT Font& GetInformationalStrings( DWRITE_INFORMATIONAL_STRING_ID informationalStringID, IDWriteLocalizedStrings** informationalStrings, BOOL* exists );
-        HW_EXPORT DWRITE_FONT_SIMULATIONS GetSimulations( );
-        HW_EXPORT Font& GetMetrics( DWRITE_FONT_METRICS* fontMetrics );
-        HW_EXPORT Font& HasCharacter( UINT32 unicodeValue, BOOL* exists );
-        HW_EXPORT bool HasCharacter( UINT32 unicodeValue );
-        HW_EXPORT Font& CreateFontFace( IDWriteFontFace** fontFace );
-        HW_EXPORT FontFace CreateFontFace( );
+        HW_EXPORT void GetFontFamily( IDWriteFontFamily** fontFamily ) const;
+        HW_EXPORT FontFamily GetFontFamily( ) const;
+        HW_EXPORT DWRITE_FONT_WEIGHT GetWeight( ) const;
+        HW_EXPORT DWRITE_FONT_STRETCH GetStretch( ) const;
+        HW_EXPORT DWRITE_FONT_STYLE GetStyle( ) const;
+        HW_EXPORT bool IsSymbolFont( ) const;
+        HW_EXPORT void GetFaceNames( IDWriteLocalizedStrings** names ) const;
+        HW_EXPORT LocalizedStrings GetFaceNames( ) const;
+        HW_EXPORT void GetInformationalStrings( DWRITE_INFORMATIONAL_STRING_ID informationalStringID, IDWriteLocalizedStrings** informationalStrings, BOOL* exists ) const;
+        HW_EXPORT DWRITE_FONT_SIMULATIONS GetSimulations( ) const;
+        HW_EXPORT void GetMetrics( DWRITE_FONT_METRICS* fontMetrics ) const;
+        HW_EXPORT void HasCharacter( UINT32 unicodeValue, BOOL* exists ) const;
+        HW_EXPORT bool HasCharacter( UINT32 unicodeValue ) const;
+        HW_EXPORT void CreateFontFace( IDWriteFontFace** fontFace ) const;
+        HW_EXPORT FontFace CreateFontFace( ) const;
     };
 
 
@@ -323,35 +323,35 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextFormat, Unknown, IDWriteTextFormat, IUnknown )
 
-        HW_EXPORT TextFormat& SetTextAlignment( DWRITE_TEXT_ALIGNMENT textAlignment );
-        HW_EXPORT TextFormat& SetParagraphAlignment( DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment );
-        HW_EXPORT TextFormat& SetWordWrapping( DWRITE_WORD_WRAPPING wordWrapping );
-        HW_EXPORT TextFormat& SetReadingDirection( DWRITE_READING_DIRECTION readingDirection );
-        HW_EXPORT TextFormat& SetFlowDirection( DWRITE_FLOW_DIRECTION flowDirection );
-        HW_EXPORT TextFormat& SetIncrementalTabStop( FLOAT incrementalTabStop );
-        HW_EXPORT TextFormat& SetTrimming( DWRITE_TRIMMING const* trimmingOptions, IDWriteInlineObject* trimmingSign );
-        HW_EXPORT TextFormat& SetLineSpacing( DWRITE_LINE_SPACING_METHOD lineSpacingMethod, FLOAT lineSpacing, FLOAT baseline );
-        HW_EXPORT DWRITE_TEXT_ALIGNMENT GetTextAlignment( );
-        HW_EXPORT DWRITE_PARAGRAPH_ALIGNMENT GetParagraphAlignment( );
-        HW_EXPORT DWRITE_WORD_WRAPPING GetWordWrapping( );
-        HW_EXPORT DWRITE_READING_DIRECTION GetReadingDirection( );
-        HW_EXPORT DWRITE_FLOW_DIRECTION GetFlowDirection( );
-        HW_EXPORT FLOAT GetIncrementalTabStop( );
-        HW_EXPORT TextFormat& GetTrimming( DWRITE_TRIMMING* trimmingOptions, IDWriteInlineObject** trimmingSign );
-        HW_EXPORT InlineObject GetTrimming( DWRITE_TRIMMING& trimmingOptions );
-        HW_EXPORT TextFormat& GetLineSpacing( DWRITE_LINE_SPACING_METHOD* lineSpacingMethod, FLOAT* lineSpacing, FLOAT* baseline );
-        HW_EXPORT TextFormat& GetFontCollection( IDWriteFontCollection** fontCollection );
-        HW_EXPORT FontCollection GetFontCollection( );
-        HW_EXPORT UINT32 GetFontFamilyNameLength( );
-        HW_EXPORT TextFormat& GetFontFamilyName( WCHAR* fontFamilyName, UINT32 nameSize );
-        HW_EXPORT std::shared_ptr<WideString> GetFontFamilyName( );
-        HW_EXPORT DWRITE_FONT_WEIGHT GetFontWeight( );
-        HW_EXPORT DWRITE_FONT_STYLE GetFontStyle( );
-        HW_EXPORT DWRITE_FONT_STRETCH GetFontStretch( );
-        HW_EXPORT FLOAT GetFontSize( );
-        HW_EXPORT UINT32 GetLocaleNameLength( );
-        HW_EXPORT TextFormat& GetLocaleName( WCHAR* localeName, UINT32 nameSize );
-        HW_EXPORT std::shared_ptr<WideString> GetLocaleName( );
+        HW_EXPORT void SetTextAlignment( DWRITE_TEXT_ALIGNMENT textAlignment ) const;
+        HW_EXPORT void SetParagraphAlignment( DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment ) const;
+        HW_EXPORT void SetWordWrapping( DWRITE_WORD_WRAPPING wordWrapping ) const;
+        HW_EXPORT void SetReadingDirection( DWRITE_READING_DIRECTION readingDirection ) const;
+        HW_EXPORT void SetFlowDirection( DWRITE_FLOW_DIRECTION flowDirection ) const;
+        HW_EXPORT void SetIncrementalTabStop( FLOAT incrementalTabStop ) const;
+        HW_EXPORT void SetTrimming( DWRITE_TRIMMING const* trimmingOptions, IDWriteInlineObject* trimmingSign ) const;
+        HW_EXPORT void SetLineSpacing( DWRITE_LINE_SPACING_METHOD lineSpacingMethod, FLOAT lineSpacing, FLOAT baseline ) const;
+        HW_EXPORT DWRITE_TEXT_ALIGNMENT GetTextAlignment( ) const;
+        HW_EXPORT DWRITE_PARAGRAPH_ALIGNMENT GetParagraphAlignment( ) const;
+        HW_EXPORT DWRITE_WORD_WRAPPING GetWordWrapping( ) const;
+        HW_EXPORT DWRITE_READING_DIRECTION GetReadingDirection( ) const;
+        HW_EXPORT DWRITE_FLOW_DIRECTION GetFlowDirection( ) const;
+        HW_EXPORT FLOAT GetIncrementalTabStop( ) const;
+        HW_EXPORT void GetTrimming( DWRITE_TRIMMING* trimmingOptions, IDWriteInlineObject** trimmingSign ) const;
+        HW_EXPORT InlineObject GetTrimming( DWRITE_TRIMMING& trimmingOptions ) const;
+        HW_EXPORT void GetLineSpacing( DWRITE_LINE_SPACING_METHOD* lineSpacingMethod, FLOAT* lineSpacing, FLOAT* baseline ) const;
+        HW_EXPORT void GetFontCollection( IDWriteFontCollection** fontCollection ) const;
+        HW_EXPORT FontCollection GetFontCollection( ) const;
+        HW_EXPORT UINT32 GetFontFamilyNameLength( ) const;
+        HW_EXPORT void GetFontFamilyName( WCHAR* fontFamilyName, UINT32 nameSize ) const;
+        HW_EXPORT WideString GetFontFamilyName( ) const;
+        HW_EXPORT DWRITE_FONT_WEIGHT GetFontWeight( ) const;
+        HW_EXPORT DWRITE_FONT_STYLE GetFontStyle( ) const;
+        HW_EXPORT DWRITE_FONT_STRETCH GetFontStretch( ) const;
+        HW_EXPORT FLOAT GetFontSize( ) const;
+        HW_EXPORT UINT32 GetLocaleNameLength( ) const;
+        HW_EXPORT void GetLocaleName( WCHAR* localeName, UINT32 nameSize ) const;
+        HW_EXPORT WideString GetLocaleName( ) const;
     };
 
 
@@ -367,12 +367,12 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Typography, Unknown, IDWriteTypography, IUnknown )
 
-        HW_EXPORT Typography& AddFontFeature( DWRITE_FONT_FEATURE fontFeature );
-        HW_EXPORT Typography& AddFontFeatures( std::shared_ptr< std::vector<DWRITE_FONT_FEATURE> > fontFeatures );
-        HW_EXPORT UINT32 GetFontFeatureCount( );
-        HW_EXPORT Typography& GetFontFeature( UINT32 fontFeatureIndex, DWRITE_FONT_FEATURE* fontFeature );
-        HW_EXPORT DWRITE_FONT_FEATURE GetFontFeature( UINT32 fontFeatureIndex );
-        HW_EXPORT std::shared_ptr< std::vector<DWRITE_FONT_FEATURE> > GetFontFeatures( );
+        HW_EXPORT void AddFontFeature( DWRITE_FONT_FEATURE fontFeature ) const;
+        HW_EXPORT void AddFontFeatures( std::shared_ptr< std::vector<DWRITE_FONT_FEATURE> > fontFeatures ) const;
+        HW_EXPORT UINT32 GetFontFeatureCount( ) const;
+        HW_EXPORT void GetFontFeature( UINT32 fontFeatureIndex, DWRITE_FONT_FEATURE* fontFeature ) const;
+        HW_EXPORT DWRITE_FONT_FEATURE GetFontFeature( UINT32 fontFeatureIndex ) const;
+        HW_EXPORT std::vector<DWRITE_FONT_FEATURE> GetFontFeatures( ) const;
     };
 
     /// <summary>
@@ -389,11 +389,11 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalysisSource, Unknown, IDWriteTextAnalysisSource, IUnknown )
 
-        HW_EXPORT TextAnalysisSource& GetTextAtPosition( UINT32 textPosition, WCHAR const** textString, UINT32* textLength );
-        HW_EXPORT TextAnalysisSource& GetTextBeforePosition( UINT32 textPosition, WCHAR const** textString, UINT32* textLength );
-        HW_EXPORT DWRITE_READING_DIRECTION GetParagraphReadingDirection( );
-        HW_EXPORT TextAnalysisSource& GetLocaleName( UINT32 textPosition, UINT32* textLength, _Outptr_result_z_ WCHAR const** localeName );
-        HW_EXPORT TextAnalysisSource& GetNumberSubstitution( UINT32 textPosition, UINT32* textLength, _Outptr_ IDWriteNumberSubstitution** numberSubstitution );
+        HW_EXPORT void GetTextAtPosition( UINT32 textPosition, WCHAR const** textString, UINT32* textLength ) const;
+        HW_EXPORT void GetTextBeforePosition( UINT32 textPosition, WCHAR const** textString, UINT32* textLength ) const;
+        HW_EXPORT DWRITE_READING_DIRECTION GetParagraphReadingDirection( ) const;
+        HW_EXPORT void GetLocaleName( UINT32 textPosition, UINT32* textLength, _Outptr_result_z_ WCHAR const** localeName ) const;
+        HW_EXPORT void GetNumberSubstitution( UINT32 textPosition, UINT32* textLength, _Outptr_ IDWriteNumberSubstitution** numberSubstitution ) const;
     };
 
 
@@ -407,10 +407,10 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalysisSink, Unknown, IDWriteTextAnalysisSink, IUnknown )
 
-        HW_EXPORT TextAnalysisSink& SetScriptAnalysis( UINT32 textPosition, UINT32 textLength, DWRITE_SCRIPT_ANALYSIS const* scriptAnalysis );
-        HW_EXPORT TextAnalysisSink& SetLineBreakpoints( UINT32 textPosition, UINT32 textLength, DWRITE_LINE_BREAKPOINT const* lineBreakpoints );
-        HW_EXPORT TextAnalysisSink& SetBidiLevel( UINT32 textPosition, UINT32 textLength, UINT8 explicitLevel, UINT8 resolvedLevel );
-        HW_EXPORT TextAnalysisSink& SetNumberSubstitution( UINT32 textPosition, UINT32 textLength, IDWriteNumberSubstitution* numberSubstitution );
+        HW_EXPORT void SetScriptAnalysis( UINT32 textPosition, UINT32 textLength, DWRITE_SCRIPT_ANALYSIS const* scriptAnalysis ) const;
+        HW_EXPORT void SetLineBreakpoints( UINT32 textPosition, UINT32 textLength, DWRITE_LINE_BREAKPOINT const* lineBreakpoints ) const;
+        HW_EXPORT void SetBidiLevel( UINT32 textPosition, UINT32 textLength, UINT8 explicitLevel, UINT8 resolvedLevel ) const;
+        HW_EXPORT void SetNumberSubstitution( UINT32 textPosition, UINT32 textLength, IDWriteNumberSubstitution* numberSubstitution ) const;
     };
 
     /// <summary>
@@ -425,31 +425,31 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalyzer, Unknown, IDWriteTextAnalyzer, IUnknown )
 
-        HW_EXPORT TextAnalyzer& AnalyzeScript(
+        HW_EXPORT void AnalyzeScript(
             IDWriteTextAnalysisSource* analysisSource,
             UINT32 textPosition,
             UINT32 textLength,
-            IDWriteTextAnalysisSink* analysisSink );
+            IDWriteTextAnalysisSink* analysisSink ) const;
 
-        HW_EXPORT TextAnalyzer& AnalyzeBidi(
+        HW_EXPORT void AnalyzeBidi(
             IDWriteTextAnalysisSource* analysisSource,
             UINT32 textPosition,
             UINT32 textLength,
-            IDWriteTextAnalysisSink* analysisSink );
+            IDWriteTextAnalysisSink* analysisSink ) const;
 
-        HW_EXPORT TextAnalyzer& AnalyzeNumberSubstitution(
+        HW_EXPORT void AnalyzeNumberSubstitution(
             IDWriteTextAnalysisSource* analysisSource,
             UINT32 textPosition,
             UINT32 textLength,
-            IDWriteTextAnalysisSink* analysisSink );
+            IDWriteTextAnalysisSink* analysisSink ) const;
 
-        HW_EXPORT TextAnalyzer& AnalyzeLineBreakpoints(
+        HW_EXPORT void AnalyzeLineBreakpoints(
             IDWriteTextAnalysisSource* analysisSource,
             UINT32 textPosition,
             UINT32 textLength,
-            IDWriteTextAnalysisSink* analysisSink );
+            IDWriteTextAnalysisSink* analysisSink ) const;
 
-        HW_EXPORT TextAnalyzer& GetGlyphs(
+        HW_EXPORT void GetGlyphs(
             WCHAR const* textString,
             UINT32 textLength,
             IDWriteFontFace* fontFace,
@@ -466,9 +466,9 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
             UINT16* glyphIndices,
             DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProps,
-            UINT32* actualGlyphCount );
+            UINT32* actualGlyphCount ) const;
 
-        HW_EXPORT TextAnalyzer& GetGlyphPlacements(
+        HW_EXPORT void GetGlyphPlacements(
             WCHAR const* textString,
             UINT16 const* clusterMap,
             DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
@@ -486,9 +486,9 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             UINT32 const* featureRangeLengths,
             UINT32 featureRanges,
             FLOAT* glyphAdvances,
-            DWRITE_GLYPH_OFFSET* glyphOffsets );
+            DWRITE_GLYPH_OFFSET* glyphOffsets ) const;
 
-        HW_EXPORT TextAnalyzer& GetGdiCompatibleGlyphPlacements(
+        HW_EXPORT void GetGdiCompatibleGlyphPlacements(
             WCHAR const* textString,
             UINT16 const* clusterMap,
             DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
@@ -509,7 +509,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             UINT32 const* featureRangeLengths,
             UINT32 featureRanges,
             FLOAT* glyphAdvances,
-            DWRITE_GLYPH_OFFSET* glyphOffsets );
+            DWRITE_GLYPH_OFFSET* glyphOffsets ) const;
     };
 
     /// <summary>
@@ -523,13 +523,13 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( InlineObject, Unknown, IDWriteInlineObject, IUnknown )
 
-        HW_EXPORT InlineObject& Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect );
+        HW_EXPORT void Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect ) const;
 
-        HW_EXPORT InlineObject& GetMetrics( DWRITE_INLINE_OBJECT_METRICS* metrics );
+        HW_EXPORT void GetMetrics( DWRITE_INLINE_OBJECT_METRICS* metrics ) const;
 
-        HW_EXPORT InlineObject& GetOverhangMetrics( DWRITE_OVERHANG_METRICS* overhangs );
+        HW_EXPORT void GetOverhangMetrics( DWRITE_OVERHANG_METRICS* overhangs ) const;
 
-        HW_EXPORT InlineObject& GetBreakConditions( DWRITE_BREAK_CONDITION* breakConditionBefore, DWRITE_BREAK_CONDITION* breakConditionAfter );
+        HW_EXPORT void GetBreakConditions( DWRITE_BREAK_CONDITION* breakConditionBefore, DWRITE_BREAK_CONDITION* breakConditionAfter ) const;
     };
 
     /// <summary>
@@ -544,11 +544,11 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( PixelSnapping, Unknown, IDWritePixelSnapping, IUnknown )
 
-        HW_EXPORT PixelSnapping& IsPixelSnappingDisabled( void* clientDrawingContext, BOOL* isDisabled );
+        HW_EXPORT void IsPixelSnappingDisabled( void* clientDrawingContext, BOOL* isDisabled ) const;
 
-        HW_EXPORT PixelSnapping& GetCurrentTransform( void* clientDrawingContext, DWRITE_MATRIX* transform );
+        HW_EXPORT void GetCurrentTransform( void* clientDrawingContext, DWRITE_MATRIX* transform ) const;
 
-        HW_EXPORT PixelSnapping& GetPixelsPerDip( void* clientDrawingContext, FLOAT* pixelsPerDip );
+        HW_EXPORT void GetPixelsPerDip( void* clientDrawingContext, FLOAT* pixelsPerDip ) const;
     };
 
     /// <summary>
@@ -561,13 +561,13 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextRenderer, PixelSnapping, IDWriteTextRenderer, IDWritePixelSnapping )
 
-        HW_EXPORT TextRenderer& DrawGlyphRun( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, DWRITE_GLYPH_RUN_DESCRIPTION const* glyphRunDescription, IUnknown* clientDrawingEffect );
+        HW_EXPORT void DrawGlyphRun( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, DWRITE_GLYPH_RUN_DESCRIPTION const* glyphRunDescription, IUnknown* clientDrawingEffect ) const;
 
-        HW_EXPORT TextRenderer& DrawUnderline( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_UNDERLINE const* underline, IUnknown* clientDrawingEffect );
+        HW_EXPORT void DrawUnderline( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_UNDERLINE const* underline, IUnknown* clientDrawingEffect ) const;
 
-        HW_EXPORT TextRenderer& DrawStrikethrough( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_STRIKETHROUGH const* strikethrough, IUnknown* clientDrawingEffect );
+        HW_EXPORT void DrawStrikethrough( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_STRIKETHROUGH const* strikethrough, IUnknown* clientDrawingEffect ) const;
 
-        HW_EXPORT TextRenderer& DrawInlineObject( void* clientDrawingContext, FLOAT originX, FLOAT originY, IDWriteInlineObject* inlineObject, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect );
+        HW_EXPORT void DrawInlineObject( void* clientDrawingContext, FLOAT originX, FLOAT originY, IDWriteInlineObject* inlineObject, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect ) const;
     };
 
     /// <summary>
@@ -578,82 +578,82 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     public:
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextLayout, TextFormat, IDWriteTextLayout, IDWriteTextFormat )
 
-        HW_EXPORT TextLayout& SetMaxWidth( FLOAT maxWidth );
-        HW_EXPORT TextLayout& SetMaxHeight( FLOAT maxHeight );
+        HW_EXPORT void SetMaxWidth( FLOAT maxWidth ) const;
+        HW_EXPORT void SetMaxHeight( FLOAT maxHeight ) const;
 
-        HW_EXPORT TextLayout& SetFontCollection( IDWriteFontCollection* fontCollection, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetFontCollection( IDWriteFontCollection* fontCollection, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetFontFamilyName( WCHAR const* fontFamilyName, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetFontFamilyName( WCHAR const* fontFamilyName, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetFontWeight( DWRITE_FONT_WEIGHT fontWeight, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetFontWeight( DWRITE_FONT_WEIGHT fontWeight, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetFontStyle( DWRITE_FONT_STYLE fontStyle, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetFontStyle( DWRITE_FONT_STYLE fontStyle, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetFontStretch( DWRITE_FONT_STRETCH fontStretch, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetFontStretch( DWRITE_FONT_STRETCH fontStretch, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetFontSize( FLOAT fontSize, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetFontSize( FLOAT fontSize, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetUnderline( BOOL hasUnderline, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetUnderline( BOOL hasUnderline, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetStrikethrough( BOOL hasStrikethrough, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetStrikethrough( BOOL hasStrikethrough, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetDrawingEffect( IUnknown* drawingEffect, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetDrawingEffect( IUnknown* drawingEffect, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetInlineObject( IDWriteInlineObject* inlineObject, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetInlineObject( IDWriteInlineObject* inlineObject, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetTypography( IDWriteTypography* typography, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetTypography( IDWriteTypography* typography, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT TextLayout& SetLocaleName( WCHAR const* localeName, DWRITE_TEXT_RANGE textRange );
+        HW_EXPORT void SetLocaleName( WCHAR const* localeName, DWRITE_TEXT_RANGE textRange ) const;
 
-        HW_EXPORT FLOAT GetMaxWidth( );
+        HW_EXPORT FLOAT GetMaxWidth( ) const;
 
-        HW_EXPORT FLOAT GetMaxHeight( );
+        HW_EXPORT FLOAT GetMaxHeight( ) const;
 
-        HW_EXPORT TextLayout& GetFontCollection( UINT32 currentPosition, IDWriteFontCollection** fontCollection, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetFontCollection( UINT32 currentPosition, IDWriteFontCollection** fontCollection, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetFontFamilyNameLength( UINT32 currentPosition, UINT32* nameLength, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetFontFamilyNameLength( UINT32 currentPosition, UINT32* nameLength, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetFontFamilyName( UINT32 currentPosition, _Out_writes_z_( nameSize ) WCHAR* fontFamilyName, UINT32 nameSize, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetFontFamilyName( UINT32 currentPosition, _Out_writes_z_( nameSize ) WCHAR* fontFamilyName, UINT32 nameSize, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetFontWeight( UINT32 currentPosition, DWRITE_FONT_WEIGHT* fontWeight, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetFontWeight( UINT32 currentPosition, DWRITE_FONT_WEIGHT* fontWeight, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetFontStyle( UINT32 currentPosition, DWRITE_FONT_STYLE* fontStyle, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetFontStyle( UINT32 currentPosition, DWRITE_FONT_STYLE* fontStyle, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetFontStretch( UINT32 currentPosition, DWRITE_FONT_STRETCH* fontStretch, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetFontStretch( UINT32 currentPosition, DWRITE_FONT_STRETCH* fontStretch, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetFontSize( UINT32 currentPosition, FLOAT* fontSize, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetFontSize( UINT32 currentPosition, FLOAT* fontSize, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetUnderline( UINT32 currentPosition, BOOL* hasUnderline, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetUnderline( UINT32 currentPosition, BOOL* hasUnderline, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetStrikethrough( UINT32 currentPosition, BOOL* hasStrikethrough, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetStrikethrough( UINT32 currentPosition, BOOL* hasStrikethrough, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetDrawingEffect( UINT32 currentPosition, IUnknown** drawingEffect, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetDrawingEffect( UINT32 currentPosition, IUnknown** drawingEffect, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetInlineObject( UINT32 currentPosition, IDWriteInlineObject** inlineObject, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetInlineObject( UINT32 currentPosition, IDWriteInlineObject** inlineObject, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetTypography( UINT32 currentPosition, IDWriteTypography** typography, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetTypography( UINT32 currentPosition, IDWriteTypography** typography, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetLocaleNameLength( UINT32 currentPosition, UINT32* nameLength, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetLocaleNameLength( UINT32 currentPosition, UINT32* nameLength, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& GetLocaleName( UINT32 currentPosition, _Out_writes_z_( nameSize ) WCHAR* localeName, UINT32 nameSize, DWRITE_TEXT_RANGE* textRange = nullptr );
+        HW_EXPORT void GetLocaleName( UINT32 currentPosition, _Out_writes_z_( nameSize ) WCHAR* localeName, UINT32 nameSize, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
 
-        HW_EXPORT TextLayout& Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY );
+        HW_EXPORT void Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY ) const;
 
-        HW_EXPORT TextLayout& GetLineMetrics( DWRITE_LINE_METRICS* lineMetrics, UINT32 maxLineCount, UINT32* actualLineCount );
+        HW_EXPORT void GetLineMetrics( DWRITE_LINE_METRICS* lineMetrics, UINT32 maxLineCount, UINT32* actualLineCount ) const;
 
-        HW_EXPORT TextLayout& GetMetrics( DWRITE_TEXT_METRICS* textMetrics );
+        HW_EXPORT void GetMetrics( DWRITE_TEXT_METRICS* textMetrics ) const;
 
-        HW_EXPORT TextLayout& GetOverhangMetrics( DWRITE_OVERHANG_METRICS* overhangs );
+        HW_EXPORT void GetOverhangMetrics( DWRITE_OVERHANG_METRICS* overhangs ) const;
 
-        HW_EXPORT TextLayout& GetClusterMetrics( _Out_writes_opt_( maxClusterCount ) DWRITE_CLUSTER_METRICS* clusterMetrics, UINT32 maxClusterCount, UINT32* actualClusterCount );
+        HW_EXPORT void GetClusterMetrics( _Out_writes_opt_( maxClusterCount ) DWRITE_CLUSTER_METRICS* clusterMetrics, UINT32 maxClusterCount, UINT32* actualClusterCount ) const;
 
-        HW_EXPORT TextLayout& DetermineMinWidth( FLOAT* minWidth );
+        HW_EXPORT void DetermineMinWidth( FLOAT* minWidth ) const;
 
-        HW_EXPORT TextLayout& HitTestPoint( FLOAT pointX, FLOAT pointY, BOOL* isTrailingHit, BOOL* isInside, DWRITE_HIT_TEST_METRICS* hitTestMetrics );
+        HW_EXPORT void HitTestPoint( FLOAT pointX, FLOAT pointY, BOOL* isTrailingHit, BOOL* isInside, DWRITE_HIT_TEST_METRICS* hitTestMetrics ) const;
 
-        HW_EXPORT TextLayout& HitTestTextPosition( UINT32 textPosition, BOOL isTrailingHit, FLOAT* pointX, FLOAT* pointY, DWRITE_HIT_TEST_METRICS* hitTestMetrics );
+        HW_EXPORT void HitTestTextPosition( UINT32 textPosition, BOOL isTrailingHit, FLOAT* pointX, FLOAT* pointY, DWRITE_HIT_TEST_METRICS* hitTestMetrics ) const;
 
-        HW_EXPORT TextLayout& HitTestTextRange( UINT32 textPosition, UINT32 textLength, FLOAT originX, FLOAT originY, DWRITE_HIT_TEST_METRICS* hitTestMetrics, UINT32 maxHitTestMetricsCount, UINT32* actualHitTestMetricsCount );
+        HW_EXPORT void HitTestTextRange( UINT32 textPosition, UINT32 textLength, FLOAT originX, FLOAT originY, DWRITE_HIT_TEST_METRICS* hitTestMetrics, UINT32 maxHitTestMetricsCount, UINT32* actualHitTestMetricsCount ) const;
     };
 
     
@@ -669,21 +669,21 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( BitmapRenderTarget, Unknown, IDWriteBitmapRenderTarget, IUnknown )
 
-        HW_EXPORT BitmapRenderTarget& DrawGlyphRun( FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, IDWriteRenderingParams* renderingParams, COLORREF textColor, RECT* blackBoxRect = nullptr );
+        HW_EXPORT void DrawGlyphRun( FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, IDWriteRenderingParams* renderingParams, COLORREF textColor, RECT* blackBoxRect = nullptr ) const;
 
-        HW_EXPORT HDC GetMemoryDC( );
+        HW_EXPORT HDC GetMemoryDC( ) const;
 
-        HW_EXPORT FLOAT GetPixelsPerDip( );
+        HW_EXPORT FLOAT GetPixelsPerDip( ) const;
 
-        HW_EXPORT BitmapRenderTarget& SetPixelsPerDip( FLOAT pixelsPerDip );
+        HW_EXPORT void SetPixelsPerDip( FLOAT pixelsPerDip ) const;
 
-        HW_EXPORT BitmapRenderTarget& GetCurrentTransform( DWRITE_MATRIX* transform );
+        HW_EXPORT void GetCurrentTransform( DWRITE_MATRIX* transform ) const;
 
-        HW_EXPORT BitmapRenderTarget& SetCurrentTransform( DWRITE_MATRIX const* transform );
+        HW_EXPORT void SetCurrentTransform( DWRITE_MATRIX const* transform ) const;
 
-        HW_EXPORT BitmapRenderTarget& GetSize( SIZE* size );
+        HW_EXPORT void GetSize( SIZE* size ) const;
 
-        HW_EXPORT BitmapRenderTarget& Resize( UINT32 width, UINT32 height );
+        HW_EXPORT void Resize( UINT32 width, UINT32 height ) const;
     };
 
 
@@ -699,15 +699,15 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( GdiInterop, Unknown, IDWriteGdiInterop, IUnknown )
 
-        HW_EXPORT GdiInterop& CreateFontFromLOGFONT( LOGFONTW const* logFont, IDWriteFont** font );
+        HW_EXPORT void CreateFontFromLOGFONT( LOGFONTW const* logFont, IDWriteFont** font ) const;
 
-        HW_EXPORT GdiInterop& ConvertFontToLOGFONT( IDWriteFont* font, LOGFONTW* logFont, BOOL* isSystemFont );
+        HW_EXPORT void ConvertFontToLOGFONT( IDWriteFont* font, LOGFONTW* logFont, BOOL* isSystemFont ) const;
 
-        HW_EXPORT GdiInterop& ConvertFontFaceToLOGFONT( IDWriteFontFace* font, LOGFONTW* logFont );
+        HW_EXPORT void ConvertFontFaceToLOGFONT( IDWriteFontFace* font, LOGFONTW* logFont ) const;
 
-        HW_EXPORT GdiInterop& CreateFontFaceFromHdc( HDC hdc, IDWriteFontFace** fontFace );
+        HW_EXPORT void CreateFontFaceFromHdc( HDC hdc, IDWriteFontFace** fontFace ) const;
 
-        HW_EXPORT GdiInterop& CreateBitmapRenderTarget( HDC hdc, UINT32 width, UINT32 height, IDWriteBitmapRenderTarget** renderTarget );
+        HW_EXPORT void CreateBitmapRenderTarget( HDC hdc, UINT32 width, UINT32 height, IDWriteBitmapRenderTarget** renderTarget ) const;
     };
 
     /// <summary>
@@ -720,11 +720,11 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( GlyphRunAnalysis, Unknown, IDWriteGlyphRunAnalysis, IUnknown )
 
-        HW_EXPORT GlyphRunAnalysis& GetAlphaTextureBounds( DWRITE_TEXTURE_TYPE textureType, RECT* textureBounds );
+        HW_EXPORT void GetAlphaTextureBounds( DWRITE_TEXTURE_TYPE textureType, RECT* textureBounds ) const;
 
-        HW_EXPORT GlyphRunAnalysis& CreateAlphaTexture( DWRITE_TEXTURE_TYPE textureType, RECT const* textureBounds, BYTE* alphaValues, UINT32 bufferSize );
+        HW_EXPORT void CreateAlphaTexture( DWRITE_TEXTURE_TYPE textureType, RECT const* textureBounds, BYTE* alphaValues, UINT32 bufferSize ) const;
 
-        HW_EXPORT GlyphRunAnalysis& GetAlphaBlendParams( IDWriteRenderingParams* renderingParams, FLOAT* blendGamma, FLOAT* blendEnhancedContrast, FLOAT* blendClearTypeLevel );
+        HW_EXPORT void GetAlphaBlendParams( IDWriteRenderingParams* renderingParams, FLOAT* blendGamma, FLOAT* blendEnhancedContrast, FLOAT* blendClearTypeLevel ) const;
     };
 
     /// <summary>
@@ -739,62 +739,62 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         HW_EXPORT Factory( DWRITE_FACTORY_TYPE factoryType );
 
-        HW_EXPORT Factory& GetSystemFontCollection( IDWriteFontCollection** fontCollection, BOOL checkForUpdates = FALSE );
-        HW_EXPORT FontCollection GetSystemFontCollection( bool checkForUpdates = false );
+        HW_EXPORT void GetSystemFontCollection( IDWriteFontCollection** fontCollection, BOOL checkForUpdates = FALSE ) const;
+        HW_EXPORT FontCollection GetSystemFontCollection( bool checkForUpdates = false ) const;
 
-        HW_EXPORT Factory& CreateCustomFontCollection( IDWriteFontCollectionLoader* collectionLoader, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontCollection** fontCollection );
-        HW_EXPORT FontCollection CreateCustomFontCollection( IDWriteFontCollectionLoader* collectionLoader, void const* collectionKey, UINT32 collectionKeySize );
+        HW_EXPORT void CreateCustomFontCollection( IDWriteFontCollectionLoader* collectionLoader, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontCollection** fontCollection ) const;
+        HW_EXPORT FontCollection CreateCustomFontCollection( IDWriteFontCollectionLoader* collectionLoader, void const* collectionKey, UINT32 collectionKeySize ) const;
 
-        HW_EXPORT Factory& RegisterFontCollectionLoader( IDWriteFontCollectionLoader* fontCollectionLoader );
-        HW_EXPORT Factory& UnregisterFontCollectionLoader( IDWriteFontCollectionLoader* fontCollectionLoader );
+        HW_EXPORT void RegisterFontCollectionLoader( IDWriteFontCollectionLoader* fontCollectionLoader ) const;
+        HW_EXPORT void UnregisterFontCollectionLoader( IDWriteFontCollectionLoader* fontCollectionLoader ) const;
 
-        HW_EXPORT Factory& CreateFontFileReference( WCHAR const* filePath, FILETIME const* lastWriteTime, IDWriteFontFile** fontFile );
-        HW_EXPORT FontFile CreateFontFileReference( WCHAR const* filePath, FILETIME const* lastWriteTime = nullptr );
+        HW_EXPORT void CreateFontFileReference( WCHAR const* filePath, FILETIME const* lastWriteTime, IDWriteFontFile** fontFile ) const;
+        HW_EXPORT FontFile CreateFontFileReference( WCHAR const* filePath, FILETIME const* lastWriteTime = nullptr ) const;
 
-        HW_EXPORT Factory& CreateCustomFontFileReference( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileLoader* fontFileLoader, IDWriteFontFile** fontFile );
-        HW_EXPORT FontFile CreateCustomFontFileReference( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileLoader* fontFileLoader );
+        HW_EXPORT void CreateCustomFontFileReference( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileLoader* fontFileLoader, IDWriteFontFile** fontFile ) const;
+        HW_EXPORT FontFile CreateCustomFontFileReference( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileLoader* fontFileLoader ) const;
 
-        HW_EXPORT Factory& CreateFontFace( DWRITE_FONT_FACE_TYPE fontFaceType, UINT32 numberOfFiles, IDWriteFontFile* const* fontFiles, UINT32 faceIndex, DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags, IDWriteFontFace** fontFace );
-        HW_EXPORT FontFace CreateFontFace( DWRITE_FONT_FACE_TYPE fontFaceType, UINT32 numberOfFiles, IDWriteFontFile* const* fontFiles, UINT32 faceIndex, DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags );
+        HW_EXPORT void CreateFontFace( DWRITE_FONT_FACE_TYPE fontFaceType, UINT32 numberOfFiles, IDWriteFontFile* const* fontFiles, UINT32 faceIndex, DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags, IDWriteFontFace** fontFace ) const;
+        HW_EXPORT FontFace CreateFontFace( DWRITE_FONT_FACE_TYPE fontFaceType, UINT32 numberOfFiles, IDWriteFontFile* const* fontFiles, UINT32 faceIndex, DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags ) const;
 
-        HW_EXPORT Factory& CreateRenderingParams( IDWriteRenderingParams** renderingParams );
-        HW_EXPORT RenderingParams CreateRenderingParams( );
+        HW_EXPORT void CreateRenderingParams( IDWriteRenderingParams** renderingParams ) const;
+        HW_EXPORT RenderingParams CreateRenderingParams( ) const;
 
-        HW_EXPORT Factory& CreateMonitorRenderingParams( HMONITOR monitor, IDWriteRenderingParams** renderingParams );
-        HW_EXPORT RenderingParams CreateMonitorRenderingParams( HMONITOR monitor );
+        HW_EXPORT void CreateMonitorRenderingParams( HMONITOR monitor, IDWriteRenderingParams** renderingParams ) const;
+        HW_EXPORT RenderingParams CreateMonitorRenderingParams( HMONITOR monitor ) const;
 
-        HW_EXPORT Factory& CreateCustomRenderingParams( FLOAT gamma, FLOAT enhancedContrast, FLOAT clearTypeLevel, DWRITE_PIXEL_GEOMETRY pixelGeometry, DWRITE_RENDERING_MODE renderingMode, IDWriteRenderingParams** renderingParams );
-        HW_EXPORT RenderingParams CreateCustomRenderingParams( FLOAT gamma, FLOAT enhancedContrast, FLOAT clearTypeLevel, DWRITE_PIXEL_GEOMETRY pixelGeometry, DWRITE_RENDERING_MODE renderingMode );
+        HW_EXPORT void CreateCustomRenderingParams( FLOAT gamma, FLOAT enhancedContrast, FLOAT clearTypeLevel, DWRITE_PIXEL_GEOMETRY pixelGeometry, DWRITE_RENDERING_MODE renderingMode, IDWriteRenderingParams** renderingParams ) const;
+        HW_EXPORT RenderingParams CreateCustomRenderingParams( FLOAT gamma, FLOAT enhancedContrast, FLOAT clearTypeLevel, DWRITE_PIXEL_GEOMETRY pixelGeometry, DWRITE_RENDERING_MODE renderingMode ) const;
 
-        HW_EXPORT Factory& RegisterFontFileLoader( IDWriteFontFileLoader* fontFileLoader );
-        HW_EXPORT Factory& UnregisterFontFileLoader( IDWriteFontFileLoader* fontFileLoader );
+        HW_EXPORT void RegisterFontFileLoader( IDWriteFontFileLoader* fontFileLoader ) const;
+        HW_EXPORT void UnregisterFontFileLoader( IDWriteFontFileLoader* fontFileLoader ) const;
 
-        HW_EXPORT Factory& CreateTextFormat( WCHAR const* fontFamilyName, IDWriteFontCollection* fontCollection, DWRITE_FONT_WEIGHT fontWeight, DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const* localeName, IDWriteTextFormat** textFormat );
-        HW_EXPORT TextFormat CreateTextFormat( WCHAR const* fontFamilyName, IDWriteFontCollection* fontCollection, DWRITE_FONT_WEIGHT fontWeight, DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const* localeName );
-        HW_EXPORT TextFormat CreateTextFormat( WCHAR const* fontFamilyName, FLOAT fontSize );
+        HW_EXPORT void CreateTextFormat( WCHAR const* fontFamilyName, IDWriteFontCollection* fontCollection, DWRITE_FONT_WEIGHT fontWeight, DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const* localeName, IDWriteTextFormat** textFormat ) const;
+        HW_EXPORT TextFormat CreateTextFormat( WCHAR const* fontFamilyName, IDWriteFontCollection* fontCollection, DWRITE_FONT_WEIGHT fontWeight, DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const* localeName ) const;
+        HW_EXPORT TextFormat CreateTextFormat( WCHAR const* fontFamilyName, FLOAT fontSize ) const;
 
-        HW_EXPORT Factory& CreateTypography( IDWriteTypography** typography );
-        HW_EXPORT Typography CreateTypography( );
+        HW_EXPORT void CreateTypography( IDWriteTypography** typography ) const;
+        HW_EXPORT Typography CreateTypography( ) const;
 
-        HW_EXPORT Factory& GetGdiInterop( IDWriteGdiInterop** gdiInterop );
-        HW_EXPORT GdiInterop GetGdiInterop( );
+        HW_EXPORT void GetGdiInterop( IDWriteGdiInterop** gdiInterop ) const;
+        HW_EXPORT GdiInterop GetGdiInterop( ) const;
 
-        HW_EXPORT Factory& CreateTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT maxWidth, FLOAT maxHeight, IDWriteTextLayout** textLayout );
-        HW_EXPORT TextLayout CreateTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT maxWidth, FLOAT maxHeight );
+        HW_EXPORT void CreateTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT maxWidth, FLOAT maxHeight, IDWriteTextLayout** textLayout ) const;
+        HW_EXPORT TextLayout CreateTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT maxWidth, FLOAT maxHeight ) const;
 
-        HW_EXPORT Factory& CreateGdiCompatibleTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT layoutWidth, FLOAT layoutHeight, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, IDWriteTextLayout** textLayout );
-        HW_EXPORT TextLayout CreateGdiCompatibleTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT layoutWidth, FLOAT layoutHeight, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural );
+        HW_EXPORT void CreateGdiCompatibleTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT layoutWidth, FLOAT layoutHeight, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, IDWriteTextLayout** textLayout ) const;
+        HW_EXPORT TextLayout CreateGdiCompatibleTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT layoutWidth, FLOAT layoutHeight, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural ) const;
 
-        HW_EXPORT Factory& CreateEllipsisTrimmingSign( IDWriteTextFormat* textFormat, IDWriteInlineObject** trimmingSign );
-        HW_EXPORT InlineObject CreateEllipsisTrimmingSign( IDWriteTextFormat* textFormat );
+        HW_EXPORT void CreateEllipsisTrimmingSign( IDWriteTextFormat* textFormat, IDWriteInlineObject** trimmingSign ) const;
+        HW_EXPORT InlineObject CreateEllipsisTrimmingSign( IDWriteTextFormat* textFormat ) const;
 
-        HW_EXPORT Factory& CreateTextAnalyzer( IDWriteTextAnalyzer** textAnalyzer );
-        HW_EXPORT TextAnalyzer CreateTextAnalyzer( );
+        HW_EXPORT void CreateTextAnalyzer( IDWriteTextAnalyzer** textAnalyzer ) const;
+        HW_EXPORT TextAnalyzer CreateTextAnalyzer( ) const;
 
-        HW_EXPORT Factory& CreateNumberSubstitution( DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod, WCHAR const* localeName, BOOL ignoreUserOverride, IDWriteNumberSubstitution** numberSubstitution );
+        HW_EXPORT void CreateNumberSubstitution( DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod, WCHAR const* localeName, BOOL ignoreUserOverride, IDWriteNumberSubstitution** numberSubstitution ) const;
 
-        HW_EXPORT Factory& CreateGlyphRunAnalysis( DWRITE_GLYPH_RUN const* glyphRun, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_RENDERING_MODE renderingMode, DWRITE_MEASURING_MODE measuringMode, FLOAT baselineOriginX, FLOAT baselineOriginY, IDWriteGlyphRunAnalysis** glyphRunAnalysis );
-        HW_EXPORT GlyphRunAnalysis CreateGlyphRunAnalysis( DWRITE_GLYPH_RUN const* glyphRun, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_RENDERING_MODE renderingMode, DWRITE_MEASURING_MODE measuringMode, FLOAT baselineOriginX, FLOAT baselineOriginY );
+        HW_EXPORT void CreateGlyphRunAnalysis( DWRITE_GLYPH_RUN const* glyphRun, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_RENDERING_MODE renderingMode, DWRITE_MEASURING_MODE measuringMode, FLOAT baselineOriginX, FLOAT baselineOriginY, IDWriteGlyphRunAnalysis** glyphRunAnalysis ) const;
+        HW_EXPORT GlyphRunAnalysis CreateGlyphRunAnalysis( DWRITE_GLYPH_RUN const* glyphRun, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_RENDERING_MODE renderingMode, DWRITE_MEASURING_MODE measuringMode, FLOAT baselineOriginX, FLOAT baselineOriginY ) const;
     };
 }
 

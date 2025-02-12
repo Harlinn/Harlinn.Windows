@@ -4,12 +4,14 @@
 
 #include "HWDef.h"
 #include "HWDXGI.h"
+#include "HWGraphics.h"
 #include "HWGraphicsD3D12.h"
 #include "HWGraphicsD3D11.h"
 #include "HWGraphicsD3D11On12.h"
 #include "HWDXCore.h"
 #include "HWMediaEngine.h"
 #include "HCCActiveObject.h"
+#include "HCCVectorMath.h"
 
 #ifdef BUILDING_HARLINN_AI
 #define HAI_EXPORT __declspec(dllexport)

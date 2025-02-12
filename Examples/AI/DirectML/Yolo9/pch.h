@@ -28,6 +28,7 @@
 #pragma once
 
 #include <HAIDirectMLX.h>
+#include <HAIONNXDirectML.h>
 #include <HWGraphics.h>
 #include <HWDWrite.h>
 #include <HWGraphicsD3D11.h>

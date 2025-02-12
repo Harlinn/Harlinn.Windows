@@ -602,6 +602,55 @@ namespace Harlinn::AI::ONNX
         : environment_( environment ), session_( environment->environment_, model_data, model_data_length, options.sessionOptions_, prepacked_weights_container )
     { }
 
+
+    struct Prediction
+    {
+        static constexpr float Epsilon = 0.5f;
+        // Bounding box coordinates
+        float xmin = 0.f;
+        float ymin = 0.f;
+        float xmax = 0.f;
+        float ymax = 0.f;
+        float score = 0.f;
+        Int64 predictedClass = 0;
+
+        Prediction( ) = default;
+    };
+
+    struct NearlyEqual
+    {
+        bool operator( )( const Prediction& lhs, const Prediction& rhs ) const
+        {
+            return AreNearlyEqual( lhs.xmin, rhs.xmin, Prediction::Epsilon ) &&
+                AreNearlyEqual( lhs.ymin, rhs.ymin, Prediction::Epsilon ) &&
+                AreNearlyEqual( lhs.xmax, rhs.xmax, Prediction::Epsilon ) &&
+                AreNearlyEqual( lhs.ymax, rhs.ymax, Prediction::Epsilon );
+        }
+    };
+
+    struct PositionHash
+    {
+        size_t operator ()(const Prediction& prediction ) const
+        {
+            std::array<float,4> array{ Math::Floor( prediction.xmin ), Math::Floor( prediction.ymin ), Math::Ceil( prediction.xmax ), Math::Ceil( prediction.ymax ) };
+            XXH64Hasher hasher;
+            hasher.Add( reinterpret_cast< const Byte* >( array.data( ) ), sizeof( float ) * 4 );
+            return hasher.Digest( );
+        }
+    };
+    struct PositionEqual
+    {
+        size_t operator ()( const Prediction& lhs, const Prediction& rhs ) const
+        {
+            std::array<float, 4> lhsArray{ Math::Floor( lhs.xmin ), Math::Floor( lhs.ymin ), Math::Ceil( lhs.xmax ), Math::Ceil( lhs.ymax ) };
+            std::array<float, 4> rhsArray{ Math::Floor( rhs.xmin ), Math::Floor( rhs.ymin ), Math::Ceil( rhs.xmax ), Math::Ceil( rhs.ymax ) };
+            return lhsArray == rhsArray;
+        }
+    };
+
+
+
+
     class Model : std::enable_shared_from_this<Model>
     {
     public:
@@ -616,10 +665,17 @@ namespace Harlinn::AI::ONNX
         ONNXTensorElementDataType inputDataType_ = ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UNDEFINED;
         size_t inputWidth_ = 0;
         size_t inputHeight_ = 0;
+        size_t inputSize_ = 0;
         size_t inputChannels_ = 0;
-        std::vector<std::byte> inputBuffer_;
+        CriticalSection criticalSection_;
+        std::vector<Prediction> predictions_;
+        UInt64 predictionsVersion_ = 0;
     public:
         HAI_EXPORT Model( const std::shared_ptr<ONNX::Session>& session );
+        
+        HAI_EXPORT Binary CreateInputBuffer( std::byte* src, UInt32 Width, UInt32 height, UInt32 rowPitch ) const;
+        
+        HAI_EXPORT virtual void Compute(const Binary& inputTensorData, const Math::Vector2f& viewportSize );
 
         std::shared_ptr<ONNX::Session> Session( ) const
         {
@@ -706,35 +762,98 @@ namespace Harlinn::AI::ONNX
         }
         size_t InputHeight( ) const
         {
-            inputHeight_;
+            return inputHeight_;
+        }
+
+        size_t InputSize( ) const
+        {
+            return inputSize_;
         }
 
         size_t InputChannels( ) const
         {
             return inputChannels_;
         }
-        
-        const std::vector<std::byte>& InputBuffer( ) const
+
+        std::vector<Prediction> Predictions( ) const
         {
-            return inputBuffer_;
+            std::scoped_lock lock( criticalSection_ );
+            return predictions_;
         }
-        std::vector<std::byte> InputBuffer( )
+        void SetPredictions( const std::vector<Prediction>& predictions )
         {
-            return inputBuffer_;
+            std::scoped_lock lock( criticalSection_ );
+            predictions_ = predictions;
+            predictionsVersion_++;
         }
-        void SetInputBuffer( const std::vector<std::byte>& inputBuffer )
+        void SetPredictions( std::vector<Prediction>&& predictions )
         {
-            inputBuffer_ = inputBuffer;
+            std::scoped_lock lock( criticalSection_ );
+            predictions_ = std::move( predictions );
+            predictionsVersion_++;
         }
-        void SetInputBuffer( std::vector<std::byte>&& inputBuffer )
+
+        void GetPredictions( std::vector<Prediction>& predictions, UInt64& predictionsVersion ) const
         {
-            inputBuffer_ = std::move(inputBuffer);
+            std::scoped_lock lock( criticalSection_ );
+            predictions = predictions_;
+            predictionsVersion = predictionsVersion_;
+        }
+
+        bool HasNewPredictions( UInt64 predictionsVersion )
+        {
+            std::scoped_lock lock( criticalSection_ );
+            return predictionsVersion != predictionsVersion_;
+        }
+
+        UInt64 PredictionsVersion( ) const
+        {
+            return predictionsVersion_;
         }
 
 
     };
 
 
+    
+
+
+    struct Detection
+    {
+        /// @brief The x-coordinate of the top-left corner of the bounding box.
+        float x;
+
+        /// @brief The y-coordinate of the top-left corner of the bounding box.
+        float y;
+
+        /// @brief The width of the bounding box.
+        float w;
+
+        /// @brief The height of the bounding box.
+        float h;
+
+        /// @brief The index of the detected object, typically corresponding to the class index in the model.
+        Int64 index;
+
+        /// @brief The confidence level of the detection.
+        float confidence;
+    };
+}
+
+namespace std
+{
+    template<>
+    struct hash<Harlinn::AI::ONNX::Prediction>
+    {
+        using value_type = Harlinn::AI::ONNX::Prediction;
+        size_t operator()( const value_type& x ) const
+        {
+            using namespace Harlinn::Common::Core;
+            XXH64Hasher hasher;
+            hasher.Add( reinterpret_cast<const Byte*>( &x ), sizeof( value_type ) );
+            return hasher.Digest( );
+        }
+    };
 }
 
 #endif

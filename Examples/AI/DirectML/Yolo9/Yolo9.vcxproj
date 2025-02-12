@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="D2DResources.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="FileDialog.cpp" />
     <ClCompile Include="Main.cpp" />

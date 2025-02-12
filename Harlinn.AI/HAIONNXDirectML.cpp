@@ -17,6 +17,7 @@
 #include "pch.h"
 #include "HAIONNXDirectML.h"
 
+#pragma comment( lib, "dxcore.lib")
 
 namespace Harlinn::AI::ONNX::DirectML
 {
@@ -34,6 +35,15 @@ namespace Harlinn::AI::ONNX::DirectML
             {
                 auto loadMessage = static_cast< ComputeNodeLoadMessage* >( message.get( ) );
                 auto fileName = loadMessage->Value( );
+                try
+                {
+                    OnLoad( fileName );
+                    loadMessage->SetResult( model_ );
+                }
+                catch ( ... )
+                {
+                    loadMessage->SetException( );
+                }
             }
             break;
             case ComputeNodeMesasgeType::Execute:
@@ -42,15 +52,25 @@ namespace Harlinn::AI::ONNX::DirectML
                 executeMessage->Execute( );
             }
             break;
+            case ComputeNodeMesasgeType::Compute:
+            {
+                auto computeMessage = static_cast< ComputeNodeComputeMessage* >( message.get( ) );
+                auto tensorData = computeMessage->Value( );
+                const auto& viewportSize = computeMessage->ViewportSize( );
+                OnCompute( tensorData, viewportSize );
+            }
+            break;
         }
     }
 
-    HAI_EXPORT void ComputeNode::Load( const WideString& modelPath )
+    HAI_EXPORT std::future<std::shared_ptr<Model>> ComputeNode::Load( const WideString& modelPath )
     {
         if ( IO::File::Exist( modelPath ) )
         {
             auto message = std::make_shared< ComputeNodeLoadMessage >( modelPath );
+            std::future<std::shared_ptr<Model>> future = message->GetFuture( );
             PostMessage( message );
+            return future;
         }
         else
         {
@@ -64,12 +84,25 @@ namespace Harlinn::AI::ONNX::DirectML
 #ifdef _DEBUG
         auto stopwatch = Stopwatch::StartNew( );
 #endif
+        std::shared_ptr<ComputeNode> self = std::static_pointer_cast< ComputeNode >( shared_from_this( ) );
         session_ = std::make_shared<ONNX::Session>( environment, modelPath.c_str( ), *sessionOptions_.get() );
+        model_ = std::make_shared<Model>( self, session_ );
 #ifdef _DEBUG
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
         PrintLn( L"Loaded {} in {} seconds.", modelPath, duration );
 #endif
+    }
+
+    HAI_EXPORT void ComputeNode::Compute( const Binary& tensorData, const Math::Vector2f& viewportSize )
+    {
+        auto message = std::make_shared< ComputeNodeComputeMessage >( tensorData, viewportSize );
+        PostMessage( message );
+    }
+
+    HAI_EXPORT void ComputeNode::OnCompute( const Binary& tensorData, const Math::Vector2f& viewportSize )
+    {
+        model_->Compute( tensorData, viewportSize );
     }
 
 
@@ -127,6 +160,17 @@ namespace Harlinn::AI::ONNX::DirectML
         }
     }
 
+
+    HAI_EXPORT std::shared_ptr<ComputeNode> ComputeEngine::AddComputeNode( const WideString& computeNodeName )
+    {
+        auto adapter = FindAdapter( );
+        if ( !adapter )
+        {
+            HCC_THROW( SystemException, L"The system could not find an appropriate AI enabled adapter." );
+        }
+        return AddComputeNode( computeNodeName, adapter, defaultSessionOptions_, D3D_FEATURE_LEVEL_12_1 );
+    }
+
     HAI_EXPORT std::shared_ptr<ComputeNode> ComputeEngine::AddComputeNode( const WideString& computeNodeName, const DXCore::Adapter1& adapter, D3D_FEATURE_LEVEL featureLevel )
     {
         return AddComputeNode( computeNodeName, adapter, defaultSessionOptions_, featureLevel );
@@ -143,6 +187,26 @@ namespace Harlinn::AI::ONNX::DirectML
         newNode->Start( );
         computeNodes_.emplace( computeNodeName, newNode );
         return newNode;
+    }
+
+    HAI_EXPORT DXCore::Adapter1 ComputeEngine::FindAdapter( )
+    {
+        auto factory = DXCore::CreateAdapterFactory( );
+        
+        GUID adapterAttribute{ 0xb71b0d41, 0x1088, 0x422f, 0xa2, 0x7c, 0x2, 0x50, 0xb7, 0xd3, 0xa9, 0x88 };
+        
+        auto adapterList = factory.CreateAdapterList( 1, &adapterAttribute );
+        std::array adapterPreferences = { DXCoreAdapterPreference::HighPerformance,DXCoreAdapterPreference::Hardware };
+        adapterList.Sort( adapterPreferences.size( ), adapterPreferences.data( ) );
+
+        for ( uint32_t i = 0, adapterCount = adapterList.GetAdapterCount( ); i < adapterCount; i++ )
+        {
+            auto possibleAdapter = adapterList.GetAdapter( i );
+            return possibleAdapter;
+
+        }
+        return {};
+
     }
 
 }

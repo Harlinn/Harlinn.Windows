@@ -756,6 +756,15 @@ namespace Harlinn::Common::Core
             return {};
         }
 
+        [[nodiscard]] std::span<value_type> ToSpan( ) const
+        {
+            if ( data_ )
+            {
+                return std::span<value_type>( data_->buffer_, data_->size_ );
+            }
+            return {};
+        }
+
         void EnsureUnique( )
         {
             if ( data_ && data_->referenceCount_ > 1 )

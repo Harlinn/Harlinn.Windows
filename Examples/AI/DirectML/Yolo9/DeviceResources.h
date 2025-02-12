@@ -18,6 +18,8 @@
 
 #include <HAIDirectML.h>
 
+#define USE_COMPUTE_ENGINE 1
+
 namespace DX
 {
     using namespace Harlinn::AI;

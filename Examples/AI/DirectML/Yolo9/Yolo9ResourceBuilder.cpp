@@ -38,6 +38,7 @@ using namespace DirectX;
 
 void Sample::CheckDevice( std::source_location caller )
 {
+#ifndef USE_COMPUTE_ENGINE
     auto hr = m_d3dDevice.GetDeviceRemovedReason( );
     if ( FAILED( hr ) )
     {
@@ -46,6 +47,7 @@ void Sample::CheckDevice( std::source_location caller )
         auto fileName = ToWideString( caller.file_name( ) ); 
         PrintLn( L"Device {} - {}:{}({})", error, function, fileName, caller.line( ) );
     }
+#endif
 }
 void Sample::CheckDeviceResources( std::source_location caller )
 {
@@ -82,7 +84,7 @@ static bool TryGetProperty(const DXCore::Adapter1& adapter, DXCoreAdapterPropert
 
 DXCore::Adapter1 Sample::GetNonGraphicsAdapter( const DXCore::AdapterList& adapterList )
 {
-    
+#ifndef USE_COMPUTE_ENGINE    
     for (uint32_t i = 0, adapterCount = adapterList.GetAdapterCount(); i < adapterCount; i++)
     {
         auto possibleAdapter = adapterList.GetAdapter( i );
@@ -106,12 +108,14 @@ DXCore::Adapter1 Sample::GetNonGraphicsAdapter( const DXCore::AdapterList& adapt
             }
         }
     }
+    
+#endif
     return {};
 }
 
 void Sample::InitializeDirectML( )
 {
-
+#ifndef USE_COMPUTE_ENGINE
     // Create Adapter Factory
     auto factory = DXCore::CreateAdapterFactory( );
 
@@ -182,6 +186,7 @@ void Sample::InitializeDirectML( )
     m_dmlDevice = std::move( dmlDevice );
     m_commandAllocator = std::move( commandAllocator );
     m_commandList = std::move( commandList );
+#endif
 }
 
 
@@ -189,7 +194,14 @@ void Sample::InitializeDirectMLResources(const wchar_t * model_path, bool bAddMo
 {
     // wait for gpu to create new textures
     m_deviceResources->WaitForGpu();
-
+#ifdef USE_COMPUTE_ENGINE
+    const wchar_t* modelfile = L"Model_Yolo_v9c_f16.onnx";
+    auto home = Harlinn::Common::Core::Environment::EnvironmentVariable( L"HCC_HOME" );
+    auto yoloDir = IO::Path::Combine( home, L"Share\\onnx\\models\\yolo" );
+    auto yoloModel = IO::Path::Combine( yoloDir, modelfile );
+    auto future = computeNode_->Load( yoloModel );
+    model_ = future.get( );
+#else
     const OrtApi& ortApi = Ort::GetApi();
     static Ort::Env s_OrtEnv{ nullptr };
     s_OrtEnv = Ort::Env(Ort::ThreadingOptions{});
@@ -390,4 +402,5 @@ void Sample::InitializeDirectMLResources(const wchar_t * model_path, bool bAddMo
 
     }
     CheckDevice( );
+#endif
 }
