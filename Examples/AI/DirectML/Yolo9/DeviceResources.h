@@ -18,8 +18,6 @@
 
 #include <HAIDirectML.h>
 
-#define USE_COMPUTE_ENGINE 1
-
 namespace DX
 {
     using namespace Harlinn::AI;
@@ -247,6 +245,11 @@ namespace DX
         void ReleaseRenderTarget( ) const
         {
             d3d11On12Device_.ReleaseWrappedResources( frameResources_[ m_backBufferIndex ].WrappedRenderTarget( ) );
+        }
+
+        const D2D::Bitmap1& D2DRenderTarget( )
+        {
+            return frameResources_[ m_backBufferIndex ].D2DRenderTarget( );
         }
 
         D3D_FEATURE_LEVEL GetDeviceFeatureLevel() const

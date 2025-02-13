@@ -23,9 +23,6 @@
 #include "FindMedia.h"
 #include "ReadData.h"
 
-#include "TensorExtents.h"
-#include "TensorHelper.h"
-#include "earcut.hpp"
 #include "Polyline2D.h"
 
 
@@ -77,1189 +74,11 @@ namespace
 
         return image;
     }
-#ifdef USE_COMPUTE_ENGINE
-}
-#else
-    // Returns true if any of the supplied floats are inf or NaN, false otherwise.
-    static bool IsInfOrNan( float arg )
-    {
-        if ( std::isinf( arg ) || std::isnan( arg ) )
-        {
-            return true;
-        }
-        return false;
-    }
-    template<typename ... Args>
-    static bool IsInfOrNan( float arg, Args&& ... args )
-    {
-        if (std::isinf( arg ) || std::isnan( arg ))
-        {
-            return true;
-        }
-
-        return IsInfOrNan( args ... );
-    }
-
-    // Given two axis-aligned bounding boxes, computes the area of intersection divided by the area of the union of
-    // the two boxes.
-    static float ComputeIntersectionOverUnion(const Prediction& a, const Prediction& b)
-    {
-        float aArea = (a.xmax - a.xmin) * (a.ymax - a.ymin);
-        float bArea = (b.xmax - b.xmin) * (b.ymax - b.ymin);
-
-        // Determine the bounds of the intersection rectangle
-        float interXMin = std::max(a.xmin, b.xmin);
-        float interYMin = std::max(a.ymin, b.ymin);
-        float interXMax = std::min(a.xmax, b.xmax);
-        float interYMax = std::min(a.ymax, b.ymax);
-
-        float intersectionArea = std::max(0.0f, interXMax - interXMin) * std::max(0.0f, interYMax - interYMin);
-        float unionArea = aArea + bArea - intersectionArea;
-
-        return (intersectionArea / unionArea);
-    }
-
-    // Given a set of predictions, applies the non-maximal suppression (NMS) algorithm to select the "best" of
-    // multiple overlapping predictions.
-    static std::vector<Prediction> ApplyNonMaximalSuppression(std::span<const Prediction> allPredictions, float threshold)
-    {
-        std::unordered_map<uint32_t, std::vector<Prediction>> predsByClass;
-        for (const auto& pred : allPredictions)
-        {
-            predsByClass[pred.predictedClass].push_back(pred);
-        }
-
-        std::vector<Prediction> selected;
-
-        for (auto& kvp : predsByClass)
-        {
-            std::vector<Prediction>& proposals = kvp.second;
-
-            while (!proposals.empty())
-            {
-                // Find the proposal with the highest score
-                auto max_iter = std::max_element(proposals.begin(), proposals.end(), [](const Prediction& lhs, const Prediction& rhs) 
-                    {
-                        return lhs.score < rhs.score;
-                    });
-
-                // Move it into the "selected" array
-                selected.push_back(*max_iter);
-                proposals.erase(max_iter);
-
-                // Compare this selected prediction with all the remaining propsals. Compute their IOU and remove any
-                // that are greater than the threshold.
-                for (auto it = proposals.begin(); it != proposals.end(); it)
-                {
-                    float iou = ComputeIntersectionOverUnion(selected.back(), *it);
-
-                    if (iou > threshold)
-                    {
-                        // Remove this element
-                        it = proposals.erase(it);
-                    }
-                    else
-                    {
-                        ++it;
-                    }
-                }
-            }
-        }
-
-        return selected;
-    }
-
-    enum class ChannelOrder
-    {
-        RGB,
-        BGR,
-        M
-    };
-
-    template <typename T>
-    void CopyTensorToPixelsByte(
-        uint8_t * src,
-        uint8_t* dst,
-        uint32_t height,
-        uint32_t width,
-        uint32_t channels)
-    {
-        std::span<const T> srcT(reinterpret_cast<const T*>(src), height*width / sizeof(T));
-
-        for (size_t pixelIndex = 0; pixelIndex < height * width; pixelIndex++)
-        {
-            BYTE m = (BYTE)srcT[pixelIndex + 0 * height * width];
-            if (m)
-                volatile int a = 0;
-            dst[pixelIndex * channels + 0] = m;
-           
-        }
-    }
-
-
-    // Converts an NCHW tensor buffer (batch size 1) to a pixel buffer.
-// Source: buffer of RGB planes (CHW) using float32/float16 components.
-// Target: buffer of RGB pixels (HWC) using uint8 components.
-    template <typename T>
-    void CopyTensorToPixels( const uint8_t * src, uint8_t * dst, uint32_t height, uint32_t width, uint32_t channels)
-    {
-        std::span<const T> srcT(reinterpret_cast<const T*>(src), (height*width) / sizeof(T));
-
-        for (size_t pixelIndex = 0; pixelIndex < height * width; pixelIndex++)
-        {
-            BYTE r = static_cast<BYTE>(std::max(0.0f, std::min(1.0f, (float)srcT[pixelIndex + 0 * height * width])) * 255.0f);
-            BYTE g = static_cast<BYTE>(std::max(0.0f, std::min(1.0f, (float)srcT[pixelIndex + 1 * height * width])) * 255.0f);
-            BYTE b = static_cast<BYTE>(std::max(0.0f, std::min(1.0f, (float)srcT[pixelIndex + 2 * height * width])) * 255.0f);
-
-            dst[pixelIndex * channels + 0] = b;
-            dst[pixelIndex * channels + 1] = g;
-            dst[pixelIndex * channels + 2] = r;
-            dst[pixelIndex * channels + 3] = 128;
-        }
-    }
-
-    inline unsigned char* pixel(unsigned char* Img, int i, int j, int width, int height, int bpp)
-    {
-        return (Img + ((i * width + j) * bpp));
-    }
-
-
-    // Converts a pixel buffer to an NCHW tensor (batch size 1).
-    // Source: buffer of RGB pixels (HWC) using uint8 components.
-    // Target: buffer of RGB planes (CHW) using float32/float16 components.
-    template <typename T>
-    void CopyPixelsToTensor(
-        std::byte*  src,
-        uint32_t srcWidth, uint32_t srcHeight, uint32_t rowPitch,
-        std::span<std::byte> dst,
-        uint32_t height,
-        uint32_t width,
-        uint32_t channels)
-    {
-        uint32_t srcChannels = rowPitch / srcWidth;
-        uint32_t rowWidth = rowPitch / srcChannels;
-        std::span<T> dstT(reinterpret_cast<T*>(dst.data()), dst.size_bytes() / sizeof(T));
-
-        if (srcWidth != width || srcHeight != height)
-        {
-            unsigned char* Img = (uint8_t*)src;
-            float ScaledWidthRatio = srcWidth / (float)width;
-            float ScaledHeightRatio = srcHeight / (float)height;
-            uint32_t pixelIndex = 0;
-
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++)
-                {
-                    float mappedheight = i * ScaledHeightRatio;  //rf
-                    float mappedwidth = j * ScaledWidthRatio;   //cf
-                    int   OriginalPosHeight = (int)mappedheight;         //ro
-                    int   OriginalPosWidth =(int) mappedwidth;          //co
-                    float deltaheight = mappedheight - OriginalPosHeight; //delta r
-                    float deltawidth = mappedwidth - OriginalPosWidth;   //delta c
-
-                    unsigned char* temp1 = pixel(Img, OriginalPosHeight, OriginalPosWidth, rowWidth, srcHeight, srcChannels);
-                    unsigned char* temp2 = pixel(Img, ((OriginalPosHeight + 1) >= height ? OriginalPosHeight : OriginalPosHeight + 1),
-                        OriginalPosWidth, rowWidth, srcHeight, srcChannels);
-                    unsigned char* temp3 = pixel(Img, OriginalPosHeight, OriginalPosWidth + 1, rowWidth, srcHeight, srcChannels);
-                    unsigned char* temp4 = pixel(Img, ((OriginalPosHeight + 1) >= srcHeight ? OriginalPosHeight : OriginalPosHeight + 1),
-                        (OriginalPosWidth + 1) >= rowWidth ? OriginalPosWidth : (OriginalPosWidth + 1), rowWidth, srcHeight, srcChannels);
-
-                    float b =
-                        ( *(temp1 + 0) * (1 - deltaheight) * (1 - deltawidth) 
-                        + *(temp2 + 0) * (deltaheight) * (1 - deltawidth) 
-                        + *(temp3 + 0) * (1 - deltaheight) * (deltawidth) 
-                        + *(temp4 + 0) * (deltaheight) * (deltawidth)) / 255.0f;
-
-                    float g =
-                        ( *(temp1 + 1) * (1 - deltaheight) * (1 - deltawidth) 
-                        + *(temp2 + 1) * (deltaheight) * (1 - deltawidth) 
-                        + *(temp3 + 1) * (1 - deltaheight) * (deltawidth) 
-                        + *(temp4 + 1) * (deltaheight) * (deltawidth)) / 255.0f;
-
-                    float r =
-                        (*(temp1 + 2) * (1 - deltaheight) * (1 - deltawidth) 
-                        + *(temp2 + 2) * (deltaheight) * (1 - deltawidth) 
-                        + *(temp3 + 2) * (1 - deltaheight) * (deltawidth) 
-                        + *(temp4 + 2) * (deltaheight) * (deltawidth)) / 255.0f;
-
-
-                    dstT[pixelIndex + 0 * height * width] = r;
-                    dstT[pixelIndex + 1 * height * width] = g;
-                    dstT[pixelIndex + 2 * height * width] = b;
-                    pixelIndex++;
-                }
-            }
-        }
-        else
-        {
-            size_t pixelIndex = 0;
-            for (size_t line = 0; line < height; line++)
-            {
-                auto _src = src + line * rowPitch;
-                for (size_t x = 0; x < width; x++)
-                {
-                    float b = static_cast<float>(_src[x * srcChannels + 0]) / 255.0f;
-                    float g = static_cast<float>(_src[x * srcChannels + 1]) / 255.0f;
-                    float r = static_cast<float>(_src[x * srcChannels + 2]) / 255.0f;
-
-                    dstT[pixelIndex + 0 * height * width] = r;
-                    dstT[pixelIndex + 1 * height * width] = g;
-                    dstT[pixelIndex + 2 * height * width] = b;
-
-                    pixelIndex++;
-                }
-            }
-        }
-    }
-
 
 }
 
 
-bool Sample::CopySharedVideoTextureTensor(std::vector<std::byte> & inputBuffer, Model_t * model)
-{
 
-    // Record start
-    auto start = std::chrono::high_resolution_clock::now();
-
-    const auto& device = m_player->GetDevice( );
-
-    D3D11::Texture2D mediaTexture = device.OpenSharedResource<D3D11::Texture2D>( m_sharedVideoTexture );
-
-    if ( mediaTexture )
-    {
-        // First verify that we can map the texture
-        D3D11_TEXTURE2D_DESC desc;
-        mediaTexture.GetDesc(&desc);
-
-        // translate texture format to WIC format. We support only BGRA and ARGB.
-        GUID wicFormatGuid;
-        switch (desc.Format) 
-        {
-        case DXGI_FORMAT_R8G8B8A8_UNORM:
-            wicFormatGuid = GUID_WICPixelFormat32bppRGBA;
-            break;
-        case DXGI_FORMAT_B8G8R8A8_UNORM:
-            wicFormatGuid = GUID_WICPixelFormat32bppBGRA;
-            break;
-        default:
-            throw std::exception("Unsupported DXGI_FORMAT: %d. Only RGBA and BGRA are supported.");
-        }
-
-        // Get the device context
-        
-        D3D11::DeviceContext d3dContext = device.GetImmediateContext();
-
-        // map the texture
-        D3D11::Texture2D mappedTexture;
-        D3D11_MAPPED_SUBRESOURCE mapInfo{};
-        
-        HRESULT hr = d3dContext.Map<true>( mediaTexture,
-                0,  // Subresource
-                D3D11_MAP_READ,
-                0,  // MapFlags
-                &mapInfo );
-
-        if (FAILED(hr)) 
-        {
-            // If we failed to map the texture, copy it to a staging resource
-            if (hr == E_INVALIDARG) 
-            {
-                D3D11_TEXTURE2D_DESC desc2;
-                desc2.Width = desc.Width;
-                desc2.Height = desc.Height;
-                desc2.MipLevels = desc.MipLevels;
-                desc2.ArraySize = desc.ArraySize;
-                desc2.Format = desc.Format;
-                desc2.SampleDesc = desc.SampleDesc;
-                desc2.Usage = D3D11_USAGE_STAGING;
-                desc2.BindFlags = 0;
-                desc2.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-                desc2.MiscFlags = 0;
-
-                D3D11::Texture2D stagingTexture = device.CreateTexture2D(&desc2);
-
-                // copy the texture to a staging resource
-                d3dContext.CopyResource(stagingTexture, mediaTexture);
-
-                // now, map the staging resource
-                d3dContext.Map( stagingTexture, 0, D3D11_MAP_READ, 0, &mapInfo);
-                mappedTexture = std::move(stagingTexture);
-            }
-            else 
-            {
-                CheckHRESULT( hr );
-            }
-        }
-        else 
-        {
-            mappedTexture = mediaTexture;
-        }
-        auto unmapResource = Finally([&] 
-            {
-            d3dContext.Unmap(mappedTexture, 0);
-            });
-
-       
-      
-        const size_t inputChannels = model->m_inputShape[model->m_inputShape.size() - 3];
-        const size_t inputHeight = model->m_inputShape[model->m_inputShape.size() - 2];
-        const size_t inputWidth = model->m_inputShape[model->m_inputShape.size() - 1];
-
-        if (desc.Width != inputWidth || desc.Height != inputHeight)
-        {
-            D2D1_FACTORY_OPTIONS options = {};
-            if (m_d2d1_factory == nullptr)
-            {
-                // Create a Direct2D factory.
-                m_d2d1_factory = D2D::CreateFactory( D2D1_FACTORY_TYPE::D2D1_FACTORY_TYPE_MULTI_THREADED );
-                
-                // Create D2Device 
-                //auto device = m_deviceResources->GetD3DDevice();
-                // DXGI::Device3 dxgiDevice = device.As<DXGI::Device3>( );
-
-                const auto& swapChain = m_deviceResources->GetSwapChain( );
-                if ( swapChain )
-                {
-                    auto dxgiDevice = swapChain.GetDevice<DXGI::Device>( );
-                    if ( dxgiDevice )
-                    {
-                        m_d2d1_device = m_d2d1_factory.CreateDevice( dxgiDevice );
-                        // Get Direct2D device's corresponding device context object.
-                        m_d2dContext = m_d2d1_device.CreateDeviceContext( D2D1_DEVICE_CONTEXT_OPTIONS_NONE );
-                    }
-                }
-            }
-            if (m_d2dContext)
-            {
-                DXGI::Surface surface = mediaTexture.As<DXGI::Surface>( );
-
-                auto bitmap = m_d2dContext.CreateBitmapFromDxgiSurface( surface );
-
-                auto scaleEffect = m_d2dContext.CreateEffect( CLSID_D2D1Scale );
-
-                scaleEffect.SetInput(0, bitmap );
-
-
-                D2D1_SCALE_INTERPOLATION_MODE interpolationMode = D2D1_SCALE_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-                //D2D1_SCALE_INTERPOLATION_MODE interpolationMode = D2D1_SCALE_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
-                scaleEffect.SetValue(D2D1_SCALE_PROP_SCALE, D2D1::Vector2F((float)inputWidth / (float)desc.Width, (float)inputHeight / (float)desc.Height));
-                scaleEffect.SetValue(D2D1_SCALE_PROP_INTERPOLATION_MODE, reinterpret_cast<const BYTE*>(&interpolationMode), sizeof(D2D1_SCALE_INTERPOLATION_MODE)); // Set the interpolation mode.
-
-                auto image_out = scaleEffect.GetOutput( );
-
-                D3D11_TEXTURE2D_DESC texDesc;
-                texDesc.Width = static_cast<UINT>(inputWidth);
-                texDesc.Height = static_cast<UINT>(inputHeight);
-                texDesc.MipLevels = 1;
-                texDesc.ArraySize = 1;
-                texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-                texDesc.SampleDesc.Count = 1;
-                texDesc.SampleDesc.Quality = 0;
-                texDesc.Usage = D3D11_USAGE_DEFAULT;
-                texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-                texDesc.CPUAccessFlags = 0;
-                texDesc.MiscFlags = 0;
-
-                auto drawTexture = device.CreateTexture2D( &texDesc );
-
-                auto drawSurface = drawTexture.As<DXGI::Surface>( );
-
-                auto drawBitmap = m_d2dContext.CreateBitmapFromDxgiSurface( drawSurface );
-                m_d2dContext.SetTarget( drawBitmap );
-
-
-                // Draw the image into the device context. Output surface is set as the target of the device context.
-                m_d2dContext.BeginDraw();
-
-                auto identityMat = D2D1::Matrix3x2F::Identity();
-
-                // Clear out any existing transform before drawing.
-                m_d2dContext.SetTransform(identityMat);
-                D2D1_POINT_2F targetOffset = { 0, 0 };
-                m_d2dContext.DrawImage(image_out, targetOffset);
-                D2D1_TAG tag1;
-                D2D1_TAG tag2;
-                m_d2dContext.EndDraw(&tag1, &tag2);
-                m_d2dContext.SetTarget(nullptr);
-
-
-                // we have our scaled image in drawTexture
-
-                // create staging texture
-                D3D11_TEXTURE2D_DESC desc2;
-                desc2.Width = texDesc.Width;
-                desc2.Height = texDesc.Height;
-                desc2.MipLevels = texDesc.MipLevels;
-                desc2.ArraySize = texDesc.ArraySize;
-                desc2.Format = texDesc.Format;
-                desc2.SampleDesc = texDesc.SampleDesc;
-                desc2.Usage = D3D11_USAGE_STAGING;
-                desc2.BindFlags = 0;
-                desc2.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-                desc2.MiscFlags = 0;
-
-                auto stagingTexture = device.CreateTexture2D( &desc2 );
-
-                // copy the texture to a staging resource
-                d3dContext.CopyResource(stagingTexture, drawTexture);
-
-                // now, map the staging resource
-                d3dContext.Map( stagingTexture, 0, D3D11_MAP_READ, 0, &mapInfo);
-
-                mappedTexture = std::move(stagingTexture);
-                mappedTexture.GetDesc(&desc);
-
-            }
-
-        }
-
-
-        switch (model->m_inputDataType)
-        {
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
-            CopyPixelsToTensor<float>((std::byte*)mapInfo.pData, desc.Width, desc.Height, mapInfo.RowPitch, inputBuffer, inputHeight, inputWidth, inputChannels);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
-            CopyPixelsToTensor<half_float::half>((std::byte*)mapInfo.pData, desc.Width, desc.Height, mapInfo.RowPitch, inputBuffer, inputHeight, inputWidth, inputChannels);
-            break;
-
-        default:
-            throw std::invalid_argument("Unsupported data type");
-        }
-        
-        auto end = std::chrono::high_resolution_clock::now();
-        m_copypixels_tensor_duration += (end - start);
-
-        return true;
-    }
-    return false;
-}
-
-
-
-void Sample::GetMask(const std::byte* outputData, std::vector<int64_t>& shape, Model_t* model, ONNXTensorElementDataType outputDataType)
-{
-    if (shape.size() != 3)
-        return;
-
-    const uint32_t outputChannels = 1;
-    const uint32_t outputHeight = shape[shape.size() - 2];
-    const uint32_t outputWidth = shape[shape.size() - 1];
-    uint32_t outputElementSize = 1;
-    auto co = ChannelOrder::RGB;
-    switch (outputDataType)
-    {
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
-            outputElementSize = sizeof(float);
-            break;
-
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
-            outputElementSize = sizeof(uint16_t);
-            break;
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
-        case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
-            outputElementSize = sizeof(uint8_t);
-            co = ChannelOrder::M;
-            break;
-    }
-
-    // convert mask to BGRA data
-    if (m_mask.size() != outputWidth * outputHeight * 4)
-        m_mask.resize(outputWidth * outputHeight * 4);
-
-    m_mask_ready = true;
-    m_mask_width = outputWidth;
-    m_mask_height = outputHeight;
-
-    int channels = 4;
-    for (size_t pixelIndex = 0; pixelIndex < outputHeight * outputWidth; pixelIndex++)
-    {
-        BYTE m = (BYTE)outputData[pixelIndex + 0 * outputWidth * outputHeight];
-        if (m)
-            volatile int a = 0;
-        m = m % sizeof( YoloConstants::colors);
-
-        m_mask[pixelIndex * channels + 0] = (uint8_t) (( YoloConstants::colors[m] & 0xff0000) >> 16);
-        m_mask[pixelIndex * channels + 1] = (uint8_t) (( YoloConstants::colors[m] & 0xff00) >> 8);
-        m_mask[pixelIndex * channels + 2] = (uint8_t) ( YoloConstants::colors[m] & 0xff);
-        m_mask[pixelIndex * channels + 3] = (uint8_t)0x80;
-    }
-}
-
-
-void Sample::GetImage(const std::byte* outputData, std::vector<int64_t>& shape, Model_t* model, ONNXTensorElementDataType outputDataType)
-{
-    if (shape.size() != 4)
-        return;
-
-    const uint32_t outputChannels = shape[shape.size() - 3];
-    const uint32_t outputHeight = shape[shape.size() - 2];
-    const uint32_t outputWidth = shape[shape.size() - 1];
-    uint32_t outputElementSize = outputDataType == ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT ? sizeof(float) : sizeof(uint16_t);
-
-    auto co = ChannelOrder::RGB;
-    switch (outputDataType)
-    {
-    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
-        outputElementSize = sizeof(float);
-        break;
-
-    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
-        outputElementSize = sizeof(uint16_t);
-        break;
-    case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
-    case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
-        outputElementSize = sizeof(uint8_t);
-        co = ChannelOrder::M;
-        break;
-    }
-    int channels = 4;
-    // convert mask to BGRA data
-    if (m_mask.size() != outputWidth * outputHeight * channels)
-        m_mask.resize(outputWidth * outputHeight * channels);
-
-    m_mask_ready = true;
-    m_mask_width = outputWidth;
-    m_mask_height = outputHeight;
-
-    switch (outputDataType)
-    {
-    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
-        CopyTensorToPixels<float>((uint8_t*)outputData, m_mask.data(), outputHeight, outputWidth, channels);
-        break;
-
-    case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
-        CopyTensorToPixels<half_float::half>((uint8_t*)outputData, m_mask.data(), outputHeight, outputWidth, channels);
-        break;
-
-    case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
-    case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
-        CopyTensorToPixelsByte<std::byte>((uint8_t*)outputData, m_mask.data(), outputHeight, outputWidth, channels);
-        break;
-
-    default:
-        throw std::invalid_argument("Unsupported data type");
-    }
-
-}
-
-
-void Sample::GetFaces(std::vector<const std::byte*>& outputData, std::vector<std::vector<int64_t>>& shapes, Model_t* model)
-{
-    if (outputData.size() != 2)
-        return;
-
-
-    Vec3<float> value1((float*)outputData[0], shapes[0][0], shapes[0][1], shapes[0][2]);
-    Vec3<float> value2((float*)outputData[1], shapes[1][0], shapes[1][1], shapes[1][2]);
- 
-    // Scale the boxes to be relative to the original image size
-    auto viewport = m_deviceResources->GetScreenViewport();
-    float xScale = (float)viewport.Width;
-    float yScale = (float)viewport.Height;
-
-    const float x_scale = (float)model->m_inputWidth;
-    const float y_scale = (float)model->m_inputHeight;
-    const float h_scale = (float)model->m_inputWidth;
-    const float w_scale = (float)model->m_inputHeight;
-
-    Anchors * _anchors =  &m_anchors[0];
-    if (value1.y != _anchors->size())
-        _anchors = &m_anchors[1];
-    if (value1.y != _anchors->size())
-    {
-        MessageBox(0, L"anchors size error", L"Error", MB_OK);
-        ExitProcess(1);
-    }
-    const Anchors& anchors = *_anchors;
-    for (Int64 i = 0; i < value1.z; ++i)
-    {
-        for (Int64 j = 0; j < value1.y;++j)
-        {
-            auto ptr2 = value2[i][j];
-            if (ptr2[0] < threshold) continue;
-
-            auto ptr = value1[i][j];
-
-            Detection result;
-            result.x = ptr[0];
-            result.y = ptr[1];
-            result.w = ptr[2];
-            result.h = ptr[3];
-            result.index = -1; // face, no label
-            result.confidence = (float)ptr2[0];
-
-            result.x = result.x / x_scale * anchors[j].w + anchors[j].x_center;
-            result.y = result.y / y_scale * anchors[j].h + anchors[j].y_center;
-
-            result.h = result.h / h_scale * anchors[j].h;
-            result.w = result.w / w_scale * anchors[j].w;
-
-            // We need to do some postprocessing on the raw values before we return them
-
-            // Convert x,y,w,h to xmin,ymin,xmax,ymax
-            
-            float xmin = result.x - result.w / 2;
-            float ymin = result.y - result.h / 2;
-            float xmax = result.x + result.w / 2;
-            float ymax = result.y + result.h / 2;
-
-            xmin *= xScale;
-            ymin *= yScale;
-            xmax *= xScale;
-            ymax *= yScale;
-
-            // Clip values out of range
-            xmin = std::clamp(xmin, 0.0f, (float)viewport.Width);
-            ymin = std::clamp(ymin, 0.0f, (float)viewport.Height);
-            xmax = std::clamp(xmax, 0.0f, (float)viewport.Width);
-            ymax = std::clamp(ymax, 0.0f, (float)viewport.Height);
-
-            // Discard invalid boxes
-            if (xmax <= xmin || ymax <= ymin || IsInfOrNan( xmin, ymin, xmax, ymax ))
-            {
-                continue;
-            }
-
-            Prediction pred = {};
-            pred.xmin = xmin;
-            pred.ymin = ymin;
-            pred.xmax = xmax;
-            pred.ymax = ymax;
-            pred.score = result.confidence;
-            pred.predictedClass = result.index;
-
-            for (int i = 0; i < 6; i++)
-            {
-                float keypoint_x = ptr[4 + i * 2];
-                float keypoint_y = ptr[5 + i * 2];
-
-                float x = keypoint_x / x_scale * anchors[j].w + anchors[j].x_center;
-                float y = keypoint_y / y_scale * anchors[j].h + anchors[j].y_center;
-                x *= xScale;
-                y *= yScale;
-                pred.m_keypoints.push_back(std::pair<float, float>(x, y));
-            }
-
-            m_preds.emplace_back(pred);
-        }
-    }
-    // Apply NMS to select the best boxes
-    m_preds = ApplyNonMaximalSuppression(m_preds, YoloConstants::c_nmsThreshold);
-}
-
-void Sample::GetPredictions2(std::vector<const std::byte*>& outputData, std::vector<std::vector<int64_t>>& shapes, const std::vector<std::string>& output_names, Model_t* model)
-{
-    if (outputData.size() != 2)
-        return;
-    // get outpunt indices
-    int output0_i = 0;
-    int output1_i = 1;
-   
-    int i = 0;
-    for (const auto& name : output_names)
-    {
-        if (name == "output0")
-            output0_i = i;
-        else if (name == "output0")
-            output0_i = i;
-        i++;
-    }
-    if (output0_i == -1 || output1_i == -1)
-        return;
-
-    Vec3<float> value1((float*)outputData[output0_i], shapes[output0_i][0], shapes[output0_i][1], shapes[output0_i][2]);
-    Vec4<float> value2((float*)outputData[output1_i], shapes[output1_i][0], shapes[output1_i][1], shapes[output1_i][2], shapes[output1_i][3]);
-    std::vector<float> out;
-    out.resize(value1.x * value1.y);
-
-
-    // Scale the boxes to be relative to the original image size
-    auto viewport = m_deviceResources->GetScreenViewport();
-    float xScale = (float)viewport.Width / model->m_inputWidth;
-    float yScale = (float)viewport.Height / model->m_inputHeight;
-
-
-    std::vector<int> class_ids;
-    std::vector<float> accus;
-    std::vector<Detection> boxes;
-
-    for (Int64 i = 0; i < value1.z; ++i)
-    {
-        for (Int64 j = 0; j < value1.x; ++j)
-        {
-            int classes = value1.y - 32 - 4;
-            float max_confidence = 0.0f;
-            int max_confidence_class = -1;
-            if (classes >  1)
-            {
-                //auto ptr = value1[i][j];
-                max_confidence = 0.0f;
-                max_confidence_class = -1;
-
-                for (int c = 4; c < classes + 4; c++)
-                {
-                    float conf = value1[i][c][j];
-                    if (conf > max_confidence)
-                    {
-                        max_confidence = conf;
-                        max_confidence_class = c - 4;
-                    }
-                }
-            }
-            else if (classes == 1)
-            {
-                max_confidence = value1[i][4][j];
-                max_confidence_class = 0;
-            }
-          
-
-            if (max_confidence < threshold) continue;
-
-            Detection result;
-            result.x = value1[i][0][j];
-            result.y = value1[i][1][j];
-            result.w = value1[i][2][j];
-            result.h = value1[i][3][j];
-            result.index = max_confidence_class;
-            result.confidence = max_confidence;
-
-            // We need to do some postprocessing on the raw values before we return them
-
-            // Convert x,y,w,h to xmin,ymin,xmax,ymax
-            float xmin = result.x - result.w / 2.0f;
-            float ymin = result.y - result.h / 2.0f;
-            float xmax = result.x + result.w / 2.0f;
-            float ymax = result.y + result.h / 2.0f;
-
-            xmin *= xScale;
-            ymin *= yScale;
-            xmax *= xScale;
-            ymax *= yScale;
-
-            // Clip values out of range
-            xmin = std::clamp(xmin, 0.0f, (float)viewport.Width);
-            ymin = std::clamp(ymin, 0.0f, (float)viewport.Height);
-            xmax = std::clamp(xmax, 0.0f, (float)viewport.Width);
-            ymax = std::clamp(ymax, 0.0f, (float)viewport.Height);
-
-            // Discard invalid boxes
-            if (xmax <= xmin || ymax <= ymin || IsInfOrNan( xmin, ymin, xmax, ymax ))
-            {
-                continue;
-            }
-
-            Prediction pred = {};
-            pred.xmin = xmin;
-            pred.ymin = ymin;
-            pred.xmax = xmax;
-            pred.ymax = ymax;
-            pred.score = result.confidence;
-            pred.predictedClass = result.index;
-            pred.i = i;
-            pred.j = j;
-
-            m_preds.push_back(pred);
-
-            accus.push_back(result.confidence);
-            class_ids.push_back(result.index);
-
-        }
-    }
-    // Apply NMS to select the best boxes
-    m_preds = ApplyNonMaximalSuppression(m_preds, YoloConstants::c_nmsThreshold);
-
-   // return;
-    // convert mask to BGRA data
-    if (m_mask.size() != value2.y * value2.x * 4)
-        m_mask.resize(value2.y * value2.x * 4);
-    std::fill(m_mask.begin(), m_mask.end(), 0);
-    m_mask_ready = true;
-    m_mask_width = value2.y;
-    m_mask_height = value2.x;
-    int channels = 4;
-
-    if (m_pred_mask.size() != value2.y * value2.x)
-        m_pred_mask.resize(value2.y * value2.x);
-
-
-    xScale = (float)viewport.Width / value2.x;
-    yScale = (float)viewport.Height / value2.y;
-
-    int start_mask_index = value1.y - 32;
-   
-
-    for (auto& pred : m_preds)
-    {
-        std::fill(m_pred_mask.begin(), m_pred_mask.end(), 0);
-
-        pred.mask_weights.resize(value2.z);
-        for (Int64 k = start_mask_index; k < value1.y; ++k)
-            pred.mask_weights[k- start_mask_index] = value1[pred.i][k][pred.j];
-
-        for (Int64 i = 0; i < value2.w; ++i)
-        {
-            int pixelIndex = 0;
-            for (Int64 k = 0; k < value2.y; ++k)
-            {
-
-                for (Int64 l = 0; l < value2.x; ++l)
-                {
-
-                    // inside bbox?
-                    // 
-                    float y = k * yScale;
-                    float x = l * xScale;
-
-                    if (x >= pred.xmin && x <= pred.xmax && y >= pred.ymin && y <= pred.ymax)
-                    {
-                        // for classes
-                        float sum = 0.0f;
-                        for (Int64 j = 0; j < value2.z; ++j)
-                        {
-                            auto v = value2[i][j][k][l];
-                            sum += pred.mask_weights[j] * v;
-                        }
-
-
-                        sum = sum / (1.0f + exp(-sum));
-                        BYTE m = 0;
-                        if (sum > 0.001)
-                        {
-
-                            m_pred_mask[k * value2.x + l] = 1;
-                            
-                            m = pred.predictedClass % 20;
-                            m_mask[pixelIndex * channels + 0] = (uint8_t)( YoloConstants::colors[m] & 0xff);
-                            m_mask[pixelIndex * channels + 1] = (uint8_t)(( YoloConstants::colors[m] & 0xff00) >> 8);
-                            m_mask[pixelIndex * channels + 2] = (uint8_t)(( YoloConstants::colors[m] & 0xff0000) >> 16);
-                            m_mask[pixelIndex * channels + 3] = (uint8_t)0x80;
-                        }
-
-                    }
-                    pixelIndex++;
-                }
-            }
-        }
-        // get contour from m_pred_mask
-        depixelator::Bitmap bmap;
-        bmap.data = m_pred_mask.data();
-        bmap.height = m_mask_height;
-        bmap.width = m_mask_width;
-        bmap.stride = m_mask_width;
-        pred.m_polylines = depixelator::findContours(bmap);
-        //pred.m_polylines = depixelator::simplify(pred.m_polylines, 0.1f);
-        //pred.m_polylines = depixelator::simplifyRDP(pred.m_polylines, 0.1f);
-        pred.m_polylines = depixelator::traceSlopes(pred.m_polylines);
-        pred.m_polylines = depixelator::smoothen(pred.m_polylines, 0.1f, 4);
-
-        for (auto& polyline : pred.m_polylines)
-        {
-            for (auto& p : polyline)
-            {
-                p.x *= xScale, p.y *= yScale;
-            }
-        }
-    }
-}
-
-
-void Sample::GetPredictions(std::vector<const std::byte*>& outputData, std::vector<std::vector<int64_t>>& shapes, const std::vector<std::string>& output_names, Model_t* model)
-{
-    // get outpunt indices
-    int boxes_i = -0;
-    int scores_i = -1;
-    int class_idx_i = -1;
-    int masks_i = -1;
-    int protos_i = -1;
-    int i = 0;
-    for (auto name : output_names)
-    {
-        if (name == "boxes")
-            boxes_i = i;
-        else if (name == "scores")
-            scores_i = i;
-        else if (name == "class_idx")
-            class_idx_i = i;
-        else if (name == "masks")
-            masks_i = i;
-        else if (name == "protos")
-            protos_i = i;
-        i++;
-    }
-    if (boxes_i == -1 || scores_i == -1 || class_idx_i == -1)
-        return;
-    if (outputData.size() >= 5)
-    {
-        if (masks_i == -1 || protos_i == -1)
-            return;
-    }
-
-
-    Vec3<float> value1((float*)outputData[boxes_i], shapes[boxes_i][0], shapes[boxes_i][1], shapes[boxes_i][2]);
-    Vec2<float> value2((float*)outputData[scores_i], shapes[scores_i][0], shapes[scores_i][1]);
-    Vec2<float> value3((float*)outputData[class_idx_i], shapes[class_idx_i][0], shapes[class_idx_i][1]);
- 
-    // Scale the boxes to be relative to the original image size
-    auto viewport = m_deviceResources->GetScreenViewport();
-    float xScale = (float)viewport.Width / model->m_inputWidth;
-    float yScale = (float)viewport.Height / model->m_inputHeight;
-
-    for (Int64 i = 0; i < value1.z; ++i)
-    {
-        for (Int64 j = 0; j < value1.y; ++j)
-        {
-            auto ptr2 = value2[i][j];
-            if (ptr2 < threshold) continue;
-
-            auto ptr = value1[i][j];
-           
-            Detection result;
-            result.x = ptr[0];
-            result.y = ptr[1];
-            result.w = ptr[2];
-            result.h = ptr[3];
-            result.index = (Int64)value3[i][j];
-            result.confidence = (float)ptr2;
-
-            // We need to do some postprocessing on the raw values before we return them
-
-            // Convert x,y,w,h to xmin,ymin,xmax,ymax
-            float xmin = result.x;
-            float ymin = result.y;
-            float xmax = result.w;
-            float ymax = result.h;
-            // Convert x,y,w,h to xmin,ymin,xmax,ymax
-             //xmin = result.x - result.w / 2;
-             //ymin = result.y - result.h / 2;
-             //xmax = result.x + result.w / 2;
-             //ymax = result.y + result.h / 2;
-
-
-            xmin *= xScale;
-            ymin *= yScale;
-            xmax *= xScale;
-            ymax *= yScale;
-
-            // Clip values out of range
-            xmin = std::clamp(xmin, 0.0f, (float)viewport.Width);
-            ymin = std::clamp(ymin, 0.0f, (float)viewport.Height);
-            xmax = std::clamp(xmax, 0.0f, (float)viewport.Width);
-            ymax = std::clamp(ymax, 0.0f, (float)viewport.Height);
-
-            // Discard invalid boxes
-            if (xmax <= xmin || ymax <= ymin || IsInfOrNan( xmin, ymin, xmax, ymax ))
-            {
-                continue;
-            }
-
-            Prediction pred = {};
-            pred.xmin = xmin;
-            pred.ymin = ymin;
-            pred.xmax = xmax;
-            pred.ymax = ymax;
-            pred.score = result.confidence;
-            pred.predictedClass = result.index;
-            pred.i = i;
-            pred.j = j;
-          
-            m_preds.push_back(pred);
-        }
-    }
-    // Apply NMS to select the best boxes
-    m_preds = ApplyNonMaximalSuppression(m_preds, YoloConstants::c_nmsThreshold);
-
-    if (outputData.size() >= 5)
-    {
-
-        Vec3<float> value4((float*)outputData[masks_i], shapes[masks_i][0], shapes[masks_i][1], shapes[masks_i][2]);
-        Vec4<float> value5((float*)outputData[protos_i], shapes[protos_i][0], shapes[protos_i][1], shapes[protos_i][2], shapes[protos_i][3]);
-
-        // convert mask to BGRA data
-        if (m_mask.size() != value5.y * value5.x * 4)
-            m_mask.resize(value5.y * value5.x * 4);
-        std::fill(m_mask.begin(), m_mask.end(), 0);
-        m_mask_ready = false;
-        m_mask_width = value5.y;
-        m_mask_height = value5.x;
-        int channels = 4;
-        if (m_pred_mask.size() != value5.y * value5.x)
-            m_pred_mask.resize(value5.y * value5.x);
-
-        float xScale = (float)viewport.Width / value5.x;
-        float yScale = (float)viewport.Height / value5.y;
-
-        for (auto& pred : m_preds)
-        {
-            std::fill(m_pred_mask.begin(), m_pred_mask.end(), 0);
-
-            pred.mask_weights.resize(value4.x);
-            for (Int64 k = 0; k < value4.x; ++k)
-                pred.mask_weights[k] = value4[pred.i][pred.j][k];
-
-            for (Int64 i = 0; i < value5.w; ++i)
-            {
-                int pixelIndex = 0;
-                for (Int64 k = 0; k < value5.y; ++k)
-                {
-                    for (Int64 l = 0; l < value5.x; ++l)
-                    {
-                        // inside bbox?
-                        // 
-                        float y = k * yScale;
-                        float x = l * xScale;
-
-                        if (x >= pred.xmin && x <= pred.xmax && y >= pred.ymin && y <= pred.ymax)
-                        {
-                            // for classes
-                            float sum = 0.0f;
-                            for (Int64 j = 0; j < value5.z; ++j)
-                            {
-                                auto v = value5[i][j][k][l];
-                                sum += pred.mask_weights[j] * v;
-                            }
-
-                            sum = sum / (1.0f + exp(-sum));
-                            BYTE m = 0;
-                            if (sum > 0.2)
-                            {
-                                m_pred_mask[k * value5.x + l] = 1;
-
-                                m = pred.predictedClass % 20;
-                                m_mask[pixelIndex * channels + 0] = (uint8_t)( YoloConstants::colors[m] & 0xff);
-                                m_mask[pixelIndex * channels + 1] = (uint8_t)(( YoloConstants::colors[m] & 0xff00) >> 8);
-                                m_mask[pixelIndex * channels + 2] = (uint8_t)(( YoloConstants::colors[m] & 0xff0000) >> 16);
-                                m_mask[pixelIndex * channels + 3] = (uint8_t)0x80;
-                            }
-                           
-                        }
-                        pixelIndex++;
-                    }
-                }
-            }
-
-            // get contour from m_pred_mask
-            depixelator::Bitmap bmap;
-            bmap.data = m_pred_mask.data();
-            bmap.height = m_mask_height;
-            bmap.width = m_mask_width;
-            bmap.stride = m_mask_width;
-            pred.m_polylines = depixelator::findContours(bmap);
-            //pred.m_polylines = depixelator::simplify(pred.m_polylines, 0.1f);
-            //pred.m_polylines = depixelator::simplifyRDP(pred.m_polylines, 0.1f);
-            pred.m_polylines = depixelator::traceSlopes(pred.m_polylines);
-            pred.m_polylines = depixelator::smoothen(pred.m_polylines, 0.1f, 4);
-           
-            for (auto& polyline : pred.m_polylines)
-            {
-                for (auto& p : polyline)
-                {
-                    p.x *= xScale, p.y *= yScale;
-                }
-            }
-        }
-    }
-}
-
-
-void Sample::GetPredictions( const std::byte* outputData, std::vector<int64_t>& shape, const std::vector<std::string>& output_names, Model_t* model )
-{
-    Vec3<float> value( ( float* )outputData, shape[ 0 ], shape[ 1 ], shape[ 2 ] );
-
-    // Scale the boxes to be relative to the original image size
-    auto viewport = m_deviceResources->GetScreenViewport( );
-    float xScale = ( float )viewport.Width / YoloConstants::c_inputWidth;
-    float yScale = ( float )viewport.Height / YoloConstants::c_inputHeight;
-
-    float* _ptr = ( float* )outputData;
-    for ( Int64 i = 0; i < value.z; ++i )
-    {
-        for ( Int64 j = 0; j < value.y; ++j )
-        {
-            auto ptr = value[ i ][ j ];
-            Detection result;
-            if ( value.x == 85 )
-            {
-                float max = 0.0f;
-                int max_loc = 0;
-                float box_confidence = ptr[ 4 ];
-                //if (box_confidence == 0.0f)
-                //    continue;
-                box_confidence = 1.0f;
-                for ( int ii = 0; ii < 80; ii++ )
-                {
-                    auto class_conf = ptr[ i + 5 ] * box_confidence;
-                    if ( class_conf > max )
-                    {
-                        max = class_conf;
-                        max_loc = i;
-                    }
-                }
-                result.confidence = max;
-                result.index = max_loc;
-
-            }
-            else
-            {
-                //float* _ptr = (float*)ptr.data();
-                if ( ptr[ 4 ] < threshold ) continue;
-                result.confidence = ( float )ptr[ 4 ];
-                result.index = ( Int64 )ptr[ 5 ];
-
-            }
-
-            result.x = ptr[ 0 ];
-            result.y = ptr[ 1 ];
-            result.w = ptr[ 2 ];
-            result.h = ptr[ 3 ];
-
-
-
-            // We need to do some postprocessing on the raw values before we return them
-
-            // Convert x,y,w,h to xmin,ymin,xmax,ymax
-            float xmin = result.x - result.w / 2;
-            float ymin = result.y - result.h / 2;
-            float xmax = result.x + result.w / 2;
-            float ymax = result.y + result.h / 2;
-
-            xmin *= xScale;
-            ymin *= yScale;
-            xmax *= xScale;
-            ymax *= yScale;
-
-            // Clip values out of range
-            xmin = std::clamp( xmin, 0.0f, ( float )viewport.Width );
-            ymin = std::clamp( ymin, 0.0f, ( float )viewport.Height );
-            xmax = std::clamp( xmax, 0.0f, ( float )viewport.Width );
-            ymax = std::clamp( ymax, 0.0f, ( float )viewport.Height );
-
-            // Discard invalid boxes
-            if ( xmax <= xmin || ymax <= ymin || IsInfOrNan( xmin, ymin, xmax, ymax ) )
-            {
-                continue;
-            }
-
-            Prediction pred = {};
-            pred.xmin = xmin;
-            pred.ymin = ymin;
-            pred.xmax = xmax;
-            pred.ymax = ymax;
-            pred.score = result.confidence;
-            pred.predictedClass = result.index;
-            m_preds.push_back( pred );
-        }
-    }
-    // Apply NMS to select the best boxes
-    m_preds = ApplyNonMaximalSuppression( m_preds, YoloConstants::c_nmsThreshold );
-}
-#endif
-
-
-#ifdef USE_COMPUTE_ENGINE
 bool Sample::CopySharedVideoTextureTensor( Binary& inputBuffer )
 {
 
@@ -1466,7 +285,7 @@ bool Sample::CopySharedVideoTextureTensor( Binary& inputBuffer )
     }
     return false;
 }
-#endif
+
 
 Sample::Sample()
     : io_( GetImGuiIO( ) ), m_ctrlConnected(false), m_run_on_gpu(false)
@@ -1505,21 +324,7 @@ bool Sample::Initialize(HWND window, int width, int height, bool run_on_gpu)
     m_keyboard = std::make_unique<Keyboard>();
     
     m_deviceResources->SetWindow(window, width, height);
-#ifndef USE_COMPUTE_ENGINE
-    InitializeDirectML( );
-    
-    if (!m_dmlDevice)
-    {
-        m_run_on_gpu = true;
-        InitializeDirectML( );
-      
-    }
-    if (!m_dmlDevice)
-    {
-        MessageBox(0, L"No ML device found", L"Error", MB_OK);
-        ExitProcess(1);
-    }
-#else
+
     auto sessionOptions = std::make_shared<ONNX::SessionOptions>( );
 
     sessionOptions->DisableMemPattern( );
@@ -1530,13 +335,11 @@ bool Sample::Initialize(HWND window, int width, int height, bool run_on_gpu)
     computeEngine_->Environment( )->DisableTelemetryEvents( );
     computeNode_ = computeEngine_->AddComputeNode( L"Compute Node" );
 
-#endif
+
     // Add the DML execution provider to ORT using the DML Device and D3D12 Command Queue created above.
     InitializeDirectMLResources();
-    CheckDevice( );
 
     m_deviceResources->CreateDeviceResources();  	
-    CheckDevice( );
 
     const auto& d3dDevice = m_deviceResources->GetD3DDevice( );
     auto& shaderResourceViewDescHeap = m_deviceResources->ShaderResourceViewDescHeap( );
@@ -1553,10 +356,7 @@ bool Sample::Initialize(HWND window, int width, int height, bool run_on_gpu)
     CreateDeviceDependentResources();
    
     m_deviceResources->CreateWindowSizeDependentResources();
-#ifdef USE_COMPUTE_ENGINE
-    d2dResources_ = std::make_unique<D2DResources>( m_deviceResources.get( ) );
-    d2dResources_->CreateDeviceDependentResources( );
-#endif
+
     CreateWindowSizeDependentResources();
 
     
@@ -1579,9 +379,6 @@ void Sample::Tick()
 // Updates the world.
 void Sample::Update(DX::StepTimer const& timer)
 {
-#ifndef USE_COMPUTE_ENGINE
-    PIXBeginEvent(PIX_COLOR_DEFAULT, L"Update");
-#endif
 
     float elapsedTime = float(timer.GetElapsedSeconds());
 
@@ -1676,9 +473,6 @@ void Sample::Update(DX::StepTimer const& timer)
             m_player->Skip((float)-10*mul);
         m_player->Play();
     }
-#ifndef USE_COMPUTE_ENGINE
-    PIXEndEvent();
-#endif
 }
 #pragma endregion
 
@@ -1753,7 +547,7 @@ void Sample::OnNewFile(const wchar_t* filename)
 
 #pragma region Frame Render
 
-#ifdef USE_COMPUTE_ENGINE
+
 void Sample::BeginCompute( )
 {
 
@@ -1766,173 +560,13 @@ void Sample::BeginCompute( )
         computeNode_->Compute( inputBuffer, viewportSize );
     }
 }
-#else
-void Sample::BeginCompute( )
-{
-    m_copypixels_tensor_duration = std::chrono::duration<double, std::milli>( 0 );
-    m_inference_duration = std::chrono::duration<double, std::milli>( 0 );
-    m_output_duration = std::chrono::duration<double, std::milli>( 0 );
-    m_preds.clear( );
-    //m_output_texture.Reset();
-
-    for ( auto& model : m_models )
-    {
-        // Convert image to tensor format (original texture -> model input)
-        const size_t inputChannels = model->m_inputShape[ model->m_inputShape.size( ) - 3 ];
-        const size_t inputHeight = model->m_inputHeight;
-        const size_t inputWidth = model->m_inputWidth;
-        const size_t inputElementSize = model->m_inputDataType == ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT ? sizeof( float ) : sizeof( uint16_t );
-
-        if ( model->m_inputBuffer.size( ) != inputChannels * inputHeight * inputWidth * inputElementSize )
-        {
-            model->m_inputBuffer.resize( inputChannels * inputHeight * inputWidth * inputElementSize );
-        }
-        if ( CopySharedVideoTextureTensor( model->m_inputBuffer, model.get( ) ) )
-        {
-            // Record start
-            auto start = std::chrono::high_resolution_clock::now( );
-
-            // Create input tensor
-            Ort::MemoryInfo memoryInfo2 = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
-            auto inputTensor = Ort::Value::CreateTensor(
-                memoryInfo2,
-                model->m_inputBuffer.data( ),
-                model->m_inputBuffer.size( ),
-                model->m_inputShape.data( ),
-                model->m_inputShape.size( ),
-                model->m_inputDataType
-            );
-
-            // Bind tensors
-            Ort::MemoryInfo memoryInfo0 = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
-            Ort::Allocator allocator0( model->m_session, memoryInfo0 );
-            auto inputName = model->m_session.GetInputNameAllocated( 0, allocator0 );
-            auto bindings = Ort::IoBinding::IoBinding( model->m_session );
-            try
-            {
-                bindings.BindInput( inputName.get( ), inputTensor );
-            }
-            catch ( const std::runtime_error& re )
-            {
-                const char* err = re.what( );
-                MessageBoxA( 0, err, "Error loading model", MB_YESNO );
-                std::cerr << "Runtime error: " << re.what( ) << std::endl;
-                exit( 1 );
-            }
-            // Create output tensor(s) and bind
-            auto tensors = model->m_session.GetOutputCount( );
-            std::vector<std::string> output_names;
-            std::vector<std::vector<int64_t>> output_shapes;
-            std::vector<ONNXTensorElementDataType> output_datatypes;
-            for ( int i = 0; i < tensors; i++ )
-            {
-                auto output_name = model->m_session.GetOutputNameAllocated( i, allocator0 );
-                output_names.push_back( output_name.get( ) );
-                auto type_info = model->m_session.GetOutputTypeInfo( i );
-                auto tensor_info = type_info.GetTensorTypeAndShapeInfo( );
-                auto shape = tensor_info.GetShape( );
-
-                for ( int i = 0; i < shape.size( ); i++ )
-                {
-                    if ( i == 0 && shape[ i ] == -1 )
-                        shape[ i ] = 1;
-                    if ( i > 0 && shape[ i ] == -1 )
-                        shape[ i ] = 640;
-                }
-
-                output_shapes.push_back( shape );
-
-                output_datatypes.push_back( tensor_info.GetElementType( ) );
-
-                bindings.BindOutput( output_names.back( ).c_str( ), memoryInfo2 );
-            }
-            try
-            {
-                // Run the session to get inference results.
-                Ort::RunOptions runOpts;
-                model->m_session.Run( runOpts, bindings );
-
-                CheckDevice( );
-
-                bindings.SynchronizeOutputs( );
-
-                CheckDevice( );
-            }
-            catch ( const std::exception& ex )
-            {
-                const char* err = ex.what( );
-                MessageBoxA( 0, err, "Error loading model", MB_YESNO );
-                std::cerr << "Error occurred: " << ex.what( ) << std::endl;
-                exit( 1 );
-            }
-
-
-            std::vector<const std::byte*> outputData;
-            int  i = 0;
-            for ( int i = 0; i < tensors; i++ )
-            {
-                const std::byte* outputBuffer = reinterpret_cast< const std::byte* >( bindings.GetOutputValues( )[ i ].GetTensorRawData( ) );
-                outputData.push_back( outputBuffer );
-            }
-
-            auto end = std::chrono::high_resolution_clock::now( );
-            m_inference_duration += ( end - start );
-
-            if ( outputData.size( ) > 0 )
-            {
-                // Record start
-                auto start = std::chrono::high_resolution_clock::now( );
-
-                if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 3 && output_datatypes[ 0 ] != ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8 )
-                {
-                    GetPredictions( outputData[ 0 ], output_shapes[ 0 ], output_names, model.get( ) );
-                }
-                else  if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 4 )
-                {
-                    GetImage( outputData[ 0 ], output_shapes[ 0 ], model.get( ), output_datatypes[ 0 ] );
-                }
-                else  if ( outputData.size( ) == 1 && output_shapes[ 0 ].size( ) == 3 && output_datatypes[ 0 ] == ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8 )
-                {
-                    GetMask( outputData[ 0 ], output_shapes[ 0 ], model.get( ), output_datatypes[ 0 ] );
-                }
-                else if ( outputData.size( ) == 2 && output_names[ 0 ] == "box_coords" && output_names[ 1 ] == "box_scores" )
-                {
-                    GetFaces( outputData, output_shapes, model.get( ) );
-                }
-                else if ( outputData.size( ) == 2 )
-                {
-                    GetPredictions2( outputData, output_shapes, output_names, model.get( ) );
-                }
-                else if ( outputData.size( ) >= 3 )
-                {
-                    GetPredictions( outputData, output_shapes, output_names, model.get( ) );
-                }
-
-                if ( !m_mask_ready )
-                {
-                    m_mask.clear( );
-                }
-
-                auto end = std::chrono::high_resolution_clock::now( );
-                m_output_duration += ( end - start );
-            }
-        }
-    }
-    
-    if ( m_mask_ready )
-    {
-        m_mask_ready = false;
-        NewTexture( m_mask.data( ), m_mask_width, m_mask_height );
-    }
-}
-#endif
 
 // Draws the scene.
 void Sample::Render()
 {
-#ifdef USE_COMPUTE_ENGINE
+
     frameTime_ = DateTime::Now( );
-#endif
+
     auto frameCount = m_timer.GetFrameCount( );
     // Don't try to render anything before the first Update.
     if ( frameCount == 0)
@@ -1940,7 +574,7 @@ void Sample::Render()
         return;
     }
 
-
+    m_preds = model_->Predictions( );
     // Get the latest video frame
     RECT r = { 0, 0, static_cast< LONG >( m_origTextureWidth ), static_cast< LONG >( m_origTextureHeight ) };
     MFVideoNormalizedRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };
@@ -1960,18 +594,11 @@ void Sample::Render()
     // Kick off the compute work that will be used to render the next frame. We do this now so that the data will be
     // ready by the time the next frame comes around.
     // 
-#ifdef USE_COMPUTE_ENGINE
     if ( frameTime_ > nextCompute_ )
     {
         nextCompute_ = frameTime_ + computeInterval_;
         BeginCompute( );
     }
-#else
-    if ( ( frameCount % 3 ) == 0 )
-    {
-        BeginCompute( );
-    }
-#endif
     // Prepare the command list to render a new frame.
     m_deviceResources->Prepare();
     Clear();
@@ -1984,9 +611,6 @@ void Sample::Render()
     const auto& scissorRect = m_deviceResources->GetScissorRect();
 
     {
-#ifndef USE_COMPUTE_ENGINE
-        PIXBeginEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ), PIX_COLOR_DEFAULT, L"Render to screen" );
-#endif
         commandList.OMSetRenderTargets(1, m_deviceResources->GetRenderTargetView());
 
         commandList.SetGraphicsRootSignature(m_texRootSignatureLinear);
@@ -2031,20 +655,14 @@ void Sample::Render()
             commandList.DrawIndexedInstanced(6, 1, 0, 0, 0);
 
         }
-#ifndef USE_COMPUTE_ENGINE
-        PIXEndEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ) );
-#endif
     }
 
     // Readback the raw data from the model, compute the model's predictions, and render the bounding boxes
     {
-#ifndef USE_COMPUTE_ENGINE
-        PIXBeginEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ), PIX_COLOR_DEFAULT, L"Render predictions");
-#endif
 
         commandList.RSSetViewports(viewport);
         commandList.RSSetScissorRects(scissorRect);
-#ifndef USE_COMPUTE_ENGINE
+
         // Draw bounding box outlines
         m_lineEffect->Apply(commandList);
 
@@ -2068,15 +686,12 @@ void Sample::Render()
 
 
             m_lineEffect->SetAlpha(0.4f /*pred.score / 5.0*/);
-
           
     
-            //DirectX::XMVECTORF32 White = { { { 0.980392158f, 0.980392158f, 0.980392158f, 1.0f} } }; // #fafafa
-            //DirectX::XMVECTORF32 White = { { { .0f, 0.980392158f, .0f, 1.0f} } }; // #fafafa
             int col = YoloConstants::colors[((pred.predictedClass < 0) ? 0 : pred.predictedClass) % 20];
             DirectX::XMVECTORF32 White = { { { (col >> 16) / 255.0f, ((col >> 8) & 0xff) / 255.0f, (col & 0xff) / 255.0f, 1.0f} } }; // #fafafa
 
-            if (pred.m_polylines.size() == 0)
+
             {
                 for (int i = 0; i < 2; i++)
                 {
@@ -2115,96 +730,12 @@ void Sample::Render()
                     }
                 }
             }
-            for (auto p : pred.m_keypoints)
-            {
-                DirectX::XMVECTORF32 KeyColor = { {  {0.0f, 1.0f, .0f, 1.0f} } }; // # green
-                float dx = 3.0f;
-                VertexPositionColor upperLeft(SimpleMath::Vector3(p.first - dx, p.second - dx, 0.f), KeyColor);
-                VertexPositionColor upperRight(SimpleMath::Vector3(p.first + dx, p.second - dx, 0.f), KeyColor);
-                VertexPositionColor lowerRight(SimpleMath::Vector3(p.first + dx, p.second + dx, 0.f), KeyColor);
-                VertexPositionColor lowerLeft(SimpleMath::Vector3(p.first - dx, p.second + dx, 0.f), KeyColor);
-                m_lineBatch->DrawQuad(upperLeft, upperRight, lowerRight, lowerLeft);
-
-
-            }
-
-            for (auto& polyline : pred.m_polylines)
-            {
-                // The number type to use for tessellation
-                using Coord = double;
-
-                // The index type. Defaults to uint32_t, but you can also pass uint16_t if you know that your
-                // data won't have more than 65536 vertices.
-                using N = uint32_t;
-
-                // Create array
-                using Point = std::array<Coord, 2>;
-                std::vector<std::vector<Point>> polygon;
-                polygon.push_back(std::vector<Point>());
-                int  i = 0;
-                for (auto& p : polyline)
-                {
-                    polygon[0].push_back(Point{ p.x, p.y });
-                }
-                auto indices = mapbox::earcut<int32_t>(polygon);
-                int size = indices.size();
-                std::vector< VertexPositionColor> vertices;
-                vertices.reserve(size);
-               
-                for (auto n : indices)
-                {
-                    Point& p = polygon[0][n];
-                    VertexPositionColor e(SimpleMath::Vector3(p[0], p[1], 0.f), White);
-                    vertices.push_back(e);
-                }
-                m_lineBatch->Draw(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertices.data(), size);
-
-            }
         }
         m_lineBatch->End();
 
         // Draw bounding box outlines
         m_lineEffect2->Apply(commandList);
 
-        m_lineBatch2->Begin(commandList);
-      
-        m_lineEffect2->SetAlpha(0.9f /*pred.score / 5.0*/);
-        for (auto& pred : m_preds)
-        {
-            int col = YoloConstants::colors[((pred.predictedClass < 0) ? 0 : pred.predictedClass) % 20];
-            DirectX::XMVECTORF32 White = { { { (col >> 16) / 255.0f, ((col >> 8) & 0xff) / 255.0f, (col & 0xff) / 255.0f, 1.0f} } }; // #fafafa
-
-            for (auto& polyline : pred.m_polylines)
-            {
-                std::vector<crushedpixel::Vec2> points;
-
-                for (auto& p : polyline)
-                {
-                    points.push_back(crushedpixel::Vec2{ p.x, p.y });
-                }
-
-                auto thickness = 10.0f;
-                auto thick_line_vertices = crushedpixel::Polyline2D::create(points, thickness,
-                    crushedpixel::Polyline2D::JointStyle::MITER,
-                    crushedpixel::Polyline2D::EndCapStyle::SQUARE);
-
-                std::vector< VertexPositionColor> vertices;
-                vertices.reserve(thick_line_vertices.size());
-
-                //White.f[0] = 1.0f;
-                for (auto p : thick_line_vertices)
-                {
-                    VertexPositionColor e(SimpleMath::Vector3(p.x, p.y, 0.f), White);
-                    vertices.push_back(e);
-                }
-                m_lineBatch2->Draw(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertices.data(), vertices.size());
-
-            }
-        }
-
-
-        m_lineBatch2->End();
-        
         // Draw predicted class labels
         m_spriteBatch->Begin(commandList);
         for (const auto& pred : m_preds)
@@ -2215,34 +746,15 @@ void Sample::Render()
                 std::wstring classTextW(classText, classText + strlen(classText));
                 wchar_t _class[128];
                 swprintf_s(_class, 128, L"%s %d%%", classTextW.c_str(), (int)(pred.score * 100.0f));
-                if (pred.m_polylines.size() == 0)
-                {
                     // Render a drop shadow by drawing the text twice with a slight offset.
                     DX::DrawControllerString(m_spriteBatch.get(), m_legendFont.get(), m_ctrlFont.get(),
                         _class, SimpleMath::Vector2(pred.xmin, pred.ymin - 1.5f * dx) + SimpleMath::Vector2(2.f, 2.f), SimpleMath::Vector4(0.0f, 0.0f, 0.0f, 0.25f));
                     DX::DrawControllerString(m_spriteBatch.get(), m_legendFont.get(), m_ctrlFont.get(),
                         _class, SimpleMath::Vector2(pred.xmin, pred.ymin - 1.5f * dx), ATG::Colors::DarkGrey);
-                }
-                else
-                {
-                    // center
-                    SimpleMath::Vector2 _classSize = m_legendFont->MeasureString(_class);
-                     // Render a drop shadow by drawing the text twice with a slight offset.
-                    DX::DrawControllerString(m_spriteBatch.get(), m_legendFont.get(), m_ctrlFont.get(),
-                        _class,
-                        SimpleMath::Vector2((pred.xmin + pred.xmax) / 2.0f - _classSize.x/2.0f, (pred.ymin + pred.ymax) / 2.0f) + SimpleMath::Vector2(2.f, 2.f),
-                        SimpleMath::Vector4(0.0f, 0.0f, 0.0f, 0.25f));
-
-                    DX::DrawControllerString(m_spriteBatch.get(), m_legendFont.get(), m_ctrlFont.get(),
-                        _class,
-                        SimpleMath::Vector2((pred.xmin + pred.xmax) /2.0f - _classSize.x / 2.0f, (pred.ymin + pred.ymax) / 2.0f ),
-                        ATG::Colors::DarkGrey);
-
-                }
             }
         }
         m_spriteBatch->End();
-#endif
+
         // Render the UI
         RenderUI( );
         
@@ -2250,77 +762,31 @@ void Sample::Render()
         ID3D12GraphicsCommandList* commandListPtr = static_cast< ID3D12GraphicsCommandList* >( commandList.GetInterfacePointer( ) );
         ImGui_ImplDX12_RenderDrawData( ::ImGui::GetDrawData( ), commandListPtr );
 
-#ifndef USE_COMPUTE_ENGINE
-        PIXEndEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ) );
-#endif
     }
 
     // Show the new frame.
-#ifndef USE_COMPUTE_ENGINE
-    PIXBeginEvent(m_deviceResources->GetCommandQueue().GetInterfacePointer<ID3D12CommandQueue>( ), PIX_COLOR_DEFAULT, L"Present");
-#endif
     m_deviceResources->Present();
 
-#ifndef USE_COMPUTE_ENGINE
-    PIXEndEvent(m_deviceResources->GetCommandQueue().GetInterfacePointer<ID3D12CommandQueue>( ) );
-#endif
 
     m_graphicsMemory->Commit(m_deviceResources->GetCommandQueue());
 
     
 }
 
-void Sample::RenderPredictions( )
-{
-    const auto& d2dFactory = m_deviceResources->D2DFactory( );
-    const auto& d2dDevice = m_deviceResources->D2DDevice( );
-    const auto& d2dDeviceContext = m_deviceResources->D2DDeviceContext( );
-    const auto& directWriteFactory = m_deviceResources->DirectWriteFactory( );
-
-    m_deviceResources->AcquireRenderTarget( );
-    auto releaseRenderTarget = Finally( [ & ]( ) 
-        { 
-            m_deviceResources->ReleaseRenderTarget( ); 
-            m_deviceResources->D3D11DeviceContext( ).Flush( );
-        } );
-    
-    for ( const auto& pred : m_preds )
-    {
-
-    }
-
-}
 
 void Sample::RenderUI( )
 {
-#ifdef USE_COMPUTE_ENGINE
-    auto predictions = model_->Predictions( );
-#endif
 
     ImGui::Begin( "Yolo 9" );
 
     const char* modelLabel = "Object detection model:";
-#ifdef USE_COMPUTE_ENGINE
+
     ImGui::Text( modelLabel );
     auto modelFile = ToAnsiString( model_->ModelFilename() );
     ImGui::Text( modelFile.c_str( ) );
 
-    auto preds = Format( "Predictions: {}", predictions.size() );
+    auto preds = Format( "Predictions: {}", m_preds.size() );
     ImGui::Text( preds.c_str( ) );
-    
-#else
-    if ( m_models.size( ) > 1 )
-        modelLabel = "Object detection models:";
-    ImGui::Text( modelLabel );
-
-    for ( auto& _model : m_models )
-    {
-        auto modelFile = ToAnsiString( _model->m_modelfile );
-        auto deviceName = ToAnsiString( m_device_name );
-        auto model = Format("{} {}", modelFile, deviceName );
-        ImGui::Text( model.c_str() );
-    }
-#endif
 
     auto fps = Format( "{:0.2f} FPS", m_fps.GetFPS( ) );
     ImGui::Text( fps.c_str( ) );
@@ -2414,9 +880,7 @@ void Sample::NewTexture(const uint8_t* image_data, uint32_t width, uint32_t heig
 void Sample::Clear()
 {
     auto commandList = m_deviceResources->GetCommandList();
-#ifndef USE_COMPUTE_ENGINE
-    PIXBeginEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>(), PIX_COLOR_DEFAULT, L"Clear" );
-#endif
+
     // Clear the views.
     auto rtvDescriptor = m_deviceResources->GetRenderTargetView();
 
@@ -2429,9 +893,7 @@ void Sample::Clear()
     auto scissorRect = m_deviceResources->GetScissorRect();
     commandList.RSSetViewports(viewport);
     commandList.RSSetScissorRects(scissorRect);
-#ifndef USE_COMPUTE_ENGINE
-    PIXEndEvent(commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ) );
-#endif
+
 }
 #pragma endregion
 
@@ -2846,9 +1308,7 @@ void Sample::CreateWindowSizeDependentResources()
     m_lineEffect2->SetProjection(proj);
 
     m_spriteBatch->SetViewport(viewport);
-#ifdef USE_COMPUTE_ENGINE
-    d2dResources_->CreateWindowSizeDependentResources( );
-#endif
+
 }
 
 
@@ -2882,9 +1342,6 @@ void Sample::OnDeviceLost()
 
     m_SRVDescriptorHeap.reset();
 
-#ifndef USE_COMPUTE_ENGINE
-    m_dmlDevice.ResetPtr();
-#endif
     m_graphicsMemory.reset();
 }
 

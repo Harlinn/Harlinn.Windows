@@ -487,12 +487,6 @@ namespace Harlinn::Common::Core
         ConditionVariable queueEmpty_;
         ConditionVariable queueFull_;
         CriticalSection criticalSection_;
-        /*
-        size_t lastItemProduced_ = 0;
-        size_t queueSize_ = 0;
-        size_t startOffset_ = 0;
-        bool closed_ = false;
-        */
         std::atomic<size_t> lastItemProduced_ = 0;
         std::atomic<size_t> queueSize_ = 0;
         std::atomic<size_t> startOffset_ = 0;

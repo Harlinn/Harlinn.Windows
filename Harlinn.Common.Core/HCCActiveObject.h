@@ -159,6 +159,52 @@ namespace Harlinn::Common::Core::Concurrency
             }
         };
 
+
+        /// <summary>
+        /// A template that may be used to implement messages
+        /// that requests a single object from the active object.
+        /// </summary>
+        template<typename ReplyT, typename MessageIdT, MessageIdT messageId>
+        class SimpleRequestMessage : public Message<MessageIdT>
+        {
+        public:
+            using Base = Message<MessageIdT>;
+            using reply_type = ReplyT;
+            using ReplyType = ReplyT;
+        private:
+            std::promise<ReplyType> promise_;
+        public:
+            SimpleRequestMessage( ) 
+                : Base( messageId )
+            { }
+        protected:
+            SimpleRequestMessage( MessageIdT msgId )
+                : Base( msgId )
+            { }
+        public:
+            std::future<ReplyType> GetFuture( )
+            {
+                return promise_.get_future( );
+            }
+            void SetResult( const ReplyType& model )
+            {
+                promise_.set_value( model );
+            }
+
+            void SetException( )
+            {
+                try
+                {
+                    promise_.set_exception( std::current_exception( ) );
+                }
+                catch ( ... )
+                {
+                }
+            }
+
+        };
+
+
         /// <summary>
         /// A template that may be used to implement messages
         /// that pass a single value to the active object.
@@ -187,7 +233,39 @@ namespace Harlinn::Common::Core::Concurrency
             }
         };
 
+        /// <summary>
+        /// A template that may be used to implement messages
+        /// that pass a single value to the active object, and 
+        /// requests a reply in the form of a single object 
+        /// from the active object.
+        /// </summary>
+        template<typename ValueT, typename ReplyT, typename MessageIdT, MessageIdT messageId>
+        class SimpleValueRequestMessage : public SimpleRequestMessage<ReplyT, MessageIdT, messageId>
+        {
+        public:
+            using Base = SimpleRequestMessage<ReplyT, MessageIdT, messageId>;
+            using value_type = ValueT;
+            using ValueType = ValueT;
+        private:
+            ValueType value_;
+        public:
+            SimpleValueRequestMessage( const ValueType& value )
+                : Base( messageId ), value_( value )
+            { }
+            SimpleValueRequestMessage( ValueType&& value )
+                : Base( messageId ), value_( std::move( value ) )
+            { }
+
+            ValueType Value( ) const
+            {
+                return value_;
+            }
+        };
+
     }
+
+    
+
 
 
     template<typename MessageT, size_t maxQueueSize = 10 * 1024>
@@ -353,6 +431,8 @@ namespace Harlinn::Common::Core::Concurrency
                 return false;
             }
         }
+
+
 
         /// <summary>
         /// Posts a message, by moving it, to the active object.

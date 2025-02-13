@@ -102,7 +102,7 @@ using namespace Harlinn::Windows::Graphics;
 #include "WICTextureLoader.h"
 
 
-#include "half.hpp"
+//#include "half.hpp"
 //#include "cxxopts.hpp"
 
 
