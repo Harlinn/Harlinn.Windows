@@ -773,6 +773,151 @@ void Sample::Render()
     
 }
 
+namespace
+{
+    AnsiString ToString( ONNXTensorElementDataType elementDataType )
+    {
+        switch ( elementDataType )
+        {
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UNDEFINED:
+                return "Undefined";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+                return "Float";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
+                return "UInt8";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+                return "Int8";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT16:
+                return "UInt16";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+                return "Int16";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+                return "Int32";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+                return "Int64";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_STRING:
+                return "String";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL:
+                return "Bool";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
+                return "Float16";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE:
+                return "Double";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT32:
+                return "UInt32";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT64:
+                return "UInt64";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX64:
+                return "Complex64";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX128:
+                return "Complex128";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16:
+                return "BFloat16";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E4M3FN:
+                return "Float8 E4M3FN";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E4M3FNUZ:
+                return "Float8 E4M3FNUZ";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E5M2:
+                return "Float8 E5M2";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E5M2FNUZ:
+                return "Float8 E5M2FNUZ";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT4:
+                return "UInt4";
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT4:
+                return "Int4";
+        }
+        return "Unknown";
+    }
+
+    void RenderTypeInfo( const std::shared_ptr<ONNX::TensorTypeAndShapeInfo>& info )
+    {
+
+        auto str = Format( "Element type: {}", ToString( info->ElementType( ) ) );
+        ImGui::Text( str.c_str( ) );
+        const auto& dimensions = info->Dimensions( );
+        const auto& symbolicDimensions = info->SymbolicDimensions( );
+        auto count = dimensions.size( );
+        
+        if ( ImGui::TreeNode( "Dimensions" ) )
+        {
+            for ( size_t i = 0; i < count; i++ )
+            {
+                auto name = symbolicDimensions[ i ];
+                if ( !name )
+                {
+                    name = "<unnamed>";
+                }
+                str = Format( "{}: {}", name, dimensions[ i ] );
+                ImGui::Text( str.c_str() );
+            }
+            ImGui::TreePop( );
+        }
+    }
+
+    void RenderTypeInfo( size_t index, const std::shared_ptr<ONNX::TypeInfo>& typeInfo )
+    {
+        auto name = typeInfo->Name( );
+        if ( !name )
+        {
+            name = Format( "unnamed##{}", index );
+        }
+        if ( ImGui::TreeNode( name.c_str() ) )
+        {
+            auto type = typeInfo->Type( );
+            switch ( type )
+            {
+                case ONNX_TYPE_UNKNOWN:
+                {
+                    ImGui::Text( "Type: Unknown" );
+                }
+                break;
+                case ONNX_TYPE_TENSOR:
+                {
+                    ImGui::Text( "Type: Tensor" );
+                    auto tensorTypeAndShapeInfo = std::static_pointer_cast< ONNX::TensorTypeAndShapeInfo >( typeInfo );
+                    RenderTypeInfo( tensorTypeAndShapeInfo );
+                }
+                break;
+                case ONNX_TYPE_SPARSETENSOR:
+                {
+                    ImGui::Text( "Type: Sparse Tensor" );
+                }
+                break;
+                case ONNX_TYPE_SEQUENCE:
+                {
+                    ImGui::Text( "Type: Sequence" );
+                }
+                break;
+                case ONNX_TYPE_MAP:
+                {
+                    ImGui::Text( "Type: Map" );
+                }
+                break;
+                case ONNX_TYPE_OPAQUE:
+                {
+                    ImGui::Text( "Type: Opaque" );
+                }
+                break;
+                case ONNX_TYPE_OPTIONAL:
+                {
+                    ImGui::Text( "Type: Optional" );
+                }
+                break;
+            }
+            ImGui::TreePop( );
+        }
+
+    }
+    void RenderTypeInfo( const std::vector<std::shared_ptr<ONNX::TypeInfo>>& typeInfos )
+    {
+        auto count = typeInfos.size( );
+        for ( size_t i = 0; i < count; i++ )
+        {
+            const auto& typeInfo = typeInfos[ i ];
+            RenderTypeInfo( i, typeInfo );
+        }
+    }
+}
 
 void Sample::RenderUI( )
 {
@@ -782,20 +927,71 @@ void Sample::RenderUI( )
     const char* modelLabel = "Object detection model:";
 
     ImGui::Text( modelLabel );
-    auto modelFile = ToAnsiString( model_->ModelFilename() );
-    ImGui::Text( modelFile.c_str( ) );
+    auto str = ToAnsiString( model_->ModelFilename() );
+    ImGui::Text( str.c_str( ) );
 
-    auto preds = Format( "Predictions: {}", m_preds.size() );
-    ImGui::Text( preds.c_str( ) );
+    str = Format( "Predictions: {}", m_preds.size() );
+    ImGui::Text( str.c_str( ) );
 
-    auto fps = Format( "{:0.2f} FPS", m_fps.GetFPS( ) );
-    ImGui::Text( fps.c_str( ) );
-    auto scaleCopy = Format( "Scale/copy: {:0.2f} ms", m_copypixels_tensor_duration.count( ) );
-    ImGui::Text( scaleCopy.c_str( ) );
-    auto inference = Format( "Inference: {:0.2f} ms", m_inference_duration.count( ) );
-    ImGui::Text( inference.c_str( ) );
-    auto output = Format( "Output: {:0.2f} ms", m_output_duration.count( ) );
-    ImGui::Text( output.c_str( ) );
+    str = Format( "{:0.2f} FPS", m_fps.GetFPS( ) );
+    ImGui::Text( str.c_str( ) );
+    
+    str = Format( "Inference: {:0.2f} ms", model_->ComputeTime().TotalMilliseconds() );
+    ImGui::Text( str.c_str( ) );
+
+    auto metadata = model_->Metadata( );
+
+    str = Format( "Producer: {}", metadata->ProducerName( ) );
+    ImGui::Text( str.c_str( ) );
+
+    str = Format( "Description: {}", metadata->Description( ) );
+    ImGui::Text( str.c_str( ) );
+
+    str = Format( "Domain: {}", metadata->Domain( ) );
+    ImGui::Text( str.c_str( ) );
+
+    str = Format( "Graph name: {}", metadata->GraphName( ) );
+    ImGui::Text( str.c_str( ) );
+
+    str = Format( "Graph description: {}", metadata->GraphDescription( ) );
+    ImGui::Text( str.c_str( ) );
+
+
+    
+    if ( ImGui::TreeNode( "Custom Metadata" ) )
+    {
+        const auto& customMetadata = metadata->CustomMetadataMap( );
+        for ( const auto& entry : customMetadata )
+        {
+            str = Format( "{}: {}", entry.first, entry.second );
+            ImGui::TextWrapped( str.c_str( ) );
+        }
+        ImGui::TreePop( );
+    }
+
+    if ( ImGui::TreeNode( "Inputs" ) )
+    {
+        const auto& inputs = metadata->Inputs( );
+        RenderTypeInfo( inputs );
+        ImGui::TreePop( );
+    }
+
+    if ( ImGui::TreeNode( "Outputs" ) )
+    {
+        const auto& outputs = metadata->Outputs( );
+        RenderTypeInfo( outputs );
+        ImGui::TreePop( );
+    }
+    if ( ImGui::TreeNode( "Overridable Initializers" ) )
+    {
+        const auto& overridableInitializers = metadata->OverridableInitializers( );
+        RenderTypeInfo( overridableInitializers );
+        ImGui::TreePop( );
+    }
+
+
+
+
     ImGui::End( );
 }
 

@@ -31,7 +31,7 @@ namespace Harlinn::AI::ONNX::DirectML
         auto messageType = message->MessageType( );
         switch ( messageType )
         {
-            case ComputeNodeMesasgeType::Load:
+            case ComputeNodeMessageType::Load:
             {
                 auto loadMessage = static_cast< ComputeNodeLoadMessage* >( message.get( ) );
                 auto fileName = loadMessage->Value( );
@@ -46,18 +46,17 @@ namespace Harlinn::AI::ONNX::DirectML
                 }
             }
             break;
-            case ComputeNodeMesasgeType::Execute:
+            case ComputeNodeMessageType::Execute:
             {
                 auto executeMessage = static_cast<Internal::ComputeNodeExecuteMessageBase*>(message.get( ));
                 executeMessage->Execute( );
             }
             break;
-            case ComputeNodeMesasgeType::Compute:
+            case ComputeNodeMessageType::Compute:
             {
                 auto computeMessage = static_cast< ComputeNodeComputeMessage* >( message.get( ) );
-                auto tensorData = computeMessage->Value( );
-                const auto& viewportSize = computeMessage->ViewportSize( );
-                OnCompute( tensorData, viewportSize );
+                auto computeData = computeMessage->Value( );
+                OnCompute( computeData.buffer, computeData.viewportSize );
             }
             break;
         }
@@ -81,14 +80,18 @@ namespace Harlinn::AI::ONNX::DirectML
     {
         auto engine = Engine( );
         auto environment = engine->Environment( );
-#ifdef _DEBUG
+
         auto stopwatch = Stopwatch::StartNew( );
-#endif
+
         std::shared_ptr<ComputeNode> self = std::static_pointer_cast< ComputeNode >( shared_from_this( ) );
         session_ = std::make_shared<ONNX::Session>( environment, modelPath.c_str( ), *sessionOptions_.get() );
         model_ = std::make_shared<Model>( self, session_ );
-#ifdef _DEBUG
+        model_->SetModelFilename( modelPath );
+
         stopwatch.Stop( );
+        auto elapsed = stopwatch.Elapsed( );
+        model_->SetLoadTime( elapsed );
+#ifdef _DEBUG
         auto duration = stopwatch.TotalSeconds( );
         PrintLn( L"Loaded {} in {} seconds.", modelPath, duration );
 #endif
@@ -96,7 +99,7 @@ namespace Harlinn::AI::ONNX::DirectML
 
     HAI_EXPORT void ComputeNode::Compute( const Binary& tensorData, const Math::Vector2f& viewportSize )
     {
-        auto message = std::make_shared< ComputeNodeComputeMessage >( tensorData, viewportSize );
+        auto message = std::make_shared< ComputeNodeComputeMessage >( ComputeMessageParams{ tensorData, viewportSize } );
         PostMessage( message );
     }
 

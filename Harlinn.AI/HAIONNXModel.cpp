@@ -404,35 +404,25 @@ namespace Harlinn::AI::ONNX
             predictions = ApplyNonMaximalSuppression( predictions, c_nmsThreshold );
             return predictions;
         }
-
     }
+
+
+
+
 
 
     Model::Model( const std::shared_ptr<ONNX::Session>& session )
         : session_( session )
     {
+        metadata_ = std::make_shared<ONNX::Metadata>( *session );
         Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
         Ort::Allocator allocator( session->Impl(), memoryInfo );
 
-        auto meta = session->GetModelMetadata( );
-        auto modelname = meta.GetGraphNameAllocated( allocator );
 
         auto inputName = session->GetInputNameAllocated( 0, allocator );
         auto inputTypeInfo = session->GetInputTypeInfo( 0 );
         auto inputTensorInfo = inputTypeInfo.GetTensorTypeAndShapeInfo( );
         inputShape_ = inputTensorInfo.GetShape( );
-
-        for ( size_t i = 0; i < inputShape_.size( ); i++ )
-        {
-            if ( i == 0 && inputShape_[ i ] == -1 )
-            {
-                inputShape_[ i ] = 1;
-            }
-            if ( i > 0 && inputShape_[ i ] == -1 )
-            {
-                inputShape_[ i ] = 640;
-            }
-        }
 
 
         inputDataType_ = inputTensorInfo.GetElementType( );
@@ -528,14 +518,6 @@ namespace Harlinn::AI::ONNX
             auto tensor_info = type_info.GetTensorTypeAndShapeInfo( );
             auto shape = tensor_info.GetShape( );
 
-            for ( int i = 0; i < shape.size( ); i++ )
-            {
-                if ( i == 0 && shape[ i ] == -1 )
-                    shape[ i ] = 1;
-                if ( i > 0 && shape[ i ] == -1 )
-                    shape[ i ] = 640;
-            }
-
             output_shapes.push_back( shape );
 
             output_datatypes.push_back( tensor_info.GetElementType( ) );
@@ -545,8 +527,10 @@ namespace Harlinn::AI::ONNX
 
         // Run the session to get inference results.
         Ort::RunOptions runOpts;
+        auto stopwatch = Stopwatch::StartNew( );
         session->Run( runOpts, bindings );
-
+        stopwatch.Stop( );
+        computeTime_ = stopwatch.Elapsed( );
         bindings.SynchronizeOutputs( );
 
 

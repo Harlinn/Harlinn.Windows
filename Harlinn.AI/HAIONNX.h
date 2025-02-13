@@ -30,6 +30,209 @@ namespace Harlinn::AI::ONNX
     class Session;
     class Environment;
 
+    class TypeInfo : public std::enable_shared_from_this<TypeInfo>
+    {
+    public:
+        using Base = std::enable_shared_from_this<TypeInfo>;
+    private:
+        ONNXType type_;
+        AnsiString name_;
+    public:
+        TypeInfo( ONNXType type, const AnsiString& name )
+            : type_( type ), name_( name )
+        { }
+        virtual ~TypeInfo( ) = default;
+
+        ONNXType Type( ) const noexcept
+        {
+            return type_;
+        }
+        const AnsiString& Name( ) const noexcept
+        {
+            return name_;
+        }
+
+    };
+
+    class TensorTypeAndShapeInfo : public TypeInfo
+    {
+    public:
+        using Base = TypeInfo;
+    private:
+        ONNXTensorElementDataType elementType_;
+        size_t elementCount_;
+        std::vector<Int64> dimensions_;
+        std::vector<AnsiString> symbolicDimensions_;
+    public:
+        TensorTypeAndShapeInfo( ONNXType type, const AnsiString& name, ONNXTensorElementDataType elementType, size_t elementCount, std::vector<Int64>&& dimensions, std::vector<AnsiString>&& symbolicDimensions )
+            : Base( type, name ), elementType_( elementType ), dimensions_( std::move( dimensions ) ), symbolicDimensions_( std::move( symbolicDimensions ) )
+        { }
+
+        ONNXTensorElementDataType ElementType( ) const noexcept
+        {
+            return elementType_;
+        }
+        size_t ElementCount( ) const noexcept
+        {
+            return elementCount_;
+        }
+        const std::vector<Int64>& Dimensions( ) const noexcept
+        {
+            return dimensions_;
+        }
+        const std::vector<AnsiString>& SymbolicDimensions( ) const noexcept
+        {
+            return symbolicDimensions_;
+        }
+
+    };
+
+    class MapTypeInfo : public TypeInfo
+    {
+    public:
+        using Base = TypeInfo;
+    private:
+        ONNXTensorElementDataType keyType_;
+        std::shared_ptr<TypeInfo> valueType_;
+    public:
+        MapTypeInfo( const AnsiString& name, ONNXTensorElementDataType keyType, const std::shared_ptr<TypeInfo>& valueType )
+            : Base( ONNX_TYPE_MAP, name ), keyType_( keyType ), valueType_( valueType )
+        { }
+
+        ONNXTensorElementDataType KeyType( ) const
+        {
+            return keyType_;
+        }
+        const std::shared_ptr<TypeInfo>& ValueType( ) const
+        {
+            return valueType_;
+        }
+
+    };
+
+    class SequenceTypeInfo : public TypeInfo
+    {
+    public:
+        using Base = TypeInfo;
+    private:
+        std::shared_ptr<TypeInfo> elementType_;
+    public:
+        SequenceTypeInfo( const AnsiString& name, const std::shared_ptr<TypeInfo>& elementType )
+            : Base( ONNX_TYPE_SEQUENCE, name ), elementType_( elementType )
+        { }
+
+        const std::shared_ptr<TypeInfo>& ElementType( ) const noexcept
+        {
+            return elementType_;
+        }
+    };
+
+    class OptionalTypeInfo : public TypeInfo
+    {
+    public:
+        using Base = TypeInfo;
+    private:
+        std::shared_ptr<TypeInfo> elementType_;
+    public:
+        OptionalTypeInfo( const AnsiString& name, const std::shared_ptr<TypeInfo>& elementType )
+            : Base( ONNX_TYPE_OPTIONAL, name ), elementType_( elementType )
+        { }
+
+        const std::shared_ptr<TypeInfo>& ElementType( ) const noexcept
+        {
+            return elementType_;
+        }
+    };
+
+    class OpaqueTypeInfo : public TypeInfo
+    {
+    public:
+        using Base = TypeInfo;
+    
+        OpaqueTypeInfo( const AnsiString& name )
+            : Base( ONNX_TYPE_OPAQUE, name )
+        { }
+    };
+
+    class UnknownTypeInfo : public TypeInfo
+    {
+    public:
+        using Base = TypeInfo;
+    private:
+        std::shared_ptr<TypeInfo> elementType_;
+    public:
+        UnknownTypeInfo( const AnsiString& name )
+            : Base( ONNX_TYPE_UNKNOWN, name )
+        { }
+    };
+
+    /// <summary>
+    /// Provides access to metadata for a Session,
+    /// including the type information about the
+    /// inputs and outputs for the model loaded into 
+    /// the Session object.
+    /// </summary>
+    class Metadata : public std::enable_shared_from_this<Metadata>
+    {
+        AnsiString producerName_;
+        AnsiString graphName_;
+        AnsiString domain_;
+        AnsiString description_;
+        std::unordered_map<AnsiString, AnsiString> customMetadataMap_;
+        Int64 version_ = 0;
+        AnsiString graphDescription_;
+        std::vector<std::shared_ptr<TypeInfo>> inputs_;
+        std::vector<std::shared_ptr<TypeInfo>> outputs_;
+        std::vector<std::shared_ptr<TypeInfo>> overridableInitializers_;
+    public:
+        HAI_EXPORT Metadata( const Session& session );
+
+        const AnsiString& ProducerName( ) const noexcept
+        {
+            return producerName_;
+        }
+        const AnsiString& GraphName( ) const noexcept
+        {
+            return graphName_;
+        }
+        const AnsiString& Domain( ) const noexcept
+        {
+            return domain_;
+        }
+        const AnsiString& Description( ) const noexcept
+        {
+            return description_;
+        }
+        const std::unordered_map<AnsiString, AnsiString>& CustomMetadataMap( ) const noexcept
+        {
+            return customMetadataMap_;
+        }
+        Int64 Version( ) const noexcept
+        {
+            return version_;
+        }
+        const AnsiString& GraphDescription( ) const noexcept
+        {
+            return graphDescription_;
+        }
+        const std::vector<std::shared_ptr<TypeInfo>>& Inputs( ) const noexcept
+        {
+            return inputs_;
+        }
+        const std::vector<std::shared_ptr<TypeInfo>>& Outputs( ) const noexcept
+        {
+            return outputs_;
+        }
+        const std::vector<std::shared_ptr<TypeInfo>>& OverridableInitializers( ) const noexcept
+        {
+            return overridableInitializers_;
+        }
+    };
+
+
+
+
+
     class SessionOptions
     {
         friend class Session;
@@ -603,6 +806,7 @@ namespace Harlinn::AI::ONNX
     { }
 
 
+
     struct Prediction
     {
         static constexpr float Epsilon = 0.5f;
@@ -657,6 +861,7 @@ namespace Harlinn::AI::ONNX
         using Base = std::enable_shared_from_this<Model>;
     private:
         std::weak_ptr<ONNX::Session> session_;
+        std::shared_ptr<Metadata> metadata_;
         WideString modelFilename_;
         Ort::Value inputTensor_{ nullptr };
         Ort::Value outputTensor_{ nullptr };
@@ -670,6 +875,8 @@ namespace Harlinn::AI::ONNX
         CriticalSection criticalSection_;
         std::vector<Prediction> predictions_;
         UInt64 predictionsVersion_ = 0;
+        TimeSpan loadTime_;
+        TimeSpan computeTime_;
     public:
         HAI_EXPORT Model( const std::shared_ptr<ONNX::Session>& session );
         
@@ -681,9 +888,19 @@ namespace Harlinn::AI::ONNX
         {
             return session_.lock();
         }
+
+        const std::shared_ptr<Metadata>& Metadata( ) const
+        {
+            return metadata_;
+        }
+
         const WideString& ModelFilename( ) const
         {
             return modelFilename_;
+        }
+        void SetModelFilename( const WideString& modelFilename )
+        {
+            modelFilename_ = modelFilename;
         }
         const Ort::Value& InputTensor( ) const
         {
@@ -810,6 +1027,24 @@ namespace Harlinn::AI::ONNX
         {
             return predictionsVersion_;
         }
+
+        TimeSpan LoadTime( ) const
+        {
+            return loadTime_;
+        }
+        void SetLoadTime( TimeSpan loadTime )
+        {
+            loadTime_ = loadTime;
+        }
+        TimeSpan ComputeTime( ) const
+        {
+            return computeTime_;
+        }
+        void SetComputeTime( TimeSpan computeTime )
+        {
+            computeTime_ = computeTime;
+        }
+
 
 
     };

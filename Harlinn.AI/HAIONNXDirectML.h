@@ -35,7 +35,7 @@ namespace Harlinn::AI::ONNX::DirectML
     };
 
 
-    enum class ComputeNodeMesasgeType
+    enum class ComputeNodeMessageType
     {
         Unknown,
         Stop,
@@ -44,71 +44,59 @@ namespace Harlinn::AI::ONNX::DirectML
         Compute
     };
 
-    using ComputeNodeMesasge = Concurrency::Messages::Message<ComputeNodeMesasgeType>;
+    /// <summary>
+    /// Base message type for the ComputeNodeMessageType enumeration
+    /// </summary>
+    using ComputeNodeMessage = Concurrency::Messages::Message<ComputeNodeMessageType>;
 
-    template<ComputeNodeMesasgeType messageId>
-    using SimpleComputeNodeMesasge = Concurrency::Messages::SimpleMessage<ComputeNodeMesasgeType, messageId>;
+    /// <summary>
+    /// SimpleMessage specialized for the ComputeNodeMessageType enumeration
+    /// </summary>
+    template<ComputeNodeMessageType messageId>
+    using SimpleComputeNodeMessage = Concurrency::Messages::SimpleMessage<ComputeNodeMessageType, messageId>;
 
-    template<typename ValueT, ComputeNodeMesasgeType messageId>
-    using ComputeNodeValueMessage = Concurrency::Messages::SimpleValueMessage<ValueT, ComputeNodeMesasgeType, messageId>;
+    /// <summary>
+    /// SimpleRequestMessage specialized for the ComputeNodeMessageType enumeration
+    /// </summary>
+    template<typename ReplyT, ComputeNodeMessageType messageId>
+    using SimpleComputeNodeRequestMessage = Concurrency::Messages::SimpleRequestMessage<ReplyT, ComputeNodeMessageType, messageId>;
 
-    using ComputeNodeStopMessage = SimpleComputeNodeMesasge<ComputeNodeMesasgeType::Stop>;
+    /// <summary>
+    /// SimpleValueMessage specialized for the ComputeNodeMessageType enumeration
+    /// </summary>
+    template<typename ValueT, ComputeNodeMessageType messageId>
+    using ComputeNodeValueMessage = Concurrency::Messages::SimpleValueMessage<ValueT, ComputeNodeMessageType, messageId>;
+
+    /// <summary>
+    /// SimpleValueRequestMessage specialized for the ComputeNodeMessageType enumeration
+    /// </summary>
+    template<typename ValueT, typename ReplyT, ComputeNodeMessageType messageId>
+    using SimpleComputeNodeValueRequestMessage = Concurrency::Messages::SimpleValueRequestMessage<ValueT, ReplyT, ComputeNodeMessageType, messageId>;
+
+
+
+    using ComputeNodeStopMessage = SimpleComputeNodeMessage<ComputeNodeMessageType::Stop>;
+
 
     class Model;
-    class ComputeNodeLoadMessage : public ComputeNodeValueMessage<WideString, ComputeNodeMesasgeType::Load>
+    using ComputeNodeLoadMessage = SimpleComputeNodeValueRequestMessage<WideString, std::shared_ptr<Model>, ComputeNodeMessageType::Load>;
+
+    struct ComputeMessageParams
     {
-        std::promise<std::shared_ptr<Model>> promise_;
-    public:
-        using Base = ComputeNodeValueMessage<WideString, ComputeNodeMesasgeType::Load>;
-        ComputeNodeLoadMessage( const WideString& modelFilename )
-            : Base( modelFilename )
-        { }
-
-        std::future<std::shared_ptr<Model>> GetFuture( )
-        {
-            return promise_.get_future( );
-        }
-        void SetResult( const std::shared_ptr<Model>& model )
-        {
-            promise_.set_value( model );
-        }
-
-        void SetException( )
-        {
-            try
-            {
-                promise_.set_exception( std::current_exception( ) );
-            }
-            catch(...)
-            { }
-        }
+        const Binary buffer; 
+        Math::Vector2f viewportSize;
     };
 
-    class ComputeNodeComputeMessage : public ComputeNodeValueMessage<Binary, ComputeNodeMesasgeType::Compute>
-    {
-        const Math::Vector2f viewportSize_;
-    public:
-        using Base = ComputeNodeValueMessage<Binary, ComputeNodeMesasgeType::Compute>;
-        ComputeNodeComputeMessage( const Binary& buffer, const Math::Vector2f& viewportSize )
-            : Base( buffer ), viewportSize_( viewportSize )
-        {
-        }
-
-        const Math::Vector2f& ViewportSize( ) const
-        {
-            return viewportSize_;
-        }
-    };
-
+    using ComputeNodeComputeMessage = ComputeNodeValueMessage<ComputeMessageParams, ComputeNodeMessageType::Compute>;
 
     class ComputeNode;
     namespace Internal
     {
-        class ComputeNodeExecuteMessageBase : public SimpleComputeNodeMesasge<ComputeNodeMesasgeType::Execute>
+        class ComputeNodeExecuteMessageBase : public SimpleComputeNodeMessage<ComputeNodeMessageType::Execute>
         {
             ONNX::DirectML::ComputeNode* computeNode_;
         public:
-            using Base = SimpleComputeNodeMesasge<ComputeNodeMesasgeType::Execute>;
+            using Base = SimpleComputeNodeMessage<ComputeNodeMessageType::Execute>;
             ComputeNodeExecuteMessageBase( ONNX::DirectML::ComputeNode* computeNode )
                 : computeNode_( computeNode )
             { }
@@ -150,11 +138,11 @@ namespace Harlinn::AI::ONNX::DirectML
     };
 
     class ComputeEngine;
-    class ComputeNode : public Concurrency::ActiveObject< std::shared_ptr<ComputeNodeMesasge>>
+    class ComputeNode : public Concurrency::ActiveObject< std::shared_ptr<ComputeNodeMessage>>
     {
         friend class ComputeEngine;
     public:
-        using Base = Concurrency::ActiveObject< std::shared_ptr<ComputeNodeMesasge>>;
+        using Base = Concurrency::ActiveObject< std::shared_ptr<ComputeNodeMessage>>;
     private:
         WideString computeNodeName_;
         WideString deviceName_;
@@ -263,7 +251,7 @@ namespace Harlinn::AI::ONNX::DirectML
 
         virtual bool IsStopMessage( const MessageType& message ) const noexcept override
         {
-            return message->MessageType( ) == ComputeNodeMesasgeType::Stop;
+            return message->MessageType( ) == ComputeNodeMessageType::Stop;
         }
         virtual void PostStopMessage( ) override
         {
