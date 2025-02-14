@@ -2,7 +2,7 @@
 #ifndef __HWMESSAGE_H__
 #define __HWMESSAGE_H__
 /*
-   Copyright 2024 Espen Harlinn
+   Copyright 2024-2025 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

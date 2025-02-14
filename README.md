@@ -10,6 +10,7 @@ This is the repository for Harlinn.Windows, a Visual Studio 2022 Solution with a
 - [Harlinn.AI](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.AI/Harlinn.AI.html) library.
   - [Harlinn.AI DirectML (DML)](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.AI/Harlinn.AI.DML.html)
   - [Harlinn.AI DirectML eXtensions (DML.X)](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.AI/Harlinn.AI.DML.X.html)
+  - [Using the ONNX runtime with the DirectML execution provider (Harlinn.AI.ONNX.DirectML)](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.AI/Harlinn.AI.ONNX.DirectML.html)
 - [Harlinn.Common.Core](https://harlinn.github.io/Cpp/Harlinn.Windows/Harlinn.Common.Core/Harlinn.Common.Core.html) library.
   - [Fast Linear Algebra Classes for Games and Graphics](https://harlinn.github.io/Cpp/Cpp/Math/FastLinearAlgebra.html)
   - [Single Instruction Multiple Data (SIMD)](https://harlinn.github.io/Cpp/Cpp/Math/SimdOperations.html)
