@@ -775,61 +775,62 @@ void Sample::Render()
 
 namespace
 {
-    AnsiString ToString( ONNXTensorElementDataType elementDataType )
+    AnsiString ToString( Harlinn::AI::Meta::TensorElementType elementDataType )
     {
+        using namespace Harlinn::AI::Meta;
         switch ( elementDataType )
         {
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UNDEFINED:
+            case TensorElementType::Undefined:
                 return "Undefined";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+            case TensorElementType::Float:
                 return "Float";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8:
+            case TensorElementType::UInt8:
                 return "UInt8";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+            case TensorElementType::Int8:
                 return "Int8";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT16:
+            case TensorElementType::UInt16:
                 return "UInt16";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+            case TensorElementType::Int16:
                 return "Int16";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+            case TensorElementType::Int32:
                 return "Int32";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+            case TensorElementType::Int64:
                 return "Int64";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_STRING:
+            case TensorElementType::String:
                 return "String";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL:
+            case TensorElementType::Bool:
                 return "Bool";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
+            case TensorElementType::Float16:
                 return "Float16";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE:
+            case TensorElementType::Double:
                 return "Double";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT32:
+            case TensorElementType::UInt32:
                 return "UInt32";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT64:
+            case TensorElementType::UInt64:
                 return "UInt64";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX64:
+            case TensorElementType::Complex64:
                 return "Complex64";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX128:
+            case TensorElementType::Complex128:
                 return "Complex128";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16:
+            case TensorElementType::BFloat16:
                 return "BFloat16";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E4M3FN:
+            case TensorElementType::Float8E4M3FN:
                 return "Float8 E4M3FN";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E4M3FNUZ:
+            case TensorElementType::Float8E4M3FNUZ:
                 return "Float8 E4M3FNUZ";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E5M2:
+            case TensorElementType::Float8E5M2:
                 return "Float8 E5M2";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E5M2FNUZ:
+            case TensorElementType::Float8E5M2FNUZ:
                 return "Float8 E5M2FNUZ";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT4:
+            case TensorElementType::UInt4:
                 return "UInt4";
-            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT4:
+            case TensorElementType::Int4:
                 return "Int4";
         }
         return "Unknown";
     }
 
-    void RenderTypeInfo( const std::shared_ptr<ONNX::TensorTypeAndShapeInfo>& info )
+    void RenderTypeInfo( const std::shared_ptr<Harlinn::AI::Meta::TensorTypeAndShapeInfo>& info )
     {
 
         auto str = Format( "Element type: {}", ToString( info->ElementType( ) ) );
@@ -854,8 +855,9 @@ namespace
         }
     }
 
-    void RenderTypeInfo( size_t index, const std::shared_ptr<ONNX::TypeInfo>& typeInfo )
+    void RenderTypeInfo( size_t index, const std::shared_ptr<Harlinn::AI::Meta::TypeInfoBase>& typeInfo )
     {
+        using namespace Harlinn::AI::Meta;
         auto name = typeInfo->Name( );
         if ( !name )
         {
@@ -866,39 +868,39 @@ namespace
             auto type = typeInfo->Type( );
             switch ( type )
             {
-                case ONNX_TYPE_UNKNOWN:
+                case TypeInfoType::Unknown:
                 {
                     ImGui::Text( "Type: Unknown" );
                 }
                 break;
-                case ONNX_TYPE_TENSOR:
+                case TypeInfoType::Tensor:
                 {
                     ImGui::Text( "Type: Tensor" );
-                    auto tensorTypeAndShapeInfo = std::static_pointer_cast< ONNX::TensorTypeAndShapeInfo >( typeInfo );
+                    auto tensorTypeAndShapeInfo = std::static_pointer_cast< TensorTypeAndShapeInfo >( typeInfo );
                     RenderTypeInfo( tensorTypeAndShapeInfo );
                 }
                 break;
-                case ONNX_TYPE_SPARSETENSOR:
+                case TypeInfoType::Sparsetensor:
                 {
                     ImGui::Text( "Type: Sparse Tensor" );
                 }
                 break;
-                case ONNX_TYPE_SEQUENCE:
+                case TypeInfoType::Sequence:
                 {
                     ImGui::Text( "Type: Sequence" );
                 }
                 break;
-                case ONNX_TYPE_MAP:
+                case TypeInfoType::Map:
                 {
                     ImGui::Text( "Type: Map" );
                 }
                 break;
-                case ONNX_TYPE_OPAQUE:
+                case TypeInfoType::Opaque:
                 {
                     ImGui::Text( "Type: Opaque" );
                 }
                 break;
-                case ONNX_TYPE_OPTIONAL:
+                case TypeInfoType::Optional:
                 {
                     ImGui::Text( "Type: Optional" );
                 }
@@ -908,7 +910,7 @@ namespace
         }
 
     }
-    void RenderTypeInfo( const std::vector<std::shared_ptr<ONNX::TypeInfo>>& typeInfos )
+    void RenderTypeInfo( const std::vector<std::shared_ptr<Harlinn::AI::Meta::TypeInfoBase>>& typeInfos )
     {
         auto count = typeInfos.size( );
         for ( size_t i = 0; i < count; i++ )

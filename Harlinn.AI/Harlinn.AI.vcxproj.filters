@@ -33,6 +33,15 @@
     <ClInclude Include="HAIONNX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HAITransforms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HAITensor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HAIMetadata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

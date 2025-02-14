@@ -1564,6 +1564,22 @@ namespace Harlinn::Common::Core::Math
         return Max( Max( first, second ), remaining... );
     }
 
+
+    template<SimpleSpanLike T>
+        requires IsFloatingPoint<typename T::value_type> || IsInteger<typename T::value_type>
+    constexpr inline typename T::value_type Multiply( const T & values )
+    {
+        using ValueType = typename T::value_type;
+        ValueType result = static_cast< ValueType >( 1 );
+        for ( auto v : values )
+        {
+            result *= v;
+        }
+        return result;
+    }
+
+
+
     /// <summary>
     /// <para>
     /// Computes the nearest integer not greater in magnitude than value.

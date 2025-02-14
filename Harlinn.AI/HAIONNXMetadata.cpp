@@ -19,23 +19,24 @@
 
 namespace Harlinn::AI::ONNX
 {
-    std::shared_ptr<TypeInfo> CreateTypeInfo( const AnsiString& name, const Ort::TypeInfo& ortTypeInfo )
+    using namespace Meta;
+    using namespace Tensors;
+    std::shared_ptr<TypeInfoBase> CreateTypeInfo( const AnsiString& name, const Ort::TypeInfo& ortTypeInfo )
     {
-        std::shared_ptr<TypeInfo> result;
-        auto onnxType = ortTypeInfo.GetONNXType( );
+        std::shared_ptr<TypeInfoBase> result;
+        auto onnxType = static_cast< TypeInfoType >( ortTypeInfo.GetONNXType( ) );
         switch ( onnxType )
         {
-            case ONNX_TYPE_UNKNOWN:
+            case TypeInfoType::Unknown:
             {
                 result = std::make_shared<UnknownTypeInfo>( name );
             }
             break;
-            case ONNX_TYPE_TENSOR:
-            case ONNX_TYPE_SPARSETENSOR:
+            case TypeInfoType::Tensor:
+            case TypeInfoType::Sparsetensor:
             {
                 auto tensorTypeAndShapeInfo = ortTypeInfo.GetTensorTypeAndShapeInfo( );
-                auto elementType = tensorTypeAndShapeInfo.GetElementType( );
-                auto elementCount = tensorTypeAndShapeInfo.GetElementCount( );
+                auto elementType = static_cast< TensorElementType >(tensorTypeAndShapeInfo.GetElementType( ));
                 auto dimensions = tensorTypeAndShapeInfo.GetShape( );
                 auto dimensionCount = tensorTypeAndShapeInfo.GetDimensionsCount( );
                 std::vector<const char*> symbolicDimensions;
@@ -52,10 +53,10 @@ namespace Harlinn::AI::ONNX
                         symbolicDimensionStrings[ i ] = ptr;
                     }
                 }
-                result = std::make_shared<TensorTypeAndShapeInfo>( onnxType, name, elementType, elementCount, std::move( dimensions ), std::move( symbolicDimensionStrings ) );
+                result = std::make_shared<TensorTypeAndShapeInfo>( onnxType, name, elementType, std::move( dimensions ), std::move( symbolicDimensionStrings ) );
             }
             break;
-            case ONNX_TYPE_SEQUENCE:
+            case TypeInfoType::Sequence:
             {
                 auto ortSequenceTypeInfo = ortTypeInfo.GetSequenceTypeInfo( );
                 auto ortElementType = ortSequenceTypeInfo.GetSequenceElementType( );
@@ -63,21 +64,21 @@ namespace Harlinn::AI::ONNX
                 result = std::make_shared<SequenceTypeInfo>( name, elementType );
             }
             break;
-            case ONNX_TYPE_MAP:
+            case TypeInfoType::Map:
             {
                 auto ortMapTypeInfo = ortTypeInfo.GetMapTypeInfo( );
-                auto keyType = ortMapTypeInfo.GetMapKeyType( );
+                auto keyType = static_cast< TensorElementType >( ortMapTypeInfo.GetMapKeyType( ) );
                 auto ortValueTypeInfo = ortMapTypeInfo.GetMapValueType( );
                 auto valueTypeInfo = CreateTypeInfo( AnsiString( ), ortValueTypeInfo );
                 result = std::make_shared<MapTypeInfo>( name, keyType, valueTypeInfo );
             }
             break;
-            case ONNX_TYPE_OPAQUE:
+            case TypeInfoType::Opaque:
             {
                 result = std::make_shared<OpaqueTypeInfo>( name );
             }
             break;
-            case ONNX_TYPE_OPTIONAL:
+            case TypeInfoType::Optional:
             {
                 auto ortOptionalTypeInfo = ortTypeInfo.GetOptionalTypeInfo( );
                 auto ortElementType = ortOptionalTypeInfo.GetOptionalElementType( );
@@ -89,77 +90,87 @@ namespace Harlinn::AI::ONNX
         return result;
     }
 
-    HAI_EXPORT Metadata::Metadata( const Session& session )
+    std::shared_ptr<Meta::Metadata> Session::CreateMetadata( )
     {
+        auto result = std::make_shared<Meta::Metadata>( );
         Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
-        Ort::Allocator allocator( session.Impl( ), memoryInfo );
+        Ort::Allocator allocator( Impl( ), memoryInfo );
 
-        auto modelMetadata = session.GetModelMetadata( );
+        auto modelMetadata = GetModelMetadata( );
         auto producerName = modelMetadata.GetProducerNameAllocated( allocator );
         if ( producerName )
         {
-            producerName_ = producerName.get( );
+            result->SetProducerName( producerName.get( ) );
         }
         auto graphName = modelMetadata.GetGraphNameAllocated( allocator );
         if ( graphName )
         {
-            graphName_ = graphName.get( );
+            result->SetGraphName( graphName.get( ) );
         }
         auto domain = modelMetadata.GetDomainAllocated( allocator );
         if ( domain )
         {
-            domain_ = domain.get( );
+            result->SetDomain( domain.get( ) );
         }
         auto description = modelMetadata.GetDescriptionAllocated( allocator );
         if ( description )
         {
-            description_ = description.get( );
+            result->SetDescription( description.get( ) );
         }
         auto graphDescription = modelMetadata.GetGraphDescriptionAllocated( allocator );
         if ( graphDescription )
         {
-            graphDescription_ = graphDescription.get( );
+            result->SetGraphDescription( graphDescription.get( ) );
         }
-        version_ = modelMetadata.GetVersion( );
+        result->SetVersion( modelMetadata.GetVersion( ) );
 
-        auto count = session.GetInputCount( );
-        inputs_.reserve( count );
-        for ( size_t i = 0; i < count; i++ )
-        {
-            auto typeInfoNameAllocated = session.GetInputNameAllocated( i, allocator );
-            AnsiString typeInfoName = typeInfoNameAllocated.get( );
-            auto ortTypeInfo = session.GetInputTypeInfo( i );
-            auto typeInfo = CreateTypeInfo( typeInfoName, ortTypeInfo );
-            inputs_.emplace_back( std::move( typeInfo ) );
-        }
-        count = session.GetOutputCount( );
-        outputs_.reserve( count );
-        for ( size_t i = 0; i < count; i++ )
-        {
-            auto typeInfoNameAllocated = session.GetOutputNameAllocated( i, allocator );
-            AnsiString typeInfoName = typeInfoNameAllocated.get( );
-            auto ortTypeInfo = session.GetOutputTypeInfo( i );
-            auto typeInfo = CreateTypeInfo( typeInfoName, ortTypeInfo );
-            outputs_.emplace_back( std::move( typeInfo ) );
-        }
-        count = session.GetOverridableInitializerCount( );
-        overridableInitializers_.reserve( count );
-        for ( size_t i = 0; i < count; i++ )
-        {
-            auto typeInfoNameAllocated = session.GetOverridableInitializerNameAllocated( i, allocator );
-            AnsiString typeInfoName = typeInfoNameAllocated.get( );
-            auto ortTypeInfo = session.GetOverridableInitializerTypeInfo( i );
-            auto typeInfo = CreateTypeInfo( typeInfoName, ortTypeInfo );
-            overridableInitializers_.emplace_back( std::move( typeInfo ) );
-        }
+        auto count = GetInputCount( );
 
+        std::vector<std::shared_ptr<TypeInfoBase>> inputs;
+        inputs.reserve( count );
+        for ( size_t i = 0; i < count; i++ )
+        {
+            auto typeInfoNameAllocated = GetInputNameAllocated( i, allocator );
+            AnsiString typeInfoName = typeInfoNameAllocated.get( );
+            auto ortTypeInfo = GetInputTypeInfo( i );
+            auto typeInfo = CreateTypeInfo( typeInfoName, ortTypeInfo );
+            inputs.emplace_back( std::move( typeInfo ) );
+        }
+        result->SetInputs( std::move( inputs ) );
+        count = GetOutputCount( );
+        std::vector<std::shared_ptr<TypeInfoBase>> outputs;
+        outputs.reserve( count );
+        for ( size_t i = 0; i < count; i++ )
+        {
+            auto typeInfoNameAllocated = GetOutputNameAllocated( i, allocator );
+            AnsiString typeInfoName = typeInfoNameAllocated.get( );
+            auto ortTypeInfo = GetOutputTypeInfo( i );
+            auto typeInfo = CreateTypeInfo( typeInfoName, ortTypeInfo );
+            outputs.emplace_back( std::move( typeInfo ) );
+        }
+        result->SetOutputs( std::move( outputs ) );
+        count = GetOverridableInitializerCount( );
+        std::vector<std::shared_ptr<TypeInfoBase>> overridableInitializers;
+        overridableInitializers.reserve( count );
+        for ( size_t i = 0; i < count; i++ )
+        {
+            auto typeInfoNameAllocated = GetOverridableInitializerNameAllocated( i, allocator );
+            AnsiString typeInfoName = typeInfoNameAllocated.get( );
+            auto ortTypeInfo = GetOverridableInitializerTypeInfo( i );
+            auto typeInfo = CreateTypeInfo( typeInfoName, ortTypeInfo );
+            overridableInitializers.emplace_back( std::move( typeInfo ) );
+        }
+        result->SetOverridableInitializers( std::move( overridableInitializers ) );
+
+        std::map<AnsiString, AnsiString> customMetadataMap;
         auto customMetadataMapKeys = modelMetadata.GetCustomMetadataMapKeysAllocated( allocator );
         for ( const auto& key : customMetadataMapKeys )
         {
             auto value = modelMetadata.LookupCustomMetadataMapAllocated( key.get( ), allocator );
-            customMetadataMap_.emplace( key.get(), value.get() );
+            customMetadataMap.emplace( key.get(), value.get() );
         }
-
+        result->SetCustomMetadataMap( std::move( customMetadataMap ) );
+        return result;
 
     }
 }

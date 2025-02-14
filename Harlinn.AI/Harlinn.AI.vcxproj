@@ -170,8 +170,11 @@
     <ClInclude Include="HAIDef.h" />
     <ClInclude Include="HAIDirectML.h" />
     <ClInclude Include="HAIDirectMLX.h" />
+    <ClInclude Include="HAIMetadata.h" />
     <ClInclude Include="HAIONNX.h" />
     <ClInclude Include="HAIONNXDirectML.h" />
+    <ClInclude Include="HAITensor.h" />
+    <ClInclude Include="HAITransforms.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

@@ -21,6 +21,8 @@
 
 namespace Harlinn::AI::ONNX
 {   
+    using namespace Meta;
+    using namespace Tensors;
     namespace
     { 
         template <typename T>
@@ -301,7 +303,7 @@ namespace Harlinn::AI::ONNX
             }
         }
 
-        std::vector<Prediction> GetPredictionsFrom(const Math::Vector2f& viewport,const std::byte* outputData, std::vector<int64_t>& shape, const std::vector<std::string>& output_names )
+        std::vector<Prediction> GetPredictionsFrom(const Math::Vector2f& viewport,const std::byte* outputData, std::vector<int64_t>& shape )
         {
             
             constexpr double threshold = .45;
@@ -414,7 +416,7 @@ namespace Harlinn::AI::ONNX
     Model::Model( const std::shared_ptr<ONNX::Session>& session )
         : session_( session )
     {
-        metadata_ = std::make_shared<ONNX::Metadata>( *session );
+        metadata_ = session->Metadata( );
         Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
         Ort::Allocator allocator( session->Impl(), memoryInfo );
 
@@ -425,8 +427,8 @@ namespace Harlinn::AI::ONNX
         inputShape_ = inputTensorInfo.GetShape( );
 
 
-        inputDataType_ = inputTensorInfo.GetElementType( );
-        if ( inputDataType_ != ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT && inputDataType_ != ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16 )
+        inputDataType_ = static_cast< TensorElementType >(inputTensorInfo.GetElementType( ));
+        if ( inputDataType_ != TensorElementType::Float && inputDataType_ != TensorElementType::Float16 )
         {
             HCC_THROW( ArgumentException, L"Model input must be of type float32 or float16", L"session" );
         }
@@ -440,17 +442,17 @@ namespace Harlinn::AI::ONNX
         inputWidth_ = inputShape_[ inputShape_.size( ) - 1 ];
 
 
-        const size_t inputElementSize = inputDataType_ == ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT ? sizeof( float ) : sizeof( uint16_t );
+        const size_t inputElementSize = inputDataType_ == TensorElementType::Float ? sizeof( float ) : sizeof( uint16_t );
 
         auto outputName = session->GetOutputNameAllocated( 0, allocator );
         auto tensors = session->GetOutputCount( );
         auto outputTypeInfo = session->GetOutputTypeInfo( 0 );
         auto outputTensorInfo = outputTypeInfo.GetTensorTypeAndShapeInfo( );
         outputShape_ = outputTensorInfo.GetShape( );
-        auto outputDataType = outputTensorInfo.GetElementType( );
+        auto outputDataType = static_cast< TensorElementType >( outputTensorInfo.GetElementType( ) );
 
-        if ( outputDataType != ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT && outputDataType != ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16
-            && outputDataType != ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8 )
+        if ( outputDataType != TensorElementType::Float && outputDataType != TensorElementType::Float16
+            && outputDataType != TensorElementType::UInt8 )
         {
             HCC_THROW( ArgumentException, L"Model output must be of type float32 or float16 or int8", L"session" );
         }
@@ -468,11 +470,11 @@ namespace Harlinn::AI::ONNX
         auto inputSpan = result.ToSpan( );
         switch ( inputDataType_ )
         {
-            case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+            case TensorElementType::Float:
                 CopyPixelsToTensor<float>( src, Width, height, rowPitch, inputSpan, inputHeight_, inputWidth_, inputChannels_ );
                 break;
 
-            case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16:
+            case TensorElementType::Float16:
                 CopyPixelsToTensor<half_float::half>( src, Width, height, rowPitch, inputSpan, inputHeight_, inputWidth_, inputChannels_ );
                 break;
 
@@ -488,14 +490,14 @@ namespace Harlinn::AI::ONNX
         auto session = Session( );
         auto inputBuffer = inputTensorData.ToSpan( );
         // Convert image to tensor format (original texture -> model input)
-        const size_t inputElementSize = inputDataType_ == ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT ? sizeof( float ) : sizeof( uint16_t );
+        const size_t inputElementSize = inputDataType_ == TensorElementType::Float ? sizeof( float ) : sizeof( uint16_t );
         
         // Record start
         auto start = std::chrono::high_resolution_clock::now( );
 
         // Create input tensor
         Ort::MemoryInfo memoryInfo2 = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
-        auto inputTensor = Ort::Value::CreateTensor( memoryInfo2, inputBuffer.data( ), inputBuffer.size( ), inputShape_.data( ), inputShape_.size( ), inputDataType_ );
+        auto inputTensor = Ort::Value::CreateTensor( memoryInfo2, inputBuffer.data( ), inputBuffer.size( ), inputShape_.data( ), inputShape_.size( ), static_cast< ONNXTensorElementDataType >( inputDataType_ ) );
 
         // Bind tensors
         Ort::MemoryInfo memoryInfo0 = Ort::MemoryInfo::CreateCpu( OrtArenaAllocator, OrtMemTypeDefault );
@@ -545,7 +547,7 @@ namespace Harlinn::AI::ONNX
         std::vector<Prediction> predictions;
         if ( outputData.size( ) > 0 )
         {
-            predictions = GetPredictionsFrom( viewportSize, outputData[ 0 ], output_shapes[ 0 ], output_names );
+            predictions = GetPredictionsFrom( viewportSize, outputData[ 0 ], output_shapes[ 0 ] );
         }
         SetPredictions( std::move(predictions) );
         
