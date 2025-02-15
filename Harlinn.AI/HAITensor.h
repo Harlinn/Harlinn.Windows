@@ -1,6 +1,21 @@
 #pragma once
 #ifndef HARLINN_AI_HAITENSOR_H_
 #define HARLINN_AI_HAITENSOR_H_
+/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 #include "HAIMetadata.h"
 
@@ -30,6 +45,20 @@ namespace Harlinn::AI::Tensors
         {
             return typeInfo_;
         }
+
+        template<typename T>
+            requires std::is_base_of_v<Value, std::remove_cvref_t<T>>
+        std::shared_ptr<std::remove_cvref_t<T>> As( )
+        {
+            return std::static_pointer_cast< std::remove_cvref_t<T> >( shared_from_this( ) );
+        }
+        template<typename T>
+            requires std::is_base_of_v<Value, std::remove_cvref_t<T>>
+        std::shared_ptr<const std::remove_cvref_t<T>> As( ) const
+        {
+            return std::static_pointer_cast< const std::remove_cvref_t<T> >( shared_from_this( ) );
+        }
+
     };
 
     /// <summary>
@@ -117,6 +146,8 @@ namespace Harlinn::AI::Tensors
             data_ = tensorData;
         }
     };
+
+    HAI_EXPORT std::shared_ptr<Value> CreateValue( std::shared_ptr<Meta::TypeInfoBase> typeInfo );
 
 }
 

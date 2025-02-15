@@ -619,6 +619,122 @@ namespace Harlinn::AI::ONNX
     }
 
 
+    class NodeInput : public std::enable_shared_from_this<NodeInput>
+    {
+    public:
+        using Base = std::enable_shared_from_this<NodeInput>;
+    private:
+        std::shared_ptr<Meta::Metadata> metadata_;
+        std::vector<std::shared_ptr<Tensors::Value>> inputs_;
+        std::vector<std::shared_ptr<Tensors::Value>> overridableInitializers_;
+    public:
+        NodeInput( const std::shared_ptr<Meta::Metadata>& metadata )
+            : metadata_( metadata )
+        {
+            const auto& inputsTypeInfo = metadata->Inputs( );
+            inputs_.reserve( inputsTypeInfo.size() );
+            for ( const auto& typeInfo : inputsTypeInfo )
+            {
+                inputs_.emplace_back( Tensors::CreateValue( typeInfo ) );
+            }
+        }
+
+        const std::shared_ptr<Meta::Metadata>& Metadata( ) const
+        {
+            return metadata_;
+        }
+
+        const std::vector<std::shared_ptr<Tensors::Value>>& Inputs( ) const
+        {
+            return inputs_;
+        }
+        const std::vector<std::shared_ptr<Tensors::Value>>& OverridableInitializers( ) const
+        {
+            return overridableInitializers_;
+        }
+    };
+
+    class NodeOutput : public std::enable_shared_from_this<NodeOutput>
+    {
+    public:
+        using Base = std::enable_shared_from_this<NodeOutput>;
+    private:
+        std::shared_ptr<Meta::Metadata> metadata_;
+        std::vector<std::shared_ptr<Tensors::Value>> outputs_;
+    public:
+        NodeOutput( const std::shared_ptr<Meta::Metadata>& metadata )
+            : metadata_( metadata )
+        {
+            const auto& outputsTypeInfo = metadata->Outputs( );
+            outputs_.reserve( outputsTypeInfo.size( ) );
+            for ( const auto& typeInfo : outputsTypeInfo )
+            {
+                outputs_.emplace_back( Tensors::CreateValue( typeInfo ) );
+            }
+        }
+
+        const std::shared_ptr<Meta::Metadata>& Metadata( ) const
+        {
+            return metadata_;
+        }
+
+        const std::vector<std::shared_ptr<Tensors::Value>>& Outputs( ) const
+        {
+            return outputs_;
+        }
+    };
+
+
+    class ResultSink : public std::enable_shared_from_this<ResultSink>
+    {
+    public:
+        using Base = std::enable_shared_from_this<ResultSink>;
+
+        virtual ~ResultSink( ) = default;
+
+        virtual void Process( TimeSpan computeTime, const std::shared_ptr<NodeOutput>& outputs ) = 0;
+    };
+
+    class EventResultSink : public ResultSink
+    {
+    public:
+        using Base = ResultSink;
+        boost::signals2::signal<void( TimeSpan, const std::shared_ptr<NodeOutput>& )> OnProcess;
+
+        virtual void Process( TimeSpan computeTime, const std::shared_ptr<NodeOutput>& outputs ) override
+        {
+            OnProcess( computeTime, outputs );
+        }
+    };
+
+
+    class Node : public std::enable_shared_from_this<Node>
+    {
+    public:
+        using Base = std::enable_shared_from_this<Node>;
+    private:
+        std::weak_ptr<ONNX::Session> session_;
+        std::shared_ptr<Meta::Metadata> metadata_;
+        WideString modelFilename_;
+    public:
+        Node( const std::shared_ptr<ONNX::Session>& session )
+            : session_( session ), metadata_( session->Metadata() )
+        { }
+        virtual ~Node( ) = default;
+
+        HAI_EXPORT virtual void Compute( const std::shared_ptr<NodeInput>& inputs, const std::shared_ptr<ResultSink>& resultSink );
+
+        std::shared_ptr<ONNX::Session> Session( ) const
+        {
+            return session_.lock( );
+        }
+        const std::shared_ptr<Meta::Metadata>& Metadata( ) const
+        {
+            return metadata_;
+        }
+    };
+
+
 
     struct Prediction
     {
@@ -647,9 +763,9 @@ namespace Harlinn::AI::ONNX
 
     struct PositionHash
     {
-        size_t operator ()(const Prediction& prediction ) const
+        size_t operator ()( const Prediction& prediction ) const
         {
-            std::array<float,4> array{ Math::Floor( prediction.xmin ), Math::Floor( prediction.ymin ), Math::Ceil( prediction.xmax ), Math::Ceil( prediction.ymax ) };
+            std::array<float, 4> array{ Math::Floor( prediction.xmin ), Math::Floor( prediction.ymin ), Math::Ceil( prediction.xmax ), Math::Ceil( prediction.ymax ) };
             XXH64Hasher hasher;
             hasher.Add( reinterpret_cast< const Byte* >( array.data( ) ), sizeof( float ) * 4 );
             return hasher.Digest( );
@@ -665,10 +781,7 @@ namespace Harlinn::AI::ONNX
         }
     };
 
-
-
-
-    class Model : std::enable_shared_from_this<Model>
+    class Model : public std::enable_shared_from_this<Model>
     {
     public:
         using Base = std::enable_shared_from_this<Model>;

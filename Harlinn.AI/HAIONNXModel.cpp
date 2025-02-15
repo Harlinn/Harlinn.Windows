@@ -18,6 +18,7 @@
 #include "HAIONNX.h"
 #include "Internal/half.hpp"
 
+#include <mdspan>
 
 namespace Harlinn::AI::ONNX
 {   
@@ -317,6 +318,7 @@ namespace Harlinn::AI::ONNX
             std::vector<Prediction> predictions;
 
             Vec3<float> value( ( float* )outputData, shape[ 0 ], shape[ 1 ], shape[ 2 ] );
+            std::span shapeSpan( shape.data( ), shape.size( ) );
 
             // Scale the boxes to be relative to the original image size
             

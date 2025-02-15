@@ -184,6 +184,8 @@
     <ClCompile Include="HAIONNXDirectMLModel.cpp" />
     <ClCompile Include="HAIONNXMetadata.cpp" />
     <ClCompile Include="HAIONNXModel.cpp" />
+    <ClCompile Include="HAIONNXNode.cpp" />
+    <ClCompile Include="HAITensor.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -1,6 +1,21 @@
 #pragma once
 #ifndef HARLINN_AI_HAIMETADATA_H_
 #define HARLINN_AI_HAIMETADATA_H_
+/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 #include "HAIDef.h"
 
@@ -87,6 +102,33 @@ namespace Harlinn::AI::Meta
             return name_;
         }
 
+        virtual bool Matches(const TypeInfoBase& other ) const
+        {
+            return type_ == other.type_;
+        }
+        bool Matches( const std::shared_ptr<TypeInfoBase>& other ) const
+        {
+            if ( other )
+            {
+                return this->Matches( *other );
+            }
+            return false;
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<TypeInfoBase,std::remove_cvref_t<T>>
+        std::shared_ptr<std::remove_cvref_t<T>> As( )
+        {
+            return std::static_pointer_cast< std::remove_cvref_t<T> >( shared_from_this( ) );
+        }
+        template<typename T>
+            requires std::is_base_of_v<TypeInfoBase, std::remove_cvref_t<T>>
+        std::shared_ptr<const std::remove_cvref_t<T>> As( ) const
+        {
+            return std::static_pointer_cast< const std::remove_cvref_t<T> >( shared_from_this( ) );
+        }
+
+
     };
 
     class TensorTypeAndShapeInfo : public TypeInfoBase
@@ -103,6 +145,21 @@ namespace Harlinn::AI::Meta
             : Base( type, name ), elementType_( elementType ), dimensions_( std::move( dimensions ) ), symbolicDimensions_( std::move( symbolicDimensions ) )
         {
             elementCount_ = Math::Multiply( dimensions_ );
+        }
+
+        virtual bool Matches( const TypeInfoBase& other ) const override
+        {
+            auto result = Base::Matches( other );
+            if ( result )
+            {
+                const auto& ti = static_cast< const TensorTypeAndShapeInfo& >( other );
+                result = elementType_ == ti.elementType_;
+                if ( result )
+                {
+                    result = dimensions_ == ti.dimensions_;
+                }
+            }
+            return result;
         }
 
         TensorElementType ElementType( ) const noexcept
@@ -183,6 +240,21 @@ namespace Harlinn::AI::Meta
         {
         }
 
+        virtual bool Matches( const TypeInfoBase& other ) const override
+        {
+            auto result = Base::Matches( other );
+            if ( result )
+            {
+                const auto& ti = static_cast< const MapTypeInfo& >( other );
+                result = keyType_ == ti.keyType_;
+                if ( result )
+                {
+                    result = valueType_->Matches( *ti.valueType_ );
+                }
+            }
+            return result;
+        }
+
         TensorElementType KeyType( ) const
         {
             return keyType_;
@@ -206,6 +278,17 @@ namespace Harlinn::AI::Meta
         {
         }
 
+        virtual bool Matches( const TypeInfoBase& other ) const override
+        {
+            auto result = Base::Matches( other );
+            if ( result )
+            {
+                const auto& ti = static_cast< const SequenceTypeInfo& >( other );
+                result = elementType_->Matches( *ti.elementType_ );
+            }
+            return result;
+        }
+
         const std::shared_ptr<TypeInfoBase>& ElementType( ) const noexcept
         {
             return elementType_;
@@ -222,6 +305,17 @@ namespace Harlinn::AI::Meta
         OptionalTypeInfo( const AnsiString& name, const std::shared_ptr<TypeInfoBase>& elementType )
             : Base( TypeInfoType::Optional, name ), elementType_( elementType )
         {
+        }
+
+        virtual bool Matches( const TypeInfoBase& other ) const override
+        {
+            auto result = Base::Matches( other );
+            if ( result )
+            {
+                const auto& ti = static_cast< const OptionalTypeInfo& >( other );
+                result = elementType_->Matches( *ti.elementType_ );
+            }
+            return result;
         }
 
         const std::shared_ptr<TypeInfoBase>& ElementType( ) const noexcept
