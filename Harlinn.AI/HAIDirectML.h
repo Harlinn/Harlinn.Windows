@@ -917,6 +917,9 @@ namespace Harlinn::AI::DML
     /// the result into the corresponding element of OutputTensor.
     /// </para>
     /// <para>
+    /// $$f(x) = x$$
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_IDENTITY_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -941,7 +944,7 @@ namespace Harlinn::AI::DML
         /// Initializes the ElementWiseIdentityOperatorDesc
         /// </summary>
         /// <param name="inputTensor">
-        /// The input tensor to read from.
+        /// Describes the input tensor to read from.
         /// </param>
         /// <param name="outputTensor">
         /// The output tensor to write the results to.
@@ -964,7 +967,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
-    /// 
+    /// Computes the absolute value for each element of InputTensor, placing 
+    /// the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// $$f(x)=|x|$$
     /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_ABS_OPERATOR_DESC
@@ -987,6 +994,13 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the arccosine for each element of InputTensor, placing 
+    /// the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// $$f(x)=cos^{-1}(x)$$
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_ACOS_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1007,6 +1021,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Adds every element in ATensor to its corresponding element in BTensor, placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_ADD_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1026,6 +1045,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseAddOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ADD_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Adds every element in ATensor to its corresponding element 
+    /// in BTensor and places the result into the corresponding element 
+    /// of OutputTensor, with the option for fused activation.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_ADD1_OPERATOR_DESC
     /// </para>
@@ -1048,6 +1072,9 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the arcsine for each element of InputTensor, placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_ASIN_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1067,6 +1094,9 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseASinOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ASIN_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Computes the arctangent for each element of InputTensor, placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_ATAN_OPERATOR_DESC
     /// </para>
@@ -1088,6 +1118,9 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the ceiling for each element of InputTensor, placing the result into the corresponding element of OutputTensor. The ceiling of x is the smallest integer that is greater than or equal to x.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_CEIL_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1108,6 +1141,9 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs the following operation for each element of InputTensor, placing the result into the corresponding element of OutputTensor. This operator clamps (or limits) every element in the input within the closed interval [Min, Max].
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_CLIP_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1115,11 +1151,11 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseClip;
-        FLOAT Min = 0.f;
-        FLOAT Max = 0.f;
+        FLOAT Min = std::numeric_limits<float>::lowest( );
+        FLOAT Max = std::numeric_limits<float>::max( );
 
         ElementWiseClipOperatorDesc( ) noexcept = default;
-        ElementWiseClipOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr, float min = 0.f, float max = 0.f ) noexcept
+        ElementWiseClipOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr, float min = std::numeric_limits<float>::lowest( ), float max = std::numeric_limits<float>::max( ) ) noexcept
             : Base( inputTensor, outputTensor, scaleBias ), Min( min ), Max( max )
         {
         }
@@ -1129,6 +1165,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseClipOperatorDesc ) == sizeof( DML_ELEMENT_WISE_CLIP_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Computes the trigonometric cosine of each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_COS_OPERATOR_DESC
     /// </para>
@@ -1150,6 +1190,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the quotient of each element of ATensor over the corresponding 
+    /// element of BTensor, placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_DIVIDE_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1169,6 +1213,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseDivideOperatorDesc ) == sizeof( DML_ELEMENT_WISE_DIVIDE_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Applies the natural exponentiation function to each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_EXP_OPERATOR_DESC
     /// </para>
@@ -1190,6 +1238,9 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the floor for each element of InputTensor, placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_FLOOR_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1209,6 +1260,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseFloorOperatorDesc ) == sizeof( DML_ELEMENT_WISE_FLOOR_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Computes the base-e (natural) logarithm of each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_LOG_OPERATOR_DESC
     /// </para>
@@ -1230,6 +1285,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a logical AND on each pair of corresponding elements of 
+    /// the input tensors, placing the result (1 for true, 0 for false) 
+    /// into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_LOGICAL_AND_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1248,6 +1308,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseLogicalAndOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_AND_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a logical equals on each pair of corresponding elements of the 
+    /// input tensors, placing the result (1 for true, 0 for false) into the 
+    /// corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_LOGICAL_EQUALS_OPERATOR_DESC
     /// </para>
@@ -1269,6 +1334,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a logical greater than on each pair of corresponding elements of the 
+    /// input tensors, placing the result (1 for true, 0 for false) into the 
+    /// corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_LOGICAL_GREATER_THAN_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1288,6 +1358,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseLogicalGreaterThanOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_GREATER_THAN_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a logical less than on each pair of corresponding elements 
+    /// of the input tensors, placing the result (1 for true, 0 for false) 
+    /// into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_LOGICAL_LESS_THAN_OPERATOR_DESC
     /// </para>
@@ -1309,6 +1384,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a logical NOT on each element of InputTensor, placing 
+    /// the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_LOGICAL_NOT_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1328,6 +1407,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseLogicalNotOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_NOT_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a logical OR on each pair of corresponding elements of the 
+    /// input tensors, placing the result into the corresponding element of 
+    /// OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_LOGICAL_OR_OPERATOR_DESC
     /// </para>
