@@ -2919,6 +2919,12 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Rearranges (permutes) data from depth into blocks of spatial 
+    /// data. The operator outputs a copy of the input tensor where 
+    /// values from the depth dimension are moved in spatial blocks to 
+    /// the height and width dimensions.
+    /// </para>
+    /// <para>
     /// Alias for DML_DEPTH_TO_SPACE_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2939,6 +2945,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( DepthToSpaceOperatorDesc ) == sizeof( DML_DEPTH_TO_SPACE_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Constructs an output tensor by tiling the input tensor. The 
+    /// elements in each dimension of the input tensor are repeated 
+    /// by a multiple in the Repeats array.
+    /// </para>
     /// <para>
     /// Alias for DML_TILE_OPERATOR_DESC
     /// </para>
@@ -2961,6 +2972,13 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( TileOperatorDesc ) == sizeof( DML_TILE_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Selects the largest K elements from each sequence along an axis of the 
+    /// InputTensor, and returns the values and indices of those elements in 
+    /// the OutputValueTensor and OutputIndexTensor, respectively. A sequence 
+    /// refers to one of the sets of elements that exist along the Axis 
+    /// dimension of the InputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_TOP_K_OPERATOR_DESC
     /// </para>
@@ -2987,6 +3005,12 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a batch normalization on the input. This operator performs the following computation: 
+    /// </para>
+    /// <para>
+    /// $$Output = FusedActivation(Scale \times \frac{Input - Mean}{ \sqrt{Variance + Epsilon} } + Bias)$$
+    /// </para>
+    /// <para>
     /// Alias for DML_BATCH_NORMALIZATION_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -3008,9 +3032,9 @@ namespace Harlinn::AI::DML
         BatchNormalizationOperatorDesc( ) noexcept = default;
         BatchNormalizationOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor,
             const TensorDesc* meanTensor = nullptr, const TensorDesc* varianceTensor = nullptr, const TensorDesc* scaleTensor = nullptr,
-            const TensorDesc* biasTensor = nullptr, bool spatial = false, float epsilon = 0.f, const OperatorDesc* fusedActivation = nullptr ) noexcept
+            const TensorDesc* biasTensor = nullptr, float epsilon = 0.f, const OperatorDesc* fusedActivation = nullptr ) noexcept
             : InputTensor( inputTensor ), MeanTensor( meanTensor ), VarianceTensor( varianceTensor ), ScaleTensor( scaleTensor ),
-            BiasTensor( biasTensor ), OutputTensor( outputTensor ), Spatial( spatial ), Epsilon( epsilon ), FusedActivation( fusedActivation )
+            BiasTensor( biasTensor ), OutputTensor( outputTensor ), Epsilon( epsilon ), FusedActivation( fusedActivation )
         {
         }
 
@@ -3020,6 +3044,15 @@ namespace Harlinn::AI::DML
 
 
     /// <summary>
+    /// <para>
+    /// Performs a mean variance normalization function on the 
+    /// input tensor. This operator will calculate the mean 
+    /// and variance of the input tensor to perform normalization. 
+    /// This operator performs the following computation:
+    /// </para>
+    /// <para>
+    /// $$Output = FusedActivation(Scale \times \frac{Input - Mean}{ \sqrt{Variance + Epsilon} } + Bias)$$
+    /// </para>
     /// <para>
     /// Alias for DML_MEAN_VARIANCE_NORMALIZATION_OPERATOR_DESC
     /// </para>
@@ -3051,6 +3084,12 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a local response normalization (LRN) function on the input. This operator performs the following computation:
+    /// </para>
+    /// <para>
+    /// $$b_{c} = a_{c}\left(k + \frac{\alpha}{n}\sum_{c'=\max(0, c-n/2)}^{\min(N-1,c+n/2)}a_{c'}^2\right)^{-\beta}$$
+    /// </para>
+    /// <para>
     /// Alias for DML_LOCAL_RESPONSE_NORMALIZATION_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -3065,11 +3104,20 @@ namespace Harlinn::AI::DML
         FLOAT Beta = 0.f;
         FLOAT Bias = 0.f;
 
+        LocalResponseNormalizationOperatorDesc( ) noexcept = default;
+        LocalResponseNormalizationOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, bool crossChannel, UInt32 localSize, float alpha = 0.0001f, float beta = 0.75f, float bias = 1.f ) noexcept
+            : Base( inputTensor, outputTensor ), CrossChannel( crossChannel ), LocalSize( localSize ), Alpha( alpha ), Beta( beta ), Bias( bias )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LOCAL_RESPONSE_NORMALIZATION_OPERATOR_DESC );
     };
     static_assert( sizeof( LocalResponseNormalizationOperatorDesc ) == sizeof( DML_LOCAL_RESPONSE_NORMALIZATION_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs an Lp-normalization function along the specified axis of the input tensor.
+    /// </para>
     /// <para>
     /// Alias for DML_LP_NORMALIZATION_OPERATOR_DESC
     /// </para>
@@ -3083,11 +3131,23 @@ namespace Harlinn::AI::DML
         FLOAT Epsilon = 0.f;
         UInt32 P = 0;
 
+        LPNormalizationOperatorDesc( ) noexcept = default;
+        LPNormalizationOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 axis = 0, float epsilon = 0.00001f, UInt32 p = 1 ) noexcept
+            : Base( inputTensor, outputTensor ), Axis( axis ), Epsilon( epsilon ), P( p )
+        { }
+
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LP_NORMALIZATION_OPERATOR_DESC );
     };
     static_assert( sizeof( LPNormalizationOperatorDesc ) == sizeof( DML_LP_NORMALIZATION_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a one-layer simple recurrent neural network (RNN) function 
+    /// on the input. This function is often referred to as the Input Gate. 
+    /// This operator performs this function multiple times in a loop, dictated by 
+    /// the sequence length dimension and the SequenceLengthsTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_RNN_OPERATOR_DESC
     /// </para>
@@ -3109,11 +3169,22 @@ namespace Harlinn::AI::DML
         _Field_size_( ActivationDescCount ) const OperatorDesc* ActivationDescs = nullptr;
         RecurrentNetworkDirection Direction = RecurrentNetworkDirection::Forward;
 
+        RNNOperatorDesc( ) noexcept = default;
+        RNNOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* weightTensor, const TensorDesc* recurrenceTensor, const TensorDesc* biasTensor, const TensorDesc* hiddenInitTensor, const TensorDesc* sequenceLengthsTensor, const TensorDesc* outputSequenceTensor, const TensorDesc* outputSingleTensor, UInt32 activationDescCount, const OperatorDesc* activationDescs, RecurrentNetworkDirection direction ) noexcept
+            : InputTensor( inputTensor ), WeightTensor( weightTensor ), RecurrenceTensor( recurrenceTensor ), BiasTensor( biasTensor ), HiddenInitTensor( hiddenInitTensor ), SequenceLengthsTensor( sequenceLengthsTensor ), OutputSequenceTensor( outputSequenceTensor ), OutputSingleTensor( outputSingleTensor ), ActivationDescCount( activationDescCount ), ActivationDescs( activationDescs ), Direction( direction )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RNN_OPERATOR_DESC );
     };
     static_assert( sizeof( RNNOperatorDesc ) == sizeof( DML_RNN_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a one-layer long short term memory (LSTM) function on the input. 
+    /// This operator uses multiple gates to perform this layer. These gates are 
+    /// performed multiple times in a loop, dictated by the sequence length dimension 
+    /// and the SequenceLengthsTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_LSTM_OPERATOR_DESC
     /// </para>
@@ -3141,11 +3212,24 @@ namespace Harlinn::AI::DML
         BOOL UseClipThreshold = FALSE;
         BOOL CoupleInputForget = FALSE;
 
+        LSTMOperatorDesc( ) noexcept = default;
+        LSTMOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* weightTensor, const TensorDesc* recurrenceTensor, const TensorDesc* biasTensor, const TensorDesc* hiddenInitTensor, const TensorDesc* cellMemInitTensor, const TensorDesc* sequenceLengthsTensor, const TensorDesc* peepholeTensor, const TensorDesc* outputSequenceTensor, const TensorDesc* outputSingleTensor, const TensorDesc* outputCellSingleTensor, UInt32 activationDescCount, const OperatorDesc* activationDescs, RecurrentNetworkDirection direction, float clipThreshold, bool useClipThreshold, bool coupleInputForget ) noexcept
+            : InputTensor( inputTensor ), WeightTensor( weightTensor ), RecurrenceTensor( recurrenceTensor ), BiasTensor( biasTensor ), HiddenInitTensor( hiddenInitTensor ), CellMemInitTensor( cellMemInitTensor ), SequenceLengthsTensor( sequenceLengthsTensor ), PeepholeTensor( peepholeTensor ), OutputSequenceTensor( outputSequenceTensor ), OutputSingleTensor( outputSingleTensor ), OutputCellSingleTensor( outputCellSingleTensor ), ActivationDescCount( activationDescCount ), ActivationDescs( activationDescs ), Direction( direction ), ClipThreshold( clipThreshold ), UseClipThreshold( useClipThreshold ), CoupleInputForget( coupleInputForget )
+        {}
+
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LSTM_OPERATOR_DESC );
     };
     static_assert( sizeof( LSTMOperatorDesc ) == sizeof( DML_LSTM_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a (standard layers) one-layer gated recurrent 
+    /// unit (GRU) function on the input. This operator uses multiple 
+    /// gates to perform this layer. These gates are performed multiple 
+    /// times in a loop dictated by the sequence length dimension and 
+    /// the SequenceLengthsTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_GRU_OPERATOR_DESC
     /// </para>
@@ -3168,6 +3252,10 @@ namespace Harlinn::AI::DML
         RecurrentNetworkDirection Direction = RecurrentNetworkDirection::Forward;
         BOOL LinearBeforeReset = FALSE;
 
+        GRUOperatorDesc( ) noexcept = default;
+        GRUOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* weightTensor, const TensorDesc* recurrenceTensor, const TensorDesc* biasTensor, const TensorDesc* hiddenInitTensor, const TensorDesc* sequenceLengthsTensor, const TensorDesc* outputSequenceTensor, const TensorDesc* outputSingleTensor, UInt32 activationDescCount, const OperatorDesc* activationDescs, RecurrentNetworkDirection direction, bool linearBeforeReset ) noexcept
+            : InputTensor( inputTensor ), WeightTensor( weightTensor ), RecurrenceTensor( recurrenceTensor ), BiasTensor( biasTensor ), HiddenInitTensor( hiddenInitTensor ), SequenceLengthsTensor( sequenceLengthsTensor ), OutputSequenceTensor( outputSequenceTensor ), OutputSingleTensor( outputSingleTensor ), ActivationDescCount( activationDescCount ), ActivationDescs( activationDescs ), Direction( direction ), LinearBeforeReset( linearBeforeReset )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GRU_OPERATOR_DESC );
     };
     static_assert( sizeof( GRUOperatorDesc ) == sizeof( DML_GRU_OPERATOR_DESC ) );
@@ -3175,6 +3263,11 @@ namespace Harlinn::AI::DML
 #if DML_TARGET_VERSION >= 0x2000
 
     /// <summary>
+    /// <para>
+    /// Returns a value representing the sign of each element of 
+    /// InputTensor, placing the result into the corresponding 
+    /// element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_SIGN_OPERATOR_DESC
     /// </para>
@@ -3196,6 +3289,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// For each element of the input tensor, returns 1 if the input 
+    /// is NaN (as defined by IEEE-754), and 0 otherwise. The result 
+    /// is placed into the corresponding element of the output tensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_IS_NAN_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -3215,6 +3313,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseIsNaNOperatorDesc ) == sizeof( DML_ELEMENT_WISE_IS_NAN_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs the Gaussian error function (erf) on each element 
+    /// of InputTensor, placing the result into the corresponding 
+    /// element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_ERF_OPERATOR_DESC
     /// </para>
