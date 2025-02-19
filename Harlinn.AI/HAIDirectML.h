@@ -1433,6 +1433,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a logical XOR (exclusive or) on each pair of corresponding 
+    /// elements of the input tensors, placing the result into the 
+    /// corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_LOGICAL_XOR_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1452,6 +1457,9 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseLogicalXorOperatorDesc ) == sizeof( DML_ELEMENT_WISE_LOGICAL_XOR_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Takes the greater of two corresponding elements from the input tensors, and places the result into the corresponding element of the output tensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_MAX_OPERATOR_DESC
     /// </para>
@@ -1473,6 +1481,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Averages each pair of corresponding elements of the input tensors, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_MEAN_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1492,6 +1504,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseMeanOperatorDesc ) == sizeof( DML_ELEMENT_WISE_MEAN_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Takes the lesser of two corresponding elements from the input tensors, 
+    /// and places the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_MIN_OPERATOR_DESC
     /// </para>
@@ -1513,6 +1529,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the product of each pair of corresponding elements of 
+    /// the input tensors, placing the result into the corresponding 
+    /// element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_MULTIPLY_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1532,6 +1553,19 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseMultiplyOperatorDesc ) == sizeof( DML_ELEMENT_WISE_MULTIPLY_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Computes each element of InputTensor raised to the power of the 
+    /// corresponding element of ExponentTensor, placing the result into 
+    /// the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// Negative bases are supported for exponents with integral values 
+    /// (though datatype can still be float), otherwise this operator returns NaN.
+    /// </para>
+    /// <para>
+    /// When the input tensor and exponent tensor both have integral data type, 
+    /// this operator guarantees exact results.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_POW_OPERATOR_DESC
     /// </para>
@@ -1558,6 +1592,14 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Raises each element of InputTensor to the power of Exponent, placing the 
+    /// result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// Negative bases are supported for integral exponents, otherwise 
+    /// this operator returns NaN.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_CONSTANT_POW_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1580,6 +1622,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the reciprocal for each element of the input tensor, placing the result 
+    /// into the corresponding element of the output tensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_RECIP_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1599,6 +1645,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseReciprocalOperatorDesc ) == sizeof( DML_ELEMENT_WISE_RECIP_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Computes the trigonometric sine of each element of InputTensor, placing 
+    /// the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_SIN_OPERATOR_DESC
     /// </para>
@@ -1620,6 +1670,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the square root of each element of InputTensor, placing 
+    /// the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_SQRT_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1639,6 +1693,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseSqrtOperatorDesc ) == sizeof( DML_ELEMENT_WISE_SQRT_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Subtracts each element of BTensor from the corresponding element 
+    /// of ATensor, placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_SUBTRACT_OPERATOR_DESC
     /// </para>
@@ -1660,6 +1718,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the trigonometric tangent of each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_TAN_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1679,6 +1741,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseTanOperatorDesc ) == sizeof( DML_ELEMENT_WISE_TAN_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Replaces all elements of InputTensor below the given threshold, Min, with Min. 
+    /// Results are placed into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_THRESHOLD_OPERATOR_DESC
     /// </para>
@@ -1700,6 +1766,24 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseThresholdOperatorDesc ) == sizeof( DML_ELEMENT_WISE_THRESHOLD_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs the following linear quantization function on every element 
+    /// in InputTensor with respect to its corresponding element in ScaleTensor 
+    /// and ZeroPointTensor, placing the results in the corresponding element 
+    /// of OutputTensor.
+    /// </para>
+    /// <para>
+    /// $$f(input, scale, zero_point) = clamp(round(input / scale) + zero_point, Min, Max)$$
+    /// </para>
+    /// <para>
+    /// Where Min is 0 and Max is 255 for UInt8 output, and Min is -128 and Max is 127 for Int8 output.
+    /// </para>
+    /// <para>
+    /// Quantizing involves converting to a lower-precision data type in order 
+    /// to accelerate arithmetic. It's a common way to increase performance at 
+    /// the cost of precision. A group of 8-bit values can be computed faster 
+    /// than a group of 32-bit values can.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_QUANTIZE_LINEAR_OPERATOR_DESC
     /// </para>
@@ -1726,6 +1810,20 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs the following linear dequantization function on every 
+    /// element in InputTensor with respect to its corresponding element 
+    /// in ScaleTensor and ZeroPointTensor, placing the results in the 
+    /// corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// $$f(input, scale, zero_point) = (input - zero_point) \times scale$$
+    /// </para>
+    /// <para>
+    /// Quantization is a common way to increase performance at the cost of precision. 
+    /// A group of 8-bit int values can be computed faster than a group of 32-bit 
+    /// float values can. Dequantizing converts the encoded data back to its domain.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_DEQUANTIZE_LINEAR_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1751,6 +1849,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs an exponential linear unit (ELU) activation function on 
+    /// every element in InputTensor, placing the result into the 
+    /// corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_ELU_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1773,15 +1876,44 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a hardmax function on each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// The operator computes the hardmax (1 for the first occurrence of the 
+    /// largest value in the layer, and 0 for all other values) of each row 
+    /// in the given input.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_HARDMAX_OPERATOR_DESC
     /// </para>
     /// </summary>
+    /// <remarks>
+    /// The operator computes the hardmax (1 for the first maximum value, 
+    /// and 0 for all others) values for each layer in the batch of the 
+    /// given input. The input is a 2-D tensor of size (batch_size x input_feature_dimensions). 
+    /// The output tensor has the same shape and contains the hardmax values of 
+    /// the corresponding input.
+    /// </remarks>
     struct ActivationHardMaxOperatorDesc : public UnaryOperatorDesc
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationHardMax;
 
         ActivationHardMaxOperatorDesc( ) noexcept = default;
+        /// <summary>
+        /// Constructs a new instance of an ActivationHardMaxOperatorDesc object.
+        /// </summary>
+        /// <param name="inputTensor">
+        /// The tensor to read from for the input. This tensor must have an 
+        /// effective rank no greater than 2. The effective rank of a tensor 
+        /// is the DimensionCount of the tensor, excluding leftmost dimensions of 
+        /// size 1. For example a tensor size of [ 1, 1, BatchCount, Width ] is valid, 
+        /// and is equivalent to a tensor of sizes [ BatchCount, Width ].
+        /// </param>
+        /// <param name="outputTensor">
+        /// The output tensor to write the results to.
+        /// </param>
         ActivationHardMaxOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor ) noexcept
             : Base( inputTensor, outputTensor )
         {
@@ -1792,6 +1924,13 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationHardMaxOperatorDesc ) == sizeof( DML_ACTIVATION_HARDMAX_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a hard sigmoid function on every element in InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// $$f(x) = max(0, min(Alpha \times x + Beta, 1))$$
+    /// </para>
     /// <para>
     /// Alias for DML_ACTIVATION_HARD_SIGMOID_OPERATOR_DESC
     /// </para>
@@ -1815,6 +1954,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs the identity activation, effectively copying every element 
+    /// of InputTensor to the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_IDENTITY_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1834,6 +1977,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationIdentityOperatorDesc ) == sizeof( DML_ACTIVATION_IDENTITY_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a leaky rectified linear unit (ReLU) activation function 
+    /// on every element in InputTensor, placing the result into the 
+    /// corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ACTIVATION_LEAKY_RELU_OPERATOR_DESC
     /// </para>
@@ -1856,6 +2004,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs the linear activation function on every element in InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_LINEAR_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1867,7 +2019,7 @@ namespace Harlinn::AI::DML
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
         ActivationLinearOperatorDesc( ) noexcept = default;
-        ActivationLinearOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha, float beta ) noexcept
+        ActivationLinearOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 1.0f, float beta = 0.f ) noexcept
             : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
         {
         }
@@ -1877,6 +2029,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationLinearOperatorDesc ) == sizeof( DML_ACTIVATION_LINEAR_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a natural log-of-softmax activation function on 
+    /// each element of InputTensor, placing the result into the 
+    /// corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ACTIVATION_LOG_SOFTMAX_OPERATOR_DESC
     /// </para>
@@ -1896,6 +2053,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationLogSoftMaxOperatorDesc ) == sizeof( DML_ACTIVATION_LOG_SOFTMAX_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a parameterized rectified linear unit (ReLU) activation 
+    /// function on every element in InputTensor, placing the result into 
+    /// the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ACTIVATION_PARAMETERIZED_RELU_OPERATOR_DESC
     /// </para>
@@ -1921,6 +2083,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a parametric softplus activation function on every element in 
+    /// InputTensor, placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_PARAMETRIC_SOFTPLUS_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1944,6 +2110,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a rectified linear unit (ReLU) activation function on every element 
+    /// in InputTensor, placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_RELU_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1963,6 +2133,11 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationReLUOperatorDesc ) == sizeof( DML_ACTIVATION_RELU_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a scaled exponential linear unit (ELU) activation function on 
+    /// every element in InputTensor, placing the result into the corresponding 
+    /// element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ACTIVATION_SCALED_ELU_OPERATOR_DESC
     /// </para>
@@ -1987,6 +2162,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a scaled hyperbolic tangent activation function on every 
+    /// element in InputTensor, placing the result into the corresponding 
+    /// element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_SCALED_TANH_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -1999,7 +2179,7 @@ namespace Harlinn::AI::DML
         FLOAT Beta = 0.f;
 
         ActivationScaledTanHOperatorDesc( ) noexcept = default;
-        ActivationScaledTanHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha, float beta ) noexcept
+        ActivationScaledTanHOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha = 1.f, float beta = 0.5f ) noexcept
             : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
         {
         }
@@ -2009,6 +2189,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationScaledTanHOperatorDesc ) == sizeof( DML_ACTIVATION_SCALED_TANH_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs the sigmoid function on every element in InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ACTIVATION_SIGMOID_OPERATOR_DESC
     /// </para>
@@ -2030,6 +2214,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a softmax activation function on InputTensor, placing 
+    /// the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_SOFTMAX_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2050,6 +2238,11 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a parametric softplus activation function on every 
+    /// element in InputTensor, placing the result into the corresponding 
+    /// element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_SOFTPLUS_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2061,7 +2254,7 @@ namespace Harlinn::AI::DML
         FLOAT Steepness = 0.f;
 
         ActivationSoftPlusOperatorDesc( ) noexcept = default;
-        ActivationSoftPlusOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float steepness = 0.f ) noexcept
+        ActivationSoftPlusOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float steepness = 1.f ) noexcept
             : Base( inputTensor, outputTensor ), Steepness( steepness )
         {
         }
@@ -2071,6 +2264,13 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationSoftPlusOperatorDesc ) == sizeof( DML_ACTIVATION_SOFTPLUS_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs the softsign function on every element in InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// $$f(x) = \frac{x}{1+|x|}$$
+    /// </para>
     /// <para>
     /// Alias for DML_ACTIVATION_SOFTSIGN_OPERATOR_DESC
     /// </para>
@@ -2093,6 +2293,14 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs a hyperbolic tangent activation function on 
+    /// every element in InputTensor, placing the result into 
+    /// the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
+    /// $$f(x) = \frac{1 - e^{-2 \times x}}{1 + e^{-2 \times x}}$$
+    /// </para>
+    /// <para>
     /// Alias for DML_ACTIVATION_TANH_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2112,6 +2320,16 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationTanHOperatorDesc ) == sizeof( DML_ACTIVATION_TANH_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a thresholded rectified linear unit (ReLU) 
+    /// activation function on every element in InputTensor, 
+    /// placing the result into the corresponding element of 
+    /// OutputTensor.
+    /// </para>
+    /// $$f(x) = \begin{cases}
+    ///            x, & \text{ if } x > \alpha\\
+    ///            0, & \text{ if } x \leq \alpha
+    ///          \end{cases}$$
     /// <para>
     /// Alias for DML_ACTIVATION_THRESHOLDED_RELU_OPERATOR_DESC
     /// </para>
@@ -2133,6 +2351,27 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ActivationThresholdedReLUOperatorDesc ) == sizeof( DML_ACTIVATION_THRESHOLDED_RELU_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a convolution of the FilterTensor with the InputTensor. This operator 
+    /// supports a number of standard convolution configurations. These standard 
+    /// configurations include forward and backward (transposed) convolution by setting 
+    /// the Direction and Mode fields, as well as depth-wise convolution by setting the 
+    /// GroupCount field.
+    /// </para>
+    /// <para>
+    /// A summary of the steps involved: 
+    /// </para>
+    /// <list type="number">
+    /// <item>
+    /// Perform the convolution into the output tensor. 
+    /// </item>
+    /// <item>
+    /// Reshape the bias to the same dimension sizes as the output tensor.
+    /// </item>
+    /// <item>
+    /// Add the reshaped bias tensor to the output tensor.
+    /// </item>
+    /// </list>
     /// <para>
     /// Alias for DML_CONVOLUTION_OPERATOR_DESC
     /// </para>
@@ -2159,7 +2398,7 @@ namespace Harlinn::AI::DML
 
         ConvolutionOperatorDesc( ) noexcept = default;
         ConvolutionOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* filterTensor, const TensorDesc* biasTensor = nullptr,
-            ConvolutionMode mode = ConvolutionMode::Convolution, ConvolutionDirection direction = ConvolutionDirection::Forward, UInt32 dimensionCount = 0,
+            ConvolutionMode mode = ConvolutionMode::CrossCorrelation, ConvolutionDirection direction = ConvolutionDirection::Forward, UInt32 dimensionCount = 0,
             const UInt32* strides = nullptr, const UInt32* dilations = nullptr, const UInt32* startPadding = nullptr, const UInt32* endPadding = nullptr, const UInt32* outputPadding = nullptr,
             UInt32 groupCount = 0, const OperatorDesc* fusedActivation = nullptr ) noexcept
             : InputTensor( inputTensor ), OutputTensor( outputTensor ), FilterTensor( filterTensor ), BiasTensor( biasTensor ),
@@ -2174,6 +2413,22 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ConvolutionOperatorDesc ) == sizeof( DML_CONVOLUTION_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a general matrix multiplication function of the form 
+    /// Output = FusedActivation(Alpha * TransA(A) x TransB(B) + Beta * C), 
+    /// where x denotes matrix multiplication, and * denotes multiplication with a scalar
+    /// </para>
+    /// <para>
+    /// This operator requires 4D tensors with layout [ BatchCount, ChannelCount, Height, Width ], 
+    /// and it will perform BatchCount * ChannelCount number of independent matrix multiplications.
+    /// </para>
+    /// <para>
+    /// For example, if ATensor has Sizes of [ BatchCount, ChannelCount, M, K ], 
+    /// and BTensor has Sizes of [ BatchCount, ChannelCount, K, N ], and OutputTensor 
+    /// has Sizes of [ BatchCount, ChannelCount, M, N ], then this operator 
+    /// performs BatchCount * ChannelCount independent matrix multiplications 
+    /// of dimensions [M,K] x [K,N] = [M,N].
+    /// </para>
     /// <para>
     /// Alias for DML_GEMM_OPERATOR_DESC
     /// </para>
@@ -2194,7 +2449,7 @@ namespace Harlinn::AI::DML
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
         GEMMOperatorDesc( ) noexcept = default;
-        GEMMOperatorDesc( const TensorDesc* aTensor, const TensorDesc* bTensor, const TensorDesc* outputTensor, const TensorDesc* cTensor, FLOAT alpha = 0.f, FLOAT beta = 0.f,
+        GEMMOperatorDesc( const TensorDesc* aTensor, const TensorDesc* bTensor, const TensorDesc* outputTensor, const TensorDesc* cTensor, FLOAT alpha = 1.f, FLOAT beta = 1.f,
             MatrixTransform transA = MatrixTransform::None, MatrixTransform transB = MatrixTransform::None, const OperatorDesc* fusedActivation = nullptr ) noexcept
             : ATensor( aTensor ), BTensor( bTensor ), CTensor( cTensor ), OutputTensor( outputTensor ), TransA( transA ), TransB( transB ), Alpha( alpha ), Beta( beta ), FusedActivation( fusedActivation )
         {
@@ -2205,6 +2460,19 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( GEMMOperatorDesc ) == sizeof( DML_GEMM_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Outputs the reduction of elements (sum, product, minimum, and so on) 
+    /// within one or more dimensions of the input tensor.
+    /// </para>
+    /// <para>
+    /// Each output element is the result of applying a reduction function on a 
+    /// subset of the input tensor. A reduction function, such as <em>sum</em>, 
+    /// maps N input elements to a single output element. The input elements 
+    /// involved in each reduction are determined by the provided input axes: 
+    /// N is equal to the product of the sizes of the reduced axes. If all 
+    /// input axes are specified, then the operator performs a reduction on the 
+    /// entire input tensor and produces a single output element.
+    /// </para>
     /// <para>
     /// Alias for DML_REDUCE_OPERATOR_DESC
     /// </para>
@@ -2231,6 +2499,9 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ReduceOperatorDesc ) == sizeof( DML_REDUCE_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Averages values across the elements within the sliding window over the input tensor.
+    /// </para>
     /// <para>
     /// Alias for DML_AVERAGE_POOLING_OPERATOR_DESC
     /// </para>
@@ -2260,6 +2531,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the Lp-normalized value across the elements within 
+    /// the sliding window over the input tensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_LP_POOLING_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2287,6 +2562,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the maximum value across the elements within the sliding 
+    /// window over the input tensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_MAX_POOLING_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2312,6 +2591,9 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( MaxPoolingOperatorDesc ) == sizeof( DML_MAX_POOLING_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs a MaxPool function across the input tensor according to regions of interest.
+    /// </para>
     /// <para>
     /// Alias for DML_ROI_POOLING_OPERATOR_DESC
     /// </para>
@@ -2339,6 +2621,32 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Extracts a single subregion (a "slice") of an input tensor.
+    /// </para>
+    /// <para>
+    /// The elements copied in the slice are determined using three values for each dimension.
+    /// </para>
+    /// <list type="bullet">
+    ///   <item>
+    ///     The offset marks the first element to copy in a dimension.
+    ///   </item>
+    ///   <item>
+    ///     The size marks the number of elements to copy in a dimension.
+    ///   </item>
+    ///   <item>
+    ///     The stride indicates the element increment or step in a dimension.
+    ///   </item>
+    /// </list>
+    /// <para>
+    /// The provided Offsets, Sizes, and Strides must only copy elements that are 
+    /// within the bounds of the input tensor (out-of-bounds reads are not permitted). 
+    /// The Sizes of the slice must exactly match the output tensor sizes. 
+    /// In general, the elements copied are calculated as follows.
+    /// </para>
+    /// <para>
+    /// $$OutputTensor[OutputCoordinates] = InputTensor[Offsets + Strides \times OutputCoordinates]$$
+    /// </para>
+    /// <para>
     /// Alias for DML_SLICE_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2364,6 +2672,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Casts each element in the input to the data type of the output tensor, 
+    /// and stores the result in the corresponding element of the output.
+    /// </para>
+    /// <para>
     /// Alias for DML_CAST_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2384,6 +2696,17 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Splits an input tensor along an axis into multiple output tensors.
+    /// </para>
+    /// <para>
+    /// All input and output tensors must have the same sizes, except for the split axis. 
+    /// The size of input tensor in the split axis determines the possible splits. For example, 
+    /// if the input tensor's split axis has size 3, then there are these potential splits: 
+    /// 1+1+1 (3 outputs), 1+2 (2 outputs), 2+1 (2 outputs), or 3 (1 output, which is simply a copy of the input tensor). 
+    /// The output tensors' split axis sizes must sum up to exactly the input tensor's 
+    /// split axis size.
+    /// </para>
+    /// <para>
     /// Alias for DML_SPLIT_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2398,8 +2721,8 @@ namespace Harlinn::AI::DML
         UInt32 Axis = 0;
 
         SplitOperatorDesc( ) noexcept = default;
-        SplitOperatorDesc( const TensorDesc* inputTensor, UInt32 outputCount, const TensorDesc* outputTensors, UInt32 axis = 0 ) noexcept
-            : InputTensor( inputTensor ), OutputCount( outputCount ), OutputTensors( outputTensors ), Axis( axis )
+        SplitOperatorDesc( const TensorDesc* inputTensor, UInt32 outputTensorCount, const TensorDesc* outputTensors, UInt32 axis = 0 ) noexcept
+            : InputTensor( inputTensor ), OutputCount( outputTensorCount ), OutputTensors( outputTensors ), Axis( axis )
         {
         }
 
@@ -2408,6 +2731,15 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( SplitOperatorDesc ) == sizeof( DML_SPLIT_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Concatenates an array of input tensors along a specified axis.
+    /// </para>
+    /// <para>
+    /// Input tensors may only be joined if their sizes are identical in all 
+    /// dimensions except for the join axis, which may contain any non-zero 
+    /// size. The output sizes are equal to the input sizes except for the 
+    /// join axis, which is the sum of all inputs' join axis size.
+    /// </para>
     /// <para>
     /// Alias for DML_JOIN_OPERATOR_DESC
     /// </para>
@@ -2423,8 +2755,8 @@ namespace Harlinn::AI::DML
         UInt32 Axis = 0;
 
         JoinOperatorDesc( ) noexcept = default;
-        JoinOperatorDesc( UInt32 inputCount, const TensorDesc* inputTensors, const TensorDesc* outputTensor, UInt32 axis = 0 ) noexcept
-            : InputCount( inputCount ), InputTensors( inputTensors ), OutputTensor( outputTensor ), Axis( axis )
+        JoinOperatorDesc( UInt32 inputTensorCount, const TensorDesc* inputTensors, const TensorDesc* outputTensor, UInt32 axis = 0 ) noexcept
+            : InputCount( inputTensorCount ), InputTensors( inputTensors ), OutputTensor( outputTensor ), Axis( axis )
         {
         }
 
@@ -2433,6 +2765,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( JoinOperatorDesc ) == sizeof( DML_JOIN_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Inflates the input tensor with constant or mirrored values on 
+    /// the edges, and writes the result to the output.
+    /// </para>
     /// <para>
     /// Alias for DML_PADDING_OPERATOR_DESC
     /// </para>
@@ -2460,6 +2796,17 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Performs an element-wise scale-and-bias function
+    /// </para>
+    /// <para>
+    /// Output = Scale * Input + Bias. 
+    /// </para>
+    /// <para>
+    /// This operator is similar to using an ElementWiseIdentityOperatorDesc 
+    /// with a scale and bias, except that ValueScale2DOperatorDesc applies a 
+    /// different bias for each channel, rather than a single bias for the entire tensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_VALUE_SCALE_2D_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2484,6 +2831,15 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Upsamples the input image, writing the result into the output 
+    /// tensor. The order of the dimensions should be NCHW 
+    /// (BatchSize, ChannelCount, Height, Width) or NCDHW (BatchSize, 
+    /// ChannelCount, Depth, Height, Width), but strides can be 
+    /// used if the data is stored in a different format. 
+    /// Unlike ResampleOperatorDesc, only the last 2 dimensions 
+    /// (height and width) can be upsampled.
+    /// </para>
+    /// <para>
     /// Alias for DML_UPSAMPLE_2D_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -2506,6 +2862,9 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( UpSample2DOperatorDesc ) == sizeof( DML_UPSAMPLE_2D_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Gathers elements from the input tensor along Axis, using IndicesTensor to remap indices. 
+    /// </para>
     /// <para>
     /// Alias for DML_GATHER_OPERATOR_DESC
     /// </para>
@@ -2533,6 +2892,11 @@ namespace Harlinn::AI::DML
 
 
     /// <summary>
+    /// <para>
+    /// Rearranges blocks of spatial data into depth. The operator outputs a 
+    /// copy of the input tensor where values from the height and width 
+    /// dimensions are moved to the depth dimension.
+    /// </para>
     /// <para>
     /// Alias for DML_SPACE_TO_DEPTH_OPERATOR_DESC
     /// </para>
