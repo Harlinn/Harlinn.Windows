@@ -3318,6 +3318,7 @@ namespace Harlinn::AI::DML
     /// of InputTensor, placing the result into the corresponding 
     /// element of OutputTensor.
     /// </para>
+    /// $$erf(x)=\frac{2}{\sqrt{\pi}}\int_{0}^{x}e^{-t^{2}}\, dt$$
     /// <para>
     /// Alias for DML_ELEMENT_WISE_ERF_OPERATOR_DESC
     /// </para>
@@ -3339,6 +3340,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the hyperbolic sine of each element of InputTensor, placing 
+    /// the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_SINH_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -3358,6 +3363,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseSinHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_SINH_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Computes the hyperbolic cosine of each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_COSH_OPERATOR_DESC
     /// </para>
@@ -3379,6 +3388,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the hyperbolic tangent of element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_TANH_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -3398,6 +3411,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseTanHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_TANH_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Computes the hyperbolic arcsine for each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_ASINH_OPERATOR_DESC
     /// </para>
@@ -3419,6 +3436,10 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Computes the hyperbolic arccosine for each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_ACOSH_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -3438,6 +3459,10 @@ namespace Harlinn::AI::DML
     static_assert( sizeof( ElementWiseACosHOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ACOSH_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Computes the hyperbolic arctangent for each element of InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ELEMENT_WISE_ATANH_OPERATOR_DESC
     /// </para>
@@ -3459,6 +3484,12 @@ namespace Harlinn::AI::DML
 
     /// <summary>
     /// <para>
+    /// Selects elements either from ATensor or BTensor, depending on the value 
+    /// of the corresponding element in ConditionTensor. Non-zero elements of 
+    /// ConditionTensor select from ATensor, while zero-valued elements select 
+    /// from BTensor.
+    /// </para>
+    /// <para>
     /// Alias for DML_ELEMENT_WISE_IF_OPERATOR_DESC
     /// </para>
     /// </summary>
@@ -3472,11 +3503,22 @@ namespace Harlinn::AI::DML
         const TensorDesc* BTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
 
+        ElementWiseIfOperatorDesc( ) noexcept = default;
+        ElementWiseIfOperatorDesc( const TensorDesc* conditionTensor, const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
+            : ConditionTensor( conditionTensor ), ATensor( inputTensorA ), BTensor( inputTensorB ), OutputTensor( outputTensor )
+        {
+        }
+
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_IF_OPERATOR_DESC );
     };
     static_assert( sizeof( ElementWiseIfOperatorDesc ) == sizeof( DML_ELEMENT_WISE_IF_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Performs the shrink activation function on every element in InputTensor, 
+    /// placing the result into the corresponding element of OutputTensor.
+    /// </para>
     /// <para>
     /// Alias for DML_ACTIVATION_SHRINK_OPERATOR_DESC
     /// </para>
@@ -3486,20 +3528,22 @@ namespace Harlinn::AI::DML
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationShrink;
 
-        FLOAT Bias = 0.f;
-        FLOAT Threshold = 0.f;
+        float Bias = 0.f;
+        float Threshold = 0.f;
 
         ActivationShrinkOperatorDesc( ) noexcept = default;
         ActivationShrinkOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float bias = 0.0f, float threshold = 0.5f ) noexcept
             : Base( inputTensor, outputTensor ), Bias( bias ), Threshold( threshold )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SHRINK_OPERATOR_DESC );
     };
     static_assert( sizeof( ActivationShrinkOperatorDesc ) == sizeof( DML_ACTIVATION_SHRINK_OPERATOR_DESC ) );
 
     /// <summary>
+    /// Computes the maximum value across the elements within 
+    /// the sliding window over the input tensor, and optionally 
+    /// returns the indices of the maximum values selected.
     /// <para>
     /// Alias for DML_MAX_POOLING1_OPERATOR_DESC
     /// </para>
@@ -3508,6 +3552,7 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MaxPooling1;
+
         _Maybenull_ const TensorDesc* OutputIndicesTensor = nullptr;
         UInt32 DimensionCount = 0;
         _Field_size_( DimensionCount ) const UInt32* Strides = nullptr;
@@ -3515,11 +3560,24 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
 
+        MaxPooling1OperatorDesc( ) noexcept = default;
+        MaxPooling1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* outputIndicesTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* windowSize, const UInt32* startPadding, const UInt32* endPadding ) noexcept
+            : Base( inputTensor, outputTensor ), OutputIndicesTensor( outputIndicesTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_POOLING1_OPERATOR_DESC );
     };
     static_assert( sizeof( MaxPooling1OperatorDesc ) == sizeof( DML_MAX_POOLING1_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Inverts a max-pooling operation (see MaxPooling1OperatorDesc for details) 
+    /// by filling the output tensor OutputTensor with the values 
+    /// in the input tensor InputTensor, as obtained from a max-pooling 
+    /// operation, according to the index values provided in the 
+    /// IndicesTensor. The elements in the output tensor untouched 
+    /// by this process are left with zero values.
+    /// </para>
     /// <para>
     /// Alias for DML_MAX_UNPOOLING_OPERATOR_DESC
     /// </para>
@@ -3533,11 +3591,27 @@ namespace Harlinn::AI::DML
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
 
+        MaxUnpoolingOperatorDesc( ) noexcept = default;
+        MaxUnpoolingOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* indicesTensor, const TensorDesc* outputTensor ) noexcept
+            : InputTensor( inputTensor ), IndicesTensor( indicesTensor ), OutputTensor( outputTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_UNPOOLING_OPERATOR_DESC );
     };
     static_assert( sizeof( MaxUnpoolingOperatorDesc ) == sizeof( DML_MAX_UNPOOLING_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Generates an identity-like matrix with ones (or other explicit 
+    /// value) on the major diagonal, and zeros everywhere else. The 
+    /// diagonal ones may be shifted (via Offset) where <c>OutputTensor[i, i + Offset] = Value</c>, 
+    /// meaning that an argument of Offset greater than zero shifts 
+    /// all values to the right, and less than zero shifts them to 
+    /// the left. This generator operator is useful for models to 
+    /// avoid storing a large constant tensor. Any leading dimensions 
+    /// before the last two are treated as a batch count, meaning 
+    /// that the tensor is treated as stack of 2D matrices.
+    /// </para>
     /// <para>
     /// Alias for DML_DIAGONAL_MATRIX_OPERATOR_DESC
     /// </para>
@@ -3551,11 +3625,19 @@ namespace Harlinn::AI::DML
         INT Offset = 0;
         FLOAT Value = 0.f;
 
+        DiagonalMatrixOperatorDesc( ) noexcept = default;
+        DiagonalMatrixOperatorDesc( const TensorDesc* outputTensor, Int32 offset = 0, float value = 1.f ) noexcept
+            : OutputTensor( outputTensor ), Offset( offset ), Value( value )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DIAGONAL_MATRIX_OPERATOR_DESC );
     };
     static_assert( sizeof( DiagonalMatrixOperatorDesc ) == sizeof( DML_DIAGONAL_MATRIX_OPERATOR_DESC ) );
 
     /// <summary>
+    /// <para>
+    /// Copies the whole input tensor to the output, then overwrites selected indices with corresponding values from the updates tensor.
+    /// </para>
     /// <para>
     /// Alias for DML_SCATTER_OPERATOR_DESC
     /// </para>
@@ -3570,6 +3652,12 @@ namespace Harlinn::AI::DML
         const TensorDesc* UpdatesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
         UInt32 Axis = 0;
+
+        ScatterElementsOperatorDesc( ) noexcept = default;
+        ScatterElementsOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* indicesTensor, const TensorDesc* updatesTensor, const TensorDesc* outputTensor, UInt32 axis ) noexcept
+            : InputTensor( inputTensor ), IndicesTensor( indicesTensor ), UpdatesTensor( updatesTensor ), OutputTensor( outputTensor ), Axis( axis )
+        { }
+
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SCATTER_OPERATOR_DESC );
     };
@@ -3590,6 +3678,11 @@ namespace Harlinn::AI::DML
         const TensorDesc* OutputTensor = nullptr;
         UInt32 Axis = 0;
 
+        OneHotOperatorDesc( ) noexcept = default;
+        OneHotOperatorDesc( const TensorDesc* indicesTensor, const TensorDesc* valuesTensor, const TensorDesc* outputTensor, UInt32 axis ) noexcept
+            : IndicesTensor( indicesTensor ), ValuesTensor( valuesTensor ), OutputTensor( outputTensor ), Axis( axis )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ONE_HOT_OPERATOR_DESC );
     };
     static_assert( sizeof( OneHotOperatorDesc ) == sizeof( DML_ONE_HOT_OPERATOR_DESC ) );
@@ -3607,6 +3700,11 @@ namespace Harlinn::AI::DML
         DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
         UInt32 ScaleCount = 0;
         _Field_size_( ScaleCount ) const FLOAT* Scales = nullptr;
+
+        ResampleOperatorDesc( ) noexcept = default;
+        ResampleOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, DML::InterpolationMode interpolationMode, UInt32 scaleCount, const FLOAT* scales ) noexcept
+            : Base( inputTensor, outputTensor ), InterpolationMode( interpolationMode ), ScaleCount( scaleCount ), Scales( scales )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE_OPERATOR_DESC );
     };
@@ -3629,8 +3727,7 @@ namespace Harlinn::AI::DML
         ElementWiseBitShiftLeftOperatorDesc( ) noexcept = default;
         ElementWiseBitShiftLeftOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
             : Base( inputTensorA, inputTensorB, outputTensor )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_SHIFT_LEFT_OPERATOR_DESC );
     };
@@ -3649,8 +3746,7 @@ namespace Harlinn::AI::DML
         ElementWiseBitShiftRightOperatorDesc( ) noexcept = default;
         ElementWiseBitShiftRightOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
             : Base( inputTensorA, inputTensorB, outputTensor )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_BIT_SHIFT_RIGHT_OPERATOR_DESC );
     };
@@ -3665,7 +3761,15 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseRound;
+
         DML::RoundingMode RoundingMode = DML::RoundingMode::HalvesToNearestEven;
+
+        ElementWiseRoundOperatorDesc( ) noexcept = default;
+
+        ElementWiseRoundOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, DML::RoundingMode roundingMode = DML::RoundingMode::HalvesToNearestEven ) noexcept
+            : Base( inputTensor, outputTensor ), RoundingMode( roundingMode )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_ROUND_OPERATOR_DESC );
     };
     static_assert( sizeof( ElementWiseRoundOperatorDesc ) == sizeof( DML_ELEMENT_WISE_ROUND_OPERATOR_DESC ) );
@@ -3681,6 +3785,12 @@ namespace Harlinn::AI::DML
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseIsInfinity;
 
         IsInfinityMode InfinityMode = IsInfinityMode::Either;
+
+        ElementWiseIsInfinityOperatorDesc( ) noexcept = default;
+
+        ElementWiseIsInfinityOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, IsInfinityMode infinityMode = IsInfinityMode::Either ) noexcept
+            : Base( inputTensor, outputTensor ), InfinityMode( infinityMode )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_IS_INFINITY_OPERATOR_DESC );
     };
@@ -3699,8 +3809,7 @@ namespace Harlinn::AI::DML
         ElementWiseModulusTruncateOperatorDesc( ) noexcept = default;
         ElementWiseModulusTruncateOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
             : Base( inputTensorA, inputTensorB, outputTensor )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_MODULUS_TRUNCATE_OPERATOR_DESC );
     };
@@ -3719,8 +3828,7 @@ namespace Harlinn::AI::DML
         ElementWiseModulusFloorOperatorDesc( ) noexcept = default;
         ElementWiseModulusFloorOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor ) noexcept
             : Base( inputTensorA, inputTensorB, outputTensor )
-        {
-        }
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_MODULUS_FLOOR_OPERATOR_DESC );
     };
@@ -3735,9 +3843,16 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::FillValueConstant;
+
         const TensorDesc* OutputTensor = nullptr;
         TensorDataType ValueDataType = TensorDataType::Unknown;
         ScalarUnion Value{};
+
+        FillValueConstantOperatorDesc( ) noexcept = default;
+        FillValueConstantOperatorDesc( const TensorDesc* outputTensor, TensorDataType valueDataType, const ScalarUnion& value ) noexcept
+            : OutputTensor( outputTensor ), ValueDataType( valueDataType ), Value( value )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_FILL_VALUE_CONSTANT_OPERATOR_DESC );
     };
     static_assert( sizeof( FillValueConstantOperatorDesc ) == sizeof( DML_FILL_VALUE_CONSTANT_OPERATOR_DESC ) );
@@ -3751,10 +3866,18 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::FillValueSequence;
+
         const TensorDesc* OutputTensor = nullptr;
         TensorDataType ValueDataType = TensorDataType::Unknown;
         ScalarUnion ValueStart{};
         ScalarUnion ValueDelta{};
+
+        FillValueSequenceOperatorDesc( ) noexcept = default;
+
+        FillValueSequenceOperatorDesc( const TensorDesc* outputTensor, TensorDataType valueDataType, const ScalarUnion& valueStart, const ScalarUnion& valueDelta ) noexcept
+            : OutputTensor( outputTensor ), ValueDataType( valueDataType ), ValueStart( valueStart ), ValueDelta( valueDelta )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_FILL_VALUE_SEQUENCE_OPERATOR_DESC );
     };
     static_assert( sizeof( FillValueSequenceOperatorDesc ) == sizeof( DML_FILL_VALUE_SEQUENCE_OPERATOR_DESC ) );
@@ -3772,6 +3895,11 @@ namespace Harlinn::AI::DML
         UInt32 Axis = 0;
         AxisDirection AxisDirection = AxisDirection::Increasing;
         BOOL HasExclusiveSum = FALSE;
+
+        CumulativeSummationOperatorDesc( ) noexcept = default;
+        CumulativeSummationOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 axis, DML::AxisDirection axisDirection = AxisDirection::Increasing, bool hasExclusiveSum = false ) noexcept
+            : Base( inputTensor, outputTensor ), Axis( axis ), AxisDirection( axisDirection ), HasExclusiveSum( hasExclusiveSum )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CUMULATIVE_SUMMATION_OPERATOR_DESC );
     };
@@ -3792,6 +3920,11 @@ namespace Harlinn::AI::DML
         const TensorDesc* OutputTensor = nullptr;
         UInt32 Axis = 0;
 
+        ReverseSubsequencesOperatorDesc( ) noexcept = default;
+        ReverseSubsequencesOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* sequenceLengthsTensor, const TensorDesc* outputTensor, UInt32 axis ) noexcept
+            : InputTensor( inputTensor ), SequenceLengthsTensor( sequenceLengthsTensor ), OutputTensor( outputTensor ), Axis( axis )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_REVERSE_SUBSEQUENCES_OPERATOR_DESC );
     };
     static_assert( sizeof( ReverseSubsequencesOperatorDesc ) == sizeof( DML_REVERSE_SUBSEQUENCES_OPERATOR_DESC ) );
@@ -3810,6 +3943,11 @@ namespace Harlinn::AI::DML
         const TensorDesc* IndicesTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
         UInt32 Axis = 0;
+
+        GatherElementsOperatorDesc( ) noexcept = default;
+        GatherElementsOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* indicesTensor, const TensorDesc* outputTensor, UInt32 axis ) noexcept
+            : InputTensor( inputTensor ), IndicesTensor( indicesTensor ), OutputTensor( outputTensor ), Axis( axis )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GATHER_ELEMENTS_OPERATOR_DESC );
     };
@@ -3833,6 +3971,11 @@ namespace Harlinn::AI::DML
         const TensorDesc* OutputTensor = nullptr;
         UInt32 InputDimensionCount = 0;
         UInt32 IndicesDimensionCount = 0;
+
+        GatherNDOperatorDesc( ) noexcept = default;
+        GatherNDOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* indicesTensor, const TensorDesc* outputTensor, UInt32 inputDimensionCount, UInt32 indicesDimensionCount) noexcept
+            : InputTensor( inputTensor ), IndicesTensor( indicesTensor ), OutputTensor( outputTensor ), InputDimensionCount( inputDimensionCount ), IndicesDimensionCount( indicesDimensionCount )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GATHER_ND_OPERATOR_DESC );
     };
