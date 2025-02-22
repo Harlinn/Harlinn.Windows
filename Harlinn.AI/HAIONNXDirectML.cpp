@@ -1,3 +1,4 @@
+#include "pch.h"
 /*
    Copyright 2024-2025 Espen Harlinn
 
@@ -13,8 +14,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
-#include "pch.h"
 #include "HAIONNXDirectML.h"
 
 #pragma comment( lib, "dxcore.lib")
@@ -200,13 +199,12 @@ namespace Harlinn::AI::ONNX::DirectML
         
         auto adapterList = factory.CreateAdapterList( 1, &adapterAttribute );
         std::array adapterPreferences = { DXCoreAdapterPreference::HighPerformance,DXCoreAdapterPreference::Hardware };
-        adapterList.Sort( adapterPreferences.size( ), adapterPreferences.data( ) );
+        adapterList.Sort( static_cast<UInt32>( adapterPreferences.size( ) ), adapterPreferences.data( ) );
 
-        for ( uint32_t i = 0, adapterCount = adapterList.GetAdapterCount( ); i < adapterCount; i++ )
+        for ( UInt32 i = 0, adapterCount = adapterList.GetAdapterCount( ); i < adapterCount; i++ )
         {
             auto possibleAdapter = adapterList.GetAdapter( i );
             return possibleAdapter;
-
         }
         return {};
 

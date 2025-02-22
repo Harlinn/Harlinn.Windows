@@ -3998,6 +3998,11 @@ namespace Harlinn::AI::DML
         UInt32 InputDimensionCount = 0;
         UInt32 IndicesDimensionCount = 0;
 
+        ScatterNDOperatorDesc( ) noexcept = default;
+        ScatterNDOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* indicesTensor, const TensorDesc* updatesTensor, const TensorDesc* outputTensor, UInt32 inputDimensionCount, UInt32 indicesDimensionCount ) noexcept
+            : InputTensor( inputTensor ), IndicesTensor( indicesTensor ), UpdatesTensor( updatesTensor ), OutputTensor( outputTensor ), InputDimensionCount( inputDimensionCount ), IndicesDimensionCount( indicesDimensionCount )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SCATTER_ND_OPERATOR_DESC );
     };
     static_assert( sizeof( ScatterNDOperatorDesc ) == sizeof( DML_SCATTER_ND_OPERATOR_DESC ) );
@@ -4020,6 +4025,11 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
 
+        MaxPooling2OperatorDesc( ) noexcept = default;
+        MaxPooling2OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* outputIndicesTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* windowSize, const UInt32* startPadding, const UInt32* endPadding, const UInt32* dilations ) noexcept
+            : Base( inputTensor, outputTensor ), OutputIndicesTensor( outputIndicesTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding ), Dilations( dilations )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_POOLING2_OPERATOR_DESC );
     };
     static_assert( sizeof( MaxPooling2OperatorDesc ) == sizeof( DML_MAX_POOLING2_OPERATOR_DESC ) );
@@ -4033,10 +4043,17 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Slice1;
+
         UInt32 DimensionCount = 0;
         _Field_size_( DimensionCount ) const UInt32* InputWindowOffsets = nullptr;
         _Field_size_( DimensionCount ) const UInt32* InputWindowSizes = nullptr;
         _Field_size_( DimensionCount ) const INT* InputWindowStrides = nullptr;
+
+        Slice1OperatorDesc( ) noexcept = default;
+        Slice1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount, const UInt32* inputWindowOffsets, const UInt32* inputWindowSizes, const Int32* inputWindowStrides ) noexcept
+            : Base( inputTensor, outputTensor ), DimensionCount( dimensionCount ), InputWindowOffsets( inputWindowOffsets ), InputWindowSizes( inputWindowSizes ), InputWindowStrides( inputWindowStrides )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SLICE1_OPERATOR_DESC );
     };
     static_assert( sizeof( Slice1OperatorDesc ) == sizeof( DML_SLICE1_OPERATOR_DESC ) );
@@ -4057,6 +4074,12 @@ namespace Harlinn::AI::DML
         UInt32 Axis = 0;
         UInt32 K = 0;
         AxisDirection AxisDirection = AxisDirection::Increasing;
+
+        TopK1OperatorDesc( ) noexcept = default;
+        TopK1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputValueTensor, const TensorDesc* outputIndexTensor, UInt32 axis, UInt32 k, DML::AxisDirection axisDirection ) noexcept
+            : InputTensor( inputTensor ), OutputValueTensor( outputValueTensor ), OutputIndexTensor( outputIndexTensor ), Axis( axis ), K(k), AxisDirection( axisDirection )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_TOP_K1_OPERATOR_DESC );
     };
     static_assert( sizeof( TopK1OperatorDesc ) == sizeof( DML_TOP_K1_OPERATOR_DESC ) );
@@ -4070,8 +4093,15 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::DepthToSpace1;
+
         UInt32 BlockSize = 0;
         DepthSpaceOrder Order = DepthSpaceOrder::DepthColumnRow;
+
+        DepthToSpace1OperatorDesc( ) noexcept = default;
+        DepthToSpace1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 blockSize, DepthSpaceOrder order = DepthSpaceOrder::DepthColumnRow ) noexcept
+            : Base( inputTensor, outputTensor ), BlockSize( blockSize ), Order( order )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DEPTH_TO_SPACE1_OPERATOR_DESC );
     };
     static_assert( sizeof( DepthToSpace1OperatorDesc ) == sizeof( DML_DEPTH_TO_SPACE1_OPERATOR_DESC ) );
@@ -4087,6 +4117,12 @@ namespace Harlinn::AI::DML
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::SpaceToDepth1;
         UInt32 BlockSize = 0;
         DepthSpaceOrder Order = DepthSpaceOrder::DepthColumnRow;
+
+        SpaceToDepth1OperatorDesc( ) noexcept = default;
+        SpaceToDepth1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 blockSize, DepthSpaceOrder order = DepthSpaceOrder::DepthColumnRow ) noexcept
+            : Base( inputTensor, outputTensor ), BlockSize( blockSize ), Order( order )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SPACE_TO_DEPTH1_OPERATOR_DESC );
     };
     static_assert( sizeof( SpaceToDepth1OperatorDesc ) == sizeof( DML_SPACE_TO_DEPTH1_OPERATOR_DESC ) );
@@ -4111,6 +4147,11 @@ namespace Harlinn::AI::DML
         FLOAT Epsilon = 0.f;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
+        MeanVarianceNormalization1OperatorDesc( ) noexcept = default;
+        MeanVarianceNormalization1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* scaleTensor, const TensorDesc* biasTensor, const TensorDesc* outputTensor, UInt32 axisCount,  const UInt32* axes, bool normalizeVariance, float epsilon, const OperatorDesc* fusedActivation ) noexcept
+            : InputTensor( inputTensor ), ScaleTensor( scaleTensor ), BiasTensor( biasTensor ), OutputTensor( outputTensor ), AxisCount( axisCount ), Axes( axes ), NormalizeVariance( normalizeVariance ), Epsilon( epsilon ), FusedActivation( fusedActivation )
+        {}
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MEAN_VARIANCE_NORMALIZATION1_OPERATOR_DESC );
     };
     static_assert( sizeof( MeanVarianceNormalization1OperatorDesc ) == sizeof( DML_MEAN_VARIANCE_NORMALIZATION1_OPERATOR_DESC ) );
@@ -4124,11 +4165,17 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Resample1;
+
         DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
         UInt32 DimensionCount = 0;
         _Field_size_( DimensionCount ) const FLOAT* Scales = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
+
+        Resample1OperatorDesc( ) noexcept = default;
+        Resample1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, DML::InterpolationMode interpolationMode, UInt32 dimensionCount, const float* scales, const float* inputPixelOffsets, const float* outputPixelOffsets ) noexcept
+            : Base( inputTensor, outputTensor ), InterpolationMode( interpolationMode ), DimensionCount( dimensionCount ), Scales( scales ), InputPixelOffsets( inputPixelOffsets ), OutputPixelOffsets( outputPixelOffsets )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE1_OPERATOR_DESC );
     };
@@ -4149,6 +4196,11 @@ namespace Harlinn::AI::DML
         const TensorDesc* BTensor = nullptr;
         _Maybenull_ const TensorDesc* BZeroPointTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
+
+        MatrixMultiplyIntegerOperatorDesc( ) noexcept = default;
+        MatrixMultiplyIntegerOperatorDesc( const TensorDesc* aTensor, const TensorDesc* aZeroPointTensor, const TensorDesc* bTensor, const TensorDesc* bZeroPointTensor, const TensorDesc* outputTensor ) noexcept
+            : ATensor( aTensor ), AZeroPointTensor( aZeroPointTensor ), BTensor( bTensor ), BZeroPointTensor( bZeroPointTensor ), OutputTensor( outputTensor )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MATRIX_MULTIPLY_INTEGER_OPERATOR_DESC );
     };
@@ -4173,6 +4225,11 @@ namespace Harlinn::AI::DML
         const TensorDesc* OutputScaleTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputZeroPointTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
+
+        QuantizedLinearMatrixMultiplyOperatorDesc( ) noexcept = default;
+        QuantizedLinearMatrixMultiplyOperatorDesc( const TensorDesc* aTensor, const TensorDesc* aScaleTensor, const TensorDesc* aZeroPointTensor, const TensorDesc* bTensor, const TensorDesc* bScaleTensor, const TensorDesc* bZeroPointTensor, const TensorDesc* outputScaleTensor, const TensorDesc* outputZeroPointTensor, const TensorDesc* outputTensor ) noexcept
+            : ATensor( aTensor ), AScaleTensor( aScaleTensor ), AZeroPointTensor( aZeroPointTensor ), BTensor( bTensor ), BScaleTensor( bScaleTensor ), BZeroPointTensor( bZeroPointTensor ), OutputScaleTensor( outputScaleTensor ), OutputZeroPointTensor( outputZeroPointTensor ), OutputTensor( outputTensor )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_QUANTIZED_LINEAR_MATRIX_MULTIPLY_OPERATOR_DESC );
     };
@@ -4199,6 +4256,11 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         UInt32 GroupCount = 0;
+
+        ConvolutionIntegerOperatorDesc( ) noexcept = default;
+        ConvolutionIntegerOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputZeroPointTensor, const TensorDesc* filterTensor, const TensorDesc* filterZeroPointTensor, const TensorDesc* outputTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* dilations, const UInt32* startPadding, const UInt32* endPadding, UInt32 groupCount ) noexcept
+            : InputTensor( inputTensor ), InputZeroPointTensor( inputZeroPointTensor ), FilterTensor( filterTensor ), FilterZeroPointTensor( filterZeroPointTensor ), OutputTensor( outputTensor ), DimensionCount( dimensionCount ), Strides( strides ), Dilations( dilations ), StartPadding( startPadding ), EndPadding( endPadding ), GroupCount( groupCount )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CONVOLUTION_INTEGER_OPERATOR_DESC );
     };
@@ -4230,6 +4292,11 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         UInt32 GroupCount = 0;
+
+        QuantizedLinearConvolutionOperatorDesc( ) noexcept = default;
+        QuantizedLinearConvolutionOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputScaleTensor, const TensorDesc* inputZeroPointTensor, const TensorDesc* filterTensor, const TensorDesc* filterScaleTensor, const TensorDesc* filterZeroPointTensor, const TensorDesc* biasTensor, const TensorDesc* outputScaleTensor, const TensorDesc* outputZeroPointTensor, const TensorDesc* outputTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* dilations, const UInt32* startPadding, const UInt32* endPadding, UInt32 groupCount ) noexcept
+            : InputTensor( inputTensor ), InputScaleTensor( inputScaleTensor ), InputZeroPointTensor( inputZeroPointTensor ), FilterTensor( filterTensor ), FilterScaleTensor( filterScaleTensor ), FilterZeroPointTensor( filterZeroPointTensor ), BiasTensor( biasTensor ), OutputScaleTensor( outputScaleTensor ), OutputZeroPointTensor( outputZeroPointTensor ), OutputTensor( outputTensor ), DimensionCount( dimensionCount ), Strides( strides ), Dilations( dilations ), StartPadding( startPadding ), EndPadding( endPadding ), GroupCount( groupCount )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_QUANTIZED_LINEAR_CONVOLUTION_OPERATOR_DESC );
     };
@@ -4409,9 +4476,16 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationReLUGrad;
+
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
+
+        ActivationReLUGradOperatorDesc( ) noexcept = default;
+        ActivationReLUGradOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputGradientTensor, const TensorDesc* outputGradientTensor )
+            : InputTensor( inputTensor ), InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_RELU_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( ActivationReLUGradOperatorDesc ) == sizeof( DML_ACTIVATION_RELU_GRAD_OPERATOR_DESC ) );
@@ -4425,6 +4499,7 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::AveragePoolingGrad;
+
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
         UInt32 DimensionCount = 0;
@@ -4433,6 +4508,12 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         BOOL IncludePadding = FALSE;
+
+        AveragePoolingGradOperatorDesc( ) noexcept = default;
+        AveragePoolingGradOperatorDesc( const TensorDesc* inputGradientTensor, const TensorDesc* outputGradientTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* windowSize, const UInt32* startPadding, const UInt32* endPadding, bool includePadding ) noexcept
+            : InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding ), IncludePadding( includePadding )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_AVERAGE_POOLING_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( AveragePoolingGradOperatorDesc ) == sizeof( DML_AVERAGE_POOLING_GRAD_OPERATOR_DESC ) );
@@ -4446,6 +4527,7 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::MaxPoolingGrad;
+
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
@@ -4455,6 +4537,12 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
+
+        MaxPoolingGradOperatorDesc( ) noexcept = default;
+        MaxPoolingGradOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputGradientTensor, const TensorDesc* outputGradientTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* windowSize, const UInt32* startPadding, const UInt32* endPadding, const UInt32* dilations ) noexcept
+            : InputTensor( inputTensor ), InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding ), Dilations( dilations )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MAX_POOLING_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( MaxPoolingGradOperatorDesc ) == sizeof( DML_MAX_POOLING_GRAD_OPERATOR_DESC ) );
@@ -4468,10 +4556,17 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::RandomGenerator;
+
         const TensorDesc* InputStateTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
         _Maybenull_ const TensorDesc* OutputStateTensor = nullptr;
         RandomGeneratorType Type = RandomGeneratorType::Philox4x32_10;
+
+        RandomGeneratorOperatorDesc( ) noexcept = default;
+        RandomGeneratorOperatorDesc( const TensorDesc* inputStateTensor, const TensorDesc* outputTensor, const TensorDesc* outputStateTensor, RandomGeneratorType type = RandomGeneratorType::Philox4x32_10 ) noexcept
+            : InputStateTensor( inputStateTensor ), OutputTensor( outputTensor ), OutputStateTensor( outputStateTensor ), Type( type )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RANDOM_GENERATOR_OPERATOR_DESC );
     };
     static_assert( sizeof( RandomGeneratorOperatorDesc ) == sizeof( DML_RANDOM_GENERATOR_OPERATOR_DESC ) );
@@ -4485,9 +4580,16 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::NonZeroCoordinates;
+
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* OutputCountTensor = nullptr;
         const TensorDesc* OutputCoordinatesTensor = nullptr;
+
+        NonZeroCoordinatesOperatorDesc( ) noexcept = default;
+        NonZeroCoordinatesOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputCountTensor, const TensorDesc* outputCoordinatesTensor ) noexcept
+            : InputTensor( inputTensor ), OutputCountTensor( outputCountTensor ), OutputCoordinatesTensor( outputCoordinatesTensor )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_NONZERO_COORDINATES_OPERATOR_DESC );
     };
     static_assert( sizeof( NonZeroCoordinatesOperatorDesc ) == sizeof( DML_NONZERO_COORDINATES_OPERATOR_DESC ) );
@@ -4501,6 +4603,7 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ResampleGrad;
+
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
         DML::InterpolationMode InterpolationMode = DML::InterpolationMode::NearestNeighbor;
@@ -4508,6 +4611,12 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const FLOAT* Scales = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
+
+        ResampleGradOperatorDesc( ) noexcept = default;
+        ResampleGradOperatorDesc( const TensorDesc* inputGradientTensor, const TensorDesc* outputGradientTensor, DML::InterpolationMode interpolationMode, UInt32 dimensionCount, const float* scales, const float* inputPixelOffsets, const float* outputPixelOffsets ) noexcept
+            : InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor ), InterpolationMode( interpolationMode ), DimensionCount( dimensionCount ), Scales( scales ), InputPixelOffsets( inputPixelOffsets ), OutputPixelOffsets( outputPixelOffsets )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( ResampleGradOperatorDesc ) == sizeof( DML_RESAMPLE_GRAD_OPERATOR_DESC ) );
@@ -4521,12 +4630,18 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::SliceGrad;
+
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* OutputGradientTensor = nullptr;
         UInt32 DimensionCount = 0;
         _Field_size_( DimensionCount ) const UInt32* InputWindowOffsets = nullptr;
         _Field_size_( DimensionCount ) const UInt32* InputWindowSizes = nullptr;
         _Field_size_( DimensionCount ) const INT* InputWindowStrides = nullptr;
+
+        SliceGradOperatorDesc( ) noexcept = default;
+        SliceGradOperatorDesc( const TensorDesc* inputGradientTensor, const TensorDesc* outputGradientTensor, UInt32 dimensionCount, const UInt32* inputWindowOffsets, const UInt32* inputWindowSizes, const Int32* inputWindowStrides ) noexcept
+            : InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor ), DimensionCount( dimensionCount ), InputWindowOffsets( inputWindowOffsets ), InputWindowSizes( inputWindowSizes ), InputWindowStrides( inputWindowStrides )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_SLICE_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( SliceGradOperatorDesc ) == sizeof( DML_SLICE_GRAD_OPERATOR_DESC ) );
@@ -4549,10 +4664,17 @@ namespace Harlinn::AI::DML
         const TensorDesc* OutputParametersTensor = nullptr;
         const TensorDesc* OutputFirstMomentTensor = nullptr;
         const TensorDesc* OutputSecondMomentTensor = nullptr;
-        FLOAT LearningRate = 0.f;
-        FLOAT Beta1 = 0.f;
-        FLOAT Beta2 = 0.f;
-        FLOAT Epsilon = 0.f;
+        float LearningRate = 0.f;
+        float Beta1 = 0.f;
+        float Beta2 = 0.f;
+        float Epsilon = 0.f;
+
+        AdamOptimizerOperatorDesc( ) noexcept = default;
+        AdamOptimizerOperatorDesc( const TensorDesc* inputParametersTensor, const TensorDesc* inputFirstMomentTensor, const TensorDesc* inputSecondMomentTensor, const TensorDesc* gradientTensor, const TensorDesc* trainingStepTensor, const TensorDesc* outputParametersTensor, const TensorDesc* outputFirstMomentTensor, const TensorDesc* outputSecondMomentTensor, float learningRate, float beta1, float beta2, float epsilon ) noexcept
+            : InputParametersTensor( inputParametersTensor ), InputFirstMomentTensor( inputFirstMomentTensor ), InputSecondMomentTensor( inputSecondMomentTensor ), GradientTensor( gradientTensor ), TrainingStepTensor( trainingStepTensor ), OutputParametersTensor( outputParametersTensor ), OutputFirstMomentTensor( outputFirstMomentTensor ), OutputSecondMomentTensor( outputSecondMomentTensor ), LearningRate( learningRate ), Beta1( beta1 ), Beta2( beta2 ), Epsilon( epsilon )
+        { }
+
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ADAM_OPTIMIZER_OPERATOR_DESC );
     };
     static_assert( sizeof( AdamOptimizerOperatorDesc ) == sizeof( DML_ADAM_OPTIMIZER_OPERATOR_DESC ) );
@@ -4566,9 +4688,16 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ArgMin;
+
         UInt32 AxisCount = 0;
         _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
         DML::AxisDirection AxisDirection = DML::AxisDirection::Increasing;
+
+        ArgMinOperatorDesc( ) noexcept = default;
+        ArgMinOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 axisCount, const UInt32* axes, DML::AxisDirection axisDirection = DML::AxisDirection::Increasing ) noexcept
+            : Base( inputTensor, outputTensor ), AxisCount( axisCount ), Axes( axes ), AxisDirection( axisDirection )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ARGMIN_OPERATOR_DESC );
     };
     static_assert( sizeof( ArgMinOperatorDesc ) == sizeof( DML_ARGMIN_OPERATOR_DESC ) );
@@ -4586,6 +4715,12 @@ namespace Harlinn::AI::DML
         UInt32 AxisCount = 0;
         _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
         DML::AxisDirection AxisDirection = DML::AxisDirection::Increasing;
+
+        ArgMaxOperatorDesc( ) noexcept = default;
+        ArgMaxOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 axisCount, const UInt32* axes, DML::AxisDirection axisDirection = DML::AxisDirection::Increasing ) noexcept
+            : Base( inputTensor, outputTensor ), AxisCount( axisCount ), Axes( axes ), AxisDirection( axisDirection )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ARGMAX_OPERATOR_DESC );
     };
     static_assert( sizeof( ArgMaxOperatorDesc ) == sizeof( DML_ARGMAX_OPERATOR_DESC ) );
@@ -4612,6 +4747,11 @@ namespace Harlinn::AI::DML
         UInt32 MinimumSamplesPerOutput = 0;
         UInt32 MaximumSamplesPerOutput = 0;
 
+        ROIAlignOperatorDesc( ) noexcept = default;
+        ROIAlignOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* roiTensor, const TensorDesc* batchIndicesTensor, const TensorDesc* outputTensor, DML::ReduceFunction reductionFunction, DML::InterpolationMode interpolationMode, float spatialScaleX, float spatialScaleY, float outOfBoundsInputValue, UInt32 minimumSamplesPerOutput, UInt32 maximumSamplesPerOutput ) noexcept
+            : InputTensor( inputTensor ), ROITensor( roiTensor ), BatchIndicesTensor( batchIndicesTensor ), OutputTensor( outputTensor ), ReductionFunction( reductionFunction ), InterpolationMode( interpolationMode ), SpatialScaleX( spatialScaleX ), SpatialScaleY( spatialScaleY ), OutOfBoundsInputValue( outOfBoundsInputValue ), MinimumSamplesPerOutput( minimumSamplesPerOutput ), MaximumSamplesPerOutput( maximumSamplesPerOutput )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ROI_ALIGN_OPERATOR_DESC );
     };
     static_assert( sizeof( ROIAlignOperatorDesc ) == sizeof( DML_ROI_ALIGN_OPERATOR_DESC ) );
@@ -4632,6 +4772,11 @@ namespace Harlinn::AI::DML
         UInt32 InputDimensionCount = 0;
         UInt32 IndicesDimensionCount = 0;
         UInt32 BatchDimensionCount = 0;
+
+        GatherND1OperatorDesc( ) noexcept = default;
+        GatherND1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* indicesTensor, const TensorDesc* outputTensor, UInt32 inputDimensionCount, UInt32 indicesDimensionCount, UInt32 batchDimensionCount ) noexcept
+            : InputTensor( inputTensor ), IndicesTensor( indicesTensor ), OutputTensor( outputTensor ), InputDimensionCount( inputDimensionCount ), IndicesDimensionCount( indicesDimensionCount ), BatchDimensionCount( batchDimensionCount )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_GATHER_ND1_OPERATOR_DESC );
     };
@@ -4725,6 +4870,12 @@ namespace Harlinn::AI::DML
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
         FLOAT Bias = 0.f;
+
+        LocalResponseNormalizationGradOperatorDesc( ) noexcept = default;
+        LocalResponseNormalizationGradOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputGradientTensor, const TensorDesc* outputGradientTensor, bool crossChannel, UInt32 localSize, float alpha, float beta, float bias ) noexcept
+            : InputTensor( inputTensor ), InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor ), CrossChannel( crossChannel ), LocalSize( localSize ), Alpha( alpha ), Beta( beta ), Bias( bias )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LOCAL_RESPONSE_NORMALIZATION_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( LocalResponseNormalizationGradOperatorDesc ) == sizeof( DML_LOCAL_RESPONSE_NORMALIZATION_GRAD_OPERATOR_DESC ) );
@@ -4738,9 +4889,17 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::CumulativeProduct;
+
         UInt32 Axis = 0;
         DML::AxisDirection AxisDirection = DML::AxisDirection::Increasing;
         BOOL HasExclusiveProduct = FALSE;
+
+        CumulativeProductOperatorDesc( ) noexcept = default;
+        CumulativeProductOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 axis, DML::AxisDirection axisDirection = DML::AxisDirection::Increasing, bool hasExclusiveProduct = false ) noexcept
+            : Base( inputTensor, outputTensor ), Axis( axis ), AxisDirection( axisDirection ), HasExclusiveProduct( hasExclusiveProduct )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_CUMULATIVE_PRODUCT_OPERATOR_DESC );
     };
     static_assert( sizeof( CumulativeProductOperatorDesc ) == sizeof( DML_CUMULATIVE_PRODUCT_OPERATOR_DESC ) );
@@ -4754,17 +4913,21 @@ namespace Harlinn::AI::DML
     {
         using Base = BaseOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::BatchNormalizationGrad;
+
         const TensorDesc* InputTensor = nullptr;
         const TensorDesc* InputGradientTensor = nullptr;
         const TensorDesc* MeanTensor = nullptr;
         const TensorDesc* VarianceTensor = nullptr;
         const TensorDesc* ScaleTensor = nullptr;
-
         const TensorDesc* OutputGradientTensor = nullptr;
         const TensorDesc* OutputScaleGradientTensor = nullptr;
         const TensorDesc* OutputBiasGradientTensor = nullptr;
-
         FLOAT Epsilon = 0.f;
+
+        BatchNormalizationGradOperatorDesc( ) noexcept = default;
+        BatchNormalizationGradOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputGradientTensor, const TensorDesc* meanTensor, const TensorDesc* varianceTensor, const TensorDesc* scaleTensor, const TensorDesc* outputGradientTensor, const TensorDesc* outputScaleGradientTensor, const TensorDesc* outputBiasGradientTensor, float epsilon ) noexcept
+            : InputTensor( inputTensor ), InputGradientTensor( inputGradientTensor ), MeanTensor( meanTensor ), VarianceTensor( varianceTensor ), ScaleTensor( scaleTensor ), OutputGradientTensor( outputGradientTensor ), OutputScaleGradientTensor( outputScaleGradientTensor ), OutputBiasGradientTensor( outputBiasGradientTensor ), Epsilon( epsilon )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BATCH_NORMALIZATION_GRAD_OPERATOR_DESC );
     };
@@ -4794,6 +4957,10 @@ namespace Harlinn::AI::DML
         _Maybenull_ const TensorDesc* OutputZeroPointTensor = nullptr;   // This is an input tensor
         const TensorDesc* OutputTensor = nullptr;
 
+        ElementWiseQuantizedLinearAddOperatorDesc( ) noexcept = default;
+        ElementWiseQuantizedLinearAddOperatorDesc( const TensorDesc* aTensor, const TensorDesc* aScaleTensor, const TensorDesc* aZeroPointTensor, const TensorDesc* bTensor, const TensorDesc* bScaleTensor, const TensorDesc* bZeroPointTensor, const TensorDesc* outputScaleTensor, const TensorDesc* outputZeroPointTensor, const TensorDesc* outputTensor) noexcept
+            : ATensor( aTensor ), AScaleTensor( aScaleTensor ), AZeroPointTensor( aZeroPointTensor ), BTensor( bTensor ), BScaleTensor( bScaleTensor ), BZeroPointTensor( bZeroPointTensor ), OutputScaleTensor( outputScaleTensor ), OutputZeroPointTensor( outputZeroPointTensor ), OutputTensor( outputTensor )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_QUANTIZED_LINEAR_ADD_OPERATOR_DESC );
     };
     static_assert( sizeof( ElementWiseQuantizedLinearAddOperatorDesc ) == sizeof( DML_ELEMENT_WISE_QUANTIZED_LINEAR_ADD_OPERATOR_DESC ) );
@@ -4807,8 +4974,14 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::DynamicQuantizeLinear;
+
         const TensorDesc* OutputScaleTensor = nullptr;                   // This is an output tensor
         const TensorDesc* OutputZeroPointTensor = nullptr;               // This is an output tensor
+
+        DynamicQuantizeLinearOperatorDesc( ) noexcept = default;
+        DynamicQuantizeLinearOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const TensorDesc* outputScaleTensor, const TensorDesc* outputZeroPointTensor ) noexcept
+            : Base( inputTensor, outputTensor ), OutputScaleTensor( outputScaleTensor ), OutputZeroPointTensor( outputZeroPointTensor )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DYNAMIC_QUANTIZE_LINEAR_OPERATOR_DESC );
     };
@@ -4839,6 +5012,10 @@ namespace Harlinn::AI::DML
         UInt32 MaximumSamplesPerOutput = 0;
         BOOL AlignRegionsToCorners = 0;
 
+        ROIAlign1OperatorDesc( ) noexcept = default;
+        ROIAlign1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* roiTensor, const TensorDesc* batchIndicesTensor, const TensorDesc* outputTensor, DML::ReduceFunction reductionFunction, DML::InterpolationMode interpolationMode, float spatialScaleX, float spatialScaleY, float inputPixelOffset, float outputPixelOffset, float outOfBoundsInputValue, UInt32 minimumSamplesPerOutput, UInt32 maximumSamplesPerOutput, bool alignRegionsToCorners ) noexcept
+            : InputTensor( inputTensor ), ROITensor( roiTensor ), BatchIndicesTensor( batchIndicesTensor ), OutputTensor( outputTensor ), ReductionFunction( reductionFunction ), InterpolationMode( interpolationMode ), SpatialScaleX( spatialScaleX ), SpatialScaleY( spatialScaleY ), InputPixelOffset( inputPixelOffset ), OutputPixelOffset( outputPixelOffset ), OutOfBoundsInputValue( outOfBoundsInputValue ), MinimumSamplesPerOutput( minimumSamplesPerOutput ), MaximumSamplesPerOutput( maximumSamplesPerOutput ), AlignRegionsToCorners( alignRegionsToCorners )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ROI_ALIGN1_OPERATOR_DESC );
     };
     static_assert( sizeof( ROIAlign1OperatorDesc ) == sizeof( DML_ROI_ALIGN1_OPERATOR_DESC ) );
@@ -4873,6 +5050,10 @@ namespace Harlinn::AI::DML
         UInt32 MaximumSamplesPerOutput = 0;
         BOOL AlignRegionsToCorners = FALSE;
 
+        ROIAlignGradOperatorDesc( ) noexcept = default;
+        ROIAlignGradOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputGradientTensor, const TensorDesc* roiTensor, const TensorDesc* batchIndicesTensor, const TensorDesc* outputGradientTensor, const TensorDesc* outputROIGradientTensor, ReduceFunction reductionFunction, DML::InterpolationMode interpolationMode, float spatialScaleX, float spatialScaleY, float inputPixelOffset, float outputPixelOffset, UInt32 minimumSamplesPerOutput, UInt32 maximumSamplesPerOutput, bool alignRegionsToCorners ) noexcept
+            : InputTensor( inputTensor ), InputGradientTensor( inputGradientTensor ), ROITensor( roiTensor ), BatchIndicesTensor( batchIndicesTensor ), OutputGradientTensor( outputGradientTensor ), OutputROIGradientTensor( outputROIGradientTensor ), ReductionFunction( reductionFunction ), InterpolationMode( interpolationMode ), SpatialScaleX( spatialScaleX ), SpatialScaleY( spatialScaleY ), InputPixelOffset( inputPixelOffset ), OutputPixelOffset( outputPixelOffset ), MinimumSamplesPerOutput( minimumSamplesPerOutput ), MaximumSamplesPerOutput( maximumSamplesPerOutput ), AlignRegionsToCorners( alignRegionsToCorners )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ROI_ALIGN_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( ROIAlignGradOperatorDesc ) == sizeof( DML_ROI_ALIGN_GRAD_OPERATOR_DESC ) );
@@ -4896,6 +5077,13 @@ namespace Harlinn::AI::DML
         const TensorDesc* OutputVarianceTensor = nullptr;
         FLOAT Epsilon = 0.f;
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
+
+        
+
+        BatchNormalizationTrainingOperatorDesc( ) noexcept = default;
+        BatchNormalizationTrainingOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* scaleTensor, const TensorDesc* biasTensor, const TensorDesc* fusedAddTensor, const TensorDesc* outputTensor, const TensorDesc* outputMeanTensor, const TensorDesc* outputVarianceTensor, float epsilon, const OperatorDesc* fusedActivation ) noexcept
+            : InputTensor( inputTensor ), ScaleTensor( scaleTensor ), BiasTensor( biasTensor ), FusedAddTensor( fusedAddTensor ), OutputTensor( outputTensor ), OutputMeanTensor( outputMeanTensor ), OutputVarianceTensor( outputVarianceTensor ), Epsilon( epsilon ), FusedActivation( fusedActivation )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BATCH_NORMALIZATION_TRAINING_OPERATOR_DESC );
     };
@@ -4921,6 +5109,13 @@ namespace Harlinn::AI::DML
         const TensorDesc* OutputBiasGradientTensor = nullptr;
         FLOAT Epsilon = 0.f;
 
+        
+
+        BatchNormalizationTrainingGradOperatorDesc( ) noexcept = default;
+        BatchNormalizationTrainingGradOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputGradientTensor, const TensorDesc* meanTensor, const TensorDesc* varianceTensor, const TensorDesc* scaleTensor, const TensorDesc* outputGradientTensor, const TensorDesc* outputScaleGradientTensor, const TensorDesc* outputBiasGradientTensor, float epsilon ) noexcept
+            : InputTensor( inputTensor ), InputGradientTensor( inputGradientTensor ), MeanTensor( meanTensor ), VarianceTensor( varianceTensor ), ScaleTensor( scaleTensor ), OutputGradientTensor( outputGradientTensor ), OutputScaleGradientTensor( outputScaleGradientTensor ), OutputBiasGradientTensor( outputBiasGradientTensor ), Epsilon( epsilon )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_BATCH_NORMALIZATION_TRAINING_GRAD_OPERATOR_DESC );
     };
     static_assert( sizeof( BatchNormalizationTrainingGradOperatorDesc ) == sizeof( DML_BATCH_NORMALIZATION_TRAINING_GRAD_OPERATOR_DESC ) );
@@ -4943,6 +5138,11 @@ namespace Harlinn::AI::DML
         ScalarUnion Min{};
         ScalarUnion Max{};
 
+        ElementWiseClip1OperatorDesc( ) noexcept = default;
+        ElementWiseClip1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, TensorDataType minMaxDataType, const ScalarUnion& min, const ScalarUnion& max ) noexcept
+            : Base( inputTensor, outputTensor ), MinMaxDataType( minMaxDataType ), Min( min ), Max( max )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CLIP1_OPERATOR_DESC );
     };
     static_assert( sizeof( ElementWiseClip1OperatorDesc ) == sizeof( DML_ELEMENT_WISE_CLIP1_OPERATOR_DESC ) );
@@ -4963,6 +5163,11 @@ namespace Harlinn::AI::DML
         TensorDataType MinMaxDataType = TensorDataType::Unknown;
         ScalarUnion Min{};
         ScalarUnion Max{};
+
+        ElementWiseClipGrad1OperatorDesc( ) noexcept = default;
+        ElementWiseClipGrad1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputGradientTensor, const TensorDesc* outputGradientTensor, TensorDataType minMaxDataType, const ScalarUnion& min, const ScalarUnion& max ) noexcept
+            : InputTensor( inputTensor ), InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor ), MinMaxDataType( minMaxDataType ), Min( min ), Max( max )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ELEMENT_WISE_CLIP_GRAD1_OPERATOR_DESC );
     };
@@ -4985,6 +5190,13 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* StartPadding = nullptr;
         _Field_size_( DimensionCount ) const UInt32* EndPadding = nullptr;
 
+        
+
+
+        Padding1OperatorDesc( ) noexcept = default;
+        Padding1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, DML::PaddingMode paddingMode, TensorDataType paddingValueDataType, const ScalarUnion& paddingValue, UInt32 dimensionCount, const UInt32* startPadding, const UInt32* endPadding ) noexcept
+            : Base( inputTensor, outputTensor ), PaddingMode( paddingMode ), PaddingValueDataType( paddingValueDataType ), PaddingValue( paddingValue ), DimensionCount( dimensionCount ), StartPadding( startPadding ), EndPadding( endPadding )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_PADDING1_OPERATOR_DESC );
     };
     static_assert( sizeof( Padding1OperatorDesc ) == sizeof( DML_PADDING1_OPERATOR_DESC ) );
@@ -5070,8 +5282,15 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationLogSoftMax1;
+
         UInt32 AxisCount = 0;
         _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
+
+        ActivationLogSoftMax1OperatorDesc( ) noexcept = default;
+        ActivationLogSoftMax1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 axisCount, const UInt32* axes ) noexcept
+            : Base( inputTensor, outputTensor ), AxisCount( axisCount ), Axes( axes )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_LOG_SOFTMAX1_OPERATOR_DESC );
     };
     static_assert( sizeof( ActivationLogSoftMax1OperatorDesc ) == sizeof( DML_ACTIVATION_LOG_SOFTMAX1_OPERATOR_DESC ) );
@@ -5085,8 +5304,16 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationHardMax1;
+
         UInt32 AxisCount = 0;
         _Field_size_( AxisCount ) const UInt32* Axes = nullptr;
+
+        ActivationHardMax1OperatorDesc( ) noexcept = default;
+        ActivationHardMax1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 axisCount, const UInt32* axes ) noexcept
+            : Base( inputTensor, outputTensor ), AxisCount( axisCount ), Axes( axes )
+        {
+        }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_HARDMAX1_OPERATOR_DESC );
     };
     static_assert( sizeof( ActivationHardMax1OperatorDesc ) == sizeof( DML_ACTIVATION_HARDMAX1_OPERATOR_DESC ) );
@@ -5107,6 +5334,11 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const FLOAT* Scales = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
+
+        Resample2OperatorDesc( ) noexcept = default;
+        Resample2OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, DML::InterpolationMode interpolationMode, AxisDirection roundingDirection, UInt32 dimensionCount, const float* scales, const float* inputPixelOffsets, const float* outputPixelOffsets ) noexcept
+            : Base( inputTensor, outputTensor ), InterpolationMode( interpolationMode ), RoundingDirection( roundingDirection ), DimensionCount( dimensionCount ), Scales( scales ), InputPixelOffsets( inputPixelOffsets ), OutputPixelOffsets( outputPixelOffsets )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE2_OPERATOR_DESC );
     };
@@ -5131,6 +5363,10 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const FLOAT* InputPixelOffsets = nullptr;
         _Field_size_( DimensionCount ) const FLOAT* OutputPixelOffsets = nullptr;
 
+        ResampleGrad1OperatorDesc( ) noexcept = default;
+        ResampleGrad1OperatorDesc( const TensorDesc* inputGradientTensor, const TensorDesc* outputGradientTensor, DML::InterpolationMode interpolationMode, AxisDirection roundingDirection, UInt32 dimensionCount, const float* scales, const float* inputPixelOffsets, const float* outputPixelOffsets ) noexcept
+            : InputGradientTensor( inputGradientTensor ), OutputGradientTensor( outputGradientTensor ), InterpolationMode( interpolationMode ), RoundingDirection( roundingDirection ), DimensionCount( dimensionCount ), Scales( scales ), InputPixelOffsets( inputPixelOffsets ), OutputPixelOffsets( outputPixelOffsets )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_RESAMPLE_GRAD1_OPERATOR_DESC );
     };
     static_assert( sizeof( ResampleGrad1OperatorDesc ) == sizeof( DML_RESAMPLE_GRAD1_OPERATOR_DESC ) );
@@ -5152,6 +5388,10 @@ namespace Harlinn::AI::DML
         INT DiagonalFillBegin = 0;
         INT DiagonalFillEnd = 0;
 
+        DiagonalMatrix1OperatorDesc( ) noexcept = default;
+        DiagonalMatrix1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, TensorDataType valueDataType, ScalarUnion value, Int32 diagonalFillBegin, Int32 diagonalFillEnd ) noexcept
+            : InputTensor( inputTensor ), OutputTensor( outputTensor ), ValueDataType( valueDataType ), Value( value ), DiagonalFillBegin( diagonalFillBegin ), DiagonalFillEnd( diagonalFillEnd )
+        { }
         DML_IMPLEMENT_CONVERSIONS_TO( DML_DIAGONAL_MATRIX1_OPERATOR_DESC );
     };
     static_assert( sizeof( DiagonalMatrix1OperatorDesc ) == sizeof( DML_DIAGONAL_MATRIX1_OPERATOR_DESC ) );
@@ -5189,6 +5429,12 @@ namespace Harlinn::AI::DML
         UInt32 HeadCount = 0;
         MultiheadAttentionMaskType MaskType = MultiheadAttentionMaskType::None;
 
+        MultiheadAttentionOperatorDesc( ) noexcept = default;
+        MultiheadAttentionOperatorDesc( const TensorDesc* queryTensor, const TensorDesc* keyTensor, const TensorDesc* valueTensor, const TensorDesc* stackedQueryKeyTensor, const TensorDesc* stackedKeyValueTensor, const TensorDesc* stackedQueryKeyValueTensor, const TensorDesc* biasTensor, const TensorDesc* maskTensor, const TensorDesc* relativePositionBiasTensor, const TensorDesc* pastKeyTensor, const TensorDesc* pastValueTensor, const TensorDesc* outputTensor, const TensorDesc* outputPresentKeyTensor, const TensorDesc* outputPresentValueTensor, float scale, float maskFilterValue, UInt32 headCount, MultiheadAttentionMaskType maskType ) noexcept
+            : QueryTensor( queryTensor ), KeyTensor( keyTensor ), ValueTensor( valueTensor ), StackedQueryKeyTensor( stackedQueryKeyTensor ), StackedKeyValueTensor( stackedKeyValueTensor ), StackedQueryKeyValueTensor( stackedQueryKeyValueTensor ), BiasTensor( biasTensor ), MaskTensor( maskTensor ), RelativePositionBiasTensor( relativePositionBiasTensor ), PastKeyTensor( pastKeyTensor ), PastValueTensor( pastValueTensor ), OutputTensor( outputTensor ), OutputPresentKeyTensor( outputPresentKeyTensor ), OutputPresentValueTensor( outputPresentValueTensor ), Scale( scale ), MaskFilterValue( maskFilterValue ), HeadCount( headCount ), MaskType( maskType )
+        { }
+
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MULTIHEAD_ATTENTION_OPERATOR_DESC );
     };
     static_assert( sizeof( MultiheadAttentionOperatorDesc ) == sizeof( DML_MULTIHEAD_ATTENTION_OPERATOR_DESC ) );
@@ -5215,6 +5461,13 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
         UInt32 P = 0;
 
+        
+
+        LPPooling1OperatorDesc( ) noexcept = default;
+        LPPooling1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* windowSize, const UInt32* startPadding, const UInt32* endPadding, const UInt32* dilations, UInt32 p ) noexcept
+            : Base( inputTensor, outputTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding ), Dilations( dilations ), P( p )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_LP_POOLING1_OPERATOR_DESC );
     };
     static_assert( sizeof( LPPooling1OperatorDesc ) == sizeof( DML_LP_POOLING1_OPERATOR_DESC ) );
@@ -5237,6 +5490,11 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
         BOOL IncludePadding = FALSE;
 
+        AveragePooling1OperatorDesc( ) noexcept = default;
+        AveragePooling1OperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* windowSize, const UInt32* startPadding, const UInt32* endPadding, const UInt32* dilations, BOOL includePadding ) noexcept
+            : Base( inputTensor, outputTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding ), Dilations( dilations ), IncludePadding( includePadding )
+        { }
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_AVERAGE_POOLING1_OPERATOR_DESC );
     };
     static_assert( sizeof( AveragePooling1OperatorDesc ) == sizeof( DML_AVERAGE_POOLING1_OPERATOR_DESC ) );
@@ -5252,6 +5510,11 @@ namespace Harlinn::AI::DML
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ActivationSwish;
 
         FLOAT SigmoidInputScale = 0.f;
+
+        ActivationSwishOperatorDesc( ) noexcept = default;
+        ActivationSwishOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float sigmoidInputScale ) noexcept
+            : Base( inputTensor, outputTensor ), SigmoidInputScale( sigmoidInputScale )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_SWISH_OPERATOR_DESC );
     };
@@ -5269,6 +5532,11 @@ namespace Harlinn::AI::DML
 
         FLOAT Alpha = 0.f;
         FLOAT Beta = 0.f;
+
+        ActivationHardSwishOperatorDesc( ) noexcept = default;
+        ActivationHardSwishOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, float alpha, float beta ) noexcept
+            : Base( inputTensor, outputTensor ), Alpha( alpha ), Beta( beta )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_ACTIVATION_HARD_SWISH_OPERATOR_DESC );
     };
@@ -5298,6 +5566,11 @@ namespace Harlinn::AI::DML
         _Field_size_( DimensionCount ) const UInt32* Dilations = nullptr;
         BOOL IncludePadding = FALSE;
 
+        QuantizedLinearAveragePoolingOperatorDesc( ) noexcept = default;
+        QuantizedLinearAveragePoolingOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* inputScaleTensor, const TensorDesc* inputZeroPointTensor, const TensorDesc* outputScaleTensor, const TensorDesc* outputZeroPointTensor, const TensorDesc* outputTensor, UInt32 dimensionCount, const UInt32* strides, const UInt32* windowSize, const UInt32* startPadding, const UInt32* endPadding, const UInt32* dilations, bool includePadding ) noexcept
+            : InputTensor( inputTensor ), InputScaleTensor( inputScaleTensor ), InputZeroPointTensor( inputZeroPointTensor ), OutputScaleTensor( outputScaleTensor ), OutputZeroPointTensor( outputZeroPointTensor ), OutputTensor( outputTensor ), DimensionCount( dimensionCount ), Strides( strides ), WindowSize( windowSize ), StartPadding( startPadding ), EndPadding( endPadding ), Dilations( dilations ), IncludePadding( includePadding )
+        {}
+
         DML_IMPLEMENT_CONVERSIONS_TO( DML_QUANTIZED_LINEAR_AVERAGE_POOLING_OPERATOR_DESC );
     };
     static_assert( sizeof( QuantizedLinearAveragePoolingOperatorDesc ) == sizeof( DML_QUANTIZED_LINEAR_AVERAGE_POOLING_OPERATOR_DESC ) );
@@ -5320,6 +5593,12 @@ namespace Harlinn::AI::DML
         _Maybenull_ const TensorDesc* BZeroPointTensor = nullptr;
         _Maybenull_ const TensorDesc* BiasTensor = nullptr;
         const TensorDesc* OutputTensor = nullptr;
+
+        
+        MatrixMultiplyIntegerToFloatOperatorDesc( ) noexcept = default;
+        MatrixMultiplyIntegerToFloatOperatorDesc( const TensorDesc* aTensor, const TensorDesc* aScaleTensor, const TensorDesc* aZeroPointTensor, const TensorDesc* bTensor, const TensorDesc* bScaleTensor, const TensorDesc* bZeroPointTensor, const TensorDesc* biasTensor, const TensorDesc* outputTensor ) noexcept
+            : ATensor( aTensor ), AScaleTensor( aScaleTensor ), AZeroPointTensor( aZeroPointTensor ), BTensor( bTensor ), BScaleTensor( bScaleTensor ), BZeroPointTensor( bZeroPointTensor ), BiasTensor( biasTensor ), OutputTensor( outputTensor )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MATRIX_MULTIPLY_INTEGER_TO_FLOAT_OPERATOR_DESC );
     };
@@ -5380,10 +5659,12 @@ namespace Harlinn::AI::DML
         FLOAT MaskFilterValue = 0.f;
         UInt32 QueryHeadCount = 0;
         UInt32 KeyValueHeadCount = 0;
-        
         MultiheadAttentionMaskType MaskType = MultiheadAttentionMaskType::None;
-
+        
         MultiheadAttention1OperatorDesc( ) noexcept = default;
+        MultiheadAttention1OperatorDesc( const TensorDesc* queryTensor, const TensorDesc* keyTensor, const TensorDesc* valueTensor, const TensorDesc* stackedQueryKeyTensor, const TensorDesc* stackedKeyValueTensor, const TensorDesc* stackedQueryKeyValueTensor, const TensorDesc* biasTensor, const TensorDesc* maskTensor, const TensorDesc* relativePositionBiasTensor, const TensorDesc* pastKeyTensor, const TensorDesc* pastValueTensor, const TensorDesc* pastSequenceLengthsTensor, const TensorDesc* outputTensor, const TensorDesc* outputPresentKeyTensor, const TensorDesc* outputPresentValueTensor, float scale, float maskFilterValue, UInt32 queryHeadCount, UInt32 keyValueHeadCount, MultiheadAttentionMaskType maskType ) noexcept
+            : QueryTensor( queryTensor ), KeyTensor( keyTensor ), ValueTensor( valueTensor ), StackedQueryKeyTensor( stackedQueryKeyTensor ), StackedKeyValueTensor( stackedKeyValueTensor ), StackedQueryKeyValueTensor( stackedQueryKeyValueTensor ), BiasTensor( biasTensor ), MaskTensor( maskTensor ), RelativePositionBiasTensor( relativePositionBiasTensor ), PastKeyTensor( pastKeyTensor ), PastValueTensor( pastValueTensor ), PastSequenceLengthsTensor( pastSequenceLengthsTensor ), OutputTensor( outputTensor ), OutputPresentKeyTensor( outputPresentKeyTensor ), OutputPresentValueTensor( outputPresentValueTensor ), Scale( scale ), MaskFilterValue( maskFilterValue ), QueryHeadCount( queryHeadCount ), KeyValueHeadCount( keyValueHeadCount ), MaskType( maskType )
+        { }
 
         DML_IMPLEMENT_CONVERSIONS_TO( DML_MULTIHEAD_ATTENTION1_OPERATOR_DESC );
     };
