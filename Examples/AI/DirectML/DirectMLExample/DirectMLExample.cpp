@@ -67,6 +67,8 @@ int main( )
 
     // Create the DirectML device.
     auto dmlDevice = DML::CreateDevice( d3D12Device );
+    auto supportedTensorDataTypes = dmlDevice.SupportedTensorDataTypes( );
+    auto SupportedFeatureLevel = dmlDevice.SupportedFeatureLevel( );
 
     constexpr UINT tensorSizes[ 4 ] = { 1, 2, 3, 4 };
     constexpr UINT tensorElementCount = tensorSizes[ 0 ] * tensorSizes[ 1 ] * tensorSizes[ 2 ] * tensorSizes[ 3 ];

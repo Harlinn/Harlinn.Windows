@@ -1763,7 +1763,7 @@ namespace Harlinn::Common::Core
         /// <returns>Returns the resulting decremented value.</returns>
         value_type Decrement( )
         {
-            return Atomic::Increment( &referenceCount_ );
+            return Atomic::Decrement( &referenceCount_ );
         }
 
         /// <summary>

@@ -38,6 +38,10 @@ namespace Harlinn::AI::DML
 
     constexpr UInt32 MinimumBufferTensorAlignment = DML_MINIMUM_BUFFER_TENSOR_ALIGNMENT;
 
+    
+
+
+
 
     class Object;
     class Device;
@@ -77,6 +81,36 @@ namespace Harlinn::AI::DML
         Int4 = DML_TENSOR_DATA_TYPE_INT4,
 #endif
     };
+
+    enum class TensorDataTypeMask : UInt32
+    {
+        Unknown = 0,
+        Float32 = 1 << ( DML_TENSOR_DATA_TYPE_FLOAT32 - 1 ),
+        Single = Float32,
+        Float16 = 1 << ( DML_TENSOR_DATA_TYPE_FLOAT16 - 1 ),
+        Half = Float16,
+        UInt32 = 1 << ( DML_TENSOR_DATA_TYPE_UINT32 - 1 ),
+        UInt16 = 1 << ( DML_TENSOR_DATA_TYPE_UINT16 - 1 ),
+        UInt8 = 1 << ( DML_TENSOR_DATA_TYPE_UINT8 - 1 ),
+        Int32 = 1 << ( DML_TENSOR_DATA_TYPE_INT32 - 1 ),
+        Int16 = 1 << ( DML_TENSOR_DATA_TYPE_INT16 - 1 ),
+        Int8 = 1 << ( DML_TENSOR_DATA_TYPE_INT8 - 1 ),
+        Float64 = 1 << ( DML_TENSOR_DATA_TYPE_FLOAT64 - 1 ),
+        Double = Float64,
+        UInt64 = 1 << ( DML_TENSOR_DATA_TYPE_UINT64 - 1 ),
+        Int64 = 1 << ( DML_TENSOR_DATA_TYPE_INT64 - 1 ),
+#if DML_TARGET_VERSION >= 0x6300
+        UInt4 = 1 << ( DML_TENSOR_DATA_TYPE_UINT4 - 1 ),
+        Int4 = 1 << ( DML_TENSOR_DATA_TYPE_INT4 - 1 ),
+#endif
+        All = Float64 | Float32 | Float16 | Int64 | Int32 | Int16 | Int8 | Int4 | UInt64 | UInt32 | UInt16 | UInt8 | UInt4,
+        AllButNibble = Float64 | Float32 | Float16 | Int64 | Int32 | Int16 | Int8 | UInt64 | UInt32 | UInt16 | UInt8,
+        AllFloat = Float64 | Float32 | Float16,
+        SmallerFloats = Float32 | Float16,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( TensorDataTypeMask, UInt32 );
+
 
     namespace Internal
     {
@@ -825,6 +859,305 @@ namespace Harlinn::AI::DML
 #endif // DML_TARGET_VERSION >= 0x6300
 
     // ===================================================================================================================
+    //   Operator meta data
+    // ===================================================================================================================
+
+    enum class FieldType
+    {
+        Unknown,
+        Bool,
+        UInt32,
+        UInt64,
+        Int32,
+        Float32,
+        UInt32Array,
+        Int32Array,
+        Float32Array,
+        ScaleBias,
+        Size,
+        Size2D,
+        ScalarUnion,
+        ScalarUnionArray,
+        TensorDataType,
+        TensorDesc,
+        TensorDescArray,
+        OperatorDesc,
+        OperatorDescArray,
+        FusedActivation
+    };
+
+    enum class FieldFlags : UInt32
+    {
+        None = 0,
+        Input = 0x00000001,
+        Output = 0x00000002,
+        Optional = 0x00000004,
+        // At least one input tensor and one output tensor
+        // must have this flag set to support in-place execution.
+        InplaceExecution = 0x00000008,
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( FieldFlags, UInt32 );
+
+    struct FieldInfo
+    {
+        const std::string Name;
+        FieldType Type = FieldType::Unknown;
+        FieldFlags Flags = FieldFlags::None;
+
+        FieldInfo( const char* name, FieldType type, FieldFlags flags )
+            : Name( name ), Type( type ), Flags( flags )
+        { }
+
+        virtual ~FieldInfo( ) = default;
+    };
+
+
+    struct TensorFieldInfo : public FieldInfo
+    {
+        using Base = FieldInfo;
+        static constexpr std::array<UInt32,8> AllDimension{1,2,3,4,5,6,7,8};
+
+        // Identifies the supported tensor data types
+        TensorDataTypeMask TypeMask = TensorDataTypeMask::Unknown;
+        // Supported dimensions
+        std::vector<UInt32> Dimensions;
+
+        TensorFieldInfo( const char* name, FieldFlags flags, TensorDataTypeMask typeMask = TensorDataTypeMask::AllButNibble )
+            : Base( name, FieldType::TensorDesc, flags ), TypeMask( typeMask ), Dimensions( AllDimension.begin( ), AllDimension.end( ) )
+        { }
+        TensorFieldInfo( const char* name, FieldFlags flags, TensorDataTypeMask typeMask, const std::vector<UInt32>& dimensions )
+            : Base( name, FieldType::TensorDesc, flags ), TypeMask( typeMask ), Dimensions( dimensions )
+        { }
+    protected:
+        TensorFieldInfo( const char* name, FieldType type, FieldFlags flags, TensorDataTypeMask typeMask = TensorDataTypeMask::AllButNibble )
+            : Base( name, type, flags ), TypeMask( typeMask ), Dimensions( AllDimension.begin( ), AllDimension.end( ) )
+        { }
+        TensorFieldInfo( const char* name, FieldType type, FieldFlags flags, TensorDataTypeMask typeMask, const std::vector<UInt32>& dimensions )
+            : Base( name, type, flags ), TypeMask( typeMask ), Dimensions( dimensions )
+        { }
+
+    };
+
+    /// <summary>
+    /// Describes a field that holds
+    /// the number of elements held
+    /// by the next FieldCount number of 
+    /// fields.
+    /// </summary>
+    struct SizeFieldInfo : public FieldInfo
+    {
+        using Base = FieldInfo;
+        UInt32 FieldCount = 0;
+
+        SizeFieldInfo( const char* name, UInt32 fieldCount = 1, FieldFlags flags = FieldFlags::None )
+            : Base( name, FieldType::Size, flags ), FieldCount( fieldCount )
+        { }
+
+    };
+
+    struct TensorDataTypeFieldInfo : public FieldInfo
+    {
+        using Base = FieldInfo;
+        TensorDataTypeMask ValidTypes = TensorDataTypeMask::All;
+
+        TensorDataTypeFieldInfo( const char* name, TensorDataTypeMask validTypes, FieldFlags flags )
+            : Base( name, FieldType::TensorDataType, flags ), ValidTypes( validTypes )
+        {
+        }
+        TensorDataTypeFieldInfo( const char* name, FieldFlags flags )
+            : Base( name, FieldType::TensorDataType, flags )
+        { }
+
+    };
+
+    namespace Internal
+    {
+        template<FieldType fieldType>
+        struct SimpleFieldInfo : public FieldInfo
+        {
+            using Base = FieldInfo;
+
+            SimpleFieldInfo( const char* name, FieldFlags flags = FieldFlags::None )
+                : Base( name, fieldType, flags )
+            {
+            }
+        };
+    }
+
+    using BoolFieldInfo = Internal::SimpleFieldInfo<FieldType::Bool>;
+    using UInt32FieldInfo = Internal::SimpleFieldInfo<FieldType::UInt32>;
+    using UInt64FieldInfo = Internal::SimpleFieldInfo<FieldType::UInt64>;
+    using Int32FieldInfo = Internal::SimpleFieldInfo<FieldType::Int32>;
+    using Float32FieldInfo = Internal::SimpleFieldInfo<FieldType::Float32>;
+    using UInt32ArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::UInt32Array>;
+    using Int32ArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::Int32Array>;
+    using Float32ArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::Float32Array>;
+    using ScaleBiasFieldInfo = Internal::SimpleFieldInfo<FieldType::ScaleBias>;
+    using Size2DFieldInfo = Internal::SimpleFieldInfo<FieldType::Size2D>;
+    using ScalarUnionFieldInfo = Internal::SimpleFieldInfo<FieldType::ScalarUnion>;
+    using ScalarUnionArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::ScalarUnionArray>;
+    using TensorDescArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::TensorDescArray>;
+    using OperatorDescFieldInfo = Internal::SimpleFieldInfo<FieldType::OperatorDesc>;
+    using OperatorDescArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::OperatorDescArray>;
+    using FusedActivationFieldInfo = Internal::SimpleFieldInfo<FieldType::FusedActivation>;
+
+    
+
+
+
+
+
+    struct OperatorTypeInfo
+    {
+        const std::string Name;
+        std::vector<std::unique_ptr<FieldInfo>> Fields;
+
+        OperatorTypeInfo(const char* name)
+            : Name( name )
+        { }
+
+        void AddInputTensor( const char* name, FieldFlags flags = FieldFlags::None, TensorDataTypeMask typeMask = TensorDataTypeMask::AllButNibble )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<TensorFieldInfo>( name, flags, typeMask );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+        void AddOutputTensor( const char* name, FieldFlags flags = FieldFlags::None, TensorDataTypeMask typeMask = TensorDataTypeMask::AllButNibble )
+        {
+            flags = FieldFlags::Output | ( flags & ( ~FieldFlags::Input ) );
+            auto fieldInfo = std::make_unique<TensorFieldInfo>( name, flags, typeMask );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddBoolean( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<BoolFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddUInt32( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<UInt32FieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddUInt64( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<UInt64FieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddInt32( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<Int32FieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddFloat32( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<Float32FieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddUInt32Array( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<UInt32ArrayFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddInt32Array( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<Int32ArrayFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddFloat32Array( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<Float32ArrayFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddScaleBias( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<ScaleBiasFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddSize2D( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<Size2DFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddScalarUnion( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<ScalarUnionFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddTensorArray( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<TensorDescArrayFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddOperator( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<OperatorDescFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddOperatorArray( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<OperatorDescArrayFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddFusedActivation( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<FusedActivationFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddTensorDataType( const char* name, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<TensorDataTypeFieldInfo>( name, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddTensorDataType( const char* name, TensorDataTypeMask validTypes, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<TensorDataTypeFieldInfo>( name, validTypes, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+        
+
+    };
+
+    using OperatorTypeInfoMap = std::unordered_map<DML::OperatorType, std::unique_ptr<DML::OperatorTypeInfo>>;
+
+
+    
+
+
+    // ===================================================================================================================
     //   Operator descriptions
     // ===================================================================================================================
 
@@ -981,6 +1314,7 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseAbs;
+        
 
         ElementWiseAbsOperatorDesc( ) noexcept = default;
         ElementWiseAbsOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
@@ -1008,6 +1342,7 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseACos;
+        
 
         ElementWiseACosOperatorDesc( ) noexcept = default;
         ElementWiseACosOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
@@ -1033,6 +1368,7 @@ namespace Harlinn::AI::DML
     {
         using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseAdd;
+        
 
         ElementWiseAddOperatorDesc( ) noexcept = default;
         ElementWiseAddOperatorDesc( const TensorDesc* inputTensorA, const TensorDesc* inputTensorB, const TensorDesc* outputTensor = nullptr ) noexcept
@@ -1058,6 +1394,8 @@ namespace Harlinn::AI::DML
     {
         using Base = BinaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseAdd1;
+        
+
         _Maybenull_ const OperatorDesc* FusedActivation = nullptr;
 
         ElementWiseAdd1OperatorDesc( ) noexcept = default;
@@ -1082,6 +1420,7 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseASin;
+        static constexpr const char* OperatorName = "ElementWiseASin";
 
         ElementWiseASinOperatorDesc( ) noexcept = default;
         ElementWiseASinOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept
@@ -5827,6 +6166,8 @@ namespace Harlinn::AI::DML
         _6_0 = 0x6000,
         _6_1 = 0x6100,
         _6_2 = 0x6200,
+        _6_3 = 0x6300,
+        _6_4 = 0x6400,
     };
 
 #endif // DML_TARGET_VERSION >= 0x2000
@@ -5998,12 +6339,71 @@ namespace Harlinn::AI::DML
         HCC_COM_STANDARD_METHODS_IMPL( Device, Object, IDMLDevice, IDMLObject )
 
     public:
+
+        HAI_EXPORT OperatorTypeInfoMap GetOperatorTypeInfo( ) const;
+
         void CheckFeatureSupport( DML_FEATURE feature, UInt32 featureQueryDataSize, _In_reads_bytes_opt_( featureQueryDataSize ) const void* featureQueryData, UInt32 featureSupportDataSize, _Out_writes_bytes_( featureSupportDataSize ) void* featureSupportData ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->CheckFeatureSupport( feature, featureQueryDataSize, featureQueryData, featureSupportDataSize, featureSupportData );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        TensorDataTypeMask SupportedTensorDataTypes( ) const
+        {
+            UInt32 result = 0;
+            InterfaceType* pInterface = GetInterface( );
+            TensorDataType first = TensorDataType::Float32;
+            TensorDataType last = TensorDataType::Int4;
+            UInt32 end = static_cast< UInt32 >( last ) + 1;
+            for ( UInt32 i = 0; i < end; i++ )
+            {
+                DML_FEATURE_QUERY_TENSOR_DATA_TYPE_SUPPORT query;
+                query.DataType = static_cast< DML_TENSOR_DATA_TYPE >( i );
+                DML_FEATURE_DATA_TENSOR_DATA_TYPE_SUPPORT support{};
+                HRESULT hr = pInterface->CheckFeatureSupport( DML_FEATURE::DML_FEATURE_TENSOR_DATA_TYPE_SUPPORT, sizeof( DML_FEATURE_QUERY_TENSOR_DATA_TYPE_SUPPORT ), &query, sizeof( DML_FEATURE_DATA_TENSOR_DATA_TYPE_SUPPORT ), &support );
+                if ( support.IsSupported )
+                {
+                    result |= 1 << ( i - 1 );
+                }
+            }
+            return static_cast< TensorDataTypeMask >( result );
+        }
+
+        FeatureLevel SupportedFeatureLevel( ) const
+        {
+            constexpr std::array<FeatureLevel, 15> featureLevels
+            {
+                FeatureLevel::_1_0,
+                FeatureLevel::_2_0,
+                FeatureLevel::_2_1,
+                FeatureLevel::_3_0,
+                FeatureLevel::_3_1,
+                FeatureLevel::_4_0,
+                FeatureLevel::_4_1,
+                FeatureLevel::_5_0,
+                FeatureLevel::_5_1,
+                FeatureLevel::_5_2,
+                FeatureLevel::_6_0,
+                FeatureLevel::_6_1,
+                FeatureLevel::_6_2,
+                FeatureLevel::_6_3,
+                FeatureLevel::_6_4
+            };
+
+            InterfaceType* pInterface = GetInterface( );
+            DML_FEATURE_QUERY_FEATURE_LEVELS query;
+            query.RequestedFeatureLevelCount = static_cast< UInt32 >( featureLevels.size() );
+            query.RequestedFeatureLevels = reinterpret_cast<const DML_FEATURE_LEVEL* >( featureLevels.data( ) );
+            DML_FEATURE_DATA_FEATURE_LEVELS support{};
+            HRESULT hr = pInterface->CheckFeatureSupport( DML_FEATURE::DML_FEATURE_FEATURE_LEVELS, sizeof( DML_FEATURE_QUERY_FEATURE_LEVELS ), &query, sizeof( DML_FEATURE_DATA_FEATURE_LEVELS ), &support );
+
+            return static_cast< FeatureLevel >( support.MaxSupportedFeatureLevel );
+
+        }
+
+
+
 
         void CreateOperator( const DML_OPERATOR_DESC* desc, REFIID riid, _COM_Outptr_opt_ void** ppv ) const
         {
