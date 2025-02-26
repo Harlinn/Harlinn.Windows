@@ -312,6 +312,119 @@ namespace Harlinn::AI::DML
             map.emplace( OperatorType::ElementWiseMax, std::move( typeInfo ) );
         }
 
+        void AddElementWiseMean( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 | TensorDataTypeMask::Int32 | TensorDataTypeMask::UInt32 );
+            auto typeInfo = MakeInplaceBinary( "ElementWiseMean", dataTypes, dataTypes, dataTypes );
+            map.emplace( OperatorType::ElementWiseMean, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseMin( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes &
+                ( TensorDataTypeMask::Float32 |
+                    TensorDataTypeMask::Float16 |
+                    TensorDataTypeMask::Int64 |
+                    TensorDataTypeMask::Int32 |
+                    TensorDataTypeMask::Int16 |
+                    TensorDataTypeMask::Int8 |
+                    TensorDataTypeMask::UInt64 |
+                    TensorDataTypeMask::UInt32 |
+                    TensorDataTypeMask::UInt16 |
+                    TensorDataTypeMask::UInt8 );
+            auto typeInfo = MakeInplaceBinary( "ElementWiseMin", dataTypes, dataTypes, dataTypes );
+            map.emplace( OperatorType::ElementWiseMin, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseMultiply( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes &
+                ( TensorDataTypeMask::Float32 |
+                    TensorDataTypeMask::Float16 |
+                    TensorDataTypeMask::Int64 |
+                    TensorDataTypeMask::Int32 |
+                    TensorDataTypeMask::Int16 |
+                    TensorDataTypeMask::Int8 |
+                    TensorDataTypeMask::UInt64 |
+                    TensorDataTypeMask::UInt32 |
+                    TensorDataTypeMask::UInt16 |
+                    TensorDataTypeMask::UInt8 );
+            auto typeInfo = MakeInplaceBinary( "ElementWiseMultiply", dataTypes, dataTypes, dataTypes );
+            map.emplace( OperatorType::ElementWiseMultiply, std::move( typeInfo ) );
+        }
+
+        void AddElementWisePow( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes &
+                ( TensorDataTypeMask::Float32 |
+                    TensorDataTypeMask::Float16 |
+                    TensorDataTypeMask::Int32 |
+                    TensorDataTypeMask::Int16 |
+                    TensorDataTypeMask::Int8 |
+                    TensorDataTypeMask::UInt32 |
+                    TensorDataTypeMask::UInt16 |
+                    TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ElementWisePow" );
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input | FieldFlags::InplaceExecution, dataTypes );
+            typeInfo->AddInputTensor( "ExponentTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output | FieldFlags::InplaceExecution, dataTypes );
+            typeInfo->AddScaleBias( "ScaleBias", FieldFlags::Optional );
+            map.emplace( OperatorType::ElementWisePow, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseConstantPow( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnaryWithScaleBias( "ElementWiseConstantPow", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Exponent" );
+            map.emplace( OperatorType::ElementWiseConstantPow, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseReciprocal( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnaryWithScaleBias( "ElementWiseReciprocal", dataTypes, dataTypes );
+            map.emplace( OperatorType::ElementWiseReciprocal, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseSin( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnaryWithScaleBias( "ElementWiseSin", dataTypes, dataTypes );
+            map.emplace( OperatorType::ElementWiseSin, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseSqrt( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnaryWithScaleBias( "ElementWiseSqrt", dataTypes, dataTypes );
+            map.emplace( OperatorType::ElementWiseSqrt, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseSubtract( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes &
+                ( TensorDataTypeMask::Float32 |
+                    TensorDataTypeMask::Float16 |
+                    TensorDataTypeMask::Int64 |
+                    TensorDataTypeMask::Int32 |
+                    TensorDataTypeMask::Int16 |
+                    TensorDataTypeMask::Int8 |
+                    TensorDataTypeMask::UInt64 |
+                    TensorDataTypeMask::UInt32 |
+                    TensorDataTypeMask::UInt16 |
+                    TensorDataTypeMask::UInt8 );
+            auto typeInfo = MakeInplaceBinary( "ElementWiseSubtract", dataTypes, dataTypes, dataTypes );
+            map.emplace( OperatorType::ElementWiseSubtract, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseTan( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnaryWithScaleBias( "ElementWiseTan", dataTypes, dataTypes );
+            map.emplace( OperatorType::ElementWiseTan, std::move( typeInfo ) );
+        }
 
 
         std::unordered_map<DML::OperatorType, std::unique_ptr<DML::OperatorTypeInfo>> InitializeOperatorTypeInfoMap( const Device& device )
@@ -342,6 +455,16 @@ namespace Harlinn::AI::DML
             AddElementWiseLogicalOr( featureLevel, supportedDataTypes, result );
             AddElementWiseLogicalXor( featureLevel, supportedDataTypes, result );
             AddElementWiseMax( featureLevel, supportedDataTypes, result );
+            AddElementWiseMean( featureLevel, supportedDataTypes, result );
+            AddElementWiseMin( featureLevel, supportedDataTypes, result );
+            AddElementWiseMultiply( featureLevel, supportedDataTypes, result );
+            AddElementWisePow( featureLevel, supportedDataTypes, result );
+            AddElementWiseConstantPow( featureLevel, supportedDataTypes, result );
+            AddElementWiseReciprocal( featureLevel, supportedDataTypes, result );
+            AddElementWiseSin( featureLevel, supportedDataTypes, result );
+            AddElementWiseSqrt( featureLevel, supportedDataTypes, result );
+            AddElementWiseSubtract( featureLevel, supportedDataTypes, result );
+            AddElementWiseTan( featureLevel, supportedDataTypes, result );
 
             return result;
         }

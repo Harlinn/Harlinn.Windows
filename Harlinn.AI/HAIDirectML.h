@@ -1420,7 +1420,6 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorWithScaleBiasDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::ElementWiseASin;
-        static constexpr const char* OperatorName = "ElementWiseASin";
 
         ElementWiseASinOperatorDesc( ) noexcept = default;
         ElementWiseASinOperatorDesc( const TensorDesc* inputTensor, const TensorDesc* outputTensor, const DML::ScaleBias* scaleBias = nullptr ) noexcept

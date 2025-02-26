@@ -3182,68 +3182,64 @@ namespace Harlinn::Common::Core::Math
 
     /// <summary>
     /// <para>
-    /// Computes the arc tangent of x / y using the signs of arguments 
-    /// to determine the correct quadrant.
+    /// arc tangent of y / x using the signs of arguments to determine the correct quadrant.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
     /// </typeparam>
-    /// <param name="x">
-    /// A floating point value.
-    /// </param>
     /// <param name="y">
     /// A floating point value.
     /// </param>
+    /// <param name="c">
+    /// A floating point value.
+    /// </param>
     /// <returns>
-    /// The arc tangent of x / y using the signs of arguments to 
-    /// determine the correct quadrant.
+    /// The arc tangent of y / x using the signs of arguments to determine the correct quadrant.
     /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ATan( T x, T y ) noexcept
+    constexpr inline std::remove_cvref_t<T> ATan( T y, T x ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
         if constexpr ( std::is_same_v<FloatT, float> )
         {
-            return Math::Internal::OpenLibM::atan2f( x, y );
+            return Math::Internal::OpenLibM::atan2f( y, x );
         }
         else
         {
-            return Math::Internal::OpenLibM::atan2( x, y );
+            return Math::Internal::OpenLibM::atan2( y, x );
         }
     }
     /// <summary>
     /// <para>
-    /// Computes the arc tangent of x / y using the signs of arguments 
-    /// to determine the correct quadrant.
+    /// The arc tangent of y / x using the signs of arguments to determine the correct quadrant.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
     /// A floating point type.
     /// </typeparam>
-    /// <param name="x">
-    /// A floating point value.
-    /// </param>
     /// <param name="y">
     /// A floating point value.
     /// </param>
+    /// <param name="x">
+    /// A floating point value.
+    /// </param>
     /// <returns>
-    /// The arc tangent of x / y using the signs of arguments to 
-    /// determine the correct quadrant.
+    /// The arc tangent of y / x using the signs of arguments to determine the correct quadrant.
     /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
-    constexpr inline std::remove_cvref_t<T> ATan2( T x, T y ) noexcept
+    constexpr inline std::remove_cvref_t<T> ATan2( T y, T x ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
         if constexpr ( std::is_same_v<FloatT, float> )
         {
-            return Math::Internal::OpenLibM::atan2f( x, y );
+            return Math::Internal::OpenLibM::atan2f( y, x );
         }
         else
         {
-            return Math::Internal::OpenLibM::atan2( x, y );
+            return Math::Internal::OpenLibM::atan2( y, x );
         }
     }
 
@@ -3324,6 +3320,8 @@ namespace Harlinn::Common::Core::Math
             return std::fma( a, b, c );
         }
     }
+
+    
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>

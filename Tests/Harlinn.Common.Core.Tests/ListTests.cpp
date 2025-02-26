@@ -189,6 +189,8 @@ BOOST_AUTO_TEST_CASE( EmplaceBackContainerTest1 )
 // --run_test=ListTests/EmplaceBackContainerTest2
 BOOST_AUTO_TEST_CASE( EmplaceBackContainerTest2 )
 {
+    Counted::ctor = 0;
+    Counted::dtor = 0;
     double duration = EmplaceBackContainerTestImpl<List<Counted>>( );
     printf( "List<Counted>:  %f seconds\n", duration );
     if ( Counted::ctor != Counted::dtor )
