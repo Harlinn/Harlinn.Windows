@@ -426,6 +426,221 @@ namespace Harlinn::AI::DML
             map.emplace( OperatorType::ElementWiseTan, std::move( typeInfo ) );
         }
 
+        void AddElementWiseThreshold( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & 
+                ( TensorDataTypeMask::Float32 |
+                    TensorDataTypeMask::Float16 |
+                    TensorDataTypeMask::Int32 |
+                    TensorDataTypeMask::Int16 |
+                    TensorDataTypeMask::Int8 |
+                    TensorDataTypeMask::UInt32 |
+                    TensorDataTypeMask::UInt16 |
+                    TensorDataTypeMask::UInt8 );
+            auto typeInfo = MakeInplaceUnaryWithScaleBias( "ElementWiseThreshold", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Min", FieldFlags::Input );
+            map.emplace( OperatorType::ElementWiseThreshold, std::move( typeInfo ) );
+        }
+        
+
+        void AddElementWiseQuantizeLinear( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 | TensorDataTypeMask::Int32  );
+            auto scaleDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto zeroPointDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt8 );
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ElementWiseQuantizeLinear" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input , inputDataTypes );
+            typeInfo->AddInputTensor( "ScaleTensor", FieldFlags::Input, scaleDataTypes );
+            typeInfo->AddInputTensor( "ZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, zeroPointDataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output , outputDataTypes );
+            
+            map.emplace( OperatorType::ElementWiseQuantizeLinear, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseDequantizeLinear( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+            auto scaleDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto zeroPointDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ElementWiseDequantizeLinear" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, inputDataTypes );
+            typeInfo->AddInputTensor( "ScaleTensor", FieldFlags::Input, scaleDataTypes );
+            typeInfo->AddInputTensor( "ZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, zeroPointDataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, outputDataTypes );
+
+            map.emplace( OperatorType::ElementWiseDequantizeLinear, std::move( typeInfo ) );
+        }
+
+
+        void AddActivationELU( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnaryWithScaleBias( "ActivationELU", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationELU, std::move( typeInfo ) );
+        }
+
+        void AddActivationHardMax( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeUnaryWithScaleBias( "ActivationHardMax", dataTypes, dataTypes );
+            map.emplace( OperatorType::ActivationHardMax, std::move( typeInfo ) );
+        }
+
+        void AddActivationHardSigmoid( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnaryWithScaleBias( "ActivationHardSigmoid", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+            typeInfo->AddFloat32( "Beta", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationHardSigmoid, std::move( typeInfo ) );
+        }
+
+        void AddActivationIdentity( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationIdentity", dataTypes, dataTypes );
+            map.emplace( OperatorType::ActivationIdentity, std::move( typeInfo ) );
+        }
+
+        void AddActivationLeakyReLU( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationLeakyReLU", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationLeakyReLU, std::move( typeInfo ) );
+        }
+
+        void AddActivationLinear( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationLinear", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+            typeInfo->AddFloat32( "Beta", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationLinear, std::move( typeInfo ) );
+        }
+
+        void AddActivationLogSoftMax( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeUnary( "ActivationLogSoftMax", dataTypes, dataTypes );
+            map.emplace( OperatorType::ActivationLogSoftMax, std::move( typeInfo ) );
+        }
+
+
+        void AddActivationParameterizedReLU( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 | TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8  );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ActivationParameterizedReLU" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input | FieldFlags::InplaceExecution, dataTypes );
+            typeInfo->AddInputTensor( "SlopeTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output | FieldFlags::InplaceExecution, dataTypes );
+
+            map.emplace( OperatorType::ActivationParameterizedReLU, std::move( typeInfo ) );
+        }
+
+        void AddActivationParametricSoftPlus( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationParametricSoftPlus", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+            typeInfo->AddFloat32( "Beta", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationParametricSoftPlus, std::move( typeInfo ) );
+        }
+
+        void AddActivationReLU( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationReLU", dataTypes, dataTypes );
+            map.emplace( OperatorType::ActivationReLU, std::move( typeInfo ) );
+        }
+
+        void AddActivationScaledELU( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationScaledELU", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+            typeInfo->AddFloat32( "Gamma", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationScaledELU, std::move( typeInfo ) );
+        }
+
+        void AddActivationScaledTanH( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationScaledTanH", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+            typeInfo->AddFloat32( "Beta", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationScaledTanH, std::move( typeInfo ) );
+        }
+
+
+        void AddActivationSigmoid( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationSigmoid", dataTypes, dataTypes );
+            map.emplace( OperatorType::ActivationSigmoid, std::move( typeInfo ) );
+        }
+
+        void AddActivationSoftMax( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeUnary( "ActivationSoftMax", dataTypes, dataTypes );
+            map.emplace( OperatorType::ActivationSoftMax, std::move( typeInfo ) );
+        }
+
+        void AddActivationSoftPlus( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationSoftPlus", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Steepness", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationSoftPlus, std::move( typeInfo ) );
+        }
+
+        void AddActivationSoftSign( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationSoftSign", dataTypes, dataTypes );
+            map.emplace( OperatorType::ActivationSoftSign, std::move( typeInfo ) );
+        }
+
+        void AddActivationTanH( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationTanH", dataTypes, dataTypes );
+            map.emplace( OperatorType::ActivationTanH, std::move( typeInfo ) );
+        }
+
+
+        void AddActivationThresholdedReLU( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto typeInfo = MakeInplaceUnary( "ActivationThresholdedReLU", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+            map.emplace( OperatorType::ActivationThresholdedReLU, std::move( typeInfo ) );
+        }
+
+
+        void AddConvolution( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 | TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "Convolution" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input | FieldFlags::InplaceExecution, dataTypes );
+            typeInfo->AddInputTensor( "SlopeTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output | FieldFlags::InplaceExecution, dataTypes );
+
+            map.emplace( OperatorType::Convolution, std::move( typeInfo ) );
+        }
+
 
         std::unordered_map<DML::OperatorType, std::unique_ptr<DML::OperatorTypeInfo>> InitializeOperatorTypeInfoMap( const Device& device )
         {
@@ -465,6 +680,27 @@ namespace Harlinn::AI::DML
             AddElementWiseSqrt( featureLevel, supportedDataTypes, result );
             AddElementWiseSubtract( featureLevel, supportedDataTypes, result );
             AddElementWiseTan( featureLevel, supportedDataTypes, result );
+            AddElementWiseThreshold( featureLevel, supportedDataTypes, result );
+            AddElementWiseQuantizeLinear( featureLevel, supportedDataTypes, result );
+            AddElementWiseDequantizeLinear( featureLevel, supportedDataTypes, result );
+            AddActivationELU( featureLevel, supportedDataTypes, result );
+            AddActivationHardMax( featureLevel, supportedDataTypes, result );
+            AddActivationHardSigmoid( featureLevel, supportedDataTypes, result );
+            AddActivationIdentity( featureLevel, supportedDataTypes, result );
+            AddActivationLeakyReLU( featureLevel, supportedDataTypes, result );
+            AddActivationLinear( featureLevel, supportedDataTypes, result );
+            AddActivationLogSoftMax( featureLevel, supportedDataTypes, result );
+            AddActivationParameterizedReLU( featureLevel, supportedDataTypes, result );
+            AddActivationParametricSoftPlus( featureLevel, supportedDataTypes, result );
+            AddActivationReLU( featureLevel, supportedDataTypes, result );
+            AddActivationScaledELU( featureLevel, supportedDataTypes, result );
+            AddActivationScaledTanH( featureLevel, supportedDataTypes, result );
+            AddActivationSigmoid( featureLevel, supportedDataTypes, result );
+            AddActivationSoftMax( featureLevel, supportedDataTypes, result );
+            AddActivationSoftPlus( featureLevel, supportedDataTypes, result );
+            AddActivationSoftSign( featureLevel, supportedDataTypes, result );
+            AddActivationTanH( featureLevel, supportedDataTypes, result );
+            AddActivationThresholdedReLU( featureLevel, supportedDataTypes, result );
 
             return result;
         }
