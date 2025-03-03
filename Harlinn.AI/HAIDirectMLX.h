@@ -992,7 +992,7 @@ namespace Harlinn::AI::DML::X
 
         
 
-        const DML::ScaleBias* ToScaleBias( const std::optional<DML::ScaleBias>& scaleBias )
+        inline const DML::ScaleBias* ToScaleBias( const std::optional<DML::ScaleBias>& scaleBias )
         {
             return scaleBias.has_value( ) ? &scaleBias.value( ) : nullptr;
         }

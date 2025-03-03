@@ -71,6 +71,9 @@
     <ClCompile Include="HAIONNXNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HAIDirectMLEnums.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

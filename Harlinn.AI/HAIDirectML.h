@@ -40,7 +40,7 @@ namespace Harlinn::AI::DML
 
     
 
-#define HAI_ENUM_STRING_PARSING( name ) \
+#define HAI_ENUM_STRING_CONVERSIONS( name ) \
     HAI_EXPORT name Parse##name( const WideString& str ); \
     HAI_EXPORT name Parse##name( const WideString& str, name defaultResult ); \
     HAI_EXPORT bool TryParse##name( const WideString& str, name& value ); \
@@ -99,7 +99,7 @@ namespace Harlinn::AI::DML
 #endif
     };
 
-    HAI_ENUM_STRING_PARSING( TensorDataType )
+    HAI_ENUM_STRING_CONVERSIONS( TensorDataType )
 
 
     enum class TensorDataTypeMask : UInt32
@@ -131,7 +131,7 @@ namespace Harlinn::AI::DML
 
     HCC_DEFINE_ENUM_FLAG_OPERATORS( TensorDataTypeMask, UInt32 );
 
-    HAI_ENUM_STRING_PARSING( TensorDataTypeMask )
+    HAI_ENUM_STRING_CONVERSIONS( TensorDataTypeMask )
 
 
     namespace Internal
@@ -215,7 +215,7 @@ namespace Harlinn::AI::DML
         Buffer = DML_TENSOR_TYPE_BUFFER,
     };
 
-    HAI_ENUM_STRING_PARSING( TensorType )
+    HAI_ENUM_STRING_CONVERSIONS( TensorType )
 
     /// <summary>
     /// <para>
@@ -228,7 +228,7 @@ namespace Harlinn::AI::DML
         OwnedByDML = DML_TENSOR_FLAG_OWNED_BY_DML,
     };
 
-    HAI_ENUM_STRING_PARSING( TensorFlags )
+    HAI_ENUM_STRING_CONVERSIONS( TensorFlags )
 
     HCC_DEFINE_ENUM_FLAG_OPERATORS( TensorFlags, UInt32 );
 
@@ -626,7 +626,7 @@ namespace Harlinn::AI::DML
 
     };
 
-    HAI_ENUM_STRING_PARSING( OperatorType )
+    HAI_ENUM_STRING_CONVERSIONS( OperatorType )
 
     // ===================================================================================================================
     //   Operator enumerations and structures
@@ -653,7 +653,7 @@ namespace Harlinn::AI::DML
         SumSquare,
     };
 
-    HAI_ENUM_STRING_PARSING( ReduceFunction )
+    HAI_ENUM_STRING_CONVERSIONS( ReduceFunction )
 
     /// <summary>
     /// <para>
@@ -666,7 +666,7 @@ namespace Harlinn::AI::DML
         Transpose,
     };
 
-    HAI_ENUM_STRING_PARSING( MatrixTransform )
+    HAI_ENUM_STRING_CONVERSIONS( MatrixTransform )
 
 
     /// <summary>
@@ -680,7 +680,7 @@ namespace Harlinn::AI::DML
         CrossCorrelation,
     };
 
-    HAI_ENUM_STRING_PARSING( ConvolutionMode )
+    HAI_ENUM_STRING_CONVERSIONS( ConvolutionMode )
 
 
     /// <summary>
@@ -694,7 +694,7 @@ namespace Harlinn::AI::DML
         Backward,
     };
 
-    HAI_ENUM_STRING_PARSING( ConvolutionDirection )
+    HAI_ENUM_STRING_CONVERSIONS( ConvolutionDirection )
 
 
     /// <summary>
@@ -716,7 +716,7 @@ namespace Harlinn::AI::DML
 #endif
     };
 
-    HAI_ENUM_STRING_PARSING( PaddingMode )
+    HAI_ENUM_STRING_CONVERSIONS( PaddingMode )
 
     /// <summary>
     /// <para>
@@ -729,7 +729,7 @@ namespace Harlinn::AI::DML
         Linear,
     };
 
-    HAI_ENUM_STRING_PARSING( InterpolationMode )
+    HAI_ENUM_STRING_CONVERSIONS( InterpolationMode )
 
     /// <summary>
     /// <para>
@@ -781,7 +781,7 @@ namespace Harlinn::AI::DML
         Bidirectional,
     };
 
-    HAI_ENUM_STRING_PARSING( RecurrentNetworkDirection )
+    HAI_ENUM_STRING_CONVERSIONS( RecurrentNetworkDirection )
 
 #if DML_TARGET_VERSION >= 0x2100
 
@@ -797,7 +797,7 @@ namespace Harlinn::AI::DML
         TowardInfinity,
     };
 
-    HAI_ENUM_STRING_PARSING( RoundingMode )
+    HAI_ENUM_STRING_CONVERSIONS( RoundingMode )
 
     /// <summary>
     /// <para>
@@ -811,7 +811,7 @@ namespace Harlinn::AI::DML
         Negative = 2,
     };
 
-    HAI_ENUM_STRING_PARSING( IsInfinityMode )
+    HAI_ENUM_STRING_CONVERSIONS( IsInfinityMode )
 
     /// <summary>
     /// <para>
@@ -824,7 +824,7 @@ namespace Harlinn::AI::DML
         Decreasing = 1,
     };
 
-    HAI_ENUM_STRING_PARSING( AxisDirection )
+    HAI_ENUM_STRING_CONVERSIONS( AxisDirection )
 
     /// <summary>
     /// <para>
@@ -837,7 +837,7 @@ namespace Harlinn::AI::DML
         ColumnRowDepth,
     };
 
-    HAI_ENUM_STRING_PARSING( DepthSpaceOrder )
+    HAI_ENUM_STRING_CONVERSIONS( DepthSpaceOrder )
 
 
     /// <summary>
@@ -881,7 +881,7 @@ namespace Harlinn::AI::DML
         Philox4x32_10
     };
 
-    HAI_ENUM_STRING_PARSING( RandomGeneratorType )
+    HAI_ENUM_STRING_CONVERSIONS( RandomGeneratorType )
 
 #endif // DML_TARGET_VERSION >= 0x3000
 
@@ -901,7 +901,7 @@ namespace Harlinn::AI::DML
         Boolean,
     };
 
-    HAI_ENUM_STRING_PARSING( MultiheadAttentionMaskType )
+    HAI_ENUM_STRING_CONVERSIONS( MultiheadAttentionMaskType )
 
 #endif // DML_TARGET_VERSION >= 0x6100
 
@@ -914,7 +914,7 @@ namespace Harlinn::AI::DML
         ScaleZeroPoint = DML_QUANTIZATION_TYPE_SCALE_ZERO_POINT,
     };
 
-    HAI_ENUM_STRING_PARSING( QuantizationType )
+    HAI_ENUM_STRING_CONVERSIONS( QuantizationType )
 
 #endif // DML_TARGET_VERSION >= 0x6300
 
@@ -929,6 +929,8 @@ namespace Harlinn::AI::DML
         UInt32,
         UInt64,
         Int32,
+        Enum,
+        Flags,
         Float32,
         UInt32Array,
         Int32Array,
@@ -946,7 +948,42 @@ namespace Harlinn::AI::DML
         FusedActivation
     };
 
-    HAI_ENUM_STRING_PARSING( FieldType )
+    HAI_ENUM_STRING_CONVERSIONS( FieldType )
+
+    enum class EnumType
+    { 
+        Unknown,
+        TensorDataType,
+        TensorDataTypeMask,
+        TensorType,
+        TensorFlags,
+        OperatorType,
+        ReduceFunction,
+        MatrixTransform,
+        ConvolutionMode,
+        ConvolutionDirection,
+        PaddingMode,
+        InterpolationMode,
+        RecurrentNetworkDirection,
+        RoundingMode,
+        IsInfinityMode,
+        AxisDirection,
+        DepthSpaceOrder,
+        RandomGeneratorType,
+        MultiheadAttentionMaskType,
+        QuantizationType,
+        FieldType,
+        EnumType,
+        FieldFlags,
+        FeatureLevel,
+        Feature,
+        ExecutionFlags,
+        CreateDeviceFlags,
+        BindingType,
+        GraphEdgeType,
+        GraphNodeType,
+    };
+
 
     enum class FieldFlags : UInt32
     {
@@ -960,7 +997,7 @@ namespace Harlinn::AI::DML
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( FieldFlags, UInt32 );
 
-    HAI_ENUM_STRING_PARSING( FieldFlags )
+    HAI_ENUM_STRING_CONVERSIONS( FieldFlags )
 
     struct FieldInfo
     {
@@ -999,8 +1036,23 @@ namespace Harlinn::AI::DML
         TensorFieldInfo( const char* name, FieldType type, FieldFlags flags, TensorDataTypeMask typeMask, const std::vector<UInt32>& dimensions )
             : Base( name, type, flags ), TypeMask( typeMask ), Dimensions( dimensions )
         { }
+    };
+
+    struct TensorArrayFieldInfo : public TensorFieldInfo
+    {
+        using Base = TensorFieldInfo;
+
+        TensorArrayFieldInfo( const char* name, FieldFlags flags, TensorDataTypeMask typeMask = TensorDataTypeMask::AllButNibble )
+            : Base( name, DML::FieldType::TensorDescArray, flags, typeMask )
+        {
+        }
+        TensorArrayFieldInfo( const char* name, FieldFlags flags, TensorDataTypeMask typeMask, const std::vector<UInt32>& dimensions )
+            : Base( name, DML::FieldType::TensorDescArray, flags, typeMask, dimensions )
+        {
+        }
 
     };
+
 
     /// <summary>
     /// Describes a field that holds
@@ -1017,6 +1069,29 @@ namespace Harlinn::AI::DML
             : Base( name, FieldType::Size, flags ), FieldCount( fieldCount )
         { }
 
+    };
+
+
+    struct EnumFieldInfo : public FieldInfo
+    {
+        using Base = FieldInfo;
+        DML::EnumType EnumType = DML::EnumType::Unknown;
+
+        EnumFieldInfo( const char* name, DML::EnumType enumType, FieldFlags flags = FieldFlags::None )
+            : Base( name, FieldType::Size, flags ), EnumType( enumType )
+        {
+        }
+    };
+
+    struct FlagsFieldInfo : public FieldInfo
+    {
+        using Base = FieldInfo;
+        DML::EnumType EnumType = DML::EnumType::Unknown;
+
+        FlagsFieldInfo( const char* name, DML::EnumType enumType, FieldFlags flags = FieldFlags::None )
+            : Base( name, FieldType::Size, flags ), EnumType( enumType )
+        {
+        }
     };
 
     struct TensorDataTypeFieldInfo : public FieldInfo
@@ -1060,7 +1135,7 @@ namespace Harlinn::AI::DML
     using Size2DFieldInfo = Internal::SimpleFieldInfo<FieldType::Size2D>;
     using ScalarUnionFieldInfo = Internal::SimpleFieldInfo<FieldType::ScalarUnion>;
     using ScalarUnionArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::ScalarUnionArray>;
-    using TensorDescArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::TensorDescArray>;
+    
     using OperatorDescFieldInfo = Internal::SimpleFieldInfo<FieldType::OperatorDesc>;
     using OperatorDescArrayFieldInfo = Internal::SimpleFieldInfo<FieldType::OperatorDescArray>;
     using FusedActivationFieldInfo = Internal::SimpleFieldInfo<FieldType::FusedActivation>;
@@ -1086,10 +1161,25 @@ namespace Harlinn::AI::DML
             auto fieldInfo = std::make_unique<TensorFieldInfo>( name, flags, typeMask );
             Fields.emplace_back( std::move( fieldInfo ) );
         }
+        void AddInputTensor( const char* name, FieldFlags flags, TensorDataTypeMask typeMask, std::vector<UInt32>& dimensions )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<TensorFieldInfo>( name, flags, typeMask, dimensions );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+
         void AddOutputTensor( const char* name, FieldFlags flags = FieldFlags::None, TensorDataTypeMask typeMask = TensorDataTypeMask::AllButNibble )
         {
             flags = FieldFlags::Output | ( flags & ( ~FieldFlags::Input ) );
             auto fieldInfo = std::make_unique<TensorFieldInfo>( name, flags, typeMask );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddOutputTensor( const char* name, FieldFlags flags, TensorDataTypeMask typeMask, std::vector<UInt32>& dimensions )
+        {
+            flags = FieldFlags::Output | ( flags & ( ~FieldFlags::Input ) );
+            auto fieldInfo = std::make_unique<TensorFieldInfo>( name, flags, typeMask, dimensions );
             Fields.emplace_back( std::move( fieldInfo ) );
         }
 
@@ -1120,6 +1210,21 @@ namespace Harlinn::AI::DML
             auto fieldInfo = std::make_unique<Int32FieldInfo>( name, flags );
             Fields.emplace_back( std::move( fieldInfo ) );
         }
+
+        void AddEnum( const char* name, DML::EnumType enumType, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<EnumFieldInfo>( name, enumType, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
+        void AddFlags( const char* name, DML::EnumType enumType, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<FlagsFieldInfo>( name, enumType, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
 
         void AddFloat32( const char* name, FieldFlags flags = FieldFlags::None )
         {
@@ -1163,6 +1268,13 @@ namespace Harlinn::AI::DML
             Fields.emplace_back( std::move( fieldInfo ) );
         }
 
+        void AddSize( const char* name, UInt32 fieldCount, FieldFlags flags = FieldFlags::None )
+        {
+            flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
+            auto fieldInfo = std::make_unique<SizeFieldInfo>( name, fieldCount, flags );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
         void AddScalarUnion( const char* name, FieldFlags flags = FieldFlags::None )
         {
             flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
@@ -1170,12 +1282,20 @@ namespace Harlinn::AI::DML
             Fields.emplace_back( std::move( fieldInfo ) );
         }
 
-        void AddTensorArray( const char* name, FieldFlags flags = FieldFlags::None )
+        void AddInputTensorArray( const char* name, FieldFlags flags = FieldFlags::None, TensorDataTypeMask typeMask = TensorDataTypeMask::AllButNibble )
         {
             flags = FieldFlags::Input | ( flags & ( ~FieldFlags::Output ) );
-            auto fieldInfo = std::make_unique<TensorDescArrayFieldInfo>( name, flags );
+            auto fieldInfo = std::make_unique<TensorArrayFieldInfo>( name, flags, typeMask );
             Fields.emplace_back( std::move( fieldInfo ) );
         }
+
+        void AddOutputTensorArray( const char* name, FieldFlags flags = FieldFlags::None, TensorDataTypeMask typeMask = TensorDataTypeMask::AllButNibble )
+        {
+            flags = FieldFlags::Output | ( flags & ( ~FieldFlags::Input ) );
+            auto fieldInfo = std::make_unique<TensorArrayFieldInfo>( name, flags, typeMask );
+            Fields.emplace_back( std::move( fieldInfo ) );
+        }
+
 
         void AddOperator( const char* name, FieldFlags flags = FieldFlags::None )
         {
@@ -3360,6 +3480,7 @@ namespace Harlinn::AI::DML
     {
         using Base = UnaryOperatorDesc;
         static constexpr DML::OperatorType OperatorType = DML::OperatorType::Tile;
+
         UInt32 RepeatsCount = 0;
         _Field_size_( RepeatsCount ) const UInt32* Repeats = nullptr;
 
@@ -6233,7 +6354,7 @@ namespace Harlinn::AI::DML
         _6_4 = 0x6400,
     };
 
-    HAI_ENUM_STRING_PARSING( FeatureLevel )
+    HAI_ENUM_STRING_CONVERSIONS( FeatureLevel )
 
 #endif // DML_TARGET_VERSION >= 0x2000
 
@@ -6251,7 +6372,7 @@ namespace Harlinn::AI::DML
 #endif // DML_TARGET_VERSION >= 0x2000
     };
 
-    HAI_ENUM_STRING_PARSING( Feature )
+    HAI_ENUM_STRING_CONVERSIONS( Feature )
 
     /// <summary>
     /// <para>
@@ -6349,7 +6470,7 @@ namespace Harlinn::AI::DML
 
     HCC_DEFINE_ENUM_FLAG_OPERATORS( ExecutionFlags, UInt32 );
 
-    HAI_ENUM_STRING_PARSING( ExecutionFlags )
+    HAI_ENUM_STRING_CONVERSIONS( ExecutionFlags )
 
     /// <summary>
     /// <para>
@@ -6364,7 +6485,7 @@ namespace Harlinn::AI::DML
 
     HCC_DEFINE_ENUM_FLAG_OPERATORS( CreateDeviceFlags, UInt32 );
 
-    HAI_ENUM_STRING_PARSING( CreateDeviceFlags )
+    HAI_ENUM_STRING_CONVERSIONS( CreateDeviceFlags )
 
     class Object : public Unknown
     {
@@ -6721,7 +6842,7 @@ namespace Harlinn::AI::DML
         BufferArray,
     };
 
-    HAI_ENUM_STRING_PARSING( BindingType )
+    HAI_ENUM_STRING_CONVERSIONS( BindingType )
 
     /// <summary>
     /// <para>
@@ -6946,7 +7067,7 @@ namespace Harlinn::AI::DML
         Intermediate = DML_GRAPH_EDGE_TYPE_INTERMEDIATE,
     };
 
-    HAI_ENUM_STRING_PARSING( GraphEdgeType )
+    HAI_ENUM_STRING_CONVERSIONS( GraphEdgeType )
 
     /// <summary>
     /// <para>
@@ -7019,7 +7140,7 @@ namespace Harlinn::AI::DML
         Constant = DML_GRAPH_NODE_TYPE_CONSTANT
     };
 
-    HAI_ENUM_STRING_PARSING( GraphNodeType )
+    HAI_ENUM_STRING_CONVERSIONS( GraphNodeType )
 
     /// <summary>
     /// <para>
@@ -7163,8 +7284,8 @@ namespace Harlinn::AI::DML
         return CreateDevice1<T>( d3d12Device.GetInterfacePointer<ID3D12Device>( ), minimumFeatureLevel, flags );
     }
 
-#ifdef HAI_ENUM_STRING_PARSING
-#undef HAI_ENUM_STRING_PARSING
+#ifdef HAI_ENUM_STRING_CONVERSIONS
+#undef HAI_ENUM_STRING_CONVERSIONS
 #endif
 
 #endif
@@ -7172,7 +7293,7 @@ namespace Harlinn::AI::DML
 
 namespace Harlinn::Common::Core
 {
-#define HAI_ENUM_STRING_PARSING( name ) \
+#define HAI_ENUM_STRING_CONVERSIONS( name ) \
     HAI_EXPORT WideString ToWideString( Harlinn::AI::DML::name value ); \
     HAI_EXPORT WideString ToWideString( Harlinn::AI::DML::name value, const WideString& defaultResult ); \
     inline AnsiString ToAnsiString( Harlinn::AI::DML::name value ) \
@@ -7202,40 +7323,115 @@ namespace Harlinn::Common::Core
         return Harlinn::AI::DML::Parse##name( str ); \
     }
 
-    HAI_ENUM_STRING_PARSING( TensorDataType )
-    HAI_ENUM_STRING_PARSING( TensorDataTypeMask )
-    HAI_ENUM_STRING_PARSING( TensorType )
-    HAI_ENUM_STRING_PARSING( TensorFlags )
-    HAI_ENUM_STRING_PARSING( OperatorType )
-    HAI_ENUM_STRING_PARSING( ReduceFunction )
-    HAI_ENUM_STRING_PARSING( MatrixTransform )
-    HAI_ENUM_STRING_PARSING( ConvolutionMode )
-    HAI_ENUM_STRING_PARSING( ConvolutionDirection )
-    HAI_ENUM_STRING_PARSING( PaddingMode )
-    HAI_ENUM_STRING_PARSING( InterpolationMode )
-    HAI_ENUM_STRING_PARSING( RecurrentNetworkDirection )
-    HAI_ENUM_STRING_PARSING( RoundingMode )
-    HAI_ENUM_STRING_PARSING( IsInfinityMode )
-    HAI_ENUM_STRING_PARSING( AxisDirection )
-    HAI_ENUM_STRING_PARSING( DepthSpaceOrder )
-    HAI_ENUM_STRING_PARSING( RandomGeneratorType )
-    HAI_ENUM_STRING_PARSING( MultiheadAttentionMaskType )
-    HAI_ENUM_STRING_PARSING( QuantizationType )
-    HAI_ENUM_STRING_PARSING( FieldType )
-    HAI_ENUM_STRING_PARSING( FieldFlags )
-    HAI_ENUM_STRING_PARSING( FeatureLevel )
-    HAI_ENUM_STRING_PARSING( Feature )
-    HAI_ENUM_STRING_PARSING( ExecutionFlags )
-    HAI_ENUM_STRING_PARSING( CreateDeviceFlags )
-    HAI_ENUM_STRING_PARSING( BindingType )
-    HAI_ENUM_STRING_PARSING( GraphEdgeType )
-    HAI_ENUM_STRING_PARSING( GraphNodeType )
+    HAI_ENUM_STRING_CONVERSIONS( TensorDataType )
+    HAI_ENUM_STRING_CONVERSIONS( TensorDataTypeMask )
+    HAI_ENUM_STRING_CONVERSIONS( TensorType )
+    HAI_ENUM_STRING_CONVERSIONS( TensorFlags )
+    HAI_ENUM_STRING_CONVERSIONS( OperatorType )
+    HAI_ENUM_STRING_CONVERSIONS( ReduceFunction )
+    HAI_ENUM_STRING_CONVERSIONS( MatrixTransform )
+    HAI_ENUM_STRING_CONVERSIONS( ConvolutionMode )
+    HAI_ENUM_STRING_CONVERSIONS( ConvolutionDirection )
+    HAI_ENUM_STRING_CONVERSIONS( PaddingMode )
+    HAI_ENUM_STRING_CONVERSIONS( InterpolationMode )
+    HAI_ENUM_STRING_CONVERSIONS( RecurrentNetworkDirection )
+    HAI_ENUM_STRING_CONVERSIONS( RoundingMode )
+    HAI_ENUM_STRING_CONVERSIONS( IsInfinityMode )
+    HAI_ENUM_STRING_CONVERSIONS( AxisDirection )
+    HAI_ENUM_STRING_CONVERSIONS( DepthSpaceOrder )
+    HAI_ENUM_STRING_CONVERSIONS( RandomGeneratorType )
+    HAI_ENUM_STRING_CONVERSIONS( MultiheadAttentionMaskType )
+    HAI_ENUM_STRING_CONVERSIONS( QuantizationType )
+    HAI_ENUM_STRING_CONVERSIONS( FieldType )
+    HAI_ENUM_STRING_CONVERSIONS( FieldFlags )
+    HAI_ENUM_STRING_CONVERSIONS( FeatureLevel )
+    HAI_ENUM_STRING_CONVERSIONS( Feature )
+    HAI_ENUM_STRING_CONVERSIONS( ExecutionFlags )
+    HAI_ENUM_STRING_CONVERSIONS( CreateDeviceFlags )
+    HAI_ENUM_STRING_CONVERSIONS( BindingType )
+    HAI_ENUM_STRING_CONVERSIONS( GraphEdgeType )
+    HAI_ENUM_STRING_CONVERSIONS( GraphNodeType )
 
 
 
-#ifdef HAI_ENUM_STRING_PARSING
-#undef HAI_ENUM_STRING_PARSING
+#ifdef HAI_ENUM_STRING_CONVERSIONS
+#undef HAI_ENUM_STRING_CONVERSIONS
 #endif
+
+    namespace Internal
+    {
+        // =========================================================================
+        // DmlFormatterImpl
+        // =========================================================================
+        template<typename EnumT, typename CharT>
+        struct DmlFormatterImpl
+        {
+            std::formatter<std::basic_string_view<CharT>, CharT> viewFormatter;
+            constexpr auto parse( std::basic_format_parse_context<CharT>& ctx )
+            {
+                return viewFormatter.parse( ctx );
+            }
+
+            template <typename FormatContext>
+            auto format( EnumT value, FormatContext& ctx ) const
+            {
+                if constexpr ( sizeof( CharT ) == 2 )
+                {
+                    auto str = ToWideString( value );
+                    std::basic_string_view<CharT> view( str.data( ), str.size( ) );
+                    return viewFormatter.format( view, ctx );
+                }
+                else
+                {
+                    auto str = ToAnsiString( value );
+                    std::basic_string_view<CharT> view( str.data( ), str.size( ) );
+                    return viewFormatter.format( view, ctx );
+                }
+            }
+        };
+    }
+
+}
+
+namespace std
+{
+#define HAI_ENUM_FORMATTER( name ) \
+    template<typename CharT> \
+    struct formatter<Harlinn::AI::DML::name, CharT> : public Harlinn::Common::Core::Internal::DmlFormatterImpl<Harlinn::AI::DML::name, CharT> \
+    { \
+    }
+
+    HAI_ENUM_FORMATTER( TensorDataType );
+    HAI_ENUM_FORMATTER( TensorDataTypeMask );
+    HAI_ENUM_FORMATTER( TensorType );
+    HAI_ENUM_FORMATTER( TensorFlags );
+    HAI_ENUM_FORMATTER( OperatorType );
+    HAI_ENUM_FORMATTER( ReduceFunction );
+    HAI_ENUM_FORMATTER( MatrixTransform );
+    HAI_ENUM_FORMATTER( ConvolutionMode );
+    HAI_ENUM_FORMATTER( ConvolutionDirection );
+    HAI_ENUM_FORMATTER( PaddingMode );
+    HAI_ENUM_FORMATTER( InterpolationMode );
+    HAI_ENUM_FORMATTER( RecurrentNetworkDirection );
+    HAI_ENUM_FORMATTER( RoundingMode );
+    HAI_ENUM_FORMATTER( IsInfinityMode );
+    HAI_ENUM_FORMATTER( AxisDirection );
+    HAI_ENUM_FORMATTER( DepthSpaceOrder );
+    HAI_ENUM_FORMATTER( RandomGeneratorType );
+    HAI_ENUM_FORMATTER( MultiheadAttentionMaskType );
+    HAI_ENUM_FORMATTER( QuantizationType );
+    HAI_ENUM_FORMATTER( FieldType );
+    HAI_ENUM_FORMATTER( FieldFlags );
+    HAI_ENUM_FORMATTER( FeatureLevel );
+    HAI_ENUM_FORMATTER( Feature );
+    HAI_ENUM_FORMATTER( ExecutionFlags );
+    HAI_ENUM_FORMATTER( CreateDeviceFlags );
+    HAI_ENUM_FORMATTER( BindingType );
+    HAI_ENUM_FORMATTER( GraphEdgeType );
+    HAI_ENUM_FORMATTER( GraphNodeType );
+
+
+#undef HAI_ENUM_FORMATTER
 }
 
 

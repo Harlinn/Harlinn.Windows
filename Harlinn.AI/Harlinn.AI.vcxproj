@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HAIDirectML.cpp" />
+    <ClCompile Include="HAIDirectMLEnums.cpp" />
     <ClCompile Include="HAIONNXDirectML.cpp" />
     <ClCompile Include="HAIONNXDirectMLModel.cpp" />
     <ClCompile Include="HAIONNXMetadata.cpp" />
