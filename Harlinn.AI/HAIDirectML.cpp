@@ -1440,6 +1440,652 @@ namespace Harlinn::AI::DML
         }
 
 
+        void AddFillValueConstant( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & TensorDataTypeMask::AllButNibble;
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "FillValueConstant" );
+
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddTensorDataType( "ValueDataType", FieldFlags::Input );
+            typeInfo->AddScalarUnion( "Value", FieldFlags::Input );
+
+            map.emplace( OperatorType::FillValueConstant, std::move( typeInfo ) );
+        }
+
+        void AddFillValueSequence( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 |
+                TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "FillValueSequence" );
+
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddTensorDataType( "ValueDataType", FieldFlags::Input );
+            typeInfo->AddScalarUnion( "ValueStart", FieldFlags::Input );
+            typeInfo->AddScalarUnion( "ValueDelta", FieldFlags::Input );
+
+            map.emplace( OperatorType::FillValueSequence, std::move( typeInfo ) );
+        }
+
+        void AddReverseSubsequences( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & TensorDataTypeMask::AllButNibble;
+
+            auto sequenceLengthsDataTypes = supportedDataTypes & ( TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ReverseSubsequences" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddInputTensor( "SequenceLengthsTensor", FieldFlags::Input, sequenceLengthsDataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddUInt32( "Axis", FieldFlags::Input );
+
+            map.emplace( OperatorType::ReverseSubsequences, std::move( typeInfo ) );
+        }
+
+        void AddGatherElements( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & TensorDataTypeMask::AllButNibble;
+
+            auto indicesTensorDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "GatherElements" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddInputTensor( "IndicesTensor", FieldFlags::Input, indicesTensorDataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddUInt32( "Axis", FieldFlags::Input );
+
+            map.emplace( OperatorType::GatherElements, std::move( typeInfo ) );
+        }
+
+        void AddGatherND( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & TensorDataTypeMask::AllButNibble;
+
+            auto indicesTensorDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "GatherND" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddInputTensor( "IndicesTensor", FieldFlags::Input, indicesTensorDataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddUInt32( "InputDimensionCount", FieldFlags::Input );
+            typeInfo->AddUInt32( "IndicesDimensionCount", FieldFlags::Input );
+
+            map.emplace( OperatorType::GatherND, std::move( typeInfo ) );
+        }
+
+        void AddScatterND( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & TensorDataTypeMask::AllButNibble;
+
+            auto indicesTensorDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ScatterND" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddInputTensor( "IndicesTensor", FieldFlags::Input, indicesTensorDataTypes );
+            typeInfo->AddInputTensor( "UpdatesTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddUInt32( "InputDimensionCount", FieldFlags::Input );
+            typeInfo->AddUInt32( "IndicesDimensionCount", FieldFlags::Input );
+
+            map.emplace( OperatorType::ScatterND, std::move( typeInfo ) );
+        }
+
+        void AddMaxPooling2( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 |
+                TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto outputIndicesDataTypes = supportedDataTypes & ( TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 );
+
+            auto dimensions = Range( 4, 5 );
+
+            auto typeInfo = MakeUnary( "MaxPooling2", dataTypes, dimensions, dataTypes, dimensions );
+
+            typeInfo->AddOutputTensor( "OutputIndicesTensor", FieldFlags::Output | FieldFlags::Optional, outputIndicesDataTypes, dimensions );
+
+            typeInfo->AddSize( "DimensionCount", 5, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Strides", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "WindowSize", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "StartPadding", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "EndPadding", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Dilations", FieldFlags::Input );
+
+            map.emplace( OperatorType::MaxPooling2, std::move( typeInfo ) );
+        }
+
+        void AddSlice1( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float64 | TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 |
+                TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = MakeUnary( "Slice1", dataTypes, dataTypes );
+            typeInfo->AddSize( "DimensionCount", 3, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "InputWindowOffsets", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "InputWindowSizes", FieldFlags::Input );
+            typeInfo->AddInt32Array( "InputWindowStrides", FieldFlags::Input );
+
+            map.emplace( OperatorType::Slice1, std::move( typeInfo ) );
+        }
+
+        void AddTopK1( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 |
+                TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto indicesDataTypes = supportedDataTypes & ( TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "TopK1" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddOutputTensor( "OutputValueTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddInputTensor( "OutputIndexTensor", FieldFlags::Output, indicesDataTypes );
+            typeInfo->AddUInt32( "Axis", FieldFlags::Input );
+            typeInfo->AddUInt32( "K", FieldFlags::Input );
+            typeInfo->AddEnum( "AxisDirection", EnumType::AxisDirection, FieldFlags::Input );
+
+            map.emplace( OperatorType::TopK1, std::move( typeInfo ) );
+        }
+
+        void AddDepthToSpace1( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::AllButNibble );
+
+            auto dimensions = Range( 4, 4 );
+
+            auto typeInfo = MakeUnary( "DepthToSpace1", dataTypes, dimensions, dataTypes, dimensions );
+
+            typeInfo->AddUInt32( "BlockSize", FieldFlags::Input );
+            typeInfo->AddEnum( "Order", EnumType::DepthSpaceOrder, FieldFlags::Input );
+
+            map.emplace( OperatorType::DepthToSpace1, std::move( typeInfo ) );
+        }
+
+        void AddSpaceToDepth1( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::AllButNibble );
+
+            auto dimensions = Range( 4, 4 );
+
+            auto typeInfo = MakeUnary( "SpaceToDepth1", dataTypes, dimensions, dataTypes, dimensions );
+
+            typeInfo->AddUInt32( "BlockSize", FieldFlags::Input );
+            typeInfo->AddEnum( "Order", EnumType::DepthSpaceOrder, FieldFlags::Input );
+
+            map.emplace( OperatorType::SpaceToDepth1, std::move( typeInfo ) );
+        }
+
+
+        void AddMeanVarianceNormalization1( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "MeanVarianceNormalization1" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddInputTensor( "ScaleTensor", FieldFlags::Input | FieldFlags::Optional, dataTypes );
+            typeInfo->AddInputTensor( "BiasTensor", FieldFlags::Input | FieldFlags::Optional, dataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddSize( "AxisCount", 1 , FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Axes", FieldFlags::Input );
+            typeInfo->AddBoolean( "NormalizeVariance", FieldFlags::Input );
+            typeInfo->AddFloat32( "Epsilon", FieldFlags::Input );
+            typeInfo->AddFusedActivation( "FusedActivation", FieldFlags::Input | FieldFlags::Optional );
+
+            map.emplace( OperatorType::MeanVarianceNormalization1, std::move( typeInfo ) );
+        }
+
+        void AddResample1( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 | TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt8 );
+
+            auto dimensions = Range( 1, 4 );
+
+            auto typeInfo = MakeUnary( "Resample1", dataTypes, dimensions, dataTypes, dimensions );
+            typeInfo->AddEnum( "InterpolationMode", EnumType::InterpolationMode, FieldFlags::Input );
+
+            typeInfo->AddSize( "DimensionCount", 3, FieldFlags::Input );
+            typeInfo->AddFloat32Array( "Scales", FieldFlags::Input );
+            typeInfo->AddFloat32Array( "InputPixelOffsets", FieldFlags::Input );
+            typeInfo->AddFloat32Array( "OutputPixelOffsets", FieldFlags::Input );
+
+            map.emplace( OperatorType::Resample1, std::move( typeInfo ) );
+        }
+
+        void AddMatrixMultiplyInteger( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt8 );
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int32 );
+
+            auto matrixDimensions = Range( 2, 4 );
+            auto zeroPointDimensions = Range( 1, 4 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "MatrixMultiplyInteger" );
+
+            typeInfo->AddInputTensor( "ATensor", FieldFlags::Input, inputDataTypes, matrixDimensions );
+            typeInfo->AddInputTensor( "AZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, inputDataTypes, zeroPointDimensions );
+
+            typeInfo->AddInputTensor( "BTensor", FieldFlags::Input, inputDataTypes, matrixDimensions );
+            typeInfo->AddInputTensor( "BZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, inputDataTypes, zeroPointDimensions );
+            
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, outputDataTypes, matrixDimensions );
+
+            map.emplace( OperatorType::MatrixMultiplyInteger, std::move( typeInfo ) );
+        }
+
+        void AddQuantizedLinearMatrixMultiply( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt8 );
+            auto scaleDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 );
+
+            auto matrixDimensions = Range( 2, 4 );
+            auto scaleAndZeroPointDimensions = Range( 1, 4 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "QuantizedLinearMatrixMultiply" );
+
+            typeInfo->AddInputTensor( "ATensor", FieldFlags::Input, dataTypes, matrixDimensions );
+            typeInfo->AddInputTensor( "AScaleTensor", FieldFlags::Input, scaleDataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddInputTensor( "AZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, dataTypes, scaleAndZeroPointDimensions );
+
+            typeInfo->AddInputTensor( "BTensor", FieldFlags::Input, dataTypes, matrixDimensions );
+            typeInfo->AddInputTensor( "BScaleTensor", FieldFlags::Input, scaleDataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddInputTensor( "BZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, dataTypes, scaleAndZeroPointDimensions );
+
+            typeInfo->AddInputTensor( "OutputScaleTensor", FieldFlags::Input, scaleDataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddInputTensor( "OutputZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, dataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes, matrixDimensions );
+
+            map.emplace( OperatorType::QuantizedLinearMatrixMultiply, std::move( typeInfo ) );
+        }
+
+        void AddConvolutionInteger( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt8 );
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int32 );
+
+            auto dimensions = Range( 3, 4 );
+            auto zeroPointDimensions = Range( 1, 4 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ConvolutionInteger" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, inputDataTypes, dimensions );
+            typeInfo->AddInputTensor( "InputZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, inputDataTypes, zeroPointDimensions );
+
+            typeInfo->AddInputTensor( "FilterTensor", FieldFlags::Input, inputDataTypes, dimensions );
+            typeInfo->AddInputTensor( "FilterZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, inputDataTypes, zeroPointDimensions );
+
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, outputDataTypes, dimensions );
+            
+            typeInfo->AddSize( "DimensionCount", 4, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Strides", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Dilations", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "StartPadding", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "EndPadding", FieldFlags::Input );
+
+            typeInfo->AddUInt32( "GroupCount", FieldFlags::Input );
+
+            map.emplace( OperatorType::ConvolutionInteger, std::move( typeInfo ) );
+        }
+
+        void AddQuantizedLinearConvolution( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int8 | TensorDataTypeMask::UInt8 );
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int32 );
+            auto scaleDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 );
+            auto biasDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int32 );
+
+            auto dimensions = Range( 3, 4 );
+            auto scaleAndZeroPointDimensions = Range( 1, 4 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "QuantizedLinearConvolution" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, inputDataTypes, dimensions );
+            typeInfo->AddInputTensor( "InputScaleTensor", FieldFlags::Input, scaleDataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddInputTensor( "InputZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, inputDataTypes, scaleAndZeroPointDimensions );
+
+            typeInfo->AddInputTensor( "FilterTensor", FieldFlags::Input, inputDataTypes, dimensions );
+            typeInfo->AddInputTensor( "FilterScaleTensor", FieldFlags::Input, scaleDataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddInputTensor( "FilterZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, inputDataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddInputTensor( "BiasTensor", FieldFlags::Input | FieldFlags::Optional, biasDataTypes, scaleAndZeroPointDimensions );
+
+            typeInfo->AddInputTensor( "OutputScaleTensor", FieldFlags::Input, scaleDataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddInputTensor( "OutputZeroPointTensor", FieldFlags::Input | FieldFlags::Optional, inputDataTypes, scaleAndZeroPointDimensions );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, outputDataTypes, dimensions );
+
+            typeInfo->AddSize( "DimensionCount", 4, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Strides", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Dilations", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "StartPadding", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "EndPadding", FieldFlags::Input );
+
+            typeInfo->AddUInt32( "GroupCount", FieldFlags::Input );
+
+            map.emplace( OperatorType::QuantizedLinearConvolution, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseBitAnd( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::AllButNibble );
+
+            auto typeInfo = MakeInplaceBinary( "ElementWiseBitAnd", dataTypes, dataTypes, dataTypes );
+
+            map.emplace( OperatorType::ElementWiseBitAnd, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseBitOr( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::AllButNibble );
+
+            auto typeInfo = MakeInplaceBinary( "ElementWiseBitOr", dataTypes, dataTypes, dataTypes );
+
+            map.emplace( OperatorType::ElementWiseBitOr, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseBitXor( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::AllButNibble );
+
+            auto typeInfo = MakeInplaceBinary( "ElementWiseBitXor", dataTypes, dataTypes, dataTypes );
+
+            map.emplace( OperatorType::ElementWiseBitXor, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseBitNot( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::AllButNibble );
+
+            auto typeInfo = MakeInplaceUnary( "ElementWiseBitNot", dataTypes, dataTypes );
+
+            map.emplace( OperatorType::ElementWiseBitNot, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseBitCount( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::AllButNibble  );
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = MakeUnary( "ElementWiseBitCount", inputDataTypes, outputDataTypes );
+
+            map.emplace( OperatorType::ElementWiseBitCount, std::move( typeInfo ) );
+        }
+
+        
+
+        void AddElementWiseLogicalGreaterThanOrEqual( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 |
+                TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = MakeInplaceBinary( "ElementWiseLogicalGreaterThanOrEqual", dataTypes, dataTypes, outputDataTypes );
+
+            map.emplace( OperatorType::ElementWiseLogicalGreaterThanOrEqual, std::move( typeInfo ) );
+        }
+
+        void AddElementWiseLogicalLessThanOrEqual( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 |
+                TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = MakeInplaceBinary( "ElementWiseLogicalLessThanOrEqual", dataTypes, dataTypes, outputDataTypes );
+
+            map.emplace( OperatorType::ElementWiseLogicalLessThanOrEqual, std::move( typeInfo ) );
+        }
+
+        void AddActivationCeLU( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16  );
+
+            auto typeInfo = MakeInplaceUnary( "ActivationCeLU", dataTypes, dataTypes );
+            typeInfo->AddFloat32( "Alpha", FieldFlags::Input );
+
+            map.emplace( OperatorType::ActivationCeLU, std::move( typeInfo ) );
+        }
+
+        void AddActivationReLUGrad( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ActivationReLUGrad" );
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddInputTensor( "InputGradientTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddOutputTensor( "OutputGradientTensor", FieldFlags::Output, dataTypes );
+
+            map.emplace( OperatorType::ActivationReLUGrad, std::move( typeInfo ) );
+        }
+
+        void AddAveragePoolingGrad( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+
+            auto dimensions = Range( 4, 5 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "AveragePoolingGrad" );
+
+            typeInfo->AddInputTensor( "InputGradientTensor", FieldFlags::Input, inputDataTypes, dimensions );
+            typeInfo->AddOutputTensor( "OutputGradientTensor", FieldFlags::Output, outputDataTypes, dimensions );
+
+            typeInfo->AddSize( "DimensionCount", 4, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Strides", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "WindowSize", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "StartPadding", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "EndPadding", FieldFlags::Input );
+
+            typeInfo->AddBoolean( "IncludePadding", FieldFlags::Input );
+
+            map.emplace( OperatorType::AveragePoolingGrad, std::move( typeInfo ) );
+        }
+
+        void AddMaxPoolingGrad( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto outputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+
+            auto dimensions = Range( 4, 5 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "MaxPoolingGrad" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, inputDataTypes, dimensions );
+            typeInfo->AddInputTensor( "InputGradientTensor", FieldFlags::Input, inputDataTypes, dimensions );
+            typeInfo->AddOutputTensor( "OutputGradientTensor", FieldFlags::Output, outputDataTypes, dimensions );
+
+            typeInfo->AddSize( "DimensionCount", 5, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Strides", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "WindowSize", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "StartPadding", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "EndPadding", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Dilations", FieldFlags::Input );
+
+            map.emplace( OperatorType::MaxPoolingGrad, std::move( typeInfo ) );
+        }
+
+        void AddRandomGenerator( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::UInt32 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "RandomGenerator" );
+
+            typeInfo->AddInputTensor( "InputStateTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddOutputTensor( "OutputStateTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddEnum( "Type", EnumType::RandomGeneratorType, FieldFlags::Input );
+
+            map.emplace( OperatorType::RandomGenerator, std::move( typeInfo ) );
+        }
+
+        void AddNonZeroCoordinates( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto inputDataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 | 
+                TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto outputDataTypes = supportedDataTypes & TensorDataTypeMask::UInt32;
+
+            auto coordinateDimensions = Range( 2, 8 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "NonZeroCoordinates" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, inputDataTypes );
+            typeInfo->AddOutputTensor( "OutputCountTensor", FieldFlags::Output, outputDataTypes );
+            typeInfo->AddOutputTensor( "OutputCoordinatesTensor", FieldFlags::Output, outputDataTypes, coordinateDimensions );
+
+            map.emplace( OperatorType::NonZeroCoordinates, std::move( typeInfo ) );
+        }
+
+        void AddResampleGrad( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+
+            auto dimensions = Range( 1, 4 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ResampleGrad" );
+
+            typeInfo->AddInputTensor( "InputGradientTensor", FieldFlags::Input, dataTypes, dimensions );
+            typeInfo->AddOutputTensor( "OutputGradientTensor", FieldFlags::Output, dataTypes, dimensions );
+
+            typeInfo->AddSize( "DimensionCount", 3, FieldFlags::Input );
+            typeInfo->AddFloat32Array( "Scales", FieldFlags::Input );
+            typeInfo->AddFloat32Array( "InputPixelOffsets", FieldFlags::Input );
+            typeInfo->AddFloat32Array( "OutputPixelOffsets", FieldFlags::Input );
+
+
+            map.emplace( OperatorType::ResampleGrad, std::move( typeInfo ) );
+        }
+
+        void AddSliceGrad( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & TensorDataTypeMask::AllButNibble;
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "SliceGrad" );
+
+            typeInfo->AddInputTensor( "InputGradientTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddOutputTensor( "OutputGradientTensor", FieldFlags::Output, dataTypes );
+
+            typeInfo->AddSize( "DimensionCount", 3, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "InputWindowOffsets", FieldFlags::Input );
+            typeInfo->AddUInt32Array( "InputWindowSizes", FieldFlags::Input );
+            typeInfo->AddInt32Array( "InputWindowStrides", FieldFlags::Input );
+
+
+            map.emplace( OperatorType::SliceGrad, std::move( typeInfo ) );
+        }
+
+        void AddAdamOptimizer( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto dimensions = Range( 4, 4 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "AdamOptimizer" );
+
+            typeInfo->AddInputTensor( "InputParametersTensor", FieldFlags::Input, dataTypes, dimensions );
+            typeInfo->AddInputTensor( "InputFirstMomentTensor", FieldFlags::Input, dataTypes, dimensions );
+            typeInfo->AddInputTensor( "InputSecondMomentTensor", FieldFlags::Input, dataTypes, dimensions );
+            typeInfo->AddInputTensor( "GradientTensor", FieldFlags::Input, dataTypes, dimensions );
+            typeInfo->AddInputTensor( "TrainingStepTensor", FieldFlags::Input, dataTypes, dimensions );
+
+            typeInfo->AddOutputTensor( "OutputParametersTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddOutputTensor( "OutputFirstMomentTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddOutputTensor( "OutputSecondMomentTensor", FieldFlags::Output, dataTypes );
+
+            typeInfo->AddFloat32( "LearningRate", FieldFlags::Input );
+            typeInfo->AddFloat32( "Beta1", FieldFlags::Input );
+            typeInfo->AddFloat32( "Beta2", FieldFlags::Input );
+            typeInfo->AddFloat32( "Epsilon", FieldFlags::Input );
+
+            map.emplace( OperatorType::AdamOptimizer, std::move( typeInfo ) );
+        }
+
+
+        void AddArgMin( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 |
+                TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = MakeUnary( "ArgMin", dataTypes, dataTypes );
+            typeInfo->AddSize( "AxisCount", 1, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Axes", FieldFlags::Input );
+            typeInfo->AddEnum( "AxisDirection", EnumType::AxisDirection, FieldFlags::Input );
+
+
+            map.emplace( OperatorType::ArgMin, std::move( typeInfo ) );
+        }
+
+        void AddArgMax( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 |
+                TensorDataTypeMask::Int32 | TensorDataTypeMask::Int16 | TensorDataTypeMask::Int8 |
+                TensorDataTypeMask::UInt32 | TensorDataTypeMask::UInt16 | TensorDataTypeMask::UInt8 );
+
+            auto typeInfo = MakeUnary( "ArgMax", dataTypes, dataTypes );
+            typeInfo->AddSize( "AxisCount", 1, FieldFlags::Input );
+            typeInfo->AddUInt32Array( "Axes", FieldFlags::Input );
+            typeInfo->AddEnum( "AxisDirection", EnumType::AxisDirection, FieldFlags::Input );
+
+            map.emplace( OperatorType::ArgMax, std::move( typeInfo ) );
+        }
+
+        void AddROIAlign( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & ( TensorDataTypeMask::Float32 | TensorDataTypeMask::Float16 );
+            auto indicesDataTypes = supportedDataTypes & ( TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 );
+            auto dimensions = Range( 4, 4 );
+            auto roiDimensions = Range( 2, 4 );
+            auto indicesDimensions = Range( 1, 4 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "ROIAlign" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes, dimensions );
+            typeInfo->AddInputTensor( "ROITensor", FieldFlags::Input, dataTypes, roiDimensions );
+            typeInfo->AddInputTensor( "BatchIndicesTensor", FieldFlags::Input, indicesDataTypes, indicesDimensions );
+
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+
+            typeInfo->AddEnum( "ReductionFunction", EnumType::ReduceFunction, FieldFlags::Input );
+            typeInfo->AddEnum( "InterpolationMode", EnumType::InterpolationMode, FieldFlags::Input );
+            typeInfo->AddFloat32( "SpatialScaleX", FieldFlags::Input );
+            typeInfo->AddFloat32( "SpatialScaleY", FieldFlags::Input );
+            typeInfo->AddFloat32( "OutOfBoundsInputValue", FieldFlags::Input );
+            typeInfo->AddUInt32( "MinimumSamplesPerOutput", FieldFlags::Input );
+            typeInfo->AddUInt32( "MaximumSamplesPerOutput", FieldFlags::Input );
+
+
+            map.emplace( OperatorType::ROIAlign, std::move( typeInfo ) );
+        }
+
+        void AddGatherND1( FeatureLevel featureLevel, TensorDataTypeMask supportedDataTypes, Map& map )
+        {
+            auto dataTypes = supportedDataTypes & TensorDataTypeMask::AllButNibble;
+
+            auto indicesTensorDataTypes = supportedDataTypes & ( TensorDataTypeMask::Int64 | TensorDataTypeMask::Int32 | TensorDataTypeMask::UInt64 | TensorDataTypeMask::UInt32 );
+
+            auto typeInfo = std::make_unique<OperatorTypeInfo>( "GatherND1" );
+
+            typeInfo->AddInputTensor( "InputTensor", FieldFlags::Input, dataTypes );
+            typeInfo->AddInputTensor( "IndicesTensor", FieldFlags::Input, indicesTensorDataTypes );
+            typeInfo->AddOutputTensor( "OutputTensor", FieldFlags::Output, dataTypes );
+            typeInfo->AddUInt32( "InputDimensionCount", FieldFlags::Input );
+            typeInfo->AddUInt32( "IndicesDimensionCount", FieldFlags::Input );
+            typeInfo->AddUInt32( "BatchDimensionCount", FieldFlags::Input );
+
+            map.emplace( OperatorType::GatherND1, std::move( typeInfo ) );
+        }
+
+
 
         std::unordered_map<DML::OperatorType, std::unique_ptr<DML::OperatorTypeInfo>> InitializeOperatorTypeInfoMap( const Device& device )
         {
@@ -1548,6 +2194,44 @@ namespace Harlinn::AI::DML
             AddElementWiseIsInfinity( featureLevel, supportedDataTypes, result );
             AddElementWiseModulusTruncate( featureLevel, supportedDataTypes, result );
             AddElementWiseModulusFloor( featureLevel, supportedDataTypes, result );
+            AddFillValueConstant( featureLevel, supportedDataTypes, result );
+            AddFillValueSequence( featureLevel, supportedDataTypes, result );
+            AddReverseSubsequences( featureLevel, supportedDataTypes, result );
+            AddGatherElements( featureLevel, supportedDataTypes, result );
+            AddGatherND( featureLevel, supportedDataTypes, result );
+            AddScatterND( featureLevel, supportedDataTypes, result );
+            AddMaxPooling2( featureLevel, supportedDataTypes, result );
+            AddSlice1( featureLevel, supportedDataTypes, result );
+            AddTopK1( featureLevel, supportedDataTypes, result );
+            AddDepthToSpace1( featureLevel, supportedDataTypes, result );
+            AddSpaceToDepth1( featureLevel, supportedDataTypes, result );
+            AddMeanVarianceNormalization1( featureLevel, supportedDataTypes, result );
+            AddResample1( featureLevel, supportedDataTypes, result );
+            AddMatrixMultiplyInteger( featureLevel, supportedDataTypes, result );
+            AddQuantizedLinearMatrixMultiply( featureLevel, supportedDataTypes, result );
+            AddConvolutionInteger( featureLevel, supportedDataTypes, result );
+            AddQuantizedLinearConvolution( featureLevel, supportedDataTypes, result );
+            AddElementWiseBitAnd( featureLevel, supportedDataTypes, result );
+            AddElementWiseBitOr( featureLevel, supportedDataTypes, result );
+            AddElementWiseBitXor( featureLevel, supportedDataTypes, result );
+            AddElementWiseBitNot( featureLevel, supportedDataTypes, result );
+            AddElementWiseBitCount( featureLevel, supportedDataTypes, result );
+            AddElementWiseLogicalGreaterThanOrEqual( featureLevel, supportedDataTypes, result );
+            AddElementWiseLogicalLessThanOrEqual( featureLevel, supportedDataTypes, result );
+            AddActivationCeLU( featureLevel, supportedDataTypes, result );
+            AddActivationReLUGrad( featureLevel, supportedDataTypes, result );
+            AddAveragePoolingGrad( featureLevel, supportedDataTypes, result );
+            AddMaxPoolingGrad( featureLevel, supportedDataTypes, result );
+            AddRandomGenerator( featureLevel, supportedDataTypes, result );
+            AddNonZeroCoordinates( featureLevel, supportedDataTypes, result );
+            AddResampleGrad( featureLevel, supportedDataTypes, result );
+            AddSliceGrad( featureLevel, supportedDataTypes, result );
+            AddAdamOptimizer( featureLevel, supportedDataTypes, result );
+            AddArgMin( featureLevel, supportedDataTypes, result );
+            AddArgMax( featureLevel, supportedDataTypes, result );
+            AddROIAlign( featureLevel, supportedDataTypes, result );
+            AddGatherND1( featureLevel, supportedDataTypes, result );
+
 
             return result;
         }
@@ -1562,3 +2246,4 @@ namespace Harlinn::AI::DML
 
 
 }
+
