@@ -1955,17 +1955,6 @@ static void BenchmarkFloatStdHypot3( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatStdHypot3 );
 
-
-static void BenchmarkDoubleInternalLog( benchmark::State& state )
-{
-    DoubleGenerator.Reset( );
-    for ( auto _ : state )
-    {
-        benchmark::DoNotOptimize( Math::Internal::LogImpl( DoubleGenerator( ) ) );
-    }
-}
-BENCHMARK( BenchmarkDoubleInternalLog );
-
 static void BenchmarkDoubleLog( benchmark::State& state )
 {
     DoubleGenerator.Reset( );
@@ -1995,16 +1984,6 @@ static void BenchmarkDoubleStdLog( benchmark::State& state )
     }
 }
 BENCHMARK( BenchmarkDoubleStdLog );
-
-static void BenchmarkFloatInternalLog( benchmark::State& state )
-{
-    FloatGenerator.Reset( );
-    for ( auto _ : state )
-    {
-        benchmark::DoNotOptimize( Math::Internal::LogImpl( FloatGenerator( ) ) );
-    }
-}
-BENCHMARK( BenchmarkFloatInternalLog );
 
 static void BenchmarkFloatLog( benchmark::State& state )
 {

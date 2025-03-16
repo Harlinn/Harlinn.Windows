@@ -529,6 +529,31 @@ namespace Harlinn::Common::Core
     inline constexpr bool IsFloatingPoint = std::is_floating_point_v<std::remove_cvref_t<T>>;
 
     template<typename T>
+    inline constexpr bool IsArithmetic = IsInteger<T> || IsFloatingPoint<T>;
+
+    namespace Internal
+    {
+        template<typename ...Args>
+        struct MakeFloatingPointImpl
+        {
+            using type = double;
+        };
+
+        template<>
+        struct MakeFloatingPointImpl<float,float>
+        {
+            using type = float;
+        };
+
+    }
+
+    template<typename S, typename T>
+        requires IsArithmetic<S> && IsArithmetic<T>
+    using MakeFloatingPoint = typename Internal::MakeFloatingPointImpl< std::remove_cvref_t<S>, std::remove_cvref_t<T> >::type;
+
+
+
+    template<typename T>
     inline constexpr std::remove_cvref_t<T> SignMask = 
         std::numeric_limits< std::make_unsigned_t<std::remove_cvref_t<T>> >::max( ) 
         - std::bit_cast<std::make_unsigned_t<std::remove_cvref_t<T>>>( 

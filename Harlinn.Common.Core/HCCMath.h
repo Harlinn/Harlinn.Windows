@@ -269,7 +269,7 @@ namespace Harlinn::Common::Core::Math
     constexpr inline std::remove_cvref_t<T> Deg2Rad( T angleInDegrees ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
-        constexpr FloatT factor = static_cast<FloatT>( M_PI_4/45.0 );
+        constexpr FloatT factor = static_cast<FloatT>( M_PI/180.0 );
         return angleInDegrees * factor;
     }
     /// <summary>
@@ -290,7 +290,7 @@ namespace Harlinn::Common::Core::Math
     constexpr inline std::remove_cvref_t<T> Rad2Deg( T angleInRadians ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
-        constexpr FloatT factor = static_cast<FloatT>( 45.0/M_PI_4 );
+        constexpr FloatT factor = static_cast<FloatT>( 180.0/M_PI );
         return angleInRadians * factor;
     }
 
@@ -310,108 +310,14 @@ namespace Harlinn::Common::Core::Math
     /// </returns>
     inline constexpr double NextAfter( double x, double y ) noexcept
     {
-        double t;
-
-        Int32 hx = GetHigh32Bits<Int32>( x );
-        UInt32 lx = GetLow32Bits<UInt32>( x );
-
-        Int32 hy = GetHigh32Bits<Int32>( y );
-        UInt32 ly = GetLow32Bits<UInt32>( y );
-
-        // |x| 
-        Int32 ix = hx & 0x7fffffff;
-        // |y| 
-        Int32 iy = hy & 0x7fffffff;
-
-        // Are x or y NaN?
-        if ( ( ( ix >= 0x7ff00000 ) && ( ( ix - 0x7ff00000 ) | lx ) != 0 ) || ( ( iy >= 0x7ff00000 ) && ( ( iy - 0x7ff00000 ) | ly ) != 0 ) )
+        if ( std::is_constant_evaluated( ) )
         {
-            return x + y;
-        }
-        if ( x == y )
-        {
-            // x=y, return y 
-            return y;
-        }
-        if ( ( ix | lx ) == 0 )
-        {			
-            // x == 0 
-            // return +-minsubnormal 
-            x = From32BitsTo64Bits<double>( hy & 0x80000000, 1 );
-            t = x * x;
-            if ( t == x )
-            {
-                return t;
-            }
-            else
-            {
-                // raise underflow flag 
-                return x;
-            }
-        }
-        if ( hx >= 0 )
-        {	
-            // x > 0 
-            if ( hx > hy || ( ( hx == hy ) && ( lx > ly ) ) )
-            {	
-                // x > y, x -= ulp 
-                if ( lx == 0 )
-                {
-                    hx -= 1;
-                }
-                lx -= 1;
-            }
-            else
-            {
-                // x < y, x += ulp 
-                lx += 1;
-                if ( lx == 0 )
-                {
-                    hx += 1;
-                }
-            }
+            return Math::Internal::OpenLibM::nextafter( x, y );
         }
         else
         {
-            // x < 0 
-            if ( hy >= 0 || hx > hy || ( ( hx == hy ) && ( lx > ly ) ) )
-            {
-                // x < y, x -= ulp 
-                if ( lx == 0 )
-                {
-                    hx -= 1;
-                }
-                lx -= 1;
-            }
-            else
-            {
-                // x > y, x += ulp 
-                lx += 1;
-                if ( lx == 0 )
-                {
-                    hx += 1;
-                }
-            }
+            return std::nextafter( x, y );
         }
-        hy = hx & 0x7ff00000;
-        if ( hy >= 0x7ff00000 )
-        {
-            // overflow  
-            return x + x;
-        }
-        if ( hy < 0x00100000 )
-        {
-            // underflow 
-            t = x * x;
-            if ( t != x )
-            {
-                // raise underflow flag 
-                y = From32BitsTo64Bits<double>( hx, lx );
-                return y;
-            }
-        }
-        x = From32BitsTo64Bits<double>( hx, lx );
-        return x;
     }
 
     /// <summary>
@@ -685,63 +591,6 @@ namespace Harlinn::Common::Core::Math
             return value & SignMask;
         }
 
-        /// <summary>
-        /// Get significand and exponent of val
-        /// </summary>
-        /// <typeparam name="T">floating point type</typeparam>
-        /// <param name="val">Value to be decomposed.</param>
-        /// <param name="exp">Reference to an int where the value of the exponent is stored.</param>
-        /// <returns>The binary significand of val.</returns>
-        template<typename T>
-            requires IsFloatingPoint<std::remove_cvref_t<T>>
-        inline constexpr std::remove_cvref_t<T> FRExpImpl( T val, int& exp ) noexcept
-        {
-            using ValueType = std::remove_cvref_t<T>;
-            using FPType = FloatingPoint<ValueType>;
-            using NormalizedType = NormalizedFloat<ValueType>;
-
-            FPType fp( val );
-
-            if ( !fp.IsInfOrNaN( ) )
-            {
-                if ( !fp.IsZero( ) )
-                {
-                    NormalizedType normalized( fp );
-                    exp = normalized.Exponent( ) + 1;
-                    normalized.SetExponent( 0 );
-                    return normalized.AsFloatingPoint( );
-                }
-                else
-                {
-                    exp = 0;
-                    return val;
-                }
-            }
-            else
-            {
-                exp = 0xFFFFFFFF;
-                return val;
-            }
-        }
-
-        /// <summary>
-        /// Breaks val into an integral and a fractional part.
-        /// </summary>
-        /// <typeparam name="T">floating point type</typeparam>
-        /// <param name="val">Floating point value to break into parts.</param>
-        /// <param name="intpart">
-        /// Reference to an object, of the same type as val, where the 
-        /// integral part is stored with the same sign as val</param>
-        template<typename ValueT>
-            requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
-        inline constexpr std::remove_cvref_t<ValueT> ModFImpl( ValueT val, ValueT& intPart ) noexcept
-        {
-            using FloatType = std::remove_cvref_t<ValueT>;
-            using FloatingPointType = FloatingPoint<FloatType>;
-            FloatingPointType value( val );
-            return value.ModF( intPart );
-        }
-
 
         /// <summary>
         /// Returns a value with the magnitude of magnitudeVal and the sign of signVal.
@@ -775,16 +624,18 @@ namespace Harlinn::Common::Core::Math
             requires IsFloatingPoint<T>
         constexpr T LerpImpl( T a, T b, T t ) noexcept
         {
-            if ( ( a <= 0 && b >= 0 ) || ( a >= 0 && b <= 0 ) )
+            constexpr T zero = static_cast< T >( 0.0 );
+            constexpr T one = static_cast< T >( 1.0 );
+            if ( ( a <= zero && b >= zero ) || ( a >= zero && b <= zero ) )
             {
-                return t * b + ( 1 - t ) * a;
+                return t * b + ( one - t ) * a;
             }
-            else if ( t == 1 )
+            else if ( t == one )
             {
                 return b;
             }
             T x = a + t * ( b - a );
-            if ( ( t > 1 ) == ( b > a ) )
+            if ( ( t > one ) == ( b > a ) )
             {
                 return b < x ? x : b;
             }
@@ -980,8 +831,28 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    /// <summary>
+    /// Determines if any of the given integral or floating point values 
+    /// is a not-a-number (NaN) value.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Integral or floating point type.
+    /// </typeparam>
+    /// <typeparam name="...Args">
+    /// Integral or floating point types.
+    /// </typeparam>
+    /// <param name="val">
+    /// Integral or floating point value.
+    /// </param>
+    /// <param name="...args">
+    /// Integral or floating point value.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if any of the given integral or floating point values 
+    /// is a not-a-number (NaN) value, otherwise <c>false</c>.
+    /// </returns>
     template<typename T, typename ... Args>
-        requires (IsInteger<T> || IsFloatingPoint<T>) //&& std::conjunction_v< std::disjunction< std::is_integral<Args>, std::is_floating_point<Args> >... >
+        requires IsArithmetic<T> && (IsArithmetic<Args> && ...)
     constexpr inline bool IsNaN( T val, Args&& ... args ) noexcept
     {
         if ( IsNaN( val ) )
@@ -1048,6 +919,39 @@ namespace Harlinn::Common::Core::Math
             }
         }
     }
+
+
+    /// <summary>
+    /// Determines if any of the given integral or floating point numbers
+    /// is positive or negative infinity. 
+    /// </summary>
+    /// <typeparam name="T">
+    /// Integral or floating point type.
+    /// </typeparam>
+    /// <typeparam name="...Args">
+    /// Integral or floating point types.
+    /// </typeparam>
+    /// <param name="val">
+    /// Integral or floating point value.
+    /// </param>
+    /// <param name="...args">
+    /// Integral or floating point value.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if any of the given integral or floating point numbers
+    /// is positive or negative infinity, otherwise <c>false</c>. 
+    /// </returns>
+    template<typename T, typename ... Args>
+        requires IsArithmetic<T> && ( IsArithmetic<Args> && ... )
+    constexpr inline bool IsInf( T val, Args&& ... args ) noexcept
+    {
+        if ( IsInf( val ) )
+        {
+            return true;
+        }
+        return IsInf( args ... );
+    }
+
 
     /// <summary>
     /// <para>
@@ -1135,7 +1039,7 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
-                return std::fabs( val );
+                return Internal::OpenLibM::fabs( val );
             }
         }
     }
@@ -1244,8 +1148,17 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline std::pair<std::remove_cvref_t<T>,int> FRExp( T val ) noexcept
     { 
-        std::pair<std::remove_cvref_t<T>, int> result;
-        result.first = Internal::FRExpImpl<std::remove_cvref_t<T>>( val, result.second );
+        using FloatT = std::remove_cvref_t<T>;
+
+        std::pair<FloatT, int> result;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            result.first = Internal::OpenLibM::frexpf( val, &result.second );
+        }
+        else
+        {
+            result.first = Internal::OpenLibM::frexp( val, &result.second );
+        }
         return result;
     }
 
@@ -1281,7 +1194,16 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> FRExp( T val, int* exp ) noexcept
     { 
-        return Internal::FRExpImpl<std::remove_cvref_t<T>>( val, *exp );
+        using FloatT = std::remove_cvref_t<T>;
+
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Internal::OpenLibM::frexpf( val, exp );
+        }
+        else
+        {
+            return Internal::OpenLibM::frexp( val, exp );
+        }
     }
     /// <summary>
     /// <para>
@@ -1315,7 +1237,16 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> FRExp( T val, int& exp ) noexcept
     { 
-        return Internal::FRExpImpl<std::remove_cvref_t<T>>( val, exp );
+        using FloatT = std::remove_cvref_t<T>;
+
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Internal::OpenLibM::frexpf( val, &exp );
+        }
+        else
+        {
+            return Internal::OpenLibM::frexp( val, &exp );
+        }
     }
 
     /// <summary>
@@ -1341,8 +1272,17 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<std::remove_cvref_t<ValueT>> 
     constexpr inline std::pair<std::remove_cvref_t<ValueT>, std::remove_cvref_t<ValueT>> ModF( ValueT val ) noexcept
     {
-        std::pair<std::remove_cvref_t<ValueT>, std::remove_cvref_t<ValueT>> result;
-        result.second = Internal::ModFImpl( val, result.first );
+        using FloatT = std::remove_cvref_t<ValueT>;
+        std::pair<FloatT, FloatT> result;
+
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            result.second = Internal::OpenLibM::modff( val, &result.first );
+        }
+        else
+        {
+            result.second = Internal::OpenLibM::modf( val, &result.first );
+        }
         return result;
     }
     /// <summary>
@@ -1371,7 +1311,16 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
     constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT* integerPart ) noexcept
     {
-        return Internal::ModFImpl( val, *integerPart );
+        using FloatT = std::remove_cvref_t<ValueT>;
+
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Internal::OpenLibM::modff( val, integerPart );
+        }
+        else
+        {
+            return Internal::OpenLibM::modf( val, integerPart );
+        }
     }
     
     /// <summary>
@@ -1400,7 +1349,16 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<std::remove_cvref_t<ValueT>>
     constexpr inline std::remove_cvref_t<ValueT> ModF( ValueT val, ValueT& integerPart ) noexcept
     {
-        return Internal::ModFImpl( val, integerPart );
+        using FloatT = std::remove_cvref_t<ValueT>;
+
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Internal::OpenLibM::modff( val, &integerPart );
+        }
+        else
+        {
+            return Internal::OpenLibM::modf( val, &integerPart );
+        }
     }
 
 
@@ -1609,20 +1567,20 @@ namespace Harlinn::Common::Core::Math
         else
         {
 #ifdef HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC
-            if constexpr ( std::is_same_v<double, T> )
+            if constexpr ( std::is_same_v<double, FloatT> )
             {
-                double result;
+                alignas( 16 ) double result;
                 _mm_store_sd( &result, _mm_round_pd( _mm_set_sd( value ), _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC ) );
                 return result;
             }
             else
             {
-                return __truncf( value );
-                /*
-                float result;
+                //return __truncf( value );
+                
+                alignas(16) float result;
                 _mm_store_ss( &result, _mm_round_ps( _mm_set_ss( value ), _MM_FROUND_TO_ZERO | _MM_FROUND_NO_EXC ) );
                 return result;
-                */
+                
             }
 #else
             if constexpr ( std::is_same_v<FloatT, float> )
@@ -1983,10 +1941,18 @@ namespace Harlinn::Common::Core::Math
     /// The interpolated or extrapolated result. 
     /// </returns>
     template<typename T, typename U>
-        requires ( ( IsInteger<T> || IsFloatingPoint<T> ) && ( IsInteger<U> || IsFloatingPoint<U> ) )
-    constexpr inline std::conditional_t<IsFloatingPoint<T>, T, std::conditional_t<IsFloatingPoint<U>, U, T>> Lerp( T a, T b, U t ) noexcept
+        requires IsArithmetic<T> && IsArithmetic<U>
+    constexpr inline MakeFloatingPoint<T,U> Lerp( T a, T b, U t ) noexcept
     {
-        return Internal::LerpImpl( a, b, t );
+        if ( std::is_constant_evaluated( ) )
+        {
+            using FloatT = MakeFloatingPoint<T, U>;
+            return Internal::LerpImpl( static_cast< FloatT >( a ), static_cast< FloatT >( b ), static_cast< FloatT >( t ) );
+        }
+        else
+        {
+            return std::lerp( a, b, t );
+        }
     }
 
     /// <summary>
@@ -2181,287 +2147,6 @@ namespace Harlinn::Common::Core::Math
         return x * twom25;
     }
 
-    namespace Internal
-    {
-        /// <summary>
-        /// <para>
-        /// Computes the double precision floating point remainder of the division operation <c>x / y</c>.
-        /// </para>
-        /// <para>
-        /// This implementation can be constexpr evaluated, and
-        /// improves runtime performance by 13.38 %.
-        /// </para>
-        /// </summary>
-        /// <param name="x">
-        /// A double precision floating point value. 
-        /// </param>
-        /// <param name="y">
-        /// A double precision floating point value. 
-        /// </param>
-        /// <returns>
-        /// The double precision floating point remainder of the division operation <c>x / y</c>.
-        /// </returns>
-        inline constexpr double FModImpl( double x, double y ) noexcept
-        {
-            UInt64 uxi = std::bit_cast< UInt64 >( x );
-            int ex = uxi >> 52 & 0x7ff;
-            int sx = uxi >> 63;
-
-            UInt64 uyi = std::bit_cast< UInt64 >( y );
-            int ey = uyi >> 52 & 0x7ff;
-
-            uint64_t i;
-
-            if ( uyi << 1 == 0 || IsNaN( y ) || ex == 0x7ff )
-            {
-                return ( x * y ) / ( x * y );
-            }
-            if ( uxi << 1 <= uyi << 1 )
-            {
-                if ( uxi << 1 == uyi << 1 )
-                {
-                    return 0 * x;
-                }
-                return x;
-            }
-
-            // normalize x and y 
-            if ( !ex )
-            {
-                for ( i = uxi << 12; i >> 63 == 0; ex--, i <<= 1 );
-                uxi <<= -ex + 1;
-            }
-            else
-            {
-                uxi &= static_cast< UInt64 >( -1 ) >> 12;
-                uxi |= 1ULL << 52;
-            }
-            if ( !ey )
-            {
-                for ( i = uyi << 12; i >> 63 == 0; ey--, i <<= 1 )
-                {
-                    ;
-                }
-                uyi <<= -ey + 1;
-            }
-            else
-            {
-                uyi &= static_cast< UInt64 >( -1 ) >> 12;
-                uyi |= 1ULL << 52;
-            }
-
-            // x mod y 
-            for ( ; ex > ey; ex-- )
-            {
-                i = uxi - uyi;
-                if ( i >> 63 == 0 )
-                {
-                    if ( i == 0 )
-                        return 0 * x;
-                    uxi = i;
-                }
-                uxi <<= 1;
-            }
-            i = uxi - uyi;
-            if ( i >> 63 == 0 )
-            {
-                if ( i == 0 )
-                    return 0 * x;
-                uxi = i;
-            }
-            for ( ; uxi >> 52 == 0; uxi <<= 1, ex-- )
-            {
-                ;
-            }
-
-            // scale result 
-            if ( ex > 0 )
-            {
-                uxi -= 1ULL << 52;
-                uxi |= ( uint64_t )ex << 52;
-            }
-            else
-            {
-                uxi >>= -ex + 1;
-            }
-            uxi |= ( uint64_t )sx << 63;
-
-            return std::bit_cast< double >( uxi );
-        }
-
-
-        /* e_fmodf.c -- float version of e_fmod.c.
-         * Conversion to float by Ian Lance Taylor, Cygnus Support, ian@cygnus.com.
-         */
-
-         /*
-          * ====================================================
-          * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
-          *
-          * Developed at SunPro, a Sun Microsystems, Inc. business.
-          * Permission to use, copy, modify, and distribute this
-          * software is freely granted, provided that this notice
-          * is preserved.
-          * ====================================================
-          */
-
-          /// <summary>
-          /// <para>
-          /// Computes the single precision floating point remainder of the division operation <c>x / y</c>.
-          /// </para>
-          /// <para>
-          /// This implementation can be constexpr evaluated, and
-          /// improves runtime performance by 89.59 %.
-          /// </para>
-          /// </summary>
-          /// <param name="x">
-          /// A single precision floating point value. 
-          /// </param>
-          /// <param name="y">
-          /// A single precision floating point value. 
-          /// </param>
-          /// <returns>
-          /// The single precision floating point remainder of the division operation <c>x / y</c>.
-          /// </returns>
-        inline constexpr float FModImpl( float x, float y ) noexcept
-        {
-            constexpr float one = 1.0;
-            constexpr float Zero[ ] = { 0.0, -0.0 };
-
-            Int32 n, hx, hy, hz, ix, iy, sx, i;
-
-            hx = std::bit_cast< Int32 >( x );
-            hy = std::bit_cast< Int32 >( y );
-            // sign of x 
-            sx = hx & 0x80000000;
-            // |x| 
-            hx ^= sx;
-            // |y| 
-            hy &= 0x7fffffff;
-
-            // purge off exception values 
-            if ( hy == 0 || ( hx >= 0x7f800000 ) || // y=0,or x not finite 
-                ( hy > 0x7f800000 ) ) // or y is NaN 
-            {
-                return ( x * y ) / ( x * y );
-            }
-            if ( hx < hy )
-            {
-                // |x|<|y| return x 
-                return x;
-            }
-            if ( hx == hy )
-            {
-                // |x|=|y| return x*0
-                return Zero[ static_cast< UInt32 >( sx ) >> 31 ];
-            }
-
-            // determine ix = ilogb(x) 
-            if ( hx < 0x00800000 )
-            {
-                // subnormal x 
-                for ( ix = -126, i = ( hx << 8 ); i > 0; i <<= 1 )
-                {
-                    ix -= 1;
-                }
-            }
-            else
-            {
-                ix = ( hx >> 23 ) - 127;
-            }
-
-            // determine iy = ilogb(y) 
-            if ( hy < 0x00800000 )
-            {
-                // subnormal y 
-                for ( iy = -126, i = ( hy << 8 ); i >= 0; i <<= 1 )
-                {
-                    iy -= 1;
-                }
-            }
-            else
-            {
-                iy = ( hy >> 23 ) - 127;
-            }
-
-            // set up {hx,lx}, {hy,ly} and align y to x 
-            if ( ix >= -126 )
-            {
-                hx = 0x00800000 | ( 0x007fffff & hx );
-            }
-            else
-            {
-                // subnormal x, shift x to normal 
-                n = -126 - ix;
-                hx = hx << n;
-            }
-            if ( iy >= -126 )
-            {
-                hy = 0x00800000 | ( 0x007fffff & hy );
-            }
-            else
-            {
-                // subnormal y, shift y to normal 
-                n = -126 - iy;
-                hy = hy << n;
-            }
-
-            // fix point fmod 
-            n = ix - iy;
-            while ( n-- )
-            {
-                hz = hx - hy;
-                if ( hz < 0 )
-                {
-                    hx = hx + hx;
-                }
-                else
-                {
-                    if ( hz == 0 )
-                    {
-                        // return sign(x)*0 
-                        return Zero[ static_cast< UInt32 >( sx ) >> 31 ];
-                    }
-                    hx = hz + hz;
-                }
-            }
-            hz = hx - hy;
-            if ( hz >= 0 )
-            {
-                hx = hz;
-            }
-
-            // convert back to floating value and restore the sign 
-            if ( hx == 0 )
-            {
-                // return sign(x)*0 
-                return Zero[ static_cast< UInt32 >( sx ) >> 31 ];
-            }
-            while ( hx < 0x00800000 )
-            {
-                // normalize x 
-                hx = hx + hx;
-                iy -= 1;
-            }
-            if ( iy >= -126 )
-            {
-                // normalize output 
-                hx = ( ( hx - 0x00800000 ) | ( ( iy + 127 ) << 23 ) );
-                x = std::bit_cast< float >( hx | sx );
-            }
-            else
-            {
-                // subnormal output 
-                n = -126 - iy;
-                hx >>= n;
-                x = std::bit_cast< float >( hx | sx );
-                // create necessary signal 
-                x *= one;
-            }
-            // exact output 
-            return x;
-        }
-    }
 
     /// <summary>
     /// <para>
@@ -2486,11 +2171,25 @@ namespace Harlinn::Common::Core::Math
     {
         if ( std::is_constant_evaluated( ) )
         {
-            return Math::Internal::FModImpl( x, y );
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return Internal::OpenLibM::fmodf( x, y );
+            }
+            else
+            {
+                return Internal::OpenLibM::fmod( x, y );
+            }
         }
         else
         {
-            return std::fmod( x, y );
+            if constexpr ( std::is_same_v<FloatT, float> )
+            {
+                return Internal::OpenLibM::fmodf( x, y );
+            }
+            else
+            {
+                return std::fmod( x, y );
+            }
         }
     }
 
@@ -2587,246 +2286,7 @@ namespace Harlinn::Common::Core::Math
 
         }
     }
-
-
-    namespace Internal
-    {
-        /*
-         * ====================================================
-         * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
-         *
-         * Developed at SunSoft, a Sun Microsystems, Inc. business.
-         * Permission to use, copy, modify, and distribute this
-         * software is freely granted, provided that this notice
-         * is preserved.
-         * ====================================================
-         */
-
-        constexpr inline double LogImpl( double x ) noexcept
-        {
-            constexpr double ln2_hi = 6.93147180369123816490e-01;
-            constexpr double ln2_lo = 1.90821492927058770002e-10;
-            constexpr double two54 = 1.80143985094819840000e+16;
-            constexpr double Lg1 = 6.666666666666735130e-01;
-            constexpr double Lg2 = 3.999999999940941908e-01;
-            constexpr double Lg3 = 2.857142874366239149e-01;
-            constexpr double Lg4 = 2.222219843214978396e-01;
-            constexpr double Lg5 = 1.818357216161805012e-01;
-            constexpr double Lg6 = 1.531383769920937332e-01;
-            constexpr double Lg7 = 1.479819860511658591e-01; 
-            constexpr double zero = 0.0;
-
-            double hfsq, f, s, z, R, w, t1, t2, dk;
-            int32_t k, i, j;
-
-            Int64 ax = std::bit_cast<Int64> ( x );
-            Int32 hx = static_cast<Int32>( ax >> 32 );
-            UInt32 lx = static_cast<UInt32>( ax );
-
-            k = 0;
-            if ( hx < 0x00100000 )
-            {
-                // x < 2**-1022  
-                if ( ( ( hx & 0x7fffffff ) | lx ) == 0 )
-                {
-                    // log(+-0)=-inf 
-                    //return -two54 / zero;
-                    return -std::numeric_limits<double>::infinity( );
-                }
-                if ( hx < 0 )
-                {
-                    // log(-#) = NaN 
-                    //return ( x - x ) / zero;
-                    return std::numeric_limits<double>::quiet_NaN( );
-                }
-                // subnormal number, scale up x 
-                k -= 54; 
-                x *= two54; 
-                ax = std::bit_cast<Int64> ( x );
-                hx = static_cast<Int32>( ax >> 32 );
-            }
-            if ( hx >= 0x7ff00000 )
-            {
-                return x + x;
-            }
-            k += ( hx >> 20 ) - 1023;
-            hx &= 0x000fffff;
-            i = ( hx + 0x95f64 ) & 0x100000;
-            // normalize x or x/2 
-            ax = (static_cast<Int64>( hx | ( i ^ 0x3ff00000 ) ) << 32) | (ax & 0x00000000FFFFFFFF);
-            x = std::bit_cast<double>( ax );
-            
-            k += ( i >> 20 );
-            f = x - 1.0;
-            if ( ( 0x000fffff & ( 2 + hx ) ) < 3 )
-            {	
-                // -2**-20 <= f < 2**-20 
-                if ( f == zero )
-                {
-                    if ( k == 0 )
-                    {
-                        return zero;
-                    }
-                    else
-                    {
-                        dk = static_cast<double>(k);
-                        return dk * ln2_hi + dk * ln2_lo;
-                    }
-                }
-                R = f * f * ( 0.5 - 0.33333333333333333 * f );
-                if ( k == 0 )
-                {
-                    return f - R;
-                }
-                else
-                {
-                    dk = static_cast<double>( k );
-                    return dk * ln2_hi - ( ( R - dk * ln2_lo ) - f );
-                }
-            }
-            s = f / ( 2.0 + f );
-            dk = static_cast<double>( k );
-            z = s * s;
-            i = hx - 0x6147a;
-            w = z * z;
-            j = 0x6b851 - hx;
-            t1 = w * ( Lg2 + w * ( Lg4 + w * Lg6 ) );
-            t2 = z * ( Lg1 + w * ( Lg3 + w * ( Lg5 + w * Lg7 ) ) );
-            i |= j;
-            R = t2 + t1;
-            if ( i > 0 )
-            {
-                hfsq = 0.5 * f * f;
-                if ( k == 0 ) 
-                    return f - ( hfsq - s * ( hfsq + R ) ); 
-                else
-                    return dk * ln2_hi - ( ( hfsq - ( s * ( hfsq + R ) + dk * ln2_lo ) ) - f );
-            }
-            else
-            {
-                if ( k == 0 ) 
-                    return f - s * ( f - R ); 
-                else
-                    return dk * ln2_hi - ( ( s * ( f - R ) - dk * ln2_lo ) - f );
-            }
-        }
-
-
-        /* e_logf.c -- float version of e_log.c.
-         * Conversion to float by Ian Lance Taylor, Cygnus Support, ian@cygnus.com.
-         */
-
-        /*
-         * ====================================================
-         * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
-         *
-         * Developed at SunPro, a Sun Microsystems, Inc. business.
-         * Permission to use, copy, modify, and distribute this
-         * software is freely granted, provided that this notice
-         * is preserved.
-         * ====================================================
-         */
-        constexpr inline float LogImpl( float x ) noexcept
-        {
-            constexpr float ln2_hi = 6.9313812256e-01f;
-            constexpr float ln2_lo = 9.0580006145e-06f;
-            constexpr float two25 = 3.355443200e+07f;
-                /* |(log(1+s)-log(1-s))/s - Lg(s)| < 2**-34.24 (~[-4.95e-11, 4.97e-11]). */
-            constexpr float Lg1 = 0xaaaaaa.0p-24f;
-            constexpr float Lg2 = 0xccce13.0p-25f;
-            constexpr float Lg3 = 0x91e9ee.0p-25f;
-            constexpr float Lg4 = 0xf89e26.0p-26f;
-
-            constexpr float zero = 0.0f;
-
-            float hfsq, f, s, z, R, w, t1, t2, dk;
-            //int32_t k, ix, i, j;
-
-            Int32 ix = std::bit_cast<Int32>( x );
-
-            Int32 k = 0;
-            if ( ix < 0x00800000 )
-            {
-                // x < 2**-126  
-                if ( ( ix & 0x7fffffff ) == 0 )
-                {
-                    // log(+-0)=-inf 
-                    //return -two25 / zero;
-                    return -std::numeric_limits<float>::infinity( );
-                }
-                if ( ix < 0 )
-                {
-                    // log(-#) = NaN 
-                    //return ( x - x ) / zero;
-                    return std::numeric_limits<float>::quiet_NaN( );
-                }
-                // subnormal number, scale up x 
-                k -= 25; 
-                x *= two25; 
-                ix = std::bit_cast<Int32>( x );
-            }
-            if ( ix >= 0x7f800000 )
-            {
-                return x + x;
-            }
-            k += ( ix >> 23 ) - 127;
-            ix &= 0x007fffff;
-            Int32 i = ( ix + ( 0x95f64 << 3 ) ) & 0x800000;
-
-            // normalize x or x/2 
-            x = std::bit_cast<float>( ix | ( i ^ 0x3f800000 ) );
-            
-            k += ( i >> 23 );
-            f = x - 1.0f;
-            if ( ( 0x007fffff & ( 0x8000 + ix ) ) < 0xc000 )
-            {	
-                // -2**-9 <= f < 2**-9 
-                if ( f == zero )
-                {
-                    if ( k == 0 )
-                    {
-                        return zero;
-                    }
-                    else
-                    {
-                        dk = static_cast<float>( k );
-                        return dk * ln2_hi + dk * ln2_lo;
-                    }
-                }
-                R = f * f * ( 0.5f - (float)0.33333333333333333 * f );
-                if ( k == 0 ) return f - R; else
-                {
-                    dk = static_cast<float>( k );
-                    return dk * ln2_hi - ( ( R - dk * ln2_lo ) - f );
-                }
-            }
-            s = f / ( 2.0f + f );
-            dk = static_cast<float>( k );
-            z = s * s;
-            i = ix - ( 0x6147a << 3 );
-            w = z * z;
-            Int32 j = ( 0x6b851 << 3 ) - ix;
-            t1 = w * ( Lg2 + w * Lg4 );
-            t2 = z * ( Lg1 + w * Lg3 );
-            i |= j;
-            R = t2 + t1;
-            if ( i > 0 )
-            {
-                hfsq = 0.5f * f * f;
-                if ( k == 0 ) 
-                    return f - ( hfsq - s * ( hfsq + R ) ); 
-                else
-                    return dk * ln2_hi - ( ( hfsq - ( s * ( hfsq + R ) + dk * ln2_lo ) ) - f );
-            }
-            else
-            {
-                if ( k == 0 ) 
-                    return f - s * ( f - R ); 
-                else
-                    return dk * ln2_hi - ( ( s * ( f - R ) - dk * ln2_lo ) - f );
-            }
-        }
-    }
+    
     /// <summary>
     /// <para>
     /// Computes the natural, base e, logarithm of <c>x</c>.
@@ -2845,14 +2305,14 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Log( T x ) noexcept
     {
-        if ( std::is_constant_evaluated( ) )
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
         {
-            return Math::Internal::LogImpl( x );
+            return Internal::OpenLibM::logf( x );
         }
         else
         {
-            return Math::Internal::LogImpl( x );
-            //return std::log( x );
+            return Internal::OpenLibM::log( x );
         }
     }
 
@@ -2968,32 +2428,18 @@ namespace Harlinn::Common::Core::Math
     constexpr inline std::remove_cvref_t<T> Sin( T x ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
-        if ( std::is_constant_evaluated( ) )
+        if constexpr ( std::is_same_v<FloatT, float> )
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
-            {
-                return Math::Internal::OpenLibM::sinf( x );
-            }
-            else
-            {
-                return Math::Internal::OpenLibM::sin( x );
-            }
+            return Math::Internal::OpenLibM::sinf( x );
         }
         else
         {
-            if constexpr ( std::is_same_v<std::remove_cvref_t<T>, float> )
+            if ( std::is_constant_evaluated( ) )
             {
-                return Math::Internal::OpenLibM::sinf( x );
-                //return sinf( x );
+                return Math::Internal::OpenLibM::sin( x );
             }
             else
             {
-
-                //using FloatType = std::remove_cvref_t<T>;
-                //FloatType result;
-                //_mm_store_sd( &result, _mm_sin_pd( _mm_set_sd( x ) ) );
-                //return result;
-                //return Math::Internal::SinImpl( x );
                 return sin( x );
             }
         }
@@ -3039,30 +2485,18 @@ namespace Harlinn::Common::Core::Math
     constexpr inline std::remove_cvref_t<T> Cos( T x ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
-        if ( std::is_constant_evaluated( ) )
+        if constexpr ( std::is_same_v<FloatT, float> )
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
-            {
-                return Math::Internal::OpenLibM::cosf( x );
-            }
-            else
-            {
-                return Math::Internal::OpenLibM::cos( x );
-            }
+            return Math::Internal::OpenLibM::cosf( x );
         }
         else
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
+            if ( std::is_constant_evaluated( ) )
             {
-                return Math::Internal::OpenLibM::cosf( x );
-                //return cosf( x );
+                return Math::Internal::OpenLibM::cos( x );
             }
             else
             {
-                //using FloatType = std::remove_cvref_t<T>;
-                //FloatType result;
-                //_mm_store_sd( &result, _mm_cos_pd( _mm_set_sd( x ) ) );
-                //return result;
                 return cos( x );
             }
         }
@@ -3113,41 +2547,20 @@ namespace Harlinn::Common::Core::Math
     constexpr inline std::remove_cvref_t<T> Tan( T x ) noexcept
     {
         using FloatT = std::remove_cvref_t<T>;
-        if ( std::is_constant_evaluated( ) )
+        if constexpr ( std::is_same_v<FloatT, float> )
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
-            {
-                return Math::Internal::OpenLibM::tanf( x );
-            }
-            else
-            {
-                return Math::Internal::OpenLibM::tan( x );
-            }
+            return Math::Internal::OpenLibM::tanf( x );
         }
         else
         {
-            if constexpr ( std::is_same_v<FloatT, float> )
+            if ( std::is_constant_evaluated( ) )
             {
-                return Math::Internal::OpenLibM::tanf( x );
+                return Math::Internal::OpenLibM::tan( x );
             }
             else
             {
-                return std::tan( x );
+                return tan( x );
             }
-            
-            /*
-            FloatType result;
-            if constexpr ( std::is_same_v<FloatType, float> )
-            {
-                _mm_store_ss( &result, _mm_tan_ps( _mm_set_ss( x ) ) );
-            }
-            else
-            {
-                _mm_store_sd( &result, _mm_tan_pd( _mm_set_sd( x ) ) );
-            }
-            return result;
-            */
-            //return std::tan( x );
         }
     }
 
@@ -3499,26 +2912,6 @@ namespace Harlinn::Common::Core::Math
     constexpr inline FloatT NextFloatUp( FloatT v )
     {   
         return NextUp( v );
-        /*
-        if ( IsInf( v ) && v > static_cast< FloatT >( 0. ) )
-        {
-            return v;
-        }
-        if ( v == static_cast< FloatT >( -0. ) )
-        {
-            v = static_cast< FloatT >( 0 );
-        }
-        auto ui = std::bit_cast< MakeUnsigned<FloatT> >( v );
-        if ( v >= static_cast< FloatT >( 0 ) )
-        {
-            ++ui;
-        }
-        else
-        {
-            --ui;
-        }
-        return std::bit_cast<FloatT>( ui );
-        */
     }
 
     template<typename FloatT>
@@ -3526,26 +2919,6 @@ namespace Harlinn::Common::Core::Math
     constexpr FloatT NextFloatDown( FloatT v )
     {
         return NextDown( v );
-        /*
-        if ( IsInf( v ) && v < static_cast< FloatT >( 0. ) )
-        {
-            return v;
-        }
-        if ( v == static_cast< FloatT >( 0. ) )
-        {
-            v = static_cast< FloatT >( -0. );
-        }
-        auto ui = std::bit_cast< MakeUnsigned<FloatT> >( v );
-        if ( v > static_cast< FloatT >( 0. ) )
-        {
-            --ui;
-        }
-        else
-        {
-            ++ui;
-        }
-        return std::bit_cast< FloatT >( ui );
-        */
     }
 
     template<typename FloatT>
@@ -3642,8 +3015,7 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT FastLog2( FloatT x )
     {
-        constexpr FloatT invLog2 = static_cast< FloatT >( 1.442695040888963387004650940071 );
-        return Math::Log( x ) * invLog2;
+        return Log2( x );
     }
 
     constexpr inline int Log2Int( float v )
@@ -4056,7 +3428,7 @@ namespace Harlinn::Common::Core::Math
     {
     public:
         using value_type = T;
-        //static constexpr Interval Pi{Constants<value_type>::Pi,Constants<value_type>::Pi };
+        //static inline constexpr Interval Pi{Constants<value_type>::Pi,Constants<value_type>::Pi };
     private:
         value_type lowerBound_ = static_cast< value_type >( 0 );
         value_type upperBound_ = static_cast< value_type >( 0 );

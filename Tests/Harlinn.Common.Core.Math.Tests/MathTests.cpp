@@ -599,6 +599,14 @@ BOOST_AUTO_TEST_CASE( IsNaNTest1 )
     constexpr float nanValue = std::numeric_limits<float>::quiet_NaN( );
     constexpr bool result = IsNaN( 1, nanValue );
     BOOST_CHECK( result );
+
+    constexpr bool result2 = IsNaN( 1, 2.0 );
+    BOOST_CHECK( result2 == false );
+#if 0
+    // Not expected to compile:
+    constexpr bool result3 = IsNaN( 1, 2.0, true );
+    BOOST_CHECK( result3 == false );
+#endif
 }
 
 
@@ -638,7 +646,7 @@ BOOST_AUTO_TEST_CASE( IsInfDoubleTest1 )
     using FloatT = double;
     Generators::RandomGenerator<FloatT, 20000> generator;
     NumericTest test( "IsInfDoubleTest1" );
-    auto success = test.Run( generator, std::isinf<FloatT>, IsInf<FloatT>,
+    auto success = test.Run( generator, []( auto v ) {return std::isinf( v ); }, []( auto v ) { return IsInf( v ); },
         {
             std::numeric_limits<FloatT>::quiet_NaN( ),
             -std::numeric_limits<FloatT>::infinity( ),
@@ -665,7 +673,7 @@ BOOST_AUTO_TEST_CASE( OpenLibMIsInfDoubleTest1 )
     using FloatT = double;
     Generators::RandomGenerator<FloatT, 20000> generator;
     NumericTest test( "OpenLibMIsInfDoubleTest1" );
-    auto success = test.Run( generator, std::isinf<FloatT>, []( auto x ) { return OpenLibM::isinf( x ) != 0; },
+    auto success = test.Run( generator, []( auto v ) {return std::isinf( v ); }, []( auto x ) { return OpenLibM::isinf( x ) != 0; },
         {
             std::numeric_limits<FloatT>::quiet_NaN( ),
             -std::numeric_limits<FloatT>::infinity( ),
