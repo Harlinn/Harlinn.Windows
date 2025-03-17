@@ -1084,11 +1084,15 @@ namespace Harlinn::Common::Core::Math
             return ToSimd( );
         }
 
-        constexpr bool operator == ( const Tuple2& other ) const noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        constexpr bool operator == ( const U& other ) const noexcept
         {
             return IsSameValue( x, other.x ) && IsSameValue( y, other.y );
         }
-        constexpr bool operator != ( const Tuple2& other ) const noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        constexpr bool operator != ( const U& other ) const noexcept
         {
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y );
         }
@@ -1128,7 +1132,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator += ( const Tuple2& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator += ( const U& other ) noexcept
         {
             x += other.x;
             y += other.y;
@@ -1148,7 +1154,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator -= ( const Tuple2& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator -= ( const U& other ) noexcept
         {
             x -= other.x;
             y -= other.y;
@@ -1169,7 +1177,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator *= ( const Tuple2& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator *= ( const U& other ) noexcept
         {
             x *= other.x;
             y *= other.y;
@@ -1190,7 +1200,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator /= ( const Tuple2& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator /= ( const U& other ) noexcept
         {
             x /= other.x;
             y /= other.y;
@@ -1412,11 +1424,15 @@ namespace Harlinn::Common::Core::Math
             return ToSimd( );
         }
 
-        constexpr bool operator == ( const Tuple3& other ) const noexcept
+        template<Internal::TupleType U>
+            requires (U::Size == Size)
+        constexpr bool operator == ( const U& other ) const noexcept
         {
             return IsSameValue( x, other.x ) && IsSameValue( y, other.y ) && IsSameValue( z, other.z );
         }
-        constexpr bool operator != ( const Tuple3& other ) const noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        constexpr bool operator != ( const U& other ) const noexcept
         {
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y ) || !IsSameValue( z, other.z );
         }
@@ -1455,7 +1471,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >(*this );
         }
 
-        DerivedType& operator += ( const Tuple3& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator += ( const U& other ) noexcept
         {
             x += other.x;
             y += other.y;
@@ -1477,7 +1495,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator -= ( const Tuple3& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator -= ( const U& other ) noexcept
         {
             x -= other.x;
             y -= other.y;
@@ -1499,7 +1519,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator *= ( const Tuple3& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator *= ( const U& other ) noexcept
         {
             x *= other.x;
             y *= other.y;
@@ -1522,7 +1544,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator /= ( const Tuple3& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator /= ( const U& other ) noexcept
         {
             x /= other.x;
             y /= other.y;
@@ -1745,11 +1769,16 @@ namespace Harlinn::Common::Core::Math
             return ToSimd( );
         }
 
-        constexpr bool operator == ( const Tuple4& other ) const noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        constexpr bool operator == ( const U& other ) const noexcept
         {
             return IsSameValue( x, other.x ) && IsSameValue( y, other.y ) && IsSameValue( z, other.z ) && IsSameValue( w, other.w );
         }
-        constexpr bool operator != ( const Tuple4& other ) const noexcept
+
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        constexpr bool operator != ( const U& other ) const noexcept
         {
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y ) || !IsSameValue( z, other.z ) || !IsSameValue( w, other.w );
         }
@@ -1788,7 +1817,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator += ( const Tuple4& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator += ( const U& other ) noexcept
         {
             x += other.x;
             y += other.y;
@@ -1812,7 +1843,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator -= ( const Tuple4& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator -= ( const U& other ) noexcept
         {
             x -= other.x;
             y -= other.y;
@@ -1837,7 +1870,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator *= ( const Tuple4& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator *= ( const U& other ) noexcept
         {
             x *= other.x;
             y *= other.y;
@@ -1861,7 +1896,9 @@ namespace Harlinn::Common::Core::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        DerivedType& operator /= ( const Tuple4& other ) noexcept
+        template<Internal::TupleType U>
+            requires ( U::Size == Size )
+        DerivedType& operator /= ( const U& other ) noexcept
         {
             x /= other.x;
             y /= other.y;

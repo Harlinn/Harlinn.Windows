@@ -866,8 +866,7 @@ public:
         requires std::is_same_v<Traits, typename T::Traits>
     Point3( const T& other ) noexcept
         : Base( other )
-    {
-    }
+    { }
 
     template<typename T>
         requires ( T::nDimensions == 3 ) && requires ( T t )
@@ -876,11 +875,12 @@ public:
     }
     Point3( const T& pi ) noexcept
         : Base( static_cast< float >( pi.x ), static_cast< float >( pi.y ), static_cast< float >( pi.z ) ) 
-    {}
+    { }
     explicit operator Vector3<double>( ) const
     {
         return Vector3<double>( static_cast< double >( x ), static_cast< double >( y ), static_cast< double >( z ) );
     }
+
 
 };
 
@@ -1094,10 +1094,10 @@ inline Point3i ToPoint3i( const Vector3<float>::Simd& other )
     return Point3i( static_cast< int >( tmp.x ), static_cast< int >( tmp.y ), static_cast< int >( tmp.z ) );
 }
 
-inline Point3i ToPoint3i( const Vector3<float>& other )
-{
-    return Point3i( static_cast< int >( other.x ), static_cast< int >( other.y ), static_cast< int >( other.z ) );
-}
+//inline Point3i ToPoint3i( const Vector3<float>& other )
+//{
+//    return Point3i( static_cast< int >( other.x ), static_cast< int >( other.y ), static_cast< int >( other.z ) );
+//}
 
 inline Point3f ToPoint3f( const Vector3<float>::Simd& other )
 {

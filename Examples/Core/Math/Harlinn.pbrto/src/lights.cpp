@@ -173,8 +173,15 @@ SampledSpectrum PointLight::Phi(SampledWavelengths lambda) const {
 pstd::optional<LightBounds> PointLight::Bounds() const {
     Point3f p = renderFromLight(Point3f(0, 0, 0));
     Float phi = 4 * Pi * scale * I->MaxValue();
+#ifdef PBRT_USES_HCCMATH
+    constexpr Float cosPi = Math::Cos( Pi );
+    constexpr Float cosPiOver2 = Math::Cos( Pi /2.f );
+    return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, cosPi,
+        cosPiOver2, false );
+#else
     return LightBounds(Bounds3f(p, p), Vector3f(0, 0, 1), phi, std::cos(Pi),
                        std::cos(Pi / 2), false);
+#endif
 }
 
 PBRT_CPU_GPU pstd::optional<LightLeSample> PointLight::SampleLe(Point2f u1, Point2f u2,
@@ -406,7 +413,12 @@ pstd::optional<LightBounds> ProjectionLight::Bounds() const {
 
     Point3f p = renderFromLight(Point3f(0, 0, 0));
     Vector3f w = Normalize(renderFromLight(Vector3f(0, 0, 1)));
+#ifdef PBRT_USES_HCCMATH
+    constexpr auto cosZero = Math::Cos( 0.f );
+    return LightBounds( Bounds3f( p, p ), w, phi, cosZero, cosTotalWidth, false );
+#else
     return LightBounds(Bounds3f(p, p), w, phi, std::cos(0.f), cosTotalWidth, false);
+#endif
 }
 
 PBRT_CPU_GPU pstd::optional<LightLeSample> ProjectionLight::SampleLe(Point2f u1, Point2f u2,
@@ -586,8 +598,16 @@ pstd::optional<LightBounds> GoniometricLight::Bounds() const {
 
     Point3f p = renderFromLight(Point3f(0, 0, 0));
     // Bound it as an isotropic point light.
+#ifdef PBRT_USES_HCCMATH
+    constexpr Float cosPi = Math::Cos( Pi );
+    constexpr Float cosPiOver2 = Math::Cos( Pi / 2.f );
+
+    return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, cosPi,
+        cosPiOver2, false );
+#else
     return LightBounds(Bounds3f(p, p), Vector3f(0, 0, 1), phi, std::cos(Pi),
                        std::cos(Pi / 2), false);
+#endif
 }
 
 PBRT_CPU_GPU pstd::optional<LightLeSample> GoniometricLight::SampleLe(Point2f u1, Point2f u2,
@@ -818,8 +838,14 @@ pstd::optional<LightBounds> DiffuseAreaLight::Bounds() const {
     phi *= scale * area * Pi;
 
     DirectionCone nb = shape.NormalBounds();
+#ifdef PBRT_USES_HCCMATH
+    constexpr Float cosPiOver2 = Math::Cos( Pi / 2.f );
+    return LightBounds( shape.Bounds( ), nb.w, phi, nb.cosTheta, cosPiOver2,
+        twoSided );
+#else
     return LightBounds(shape.Bounds(), nb.w, phi, nb.cosTheta, std::cos(Pi / 2),
                        twoSided);
+#endif
 }
 
 PBRT_CPU_GPU pstd::optional<LightLeSample> DiffuseAreaLight::SampleLe(Point2f u1, Point2f u2,
@@ -1364,8 +1390,14 @@ SpotLight::SpotLight(const Transform &renderFromLight,
     : LightBase(LightType::DeltaPosition, renderFromLight, mediumInterface),
       Iemit(LookupSpectrum(Iemit)),
       scale(scale),
+#ifdef PBRT_USES_HCCMATH
+    cosFalloffEnd( Math::Cos( Deg2Rad( totalWidth ) ) ),
+    cosFalloffStart( Math::Cos( Deg2Rad( falloffStart ) ) )
+#else
       cosFalloffEnd(std::cos(Radians(totalWidth))),
-      cosFalloffStart(std::cos(Radians(falloffStart))) {
+      cosFalloffStart(std::cos(Radians(falloffStart))) 
+#endif
+{
     CHECK_LE(falloffStart, totalWidth);
 }
 
@@ -1467,9 +1499,15 @@ SpotLight *SpotLight::Create(const Transform &renderFromLight, Medium medium,
     sc /= SpectrumToPhotometric(I);
 
     Float phi_v = parameters.GetOneFloat("power", -1);
-    if (phi_v > 0) {
+    if (phi_v > 0) 
+    {
+#ifdef PBRT_USES_HCCMATH
+        Float cosFalloffEnd = Math::Cos( Deg2Rad( coneangle ) );
+        Float cosFalloffStart = Math::Cos( Deg2Rad( coneangle - conedelta ) );
+#else
         Float cosFalloffEnd = std::cos(Radians(coneangle));
         Float cosFalloffStart = std::cos(Radians(coneangle - conedelta));
+#endif
         Float k_e =
             2 * Pi * ((1 - cosFalloffStart) + (cosFalloffStart - cosFalloffEnd) / 2);
         sc *= phi_v / k_e;

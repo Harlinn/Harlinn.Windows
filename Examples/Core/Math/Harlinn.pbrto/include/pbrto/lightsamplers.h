@@ -393,16 +393,28 @@ class BVHLightSampler {
         std::vector<std::pair<int, LightBounds>> &bvhLights, int start, int end,
         uint32_t bitTrail, int depth);
 
-    Float EvaluateCost(const LightBounds &b, const Bounds3f &bounds, int dim) const {
+    Float EvaluateCost(const LightBounds &b, const Bounds3f &bounds, int dim) const 
+    {
         // Evaluate direction bounds measure for _LightBounds_
+#ifdef PBRT_USES_HCCMATH
+        Float theta_o = Math::ACos( b.cosTheta_o );
+        Float theta_e = Math::ACos( b.cosTheta_e );
+#else
         Float theta_o = std::acos(b.cosTheta_o), theta_e = std::acos(b.cosTheta_e);
+#endif
         Float theta_w = std::min(theta_o + theta_e, Pi);
         Float sinTheta_o = SafeSqrt(1 - Sqr(b.cosTheta_o));
+#ifdef PBRT_USES_HCCMATH
+        Float M_omega = 2 * Pi * ( 1 - b.cosTheta_o ) +
+            Pi / 2 *
+            ( 2 * theta_w * sinTheta_o - Math::Cos( theta_o - 2 * theta_w ) -
+                2 * theta_o * sinTheta_o + b.cosTheta_o );
+#else
         Float M_omega = 2 * Pi * (1 - b.cosTheta_o) +
                         Pi / 2 *
                             (2 * theta_w * sinTheta_o - std::cos(theta_o - 2 * theta_w) -
                              2 * theta_o * sinTheta_o + b.cosTheta_o);
-
+#endif
         // Return complete cost estimate for _LightBounds_
         Float Kr = MaxComponentValue(bounds.Diagonal()) / bounds.Diagonal()[dim];
         return b.phi * M_omega * Kr * b.bounds.SurfaceArea();

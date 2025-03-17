@@ -62,8 +62,18 @@ PBRT_CPU_GPU DirectionCone Union(const DirectionCone &a, const DirectionCone &b)
         return a;
 
     // Handle the cases where one cone is inside the other
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float theta_a = Math::SafeACos( a.cosTheta ), theta_b = SafeACos( b.cosTheta );
+#else
     Float theta_a = SafeACos(a.cosTheta), theta_b = SafeACos(b.cosTheta);
-    Float theta_d = AngleBetween(a.w, b.w);
+    
+#endif
+
+#ifdef PBRT_USES_HCCMATH
+    Float theta_d = Math::ScalarAngleBetween( a.w, b.w );
+#else
+    Float theta_d = AngleBetween( a.w, b.w );
+#endif
     if (std::min(theta_d + theta_b, Pi) <= theta_a)
         return a;
     if (std::min(theta_d + theta_a, Pi) <= theta_b)
@@ -80,7 +90,11 @@ PBRT_CPU_GPU DirectionCone Union(const DirectionCone &a, const DirectionCone &b)
     if (LengthSquared(wr) == 0)
         return DirectionCone::EntireSphere();
     Vector3f w = Rotate(Degrees(theta_r), wr)(a.w);
+#ifdef PBRT_USES_HCCMATH
+    return DirectionCone( w, Math::Cos( theta_o ) );
+#else
     return DirectionCone(w, std::cos(theta_o));
+#endif
 }
 
 std::string DirectionCone::ToString() const {

@@ -22,7 +22,8 @@
 
 namespace pbrt {
 
-PBRTO_EXPORT void RenderCPU(BasicScene &parsedScene) {
+PBRTO_EXPORT void RenderCPU(BasicScene &parsedScene) 
+{
     Allocator alloc;
     ThreadLocal<Allocator> threadAllocators([]() { return Allocator(); });
 

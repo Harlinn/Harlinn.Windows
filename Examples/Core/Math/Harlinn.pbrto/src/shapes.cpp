@@ -48,8 +48,13 @@ PBRT_CPU_GPU pstd::optional<ShapeSample> Sphere::Sample(Point2f u) const {
     if (reverseOrientation)
         n *= -1;
     // Compute $(u, v)$ coordinates for sphere sample
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float theta = Math::SafeACos( pObj.z / radius );
+    Float phi = Math::ATan2( pObj.y, pObj.x );
+#else
     Float theta = SafeACos(pObj.z / radius);
     Float phi = std::atan2(pObj.y, pObj.x);
+#endif
     if (phi < 0)
         phi += 2 * Pi;
     Point2f uv(phi / phiMax, (theta - thetaZMin) / (thetaZMax - thetaZMin));

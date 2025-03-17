@@ -28,16 +28,18 @@
 #include <string>
 #include <vector>
 
-namespace pbrt {
+namespace pbrt 
+{
 
 // Integrator Definition
-class Integrator {
+class Integrator 
+{
   public:
     // Integrator Public Methods
     virtual ~Integrator();
 
     static std::unique_ptr<Integrator> Create(
-        const std::string &name, const ParameterDictionary &parameters, Camera camera,
+        const std::string &name, const ParameterDictionary& parameters, Camera camera,
         Sampler sampler, Primitive aggregate, std::vector<Light> lights,
         const RGBColorSpace *colorSpace, const FileLoc *loc);
 

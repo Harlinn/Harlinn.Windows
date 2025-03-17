@@ -254,7 +254,8 @@ inline Float InvertNormalSample(Float x, Float mu = 0, Float sigma = 1) {
     return 0.5f * (1 + std::erf((x - mu) / (sigma * Sqrt2)));
 }
 
-PBRT_CPU_GPU inline Point2f SampleTwoNormal(Point2f u, Float mu = 0, Float sigma = 1) {
+PBRT_CPU_GPU inline Point2f SampleTwoNormal(Point2f u, Float mu = 0, Float sigma = 1) 
+{
 #ifdef PBRT_USES_HCCMATH_LOG
     Float r2 = -2 * Math::Log( 1 - u[ 0 ] );
 #else
@@ -262,8 +263,13 @@ PBRT_CPU_GPU inline Point2f SampleTwoNormal(Point2f u, Float mu = 0, Float sigma
 #endif
 #ifdef PBRT_USES_HCCMATH_SINCOS
 #ifdef PBRT_USES_HCCMATH_SQRT
-    return { mu + sigma * Math::Sqrt( r2 * Math::Cos( 2 * Pi * u[ 1 ] ) ),
-            mu + sigma * Math::Sqrt( r2 * Math::Sin( 2 * Pi * u[ 1 ] ) ) };
+    Float theta = 2.f * Pi * u.y;
+    Float sinTheta;
+    Float cosTheta;
+    Math::SinCos( theta, &sinTheta, &cosTheta );
+
+    return { mu + sigma * Math::Sqrt( r2 * cosTheta ),
+            mu + sigma * Math::Sqrt( r2 * sinTheta ) };
 #else
     return { mu + sigma * std::sqrt( r2 * Math::Cos( 2 * Pi * u[ 1 ] ) ),
             mu + sigma * std::sqrt( r2 * Math::Sin( 2 * Pi * u[ 1 ] ) ) };
@@ -359,7 +365,11 @@ PBRT_CPU_GPU inline Point2f SampleUniformDiskPolar(Point2f u) {
 #endif
     Float theta = 2 * Pi * u[1];
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    return { r * Math::Cos( theta ), r * Math::Sin( theta ) };
+    Float sinTheta;
+    Float cosTheta;
+    Math::SinCos( theta, &sinTheta, &cosTheta );
+
+    return { r * cosTheta, r * sinTheta };
 #else
     return {r * std::cos(theta), r * std::sin(theta)};
 #endif
@@ -389,7 +399,10 @@ PBRT_CPU_GPU inline Point2f SampleUniformDiskConcentric(Point2f u) {
         theta = PiOver2 - PiOver4 * (uOffset.x / uOffset.y);
     }
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    return r * Point2f( Math::Cos( theta ), Math::Sin( theta ) );
+    Float sinTheta;
+    Float cosTheta;
+    Math::SinCos( theta, &sinTheta, &cosTheta );
+    return r * Point2f( cosTheta, sinTheta );
 #else
     return r * Point2f(std::cos(theta), std::sin(theta));
 #endif
@@ -434,7 +447,10 @@ PBRT_CPU_GPU inline Vector3f SampleUniformHemisphere(Point2f u) {
     Float r = SafeSqrt(1 - Sqr(z));
     Float phi = 2 * Pi * u[1];
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    return { r * Math::Cos( phi ), r * Math::Sin( phi ), z };
+    Float sinPhi;
+    Float cosPhi;
+    Math::SinCos( phi, &sinPhi, &cosPhi );
+    return { r * cosPhi, r * sinPhi, z };
 #else
     return {r * std::cos(phi), r * std::sin(phi), z};
 #endif
@@ -456,7 +472,10 @@ PBRT_CPU_GPU inline Vector3f SampleUniformSphere(Point2f u) {
     Float r = SafeSqrt(1 - Sqr(z));
     Float phi = 2 * Pi * u[1];
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    return { r * Math::Cos( phi ), r * Math::Sin( phi ), z };
+    Float sinPhi;
+    Float cosPhi;
+    Math::SinCos( phi, &sinPhi, &cosPhi );
+    return { r * cosPhi, r * sinPhi, z };
 #else
     return {r * std::cos(phi), r * std::sin(phi), z};
 #endif
@@ -555,8 +574,12 @@ inline Vector3f SampleUniformHemisphereConcentric(Point2f u) {
     }
 #ifdef PBRT_USES_HCCMATH_SINCOS
 #ifdef PBRT_USES_HCCMATH_SQRT
-    return Vector3f( Math::Cos( theta ) * r * Math::Sqrt( 2 - r * r ),
-        Math::Sin( theta ) * r * Math::Sqrt( 2 - r * r ), 1 - r * r );
+    Float sinTheta;
+    Float cosTheta;
+    Math::SinCos( theta, &sinTheta, &cosTheta );
+
+    return Vector3f( cosTheta * r * Math::Sqrt( 2 - r * r ),
+        sinTheta * r * Math::Sqrt( 2 - r * r ), 1 - r * r );
 #else
     return Vector3f( Math::Cos( theta ) * r * std::sqrt( 2 - r * r ),
         Math::Sin( theta ) * r * std::sqrt( 2 - r * r ), 1 - r * r );

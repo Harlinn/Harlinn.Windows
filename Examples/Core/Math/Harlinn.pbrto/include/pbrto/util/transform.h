@@ -225,11 +225,19 @@ PBRT_CPU_GPU inline Transform Inverse(const Transform &t) {
 }
 
 PBRT_CPU_GPU inline Transform Transpose(const Transform &t) {
+#ifdef PBRT_USES_HCCMATH
+    return Transform( Math::Transpose( t.GetMatrix( ) ), Math::Transpose( t.GetInverseMatrix( ) ) );
+#else
     return Transform(Transpose(t.GetMatrix()), Transpose(t.GetInverseMatrix()));
+#endif
 }
 
 PBRT_CPU_GPU inline Transform Rotate(Float sinTheta, Float cosTheta, Vector3f axis) {
+#ifdef PBRT_USES_HCCMATH
+    Vector3f a = Math::Normalize( axis );
+#else
     Vector3f a = Normalize(axis);
+#endif
     SquareMatrix<4> m;
     // Compute rotation of first basis vector
     m[0][0] = a.x * a.x + (1 - a.x * a.x) * cosTheta;
@@ -248,21 +256,29 @@ PBRT_CPU_GPU inline Transform Rotate(Float sinTheta, Float cosTheta, Vector3f ax
     m[2][2] = a.z * a.z + (1 - a.z * a.z) * cosTheta;
     m[2][3] = 0;
 
+#ifdef PBRT_USES_HCCMATH
+    return Transform( m, Math::Transpose( m ) );
+#else
     return Transform(m, Transpose(m));
+#endif
 }
 
 PBRT_CPU_GPU inline Transform Rotate(Float theta, Vector3f axis) {
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    Float sinTheta = Math::Sin( Radians( theta ) );
-    Float cosTheta = Math::Cos( Radians( theta ) );
+    auto rTheta = Math::Deg2Rad( theta );
+    Float sinTheta;
+    Float cosTheta;
+    Math::SinCos( rTheta, &sinTheta, &cosTheta );
 #else
     Float sinTheta = std::sin(Radians(theta));
     Float cosTheta = std::cos(Radians(theta));
 #endif
     return Rotate(sinTheta, cosTheta, axis);
+
 }
 
-PBRT_CPU_GPU inline Transform RotateFromTo(Vector3f from, Vector3f to) {
+PBRT_CPU_GPU inline Transform RotateFromTo(Vector3f from, Vector3f to) 
+{
     // Compute intermediate vector for vector reflection
     Vector3f refl;
     if (std::abs(from.x) < 0.72f && std::abs(to.x) < 0.72f)
@@ -275,14 +291,37 @@ PBRT_CPU_GPU inline Transform RotateFromTo(Vector3f from, Vector3f to) {
     // Initialize matrix _r_ for rotation
     Vector3f u = refl - from, v = refl - to;
     SquareMatrix<4> r;
-    for (int i = 0; i < 3; ++i)
-        for (int j = 0; j < 3; ++j)
+#ifdef PBRT_USES_HCCMATH
+    auto dotUU = Math::ScalarDot( u, u );
+    auto dotVV = Math::ScalarDot( v, v );
+    auto dotUV = Math::ScalarDot( u, v );
+    for ( int i = 0; i < 3; ++i )
+    {
+        for ( int j = 0; j < 3; ++j )
+        {
             // Initialize matrix element _r[i][j]_
-            r[i][j] = ((i == j) ? 1 : 0) - 2 / Dot(u, u) * u[i] * u[j] -
-                      2 / Dot(v, v) * v[i] * v[j] +
-                      4 * Dot(u, v) / (Dot(u, u) * Dot(v, v)) * v[i] * u[j];
-
+            r[ i ][ j ] = ( ( i == j ) ? 1 : 0 ) - 
+                2 / dotUU * u[ i ] * u[ j ] - 2 / dotVV * v[ i ] * v[ j ] + 
+                4 * dotUV / ( dotUU * dotVV ) * v[ i ] * u[ j ];
+        }
+    }
+#else
+    for ( int i = 0; i < 3; ++i )
+    {
+        for ( int j = 0; j < 3; ++j )
+        {
+            // Initialize matrix element _r[i][j]_
+            r[ i ][ j ] = ( ( i == j ) ? 1 : 0 ) - 2 / Dot( u, u ) * u[ i ] * u[ j ] -
+                2 / Dot( v, v ) * v[ i ] * v[ j ] +
+                4 * Dot( u, v ) / ( Dot( u, u ) * Dot( v, v ) ) * v[ i ] * u[ j ];
+        }
+    }
+#endif
+#ifdef PBRT_USES_HCCMATH
+    return Transform( r, Math::Transpose( r ) );
+#else
     return Transform(r, Transpose(r));
+#endif
 }
 
 PBRT_CPU_GPU inline Vector3fi Transform::operator()(const Vector3fi &v) const {
@@ -401,7 +440,11 @@ PBRT_CPU_GPU inline Transform::Transform(Quaternion q) {
     mInv[2][2] = 1 - 2 * (xx + yy);
 
     // Transpose since we are left-handed.  Ugh.
+#ifdef PBRT_USES_HCCMATH
+    m = Math::Transpose( mInv );
+#else
     m = Transpose(mInv);
+#endif
 }
 
 template <typename T>

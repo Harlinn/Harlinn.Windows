@@ -628,16 +628,22 @@ PBRT_CPU_GPU pstd::optional<CameraRay> SphericalCamera::GenerateRay(CameraSample
     Point2f uv(sample.pFilm.x / film.FullResolution().x,
                sample.pFilm.y / film.FullResolution().y);
     Vector3f dir;
-    if (mapping == EquiRectangular) {
+    if (mapping == EquiRectangular) 
+    {
         // Compute ray direction using equirectangular mapping
         Float theta = Pi * uv[1], phi = 2 * Pi * uv[0];
 #ifdef PBRT_USES_HCCMATH_SINCOS
-        dir = SphericalDirection( Math::Sin( theta ), Math::Cos( theta ), phi );
+        Float sinTheta;
+        Float cosTheta;
+        Math::SinCos( theta,&sinTheta, &cosTheta );
+        dir = SphericalDirection( sinTheta, cosTheta, phi );
 #else
         dir = SphericalDirection(std::sin(theta), std::cos(theta), phi);
 #endif
 
-    } else {
+    } 
+    else 
+    {
         // Compute ray direction using equal area mapping
         uv = WrapEqualAreaSquare(uv);
         dir = EqualAreaSquareToSphere(uv);
@@ -1433,12 +1439,18 @@ RealisticCamera *RealisticCamera::Create(const ParameterDictionary &parameters,
         } else if (apertureName == "star") {
             // 5-sided. Vertices are two pentagons--inner and outer radius
             pstd::array<Point2f, 10> vert;
-            for (int i = 0; i < 10; ++i) {
+            for (int i = 0; i < 10; ++i) 
+            {
                 // inner radius: https://math.stackexchange.com/a/2136996
 #ifdef PBRT_USES_HCCMATH_SINCOS
-                Float r =
-                    ( i & 1 ) ? 1.f : ( Math::Cos( Radians( 72.f ) ) / Math::Cos( Radians( 36.f ) ) );
-                vert[ i ] = Point2f( r * Math::Cos( Pi * i / 5.f ), r * Math::Sin( Pi * i / 5.f ) );
+                constexpr auto gr = Math::Cos( Deg2Rad( 72.f ) ) / Math::Cos( Deg2Rad( 36.f ) );
+
+                Float r = ( i & 1 ) ? 1.f : gr;
+                Float sinV;
+                Float cosV;
+                Math::SinCos( Pi * i / 5.f,&sinV, &cosV );
+
+                vert[ i ] = Point2f( r * cosV, r * sinV );
 #else
                 Float r =
                     (i & 1) ? 1.f : (std::cos(Radians(72.f)) / std::cos(Radians(36.f)));

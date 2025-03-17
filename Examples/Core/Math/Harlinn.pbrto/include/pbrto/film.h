@@ -70,6 +70,7 @@ class PixelSensor {
         }
 
         // Initialize _XYZFromSensorRGB_ using linear least squares
+
         pstd::optional<SquareMatrix<3>> m =
             LinearLeastSquares(rgbCamera, xyzOutput, nSwatchReflectances);
         if (!m)

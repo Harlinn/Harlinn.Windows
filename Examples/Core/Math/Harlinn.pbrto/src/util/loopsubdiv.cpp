@@ -337,10 +337,15 @@ TriangleMesh *LoopSubdivide(const Transform *renderFromObject, bool reverseOrien
         vertex->oneRing(&pRing[0]);
         if (!vertex->boundary) {
             // Compute tangents of interior face
-            for (int j = 0; j < valence; ++j) {
+            for (int j = 0; j < valence; ++j) 
+            {
 #ifdef PBRT_USES_HCCMATH_SINCOS
-                S += Math::Cos( 2 * Pi * j / valence ) * Vector3f( pRing[ j ] );
-                T += Math::Sin( 2 * Pi * j / valence ) * Vector3f( pRing[ j ] );
+                Float alpha = 2.f * Pi * j / valence;
+                Float sinAlpha;
+                Float cosAlpha;
+                Math::SinCos( alpha,&sinAlpha, &cosAlpha );
+                S += cosAlpha * Vector3f( pRing[ j ] );
+                T += sinAlpha * Vector3f( pRing[ j ] );
 #else
                 S += std::cos(2 * Pi * j / valence) * Vector3f(pRing[j]);
                 T += std::sin(2 * Pi * j / valence) * Vector3f(pRing[j]);

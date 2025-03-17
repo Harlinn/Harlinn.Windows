@@ -15,6 +15,7 @@
 
 namespace pbrt {
 
+#ifndef PBRT_USES_HCCMATH
 std::string CompensatedFloat::ToString() const {
     return StringPrintf("[ CompensatedFloat v: %f err: %f ]", v, err);
 }
@@ -24,7 +25,7 @@ std::string CompensatedSum<Float>::ToString() const {
     return StringPrintf("[ CompensatedSum sum: %s c: %s ]", sum, c);
 }
 
-#ifndef PBRT_USES_HCCMATH
+
 
 template <int N>
 std::string SquareMatrix<N>::ToString() const {
@@ -332,8 +333,12 @@ PBRT_CPU_GPU Vector3f EqualAreaSquareToSphere(Point2f p) {
 
     // Compute $\cos\phi$ and $\sin\phi$ for original quadrant and return vector
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    Float cosPhi = pstd::copysign( Math::Cos( phi ), u );
-    Float sinPhi = pstd::copysign( Math::Sin( phi ), v );
+    Float cosPhi;
+    Float sinPhi;
+    Math::SinCos( phi, &sinPhi, &cosPhi );
+
+    cosPhi = Math::CopySign( cosPhi, u );
+    sinPhi = Math::CopySign( sinPhi, v );
 #else
     Float cosPhi = pstd::copysign(std::cos(phi), u);
     Float sinPhi = pstd::copysign(std::sin(phi), v);

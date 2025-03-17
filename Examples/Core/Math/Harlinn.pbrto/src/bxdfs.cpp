@@ -1092,7 +1092,10 @@ PBRT_CPU_GPU pstd::optional<BSDFSample> MeasuredBxDF::Sample_f(Vector3f wo, Floa
     if (brdf->isotropic)
         phi_m += phi_o;
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    Float sinTheta_m = Math::Sin( theta_m ), cosTheta_m = Math::Cos( theta_m );
+
+    Float sinTheta_m; 
+    Float cosTheta_m;
+    Math::SinCos( theta_m, &sinTheta_m, &cosTheta_m );
 #else
     Float sinTheta_m = std::sin(theta_m), cosTheta_m = std::cos(theta_m);
 #endif

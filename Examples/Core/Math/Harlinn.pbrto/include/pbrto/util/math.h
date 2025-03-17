@@ -153,6 +153,10 @@ inline uint32_t Compact1By2(uint32_t x) {
     return x;
 }
 
+#ifdef PBRT_USES_HCCMATH
+template <typename Float>
+using CompensatedSum = Math::CompensatedSum<Float>;
+#else
 // CompensatedSum Definition
 template <typename Float>
 class CompensatedSum {
@@ -186,6 +190,11 @@ class CompensatedSum {
   private:
     Float sum = 0, c = 0;
 };
+#endif
+
+#ifdef PBRT_USES_HCCMATH
+using CompensatedFloat = Math::CompensatedFloat<Float>;
+#else
 
 // CompensatedFloat Definition
 struct CompensatedFloat {
@@ -201,6 +210,7 @@ struct CompensatedFloat {
 
     Float v, err;
 };
+#endif
 
 #ifdef PBRT_USES_HCCMATH
 template <int N>
@@ -598,6 +608,7 @@ PBRT_CPU_GPU inline T RoundUpPow4(T v) {
     return IsPowerOf4(v) ? v : (1 << (2 * (1 + Log4Int(v))));
 }
 
+
 PBRT_CPU_GPU inline CompensatedFloat TwoProd(Float a, Float b) {
     Float ab = a * b;
     return {ab, FMA(a, b, -ab)};
@@ -623,6 +634,7 @@ PBRT_CPU_GPU inline auto SumOfProducts(Ta a, Tb b, Tc c, Td d) {
     auto error = FMA(c, d, -cd);
     return sumOfProducts + error;
 }
+
 
 namespace internal {
 // InnerProduct Helper Functions
@@ -767,7 +779,7 @@ pstd::optional<SquareMatrix<N>> LinearLeastSquares(const Float A[][N], const Flo
     auto AtAi = Inverse( AtA, &determinant );
     if ( Traits::First( determinant.simd ) == 0.f )
         return {};
-    return SquareMatrix<N>(Transpose( AtAi * AtB ));
+    return SquareMatrix<N>(Math::Transpose( AtAi * AtB ));
 #else
     auto AtAi = Inverse(AtA);
     if (!AtAi)

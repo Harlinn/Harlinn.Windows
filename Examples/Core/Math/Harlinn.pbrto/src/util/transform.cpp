@@ -49,8 +49,13 @@ PBRT_CPU_GPU Transform Scale(Float x, Float y, Float z) {
 // clang-format off
 PBRT_CPU_GPU Transform RotateX(Float theta) {
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    Float sinTheta = Math::Sin( Radians( theta ) );
-    Float cosTheta = Math::Cos( Radians( theta ) );
+    auto rTheta = Math::Deg2Rad( theta );
+    Float sinTheta;
+    Float cosTheta;
+    Math::SinCos( rTheta,&sinTheta,&cosTheta );
+
+    //Float sinTheta = Math::Sin( Radians( theta ) );
+    //Float cosTheta = Math::Cos( Radians( theta ) );
 #else
     Float sinTheta = std::sin(Radians(theta));
     Float cosTheta = std::cos(Radians(theta));
@@ -59,15 +64,24 @@ PBRT_CPU_GPU Transform RotateX(Float theta) {
                       0, cosTheta, -sinTheta, 0,
                       0, sinTheta,  cosTheta, 0,
                       0,        0,         0, 1);
+#ifdef PBRT_USES_HCCMATH
+    return Transform( m, Math::Transpose( m ) );
+#else
     return Transform(m, Transpose(m));
+#endif
 }
 // clang-format on
 
 // clang-format off
 PBRT_CPU_GPU Transform RotateY(Float theta) {
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    Float sinTheta = Math::Sin( Radians( theta ) );
-    Float cosTheta = Math::Cos( Radians( theta ) );
+    auto rTheta = Math::Deg2Rad( theta );
+    Float sinTheta;
+    Float cosTheta;
+    Math::SinCos( rTheta, &sinTheta, &cosTheta );
+
+    //Float sinTheta = Math::Sin( Radians( theta ) );
+    //Float cosTheta = Math::Cos( Radians( theta ) );
 #else
     Float sinTheta = std::sin(Radians(theta));
     Float cosTheta = std::cos(Radians(theta));
@@ -76,12 +90,20 @@ PBRT_CPU_GPU Transform RotateY(Float theta) {
                               0, 1,        0, 0,
                       -sinTheta, 0, cosTheta, 0,
                               0, 0,        0, 1);
+#ifdef PBRT_USES_HCCMATH
+    return Transform( m, Math::Transpose( m ) );
+#else
     return Transform(m, Transpose(m));
+#endif
 }
 PBRT_CPU_GPU Transform RotateZ(Float theta) {
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    Float sinTheta = Math::Sin( Radians( theta ) );
-    Float cosTheta = Math::Cos( Radians( theta ) );
+    auto rTheta = Math::Deg2Rad( theta );
+    Float sinTheta;
+    Float cosTheta;
+    Math::SinCos( rTheta, &sinTheta, &cosTheta );
+    //Float sinTheta = Math::Sin( Radians( theta ) );
+    //Float cosTheta = Math::Cos( Radians( theta ) );
 #else
     Float sinTheta = std::sin(Radians(theta));
     Float cosTheta = std::cos(Radians(theta));
@@ -90,7 +112,11 @@ PBRT_CPU_GPU Transform RotateZ(Float theta) {
                       sinTheta,  cosTheta, 0, 0,
                              0,         0, 1, 0,
                              0,         0, 0, 1);
+#ifdef PBRT_USES_HCCMATH
+    return Transform( m, Math::Transpose( m ) );
+#else
     return Transform(m, Transpose(m));
+#endif
 }
 // clang-format on
 
@@ -103,19 +129,28 @@ PBRT_CPU_GPU Transform LookAt(Point3f pos, Point3f look, Vector3f up) {
     worldFromCamera[3][3] = 1;
 
     // Initialize first three columns of viewing matrix
-    Vector3f dir = Normalize(look - pos);
+    
 #ifdef PBRT_USES_HCCMATH
-    if ( ScalarLength(Cross(Normalize(up), dir)) == 0)
+    Vector3f dir = Math::Normalize( look - pos );
+    auto tmp = Math::Cross( Math::Normalize( up ), dir );
+    if ( ScalarLength( tmp ) == 0)
 #else
+    Vector3f dir = Normalize( look - pos );
     if ( Length( Cross( Normalize( up ), dir ) ) == 0 )
 #endif
-        LOG_FATAL("LookAt: \"up\" vector (%f, %f, %f) and viewing direction "
-                  "(%f, %f, %f) "
-                  "passed to LookAt are pointing in the same direction.",
-                  up.x, up.y, up.z, dir.x, dir.y, dir.z);
-
+    {
+        LOG_FATAL( "LookAt: \"up\" vector (%f, %f, %f) and viewing direction "
+            "(%f, %f, %f) "
+            "passed to LookAt are pointing in the same direction.",
+            up.x, up.y, up.z, dir.x, dir.y, dir.z );
+    }
+#ifdef PBRT_USES_HCCMATH
+    Vector3f right = Math::Normalize( tmp );
+    Vector3f newUp = Math::Cross( dir, right );
+#else
     Vector3f right = Normalize(Cross(Normalize(up), dir));
     Vector3f newUp = Cross(dir, right);
+#endif
     worldFromCamera[0][0] = right.x;
     worldFromCamera[1][0] = right.y;
     worldFromCamera[2][0] = right.z;
@@ -134,6 +169,8 @@ PBRT_CPU_GPU Transform LookAt(Point3f pos, Point3f look, Vector3f up) {
 #else
     SquareMatrix<4> cameraFromWorld = InvertOrExit(worldFromCamera);
 #endif
+
+
     return Transform(cameraFromWorld, worldFromCamera);
 }
 
@@ -240,7 +277,7 @@ void Transform::Decompose(Vector3f *T, SquareMatrix<4> *R, SquareMatrix<4> *S) c
     do {
         // Compute next matrix _Rnext_ in series
 #ifdef PBRT_USES_HCCMATH_SQRT
-        SquareMatrix<4> Rit = Inverse( Transpose( *R ) );
+        SquareMatrix<4> Rit = Math::Inverse( Math::Transpose( *R ) );
 #else
         SquareMatrix<4> Rit = InvertOrExit(Transpose(*R));
 #endif
@@ -436,7 +473,11 @@ AnimatedTransform::AnimatedTransform(const Transform &startTransform, Float star
     // Compute terms of motion derivative function
     if (hasRotation) {
         Float cosTheta = Dot(R[0], R[1]);
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float theta = Math::SafeACos( cosTheta );
+#else
         Float theta = SafeACos(cosTheta);
+#endif
         Quaternion qperp = Normalize(R[1] - R[0] * cosTheta);
 
         Float t0x = T[0].x;
@@ -1140,7 +1181,11 @@ PBRT_CPU_GPU Bounds3f AnimatedTransform::BoundPointMotion(Point3f p) const {
         return Bounds3f(startTransform(p));
     Bounds3f bounds(startTransform(p), endTransform(p));
     Float cosTheta = Dot(R[0], R[1]);
+#ifdef PBRT_USES_HCCMATH_SQRT
+    Float theta = Math::SafeACos( cosTheta );
+#else
     Float theta = SafeACos(cosTheta);
+#endif
     for (int c = 0; c < 3; ++c) {
         // Find any motion derivative zeros for the component _c_
         Float zeros[8];
@@ -1179,17 +1224,28 @@ PBRT_CPU_GPU void AnimatedTransform::FindZeros(Float c1, Float c2, Float c3, Flo
         FindZeros(c1, c2, c3, c4, c5, theta, Interval(mid, tInterval.UpperBound()), zeros,
                   nZeros, depth - 1);
 
-    } else {
+    } 
+    else 
+    {
         // Use Newton's method to refine zero
         Float tNewton = tInterval.Midpoint();
-        for (int i = 0; i < 4; ++i) {
+#ifdef PBRT_USES_HCCMATH
+        Float tNewtonTwoTheta = 2 * theta * tNewton;
+        Float sintNewtonTwoTheta;
+        Float costNewtonTwoTheta;
+        Math::SinCos( tNewtonTwoTheta, &sintNewtonTwoTheta, &costNewtonTwoTheta );
+
+#endif
+        for (int i = 0; i < 4; ++i) 
+        {
             // Evaluate motion function derivative and its derivative at _tNewton_
 #ifdef PBRT_USES_HCCMATH_SINCOS
-            Float fNewton = c1 + ( c2 + c3 * tNewton ) * Math::Cos( 2 * theta * tNewton ) +
-                ( c4 + c5 * tNewton ) * Math::Sin( 2 * theta * tNewton );
+            Float fNewton = c1 + ( c2 + c3 * tNewton ) * costNewtonTwoTheta +
+                ( c4 + c5 * tNewton ) * sintNewtonTwoTheta;
+
             Float fPrimeNewton =
-                ( c3 + 2 * ( c4 + c5 * tNewton ) * theta ) * Math::Cos( 2 * tNewton * theta ) +
-                ( c5 - 2 * ( c2 + c3 * tNewton ) * theta ) * Math::Sin( 2 * tNewton * theta );
+                ( c3 + 2 * ( c4 + c5 * tNewton ) * theta ) * costNewtonTwoTheta +
+                ( c5 - 2 * ( c2 + c3 * tNewton ) * theta ) * sintNewtonTwoTheta;
 #else
             Float fNewton = c1 + (c2 + c3 * tNewton) * std::cos(2 * theta * tNewton) +
                             (c4 + c5 * tNewton) * std::sin(2 * theta * tNewton);

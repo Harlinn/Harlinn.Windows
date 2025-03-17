@@ -3451,10 +3451,11 @@ static double checkerboard(Point2f p) {
     return ((pi.x & 1) ^ (pi.y & 1)) ? 2 : 0;
 }
 static double rotatedCheckerboard(Point2f p) {
-    double angle = Radians(45);
-    double nrm = 1.00006866455078125;
+    constexpr double angle = Deg2Rad(45.);
+    constexpr double nrm = 1.00006866455078125;
 #ifdef PBRT_USES_HCCMATH_SINCOS
-    static double sa = Math::Sin( angle ), ca = Math::Cos( angle );
+    constexpr double sa = Math::Sin( angle ); 
+    constexpr double ca = Math::Cos( angle );
 #else
     static double sa = std::sin(angle), ca = std::cos(angle);
 #endif
@@ -3466,7 +3467,7 @@ static double gaussian(Point2f p) {
 #ifdef PBRT_USES_HCCMATH_SQRT
     auto Gaussian = []( double x, double mu = 0, double sigma = 1 ) {
         return 1 / Math::Sqrt( 2 * Pi * sigma * sigma ) *
-            std::exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
+            Math::Exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
         };
 #else
     auto Gaussian = [](double x, double mu = 0, double sigma = 1) {

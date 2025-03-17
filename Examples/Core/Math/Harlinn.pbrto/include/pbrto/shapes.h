@@ -245,7 +245,11 @@ class Sphere {
         // Find parametric representation of sphere hit
         Float u = phi / phiMax;
         Float cosTheta = pHit.z / radius;
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float theta = Math::SafeACos( cosTheta );
+#else
         Float theta = SafeACos(cosTheta);
+#endif
         Float v = (theta - thetaZMin) / (thetaZMax - thetaZMin);
         // Compute sphere $\dpdu$ and $\dpdv$
 #ifdef PBRT_USES_HCCMATH_SQRT
@@ -376,7 +380,11 @@ class Sphere {
 
         // Compute $(u,v)$ coordinates for sampled point on sphere
         Point3f pObj = (*objectFromRender)(p);
+#ifdef PBRT_USES_HCCMATH_SQRT
+        Float theta = Math::SafeACos( pObj.z / radius );
+#else
         Float theta = SafeACos(pObj.z / radius);
+#endif
         Float spherePhi = std::atan2(pObj.y, pObj.x);
         if (spherePhi < 0)
             spherePhi += 2 * Pi;
