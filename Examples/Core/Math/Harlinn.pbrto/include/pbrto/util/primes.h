@@ -9,11 +9,12 @@
 
 #include <pbrto/util/pstd.h>
 
-namespace pbrt {
+namespace pbrt
+{
 
-// Prime Table Declarations
-static constexpr int PrimeTableSize = 1000;
-extern PBRT_CONST int Primes[PrimeTableSize];
+    // Prime Table Declarations
+    static constexpr int PrimeTableSize = 1000;
+    extern PBRT_CONST int Primes[ PrimeTableSize ];
 
 }  // namespace pbrt
 

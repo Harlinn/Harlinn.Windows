@@ -82,7 +82,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -103,7 +103,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -125,7 +125,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -146,7 +146,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.Windows;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.benchmark\include;$(SolutionDir)Examples\Core\Math\Harlinn.pbrto\include;$(SolutionDir)Tests\Harlinn.Util.Test;$(SolutionDir)3rdParty\Harlinn.Eigen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -187,6 +187,7 @@
     <ClCompile Include="SquareMatrix3Tests.cpp" />
     <ClCompile Include="SquareMatrix4FloatTests.cpp" />
     <ClCompile Include="Transform3DTests.cpp" />
+    <ClCompile Include="TransformationsTests.cpp" />
     <ClCompile Include="TruncTests.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,7 @@
 #include "BenchmarkUtils.h"
 
 
+
 namespace
 {
     RandomGenerator<double, SampleCount> DoubleGenerator;

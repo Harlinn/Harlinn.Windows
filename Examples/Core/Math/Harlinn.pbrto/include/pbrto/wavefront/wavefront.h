@@ -9,9 +9,10 @@
 
 #include <pbrto/scene.h>
 
-namespace pbrt {
+namespace pbrt
+{
 
-PBRTO_EXPORT void RenderWavefront(BasicScene &);
+    PBRTO_EXPORT void RenderWavefront( BasicScene& );
 
 }
 

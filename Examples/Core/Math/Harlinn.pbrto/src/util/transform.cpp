@@ -19,7 +19,8 @@ namespace pbrt {
 
 // Transform Function Definitions
 // clang-format off
-PBRT_CPU_GPU Transform Translate(Vector3f delta) {
+PBRT_CPU_GPU 
+PBRTO_EXPORT Transform Translate(Vector3f delta) {
     SquareMatrix<4> m(1, 0, 0, delta.x,
                       0, 1, 0, delta.y,
                       0, 0, 1, delta.z,
@@ -33,7 +34,8 @@ PBRT_CPU_GPU Transform Translate(Vector3f delta) {
 // clang-format on
 
 // clang-format off
-PBRT_CPU_GPU Transform Scale(Float x, Float y, Float z) {
+PBRT_CPU_GPU 
+PBRTO_EXPORT Transform Scale(Float x, Float y, Float z) {
     SquareMatrix<4> m(x, 0, 0, 0,
                       0, y, 0, 0,
                       0, 0, z, 0,
@@ -47,7 +49,8 @@ PBRT_CPU_GPU Transform Scale(Float x, Float y, Float z) {
 // clang-format on
 
 // clang-format off
-PBRT_CPU_GPU Transform RotateX(Float theta) {
+PBRT_CPU_GPU 
+PBRTO_EXPORT Transform RotateX(Float theta) {
 #ifdef PBRT_USES_HCCMATH_SINCOS
     auto rTheta = Math::Deg2Rad( theta );
     Float sinTheta;
@@ -73,7 +76,8 @@ PBRT_CPU_GPU Transform RotateX(Float theta) {
 // clang-format on
 
 // clang-format off
-PBRT_CPU_GPU Transform RotateY(Float theta) {
+PBRT_CPU_GPU 
+PBRTO_EXPORT Transform RotateY(Float theta) {
 #ifdef PBRT_USES_HCCMATH_SINCOS
     auto rTheta = Math::Deg2Rad( theta );
     Float sinTheta;
@@ -96,7 +100,8 @@ PBRT_CPU_GPU Transform RotateY(Float theta) {
     return Transform(m, Transpose(m));
 #endif
 }
-PBRT_CPU_GPU Transform RotateZ(Float theta) {
+PBRT_CPU_GPU 
+PBRTO_EXPORT Transform RotateZ(Float theta) {
 #ifdef PBRT_USES_HCCMATH_SINCOS
     auto rTheta = Math::Deg2Rad( theta );
     Float sinTheta;
@@ -120,7 +125,8 @@ PBRT_CPU_GPU Transform RotateZ(Float theta) {
 }
 // clang-format on
 
-PBRT_CPU_GPU Transform LookAt(Point3f pos, Point3f look, Vector3f up) {
+PBRT_CPU_GPU 
+PBRTO_EXPORT Transform LookAt(Point3f pos, Point3f look, Vector3f up) {
     SquareMatrix<4> worldFromCamera;
     // Initialize fourth column of viewing matrix
     worldFromCamera[0][3] = pos.x;

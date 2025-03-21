@@ -14,9 +14,10 @@
 #include <string>
 #include <vector>
 
-namespace pbrt {
+namespace pbrt
+{
 
-void PrintStackTrace();
+    void PrintStackTrace( );
 
 #ifdef PBRT_IS_GPU_CODE
 
@@ -32,7 +33,7 @@ void PrintStackTrace();
 
 #else
 
-// CHECK Macro Definitions
+    // CHECK Macro Definitions
 #define CHECK(x) (!(!(x) && (LOG_FATAL("Check failed: %s", #x), true)))
 
 #define CHECK_EQ(a, b) CHECK_IMPL(a, b, ==)
@@ -120,22 +121,23 @@ void PrintStackTrace();
 #endif  // PBRT_IS_GPU_CODE
 
 // CheckCallbackScope Definition
-class CheckCallbackScope {
-  public:
-    // CheckCallbackScope Public Methods
-    CheckCallbackScope(std::function<std::string(void)> callback);
+    class CheckCallbackScope
+    {
+    public:
+        // CheckCallbackScope Public Methods
+        CheckCallbackScope( std::function<std::string( void )> callback );
 
-    ~CheckCallbackScope();
+        ~CheckCallbackScope( );
 
-    CheckCallbackScope(const CheckCallbackScope &) = delete;
-    CheckCallbackScope &operator=(const CheckCallbackScope &) = delete;
+        CheckCallbackScope( const CheckCallbackScope& ) = delete;
+        CheckCallbackScope& operator=( const CheckCallbackScope& ) = delete;
 
-    static void Fail();
+        static void Fail( );
 
-  private:
-    // CheckCallbackScope Private Members
-    static std::vector<std::function<std::string(void)>> callbacks;
-};
+    private:
+        // CheckCallbackScope Private Members
+        static std::vector<std::function<std::string( void )>> callbacks;
+    };
 
 }  // namespace pbrt
 

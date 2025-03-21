@@ -18,54 +18,59 @@
 
 #include <optix.h>
 
-namespace pbrt {
+namespace pbrt
+{
 
-class TriangleMesh;
-class BilinearPatchMesh;
+    class TriangleMesh;
+    class BilinearPatchMesh;
 
-struct TriangleMeshRecord {
-    const TriangleMesh *mesh;
-    Material material;
-    FloatTexture alphaTexture;
-    pstd::span<Light> areaLights;
-    MediumInterface *mediumInterface;
-};
+    struct TriangleMeshRecord
+    {
+        const TriangleMesh* mesh;
+        Material material;
+        FloatTexture alphaTexture;
+        pstd::span<Light> areaLights;
+        MediumInterface* mediumInterface;
+    };
 
-struct BilinearMeshRecord {
-    const BilinearPatchMesh *mesh;
-    Material material;
-    FloatTexture alphaTexture;
-    pstd::span<Light> areaLights;
-    MediumInterface *mediumInterface;
-};
+    struct BilinearMeshRecord
+    {
+        const BilinearPatchMesh* mesh;
+        Material material;
+        FloatTexture alphaTexture;
+        pstd::span<Light> areaLights;
+        MediumInterface* mediumInterface;
+    };
 
-struct QuadricRecord {
-    Shape shape;
-    Material material;
-    FloatTexture alphaTexture;
-    Light areaLight;
-    MediumInterface *mediumInterface;
-};
+    struct QuadricRecord
+    {
+        Shape shape;
+        Material material;
+        FloatTexture alphaTexture;
+        Light areaLight;
+        MediumInterface* mediumInterface;
+    };
 
-struct RayIntersectParameters {
-    OptixTraversableHandle traversable;
+    struct RayIntersectParameters
+    {
+        OptixTraversableHandle traversable;
 
-    const RayQueue *rayQueue;
+        const RayQueue* rayQueue;
 
-    // closest hit
-    RayQueue *nextRayQueue;
-    EscapedRayQueue *escapedRayQueue;
-    HitAreaLightQueue *hitAreaLightQueue;
-    MaterialEvalQueue *basicEvalMaterialQueue, *universalEvalMaterialQueue;
-    MediumSampleQueue *mediumSampleQueue;
+        // closest hit
+        RayQueue* nextRayQueue;
+        EscapedRayQueue* escapedRayQueue;
+        HitAreaLightQueue* hitAreaLightQueue;
+        MaterialEvalQueue* basicEvalMaterialQueue, * universalEvalMaterialQueue;
+        MediumSampleQueue* mediumSampleQueue;
 
-    // shadow rays
-    ShadowRayQueue *shadowRayQueue;
-    SOA<PixelSampleState> pixelSampleState;
+        // shadow rays
+        ShadowRayQueue* shadowRayQueue;
+        SOA<PixelSampleState> pixelSampleState;
 
-    // Subsurface scattering...
-    SubsurfaceScatterQueue *subsurfaceScatterQueue;
-};
+        // Subsurface scattering...
+        SubsurfaceScatterQueue* subsurfaceScatterQueue;
+    };
 
 }  // namespace pbrt
 

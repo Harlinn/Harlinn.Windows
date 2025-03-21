@@ -3451,12 +3451,15 @@ static double checkerboard(Point2f p) {
     return ((pi.x & 1) ^ (pi.y & 1)) ? 2 : 0;
 }
 static double rotatedCheckerboard(Point2f p) {
-    constexpr double angle = Deg2Rad(45.);
-    constexpr double nrm = 1.00006866455078125;
+    
 #ifdef PBRT_USES_HCCMATH_SINCOS
+    constexpr double angle = Deg2Rad( 45. );
+    constexpr double nrm = 1.00006866455078125;
     constexpr double sa = Math::Sin( angle ); 
     constexpr double ca = Math::Cos( angle );
 #else
+    const double angle = Radians( 45. );
+    const double nrm = 1.00006866455078125;
     static double sa = std::sin(angle), ca = std::cos(angle);
 #endif
     return (double)checkerboard(

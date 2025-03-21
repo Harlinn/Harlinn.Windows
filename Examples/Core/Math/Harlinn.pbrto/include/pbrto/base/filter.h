@@ -11,36 +11,38 @@
 
 #include <string>
 
-namespace pbrt {
+namespace pbrt
+{
 
-// Filter Declarations
-struct FilterSample;
-class BoxFilter;
-class GaussianFilter;
-class MitchellFilter;
-class LanczosSincFilter;
-class TriangleFilter;
+    // Filter Declarations
+    struct FilterSample;
+    class BoxFilter;
+    class GaussianFilter;
+    class MitchellFilter;
+    class LanczosSincFilter;
+    class TriangleFilter;
 
-// Filter Definition
-class Filter : public TaggedPointer<BoxFilter, GaussianFilter, MitchellFilter,
-                                    LanczosSincFilter, TriangleFilter> {
-  public:
-    // Filter Interface
-    using TaggedPointer::TaggedPointer;
+    // Filter Definition
+    class Filter : public TaggedPointer<BoxFilter, GaussianFilter, MitchellFilter,
+        LanczosSincFilter, TriangleFilter>
+    {
+    public:
+        // Filter Interface
+        using TaggedPointer::TaggedPointer;
 
-    static Filter Create(const std::string &name, const ParameterDictionary &parameters,
-                         const FileLoc *loc, Allocator alloc);
+        static Filter Create( const std::string& name, const ParameterDictionary& parameters,
+            const FileLoc* loc, Allocator alloc );
 
-    PBRT_CPU_GPU inline Vector2f Radius() const;
+        PBRT_CPU_GPU inline Vector2f Radius( ) const;
 
-    PBRT_CPU_GPU inline Float Evaluate(Point2f p) const;
+        PBRT_CPU_GPU inline Float Evaluate( Point2f p ) const;
 
-    PBRT_CPU_GPU inline Float Integral() const;
+        PBRT_CPU_GPU inline Float Integral( ) const;
 
-    PBRT_CPU_GPU inline FilterSample Sample(Point2f u) const;
+        PBRT_CPU_GPU inline FilterSample Sample( Point2f u ) const;
 
-    std::string ToString() const;
-};
+        std::string ToString( ) const;
+    };
 
 }  // namespace pbrt
 

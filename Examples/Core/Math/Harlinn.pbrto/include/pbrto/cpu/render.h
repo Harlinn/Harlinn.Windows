@@ -7,11 +7,12 @@
 
 #include <pbrto/pbrt.h>
 
-namespace pbrt {
+namespace pbrt
+{
 
-class BasicScene;
+    class BasicScene;
 
-PBRTO_EXPORT void RenderCPU(BasicScene &scene);
+    PBRTO_EXPORT void RenderCPU( BasicScene& scene );
 
 }  // namespace pbrt
 

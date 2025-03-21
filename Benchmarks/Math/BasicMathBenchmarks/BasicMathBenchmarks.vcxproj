@@ -155,6 +155,7 @@
     <ClCompile Include="QuaternionBenchmarks.cpp" />
     <ClCompile Include="SquareMatrixBenchmarks.cpp" />
     <ClCompile Include="Transform3DBenchmarks.cpp" />
+    <ClCompile Include="TransformationsBenchmarks.cpp" />
     <ClCompile Include="TupleFloatBenchmarks.cpp" />
   </ItemGroup>
   <ItemGroup>

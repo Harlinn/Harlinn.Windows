@@ -35,141 +35,158 @@
 
 #endif  // __CUDACC__
 
-namespace pbrt {
+namespace pbrt
+{
 
-// WorkQueue Definition
-template <typename WorkItem>
-class WorkQueue : public SOA<WorkItem> {
-  public:
-    // WorkQueue Public Methods
-    WorkQueue() = default;
-    WorkQueue(int n, Allocator alloc) : SOA<WorkItem>(n, alloc) {}
-    WorkQueue &operator=(const WorkQueue &w) {
-        SOA<WorkItem>::operator=(w);
+    // WorkQueue Definition
+    template <typename WorkItem>
+    class WorkQueue : public SOA<WorkItem>
+    {
+    public:
+        // WorkQueue Public Methods
+        WorkQueue( ) = default;
+        WorkQueue( int n, Allocator alloc ) : SOA<WorkItem>( n, alloc ) {}
+        WorkQueue& operator=( const WorkQueue& w )
+        {
+            SOA<WorkItem>::operator=( w );
 #if defined(PBRT_IS_GPU_CODE) && defined(PBRT_USE_LEGACY_CUDA_ATOMICS)
-        size = w.size;
+            size = w.size;
 #else
-        size.store(w.size.load());
+            size.store( w.size.load( ) );
 #endif
-        return *this;
-    }
+            return *this;
+        }
 
-    PBRT_CPU_GPU
-    int Size() const {
+        PBRT_CPU_GPU
+            int Size( ) const
+        {
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_USE_LEGACY_CUDA_ATOMICS
-        return size;
+            return size;
 #else
-        return size.load(cuda::std::memory_order_relaxed);
+            return size.load( cuda::std::memory_order_relaxed );
 #endif
 #else
-        return size.load(std::memory_order_relaxed);
+            return size.load( std::memory_order_relaxed );
 #endif
-    }
-    PBRT_CPU_GPU
-    void Reset() {
+        }
+        PBRT_CPU_GPU
+            void Reset( )
+        {
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_USE_LEGACY_CUDA_ATOMICS
-        size = 0;
+            size = 0;
 #else
-        size.store(0, cuda::std::memory_order_relaxed);
+            size.store( 0, cuda::std::memory_order_relaxed );
 #endif
 #else
-        size.store(0, std::memory_order_relaxed);
+            size.store( 0, std::memory_order_relaxed );
 #endif
-    }
+        }
 
-    PBRT_CPU_GPU
-    int Push(WorkItem w) {
-        int index = AllocateEntry();
-        (*this)[index] = w;
-        return index;
-    }
+        PBRT_CPU_GPU
+            int Push( WorkItem w )
+        {
+            int index = AllocateEntry( );
+            ( *this )[ index ] = w;
+            return index;
+        }
 
-  protected:
-    // WorkQueue Protected Methods
-    PBRT_CPU_GPU
-    int AllocateEntry() {
+    protected:
+        // WorkQueue Protected Methods
+        PBRT_CPU_GPU
+            int AllocateEntry( )
+        {
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_USE_LEGACY_CUDA_ATOMICS
-        return atomicAdd(&size, 1);
+            return atomicAdd( &size, 1 );
 #else
-        return size.fetch_add(1, cuda::std::memory_order_relaxed);
+            return size.fetch_add( 1, cuda::std::memory_order_relaxed );
 #endif
 #else
-        return size.fetch_add(1, std::memory_order_relaxed);
+            return size.fetch_add( 1, std::memory_order_relaxed );
 #endif
-    }
+        }
 
-  private:
-    // WorkQueue Private Members
+    private:
+        // WorkQueue Private Members
 #ifdef PBRT_IS_GPU_CODE
 #ifdef PBRT_USE_LEGACY_CUDA_ATOMICS
-    int size = 0;
+        int size = 0;
 #else
-    cuda::atomic<int, cuda::thread_scope_device> size{0};
+        cuda::atomic<int, cuda::thread_scope_device> size{ 0 };
 #endif
 #else
-    std::atomic<int> size{0};
+        std::atomic<int> size{ 0 };
 #endif  // PBRT_IS_GPU_CODE
-};
+    };
 
-// WorkQueue Inline Functions
-template <typename F, typename WorkItem>
-void ForAllQueued(const char *desc, const WorkQueue<WorkItem> *q, int maxQueued,
-                  F &&func) {
-    if (Options->useGPU) {
-        // Launch GPU threads to process _q_ using _func_
+    // WorkQueue Inline Functions
+    template <typename F, typename WorkItem>
+    void ForAllQueued( const char* desc, const WorkQueue<WorkItem>* q, int maxQueued,
+        F&& func )
+    {
+        if ( Options->useGPU )
+        {
+            // Launch GPU threads to process _q_ using _func_
 #ifdef PBRT_BUILD_GPU_RENDERER
-        GPUParallelFor(desc, maxQueued, [=] PBRT_GPU(int index) mutable {
-            if (index >= q->Size())
-                return;
-            func((*q)[index]);
-        });
+            GPUParallelFor( desc, maxQueued, [ = ] PBRT_GPU( int index ) mutable
+            {
+                if ( index >= q->Size( ) )
+                    return;
+                func( ( *q )[ index ] );
+            } );
 #else
-        LOG_FATAL("Options->useGPU was set without PBRT_BUILD_GPU_RENDERER enabled");
+            LOG_FATAL( "Options->useGPU was set without PBRT_BUILD_GPU_RENDERER enabled" );
 #endif
 
-    } else {
-        // Process _q_ using _func_ with CPU threads
-        ParallelFor(0, q->Size(), [&](int index) { func((*q)[index]); });
+        }
+        else
+        {
+            // Process _q_ using _func_ with CPU threads
+            ParallelFor( 0, q->Size( ), [ & ]( int index ) { func( ( *q )[ index ] ); } );
+        }
     }
-}
 
-// MultiWorkQueue Definition
-template <typename T>
-class MultiWorkQueue;
-
-template <typename... Ts>
-class MultiWorkQueue<TypePack<Ts...>> {
-  public:
-    // MultiWorkQueue Public Methods
+    // MultiWorkQueue Definition
     template <typename T>
-    PBRT_CPU_GPU WorkQueue<T> *Get() {
-        return &pstd::get<WorkQueue<T>>(queues);
-    }
+    class MultiWorkQueue;
 
-    MultiWorkQueue(int n, Allocator alloc, pstd::span<const bool> haveType) {
-        int index = 0;
-        ((*Get<Ts>() = WorkQueue<Ts>(haveType[index++] ? n : 1, alloc)), ...);
-    }
+    template <typename... Ts>
+    class MultiWorkQueue<TypePack<Ts...>>
+    {
+    public:
+        // MultiWorkQueue Public Methods
+        template <typename T>
+        PBRT_CPU_GPU WorkQueue<T>* Get( )
+        {
+            return &pstd::get<WorkQueue<T>>( queues );
+        }
 
-    template <typename T>
-    PBRT_CPU_GPU int Size() const {
-        return Get<T>()->Size();
-    }
-    template <typename T>
-    PBRT_CPU_GPU int Push(const T &value) {
-        return Get<T>()->Push(value);
-    }
+        MultiWorkQueue( int n, Allocator alloc, pstd::span<const bool> haveType )
+        {
+            int index = 0;
+            ( ( *Get<Ts>( ) = WorkQueue<Ts>( haveType[ index++ ] ? n : 1, alloc ) ), ... );
+        }
 
-    PBRT_CPU_GPU
-    void Reset() { (Get<Ts>()->Reset(), ...); }
+        template <typename T>
+        PBRT_CPU_GPU int Size( ) const
+        {
+            return Get<T>( )->Size( );
+        }
+        template <typename T>
+        PBRT_CPU_GPU int Push( const T& value )
+        {
+            return Get<T>( )->Push( value );
+        }
 
-  private:
-    // MultiWorkQueue Private Members
-    pstd::tuple<WorkQueue<Ts>...> queues;
-};
+        PBRT_CPU_GPU
+            void Reset( ) { ( Get<Ts>( )->Reset( ), ... ); }
+
+    private:
+        // MultiWorkQueue Private Members
+        pstd::tuple<WorkQueue<Ts>...> queues;
+    };
 
 }  // namespace pbrt
 

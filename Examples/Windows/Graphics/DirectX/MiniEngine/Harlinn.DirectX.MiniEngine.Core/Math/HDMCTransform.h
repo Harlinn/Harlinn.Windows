@@ -454,8 +454,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 #endif
 #ifdef HDMC_USES_HCC_MATH
         template<size_t N>
-            requires (N > 2)
+            requires (N == 3)
         INLINE explicit AffineTransform( const std::array<m::SIMDType,N>& mat )
+            : m_basis( mat )
+        {
+        }
+
+        template<size_t N>
+            requires ( N > 3 )
+        INLINE explicit AffineTransform( const std::array<m::SIMDType, N>& mat )
             : m_basis( mat ), m_translation( SetWToOne( mat[ 3 ] ) )
         {
         }
