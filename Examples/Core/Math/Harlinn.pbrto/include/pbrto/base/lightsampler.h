@@ -28,25 +28,27 @@ namespace pbrt
     class ExhaustiveLightSampler;
 
     // LightSampler Definition
-    class LightSampler : public TaggedPointer<UniformLightSampler, PowerLightSampler,
-        ExhaustiveLightSampler, BVHLightSampler>
+    class LightSampler : public TaggedPointer<UniformLightSampler, PowerLightSampler, ExhaustiveLightSampler, BVHLightSampler>
     {
     public:
         // LightSampler Interface
         using TaggedPointer::TaggedPointer;
 
-        static LightSampler Create( const std::string& name, pstd::span<const Light> lights,
-            Allocator alloc );
+        static LightSampler Create( const std::string& name, pstd::span<const Light> lights, Allocator alloc );
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU inline pstd::optional<SampledLight> Sample( const LightSampleContext& ctx,
-            Float u ) const;
+        PBRT_CPU_GPU 
+        inline pstd::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const;
 
-        PBRT_CPU_GPU inline Float PMF( const LightSampleContext& ctx, Light light ) const;
+        PBRT_CPU_GPU 
+        inline Float PMF( const LightSampleContext& ctx, Light light ) const;
 
-        PBRT_CPU_GPU inline pstd::optional<SampledLight> Sample( Float u ) const;
-        PBRT_CPU_GPU inline Float PMF( Light light ) const;
+        PBRT_CPU_GPU 
+        inline pstd::optional<SampledLight> Sample( Float u ) const;
+
+        PBRT_CPU_GPU 
+        inline Float PMF( Light light ) const;
     };
 
 }  // namespace pbrt

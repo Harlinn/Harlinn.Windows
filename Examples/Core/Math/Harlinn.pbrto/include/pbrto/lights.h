@@ -43,35 +43,43 @@ namespace pbrt
     // LightLiSample Definition
     struct LightLiSample
     {
-        // LightLiSample Public Methods
-        LightLiSample( ) = default;
-        PBRT_CPU_GPU
-            LightLiSample( const SampledSpectrum& L, Vector3f wi, Float pdf,
-                const Interaction& pLight )
-            : L( L ), wi( wi ), pdf( pdf ), pLight( pLight )
-        {
-        }
-        std::string ToString( ) const;
-
         SampledSpectrum L;
         Vector3f wi;
         Float pdf;
         Interaction pLight;
+
+        // LightLiSample Public Methods
+        LightLiSample( ) = default;
+
+        PBRT_CPU_GPU
+        LightLiSample( const SampledSpectrum& L, Vector3f wi, Float pdf, const Interaction& pLight )
+            : L( L ), wi( wi ), pdf( pdf ), pLight( pLight )
+        { }
+        std::string ToString( ) const;
+
+        
     };
 
     // LightLeSample Definition
     struct LightLeSample
     {
+        // LightLeSample Public Members
+        SampledSpectrum L;
+        Ray ray;
+        pstd::optional<Interaction> intr;
+        Float pdfPos = 0; 
+        Float pdfDir = 0;
+
         // LightLeSample Public Methods
         LightLeSample( ) = default;
+
         PBRT_CPU_GPU
-            LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
+        LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
             : L( L ), ray( ray ), pdfPos( pdfPos ), pdfDir( pdfDir )
-        {
-        }
+        { }
+
         PBRT_CPU_GPU
-            LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr,
-                Float pdfPos, Float pdfDir )
+        LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr, Float pdfPos, Float pdfDir )
             : L( L ), ray( ray ), intr( intr ), pdfPos( pdfPos ), pdfDir( pdfDir )
         {
             CHECK( this->intr->n != Normal3f( 0, 0, 0 ) );
@@ -79,13 +87,9 @@ namespace pbrt
         std::string ToString( ) const;
 
         PBRT_CPU_GPU
-            Float AbsCosTheta( Vector3f w ) const { return intr ? AbsDot( w, intr->n ) : 1; }
+        Float AbsCosTheta( Vector3f w ) const { return intr ? AbsDot( w, intr->n ) : 1; }
 
-        // LightLeSample Public Members
-        SampledSpectrum L;
-        Ray ray;
-        pstd::optional<Interaction> intr;
-        Float pdfPos = 0, pdfDir = 0;
+        
     };
 
     // LightSampleContext Definition

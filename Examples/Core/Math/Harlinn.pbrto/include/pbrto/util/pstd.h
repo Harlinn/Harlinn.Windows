@@ -31,7 +31,13 @@ using namespace Harlinn::Common::Core;
 
 namespace pstd
 {
+#ifdef PBRT_USES_HCCMATH
+    using std::swap;
+    using std::bit_cast;
 
+    template <typename T, size_t N>
+    using array = std::array<T,N>;
+#else
     template <typename T>
     PBRT_CPU_GPU inline void swap( T& a, T& b )
     {
@@ -172,6 +178,7 @@ namespace pstd
     private:
         T values[ N ] = {};
     };
+#endif
 
     template <typename T>
     class optional
@@ -352,6 +359,7 @@ namespace pstd
 
     }  // namespace span_internal
 
+
     inline constexpr std::size_t dynamic_extent = -1;
 
     // span implementation partially based on absl::Span from Google's Abseil library.
@@ -467,6 +475,7 @@ namespace pstd
         T* ptr;
         size_t n;
     };
+
 
     template <int &...ExplicitArgumentBarrier, typename T>
     PBRT_CPU_GPU inline constexpr span<T> MakeSpan( T* ptr, size_t size ) noexcept

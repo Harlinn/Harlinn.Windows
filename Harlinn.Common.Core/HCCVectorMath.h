@@ -6319,16 +6319,22 @@ namespace Harlinn::Common::Core::Math
         requires Internal::IsCompatible<T, U>
     constexpr inline ResultT ScalarDot( const T& v1, const U& v2 ) noexcept
     {
+        using Traits = typename T::Traits;
+        auto vec1 = Traits::Load( v1.values );
+        auto vec2 = Traits::Load( v1.values );
         if constexpr ( T::Size == 2 )
         {
+            //return Traits::First( _mm_dp_ps( vec1, vec2, 0b00110001 ) );
             return v1.x * v2.x + v1.y * v2.y;
         }
         else if constexpr ( T::Size == 3 )
         {
+            //return Traits::First( _mm_dp_ps( vec1, vec2, 0b01110001 ) );
             return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
         }
         else if constexpr ( T::Size == 4 )
         {
+            //return Traits::First( _mm_dp_ps( vec1, vec2, 0b11110001 ) );
             return v1.x* v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
         }
     }
@@ -13197,9 +13203,10 @@ namespace Harlinn::Common::Core::Math
             : data_( DefaultValue )
         { }
 
-        SquareMatrix( const value_type mat[ Size ][ Size ] )
+        SquareMatrix( const value_type (&mat)[ Size ][ Size ] )
+            : data_(*reinterpret_cast< const MatrixData* >( &mat[ 0 ][ 0 ] ))
         {
-            memcpy( data_[ 0 ].data( ), &mat[ 0 ][ 0 ], Size * Size * sizeof( value_type ) );
+            //memcpy( data_[ 0 ].data( ), &mat[ 0 ][ 0 ], Size * Size * sizeof( value_type ) );
         }
 
         template<SimpleSpanLike T>

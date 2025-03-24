@@ -13,92 +13,100 @@
 #include <cmath>
 #include <type_traits>
 
-namespace pbrt {
+namespace pbrt
+{
 
-template <>
-std::string internal::ToString2<Interval>(Interval x, Interval y) {
-    return StringPrintf("[ %s %s ]", x, y);
-}
+    template <>
+    std::string internal::ToString2<Interval>( Interval x, Interval y )
+    {
+        return StringPrintf( "[ %s %s ]", x, y );
+    }
 
-template <>
-std::string internal::ToString3<Interval>(Interval x, Interval y, Interval z) {
-    return StringPrintf("[ %s %s %s ]", x, y, z);
-}
+    template <>
+    std::string internal::ToString3<Interval>( Interval x, Interval y, Interval z )
+    {
+        return StringPrintf( "[ %s %s %s ]", x, y, z );
+    }
 
-template <typename T>
-std::string internal::ToString2(T x, T y) {
-    if (std::is_floating_point_v<T>)
-        return StringPrintf("[ %f, %f ]", x, y);
-    else
-        return StringPrintf("[ %d, %d ]", x, y);
-}
+    template <typename T>
+    std::string internal::ToString2( T x, T y )
+    {
+        if ( std::is_floating_point_v<T> )
+            return StringPrintf( "[ %f, %f ]", x, y );
+        else
+            return StringPrintf( "[ %d, %d ]", x, y );
+    }
 
-template <typename T>
-std::string internal::ToString3(T x, T y, T z) {
-    if (std::is_floating_point_v<T>)
-        return StringPrintf("[ %f, %f, %f ]", x, y, z);
-    else
-        return StringPrintf("[ %d, %d, %d ]", x, y, z);
-}
+    template <typename T>
+    std::string internal::ToString3( T x, T y, T z )
+    {
+        if ( std::is_floating_point_v<T> )
+            return StringPrintf( "[ %f, %f, %f ]", x, y, z );
+        else
+            return StringPrintf( "[ %d, %d, %d ]", x, y, z );
+    }
 
-template std::string internal::ToString2(float, float);
-template std::string internal::ToString2(double, double);
-template std::string internal::ToString2(int, int);
-template std::string internal::ToString3(float, float, float);
-template std::string internal::ToString3(double, double, double);
-template std::string internal::ToString3(int, int, int);
+    template std::string internal::ToString2( float, float );
+    template std::string internal::ToString2( double, double );
+    template std::string internal::ToString2( int, int );
+    template std::string internal::ToString3( float, float, float );
+    template std::string internal::ToString3( double, double, double );
+    template std::string internal::ToString3( int, int, int );
 
-// Quaternion Method Definitions
-std::string Quaternion::ToString() const {
-    return StringPrintf("[ %f, %f, %f, %f ]", v.x, v.y, v.z, w);
-}
+    // Quaternion Method Definitions
+    std::string Quaternion::ToString( ) const
+    {
+        return StringPrintf( "[ %f, %f, %f, %f ]", v.x, v.y, v.z, w );
+    }
 
-// DirectionCone Function Definitions
-PBRT_CPU_GPU DirectionCone Union(const DirectionCone &a, const DirectionCone &b) {
-    // Handle the cases where one or both cones are empty
-    if (a.IsEmpty())
-        return b;
-    if (b.IsEmpty())
-        return a;
+    // DirectionCone Function Definitions
+    PBRT_CPU_GPU DirectionCone Union( const DirectionCone& a, const DirectionCone& b )
+    {
+        // Handle the cases where one or both cones are empty
+        if ( a.IsEmpty( ) )
+            return b;
+        if ( b.IsEmpty( ) )
+            return a;
 
-    // Handle the cases where one cone is inside the other
+        // Handle the cases where one cone is inside the other
 #ifdef PBRT_USES_HCCMATH_SQRT
-    Float theta_a = Math::SafeACos( a.cosTheta ), theta_b = SafeACos( b.cosTheta );
+        Float theta_a = Math::SafeACos( a.cosTheta ), theta_b = SafeACos( b.cosTheta );
 #else
-    Float theta_a = SafeACos(a.cosTheta), theta_b = SafeACos(b.cosTheta);
-    
+        Float theta_a = SafeACos( a.cosTheta ), theta_b = SafeACos( b.cosTheta );
+
 #endif
 
 #ifdef PBRT_USES_HCCMATH
-    Float theta_d = Math::ScalarAngleBetween( a.w, b.w );
+        Float theta_d = Math::ScalarAngleBetween( a.w, b.w );
 #else
-    Float theta_d = AngleBetween( a.w, b.w );
+        Float theta_d = AngleBetween( a.w, b.w );
 #endif
-    if (std::min(theta_d + theta_b, Pi) <= theta_a)
-        return a;
-    if (std::min(theta_d + theta_a, Pi) <= theta_b)
-        return b;
+        if ( std::min( theta_d + theta_b, Pi ) <= theta_a )
+            return a;
+        if ( std::min( theta_d + theta_a, Pi ) <= theta_b )
+            return b;
 
-    // Compute the spread angle of the merged cone, $\theta_o$
-    Float theta_o = (theta_a + theta_d + theta_b) / 2;
-    if (theta_o >= Pi)
-        return DirectionCone::EntireSphere();
+        // Compute the spread angle of the merged cone, $\theta_o$
+        Float theta_o = ( theta_a + theta_d + theta_b ) / 2;
+        if ( theta_o >= Pi )
+            return DirectionCone::EntireSphere( );
 
-    // Find the merged cone's axis and return cone union
-    Float theta_r = theta_o - theta_a;
-    Vector3f wr = Cross(a.w, b.w);
-    if (LengthSquared(wr) == 0)
-        return DirectionCone::EntireSphere();
-    Vector3f w = Rotate(Degrees(theta_r), wr)(a.w);
+        // Find the merged cone's axis and return cone union
+        Float theta_r = theta_o - theta_a;
+        Vector3f wr = Cross( a.w, b.w );
+        if ( LengthSquared( wr ) == 0 )
+            return DirectionCone::EntireSphere( );
+        Vector3f w = Rotate( Degrees( theta_r ), wr )( a.w );
 #ifdef PBRT_USES_HCCMATH
-    return DirectionCone( w, Math::Cos( theta_o ) );
+        return DirectionCone( w, Math::Cos( theta_o ) );
 #else
-    return DirectionCone(w, std::cos(theta_o));
+        return DirectionCone( w, std::cos( theta_o ) );
 #endif
-}
+    }
 
-std::string DirectionCone::ToString() const {
-    return StringPrintf("[ DirectionCone w: %s cosTheta: %f ]", w, cosTheta);
-}
+    std::string DirectionCone::ToString( ) const
+    {
+        return StringPrintf( "[ DirectionCone w: %s cosTheta: %f ]", w, cosTheta );
+    }
 
 }  // namespace pbrt

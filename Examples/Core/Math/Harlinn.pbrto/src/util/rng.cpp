@@ -9,10 +9,12 @@
 
 #include <cinttypes>
 
-namespace pbrt {
+namespace pbrt
+{
 
-std::string RNG::ToString() const {
-    return StringPrintf("[ RNG state: %" PRIu64 " inc: %" PRIu64 " ]", state, inc);
-}
+    std::string RNG::ToString( ) const
+    {
+        return StringPrintf( "[ RNG state: %" PRIu64 " inc: %" PRIu64 " ]", state, inc );
+    }
 
 }  // namespace pbrt

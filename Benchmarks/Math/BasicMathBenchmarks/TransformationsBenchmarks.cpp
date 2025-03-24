@@ -44,11 +44,15 @@ namespace
 
 #ifdef RUN_TRANSFORMATIONS_BENCHMARKS
 
-static void BenchmarkMathAffineTransformation( benchmark::State& state )
+static void BenchmarkMathAffineTransformationPoint3f( benchmark::State& state )
 {
     FloatM10To100Generator.Reset( );
     
-    Math::AffineTransformation affineTransformation = Math::AffineTransformation::Scale( 1.5f, 2.5f, 3.f );
+    Math::Point3f mathCameraPosition( 1.f, -1.5f, 2.f );
+    Math::Point3f mathFocusPosition( 20.f, 20.f, 20.f );
+    Math::Vector3f mathUpDirection( 0.f, 1.f, 0.f );
+
+    Math::AffineTransformation affineTransformation = Math::AffineTransformation::LookAt( mathCameraPosition, mathFocusPosition, mathUpDirection );
 
     for ( auto _ : state )
     {
@@ -57,13 +61,17 @@ static void BenchmarkMathAffineTransformation( benchmark::State& state )
         benchmark::DoNotOptimize( p1Transformed.z );
     }
 }
-BENCHMARK( BenchmarkMathAffineTransformation );
+BENCHMARK( BenchmarkMathAffineTransformationPoint3f );
 
-static void BenchmarkPbrtTransform( benchmark::State& state )
+static void BenchmarkPbrtTransformPoint3f( benchmark::State& state )
 {
     FloatM10To100Generator.Reset( );
 
-    pbrt::Transform pbrtTransform = pbrt::Scale( 1.5f, 2.5f, 3.f );
+    pbrt::Point3f pbrtCameraPosition( 1.f, -1.5f, 2.f );
+    pbrt::Point3f pbrtFocusPosition( 20.f, 20.f, 20.f );
+    pbrt::Vector3f pbrtUpDirection( 0.f, 1.f, 0.f );
+
+    pbrt::Transform pbrtTransform = pbrt::LookAt( pbrtCameraPosition, pbrtFocusPosition, pbrtUpDirection );
 
     for ( auto _ : state )
     {
@@ -72,8 +80,83 @@ static void BenchmarkPbrtTransform( benchmark::State& state )
         benchmark::DoNotOptimize( p1Transformed.z );
     }
 }
-BENCHMARK( BenchmarkPbrtTransform );
+BENCHMARK( BenchmarkPbrtTransformPoint3f );
 
+static void BenchmarkMathAffineTransformationNormal3f( benchmark::State& state )
+{
+    FloatM10To100Generator.Reset( );
+
+    Math::Point3f mathCameraPosition( 1.f, -1.5f, 2.f );
+    Math::Point3f mathFocusPosition( 20.f, 20.f, 20.f );
+    Math::Vector3f mathUpDirection( 0.f, 1.f, 0.f );
+
+    Math::AffineTransformation affineTransformation = Math::AffineTransformation::LookAt( mathCameraPosition, mathFocusPosition, mathUpDirection );
+
+    for ( auto _ : state )
+    {
+        Math::Normal3f p1( FloatM10To100Generator( ), FloatM10To100Generator( ), FloatM10To100Generator( ) );
+        Math::Normal3f p1Transformed = affineTransformation( p1 );
+        benchmark::DoNotOptimize( p1Transformed.z );
+    }
+}
+BENCHMARK( BenchmarkMathAffineTransformationNormal3f );
+
+static void BenchmarkPbrtTransformNormal3f( benchmark::State& state )
+{
+    FloatM10To100Generator.Reset( );
+
+    pbrt::Point3f pbrtCameraPosition( 1.f, -1.5f, 2.f );
+    pbrt::Point3f pbrtFocusPosition( 20.f, 20.f, 20.f );
+    pbrt::Vector3f pbrtUpDirection( 0.f, 1.f, 0.f );
+
+    pbrt::Transform pbrtTransform = pbrt::LookAt( pbrtCameraPosition, pbrtFocusPosition, pbrtUpDirection );
+
+    for ( auto _ : state )
+    {
+        pbrt::Normal3f p1( FloatM10To100Generator( ), FloatM10To100Generator( ), FloatM10To100Generator( ) );
+        pbrt::Normal3f p1Transformed = pbrtTransform( p1 );
+        benchmark::DoNotOptimize( p1Transformed.z );
+    }
+}
+BENCHMARK( BenchmarkPbrtTransformNormal3f );
+
+static void BenchmarkMathAffineTransformationVector3f( benchmark::State& state )
+{
+    FloatM10To100Generator.Reset( );
+
+    Math::Point3f mathCameraPosition( 1.f, -1.5f, 2.f );
+    Math::Point3f mathFocusPosition( 20.f, 20.f, 20.f );
+    Math::Vector3f mathUpDirection( 0.f, 1.f, 0.f );
+
+    Math::AffineTransformation affineTransformation = Math::AffineTransformation::LookAt( mathCameraPosition, mathFocusPosition, mathUpDirection );
+
+    for ( auto _ : state )
+    {
+        Math::Vector3f p1( FloatM10To100Generator( ), FloatM10To100Generator( ), FloatM10To100Generator( ) );
+        Math::Vector3f p1Transformed = affineTransformation( p1 );
+        benchmark::DoNotOptimize( p1Transformed.z );
+    }
+}
+BENCHMARK( BenchmarkMathAffineTransformationVector3f );
+
+static void BenchmarkPbrtTransformVector3f( benchmark::State& state )
+{
+    FloatM10To100Generator.Reset( );
+
+    pbrt::Point3f pbrtCameraPosition( 1.f, -1.5f, 2.f );
+    pbrt::Point3f pbrtFocusPosition( 20.f, 20.f, 20.f );
+    pbrt::Vector3f pbrtUpDirection( 0.f, 1.f, 0.f );
+
+    pbrt::Transform pbrtTransform = pbrt::LookAt( pbrtCameraPosition, pbrtFocusPosition, pbrtUpDirection );
+
+    for ( auto _ : state )
+    {
+        pbrt::Vector3f p1( FloatM10To100Generator( ), FloatM10To100Generator( ), FloatM10To100Generator( ) );
+        pbrt::Vector3f p1Transformed = pbrtTransform( p1 );
+        benchmark::DoNotOptimize( p1Transformed.z );
+    }
+}
+BENCHMARK( BenchmarkPbrtTransformVector3f );
 
 
 #endif

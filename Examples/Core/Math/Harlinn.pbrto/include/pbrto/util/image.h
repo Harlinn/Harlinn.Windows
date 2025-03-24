@@ -242,26 +242,26 @@ namespace pbrt
     // Image Definition
     class Image
     {
+        // Image Private Members
+        PixelFormat format;
+        Point2i resolution;
+        pstd::vector<std::string> channelNames;
+
+        ColorEncoding encoding = nullptr;
+        pstd::vector<uint8_t> p8;
+        pstd::vector<Half> p16;
+        pstd::vector<float> p32;
+
     public:
         // Image Public Methods
         Image( Allocator alloc = {} )
-            : p8( alloc ),
-            p16( alloc ),
-            p32( alloc ),
-            format( PixelFormat::U256 ),
-            resolution( 0, 0 )
-        {
-        }
-        Image( pstd::vector<uint8_t> p8, Point2i resolution,
-            pstd::span<const std::string> channels, ColorEncoding encoding );
-        Image( pstd::vector<Half> p16, Point2i resolution,
-            pstd::span<const std::string> channels );
-        Image( pstd::vector<float> p32, Point2i resolution,
-            pstd::span<const std::string> channels );
+            : p8( alloc ), p16( alloc ), p32( alloc ), format( PixelFormat::U256 ), resolution( 0, 0 )
+        { }
+        Image( pstd::vector<uint8_t> p8, Point2i resolution, pstd::span<const std::string> channels, ColorEncoding encoding );
+        Image( pstd::vector<Half> p16, Point2i resolution, pstd::span<const std::string> channels );
+        Image( pstd::vector<float> p32, Point2i resolution, pstd::span<const std::string> channels );
 
-        Image( PixelFormat format, Point2i resolution,
-            pstd::span<const std::string> channelNames, ColorEncoding encoding = nullptr,
-            Allocator alloc = {} );
+        Image( PixelFormat format, Point2i resolution, pstd::span<const std::string> channelNames, ColorEncoding encoding = nullptr, Allocator alloc = {} );
 
         PBRT_CPU_GPU
             PixelFormat Format( ) const { return format; }
@@ -454,14 +454,7 @@ namespace pbrt
 
         std::unique_ptr<uint8_t[ ]> QuantizePixelsToU256( int* nOutOfGamut ) const;
 
-        // Image Private Members
-        PixelFormat format;
-        Point2i resolution;
-        pstd::vector<std::string> channelNames;
-        ColorEncoding encoding = nullptr;
-        pstd::vector<uint8_t> p8;
-        pstd::vector<Half> p16;
-        pstd::vector<float> p32;
+        
     };
 
     // Image Inline Method Definitions

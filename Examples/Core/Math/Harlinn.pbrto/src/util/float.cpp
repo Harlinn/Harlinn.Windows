@@ -7,10 +7,12 @@
 
 #include <pbrto/util/print.h>
 
-namespace pbrt {
+namespace pbrt
+{
 
-std::string Half::ToString() const {
-    return StringPrintf("%f", (float)(*this));
-}
+    std::string Half::ToString( ) const
+    {
+        return StringPrintf( "%f", ( float )( *this ) );
+    }
 
 }  // namespace pbrt

@@ -30,14 +30,26 @@ namespace pbrt
     // DiffuseBxDF Definition
     class DiffuseBxDF
     {
+        SampledSpectrum R;
     public:
         // DiffuseBxDF Public Methods
         DiffuseBxDF( ) = default;
-        PBRT_CPU_GPU
-            DiffuseBxDF( SampledSpectrum R ) : R( R ) {}
 
         PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+#ifdef PBRT_USES_HCCMATH
+        DiffuseBxDF( const SampledSpectrum& R )
+#else
+        DiffuseBxDF( SampledSpectrum R ) 
+#endif
+            : R( R ) 
+        {}
+
+        PBRT_CPU_GPU
+#ifdef PBRT_USES_HCCMATH
+        SampledSpectrum f( const Vector3f& wo, const Vector3f& wi, TransportMode mode ) const
+#else
+        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+#endif
         {
             if ( !SameHemisphere( wo, wi ) )
                 return SampledSpectrum( 0.f );
@@ -45,9 +57,11 @@ namespace pbrt
         }
 
         PBRT_CPU_GPU
-            pstd::optional<BSDFSample> Sample_f(
-                Vector3f wo, Float uc, Point2f u, TransportMode mode,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+#ifdef PBRT_USES_HCCMATH
+        pstd::optional<BSDFSample> Sample_f( const Vector3f& wo, Float uc, const Point2f& u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+#else
+        pstd::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+#endif
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 return {};
@@ -61,8 +75,11 @@ namespace pbrt
         }
 
         PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+#ifdef PBRT_USES_HCCMATH
+        Float PDF( const Vector3f& wo, const Vector3f& wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+#else
+        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+#endif
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) || !SameHemisphere( wo, wi ) )
                 return 0;
@@ -84,7 +101,7 @@ namespace pbrt
         }
 
     private:
-        SampledSpectrum R;
+        
     };
 
     // DiffuseTransmissionBxDF Definition
@@ -1259,15 +1276,20 @@ namespace pbrt
         Float eta;
     };
 
+#ifdef PBRT_USES_HCCMATH_SQRT
+    PBRT_CPU_GPU inline SampledSpectrum BxDF::f( const Vector3f& wo, const Vector3f& wi, TransportMode mode ) const
+#else
     PBRT_CPU_GPU inline SampledSpectrum BxDF::f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+#endif
     {
         auto f = [ & ]( auto ptr ) -> SampledSpectrum { return ptr->f( wo, wi, mode ); };
         return Dispatch( f );
     }
-
-    PBRT_CPU_GPU inline pstd::optional<BSDFSample> BxDF::Sample_f( Vector3f wo, Float uc, Point2f u,
-        TransportMode mode,
-        BxDFReflTransFlags sampleFlags ) const
+#ifdef PBRT_USES_HCCMATH_SQRT
+    PBRT_CPU_GPU inline pstd::optional<BSDFSample> BxDF::Sample_f( const Vector3f& wo, Float uc, const Point2f& u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+#else
+    PBRT_CPU_GPU inline pstd::optional<BSDFSample> BxDF::Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+#endif
     {
         auto sample_f = [ & ]( auto ptr ) -> pstd::optional<BSDFSample> {
             return ptr->Sample_f( wo, uc, u, mode, sampleFlags );
@@ -1275,8 +1297,11 @@ namespace pbrt
         return Dispatch( sample_f );
     }
 
-    PBRT_CPU_GPU inline Float BxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-        BxDFReflTransFlags sampleFlags ) const
+#ifdef PBRT_USES_HCCMATH_SQRT
+    PBRT_CPU_GPU inline Float BxDF::PDF( const Vector3f& wo, const Vector3f& wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+#else
+    PBRT_CPU_GPU inline Float BxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+#endif
     {
         auto pdf = [ & ]( auto ptr ) { return ptr->PDF( wo, wi, mode, sampleFlags ); };
         return Dispatch( pdf );

@@ -29,11 +29,10 @@ namespace pbrt
         // BSSRDF Interface
         using TaggedPointer::TaggedPointer;
 
-        PBRT_CPU_GPU inline pstd::optional<BSSRDFProbeSegment> SampleSp( Float u1,
-            Point2f u2 ) const;
+        PBRT_CPU_GPU 
+        inline pstd::optional<BSSRDFProbeSegment> SampleSp( Float u1, Point2f u2 ) const;
 
-        inline BSSRDFSample ProbeIntersectionToSample( const SubsurfaceInteraction& si,
-            ScratchBuffer& scratchBuffer ) const;
+        inline BSSRDFSample ProbeIntersectionToSample( const SubsurfaceInteraction& si, ScratchBuffer& scratchBuffer ) const;
     };
 
 }  // namespace pbrt

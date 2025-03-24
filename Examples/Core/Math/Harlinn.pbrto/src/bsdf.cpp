@@ -7,16 +7,19 @@
 
 #include <pbrto/util/spectrum.h>
 
-namespace pbrt {
+namespace pbrt
+{
 
-std::string BSDFSample::ToString() const {
-    return StringPrintf("[ BSDFSample f: %s wi: %s pdf: %s flags: %s ]", f, wi, pdf,
-                        flags);
-}
+    std::string BSDFSample::ToString( ) const
+    {
+        return StringPrintf( "[ BSDFSample f: %s wi: %s pdf: %s flags: %s ]", f, wi, pdf,
+            flags );
+    }
 
-// BSDF Method Definitions
-std::string BSDF::ToString() const {
-    return StringPrintf("[ BSDF bxdf: %s shadingFrame: %s ]", bxdf, shadingFrame);
-}
+    // BSDF Method Definitions
+    std::string BSDF::ToString( ) const
+    {
+        return StringPrintf( "[ BSDF bxdf: %s shadingFrame: %s ]", bxdf, shadingFrame );
+    }
 
 }  // namespace pbrt

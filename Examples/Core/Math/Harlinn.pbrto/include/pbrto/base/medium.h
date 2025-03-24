@@ -37,12 +37,14 @@ namespace pbrt
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU inline Float p( Vector3f wo, Vector3f wi ) const;
+        PBRT_CPU_GPU 
+        inline Float p( Vector3f wo, Vector3f wi ) const;
 
-        PBRT_CPU_GPU inline pstd::optional<PhaseFunctionSample> Sample_p( Vector3f wo,
-            Point2f u ) const;
+        PBRT_CPU_GPU 
+        inline pstd::optional<PhaseFunctionSample> Sample_p( Vector3f wo, Point2f u ) const;
 
-        PBRT_CPU_GPU inline Float PDF( Vector3f wo, Vector3f wi ) const;
+        PBRT_CPU_GPU 
+        inline Float PDF( Vector3f wo, Vector3f wi ) const;
     };
 
     class HomogeneousMedium;
@@ -65,63 +67,64 @@ namespace pbrt
     class HomogeneousMajorantIterator;
     class DDAMajorantIterator;
 
-    class RayMajorantIterator
-        : public TaggedPointer<HomogeneousMajorantIterator, DDAMajorantIterator>
+    class RayMajorantIterator : public TaggedPointer<HomogeneousMajorantIterator, DDAMajorantIterator>
     {
     public:
         using TaggedPointer::TaggedPointer;
 
         PBRT_CPU_GPU
-            pstd::optional<RayMajorantSegment> Next( );
+        pstd::optional<RayMajorantSegment> Next( );
 
         std::string ToString( ) const;
     };
 
     // Medium Definition
-    class Medium
-        : public TaggedPointer<  // Medium Types
-        HomogeneousMedium, GridMedium, RGBGridMedium, CloudMedium, NanoVDBMedium
-
-        >
+    class Medium : public TaggedPointer< HomogeneousMedium, GridMedium, RGBGridMedium, CloudMedium, NanoVDBMedium >
     {
     public:
         // Medium Interface
         using TaggedPointer::TaggedPointer;
 
-        static Medium Create( const std::string& name, const ParameterDictionary& parameters,
-            const Transform& renderFromMedium, const FileLoc* loc,
-            Allocator alloc );
+        static Medium Create( const std::string& name, const ParameterDictionary& parameters, const Transform& renderFromMedium, const FileLoc* loc, Allocator alloc );
 
         std::string ToString( ) const;
 
         PBRT_CPU_GPU
-            bool IsEmissive( ) const;
+        bool IsEmissive( ) const;
 
         PBRT_CPU_GPU
-            MediumProperties SamplePoint( Point3f p, const SampledWavelengths& lambda ) const;
+        MediumProperties SamplePoint( Point3f p, const SampledWavelengths& lambda ) const;
 
         // Medium Public Methods
-        RayMajorantIterator SampleRay( Ray ray, Float tMax, const SampledWavelengths& lambda,
-            ScratchBuffer& buf ) const;
+        RayMajorantIterator SampleRay( Ray ray, Float tMax, const SampledWavelengths& lambda, ScratchBuffer& buf ) const;
     };
 
     // MediumInterface Definition
     struct MediumInterface
     {
+        // MediumInterface Public Members
+        Medium inside; 
+        Medium outside;
+
         // MediumInterface Public Methods
         std::string ToString( ) const;
 
         MediumInterface( ) = default;
         PBRT_CPU_GPU
-            MediumInterface( Medium medium ) : inside( medium ), outside( medium ) {}
-        PBRT_CPU_GPU
-            MediumInterface( Medium inside, Medium outside ) : inside( inside ), outside( outside ) {}
+        MediumInterface( Medium medium ) 
+            : inside( medium ), outside( medium ) 
+        { }
 
         PBRT_CPU_GPU
-            bool IsMediumTransition( ) const { return inside != outside; }
+        MediumInterface( Medium inside, Medium outside ) 
+            : inside( inside ), outside( outside ) 
+        { }
 
-        // MediumInterface Public Members
-        Medium inside, outside;
+        PBRT_CPU_GPU
+        bool IsMediumTransition( ) const 
+        { 
+            return inside != outside; 
+        }
     };
 
 }  // namespace pbrt

@@ -9,25 +9,28 @@
 #include <Windows.h>
 #endif
 
-namespace pbrt {
+namespace pbrt
+{
 
-PBRTO_EXPORT std::vector<std::string> GetCommandLineArguments(char *argv[]) {
-    std::vector<std::string> argStrings;
+    PBRTO_EXPORT std::vector<std::string> GetCommandLineArguments( char* argv[ ] )
+    {
+        std::vector<std::string> argStrings;
 #ifdef PBRT_IS_WINDOWS
-    // Handle UTF16-encoded arguments on Windows
-    int argc;
-    LPWSTR *argvw = CommandLineToArgvW(GetCommandLineW(), &argc);
-    CHECK(argv != nullptr);
-    for (int i = 1; i < argc; ++i)
-        argStrings.push_back(UTF8FromWString(argvw[i]));
+        // Handle UTF16-encoded arguments on Windows
+        int argc;
+        LPWSTR* argvw = CommandLineToArgvW( GetCommandLineW( ), &argc );
+        CHECK( argv != nullptr );
+        for ( int i = 1; i < argc; ++i )
+            argStrings.push_back( UTF8FromWString( argvw[ i ] ) );
 #else
-    ++argv;  // skip executable name
-    while (*argv) {
-        argStrings.push_back(*argv);
-        ++argv;
-    }
+        ++argv;  // skip executable name
+        while ( *argv )
+        {
+            argStrings.push_back( *argv );
+            ++argv;
+        }
 #endif  // PBRT_IS_WINDOWS
-    return argStrings;
-}
+        return argStrings;
+    }
 
 }  // namespace pbrt

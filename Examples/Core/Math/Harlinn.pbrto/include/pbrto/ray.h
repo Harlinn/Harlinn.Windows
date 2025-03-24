@@ -19,43 +19,63 @@ namespace pbrt
     class Ray
     {
     public:
-        // Ray Public Methods
-        PBRT_CPU_GPU
-            bool HasNaN( ) const { return ( o.HasNaN( ) || d.HasNaN( ) ); }
-
-        std::string ToString( ) const;
-
-        PBRT_CPU_GPU
-            Point3f operator()( Float t ) const { return o + d * t; }
-
-        Ray( ) = default;
-        PBRT_CPU_GPU
-            Ray( Point3f o, Vector3f d, Float time = 0.f, Medium medium = nullptr )
-            : o( o ), d( d ), time( time ), medium( medium )
-        {
-        }
-
         // Ray Public Members
         Point3f o;
         Vector3f d;
         Float time = 0;
         Medium medium = nullptr;
+
+        // Ray Public Methods
+        Ray( ) = default;
+
+        PBRT_CPU_GPU
+#ifdef PBRT_USES_HCCMATH
+        Ray( const Point3f& o, const Vector3f& d, Float time = 0.f, Medium medium = nullptr )
+#else
+        Ray( Point3f o, Vector3f d, Float time = 0.f, Medium medium = nullptr )
+#endif
+            : o( o ), d( d ), time( time ), medium( medium )
+        { }
+
+
+        PBRT_CPU_GPU
+        bool HasNaN( ) const { return ( o.HasNaN( ) || d.HasNaN( ) ); }
+
+        std::string ToString( ) const;
+
+        PBRT_CPU_GPU
+        Point3f operator()( Float t ) const { return o + d * t; }
+
+        
+
+        
     };
 
     // RayDifferential Definition
     class RayDifferential : public Ray
     {
     public:
+        // RayDifferential Public Members
+        bool hasDifferentials = false;
+
+        Point3f rxOrigin, ryOrigin;
+        Vector3f rxDirection, ryDirection;
+
         // RayDifferential Public Methods
         RayDifferential( ) = default;
         PBRT_CPU_GPU
-            RayDifferential( Point3f o, Vector3f d, Float time = 0.f, Medium medium = nullptr )
+#ifdef PBRT_USES_HCCMATH
+        RayDifferential( const Point3f& o, const Vector3f& d, Float time = 0.f, Medium medium = nullptr )
+#else
+        RayDifferential( Point3f o, Vector3f d, Float time = 0.f, Medium medium = nullptr )
+#endif
             : Ray( o, d, time, medium )
-        {
-        }
+        { }
 
         PBRT_CPU_GPU
-            explicit RayDifferential( const Ray& ray ) : Ray( ray ) {}
+        explicit RayDifferential( const Ray& ray ) 
+            : Ray( ray ) 
+        { }
 
         void ScaleDifferentials( Float s )
         {
@@ -66,7 +86,7 @@ namespace pbrt
         }
 
         PBRT_CPU_GPU
-            bool HasNaN( ) const
+        bool HasNaN( ) const
         {
             return Ray::HasNaN( ) ||
                 ( hasDifferentials && ( rxOrigin.HasNaN( ) || ryOrigin.HasNaN( ) ||
@@ -74,14 +94,16 @@ namespace pbrt
         }
         std::string ToString( ) const;
 
-        // RayDifferential Public Members
-        bool hasDifferentials = false;
-        Point3f rxOrigin, ryOrigin;
-        Vector3f rxDirection, ryDirection;
+        
     };
 
     // Ray Inline Functions
-    PBRT_CPU_GPU inline Point3f OffsetRayOrigin( Point3fi pi, Normal3f n, Vector3f w )
+    PBRT_CPU_GPU 
+#ifdef PBRT_USES_HCCMATH
+    inline Point3f OffsetRayOrigin( const Point3fi& pi, const Normal3f& n, const Vector3f& w )
+#else
+    inline Point3f OffsetRayOrigin( Point3fi pi, Normal3f n, Vector3f w )
+#endif
     {
         // Find vector _offset_ to corner of error bounds and compute initial _po_
 #ifdef PBRT_USES_HCCMATH
@@ -89,7 +111,11 @@ namespace pbrt
 #else
         Float d = Dot( Abs( n ), pi.Error( ) );
 #endif
+#ifdef PBRT_USES_HCCMATH
+        Vector3f offset = Vector3f( n ) * d;
+#else
         Vector3f offset = d * Vector3f( n );
+#endif
         if ( Dot( w, n ) < 0 )
             offset = -offset;
         Point3f po = Point3f( pi ) + offset;
@@ -106,19 +132,29 @@ namespace pbrt
         return po;
     }
 
+#ifdef PBRT_USES_HCCMATH
+    PBRT_CPU_GPU inline Ray SpawnRay( const Point3fi& pi, const Normal3f& n, Float time, const Vector3f& d )
+#else
     PBRT_CPU_GPU inline Ray SpawnRay( Point3fi pi, Normal3f n, Float time, Vector3f d )
+#endif
     {
         return Ray( OffsetRayOrigin( pi, n, d ), d, time );
     }
 
+#ifdef PBRT_USES_HCCMATH
+    PBRT_CPU_GPU inline Ray SpawnRayTo( const Point3fi& pFrom, const Normal3f& n, Float time, const Point3f& pTo )
+#else
     PBRT_CPU_GPU inline Ray SpawnRayTo( Point3fi pFrom, Normal3f n, Float time, Point3f pTo )
+#endif
     {
         Vector3f d = pTo - Point3f( pFrom );
         return SpawnRay( pFrom, n, time, d );
     }
-
-    PBRT_CPU_GPU inline Ray SpawnRayTo( Point3fi pFrom, Normal3f nFrom, Float time,
-        Point3fi pTo, Normal3f nTo )
+#ifdef PBRT_USES_HCCMATH
+    PBRT_CPU_GPU inline Ray SpawnRayTo( const Point3fi& pFrom, const Normal3f& nFrom, Float time, const Point3fi& pTo, const Normal3f& nTo )
+#else
+    PBRT_CPU_GPU inline Ray SpawnRayTo( Point3fi pFrom, Normal3f nFrom, Float time, Point3fi pTo, Normal3f nTo )
+#endif
     {
         Point3f pf = OffsetRayOrigin( pFrom, nFrom, Point3f( pTo ) - Point3f( pFrom ) );
         Point3f pt = OffsetRayOrigin( pTo, nTo, pf - Point3f( pTo ) );
