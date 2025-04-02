@@ -348,6 +348,243 @@
     <ClInclude Include="src\ext\rply\rply.h">
       <Filter>src\ext\rply</Filter>
     </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewTransform.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewVecMath.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewFloat.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewPbrt.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewMath.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewRay.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewBssrdf.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewBxdf.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewColor.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewBluenoise.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewBufferCache.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewColorSpace.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewContainers.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewDisplay.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewError.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewFile.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewGui.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewHash.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewParallel.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewImage.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewStats.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewSpectrum.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewSampling.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewLog.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewLoopSubDiv.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewLowDiscrepancy.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewMemory.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewMesh.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewMipMap.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewNoise.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewPmj02Tables.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewPrimes.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewProgressReporter.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewRng.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewSobolMatrices.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewSplines.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewString.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewCamera.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewFilm.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewFilter.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewLight.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewSampler.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewShape.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewTexture.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cpu\NewAggregates.h">
+      <Filter>include\pbrto\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cpu\NewIntegrators.h">
+      <Filter>include\pbrto\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cpu\NewPrimitive.h">
+      <Filter>include\pbrto\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\cpu\NewRender.h">
+      <Filter>include\pbrto\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\NewAggregate.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\NewIntegrator.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\NewIntersect.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewLightSampler.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\NewWavefront.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\NewWorkitems.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\wavefront\NewWorkqueue.h">
+      <Filter>include\pbrto\wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewMaterial.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\base\NewMedium.h">
+      <Filter>include\pbrto\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewTaggedPtr.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewBsdf.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewBssrdf.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewBxdfs.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewScattering.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewCameras.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewFilm.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewFilters.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewInteraction.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewLights.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewLightSamplers.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewMaterials.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewMedia.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewParamDict.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewParser.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewSamplers.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewScene.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewTextures.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewCheck.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewPStd.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewArgs.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pbrto\NewOptions.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -583,6 +820,120 @@
     </ClCompile>
     <ClCompile Include="src\util\rgbspectrum_srgb.cpp">
       <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewVecMath.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewTransform.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewMath.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewBlueNoise.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewBufferCache.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewColor.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewLog.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewError.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewColorSpace.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewDisplay.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewFile.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewGui.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewImage.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewLoopSubDiv.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewLowDiscrepancy.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewMemory.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewMesh.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewMipmap.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewNoise.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewParallel.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewPmj02Tables.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewPrimes.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewProgressReporter.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewRgbSpectrum_aces.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewRgbSpectrum_dci_p3.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewRgbSpectrum_rec2020.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewRgbSpectrum_srgb.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewRng.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewSampling.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewScattering.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewSobolMatrices.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewSpectrum.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewStats.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewString.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewArgs.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewPStd.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewCheck.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewOptions.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

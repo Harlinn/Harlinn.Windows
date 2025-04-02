@@ -20,7 +20,9 @@
 
 
 #include <HCCDef.h>
-
+#include <HCCVectorMath.h>
+#include <HCCString.h>
+#include <HCCIO.h>
 
 #ifdef BUILDING_HARLINN_PBRTO
 #define PBRTO_EXPORT __declspec(dllexport)
@@ -73,7 +75,7 @@
 #define PBRT_HAVE__ALIGNED_MALLOC 1
 #endif
 
-#define PBRT_USES_HCCMATH 1
+//#define PBRT_USES_HCCMATH 1
 #ifdef PBRT_USES_HCCMATH
 #define PBRT_USES_HCCMATH_SINCOS 1
 #define PBRT_USES_HCCMATH_SQRT 1
@@ -94,11 +96,6 @@
 
 #define PBRT_CONSTEXPR //constexpr
 
-#ifdef PBRT_USES_HCCMATH
-#include <HCCVectorMath.h>
-using namespace Harlinn::Common::Core;
-using namespace Harlinn::Common::Core::Math;
-#endif
 
 
 #endif

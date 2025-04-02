@@ -1645,7 +1645,7 @@ namespace Harlinn::Common::Core::SIMD
     template<typename T,size_t N>
     struct Traits32Bit : public Internal::TraitsBase
     {
-        using Type = Int32;
+        using Type = T;
         static constexpr size_t Size = N;
     private:
         static constexpr bool UseShortSIMDType = N <= 4;
@@ -1733,6 +1733,325 @@ namespace Harlinn::Common::Core::SIMD
         }
 
         /// <summary>
+        /// Returns the first element of <c>src</<>. The first
+        /// element is the element at the lowest position of <c>src</<>.
+        /// </summary>
+        /// <param name="src">SIMDType to extract the first value from.</param>
+        /// <returns>
+        /// The first element of <c>src</<>.
+        /// </returns>
+        static Type First( SIMDType src ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_cvtsi128_si32( src );
+            }
+            else
+            {
+                return _mm256_cvtsi256_si32( src );
+            }
+        }
+
+        /// <summary>
+        /// Returns an array containing the lower <c>N</c> elements
+        /// of <c>v</c>.
+        /// </summary>
+        /// <param name="src">
+        /// The SIMDType holding the values to return
+        /// </param>
+        /// <returns>
+        /// An array containing the lower <c>N</c> elements
+        /// of <c>v</c>.
+        /// </returns>
+        static ArrayType ToArray( SIMDType src ) noexcept
+        {
+            if constexpr ( N == SIMDTypeCapacity )
+            {
+                alignas( AlignAs ) ArrayType result;
+                Store( result.data( ), src );
+                return result;
+            }
+            else if constexpr ( N == 1 )
+            {
+                ArrayType result;
+                result[ 0 ] = _mm_cvtsi128_si32( src );
+                return result;
+            }
+            else if constexpr ( N == 2 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), _mm_castsi128_pd( src ) );
+                return result;
+            }
+            else if constexpr ( N == 3 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                auto srcd = _mm_castsi128_pd( src );
+                _mm_store_sd( reinterpret_cast< double* >( result.data( ) ), srcd );
+                result[ 2 ] = std::bit_cast< Type >( _mm_extract_epi32( src, 2 ) );
+                return result;
+            }
+            else if constexpr ( N == 4 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                _mm_store_si128( reinterpret_cast< __m128i* >( result.data( ) ), src );
+                return result;
+            }
+            else if constexpr ( N == 8 )
+            {
+                alignas( AlignAs ) ArrayType result;
+                Store( result.data( ), src );
+                return result;
+            }
+            else
+            {
+                alignas( AlignAs ) std::array<Type, SIMDTypeCapacity> tmp;
+                Store( tmp.data( ), src );
+                return[ &tmp ] <std::size_t... I>
+                    ( std::index_sequence<I...> )
+                {
+                    ArrayType result;
+                    ( ( result[ I ] = tmp[ I ] ), ... );
+                    return result;
+                }( std::make_index_sequence<N>( ) );
+            }
+        }
+
+        /// <summary>
+        /// Returns a SIMDType with all elements set to the
+        /// value of <c>v[index]</c>.
+        /// </summary>
+        /// <typeparam name="index">
+        /// The index of the value, in <c>v</c> to assign to ell the elements
+        /// of the result, 
+        /// </typeparam>
+        /// <param name="v">
+        /// The SIMDType type containing the the source value.
+        /// </param>
+        /// <returns>
+        /// A SIMDType with all elements set to the
+        /// value of <c>v[index]</c>.
+        /// </returns>
+        template<size_t index>
+            requires ( index < Size )
+        static SIMDType At( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( index == 0 )
+                {
+                    return _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 0, 0, 0, 0 ) );
+                }
+                else if constexpr ( index == 1 )
+                {
+                    return _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 1, 1, 1, 1 ) );
+                }
+                else if constexpr ( index == 2 )
+                {
+                    return _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 2, 2, 2, 2 ) );
+                }
+                else
+                {
+                    return _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 3, 3, 3, 3 ) );
+                }
+            }
+            else
+            {
+                if constexpr ( index < 4 )
+                {
+                    auto low = _mm256_castsi256_si128( v );
+                    if constexpr ( index == 0 )
+                    {
+                        return _mm256_broadcastd_epi32( low );
+                    }
+                    else if constexpr ( index == 1 )
+                    {
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, low, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                    }
+                    else if constexpr ( index == 2 )
+                    {
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, low, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                    }
+                    else
+                    {
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( low, low, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                    }
+                }
+                else
+                {
+                    auto high = _mm256_extractf128_si256( v, 1 );
+                    if constexpr ( index == 4 )
+                    {
+                        return _mm256_broadcastd_epi32( high );
+                    }
+                    else if constexpr ( index == 5 )
+                    {
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, high, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                    }
+                    else if constexpr ( index == 6 )
+                    {
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, high, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                    }
+                    else
+                    {
+                        return _mm256_broadcastd_epi32( _mm_shuffle_epi32( high, high, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the value of <c>v[index]</c>.
+        /// </summary>
+        /// <typeparam name="index">
+        /// The index of the value, in <c>v</c>.
+        /// </typeparam>
+        /// <param name="v">
+        /// The SIMDType type containing the the source value.
+        /// </param>
+        /// <returns>
+        /// The value of <c>v[index]</c>.
+        /// </returns>
+        template<size_t index>
+            requires ( index < Size )
+        static Type Extract( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( index == 0 )
+                {
+                    return _mm_cvtsi128_si32( v );
+                }
+                else if constexpr ( index == 1 )
+                {
+                    return _mm_extract_epi32( v, 1 );
+                }
+                else if constexpr ( index == 2 )
+                {
+                    return _mm_extract_epi32( v, 2 );
+                }
+                else
+                {
+                    return _mm_extract_epi32( v, 3 );
+                }
+            }
+            else
+            {
+                if constexpr ( index < 4 )
+                {
+                    auto low = _mm256_castsi256_si128( v );
+                    if constexpr ( index == 0 )
+                    {
+                        return _mm_cvtsi128_si32( low );
+                    }
+                    else if constexpr ( index == 1 )
+                    {
+                        return _mm_extract_epi32( low, 1 );
+                    }
+                    else if constexpr ( index == 2 )
+                    {
+                        return _mm_extract_epi32( low, 2 );
+                    }
+                    else
+                    {
+                        return _mm_extract_epi32( low, 3 );
+                    }
+                }
+                else
+                {
+                    auto high = _mm256_extractf128_si256( v, 1 );
+                    if constexpr ( index == 4 )
+                    {
+                        return _mm_cvtsi128_si32( high );
+                    }
+                    else if constexpr ( index == 5 )
+                    {
+                        return _mm_extract_epi32( high, 1 );
+                    }
+                    else if constexpr ( index == 6 )
+                    {
+                        return _mm_extract_epi32( high, 2 );
+                    }
+                    else
+                    {
+                        return _mm_extract_epi32( high, 3 );
+                    }
+                }
+            }
+        }
+
+        static constexpr bool HasNaN( SIMDType v ) noexcept
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Compute the bitwise AND of packed 32-bit integer 
+        /// elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType And( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_and_epi32( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_and_epi32( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise NOT of packed 32-bit integer 
+        /// elements in <c>lhs</c> and then AND with <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType AndNot( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_andnot_epi32( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_andnot_epi32( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise OR of packed 32-bit integer 
+        /// elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType Or( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_or_epi32( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_or_epi32( lhs, rhs );
+            }
+        }
+
+        /// <summary>
+        /// Compute the bitwise XOR of packed 32-bit integer 
+        /// elements in <c>lhs</c> and <c>rhs</c>, returning the results.
+        /// </summary>
+        static SIMDType Xor( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_xor_epi32( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_xor_epi32( lhs, rhs );
+            }
+        }
+
+
+
+        /// <summary>
         /// Adds two int32 vectors.
         /// </summary>
         /// <param name="lhs">int32 vector used for the left-hand side of the operation</param>
@@ -1756,6 +2075,61 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_add_epi32( lhs, rhs );
             }
         }
+
+        /// <summary>
+        /// Add Horizontal 32 bit integer values
+        /// </summary>
+        /// <param name="lhs">32 bit integer vector used for the left-hand side of the operation</param>
+        /// <param name="rhs">32 bit integer vector used for the right-hand side of the operation</param>
+        /// <remarks>
+        /// Adds pairs of adjacent 32 bit integer values from the first 
+        /// source operand, lhs, and the second source operand, rhs.
+        /// </remarks>
+        /// <returns>Result of the addition operation</returns>
+        static SIMDType HAdd( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_hadd_epi32( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_hadd_epi32( lhs, rhs );
+            }
+        }
+
+        static SIMDType HSum( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return v;
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_add_epi32( _mm_shuffle_epi32( v, v, 0b01'00'01'00 ), _mm_permute_epi32( v, v, 0b00'01'00'01 ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return _mm_add_epi32( _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 0, 2, 1, 0 ) ), _mm_add_epi32( _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 1, 1, 0, 2 ) ), _mm_shuffle_epi32( v, v, _MM_SHUFFLE( 2, 0, 2, 1 ) ) ) );
+                }
+                else
+                {
+                    return _mm_add_epi32( _mm_add_epi32( v, _mm_shuffle_epi32( v, v, 0b10'01'00'11 ) ),
+                        _mm_add_epi32( _mm_shuffle_epi32( v, v, 0b01'00'11'10 ), _mm_shuffle_epi32( v, v, 0b00'11'10'01 ) ) );
+                }
+            }
+            else
+            {
+                __m128i low = _mm256_castsi256_si128( v );
+                __m128i high = _mm256_extractf128_si256( v, 1 );
+                __m128i r1 = _mm_add_epi32( low, high );
+                __m128i r2 = _mm_add_epi32( r1, _mm_castps_si128(  _mm_movehl_ps( _mm_castsi128_ps( r1 ), _mm_castsi128_ps( r1 ) ) ) );
+                return _mm256_broadcastd_epi32( _mm_add_epi32( r2, _mm_castps_si128( _mm_movehdup_ps( _mm_castsi128_ps( r2 ) ) ) ) );
+            }
+        }
+
 
         /// <summary>
         /// Subtracts int32 vectors.
@@ -1799,6 +2173,54 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_mul_epi32( lhs, rhs );
             }
         }
+
+        static SIMDType Mul( Type lhs, SIMDType rhs ) noexcept
+        {
+            return Mul( Fill( lhs ), rhs );
+        }
+
+        static SIMDType Mul( SIMDType lhs, Type rhs ) noexcept
+        {
+            return Mul( lhs, Fill( rhs ) );
+        }
+
+        static SIMDType Min( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_min_epi32( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_min_epi32( lhs, rhs );
+            }
+        }
+
+        static SIMDType Max( SIMDType lhs, SIMDType rhs ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_max_epi32( lhs, rhs );
+            }
+            else
+            {
+                return _mm256_max_epi32( lhs, rhs );
+            }
+        }
+
+        static SIMDType Clamp( SIMDType v, SIMDType lowerBounds, SIMDType upperBounds ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_min_epi32( upperBounds, _mm_max_epi32( lowerBounds, v ) );
+            }
+            else
+            {
+                return _mm256_min_epi32( upperBounds, _mm256_max_epi32( lowerBounds, v ) );
+            }
+        }
+
+
     };
 
     template<size_t N>
@@ -1985,6 +2407,9 @@ namespace Harlinn::Common::Core::SIMD
                 return  prod;
             }
         }
+
+        
+
     };
 
 
@@ -2014,6 +2439,7 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr ValueType SignMaskValue = std::bit_cast< ValueType >( 0x80000000U );
 
             static constexpr ValueType InfinityValue = std::bit_cast< ValueType >( 0x7F800000U );
+            static constexpr ValueType NegativeInfinityValue = std::bit_cast< ValueType >( 0xFF800000U );
             static constexpr ValueType QNaNValue = std::bit_cast< ValueType >( 0x7FC00000U );
             static constexpr ValueType QNaNTestValue = std::bit_cast< ValueType >( 0x007FFFFFU );
             static constexpr ValueType AbsMaskValue = std::bit_cast< ValueType >( 0x7FFFFFFF );
@@ -2122,6 +2548,7 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr SIMDType ThreePiOver4 = { {Base::ThreePiOver4,Base::ThreePiOver4,Base::ThreePiOver4,Base::ThreePiOver4} };
             static constexpr SIMDType Epsilon = { { 1.192092896e-7f, 1.192092896e-7f, 1.192092896e-7f, 1.192092896e-7f } };
             static constexpr SIMDType Infinity = { { Base::InfinityValue, Base::InfinityValue, Base::InfinityValue, Base::InfinityValue } };
+            static constexpr SIMDType NegativeInfinity = { { Base::NegativeInfinityValue, Base::NegativeInfinityValue, Base::NegativeInfinityValue, Base::NegativeInfinityValue } };
             static constexpr SIMDType QNaN = { { Base::QNaNValue, Base::QNaNValue, Base::QNaNValue, Base::QNaNValue } };
             static constexpr SIMDType QNaNTest = { { Base::QNaNTestValue, Base::QNaNTestValue, Base::QNaNTestValue, Base::QNaNTestValue } };
             static constexpr SIMDType AbsMask = { { Base::AbsMaskValue, Base::AbsMaskValue, Base::AbsMaskValue, Base::AbsMaskValue } };
@@ -2704,6 +3131,8 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        
+
         /// <summary>
         /// Returns the value of <c>v[index]</c>.
         /// </summary>
@@ -2728,15 +3157,15 @@ namespace Harlinn::Common::Core::SIMD
                 }
                 else if constexpr ( index == 1 )
                 {
-                    return _mm_cvtss_f32( _mm_permute_ps( v, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                    return std::bit_cast<Type>(_mm_extract_ps( v, 1 ));
                 }
                 else if constexpr ( index == 2 )
                 {
-                    return _mm_cvtss_f32( _mm_permute_ps( v, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                    return std::bit_cast< Type >( _mm_extract_ps( v, 2 ) );
                 }
                 else
                 {
-                    return _mm_cvtss_f32( _mm_permute_ps( v, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                    return std::bit_cast< Type >( _mm_extract_ps( v, 3 ) );
                 }
             }
             else
@@ -2750,15 +3179,15 @@ namespace Harlinn::Common::Core::SIMD
                     }
                     else if constexpr ( index == 1 )
                     {
-                        return _mm_cvtss_f32( _mm_permute_ps( low, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                        return std::bit_cast< Type >( _mm_extract_ps( low, 1 ) );
                     }
                     else if constexpr ( index == 2 )
                     {
-                        return _mm_cvtss_f32( _mm_permute_ps( low, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                        return std::bit_cast< Type >( _mm_extract_ps( low, 2 ) );
                     }
                     else
                     {
-                        return _mm_cvtss_f32( _mm_permute_ps( low, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                        return std::bit_cast< Type >( _mm_extract_ps( low, 3 ) );
                     }
                 }
                 else
@@ -2770,15 +3199,15 @@ namespace Harlinn::Common::Core::SIMD
                     }
                     else if constexpr ( index == 5 )
                     {
-                        return _mm_cvtss_f32( _mm_permute_ps( high, _MM_SHUFFLE( 1, 1, 1, 1 ) ) );
+                        return std::bit_cast< Type >( _mm_extract_ps( high, 1 ) );
                     }
                     else if constexpr ( index == 6 )
                     {
-                        return _mm_cvtss_f32( _mm_permute_ps( high, _MM_SHUFFLE( 2, 2, 2, 2 ) ) );
+                        return std::bit_cast< Type >( _mm_extract_ps( high, 2 ) );
                     }
                     else
                     {
-                        return _mm_cvtss_f32( _mm_permute_ps( high, _MM_SHUFFLE( 3, 3, 3, 3 ) ) );
+                        return std::bit_cast< Type >( _mm_extract_ps( high, 3 ) );
                     }
                 }
             }
@@ -3675,6 +4104,40 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static SIMDIntegerType Select( SIMDIntegerType v1, SIMDIntegerType v2, SIMDIntegerType control ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                auto rmm1 = _mm_andnot_epi32( control, v1 );
+                auto rmm2 = _mm_and_epi32( v2, control );
+                return _mm_or_epi32( rmm1, rmm2 );
+            }
+            else
+            {
+                auto rmm1 = _mm256_andnot_epi32( control, v1 );
+                auto rmm2 = _mm256_and_epi32( v2, control );
+                return _mm256_or_epi32( rmm1, rmm2 );
+            }
+        }
+
+        static SIMDIntegerType Select( SIMDIntegerType v1, SIMDIntegerType v2, SIMDType control ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                auto rmm1 = _mm_andnot_epi32( _mm_castps_si128( control ), v1 );
+                auto rmm2 = _mm_and_epi32( v2, _mm_castps_si128( control ) );
+                return _mm_or_epi32( rmm1, rmm2 );
+            }
+            else
+            {
+                auto rmm1 = _mm256_andnot_epi32( _mm256_castps_si256( control ), v1 );
+                auto rmm2 = _mm256_and_epi32( v2, _mm256_castps_si256( control ) );
+                return _mm256_or_epi32( rmm1, rmm2 );
+            }
+        }
+
+        
+
 
         /// <summary>
         /// Unpack and interleave single-precision (32-bit) floating-point elements 
@@ -3736,6 +4199,36 @@ namespace Harlinn::Common::Core::SIMD
             auto tmp = And( v, Constants::AbsMask );
             return Equal( tmp, Constants::Infinity );
         }
+
+        static SIMDType IsNegativeInf( SIMDType v ) noexcept
+        {
+            return Equal( v, Fill(Constants::NegativeInfinityValue) );
+        }
+
+        static SIMDType IsNegativeInfOrNaN( SIMDType v ) noexcept
+        {
+            auto isNegativeInf = IsNegativeInf( v );
+            auto isNaN = IsNaN( v );
+            return Or( isNegativeInf, isNaN );
+        }
+
+        static SIMDType IsPositiveInf( SIMDType v ) noexcept
+        {
+            return Equal( v, Fill( Constants::InfinityValue ) );
+        }
+
+        static SIMDType IsPositiveInfOrNaN( SIMDType v ) noexcept
+        {
+            auto isPositiveInf = IsPositiveInf( v );
+            auto isNaN = IsNaN( v );
+            return Or( isPositiveInf, isNaN );
+        }
+
+        static SIMDType IsZero( SIMDType v ) noexcept
+        {
+            return Equal( v, _mm_setzero_ps( ) );
+        }
+
 
         static SIMDType IsNaN( SIMDType v ) noexcept
         {
@@ -4593,6 +5086,112 @@ namespace Harlinn::Common::Core::SIMD
         }
 
         /// <summary>
+        /// Checks if all of the first <c>Size</c> number of elements 
+        /// are equal to 0xFFFFFFFF.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns>
+        /// <c>true</c> if all of the first <c>Size</c> number of elements 
+        /// are equal to 0xFFFFFFFF, otherwise <c>false</c>.
+        /// </returns>
+        static bool AllTrue( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return ( _mm_movemask_ps( v ) & 1 ) == 1;
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return ( _mm_movemask_ps( v ) & 3 ) == 3;
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return ( _mm_movemask_ps( v ) & 7 ) == 7;
+                }
+                else
+                {
+                    return ( _mm_movemask_ps( v ) & 15 ) == 15;
+                }
+            }
+            else
+            {
+                if constexpr ( N == 5 )
+                {
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 31 ) == 31;
+                }
+                else if constexpr ( N == 6 )
+                {
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 63 ) == 63;
+                }
+                else if constexpr ( N == 7 )
+                {
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 127 ) == 127;
+                }
+                else
+                {
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 255 ) == 255;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if any of the first <c>Size</c> number of elements 
+        /// are equal to 0xFFFFFFFF.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns>
+        /// <c>true</c> if any of the first <c>Size</c> number of elements 
+        /// are equal to 0xFFFFFFFF, otherwise <c>false</c>.
+        /// </returns>
+        static bool AnyTrue( SIMDType v ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( N == 1 )
+                {
+                    return ( _mm_movemask_ps( v ) & 1 ) != 0;
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return ( _mm_movemask_ps( v ) & 3 ) != 0;
+                }
+                else if constexpr ( N == 3 )
+                {
+                    return ( _mm_movemask_ps( v ) & 7 ) != 0;
+                }
+                else
+                {
+                    return ( _mm_movemask_ps( v ) & 15 ) != 0;
+                }
+            }
+            else
+            {
+                if constexpr ( N == 5 )
+                {
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 31 ) != 0;
+                }
+                else if constexpr ( N == 6 )
+                {
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 63 ) != 0;
+                }
+                else if constexpr ( N == 7 )
+                {
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 127 ) != 0;
+                }
+                else
+                {
+                    return ( _mm256_movemask_ps( _mm256_castsi256_ps( v ) ) & 255 ) != 0;
+                }
+            }
+        }
+
+
+
+
+
+        /// <summary>
         /// Determines whether the elements of v1 are less than 
         /// the corresponding elements of v2.
         /// </summary>
@@ -4619,6 +5218,19 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_cmp_ps( v1, v2, _CMP_LT_OQ );
             }
         }
+
+        static bool AllLess( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = Less( v1, v2 );
+            return AllTrue( result );
+        }
+
+        static bool AnyLess( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = Less( v1, v2 );
+            return AnyTrue( result );
+        }
+
 
         /// <summary>
         /// Determines whether the elements of v1 are less than or equal to
@@ -4648,6 +5260,18 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static bool AllLessOrEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = LessOrEqual( v1, v2 );
+            return AllTrue( result );
+        }
+
+        static bool AnyLessOrEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = LessOrEqual( v1, v2 );
+            return AnyTrue( result );
+        }
+
         /// <summary>
         /// Determines whether the elements of v1 are equal to
         /// the corresponding elements of v2.
@@ -4673,6 +5297,12 @@ namespace Harlinn::Common::Core::SIMD
             {
                 return _mm256_cmp_ps( v1, v2, _CMP_EQ_OQ );
             }
+        }
+
+        static bool AnyEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = Equal( v1, v2 );
+            return AnyTrue( result );
         }
 
         /// <summary>
@@ -4702,6 +5332,18 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static bool AllNotEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = NotEqual( v1, v2 );
+            return AllTrue( result );
+        }
+
+        static bool AnyNotEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = NotEqual( v1, v2 );
+            return AnyTrue( result );
+        }
+
 
         /// <summary>
         /// Determines whether the elements of v1 are nearly equal to
@@ -4725,6 +5367,18 @@ namespace Harlinn::Common::Core::SIMD
             temp = Sub( temp, delta );
             temp = Max( temp, delta );
             return LessOrEqual( temp, epsilon );
+        }
+
+        static bool AllNearEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
+        {
+            auto result = NearEqual( v1, v2, epsilon );
+            return AllTrue( result );
+        }
+
+        static bool AnyNearEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
+        {
+            auto result = NearEqual( v1, v2, epsilon );
+            return AnyTrue( result );
         }
 
 
@@ -4755,6 +5409,19 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static bool AllGreaterOrEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = GreaterOrEqual( v1, v2 );
+            return AllTrue( result );
+        }
+
+        static bool AnyGreaterOrEqual( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = GreaterOrEqual( v1, v2 );
+            return AnyTrue( result );
+        }
+
+
         /// <summary>
         /// Determines whether the elements of v1 are greater than
         /// the corresponding elements of v2.
@@ -4780,6 +5447,18 @@ namespace Harlinn::Common::Core::SIMD
             {
                 return _mm256_cmp_ps( v1, v2, _CMP_GT_OQ );
             }
+        }
+
+        static bool AllGreater( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = Greater( v1, v2 );
+            return AllTrue( result );
+        }
+
+        static bool AnyGreater( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = Greater( v1, v2 );
+            return AnyTrue( result );
         }
 
         /// <summary>
@@ -4846,6 +5525,20 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static bool AllEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
+        {
+            auto v = Abs( Sub( v1, v2 ) );
+            auto rmm1 = LessOrEqual( v, epsilon );
+            return AllTrue( rmm1 );
+        }
+
+        static bool AnyEqual( SIMDType v1, SIMDType v2, SIMDType epsilon ) noexcept
+        {
+            auto v = Abs( Sub( v1, v2 ) );
+            auto rmm1 = LessOrEqual( v, epsilon );
+            return AnyTrue( rmm1 );
+        }
+
         /// <summary>
         /// Performs binary, element wise comparision of v1 and v2. 
         /// </summary>
@@ -4866,6 +5559,18 @@ namespace Harlinn::Common::Core::SIMD
             {
                 return _mm_castsi256_ps( _mm256_cmpeq_epi32( _mm256_castps_si256( v1 ), _mm256_castps_si256( v2 ) ) );
             }
+        }
+
+        static bool AllSameValue( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = SameValue( v1, v2 );
+            return AllTrue( result );
+        }
+
+        static bool AnySameValue( SIMDType v1, SIMDType v2 ) noexcept
+        {
+            auto result = SameValue( v1, v2 );
+            return AnyTrue( result );
         }
 
         /// <summary>
@@ -4890,6 +5595,33 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static bool AllSameValue( SIMDType v1, SIMDIntegerType v2 ) noexcept
+        {
+            auto result = SameValue( v1, v2 );
+            if constexpr ( UseShortSIMDType )
+            {
+                return AllTrue( _mm_castsi128_ps( result ) );
+            }
+            else
+            {
+                return AllTrue( _mm_castsi256_ps( result ) );
+            }
+        }
+
+        static bool AnySameValue( SIMDType v1, SIMDIntegerType v2 ) noexcept
+        {
+            auto result = SameValue( v1, v2 );
+            if constexpr ( UseShortSIMDType )
+            {
+                return AnyTrue( _mm_castsi128_ps( result ) );
+            }
+            else
+            {
+                return AnyTrue( _mm_castsi256_ps( result ) );
+            }
+        }
+
+
         /// <summary>
         /// Performs binary, element wise comparision of v1 and v2. 
         /// </summary>
@@ -4909,6 +5641,32 @@ namespace Harlinn::Common::Core::SIMD
             else
             {
                 return _mm256_cmpeq_epi32( v1, _mm256_castps_si256( v2 ) );
+            }
+        }
+
+        static bool AllSameValue( SIMDIntegerType v1, SIMDType v2 ) noexcept
+        {
+            auto result = SameValue( v1, v2 );
+            if constexpr ( UseShortSIMDType )
+            {
+                return AllTrue( _mm_castsi128_ps( result ) );
+            }
+            else
+            {
+                return AllTrue( _mm_castsi256_ps( result ) );
+            }
+        }
+
+        static bool AnySameValue( SIMDIntegerType v1, SIMDType v2 ) noexcept
+        {
+            auto result = SameValue( v1, v2 );
+            if constexpr ( UseShortSIMDType )
+            {
+                return AnyTrue( _mm_castsi128_ps( result ) );
+            }
+            else
+            {
+                return AnyTrue( _mm_castsi256_ps( result ) );
             }
         }
 
@@ -4934,6 +5692,31 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
+        static bool AllSameValue( SIMDIntegerType v1, SIMDIntegerType v2 ) noexcept
+        {
+            auto result = SameValue( v1, v2 );
+            if constexpr ( UseShortSIMDType )
+            {
+                return AllTrue( _mm_castsi128_ps( result ) );
+            }
+            else
+            {
+                return AllTrue( _mm_castsi256_ps( result ) );
+            }
+        }
+
+        static bool AnySameValue( SIMDIntegerType v1, SIMDIntegerType v2 ) noexcept
+        {
+            auto result = SameValue( v1, v2 );
+            if constexpr ( UseShortSIMDType )
+            {
+                return AnyTrue( _mm_castsi128_ps( result ) );
+            }
+            else
+            {
+                return AnyTrue( _mm_castsi256_ps( result ) );
+            }
+        }
 
 
         /// <summary>
@@ -5466,6 +6249,71 @@ namespace Harlinn::Common::Core::SIMD
             auto x = At<0>( n ); 
             return FMAdd( x, mr1, result );
         }
+
+        static SIMDType NextUp( SIMDType v )
+        {
+            /*
+            if ( IsInf( v ) && v > 0.f )
+                return v;
+            if ( v == -0.f )
+                v = 0.f;
+
+            uint32_t ui = FloatToBits( v );
+            if ( v >= 0 )
+                ++ui;
+            else
+                --ui;
+            return BitsToFloat( ui );
+            */
+
+            auto OneI = Traits<UInt32, 4>::Fill( 0x00000001 );
+
+            auto v1 = Select( v, _mm_setzero_ps( ), IsZero( v ) );
+
+            auto v1i = _mm_castps_si128( v1 );
+            auto v1iPositive = _mm_add_epi32( v1i, OneI );
+            v1i = _mm_sub_epi32( v1i, OneI );
+
+            auto r1i = Select( v1i, v1iPositive, GreaterOrEqual( v, _mm_setzero_ps( ) ) );
+            auto r1 = _mm_castsi128_ps( r1i );
+
+            r1 = Select( r1, v, IsPositiveInfOrNaN( v ) );
+            return r1;
+
+
+        }
+
+        static SIMDType NextDown( SIMDType v )
+        {
+            /*
+            if ( IsInf( v ) && v < 0. )
+                return v;
+            if ( v == 0.f )
+                v = -0.f;
+            uint32_t ui = FloatToBits( v );
+            if ( v > 0 )
+                --ui;
+            else
+                ++ui;
+            return BitsToFloat( ui );
+
+            */
+
+            auto OneI = Traits<UInt32, 4>::Fill( 0x00000001 );
+
+            auto v1 = Select( v, Fill(-0.f), IsZero( v ) );
+            
+            auto v1i = _mm_castps_si128( v1 );
+            auto v1iPositive = _mm_sub_epi32( v1i, OneI );
+            v1i = _mm_add_epi32( v1i, OneI );
+
+            auto r1i = Select( v1i, v1iPositive, Greater( v, _mm_setzero_ps( ) ) );
+            auto r1 = _mm_castsi128_ps( r1i );
+
+            r1 = Select( r1, v, IsNegativeInfOrNaN( v ) );
+            return r1;
+        }
+
 
 
     };

@@ -38,7 +38,7 @@ namespace pbrt
     // helpers, fwiw
     template <typename T>
 #ifdef PBRT_USES_HCCMATH
-        requires ( Math::Internal::TupleType<T> == false )
+        requires ( Math::Internal::TupleType<T> == false && Math::Internal::SimdType<T> == false )
 #endif
     static auto operator<<( std::ostream& os, const T& v ) -> decltype( v.ToString( ), os )
     {

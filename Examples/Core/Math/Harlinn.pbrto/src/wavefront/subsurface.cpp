@@ -122,10 +122,18 @@ namespace pbrt
                     {
                         Ray ray = SpawnRay( intr.pi, intr.n, time, wi );
                         if ( haveMedia )
+                        {
                             // TODO: should always just take outside in this case?
+#ifdef PBRT_USES_HCCMATH
+                            ray.medium = Math::ScalarDot( ray.d, intr.n ) > 0
+                                ? w.mediumInterface.outside
+                                : w.mediumInterface.inside;
+#else
                             ray.medium = Dot( ray.d, intr.n ) > 0
-                            ? w.mediumInterface.outside
-                            : w.mediumInterface.inside;
+                                ? w.mediumInterface.outside
+                                : w.mediumInterface.inside;
+#endif
+                        }
 
                         // || rather than | is intentional, to avoid the read if
                         // possible...

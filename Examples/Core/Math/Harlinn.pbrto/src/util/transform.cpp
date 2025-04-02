@@ -65,9 +65,6 @@ namespace pbrt
         Float sinTheta;
         Float cosTheta;
         Math::SinCos( rTheta, &sinTheta, &cosTheta );
-
-        //Float sinTheta = Math::Sin( Radians( theta ) );
-        //Float cosTheta = Math::Cos( Radians( theta ) );
 #else
         Float sinTheta = std::sin( Radians( theta ) );
         Float cosTheta = std::cos( Radians( theta ) );
@@ -93,9 +90,6 @@ namespace pbrt
         Float sinTheta;
         Float cosTheta;
         Math::SinCos( rTheta, &sinTheta, &cosTheta );
-
-        //Float sinTheta = Math::Sin( Radians( theta ) );
-        //Float cosTheta = Math::Cos( Radians( theta ) );
 #else
         Float sinTheta = std::sin( Radians( theta ) );
         Float cosTheta = std::cos( Radians( theta ) );
@@ -118,8 +112,6 @@ namespace pbrt
         Float sinTheta;
         Float cosTheta;
         Math::SinCos( rTheta, &sinTheta, &cosTheta );
-        //Float sinTheta = Math::Sin( Radians( theta ) );
-        //Float cosTheta = Math::Cos( Radians( theta ) );
 #else
         Float sinTheta = std::sin( Radians( theta ) );
         Float cosTheta = std::cos( Radians( theta ) );
@@ -234,7 +226,9 @@ namespace pbrt
     {
         Bounds3f bt;
         for ( int i = 0; i < 8; ++i )
+        {
             bt = Union( bt, ( *this )( b.Corner( i ) ) );
+        }
         return bt;
     }
 
@@ -261,6 +255,10 @@ namespace pbrt
 
     PBRT_CPU_GPU Transform::operator Quaternion( ) const
     {
+#ifdef PBRT_USES_HCCMATH
+        Quaternion quat = Quaternion::FromMatrix(m_);
+        return quat;
+#else
         Float trace = m[ 0 ][ 0 ] + m[ 1 ][ 1 ] + m[ 2 ][ 2 ];
         Quaternion quat;
         if ( trace > 0.f )
@@ -302,6 +300,7 @@ namespace pbrt
             quat.v.z = q[ 2 ];
         }
         return quat;
+#endif
     }
 
     void Transform::Decompose( Vector3f* T, SquareMatrix<4>* R, SquareMatrix<4>* S ) const
@@ -388,6 +387,39 @@ namespace pbrt
         return ret;
     }
 
+#ifdef PBRT_USES_HCCMATH
+    PBRT_CPU_GPU Point3fi Transform::ApplyInverse( const Point3fi& p ) const
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        using Point3Simd = Point3<float>::Simd;
+        using Point3Traits = Point3<float>::Traits;
+
+        constexpr Float gammaValue = gamma( 3 );
+        constexpr Float gammaPlusOneValue = gammaValue + 1.f;
+
+        Traits::SIMDType gammaVector = Point3Traits::Set( gammaValue, gammaValue, gammaValue );
+        Traits::SIMDType gammaVectorPlussOne = Point3Traits::Set( gammaPlusOneValue, gammaPlusOneValue, gammaPlusOneValue );
+
+        Point3Simd point( p );
+
+        Point3Simd result = Traits::TransformPoint( point.simd, mInv_.simd[ 0 ], mInv_.simd[ 1 ], mInv_.simd[ 2 ], mInv_.simd[ 3 ] );
+
+        Point3Simd vOutError;
+        if ( p.IsExact( ) )
+        {
+            vOutError.simd = Traits::Mul( gammaVector, Traits::Abs( result.simd ) );
+        }
+        else
+        {
+            Traits::SIMDType vInError = Point3Traits::Load( p.Error( ).values );
+            vOutError.simd = Traits::Add( Traits::Mul( gammaVectorPlussOne, Traits::Abs( Traits::TransformPoint( vInError, mInv_.simd[ 0 ], mInv_.simd[ 1 ], mInv_.simd[ 2 ], mInv_.simd[ 3 ] ) ) ),
+                Traits::Mul( gammaVector, Traits::Abs( result.simd ) ) );
+        }
+
+        return Point3fi( Point3f( result ), Point3f( vOutError ) );
+    }
+
+#else
     PBRT_CPU_GPU Point3fi Transform::ApplyInverse( const Point3fi& p ) const
     {
         Float x = Float( p.x ), y = Float( p.y ), z = Float( p.z );
@@ -433,6 +465,7 @@ namespace pbrt
         else
             return Point3fi( Point3f( xp, yp, zp ), pOutError ) / wp;
     }
+#endif
 
     PBRT_CPU_GPU Interaction Transform::operator()( const Interaction& in ) const
     {

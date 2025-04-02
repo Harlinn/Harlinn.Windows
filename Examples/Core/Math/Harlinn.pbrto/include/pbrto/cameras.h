@@ -234,8 +234,8 @@ namespace pbrt
             Point3f pxAdjusted = px - pDownZ;
             Point3f pyAdjusted = py - pDownZ;
 
-            *dpdx = sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( pxAdjusted ), time );
-            *dpdy = sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( pyAdjusted ), time );
+            *dpdx = sppScale * RenderFromCamera( ToPoint3f( DownZFromCamera.ApplyInverse( pxAdjusted ) ), time );
+            *dpdy = sppScale * RenderFromCamera( ToPoint3f( DownZFromCamera.ApplyInverse( pyAdjusted ) ), time );
 #else
             *dpdx = sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( px - pDownZ ), time );
             *dpdy = sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( py - pDownZ ), time );

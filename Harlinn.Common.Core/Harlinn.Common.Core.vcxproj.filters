@@ -584,6 +584,9 @@
     <ClCompile Include="HCCDoxygenStructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HCCMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Support\hcc.natvis">

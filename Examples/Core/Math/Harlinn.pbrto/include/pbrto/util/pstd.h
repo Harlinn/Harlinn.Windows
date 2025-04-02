@@ -1425,4 +1425,121 @@ namespace pstd
 
 }  // namespace pstd
 
+namespace std
+{
+    template<typename T, typename CharT>
+        requires requires(const T& t)
+        { 
+            { t.ToString( ) }->same_as<basic_string<CharT>>;
+        }
+    struct formatter<T, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const T& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"{}", value.ToString( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "{}", value.ToString( ) );
+            }
+        }
+    };
+
+    template<typename CharT, formattable<CharT> T >
+    struct formatter<pstd::optional<T>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const pstd::optional<T>& opt, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                if ( opt.has_value( ) )
+                {
+                    return std::format_to( ctx.out( ), L"{}", opt.value( ) );
+                }
+                else
+                {
+                    return std::format_to( ctx.out( ), L"<empty>" );
+                }
+            }
+            else
+            {
+                if ( opt.has_value( ) )
+                {
+                    return std::format_to( ctx.out( ), "{}", opt.value( ) );
+                }
+                else
+                {
+                    return std::format_to( ctx.out( ), "<empty>" );
+                }
+            }
+        }
+    };
+
+    template<typename CharT, formattable<CharT> T >
+    struct formatter<pstd::optional<const T*>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const pstd::optional<const T*>& opt, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                if ( opt.has_value( ) )
+                {
+                    if ( opt.value( ) )
+                    {
+                        return std::format_to( ctx.out( ), L"{}", *opt.value( ) );
+                    }
+                    else
+                    {
+                        return std::format_to( ctx.out( ), L"<nullptr>" );
+                    }
+                }
+                else
+                {
+                    return std::format_to( ctx.out( ), L"<empty>" );
+                }
+            }
+            else
+            {
+                if ( opt.has_value( ) )
+                {
+                    if ( opt.value( ) )
+                    {
+                        return std::format_to( ctx.out( ), "{}", *opt.value( ) );
+                    }
+                    else
+                    {
+                        return std::format_to( ctx.out( ), "<nullptr>" );
+                    }
+                }
+                else
+                {
+                    return std::format_to( ctx.out( ), "<empty>" );
+                }
+            }
+        }
+    };
+
+
+}
+
 #endif  // PBRT_UTIL_PSTD_H

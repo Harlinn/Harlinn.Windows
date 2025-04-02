@@ -31,41 +31,18 @@ namespace pbrt
         SquareMatrix<4> mInv;
     public:
         // Transform Public Methods
-        PBRT_CPU_GPU
-        inline Ray ApplyInverse( const Ray& r, Float* tMax = nullptr ) const;
-
-        PBRT_CPU_GPU
-        inline RayDifferential ApplyInverse( const RayDifferential& r, Float* tMax = nullptr ) const;
-
-#ifdef PBRT_USES_HCCMATH
-        template <typename T>
-        PBRT_CPU_GPU inline Vector3<T> ApplyInverse( const Vector3<T>& v ) const;
-
-        template <typename T>
-        PBRT_CPU_GPU inline Normal3<T> ApplyInverse( const Normal3<T>& ) const;
-#else
-        template <typename T>
-        PBRT_CPU_GPU inline Vector3<T> ApplyInverse( Vector3<T> v ) const;
-        
-        template <typename T>
-        PBRT_CPU_GPU inline Normal3<T> ApplyInverse( Normal3<T> ) const;
-#endif
-        std::string ToString( ) const;
-
         Transform( ) = default;
 
         PBRT_CPU_GPU
         Transform( const SquareMatrix<4>& m ) 
             : m( m )
         {
-#ifdef PBRT_USES_HCCMATH
-            pstd::optional<SquareMatrix<4>> inv = SquareMatrix<4>( Inverse( m ) );
-#else
             pstd::optional<SquareMatrix<4>> inv = Inverse( m );
-#endif
 
             if ( inv )
+            {
                 mInv = *inv;
+            }
             else
             {
                 // Initialize _mInv_ with not-a-number values
@@ -80,17 +57,38 @@ namespace pbrt
 
 
         PBRT_CPU_GPU
-#ifdef PBRT_USES_HCCMATH
-        Transform( const Float (&mat)[ 4 ][ 4 ] )
-#else
         Transform( const Float mat[ 4 ][ 4 ] )
-#endif
             : Transform( SquareMatrix<4>( mat ) )
         {
         }
 
         PBRT_CPU_GPU
-        Transform( const SquareMatrix<4>& m, const SquareMatrix<4>& mInv ) : m( m ), mInv( mInv ) {}
+        Transform( const SquareMatrix<4>& m, const SquareMatrix<4>& mInv ) 
+            : m( m ), mInv( mInv ) 
+        {}
+
+
+
+        PBRT_CPU_GPU
+        explicit Transform( const Frame& frame );
+
+        PBRT_CPU_GPU
+        explicit Transform( Quaternion q );
+
+        PBRT_CPU_GPU
+        inline Ray ApplyInverse( const Ray& r, Float* tMax = nullptr ) const;
+
+        PBRT_CPU_GPU
+        inline RayDifferential ApplyInverse( const RayDifferential& r, Float* tMax = nullptr ) const;
+
+        template <typename T>
+        PBRT_CPU_GPU inline Vector3<T> ApplyInverse( Vector3<T> v ) const;
+        
+        template <typename T>
+        PBRT_CPU_GPU inline Normal3<T> ApplyInverse( Normal3<T> ) const;
+
+        std::string ToString( ) const;
+
 
         PBRT_CPU_GPU
         const SquareMatrix<4>& GetMatrix( ) const 
@@ -131,19 +129,6 @@ namespace pbrt
                 std::abs( lc2 - 1 ) > tolerance );
         }
 
-#ifdef PBRT_USES_HCCMATH
-        template <typename T>
-        PBRT_CPU_GPU Point3<T> operator()( const Point3<T>& p ) const;
-
-        template <typename T>
-        PBRT_CPU_GPU inline Point3<T> ApplyInverse( const Point3<T>& p ) const;
-
-        template <typename T>
-        PBRT_CPU_GPU Vector3<T> operator()( const Vector3<T>& v ) const;
-
-        template <typename T>
-        PBRT_CPU_GPU Normal3<T> operator()( const Normal3<T>& ) const;
-#else
         template <typename T>
         PBRT_CPU_GPU Point3<T> operator()( Point3<T> p ) const;
 
@@ -155,7 +140,7 @@ namespace pbrt
 
         template <typename T>
         PBRT_CPU_GPU Normal3<T> operator()( Normal3<T> ) const;
-#endif
+
         PBRT_CPU_GPU
         Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
 
@@ -165,28 +150,12 @@ namespace pbrt
         PBRT_CPU_GPU
         Bounds3f operator()( const Bounds3f& b ) const;
 
-#ifdef PBRT_USES_HCCMATH
-        PBRT_CPU_GPU
-        Transform operator*( const Transform& t2 ) const
-        {
-            return Transform( m * t2.m, t2.mInv * mInv );
-        }
-#else
         PBRT_CPU_GPU
         Transform operator*( const Transform& t2 ) const;
-#endif
+
         PBRT_CPU_GPU
         bool SwapsHandedness( ) const;
 
-        PBRT_CPU_GPU
-        explicit Transform( const Frame& frame );
-#ifdef PBRT_USES_HCCMATH
-        PBRT_CPU_GPU
-        explicit Transform( const Quaternion& q );
-#else
-        PBRT_CPU_GPU
-        explicit Transform( Quaternion q );
-#endif
         PBRT_CPU_GPU
         explicit operator Quaternion( ) const;
 
@@ -204,15 +173,34 @@ namespace pbrt
         PBRT_CPU_GPU
         SurfaceInteraction ApplyInverse( const SurfaceInteraction& in ) const;
 
+
         PBRT_CPU_GPU
         Point3fi operator()( const Point3fi& p ) const
         {
             Float x = Float( p.x ), y = Float( p.y ), z = Float( p.z );
             // Compute transformed coordinates from point _(x, y, z)_
-            Float xp = ( m[ 0 ][ 0 ] * x + m[ 0 ][ 1 ] * y ) + ( m[ 0 ][ 2 ] * z + m[ 0 ][ 3 ] );
-            Float yp = ( m[ 1 ][ 0 ] * x + m[ 1 ][ 1 ] * y ) + ( m[ 1 ][ 2 ] * z + m[ 1 ][ 3 ] );
-            Float zp = ( m[ 2 ][ 0 ] * x + m[ 2 ][ 1 ] * y ) + ( m[ 2 ][ 2 ] * z + m[ 2 ][ 3 ] );
-            Float wp = ( m[ 3 ][ 0 ] * x + m[ 3 ][ 1 ] * y ) + ( m[ 3 ][ 2 ] * z + m[ 3 ][ 3 ] );
+            Float xp =  
+                m[ 0 ][ 0 ] * x + 
+                m[ 0 ][ 1 ] * y + 
+                m[ 0 ][ 2 ] * z + 
+                m[ 0 ][ 3 ];
+
+            Float yp = m[ 1 ][ 0 ] * x + 
+                m[ 1 ][ 1 ] * y + 
+                m[ 1 ][ 2 ] * z + 
+                m[ 1 ][ 3 ];
+
+            Float zp = 
+                m[ 2 ][ 0 ] * x + 
+                m[ 2 ][ 1 ] * y + 
+                m[ 2 ][ 2 ] * z + 
+                m[ 2 ][ 3 ];
+
+            Float wp = 
+                m[ 3 ][ 0 ] * x + 
+                m[ 3 ][ 1 ] * y + 
+                m[ 3 ][ 2 ] * z + 
+                m[ 3 ][ 3 ];
 
             // Compute absolute error for transformed point, _pError_
             Vector3f pError;
@@ -267,13 +255,10 @@ namespace pbrt
     };
 
     // Transform Function Declarations
-#ifdef PBRT_USES_HCCMATH
-    PBRT_CPU_GPU
-    PBRTO_EXPORT Transform Translate( const Vector3f& delta );
-#else
+
     PBRT_CPU_GPU
     PBRTO_EXPORT Transform Translate( Vector3f delta );
-#endif
+
     PBRT_CPU_GPU
     PBRTO_EXPORT Transform Scale( Float x, Float y, Float z );
 
@@ -284,13 +269,9 @@ namespace pbrt
     PBRT_CPU_GPU
     PBRTO_EXPORT Transform RotateZ( Float theta );
 
-#ifdef PBRT_USES_HCCMATH
-    PBRT_CPU_GPU
-    PBRTO_EXPORT Transform LookAt( const Point3f& pos, const Point3f& look, const Vector3f& up );
-#else
     PBRT_CPU_GPU
     PBRTO_EXPORT Transform LookAt( Point3f pos, Point3f look, Vector3f up );
-#endif
+
     PBRT_CPU_GPU
     Transform Orthographic( Float znear, Float zfar );
 
@@ -305,20 +286,13 @@ namespace pbrt
 
     PBRT_CPU_GPU inline Transform Transpose( const Transform& t )
     {
-#ifdef PBRT_USES_HCCMATH
-        return Transform( Math::Transpose( t.GetMatrix( ) ), Math::Transpose( t.GetInverseMatrix( ) ) );
-#else
         return Transform( Transpose( t.GetMatrix( ) ), Transpose( t.GetInverseMatrix( ) ) );
-#endif
     }
+
 
     PBRT_CPU_GPU inline Transform Rotate( Float sinTheta, Float cosTheta, Vector3f axis )
     {
-#ifdef PBRT_USES_HCCMATH
-        Vector3f a = Math::Normalize( axis );
-#else
         Vector3f a = Normalize( axis );
-#endif
         SquareMatrix<4> m;
         // Compute rotation of first basis vector
         m[ 0 ][ 0 ] = a.x * a.x + ( 1 - a.x * a.x ) * cosTheta;
@@ -337,37 +311,19 @@ namespace pbrt
         m[ 2 ][ 2 ] = a.z * a.z + ( 1 - a.z * a.z ) * cosTheta;
         m[ 2 ][ 3 ] = 0;
 
-#ifdef PBRT_USES_HCCMATH
-        return Transform( m, Math::Transpose( m ) );
-#else
         return Transform( m, Transpose( m ) );
-#endif
     }
 
-#ifdef PBRT_USES_HCCMATH
-    PBRT_CPU_GPU inline Transform Rotate( Float theta, const Vector3f& axis )
-#else
+
     PBRT_CPU_GPU inline Transform Rotate( Float theta, Vector3f axis )
-#endif
     {
-#ifdef PBRT_USES_HCCMATH_SINCOS
-        auto rTheta = Math::Deg2Rad( theta );
-        Float sinTheta;
-        Float cosTheta;
-        Math::SinCos( rTheta, &sinTheta, &cosTheta );
-#else
         Float sinTheta = std::sin( Radians( theta ) );
         Float cosTheta = std::cos( Radians( theta ) );
-#endif
         return Rotate( sinTheta, cosTheta, axis );
-
     }
 
-#ifdef PBRT_USES_HCCMATH
-    PBRT_CPU_GPU inline Transform RotateFromTo( const Vector3f& from, const Vector3f& to )
-#else
+
     PBRT_CPU_GPU inline Transform RotateFromTo( Vector3f from, Vector3f to )
-#endif
     {
         // Compute intermediate vector for vector reflection
         Vector3f refl;
@@ -381,21 +337,6 @@ namespace pbrt
         // Initialize matrix _r_ for rotation
         Vector3f u = refl - from, v = refl - to;
         SquareMatrix<4> r;
-#ifdef PBRT_USES_HCCMATH
-        auto dotUU = Math::ScalarDot( u, u );
-        auto dotVV = Math::ScalarDot( v, v );
-        auto dotUV = Math::ScalarDot( u, v );
-        for ( int i = 0; i < 3; ++i )
-        {
-            for ( int j = 0; j < 3; ++j )
-            {
-                // Initialize matrix element _r[i][j]_
-                r[ i ][ j ] = ( ( i == j ) ? 1 : 0 ) -
-                    2 / dotUU * u[ i ] * u[ j ] - 2 / dotVV * v[ i ] * v[ j ] +
-                    4 * dotUV / ( dotUU * dotVV ) * v[ i ] * u[ j ];
-            }
-        }
-#else
         for ( int i = 0; i < 3; ++i )
         {
             for ( int j = 0; j < 3; ++j )
@@ -406,13 +347,9 @@ namespace pbrt
                     4 * Dot( u, v ) / ( Dot( u, u ) * Dot( v, v ) ) * v[ i ] * u[ j ];
             }
         }
-#endif
-#ifdef PBRT_USES_HCCMATH
-        return Transform( r, Math::Transpose( r ) );
-#else
         return Transform( r, Transpose( r ) );
-#endif
     }
+
 
     PBRT_CPU_GPU inline Vector3fi Transform::operator()( const Vector3fi& v ) const
     {
@@ -420,214 +357,135 @@ namespace pbrt
         Vector3f vOutError;
         if ( v.IsExact( ) )
         {
-            vOutError.x = gamma( 3 ) * ( std::abs( m[ 0 ][ 0 ] * x ) + std::abs( m[ 0 ][ 1 ] * y ) +
+            vOutError.x = gamma( 3 ) * ( 
+                std::abs( m[ 0 ][ 0 ] * x ) + 
+                std::abs( m[ 0 ][ 1 ] * y ) +
                 std::abs( m[ 0 ][ 2 ] * z ) );
-            vOutError.y = gamma( 3 ) * ( std::abs( m[ 1 ][ 0 ] * x ) + std::abs( m[ 1 ][ 1 ] * y ) +
+
+            vOutError.y = gamma( 3 ) * ( 
+                std::abs( m[ 1 ][ 0 ] * x ) + 
+                std::abs( m[ 1 ][ 1 ] * y ) +
                 std::abs( m[ 1 ][ 2 ] * z ) );
-            vOutError.z = gamma( 3 ) * ( std::abs( m[ 2 ][ 0 ] * x ) + std::abs( m[ 2 ][ 1 ] * y ) +
+
+            vOutError.z = gamma( 3 ) * ( 
+                std::abs( m[ 2 ][ 0 ] * x ) + 
+                std::abs( m[ 2 ][ 1 ] * y ) +
                 std::abs( m[ 2 ][ 2 ] * z ) );
         }
         else
         {
             Vector3f vInError = v.Error( );
-            vOutError.x = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 0 ][ 0 ] ) * vInError.x +
+            vOutError.x = ( gamma( 3 ) + 1 ) *  ( 
+                std::abs( m[ 0 ][ 0 ] ) * vInError.x +
                 std::abs( m[ 0 ][ 1 ] ) * vInError.y +
                 std::abs( m[ 0 ][ 2 ] ) * vInError.z ) +
-                gamma( 3 ) * ( std::abs( m[ 0 ][ 0 ] * x ) + std::abs( m[ 0 ][ 1 ] * y ) +
+                gamma( 3 ) * ( 
+                    std::abs( m[ 0 ][ 0 ] * x ) + 
+                    std::abs( m[ 0 ][ 1 ] * y ) +
                     std::abs( m[ 0 ][ 2 ] * z ) );
-            vOutError.y = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 1 ][ 0 ] ) * vInError.x +
+
+            vOutError.y = ( gamma( 3 ) + 1 ) * ( 
+                std::abs( m[ 1 ][ 0 ] ) * vInError.x +
                 std::abs( m[ 1 ][ 1 ] ) * vInError.y +
                 std::abs( m[ 1 ][ 2 ] ) * vInError.z ) +
-                gamma( 3 ) * ( std::abs( m[ 1 ][ 0 ] * x ) + std::abs( m[ 1 ][ 1 ] * y ) +
+                gamma( 3 ) * ( 
+                    std::abs( m[ 1 ][ 0 ] * x ) + 
+                    std::abs( m[ 1 ][ 1 ] * y ) +
                     std::abs( m[ 1 ][ 2 ] * z ) );
-            vOutError.z = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 2 ][ 0 ] ) * vInError.x +
+
+            vOutError.z = ( gamma( 3 ) + 1 ) * ( 
+                std::abs( m[ 2 ][ 0 ] ) * vInError.x +
                 std::abs( m[ 2 ][ 1 ] ) * vInError.y +
                 std::abs( m[ 2 ][ 2 ] ) * vInError.z ) +
-                gamma( 3 ) * ( std::abs( m[ 2 ][ 0 ] * x ) + std::abs( m[ 2 ][ 1 ] * y ) +
+                gamma( 3 ) * ( 
+                    std::abs( m[ 2 ][ 0 ] * x ) + 
+                    std::abs( m[ 2 ][ 1 ] * y ) +
                     std::abs( m[ 2 ][ 2 ] * z ) );
         }
 
-        Float xp = m[ 0 ][ 0 ] * x + m[ 0 ][ 1 ] * y + m[ 0 ][ 2 ] * z;
-        Float yp = m[ 1 ][ 0 ] * x + m[ 1 ][ 1 ] * y + m[ 1 ][ 2 ] * z;
-        Float zp = m[ 2 ][ 0 ] * x + m[ 2 ][ 1 ] * y + m[ 2 ][ 2 ] * z;
+        Float xp = 
+            m[ 0 ][ 0 ] * x + 
+            m[ 0 ][ 1 ] * y + 
+            m[ 0 ][ 2 ] * z;
+
+        Float yp = 
+            m[ 1 ][ 0 ] * x + 
+            m[ 1 ][ 1 ] * y + 
+            m[ 1 ][ 2 ] * z;
+
+        Float zp = 
+            m[ 2 ][ 0 ] * x + 
+            m[ 2 ][ 1 ] * y + 
+            m[ 2 ][ 2 ] * z;
 
         return Vector3fi( Vector3f( xp, yp, zp ), vOutError );
     }
 
+
     // Transform Inline Methods
-#ifdef PBRT_USES_HCCMATH
-    template <typename T>
-    PBRT_CPU_GPU inline Point3<T> Transform::operator()( const Point3<T>& p ) const
-#else
+
     template <typename T>
     PBRT_CPU_GPU inline Point3<T> Transform::operator()( Point3<T> p ) const
-#endif
     {
+        T xp = m[ 0 ][ 0 ] * p.x +
+            m[ 0 ][ 1 ] * p.y +
+            m[ 0 ][ 2 ] * p.z +
+            m[ 0 ][ 3 ];
 
-#ifdef PBRT_USES_HCCMATH
-        if constexpr ( std::is_same_v<T, float> )
+        T yp = m[ 1 ][ 0 ] * p.x +
+            m[ 1 ][ 1 ] * p.y +
+            m[ 1 ][ 2 ] * p.z +
+            m[ 1 ][ 3 ];
+
+        T zp = m[ 2 ][ 0 ] * p.x +
+            m[ 2 ][ 1 ] * p.y +
+            m[ 2 ][ 2 ] * p.z +
+            m[ 2 ][ 3 ];
+
+        T wp = m[ 3 ][ 0 ] * p.x +
+            m[ 3 ][ 1 ] * p.y +
+            m[ 3 ][ 2 ] * p.z +
+            m[ 3 ][ 3 ];
+
+        if ( wp == 1 )
         {
-            using Traits = SquareMatrix<4>::Traits;
-            using Constants = Traits::Constants;
-            using Point3Simd = Point3<float>::Simd;
-
-            auto matrix = m.ToSimd( );
-
-            auto point = Traits::Permute<0, 1, 2, 7>( Point3<float>::Traits::Load(p.data()), Constants::IdentityR4 );
-
-            auto wp = _mm_dp_ps( matrix.simd[ 3 ], point, 0b11111111 );
-
-            Point3Simd result( Traits::Div( Traits::Add( Traits::Add( _mm_dp_ps( matrix.simd[ 0 ], point, 0b11110001 ), _mm_dp_ps( matrix.simd[ 1 ], point, 0b11110010 ) ), _mm_dp_ps( matrix.simd[ 2 ], point, 0b11110100 ) ), wp ) );
-            return result;
-
-            /*
-            auto xp = _mm_cvtss_f32( _mm_dp_ps( matrix.simd[ 0 ], point, 0b11110001 ) );
-            auto yp = _mm_cvtss_f32( _mm_dp_ps( matrix.simd[ 1 ], point, 0b11110001 ) );
-            auto zp = _mm_cvtss_f32( _mm_dp_ps( matrix.simd[ 2 ], point, 0b11110001 ) );
-            auto wp = _mm_cvtss_f32( _mm_dp_ps( matrix.simd[ 3 ], point, 0b11110001 ) );
-            */
-            /*
-            auto xp = Traits::First( Traits::HSum( Traits::Mul( matrix.simd[ 0 ], point ) ) );
-            auto yp = Traits::First( Traits::HSum( Traits::Mul( matrix.simd[ 1 ], point ) ) );
-            auto zp = Traits::First( Traits::HSum( Traits::Mul( matrix.simd[ 2 ], point ) ) );
-            auto wp = Traits::First( Traits::HSum( Traits::Mul( matrix.simd[ 3 ], point ) ) );
-            */
-
-            /*
-            if ( wp == 1.f )
-            {
-                return Point3<T>( xp, yp, zp );
-            }
-            else
-            {
-                return Point3<T>( xp, yp, zp ) / wp;
-            }
-            */
-
+            return Point3<T>( xp, yp, zp );
         }
         else
         {
-#endif
-            T xp = m[ 0 ][ 0 ] * p.x +
-                m[ 0 ][ 1 ] * p.y +
-                m[ 0 ][ 2 ] * p.z +
-                m[ 0 ][ 3 ];
-
-            T yp = m[ 1 ][ 0 ] * p.x +
-                m[ 1 ][ 1 ] * p.y +
-                m[ 1 ][ 2 ] * p.z +
-                m[ 1 ][ 3 ];
-
-            T zp = m[ 2 ][ 0 ] * p.x +
-                m[ 2 ][ 1 ] * p.y +
-                m[ 2 ][ 2 ] * p.z +
-                m[ 2 ][ 3 ];
-
-            T wp = m[ 3 ][ 0 ] * p.x +
-                m[ 3 ][ 1 ] * p.y +
-                m[ 3 ][ 2 ] * p.z +
-                m[ 3 ][ 3 ];
-
-            if ( wp == 1 )
-            {
-                return Point3<T>( xp, yp, zp );
-            }
-            else
-            {
-                return Point3<T>( xp, yp, zp ) / wp;
-            }
-
-#ifdef PBRT_USES_HCCMATH
+            return Point3<T>( xp, yp, zp ) / wp;
         }
-#endif
-
     }
 
-#ifdef PBRT_USES_HCCMATH
-    template <typename T>
-    PBRT_CPU_GPU inline Vector3<T> Transform::operator()( const Vector3<T>& v ) const
-#else
+
+
     template <typename T>
     PBRT_CPU_GPU inline Vector3<T> Transform::operator()( Vector3<T> v ) const
-#endif
     {
-#ifdef PBRT_USES_HCCMATH
-        if constexpr ( std::is_same_v<T, float> )
-        {
-            using Traits = Vector3<float>::Traits;
-            using Constants = Traits::Constants;
-            using Vector3Simd = Vector3<float>::Simd;
+        return Vector3<T>(
+            m[ 0 ][ 0 ] * v.x + 
+            m[ 0 ][ 1 ] * v.y + 
+            m[ 0 ][ 2 ] * v.z,
 
-            auto matrix = m.ToSimd( );
-            auto vector = Traits::Load( v.data( ) );
+            m[ 1 ][ 0 ] * v.x + 
+            m[ 1 ][ 1 ] * v.y + 
+            m[ 1 ][ 2 ] * v.z,
 
-            Vector3Simd result( Traits::Add( Traits::Add( ( _mm_dp_ps( matrix.simd[ 0 ], vector, 0b01110001 ) ), _mm_dp_ps( matrix.simd[ 1 ], vector, 0b01110010 )  ),
-                _mm_dp_ps( matrix.simd[ 2 ], vector, 0b01110100 ) ) );
-
-            return result;
-
-            /*
-            auto xv = Traits::First( Traits::HSum( Traits::Mul( matrix.simd[ 0 ], vector ) ) );
-            auto yv = Traits::First( Traits::HSum( Traits::Mul( matrix.simd[ 1 ], vector ) ) );
-            auto zv = Traits::First( Traits::HSum( Traits::Mul( matrix.simd[ 2 ], vector ) ) );
-            */
-
-            //return Vector3<T>( xv, yv, zv );
-        }
-        else
-        {
-#endif
-            return Vector3<T>(
-                m[ 0 ][ 0 ] * v.x + m[ 0 ][ 1 ] * v.y + m[ 0 ][ 2 ] * v.z,
-                m[ 1 ][ 0 ] * v.x + m[ 1 ][ 1 ] * v.y + m[ 1 ][ 2 ] * v.z,
-                m[ 2 ][ 0 ] * v.x + m[ 2 ][ 1 ] * v.y + m[ 2 ][ 2 ] * v.z );
-#ifdef PBRT_USES_HCCMATH
-        }
-#endif
+            m[ 2 ][ 0 ] * v.x + 
+            m[ 2 ][ 1 ] * v.y + 
+            m[ 2 ][ 2 ] * v.z );
     }
 
-#ifdef PBRT_USES_HCCMATH
-    template <typename T>
-    PBRT_CPU_GPU inline Normal3<T> Transform::operator()( const Normal3<T>& n ) const
-#else
+
+
     template <typename T>
     PBRT_CPU_GPU inline Normal3<T> Transform::operator()( Normal3<T> n ) const
-#endif
     {
-#ifdef PBRT_USES_HCCMATH
-        if constexpr ( std::is_same_v<T, float> )
-        {
-            using Traits = Normal3<float>::Traits;
-            using Constants = Traits::Constants;
-            using Normal3Simd = Normal3<float>::Simd;
-
-            auto matrix = mInv.ToSimd( );
-            auto normal = Traits::Load( n.data( ) );
-
-            Normal3Simd result( Traits::Add( Traits::Add( ( _mm_dp_ps( matrix.simd[ 0 ], normal, 0b01110001 ) ), _mm_dp_ps( matrix.simd[ 1 ], normal, 0b01110010 ) ),
-                _mm_dp_ps( matrix.simd[ 2 ], normal, 0b01110100 ) ) );
-
-            return result;
-
-            /*
-            auto xn = _mm_cvtss_f32( _mm_dp_ps( matrix.simd[ 0 ], normal, 0b01110001 ) );
-            auto yn = _mm_cvtss_f32( _mm_dp_ps( matrix.simd[ 1 ], normal, 0b01110001 ) );
-            auto zn = _mm_cvtss_f32( _mm_dp_ps( matrix.simd[ 2 ], normal, 0b01110001 ) );
-            */
-
-            //return Normal3<T>( xn, yn, zn );
-        }
-        else
-        {
-#endif
             T x = n.x, y = n.y, z = n.z;
             return Normal3<T>( 
                 mInv[ 0 ][ 0 ] * x + mInv[ 1 ][ 0 ] * y + mInv[ 2 ][ 0 ] * z,
                 mInv[ 0 ][ 1 ] * x + mInv[ 1 ][ 1 ] * y + mInv[ 2 ][ 1 ] * z,
                 mInv[ 0 ][ 2 ] * x + mInv[ 1 ][ 2 ] * y + mInv[ 2 ][ 2 ] * z );
-#ifdef PBRT_USES_HCCMATH
-        }
-#endif
     }
 
     PBRT_CPU_GPU inline Ray Transform::operator()( const Ray& r, Float* tMax ) const
@@ -637,19 +495,15 @@ namespace pbrt
         // Offset ray origin to edge of error bounds and compute _tMax_
         if ( Float lengthSquared = LengthSquared( d ); lengthSquared > 0 )
         {
-#ifdef PBRT_USES_HCCMATH
-            Float dt = ScalarDot( Abs( d ), o.Error( ) ) / lengthSquared;
-#else
             Float dt = Dot( Abs( d ), o.Error( ) ) / lengthSquared;
-#endif
 
             o += d * dt;
             if ( tMax )
                 *tMax -= dt;
         }
-
         return Ray( Point3f( o ), d, r.time, r.medium );
     }
+
 
     PBRT_CPU_GPU inline RayDifferential Transform::operator()( const RayDifferential& r, Float* tMax ) const
     {
@@ -670,11 +524,8 @@ namespace pbrt
     {
     }
 
-#ifdef PBRT_USES_HCCMATH
-    PBRT_CPU_GPU inline Transform::Transform( const Quaternion& q )
-#else
+
     PBRT_CPU_GPU inline Transform::Transform( Quaternion q )
-#endif
     {
         Float xx = q.v.x * q.v.x;
         Float yy = q.v.y * q.v.y; 
@@ -700,20 +551,13 @@ namespace pbrt
         mInv[ 2 ][ 2 ] = 1 - 2 * ( xx + yy );
 
         // Transpose since we are left-handed.  Ugh.
-#ifdef PBRT_USES_HCCMATH
-        m = Math::Transpose( mInv );
-#else
         m = Transpose( mInv );
-#endif
+
     }
 
-#ifdef PBRT_USES_HCCMATH
-    template <typename T>
-    PBRT_CPU_GPU inline Point3<T> Transform::ApplyInverse( const Point3<T>& p ) const
-#else
+
     template <typename T>
     PBRT_CPU_GPU inline Point3<T> Transform::ApplyInverse( Point3<T> p ) const
-#endif
     {
         T x = p.x, y = p.y, z = p.z;
         T xp = ( mInv[ 0 ][ 0 ] * x + mInv[ 0 ][ 1 ] * y ) + ( mInv[ 0 ][ 2 ] * z + mInv[ 0 ][ 3 ] );
@@ -722,18 +566,16 @@ namespace pbrt
         T wp = ( mInv[ 3 ][ 0 ] * x + mInv[ 3 ][ 1 ] * y ) + ( mInv[ 3 ][ 2 ] * z + mInv[ 3 ][ 3 ] );
         CHECK_NE( wp, 0 );
         if ( wp == 1 )
+        {
             return Point3<T>( xp, yp, zp );
+        }
         else
             return Point3<T>( xp, yp, zp ) / wp;
     }
 
-#ifdef PBRT_USES_HCCMATH
-    template <typename T>
-    PBRT_CPU_GPU inline Vector3<T> Transform::ApplyInverse( const Vector3<T>& v ) const
-#else
+
     template <typename T>
     PBRT_CPU_GPU inline Vector3<T> Transform::ApplyInverse( Vector3<T> v ) const
-#endif
     {
         T x = v.x, y = v.y, z = v.z;
         return Vector3<T>( mInv[ 0 ][ 0 ] * x + mInv[ 0 ][ 1 ] * y + mInv[ 0 ][ 2 ] * z,
@@ -741,13 +583,9 @@ namespace pbrt
             mInv[ 2 ][ 0 ] * x + mInv[ 2 ][ 1 ] * y + mInv[ 2 ][ 2 ] * z );
     }
 
-#ifdef PBRT_USES_HCCMATH
-    template <typename T>
-    PBRT_CPU_GPU inline Normal3<T> Transform::ApplyInverse( const Normal3<T>& n ) const
-#else
+
     template <typename T>
     PBRT_CPU_GPU inline Normal3<T> Transform::ApplyInverse( Normal3<T> n ) const
-#endif
     {
         T x = n.x, y = n.y, z = n.z;
         return Normal3<T>( m[ 0 ][ 0 ] * x + m[ 1 ][ 0 ] * y + m[ 2 ][ 0 ] * z,
@@ -755,25 +593,29 @@ namespace pbrt
             m[ 0 ][ 2 ] * x + m[ 1 ][ 2 ] * y + m[ 2 ][ 2 ] * z );
     }
 
+
     PBRT_CPU_GPU inline Ray Transform::ApplyInverse( const Ray& r, Float* tMax ) const
     {
         Point3fi o = ApplyInverse( Point3fi( r.o ) );
         Vector3f d = ApplyInverse( r.d );
+
         // Offset ray origin to edge of error bounds and compute _tMax_
+
         Float lengthSquared = LengthSquared( d );
+
         if ( lengthSquared > 0 )
         {
             Vector3f oError( o.x.Width( ) / 2, o.y.Width( ) / 2, o.z.Width( ) / 2 );
-#ifdef PBRT_USES_HCCMATH
-            Float dt = ScalarDot( Abs( d ), oError ) / lengthSquared;
-#else
+
             Float dt = Dot( Abs( d ), oError ) / lengthSquared;
-#endif
+
             o += d * dt;
             if ( tMax )
                 *tMax -= dt;
         }
+
         return Ray( Point3f( o ), d, r.time, r.medium );
+
     }
 
     PBRT_CPU_GPU inline RayDifferential Transform::ApplyInverse( const RayDifferential& r, Float* tMax ) const

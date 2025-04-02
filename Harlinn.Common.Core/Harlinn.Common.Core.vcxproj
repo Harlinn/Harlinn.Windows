@@ -371,6 +371,7 @@
     <ClCompile Include="HCCLoggerTypes.cpp" />
     <ClCompile Include="HCCLoggerLevel.cpp" />
     <ClCompile Include="HCCLoggerLMDBSink.cpp" />
+    <ClCompile Include="HCCMath.cpp" />
     <ClCompile Include="HCCMemory.cpp" />
     <ClCompile Include="HCCPersistentFormatter.cpp" />
     <ClCompile Include="HCCPipe.cpp" />

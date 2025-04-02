@@ -41,6 +41,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
+#ifndef PBRT_USES_HCCMATH
     inline bool Equal( const pbrt::SquareMatrix<4>& m1, const pbrt::SquareMatrix<4>& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
@@ -58,6 +59,7 @@ namespace Harlinn::Util::Test
         }
         return true;
     }
+#endif
 
     inline bool Equal( const DirectX::XMFLOAT4X4& m1, const DirectX::XMFLOAT4X4& m2, float epsilon = 0.0001f )
     {
@@ -77,6 +79,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
+#ifndef PBRT_USES_HCCMATH
     inline bool Equal( const pbrt::SquareMatrix<4>& m1, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
@@ -111,6 +114,7 @@ namespace Harlinn::Util::Test
         }
         return true;
     }
+#endif
 
     inline bool Equal( const DirectX::XMFLOAT4X4& m1, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
@@ -162,21 +166,6 @@ namespace Harlinn::Util::Test
     }
 
 
-    template<Common::Core::Math::Internal::TupleType T, Common::Core::Math::Internal::TupleType U>
-    inline bool Equal( const T& v1, const U& v2, float epsilon = 0.0001f )
-    {
-        for ( size_t i = 0; i < 3; i++ )
-        {
-            auto value1 = v1[ i ];
-            float value2 = v2[ i ];
-            auto delta = value1 - value2;
-            if ( std::abs( delta ) > epsilon )
-            {
-                return false;
-            }
-        }
-        return true;
-    }
     template<Common::Core::Math::Internal::TupleType T>
     inline bool Equal( const DirectX::XMFLOAT3& v1, const T& v2, float epsilon = 0.0001f )
     {
@@ -224,7 +213,7 @@ namespace Harlinn::Util::Test
         return true;
     }
 
-
+#ifndef PBRT_USES_HCCMATH
     template<Common::Core::Math::Internal::TupleType T>
     inline bool Equal( const pbrt::Vector3f& v1, const T& v2, float epsilon = 0.0001f )
     {
@@ -320,7 +309,7 @@ namespace Harlinn::Util::Test
         }
         return true;
     }
-
+#endif
 
 
 }

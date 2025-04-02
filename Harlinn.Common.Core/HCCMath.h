@@ -127,6 +127,22 @@ namespace Harlinn::Common::Core::Math
         return std::bit_cast<Int32>( x ) == std::bit_cast<Int32>( y );
     }
 
+    constexpr inline bool IsSameValue( Int32 x, Int32 y ) noexcept
+    {
+        return x == y;
+    }
+    constexpr inline bool IsSameValue( UInt32 x, UInt32 y ) noexcept
+    {
+        return x == y;
+    }
+    constexpr inline bool IsSameValue( Int64 x, Int64 y ) noexcept
+    {
+        return x == y;
+    }
+    constexpr inline bool IsSameValue( UInt64 x, UInt64 y ) noexcept
+    {
+        return x == y;
+    }
     
     /// <summary>
     /// Tests if a double precision floating value is zero.
@@ -155,6 +171,22 @@ namespace Harlinn::Common::Core::Math
         return ( std::bit_cast<Int32>( x ) & 0x7FFFFFFF ) == 0;
     }
 
+    constexpr inline bool IsZero( Int32 x ) noexcept
+    {
+        return x == 0L;
+    }
+    constexpr inline bool IsZero( UInt32 x ) noexcept
+    {
+        return x == 0UL;
+    }
+    constexpr inline bool IsZero( Int64 x ) noexcept
+    {
+        return x == 0LL;
+    }
+    constexpr inline bool IsZero( UInt64 x ) noexcept
+    {
+        return x == 0ULL;
+    }
 
     /// <summary>
     /// <para>
@@ -950,6 +982,27 @@ namespace Harlinn::Common::Core::Math
             return true;
         }
         return IsInf( args ... );
+    }
+
+    template<typename T>
+        requires IsInteger<T>
+    constexpr inline bool IsFinite( T val ) noexcept
+    {
+        return true;
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline bool IsFinite( T val ) noexcept
+    {
+        return Internal::OpenLibM::isfinite( val );
+    }
+
+    template<typename T, typename ... Args>
+        requires IsArithmetic<T> && ( IsArithmetic<Args> && ... )
+    constexpr inline bool IsFinite( Args&& ... args ) noexcept
+    {
+        return (IsFinite( args ) && ...);
     }
 
 
@@ -1873,7 +1926,7 @@ namespace Harlinn::Common::Core::Math
     }
 #endif
 
-#ifdef HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP
+
     /// <summary>
     /// <para>
     /// If the value is within [minimumValue, maximumValue], the function 
@@ -1895,34 +1948,23 @@ namespace Harlinn::Common::Core::Math
     /// <returns>
     /// The value within [minimumValue, maximumValue], or the nearest boundary.
     /// </returns>
-    template<typename T>
-        requires requires(const T& t1, const T& t2 )
-        { 
-            { t1 < t2 }->std::convertible_to<bool>;
-        }
-    constexpr inline const T& Clamp( const T& value, const T& minimumValue, const T& maximumValue )
+    template<typename T1, typename T2, typename T3>
+        requires IsArithmetic<T1> && IsArithmetic<T2>&& IsArithmetic<T3>
+    constexpr inline T1 Clamp( T1 value, T2 minimumValue, T3 maximumValue )
     {
-        if ( value < minimumValue )
+        if ( value < static_cast< T1 >( minimumValue ) )
         {
-            return minimumValue;
+            return static_cast<T1>( minimumValue );
         }
-        else if ( maximumValue < value )
+        else if ( static_cast< T1 >( maximumValue ) < value )
         {
-            return maximumValue;
+            return static_cast<T1>( maximumValue );
         }
         else
         {
             return value;
         }
     }
-
-#else
-    template<typename T>
-    constexpr inline T& Clamp( const T& value, const T& minimumValue, const T& maximumValue )
-    {
-        return std::clamp( value, minimumValue, maximumValue );
-    }
-#endif
 
     /// <summary>
     /// <para>
@@ -2836,9 +2878,9 @@ namespace Harlinn::Common::Core::Math
         return Sqrt( std::max( Constants< FloatT>::Zero, x ) );
     }
 
-    template<typename FloatT>
-        requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT Sqr( FloatT v )
+    template<typename T>
+        requires IsArithmetic<T> || IsComplex<T>
+    constexpr inline T Sqr( T v )
     {
         return v * v;
     }
@@ -2930,84 +2972,84 @@ namespace Harlinn::Common::Core::Math
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT AddRoundUp( FloatT a, FloatT b )
+    constexpr inline FloatT AddAdjustUp( FloatT a, FloatT b )
     {
-        return NextFloatUp( a + b );
+        return NextUp( a + b );
     }
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT AddRoundDown( FloatT a, FloatT b )
+    constexpr inline FloatT AddAdjustDown( FloatT a, FloatT b )
     {
-        return NextFloatDown( a + b );
-    }
-
-    template<typename FloatT>
-        requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT SubRoundUp( FloatT a, FloatT b )
-    {
-        return AddRoundUp( a, -b );
-    }
-    template<typename FloatT>
-        requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT SubRoundDown( FloatT a, FloatT b )
-    {
-        return AddRoundDown( a, -b );
+        return NextDown( a + b );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT MulRoundUp( FloatT a, FloatT b )
+    constexpr inline FloatT SubAdjustUp( FloatT a, FloatT b )
     {
-        return NextFloatUp( a * b );
+        return AddAdjustUp( a, -b );
+    }
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT SubAdjustDown( FloatT a, FloatT b )
+    {
+        return AddAdjustDown( a, -b );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT MulRoundDown( FloatT a, FloatT b )
+    constexpr inline FloatT MulAdjustUp( FloatT a, FloatT b )
     {
-        return NextFloatDown( a * b );
+        return NextUp( a * b );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT DivRoundUp( FloatT a, FloatT b )
+    constexpr inline FloatT MulAdjustDown( FloatT a, FloatT b )
     {
-        return NextFloatUp( a / b );
+        return NextDown( a * b );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT DivRoundDown( FloatT a, FloatT b )
+    constexpr inline FloatT DivAdjustUp( FloatT a, FloatT b )
     {
-        return NextFloatDown( a / b );
+        return NextUp( a / b );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT SqrtRoundUp( FloatT a )
+    constexpr inline FloatT DivAdjustDown( FloatT a, FloatT b )
     {
-        return NextFloatUp( Sqrt( a ) );
+        return NextDown( a / b );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT SqrtRoundDown( FloatT a )
+    constexpr inline FloatT SqrtAdjustUp( FloatT a )
     {
-        return std::max<FloatT>( 0, NextFloatDown( Sqrt( a ) ) );
+        return NextUp( Sqrt( a ) );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT FMARoundUp( FloatT a, FloatT b, FloatT c )
+    constexpr inline FloatT SqrtAdjustDown( FloatT a )
     {
-        return NextFloatUp( FMA( a, b, c ) );
+        return std::max<FloatT>( 0, NextDown( Sqrt( a ) ) );
     }
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
-    constexpr inline FloatT FMARoundDown( FloatT a, FloatT b, FloatT c )
+    constexpr inline FloatT FMAAdjustUp( FloatT a, FloatT b, FloatT c )
     {
-        return NextFloatDown( FMA( a, b, c ) );
+        return NextUp( FMA( a, b, c ) );
+    }
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
+    constexpr inline FloatT FMAAdjustDown( FloatT a, FloatT b, FloatT c )
+    {
+        return NextDown( FMA( a, b, c ) );
     }
 
 
@@ -3419,6 +3461,8 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+
+
     
 
 
@@ -3458,7 +3502,7 @@ namespace Harlinn::Common::Core::Math
             }
             else
             {
-                return Interval( SubRoundDown( v, err ), AddRoundUp( v, err ) );
+                return Interval( SubAdjustDown( v, err ), AddAdjustUp( v, err ) );
             }
         }
 
@@ -3502,29 +3546,29 @@ namespace Harlinn::Common::Core::Math
 
         constexpr Interval operator+( const Interval& i ) const
         {
-            return { AddRoundDown( lowerBound_, i.lowerBound_ ), AddRoundUp( upperBound_, i.upperBound_ ) };
+            return { AddAdjustDown( lowerBound_, i.lowerBound_ ), AddAdjustUp( upperBound_, i.upperBound_ ) };
         }
 
         constexpr Interval operator-( const Interval& i ) const
         {
-            return { SubRoundDown( lowerBound_, i.upperBound_ ), SubRoundUp( upperBound_, i.lowerBound_ ) };
+            return { SubAdjustDown( lowerBound_, i.upperBound_ ), SubAdjustUp( upperBound_, i.lowerBound_ ) };
         }
 
         constexpr Interval operator*( const Interval& i ) const
         {
             value_type lp[ 4 ] = 
             { 
-                MulRoundDown( lowerBound_, i.lowerBound_ ), 
-                MulRoundDown( upperBound_, i.lowerBound_ ),
-                MulRoundDown( lowerBound_, i.upperBound_ ), 
-                MulRoundDown( upperBound_, i.upperBound_ ) 
+                MulAdjustDown( lowerBound_, i.lowerBound_ ),
+                MulAdjustDown( upperBound_, i.lowerBound_ ),
+                MulAdjustDown( lowerBound_, i.upperBound_ ),
+                MulAdjustDown( upperBound_, i.upperBound_ )
             };
             value_type hp[ 4 ] = 
             { 
-                MulRoundUp( lowerBound_, i.lowerBound_ ), 
-                MulRoundUp( upperBound_, i.lowerBound_ ),
-                MulRoundUp( lowerBound_, i.upperBound_ ), 
-                MulRoundUp( upperBound_, i.upperBound_ ) 
+                MulAdjustUp( lowerBound_, i.lowerBound_ ),
+                MulAdjustUp( upperBound_, i.lowerBound_ ),
+                MulAdjustUp( lowerBound_, i.upperBound_ ),
+                MulAdjustUp( upperBound_, i.upperBound_ )
             };
             return { Min( lp[ 0 ], lp[ 1 ], lp[ 2 ], lp[ 3 ] ),
                     Max( hp[ 0 ], hp[ 1 ], hp[ 2 ], hp[ 3 ] ) };
@@ -3576,11 +3620,11 @@ namespace Harlinn::Common::Core::Math
         {
             if ( f > static_cast< value_type >( 0 ) )
             {
-                *this = Interval( MulRoundDown( f, lowerBound_ ), MulRoundUp( f, upperBound_ ) );
+                *this = Interval( MulAdjustDown( f, lowerBound_ ), MulAdjustUp( f, upperBound_ ) );
             }
             else
             {
-                *this = Interval( MulRoundDown( f, upperBound_ ), MulRoundUp( f, lowerBound_ ) );
+                *this = Interval( MulAdjustDown( f, upperBound_ ), MulAdjustUp( f, lowerBound_ ) );
             }
             return *this;
         }
@@ -3588,11 +3632,11 @@ namespace Harlinn::Common::Core::Math
         {
             if ( f > static_cast< value_type >( 0 ) )
             {
-                *this = Interval( DivRoundDown( lowerBound_, f ), DivRoundUp( upperBound_, f ) );
+                *this = Interval( DivAdjustDown( lowerBound_, f ), DivAdjustUp( upperBound_, f ) );
             }
             else
             {
-                *this = Interval( DivRoundDown( upperBound_, f ), DivRoundUp( lowerBound_, f ) );
+                *this = Interval( DivAdjustDown( upperBound_, f ), DivAdjustUp( lowerBound_, f ) );
             }
             return *this;
         }
@@ -3624,10 +3668,10 @@ namespace Harlinn::Common::Core::Math
             // return an interval of everything.
             return Interval<FloatT>( -std::numeric_limits<FloatT>::infinity(), std::numeric_limits<FloatT>::infinity( ) );
         }
-        FloatT lowQuot[ 4 ] = { DivRoundDown( lowerBound_, interval.lowerBound_ ), DivRoundDown( upperBound_, interval.lowerBound_ ),
-                            DivRoundDown( lowerBound_, interval.upperBound_ ), DivRoundDown( upperBound_, interval.upperBound_ ) };
-        FloatT highQuot[ 4 ] = { DivRoundUp( lowerBound_, interval.lowerBound_ ), DivRoundUp( upperBound_, interval.lowerBound_ ),
-                             DivRoundUp( lowerBound_, interval.upperBound_ ), DivRoundUp( upperBound_, interval.upperBound_ ) };
+        FloatT lowQuot[ 4 ] = { DivAdjustDown( lowerBound_, interval.lowerBound_ ), DivAdjustDown( upperBound_, interval.lowerBound_ ),
+                            DivAdjustDown( lowerBound_, interval.upperBound_ ), DivAdjustDown( upperBound_, interval.upperBound_ ) };
+        FloatT highQuot[ 4 ] = { DivAdjustUp( lowerBound_, interval.lowerBound_ ), DivAdjustUp( upperBound_, interval.lowerBound_ ),
+                             DivAdjustUp( lowerBound_, interval.upperBound_ ), DivAdjustUp( upperBound_, interval.upperBound_ ) };
         return { Min( lowQuot[ 0 ], lowQuot[ 1 ], lowQuot[ 2 ], lowQuot[ 3 ] ),
                 Max( highQuot[ 0 ], highQuot[ 1 ], highQuot[ 2 ], highQuot[ 3 ] ) };
     }
@@ -3644,9 +3688,9 @@ namespace Harlinn::Common::Core::Math
         }
         if ( InRange( static_cast< FloatT >( 0 ), interval ) )
         {
-            return Interval<FloatT>( static_cast< FloatT >( 0 ), MulRoundUp( ahigh, ahigh ) );
+            return Interval<FloatT>( static_cast< FloatT >( 0 ), MulAdjustUp( ahigh, ahigh ) );
         }
-        return Interval<FloatT>( MulRoundDown( alow, alow ), MulRoundUp( ahigh, ahigh ) );
+        return Interval<FloatT>( MulAdjustDown( alow, alow ), MulAdjustUp( ahigh, ahigh ) );
     }
 
     template<typename FloatT>
@@ -3676,11 +3720,11 @@ namespace Harlinn::Common::Core::Math
     {
         if ( f > static_cast< FloatT >( 0 ) )
         {
-            return Interval<FloatT>( MulRoundDown( f, i.LowerBound( ) ), MulRoundUp( f, i.UpperBound( ) ) );
+            return Interval<FloatT>( MulAdjustDown( f, i.LowerBound( ) ), MulAdjustUp( f, i.UpperBound( ) ) );
         }
         else
         {
-            return Interval<FloatT>( MulRoundDown( f, i.UpperBound( ) ), MulRoundUp( f, i.LowerBound( ) ) );
+            return Interval<FloatT>( MulAdjustDown( f, i.UpperBound( ) ), MulAdjustUp( f, i.LowerBound( ) ) );
         }
     }
 
@@ -3697,11 +3741,11 @@ namespace Harlinn::Common::Core::Math
 
         if ( f > static_cast< FloatT >( 0 ) )
         {
-            return Interval( DivRoundDown( f, i.UpperBound( ) ), DivRoundUp( f, i.LowerBound( ) ) );
+            return Interval( DivAdjustDown( f, i.UpperBound( ) ), DivAdjustUp( f, i.LowerBound( ) ) );
         }
         else
         {
-            return Interval( DivRoundDown( f, i.LowerBound( ) ), DivRoundUp( f, i.UpperBound( ) ) );
+            return Interval( DivAdjustDown( f, i.LowerBound( ) ), DivAdjustUp( f, i.UpperBound( ) ) );
         }
     }
 
@@ -3724,9 +3768,9 @@ namespace Harlinn::Common::Core::Math
     inline Interval<FloatT> operator*( const Interval<FloatT>& i, FloatT f )
     {
         if ( f > static_cast< FloatT >( 0 ) )
-            return Interval( MulRoundDown( f, i.LowerBound( ) ), MulRoundUp( f, i.UpperBound( ) ) );
+            return Interval( MulAdjustDown( f, i.LowerBound( ) ), MulAdjustUp( f, i.UpperBound( ) ) );
         else
-            return Interval( MulRoundDown( f, i.UpperBound( ) ), MulRoundUp( f, i.LowerBound( ) ) );
+            return Interval( MulAdjustDown( f, i.UpperBound( ) ), MulAdjustUp( f, i.LowerBound( ) ) );
     }
 
     template<typename FloatT>
@@ -3740,11 +3784,11 @@ namespace Harlinn::Common::Core::Math
 
         if ( f > static_cast< FloatT >( 0 ) )
         {
-            return Interval( DivRoundDown( i.LowerBound( ), f ), DivRoundUp( i.UpperBound( ), f ) );
+            return Interval( DivAdjustDown( i.LowerBound( ), f ), DivAdjustUp( i.UpperBound( ), f ) );
         }
         else
         {
-            return Interval( DivRoundDown( i.UpperBound( ), f ), DivRoundUp( i.LowerBound( ), f ) );
+            return Interval( DivAdjustDown( i.UpperBound( ), f ), DivAdjustUp( i.LowerBound( ), f ) );
         }
     }
 
@@ -3808,7 +3852,7 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> Sqrt( const Interval<FloatT>& i )
     {
-        return { SqrtRoundDown( i.LowerBound( ) ), SqrtRoundUp( i.UpperBound( ) ) };
+        return { SqrtAdjustDown( i.LowerBound( ) ), SqrtAdjustUp( i.UpperBound( ) ) };
     }
 
     template<typename FloatT>
@@ -3822,14 +3866,14 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> FMA( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c )
     {
-        FloatT low = Min( FMARoundDown( a.LowerBound( ), b.LowerBound( ), c.LowerBound( ) ),
-                              FMARoundDown( a.UpperBound( ), b.LowerBound( ), c.LowerBound( ) ),
-                              FMARoundDown( a.LowerBound( ), b.UpperBound( ), c.LowerBound( ) ),
-                              FMARoundDown( a.UpperBound( ), b.UpperBound( ), c.LowerBound( ) ) );
-        FloatT high = Max( FMARoundUp( a.LowerBound( ), b.LowerBound( ), c.UpperBound( ) ),
-                               FMARoundUp( a.UpperBound( ), b.LowerBound( ), c.UpperBound( ) ),
-                               FMARoundUp( a.LowerBound( ), b.UpperBound( ), c.UpperBound( ) ),
-                               FMARoundUp( a.UpperBound( ), b.UpperBound( ), c.UpperBound( ) ) );
+        FloatT low = Min( FMAAdjustDown( a.LowerBound( ), b.LowerBound( ), c.LowerBound( ) ),
+                              FMAAdjustDown( a.UpperBound( ), b.LowerBound( ), c.LowerBound( ) ),
+                              FMAAdjustDown( a.LowerBound( ), b.UpperBound( ), c.LowerBound( ) ),
+                              FMAAdjustDown( a.UpperBound( ), b.UpperBound( ), c.LowerBound( ) ) );
+        FloatT high = Max( FMAAdjustUp( a.LowerBound( ), b.LowerBound( ), c.UpperBound( ) ),
+                               FMAAdjustUp( a.UpperBound( ), b.LowerBound( ), c.UpperBound( ) ),
+                               FMAAdjustUp( a.LowerBound( ), b.UpperBound( ), c.UpperBound( ) ),
+                               FMAAdjustUp( a.UpperBound( ), b.UpperBound( ), c.UpperBound( ) ) );
         return Interval<FloatT>( low, high );
     }
 
@@ -3867,7 +3911,7 @@ namespace Harlinn::Common::Core::Math
         FloatT high = DifferenceOfProducts( a[ abHighIndex & 1 ], b[ abHighIndex >> 1 ], c[ cdLowIndex & 1 ], d[ cdLowIndex >> 1 ] );
         
 
-        return { NextFloatDown( NextFloatDown( low ) ), NextFloatUp( NextFloatUp( high ) ) };
+        return { NextDown( NextDown( low ) ), NextUp( NextUp( high ) ) };
     }
 
     template<typename FloatT>
@@ -3930,7 +3974,7 @@ namespace Harlinn::Common::Core::Math
         FloatT low = ACos( std::min<FloatT>( static_cast< FloatT >( 1 ), i.UpperBound( ) ) );
         FloatT high = ACos( std::max<FloatT>( static_cast< FloatT >( -1 ), i.LowerBound( ) ) );
 
-        return Interval<FloatT>( std::max<FloatT>( static_cast< FloatT >( 0 ), NextFloatDown( low ) ), NextFloatUp( high ) );
+        return Interval<FloatT>( std::max<FloatT>( static_cast< FloatT >( 0 ), NextDown( low ) ), NextUp( high ) );
     }
 
     template<typename FloatT>
@@ -3944,8 +3988,8 @@ namespace Harlinn::Common::Core::Math
         {
             std::swap( low, high );
         }
-        low = std::max<FloatT>( static_cast< FloatT >( -1 ), NextFloatDown( low ) );
-        high = std::min<FloatT>( static_cast< FloatT >( 1 ), NextFloatUp( high ) );
+        low = std::max<FloatT>( static_cast< FloatT >( -1 ), NextDown( low ) );
+        high = std::min<FloatT>( static_cast< FloatT >( 1 ), NextUp( high ) );
         if ( InRange( Constants<FloatT>::PiOver2, i ) )
         {
             high = static_cast< FloatT >( 1 );
@@ -3961,14 +4005,14 @@ namespace Harlinn::Common::Core::Math
         requires IsFloatingPoint<FloatT>
     inline Interval<FloatT> Cos( const Interval<FloatT>& i )
     {
-        FloatT low = std::cos( std::max<FloatT>( static_cast< FloatT >( 0 ), i.LowerBound( ) ) );
-        FloatT high = Cos( i.UpperBound( ) );
+        FloatT low = Math::Cos( std::max<FloatT>( static_cast< FloatT >( 0 ), i.LowerBound( ) ) );
+        FloatT high = Math::Cos( i.UpperBound( ) );
         if ( low > high )
         {
             std::swap( low, high );
         }
-        low = std::max<FloatT>( static_cast< FloatT >( -1 ), NextFloatDown( low ) );
-        high = std::min<FloatT>( static_cast< FloatT >( 1 ), NextFloatUp( high ) );
+        low = std::max<FloatT>( static_cast< FloatT >( -1 ), NextDown( low ) );
+        high = std::min<FloatT>( static_cast< FloatT >( 1 ), NextUp( high ) );
         if ( InRange( Constants<FloatT>::Pi, i ) )
         {
             low = static_cast< FloatT >( -1 );
@@ -4023,6 +4067,271 @@ namespace Harlinn::Common::Core::Math
         return Interval( std::max<FloatT>( 0, ss.LowerBound( ) ), ss.UpperBound( ) );
     }
 
+    namespace Internal
+    {
+        constexpr float HalfToFloat( const UInt16 value )
+        {
+            constexpr UInt32 Magic = 113UL << 23UL;
+            constexpr UInt32 ShiftedExp = 0x7c00 << 13;
+
+            const UInt16 h = value;
+            UInt32 result = ( h & 0x7fff ) << 13;
+
+            const UInt32 exp = ShiftedExp & result;
+            result += ( 127 - 15 ) << 23;
+
+            if ( exp == ShiftedExp )
+            {
+                result += ( 128 - 16 ) << 23;
+            }
+            else if ( exp == 0 )
+            {
+                result += 1 << 23;
+                auto f = std::bit_cast< float >( result );
+                f -= std::bit_cast< float >( Magic );
+                result = std::bit_cast< UInt32 >( f );
+            }
+
+            result |= ( h & 0x8000 ) << 16;
+            return std::bit_cast< float >( result );
+        }
+
+        constexpr UInt16 FloatToHalf( float value )
+        {
+            constexpr UInt32 FloatInfinity = 255UL << 23UL;
+            constexpr UInt32 HalfInfinity = 31UL << 23UL;
+            constexpr UInt32 Magic = 15UL << 23UL;
+            constexpr UInt32 SignMask = 0x80000000UL;
+            constexpr UInt32 RoundMask = ~0xfffUL;
+
+            UInt32 v = std::bit_cast< UInt32 >( value );
+
+            const UInt32 sign = v & SignMask;
+            v ^= sign;
+            UInt32 h = 0;
+            if ( v >= FloatInfinity )
+            {
+                h = ( v > FloatInfinity ) ? 0x7e00 : 0x7c00;
+            }
+            else
+            {
+                v &= RoundMask;
+                auto f = std::bit_cast< float >( v );
+                f *= std::bit_cast< float >( Magic );
+                v = std::bit_cast< UInt32 >( f );
+                v -= RoundMask;
+
+                if ( v > HalfInfinity )
+                {
+                    v = HalfInfinity;
+                }
+                h = v >> 13;
+            }
+
+            h |= sign >> 16;
+            return h;
+        }
+    }
+
+    class Half
+    {
+    public:
+        static constexpr UInt16 ExponentMask = 0b0111110000000000;
+        static constexpr UInt16 SignificandMask = 0b1111111111;
+        static constexpr UInt16 NegativeZero = 0b1000000000000000;
+        static constexpr UInt16 PositiveZero = 0;
+        static constexpr UInt16 NegativeInfinity = 0b1111110000000000;
+        static constexpr UInt16 PositiveInfinity = 0b0111110000000000;
+    private:
+        UInt16 value_ = 0;
+    public:
+        constexpr Half( ) noexcept = default;
+        constexpr Half( const Half& other ) noexcept = default;
+        constexpr Half& operator=( const Half& other ) noexcept = default;
+
+    private:
+        explicit constexpr Half( UInt16 value ) noexcept
+            : value_( value )
+        { }
+    public:
+
+        explicit constexpr Half( float value ) noexcept
+            : value_( Internal::FloatToHalf( value ) )
+        { }
+        explicit constexpr Half( double value ) noexcept
+            : Half( static_cast<float>( value ) )
+        { }
+
+        static constexpr Half FromBits( UInt16 value ) noexcept
+        {
+            return Half( value );
+        }
+
+        constexpr UInt16 Bits( ) const noexcept
+        { 
+            return value_; 
+        }
+
+        explicit constexpr operator float( ) const noexcept
+        {
+            return Internal::HalfToFloat( value_ );
+        }
+        explicit constexpr operator double( ) const noexcept
+        { 
+            return static_cast< double >( Internal::HalfToFloat( value_ ) );
+        }
+
+        constexpr bool operator==( const Half& other ) const noexcept
+        {
+            if ( value_ == other.value_ )
+            {
+                return true;
+            }
+            return ( value_ == NegativeZero && other.value_ == PositiveZero ) || ( value_ == PositiveZero && other.value_ == NegativeZero );
+        }
+        constexpr bool operator!=( const Half& other ) const noexcept
+        { 
+            return !( *this == other );
+        }
+
+        constexpr Half operator-( ) const noexcept
+        { 
+            return Half( static_cast<UInt16>( value_ ^ ( 1 << 15 ) ) );
+        }
+
+        constexpr int Sign( ) const noexcept
+        { 
+            return ( value_ >> 15 ) ? -1 : 1;
+        }
+
+        constexpr bool IsInf( ) const noexcept
+        { 
+            return value_ == PositiveInfinity || value_ == NegativeInfinity;
+        }
+
+        constexpr bool IsNaN( ) const noexcept
+        {
+            return ( ( value_ & ExponentMask ) == ExponentMask &&
+                ( value_ & SignificandMask ) != 0 );
+        }
+
+        
+        constexpr Half NextUp( ) const noexcept
+        {
+            if ( IsInf( ) && Sign( ) == 1 )
+            {
+                return *this;
+            }
+
+            Half up = *this;
+            if ( up.value_ == NegativeZero )
+            {
+                up.value_ = PositiveZero;
+            }
+            
+            if ( up.Sign( ) >= 0 )
+            {
+                ++up.value_;
+            }
+            else
+            {
+                --up.value_;
+            }
+            return up;
+        }
+
+        constexpr Half NextDown( ) const noexcept
+        {
+            if ( IsInf( ) && Sign( ) == -1 )
+            {
+                return *this;
+            }
+
+            Half down = *this;
+            if ( down.value_ == PositiveZero )
+            {
+                down.value_ = NegativeZero;
+            }
+            if ( down.Sign( ) >= 0 )
+            {
+                --down.value_;
+            }
+            else
+            {
+                ++down.value_;
+            }
+            return down;
+        }
+    };
+}
+
+namespace Harlinn::Common::Core
+{
+    HCC_EXPORT WideString ToWideString( const Math::Half& value );
+    HCC_EXPORT AnsiString ToAnsiString( const Math::Half& value );
+}
+
+namespace std
+{
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Half, CharT>
+    {
+        formatter<float, CharT> floatFormatter;
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return floatFormatter.parse( ctx );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Half& half, FormatContext& ctx ) const
+        {
+            float v = static_cast< float >( half );
+            return floatFormatter.format( v, ctx );
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Interval<float>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Interval<float>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}, {}]", value.LowerBound( ), value.UpperBound( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}, {}]", value.LowerBound( ), value.UpperBound( ) );
+            }
+        }
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Interval<double>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Interval<double>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}, {}]", value.LowerBound( ), value.UpperBound( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}, {}]", value.LowerBound( ), value.UpperBound( ) );
+            }
+        }
+    };
 
 }
 

@@ -32,21 +32,6 @@ namespace
         return true;
     }
 
-    template<Math::Internal::TupleType T, Math::Internal::TupleType U>
-    inline bool Equal( const T& q1, const U& q2, float epsilon = 0.0001f )
-    {
-        for ( size_t i = 0; i < T::Size; i++ )
-        {
-            auto v1 = q1[ i ];
-            float v2 = q2[ i ];
-            auto delta = v1 - v2;
-            if ( std::abs( delta ) > epsilon )
-            {
-                return false;
-            }
-        }
-        return true;
-    }
 
     inline bool Equal( const DirectX::XMFLOAT4A& q1, const DirectX::XMFLOAT4A& q2, float epsilon = 0.0001f )
     {

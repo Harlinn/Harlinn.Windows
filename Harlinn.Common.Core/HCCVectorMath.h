@@ -933,6 +933,10 @@ namespace Harlinn::Common::Core::Math
         {
             return Traits::At<0>( simd );
         }
+        value_type x( ) const
+        {
+            return Traits::Extract<0>( simd );
+        }
         void SetX( SIMDType src )
         {
             simd = Traits::Permute<4, 1, 2, 3>( simd, src );
@@ -945,6 +949,10 @@ namespace Harlinn::Common::Core::Math
         {
             return Traits::At<1>( simd );
         }
+        value_type y( ) const
+        {
+            return Traits::Extract<1>( simd );
+        }
         void SetY( SIMDType src )
         {
             simd = Traits::Permute<0, 5, 2, 3>( simd, src );
@@ -956,6 +964,10 @@ namespace Harlinn::Common::Core::Math
         TupleSimd Z( ) const requires (Size > 2)
         {
             return Traits::At<2>( simd );
+        }
+        value_type z( ) const requires ( Size > 2 )
+        {
+            return Traits::Extract<2>( simd );
         }
         void SetZ( SIMDType src ) requires ( Size > 2 )
         {
@@ -977,6 +989,11 @@ namespace Harlinn::Common::Core::Math
         {
             return Traits::At<3>( simd );
         }
+        value_type w( ) const requires ( Size > 3 )
+        {
+            return Traits::Extract<3>( simd );
+        }
+
         void SetW( SIMDType src ) requires ( Size > 3 )
         {
             simd = Traits::Permute<0, 1, 2, 7>( simd, src );
@@ -985,6 +1002,91 @@ namespace Harlinn::Common::Core::Math
         {
             SetW( src.simd );
         }
+
+        value_type operator[]( size_t idx ) const
+        {
+            if constexpr ( Size == 1 )
+            {
+                return Traits::Extract<0>( simd );
+            }
+            else if constexpr ( Size == 2 )
+            {
+                switch ( idx )
+                {
+                    case 0:
+                        return Traits::Extract<0>( simd );
+                    case 1:
+                        return Traits::Extract<1>( simd );
+                }
+            }
+            else if constexpr ( Size == 3 )
+            {
+                switch ( idx )
+                {
+                    case 0:
+                        return Traits::Extract<0>( simd );
+                    case 1:
+                        return Traits::Extract<1>( simd );
+                    case 2:
+                        return Traits::Extract<2>( simd );
+                }
+            }
+            else if constexpr ( Size == 4 )
+            {
+                switch ( idx )
+                {
+                    case 0:
+                        return Traits::Extract<0>( simd );
+                    case 1:
+                        return Traits::Extract<1>( simd );
+                    case 2:
+                        return Traits::Extract<2>( simd );
+                    case 3:
+                        return Traits::Extract<3>( simd );
+                }
+            }
+            return operator[]( idx % Size );
+        }
+
+
+
+        WideString ToString( ) const
+        {
+            if constexpr ( Size == 2 )
+            {
+                return Format( L"[{}, {}]", Traits::First( X().simd ), Traits::First( Y( ).simd ) );
+            }
+            else if constexpr ( Size == 3 )
+            {
+                return Format( L"[{}, {}, {}]", Traits::First( X( ).simd ), Traits::First( Y( ).simd ), Traits::First( Z( ).simd ) );
+            }
+            else
+            {
+                return Format( L"[{}, {}, {}, {}]", Traits::First( X( ).simd ), Traits::First( Y( ).simd ), Traits::First( Z( ).simd ), Traits::First( W( ).simd ) );
+            }
+        }
+        std::string ToStdString( ) const
+        {
+            if constexpr ( Size == 2 )
+            {
+                return std::format( "[{}, {}]", Traits::First( X( ).simd ), Traits::First( Y( ).simd ) );
+            }
+            else if constexpr ( Size == 3 )
+            {
+                return std::format( "[{}, {}, {}]", Traits::First( X( ).simd ), Traits::First( Y( ).simd ), Traits::First( Z( ).simd ) );
+            }
+            else
+            {
+                return std::format( "[{}, {}, {}, {}]", Traits::First( X( ).simd ), Traits::First( Y( ).simd ), Traits::First( Z( ).simd ), Traits::First( W( ).simd ) );
+            }
+        }
+
+        friend std::ostream& operator << ( std::ostream& stream, const TupleSimd& t )
+        {
+            stream << t.ToStdString( );
+            return stream;
+        }
+
 
     };
 
@@ -2239,6 +2341,8 @@ namespace Harlinn::Common::Core::Math
     // Operations
     
     
+
+
     /// <summary>
     /// Retrieves the lowest element of v 
     /// </summary>
@@ -2344,8 +2448,139 @@ namespace Harlinn::Common::Core::Math
     }
 
 
+    /// <summary>
+    /// 
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T> && Internal::IsCompatible<S, U>
+    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( lhs.simd, rhs.simd, epsilon.simd );
+    }
 
-    
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( lhs.simd, rhs.simd, Traits::Load( epsilon.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), epsilon.simd );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
+    }
+
+    //
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, epsilon.simd );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Load( epsilon.values ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), epsilon.simd );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<S, U>
+    inline bool Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Load( epsilon.values ) );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T, typename U>
+        requires Internal::IsCompatible<S, T> && IsArithmetic<U>
+    inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( lhs.simd, rhs.simd, Traits::Fill( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Traits::Fill( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Traits::Fill( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T, typename U>
+        requires Internal::IsCompatible<S, T>&& IsArithmetic<U>
+    inline bool Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Traits::Fill( static_cast< typename Traits::Type >( epsilon ) ) );
+    }
+
+    template<Internal::SimdType S, Internal::SimdType T>
+        requires Internal::IsCompatible<S, T>
+    inline bool Equal( const S& lhs, const T& rhs ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Constants = typename Traits::Constants;
+        return Traits::AllEqual( lhs.simd, rhs.simd, Constants::Epsilon );
+    }
+    template<Internal::SimdType S, Internal::TupleType T>
+        requires Internal::IsCompatible<S, T>
+    inline bool Equal( const S& lhs, const T& rhs ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Constants = typename Traits::Constants;
+        return Traits::AllEqual( lhs.simd, Traits::Load( rhs.values ), Constants::Epsilon );
+    }
+    template<Internal::TupleType S, Internal::SimdType T>
+        requires Internal::IsCompatible<S, T>
+    inline bool Equal( const S& lhs, const T& rhs ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Constants = typename Traits::Constants;
+        return Traits::AllEqual( Traits::Load( lhs.values ), rhs.simd, Constants::Epsilon );
+    }
+    template<Internal::TupleType S, Internal::TupleType T>
+        requires Internal::IsCompatible<S, T>
+    inline bool Equal( const S& lhs, const T& rhs ) noexcept
+    {
+        using Traits = typename S::Traits;
+        using Constants = typename Traits::Constants;
+        return Traits::AllEqual( Traits::Load( lhs.values ), Traits::Load( rhs.values ), Constants::Epsilon );
+    }
+
 
 
     // Abs
@@ -9797,6 +10032,695 @@ namespace Harlinn::Common::Core::Math
         return MinComponentIndex( tmp );
     }
 
+
+    // AddAdjustUp
+
+    template<Internal::SimdType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline S AddAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Add( a.simd, b.simd ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline S AddAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Add( a.simd, Traits::Load( b.values ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline T AddAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Add( Traits::Load( a.values ), b.simd ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd AddAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+    }
+
+
+    // AddAdjustDown
+
+    template<Internal::SimdType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline S AddAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Add( a.simd, b.simd ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline S AddAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Add( a.simd, Traits::Load( b.values ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline T AddAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Add( Traits::Load( a.values ), b.simd ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd AddAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+    }
+
+    // SubAdjustUp
+
+    template<Internal::SimdType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline S SubAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Sub( a.simd, b.simd ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline S SubAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Sub( a.simd, Traits::Load( b.values ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline T SubAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Sub( Traits::Load( a.values ), b.simd ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd SubAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Sub( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+    }
+
+    // SubAdjustDown
+
+    template<Internal::SimdType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline S SubAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Sub( a.simd, b.simd ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline S SubAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Sub( a.simd, Traits::Load( b.values ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline T SubAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Sub( Traits::Load( a.values ), b.simd ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd SubAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Sub( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+    }
+
+    // MulAdjustUp
+
+    template<Internal::SimdType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline S MulAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Mul( a.simd, b.simd ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline S MulAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Mul( a.simd, Traits::Load( b.values ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline T MulAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Mul( Traits::Load( a.values ), b.simd ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd MulAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Mul( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+    }
+
+    // MulAdjustDown
+
+    template<Internal::SimdType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline S MulAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Mul( a.simd, b.simd ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline S MulAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Mul( a.simd, Traits::Load( b.values ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline T MulAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Mul( Traits::Load( a.values ), b.simd ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd MulAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Mul( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+    }
+
+    // DivAdjustUp
+
+    template<Internal::SimdType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline S DivAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Div( a.simd, b.simd ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline S DivAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Div( a.simd, Traits::Load( b.values ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline T DivAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Div( Traits::Load( a.values ), b.simd ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd DivAdjustUp( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Div( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+    }
+
+    // DivAdjustDown
+
+    template<Internal::SimdType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline S DivAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Div( a.simd, b.simd ) );
+    }
+
+    template<Internal::SimdType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline S DivAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Div( a.simd, Traits::Load( b.values ) ) );
+    }
+
+    template<Internal::TupleType S, Internal::SimdType T >
+        requires Internal::IsCompatible<S, T>
+    inline T DivAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Div( Traits::Load( a.values ), b.simd ) );
+    }
+
+    template<Internal::TupleType S, Internal::TupleType T >
+        requires Internal::IsCompatible<S, T>
+    inline typename S::Simd DivAdjustDown( const S& a, const T& b ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Div( Traits::Load( a.values ), Traits::Load( b.values ) ) );
+    }
+
+    
+    // SqrtAdjustUp
+
+    template<Internal::SimdType S >
+    inline S SqrtAdjustUp( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Sqrt( v.simd ) );
+    }
+    template<Internal::TupleType S >
+    inline typename S::Simd SqrtAdjustUp( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextUp( Traits::Sqrt( Traits::Load( v.values ) ) );
+    }
+
+    // SqrtAdjustDown
+
+    template<Internal::SimdType S >
+    inline S SqrtAdjustDown( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Sqrt( v.simd ) );
+    }
+    template<Internal::TupleType S >
+    inline typename S::Simd SqrtAdjustDown( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::NextDown( Traits::Sqrt( Traits::Load( v.values ) ) );
+    }
+
+    // FMAAdjustUp
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextUp( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextUp( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextUp( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextUp( Traits::FMAdd( a.simd, b.simd, c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextUp( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextUp( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    // FMAAdjustDown
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), b.simd, Traits::Load( c.values.data( ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextDown( Traits::FMAdd( Traits::Fill( static_cast< Type >( a ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextDown( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextDown( Traits::FMAdd( a.simd, Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Fill( static_cast< Type >( b ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextDown( Traits::FMAdd( a.simd, b.simd, c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextDown( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values.data( ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd ) );
+    }
+
+    /// <summary>
+    /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::NextDown( Traits::FMAdd( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) ) );
+    }
+
     
     
     template<>
@@ -9830,6 +10754,40 @@ namespace Harlinn::Common::Core::Math
             requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
         Vector( const T& other ) noexcept
             : Vector( Traits::ToArray(  other.simd ) )
+        { }
+
+    };
+
+    template<>
+    class Vector<Int32, 2> : public Tuple2<Vector<Int32, 2>, Int32>, public Internal::VectorBase
+    {
+    public:
+        using Base = Tuple2<Vector<Int32, 2>, Int32>;
+
+        using Traits = Base::Traits;
+
+        Vector( ) noexcept = default;
+        explicit Vector( Int32 v ) noexcept
+            : Base( v, v )
+        { }
+        Vector( Int32 xv, Int32 yv ) noexcept
+            : Base( xv, yv )
+        { }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
+
+        template<Internal::TupleType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Base( other.x, other.y )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
         { }
 
     };
@@ -9947,6 +10905,39 @@ namespace Harlinn::Common::Core::Math
     };
 
     template<>
+    class Vector<Int32, 3> : public Tuple3<Vector<Int32, 3>, Int32>, public Internal::VectorBase
+    {
+    public:
+        using Base = Tuple3<Vector<Int32, 3>, Int32>;
+        using Traits = Base::Traits;
+
+        Vector( ) noexcept = default;
+        explicit Vector( Int32 v ) noexcept
+            : Base( v, v, v )
+        { }
+        Vector( Int32 xv, Int32 yv, Int32 zv ) noexcept
+            : Base( xv, yv, zv )
+        { }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
+
+        template<Internal::TupleType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Base( other.x, other.y, other.z )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        { }
+    };
+
+
+    template<>
     class Vector<double, 3> : public Tuple3<Vector<double, 3>, double>, public Internal::VectorBase
     {
     public:
@@ -10054,6 +11045,41 @@ namespace Harlinn::Common::Core::Math
         { }
     };
 
+    template<>
+    class Vector<Int32, 4> : public Tuple4<Vector<Int32, 4>, Int32>, public Internal::VectorBase
+    {
+    public:
+        using Base = Tuple4<Vector<Int32, 4>, Int32>;
+
+        using Traits = Base::Traits;
+        using Base::Size;
+        using value_type = Base::value_type;
+
+        Vector( ) noexcept = default;
+        explicit Vector( Int32 v ) noexcept
+            : Base( v, v, v, v )
+        { }
+        Vector( Int32 xv, Int32 yv, Int32 zv, Int32 wv ) noexcept
+            : Base( xv, yv, zv, wv )
+        { }
+
+        Vector( const ArrayType& values ) noexcept
+            : Base( values )
+        { }
+
+        template<Internal::TupleType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Base( other.x, other.y, other.z, other.w )
+        { }
+
+        template<Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        Vector( const T& other ) noexcept
+            : Vector( Traits::ToArray( other.simd ) )
+        { }
+    };
+
 
 
     template<>
@@ -10131,72 +11157,6 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
-
-    template<>
-    class Vector<Int32, 2> : public Tuple2<Vector<Int32, 2>, Int32>, public Internal::VectorBase
-    {
-    public:
-        using Base = Tuple2<Vector<Int32, 2>, Int32>;
-
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        Vector( Int32 xv, Int32 yv ) noexcept
-            : Base( xv, yv )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-    };
-
-    template<>
-    class Vector<Int32, 3> : public Tuple3<Vector<Int32, 3>, Int32>, public Internal::VectorBase
-    {
-    public:
-        using Base = Tuple3<Vector<Int32, 3>, Int32>;
-
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        Vector( Int32 xv, Int32 yv, Int32 zv ) noexcept
-            : Base( xv, yv, zv )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-    };
-
-    template<>
-    class Vector<Int32, 4> : public Tuple4<Vector<Int32, 4>, Int32>, public Internal::VectorBase
-    {
-    public:
-        using Base = Tuple4<Vector<Int32, 4>, Int32>;
-
-        using Traits = Base::Traits;
-
-        Vector( ) noexcept = default;
-        Vector( Int32 xv, Int32 yv, Int32 zv, Int32 wv ) noexcept
-            : Base( xv, yv, zv, wv )
-        {
-        }
-
-        template<typename T>
-            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
-        Vector( const T& other ) noexcept
-            : Base( other )
-        {
-        }
-    };
 
     /// <summary>
     /// Calculates the angle in radians between two vectors.
@@ -10550,6 +11510,8 @@ namespace Harlinn::Common::Core::Math
         }
     };
 
+
+
     // https://www.iquilezles.org/www/articles/ibilinear/ibilinear.htm,
     // with a fix for perfect quads
     inline Point2f InvertBilinear( const Point2f& p, const std::span<const Point2f>& vert )
@@ -10619,6 +11581,8 @@ namespace Harlinn::Common::Core::Math
         {
         }
     };
+
+
 
     /// <summary>
     /// Calculates the minimum distance between a line and a point.
@@ -18528,11 +19492,593 @@ namespace Harlinn::Common::Core::Math
 
         return S( SIMD::Traits<FloatT, 3>::FMAdd( result, scale, offset ) );
     }
+}
+
+namespace std
+{
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<float,2>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<float,2>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}]", value.x, value.y );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}]", value.x, value.y );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<float, 2>::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<float, 2>::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}]", value.x(), value.y() );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}]", value.x(), value.y() );
+            }
+        }
+    };
 
 
-    
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<int, 2>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<int, 2>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}]", value.x, value.y );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}]", value.x, value.y );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<int, 2>::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<int, 2>::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}]", value.x( ), value.y( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}]", value.x( ), value.y( ) );
+            }
+        }
+    };
+
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<float, 3>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<float, 3>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x, value.y, value.z );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x, value.y, value.z );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<float, 3>::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<float, 3>::Simd & value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+        }
+    };
+
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<int, 3>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<int, 3>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x, value.y, value.z );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x, value.y, value.z );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<int, 3>::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<int, 3>::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+        }
+    };
+
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<float, 4>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<float, 4>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}; {}]", value.x, value.y, value.z, value.w );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}; {}]", value.x, value.y, value.z, value.w );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<float, 4>::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<float, 4>::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}; {}]", value.x( ), value.y( ), value.z( ), value.w( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}; {}]", value.x( ), value.y( ), value.z( ), value.w( ) );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<int, 4>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<int, 4>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}; {}]", value.x, value.y, value.z, value.w );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}; {}]", value.x, value.y, value.z, value.w );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Vector<int, 4>::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Vector<int, 4>::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}; {}]", value.x( ), value.y( ), value.z( ), value.w( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}; {}]", value.x( ), value.y( ), value.z( ), value.w( ) );
+            }
+        }
+    };
+
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Point2f, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Point2f& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}]", value.x, value.y );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}]", value.x, value.y );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Point2f::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Point2f::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}]", value.x( ), value.y( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}]", value.x( ), value.y( ) );
+            }
+        }
+    };
+
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Point2i, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Point2i& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}]", value.x, value.y );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}]", value.x, value.y );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Point2i::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Point2i::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}]", value.x( ), value.y( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}]", value.x( ), value.y( ) );
+            }
+        }
+    };
+
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Point3f, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Point3f& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x, value.y, value.z );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x, value.y, value.z );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Point3f::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Point3f::Simd & value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+        }
+    };
+
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Point3i, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Point3i& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x, value.y, value.z );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x, value.y, value.z );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Point3i::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Point3i::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+        }
+    };
+
+
+
+
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Quaternion<float>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Quaternion<float>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}; {}]", value.v.x, value.v.y, value.v.z, value.w );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}; {}]", value.v.x, value.v.y, value.v.z, value.w );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::SquareMatrix<float,3>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::SquareMatrix<float, 3>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[[{}; {}; {}][{}; {}; {}][{}; {}; {}]]", 
+                    value[ 0 ][ 0 ], value[ 0 ][ 1 ], value[ 0 ][ 2 ], 
+                    value[ 1 ][ 0 ], value[ 1 ][ 1 ], value[ 1 ][ 2 ],
+                    value[ 2 ][ 0 ], value[ 2 ][ 1 ], value[ 2 ][ 2 ] );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[[{}; {}; {}][{}; {}; {}][{}; {}; {}]]",
+                    value[ 0 ][ 0 ], value[ 0 ][ 1 ], value[ 0 ][ 2 ],
+                    value[ 1 ][ 0 ], value[ 1 ][ 1 ], value[ 1 ][ 2 ],
+                    value[ 2 ][ 0 ], value[ 2 ][ 1 ], value[ 2 ][ 2 ] );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::SquareMatrix<float, 3>::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::SquareMatrix<float, 3>::Simd& value, FormatContext& ctx ) const
+        {
+            Harlinn::Common::Core::Math::SquareMatrix<float, 3> m( value );
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"{}", m );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "{}", m );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::SquareMatrix<float, 4>, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::SquareMatrix<float, 4>& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[[{}; {}; {}; {}][{}; {}; {}; {}][{}; {}; {}; {}][{}; {}; {}; {}]]",
+                    value[ 0 ][ 0 ], value[ 0 ][ 1 ], value[ 0 ][ 2 ], value[ 0 ][ 3 ],
+                    value[ 1 ][ 0 ], value[ 1 ][ 1 ], value[ 1 ][ 2 ], value[ 1 ][ 3 ],
+                    value[ 2 ][ 0 ], value[ 2 ][ 1 ], value[ 2 ][ 2 ], value[ 2 ][ 3 ],
+                    value[ 3 ][ 0 ], value[ 3 ][ 1 ], value[ 3 ][ 2 ], value[ 3 ][ 3 ] );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[[{}; {}; {}; {}][{}; {}; {}; {}][{}; {}; {}; {}][{}; {}; {}; {}]]",
+                    value[ 0 ][ 0 ], value[ 0 ][ 1 ], value[ 0 ][ 2 ], value[ 0 ][ 3 ],
+                    value[ 1 ][ 0 ], value[ 1 ][ 1 ], value[ 1 ][ 2 ], value[ 1 ][ 3 ],
+                    value[ 2 ][ 0 ], value[ 2 ][ 1 ], value[ 2 ][ 2 ], value[ 2 ][ 3 ],
+                    value[ 3 ][ 0 ], value[ 3 ][ 1 ], value[ 3 ][ 2 ], value[ 3 ][ 3 ] );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::SquareMatrix<float, 4>::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::SquareMatrix<float, 4>::Simd& value, FormatContext& ctx ) const
+        {
+            Harlinn::Common::Core::Math::SquareMatrix<float, 4> m( value );
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"{}", m );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "{}", m );
+            }
+        }
+    };
+
+
+
 
 }
+
 
 
 #endif

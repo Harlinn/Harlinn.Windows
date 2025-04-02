@@ -3419,5 +3419,130 @@ BOOST_AUTO_TEST_CASE( ATan2Test1 )
 }
 
 
+// --run_test=SIMDFloatTests/NextUpTest1
+BOOST_AUTO_TEST_CASE( NextUpTest1 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+
+    auto arg1 = Traits::Set(
+        -std::numeric_limits<float>::infinity( ),
+        std::numeric_limits<float>::infinity( ),
+        std::numeric_limits<float>::max( ),
+        std::numeric_limits<float>::quiet_NaN( ) );
+
+    auto expectedNextUp1 = Traits::Set(
+        Math::NextUp( -std::numeric_limits<float>::infinity( ) ),
+        Math::NextUp( std::numeric_limits<float>::infinity( ) ),
+        Math::NextUp( std::numeric_limits<float>::lowest( ) ),
+        Math::NextUp( std::numeric_limits<float>::quiet_NaN( ) ) );
+
+    auto nextUp = Traits::NextUp( arg1 );
+
+    auto sameValue = Traits::SameValue( nextUp, expectedNextUp1 );
+
+    __m128 expected = { .m128_u32{0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF} };
+
+    auto equal = Traits::ToArray( sameValue ) != Traits::ToArray( expected );
+
+    BOOST_CHECK( equal );
+}
+
+
+// --run_test=SIMDFloatTests/NextUpTest2
+BOOST_AUTO_TEST_CASE( NextUpTest2 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+
+    auto arg1 = Traits::Set(
+        -0.f,
+        0.f,
+        -std::numeric_limits<float>::epsilon( ),
+        std::numeric_limits<float>::epsilon( ) );
+
+    auto expectedNextUp1 = Traits::Set(
+        Math::NextUp( -0.f ),
+        Math::NextUp( 0.f ),
+        Math::NextUp( -std::numeric_limits<float>::epsilon( ) ),
+        Math::NextUp( std::numeric_limits<float>::epsilon( ) ) );
+
+    auto nextUp = Traits::NextUp( arg1 );
+
+    auto sameValue = Traits::SameValue( nextUp, expectedNextUp1 );
+
+    __m128 expected = { .m128_u32{0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF} };
+
+    auto equal = Traits::ToArray( sameValue ) != Traits::ToArray( expected );
+
+    BOOST_CHECK( equal );
+}
+
+
+
+// --run_test=SIMDFloatTests/NextDownTest1
+BOOST_AUTO_TEST_CASE( NextDownTest1 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+
+    auto arg1 = Traits::Set(
+        -std::numeric_limits<float>::infinity( ),
+        std::numeric_limits<float>::infinity( ),
+        std::numeric_limits<float>::max( ),
+        std::numeric_limits<float>::quiet_NaN( ) );
+
+    auto expectedNextDown1 = Traits::Set(
+        Math::NextDown( -std::numeric_limits<float>::infinity( ) ),
+        Math::NextDown( std::numeric_limits<float>::infinity( ) ),
+        Math::NextDown( std::numeric_limits<float>::max( ) ),
+        Math::NextDown( std::numeric_limits<float>::quiet_NaN( ) ) );
+
+    auto nextDown = Traits::NextDown( arg1 );
+
+    auto sameValue = Traits::SameValue( nextDown, expectedNextDown1 );
+
+    __m128 expected = { .m128_u32{0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF} };
+
+    auto equal = Traits::ToArray( sameValue ) != Traits::ToArray( expected );
+    
+    BOOST_CHECK( equal );
+}
+
+// --run_test=SIMDFloatTests/NextDownTest2
+BOOST_AUTO_TEST_CASE( NextDownTest2 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+
+    auto arg1 = Traits::Set(
+        -0.f,
+        0.f,
+        -std::numeric_limits<float>::epsilon( ),
+        std::numeric_limits<float>::epsilon( ) );
+
+    auto expectedNextDown1 = Traits::Set(
+        Math::NextDown( -0.f ),
+        Math::NextDown( 0.f ),
+        Math::NextDown( -std::numeric_limits<float>::epsilon( ) ),
+        Math::NextDown( std::numeric_limits<float>::epsilon( ) ) );
+
+    auto nextDown = Traits::NextDown( arg1 );
+
+    auto sameValue = Traits::SameValue( nextDown, expectedNextDown1 );
+
+    __m128 expected = { .m128_u32{0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF} };
+
+    auto equal = Traits::ToArray( sameValue ) != Traits::ToArray( expected );
+
+    BOOST_CHECK( equal );
+}
+
+
+
 
 BOOST_AUTO_TEST_SUITE_END( )

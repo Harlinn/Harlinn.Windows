@@ -149,35 +149,50 @@ namespace pbrt
     // DDAMajorantIterator Definition
     class DDAMajorantIterator
     {
+        // DDAMajorantIterator Private Members
+        SampledSpectrum sigma_t;
+        Float tMin = Infinity;
+        Float tMax = -Infinity;
+        const MajorantGrid* grid;
+        Float nextCrossingT[ 3 ]; 
+        Float deltaT[ 3 ];
+        int step[ 3 ]; 
+        int voxelLimit[ 3 ]; 
+        int voxel[ 3 ];
     public:
         // DDAMajorantIterator Public Methods
         DDAMajorantIterator( ) = default;
         PBRT_CPU_GPU
-            DDAMajorantIterator( Ray ray, Float tMin, Float tMax, const MajorantGrid* grid,
-                SampledSpectrum sigma_t )
+        DDAMajorantIterator( Ray ray, Float tMin, Float tMax, const MajorantGrid* grid, SampledSpectrum sigma_t )
             : tMin( tMin ), tMax( tMax ), grid( grid ), sigma_t( sigma_t )
         {
             // Set up 3D DDA for ray through the majorant grid
             Vector3f diag = grid->bounds.Diagonal( );
-            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ),
-                Vector3f( ray.d.x / diag.x, ray.d.y / diag.y, ray.d.z / diag.z ) );
+#ifdef PBRT_USES_HCCMATH
+            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ), Vector3f( ray.d / diag ) );
+#else
+            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ), Vector3f( ray.d.x / diag.x, ray.d.y / diag.y, ray.d.z / diag.z ) );
+#endif
             Point3f gridIntersect = rayGrid( tMin );
+#ifdef PBRT_USES_HCCMATH
             for ( int axis = 0; axis < 3; ++axis )
             {
                 // Initialize ray stepping parameters for _axis_
                 // Compute current voxel for axis and handle negative zero direction
-                voxel[ axis ] =
-                    Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
-                deltaT[ axis ] = 1 / ( std::abs( rayGrid.d[ axis ] ) * grid->res[ axis ] );
-                if ( rayGrid.d[ axis ] == -0.f )
-                    rayGrid.d[ axis ] = 0.f;
+                voxel[ axis ] = Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
 
+
+                deltaT[ axis ] = 1 / ( std::abs( rayGrid.d[ axis ] ) * grid->res[ axis ] );
+
+                if ( rayGrid.d[ axis ] == -0.f )
+                {
+                    rayGrid.d[ axis ] = 0.f;
+                }
                 if ( rayGrid.d[ axis ] >= 0 )
                 {
                     // Handle ray with positive direction for voxel stepping
                     Float nextVoxelPos = Float( voxel[ axis ] + 1 ) / grid->res[ axis ];
-                    nextCrossingT[ axis ] =
-                        tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
+                    nextCrossingT[ axis ] = tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
                     step[ axis ] = 1;
                     voxelLimit[ axis ] = grid->res[ axis ];
 
@@ -186,12 +201,44 @@ namespace pbrt
                 {
                     // Handle ray with negative direction for voxel stepping
                     Float nextVoxelPos = Float( voxel[ axis ] ) / grid->res[ axis ];
-                    nextCrossingT[ axis ] =
-                        tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
+                    nextCrossingT[ axis ] = tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
                     step[ axis ] = -1;
                     voxelLimit[ axis ] = -1;
                 }
             }
+#else
+            for ( int axis = 0; axis < 3; ++axis )
+            {
+                // Initialize ray stepping parameters for _axis_
+                // Compute current voxel for axis and handle negative zero direction
+                voxel[ axis ] = Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
+
+
+                deltaT[ axis ] = 1 / ( std::abs( rayGrid.d[ axis ] ) * grid->res[ axis ] );
+
+                if ( rayGrid.d[ axis ] == -0.f )
+                {
+                    rayGrid.d[ axis ] = 0.f;
+                }
+                if ( rayGrid.d[ axis ] >= 0 )
+                {
+                    // Handle ray with positive direction for voxel stepping
+                    Float nextVoxelPos = Float( voxel[ axis ] + 1 ) / grid->res[ axis ];
+                    nextCrossingT[ axis ] = tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
+                    step[ axis ] = 1;
+                    voxelLimit[ axis ] = grid->res[ axis ];
+
+                }
+                else
+                {
+                    // Handle ray with negative direction for voxel stepping
+                    Float nextVoxelPos = Float( voxel[ axis ] ) / grid->res[ axis ];
+                    nextCrossingT[ axis ] = tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
+                    step[ axis ] = -1;
+                    voxelLimit[ axis ] = -1;
+                }
+            }
+#endif
         }
 
         PBRT_CPU_GPU
@@ -226,12 +273,7 @@ namespace pbrt
         std::string ToString( ) const;
 
     private:
-        // DDAMajorantIterator Private Members
-        SampledSpectrum sigma_t;
-        Float tMin = Infinity, tMax = -Infinity;
-        const MajorantGrid* grid;
-        Float nextCrossingT[ 3 ], deltaT[ 3 ];
-        int step[ 3 ], voxelLimit[ 3 ], voxel[ 3 ];
+        
     };
 
     // HomogeneousMedium Definition

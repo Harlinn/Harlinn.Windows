@@ -531,6 +531,9 @@ namespace Harlinn::Common::Core
     template<typename T>
     inline constexpr bool IsArithmetic = IsInteger<T> || IsFloatingPoint<T>;
 
+    template<typename T>
+    inline constexpr bool IsComplex = std::is_same_v<std::remove_cvref_t<T>, std::complex<float>> || std::is_same_v<std::remove_cvref_t<T>, std::complex<double>>;
+
     namespace Internal
     {
         template<typename ...Args>
@@ -544,7 +547,6 @@ namespace Harlinn::Common::Core
         {
             using type = float;
         };
-
     }
 
     template<typename S, typename T>

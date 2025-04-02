@@ -161,12 +161,9 @@ namespace Harlinn::Common::Core::Math
         requires IsInteger<T>
     constexpr inline std::remove_cvref_t<T> Round( T value ) noexcept;
 
-    template<typename T>
-        requires requires( const T& t1, const T& t2 )
-        {
-            { t1 < t2 }->std::convertible_to<bool>;
-        }
-    constexpr inline const T& Clamp( const T& value, const T& minimumValue, const T& maximumValue );
+    template<typename T1, typename T2, typename T3>
+        requires IsArithmetic<T1>&& IsArithmetic<T2>&& IsArithmetic<T3>
+    constexpr inline T1 Clamp( T1 value, T2 minimumValue, T3 maximumValue );
 
 
     template<typename T>
