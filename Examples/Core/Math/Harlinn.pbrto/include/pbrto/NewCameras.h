@@ -232,33 +232,24 @@ namespace pbrto
 
             // Find intersection points for approximated camera differential rays
             Ray xRay( Point3f( 0, 0, 0 ) + minPosDifferentialX, Vector3f( 0, 0, 1 ) + minDirDifferentialX );
-            Float tx = -( Dot( nDownZ, Vector3f( xRay.o ) ) - d ) / Dot( nDownZ, xRay.d );
+            Float tx = -( ScalarDot( nDownZ, Vector3f( xRay.o ) ) - d ) / ScalarDot( nDownZ, xRay.d );
             Ray yRay( Point3f( 0, 0, 0 ) + minPosDifferentialY, Vector3f( 0, 0, 1 ) + minDirDifferentialY );
-            Float ty = -( Dot( nDownZ, Vector3f( yRay.o ) ) - d ) / Dot( nDownZ, yRay.d );
+            Float ty = -( ScalarDot( nDownZ, Vector3f( yRay.o ) ) - d ) / ScalarDot( nDownZ, yRay.d );
             Point3f px = xRay( tx ), py = yRay( ty );
 
             // Estimate $\dpdx$ and $\dpdy$ in tangent plane at intersection point
-#ifdef PBRT_USES_HCCMATH_SQRT
             Float sppScale =
                 GetOptions( ).disablePixelJitter
                 ? 1
                 : std::max<Float>( .125, 1 / Math::Sqrt( ( Float )samplesPerPixel ) );
-#else
-            Float sppScale =
-                GetOptions( ).disablePixelJitter
-                ? 1
-                : std::max<Float>( .125, 1 / std::sqrt( ( Float )samplesPerPixel ) );
-#endif
-#ifdef PBRT_USES_HCCMATH
+
+
             Point3f pxAdjusted = px - pDownZ;
             Point3f pyAdjusted = py - pDownZ;
 
             *dpdx = sppScale * RenderFromCamera( ToPoint3f( DownZFromCamera.ApplyInverse( pxAdjusted ) ), time );
             *dpdy = sppScale * RenderFromCamera( ToPoint3f( DownZFromCamera.ApplyInverse( pyAdjusted ) ), time );
-#else
-            * dpdx = sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( px - pDownZ ), time );
-            *dpdy = sppScale * RenderFromCamera( DownZFromCamera.ApplyInverse( py - pDownZ ), time );
-#endif
+
         }
 
     protected:
@@ -387,23 +378,20 @@ namespace pbrto
 
         static OrthographicCamera* Create( const ParameterDictionary& parameters, const CameraTransform& cameraTransform, Film film, Medium medium, const FileLoc* loc, Allocator alloc = {} );
 
-        PBRT_CPU_GPU
-            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
+        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
         {
-            LOG_FATAL( "We() unimplemented for OrthographicCamera" );
+            NLOG_FATAL( "We() unimplemented for OrthographicCamera" );
             return {};
         }
 
-        PBRT_CPU_GPU
-            void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
+        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "PDF_We() unimplemented for OrthographicCamera" );
+            NLOG_FATAL( "PDF_We() unimplemented for OrthographicCamera" );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
+        pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
         {
-            LOG_FATAL( "SampleWi() unimplemented for OrthographicCamera" );
+            NLOG_FATAL( "SampleWi() unimplemented for OrthographicCamera" );
             return {};
         }
         std::string ToString( ) const;
@@ -431,11 +419,9 @@ namespace pbrto
             Point3f pCorner( -radius.x, -radius.y, 0.f );
             Vector3f wCornerCamera = Normalize( Vector3f( cameraFromRaster( pCorner ) ) );
             cosTotalWidth = wCornerCamera.z;
-#ifdef PBRT_USES_HCCMATH
-            DCHECK_LT( .9999 * cosTotalWidth, Math::Cos( Deg2Rad( fov / 2 ) ) );
-#else
-            DCHECK_LT( .9999 * cosTotalWidth, std::cos( Radians( fov / 2 ) ) );
-#endif
+
+            NDCHECK_LT( .9999 * cosTotalWidth, Math::Cos( Deg2Rad( fov / 2 ) ) );
+
 
             // Compute image plane area at $z=1$ for _PerspectiveCamera_
             Point2i res = film.FullResolution( );
@@ -503,20 +489,20 @@ namespace pbrto
         PBRT_CPU_GPU
             SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
         {
-            LOG_FATAL( "We() unimplemented for SphericalCamera" );
+            NLOG_FATAL( "We() unimplemented for SphericalCamera" );
             return {};
         }
 
         PBRT_CPU_GPU
             void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "PDF_We() unimplemented for SphericalCamera" );
+            NLOG_FATAL( "PDF_We() unimplemented for SphericalCamera" );
         }
 
         PBRT_CPU_GPU
             pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
         {
-            LOG_FATAL( "SampleWi() unimplemented for SphericalCamera" );
+            NLOG_FATAL( "SampleWi() unimplemented for SphericalCamera" );
             return {};
         }
 
@@ -566,20 +552,20 @@ namespace pbrto
         PBRT_CPU_GPU
             SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const
         {
-            LOG_FATAL( "We() unimplemented for RealisticCamera" );
+            NLOG_FATAL( "We() unimplemented for RealisticCamera" );
             return {};
         }
 
         PBRT_CPU_GPU
             void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "PDF_We() unimplemented for RealisticCamera" );
+            NLOG_FATAL( "PDF_We() unimplemented for RealisticCamera" );
         }
 
         PBRT_CPU_GPU
             pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
         {
-            LOG_FATAL( "SampleWi() unimplemented for RealisticCamera" );
+            NLOG_FATAL( "SampleWi() unimplemented for RealisticCamera" );
             return {};
         }
 
@@ -635,11 +621,9 @@ namespace pbrto
             }
             // Compute surface normal of element at ray intersection point
             *n = Normal3f( Vector3f( o + *t * ray.d ) );
-#ifdef PBRT_USES_HCCMATH
+
             * n = FaceForward( Normal3f( Normalize( *n ) ), Vector3f( -ray.d ) );
-#else
-            * n = FaceForward( Normalize( *n ), -ray.d );
-#endif
+
 
             return true;
         }

@@ -54,17 +54,10 @@ namespace pbrto
         if ( deriv )
         {
             // Compute B\'ezier curve derivative at $u$
-#ifdef PBRT_USES_HCCMATH
             if ( ScalarLengthSquared( cp2[ 1 ] - cp2[ 0 ] ) > 0 )
             {
                 *deriv = 3 * ( cp2[ 1 ] - cp2[ 0 ] );
             }
-#else
-            if ( LengthSquared( cp2[ 1 ] - cp2[ 0 ] ) > 0 )
-            {
-                *deriv = 3 * ( cp2[ 1 ] - cp2[ 0 ] );
-            }
-#endif
             else
                 *deriv = cp[ 3 ] - cp[ 0 ];
         }

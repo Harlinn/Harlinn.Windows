@@ -44,9 +44,11 @@
 
 namespace pbrto
 {
+    using Math::AbsDot;
     using Math::AngleBetween;
     using Math::Clamp;
     using Math::DifferenceOfProducts;
+    using Math::FastExp;
     using Math::FMA;
     using Math::InnerProduct;
     using Math::Inverse;
@@ -54,6 +56,7 @@ namespace pbrto
     using Math::IsNaN;
     using Math::IsSameValue;
     using Math::Log2;
+    using Math::LogI0;
     using Math::Max;
     using Math::Min;
     using Math::Pow;

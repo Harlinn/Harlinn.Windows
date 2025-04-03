@@ -49,8 +49,30 @@
 
 namespace pbrto
 {
-
     std::string ToString( LightType type );
+}
+
+namespace std
+{
+    template<typename CharT>
+    struct formatter<pbrto::LightType, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( pbrto::LightType value, FormatContext& ctx ) const
+        {
+            return std::format_to( ctx.out( ), "{}", pbrto::ToString( value ) );
+        }
+    };
+}
+
+namespace pbrto
+{
+
 
     // Light Inline Functions
     PBRT_CPU_GPU inline bool IsDeltaLight( LightType type )
@@ -92,22 +114,19 @@ namespace pbrto
         // LightLeSample Public Methods
         LightLeSample( ) = default;
 
-        PBRT_CPU_GPU
-            LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
+        LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
             : L( L ), ray( ray ), pdfPos( pdfPos ), pdfDir( pdfDir )
         {
         }
 
-        PBRT_CPU_GPU
-            LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr, Float pdfPos, Float pdfDir )
+        LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr, Float pdfPos, Float pdfDir )
             : L( L ), ray( ray ), intr( intr ), pdfPos( pdfPos ), pdfDir( pdfDir )
         {
             NCHECK( this->intr->n != Normal3f( 0, 0, 0 ) );
         }
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            Float AbsCosTheta( Vector3f w ) const { return intr ? AbsDot( w, intr->n ) : 1; }
+        Float AbsCosTheta( Vector3f w ) const { return intr ? ScalarAbsDot( w, intr->n ) : 1.f; }
 
 
     };
@@ -257,7 +276,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for non-area lights" );
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
         pstdo::optional<LightBounds> Bounds( ) const;
@@ -271,11 +290,8 @@ namespace pbrto
         {
             Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
             Vector3f wi = Normalize( p - ctx.p( ) );
-#ifdef PBRT_USES_HCCMATH
             SampledSpectrum Li = scale * I->Sample( lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
-#else
-            SampledSpectrum Li = scale * I->Sample( lambda ) / DistanceSquared( p, ctx.p( ) );
-#endif
+
             return LightLiSample( Li, wi, 1, Interaction( p, &mediumInterface ) );
         }
 
@@ -325,7 +341,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for non-area lights" );
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
         pstdo::optional<LightBounds> Bounds( ) const { return {}; }
@@ -392,7 +408,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for non-area lights" );
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
         pstdo::optional<LightBounds> Bounds( ) const;
@@ -446,7 +462,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for non-area lights" );
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
         pstdo::optional<LightBounds> Bounds( ) const;
@@ -499,7 +515,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Ray&, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for area lights" );
+            NLOG_FATAL( "Shouldn't be called for area lights" );
         }
 
         std::string ToString( ) const;
@@ -509,7 +525,7 @@ namespace pbrto
                 const SampledWavelengths& lambda ) const
         {
             // Check for zero emitted radiance from point on area light
-            if ( !twoSided && Dot( n, w ) < 0 )
+            if ( !twoSided && ScalarDot( n, w ) < 0 )
                 return SampledSpectrum( 0.f );
             if ( AlphaMasked( Interaction( p, uv ) ) )
                 return SampledSpectrum( 0.f );
@@ -599,7 +615,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for non-area lights" );
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
         pstdo::optional<LightBounds> Bounds( ) const { return {}; }
@@ -642,7 +658,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for non-area lights" );
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
         std::string ToString( ) const;
@@ -744,7 +760,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for non-area lights" );
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
         pstdo::optional<LightBounds> Bounds( ) const { return {}; }
@@ -802,11 +818,7 @@ namespace pbrto
         PBRT_CPU_GPU
             Float Area( ) const
         {
-#ifdef PBRT_USES_HCCMATH
             return ScalarLength( portal[ 1 ] - portal[ 0 ] ) * ScalarLength( portal[ 3 ] - portal[ 0 ] );
-#else
-            return Length( portal[ 1 ] - portal[ 0 ] ) * Length( portal[ 3 ] - portal[ 0 ] );
-#endif
         }
 
         // PortalImageInfiniteLight Private Members
@@ -853,7 +865,7 @@ namespace pbrto
         PBRT_CPU_GPU
             void PDF_Le( const Interaction&, Vector3f w, Float* pdfPos, Float* pdfDir ) const
         {
-            LOG_FATAL( "Shouldn't be called for non-area lights" );
+            NLOG_FATAL( "Shouldn't be called for non-area lights" );
         }
 
         pstdo::optional<LightBounds> Bounds( ) const;
@@ -868,16 +880,10 @@ namespace pbrto
             Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
             Vector3f wi = Normalize( p - ctx.p( ) );
             // Compute incident radiance _Li_ for _SpotLight_
-#ifdef PBRT_USES_HCCMATH
             Vector3f wLight = Normalize( renderFromLight.ApplyInverse( Vector3f( -wi ) ) );
-#else
-            Vector3f wLight = Normalize( renderFromLight.ApplyInverse( -wi ) );
-#endif
-#ifdef PBRT_USES_HCCMATH
+
             SampledSpectrum Li = I( wLight, lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
-#else
-            SampledSpectrum Li = I( wLight, lambda ) / DistanceSquared( p, ctx.p( ) );
-#endif
+
 
             if ( !Li )
                 return {};

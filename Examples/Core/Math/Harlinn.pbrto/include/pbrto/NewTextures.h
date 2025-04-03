@@ -854,7 +854,7 @@ namespace pbrto
     public:
         SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
-            LOG_FATAL( "GPUSpectrumImageTexture::Evaluate called from CPU" );
+            NLOG_FATAL( "GPUSpectrumImageTexture::Evaluate called from CPU" );
             return SampledSpectrum( 0 );
         }
 
@@ -863,7 +863,7 @@ namespace pbrto
             SpectrumType spectrumType, const FileLoc* loc,
             Allocator alloc )
         {
-            LOG_FATAL( "GPUSpectrumImageTexture::Create called in non-GPU configuration." );
+            NLOG_FATAL( "GPUSpectrumImageTexture::Create called in non-GPU configuration." );
             return nullptr;
         }
 
@@ -875,7 +875,7 @@ namespace pbrto
     public:
         Float Evaluate( const TextureEvalContext& ) const
         {
-            LOG_FATAL( "GPUFloatImageTexture::Evaluate called from CPU" );
+            NLOG_FATAL( "GPUFloatImageTexture::Evaluate called from CPU" );
             return 0;
         }
 
@@ -883,7 +883,7 @@ namespace pbrto
             const TextureParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc )
         {
-            LOG_FATAL( "GPUFloatImageTexture::Create called in non-GPU configuration." );
+            NLOG_FATAL( "GPUFloatImageTexture::Create called in non-GPU configuration." );
             return nullptr;
         }
 
@@ -907,8 +907,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
 
         static MarbleTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -933,8 +932,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             Float amt = amount.Evaluate( ctx );
             Float t1 = 0, t2 = 0;
@@ -966,10 +964,9 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
-            Float amt = AbsDot( ctx.n, dir );
+            Float amt = ScalarAbsDot( ctx.n, dir );
             Float t1 = 0, t2 = 0;
             if ( amt != 0 )
                 t1 = tex1.Evaluate( ctx );
@@ -999,8 +996,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float amt = amount.Evaluate( ctx );
             SampledSpectrum t1, t2;
@@ -1033,10 +1029,9 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
-            Float amt = AbsDot( ctx.n, dir );
+            Float amt = ScalarAbsDot( ctx.n, dir );
             SampledSpectrum t1, t2;
             if ( amt != 0 )
                 t1 = tex1.Evaluate( ctx, lambda );
@@ -1085,8 +1080,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const;
+        Float Evaluate( TextureEvalContext ctx ) const;
         static FloatPtexTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc );
@@ -1102,8 +1096,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
 
         static SpectrumPtexTexture* Create( const Transform& renderFromTexture,
             const TextureParameterDictionary& parameters,
@@ -1122,8 +1115,7 @@ namespace pbrto
         GPUFloatPtexTexture( const std::string& filename, ColorEncoding encoding, Float scale,
             Allocator alloc );
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             NDCHECK( ctx.faceIndex >= 0 && ctx.faceIndex < faceValues.size( ) );
             return faceValues[ ctx.faceIndex ];
@@ -1144,8 +1136,7 @@ namespace pbrto
         GPUSpectrumPtexTexture( const std::string& filename, ColorEncoding encoding,
             Float scale, SpectrumType spectrumType, Allocator alloc );
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             NCHECK( ctx.faceIndex >= 0 && ctx.faceIndex < faceValues.size( ) );
 
@@ -1187,8 +1178,7 @@ namespace pbrto
             const TextureParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc );
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             Float sc = scale.Evaluate( ctx );
             if ( sc == 0 )
@@ -1211,8 +1201,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
+        SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const
         {
             Float sc = scale.Evaluate( ctx );
             if ( sc == 0 )
@@ -1239,8 +1228,7 @@ namespace pbrto
         // WindyTexture Public Methods
         WindyTexture( TextureMapping3D mapping ) : mapping( mapping ) {}
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             TexCoord3D c = mapping.Map( ctx );
             Float windStrength = FBm( .1f * c.p, .1f * c.dpdx, .1f * c.dpdy, .5, 3 );
@@ -1268,8 +1256,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            Float Evaluate( TextureEvalContext ctx ) const
+        Float Evaluate( TextureEvalContext ctx ) const
         {
             TexCoord3D c = mapping.Map( ctx );
             return Turbulence( c.p, c.dpdx, c.dpdy, omega, octaves );
@@ -1306,18 +1293,15 @@ namespace pbrto
     {
     public:
         // UniversalTextureEvaluator Public Methods
-        PBRT_CPU_GPU
-            bool CanEvaluate( std::initializer_list<FloatTexture>,
+        bool CanEvaluate( std::initializer_list<FloatTexture>,
                 std::initializer_list<SpectrumTexture> ) const
         {
             return true;
         }
 
-        PBRT_CPU_GPU
-            Float operator()( FloatTexture tex, TextureEvalContext ctx );
+        Float operator()( FloatTexture tex, TextureEvalContext ctx );
 
-        PBRT_CPU_GPU
-            SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx,
+        SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx,
                 SampledWavelengths lambda );
     };
 
@@ -1326,8 +1310,7 @@ namespace pbrto
     {
     public:
         // BasicTextureEvaluator Public Methods
-        PBRT_CPU_GPU
-            bool CanEvaluate( std::initializer_list<FloatTexture> ftex,
+        bool CanEvaluate( std::initializer_list<FloatTexture> ftex,
                 std::initializer_list<SpectrumTexture> stex ) const
         {
             // Return _false_ if any _FloatTexture_s cannot be evaluated
@@ -1345,8 +1328,7 @@ namespace pbrto
             return true;
         }
 
-        PBRT_CPU_GPU
-            Float operator()( FloatTexture tex, TextureEvalContext ctx )
+        Float operator()( FloatTexture tex, TextureEvalContext ctx )
         {
             if ( tex.Is<FloatConstantTexture>( ) )
                 return tex.Cast<FloatConstantTexture>( )->Evaluate( ctx );
@@ -1359,13 +1341,12 @@ namespace pbrto
             else
             {
                 if ( tex )
-                    LOG_FATAL( "BasicTextureEvaluator::operator() called with %s", tex );
+                    NLOG_FATAL( "BasicTextureEvaluator::operator() called with %s", tex );
                 return 0.f;
             }
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx,
+        SampledSpectrum operator()( SpectrumTexture tex, TextureEvalContext ctx,
                 SampledWavelengths lambda )
         {
             if ( tex.Is<SpectrumConstantTexture>( ) )
@@ -1379,7 +1360,7 @@ namespace pbrto
             else
             {
                 if ( tex )
-                    LOG_FATAL( "BasicTextureEvaluator::operator() called with %s", tex );
+                    NLOG_FATAL( "BasicTextureEvaluator::operator() called with {}", tex );
                 return SampledSpectrum( 0.f );
             }
         }

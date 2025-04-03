@@ -511,7 +511,7 @@ namespace pbrto
             Vector3f v21 = p[ v[ 2 ] ] - p[ v[ 1 ] ];
 
             Normal3f vn( Cross( v10, v21 ) );
-            if ( LengthSquared( vn ) > 0 )
+            if ( ScalarLengthSquared( vn ) > 0 )
             {
                 vn = Normalize( vn );
                 n[ v[ 0 ] ] += vn;
@@ -522,7 +522,7 @@ namespace pbrto
         NCHECK_EQ( 0, quadIndices.size( ) );  // TODO: handle this...
 
         for ( size_t i = 0; i < n.size( ); ++i )
-            if ( LengthSquared( n[ i ] ) > 0 )
+            if ( ScalarLengthSquared( n[ i ] ) > 0 )
                 n[ i ] = Normalize( n[ i ] );
     }
 

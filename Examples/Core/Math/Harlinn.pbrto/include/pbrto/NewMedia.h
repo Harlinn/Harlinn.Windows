@@ -50,7 +50,7 @@
 #include <memory>
 #include <vector>
 
-namespace pbrt
+namespace pbrto
 {
 
     // Media Function Declarations
@@ -537,9 +537,9 @@ namespace pbrt
 
         std::string ToString( ) const
         {
-            return StringPrintf( "[ CloudMedium bounds: %s renderFromMedium: %s phase: %s "
-                "sigma_a_spec: %s sigma_s_spec: %s density: %f wispiness: %f "
-                "frequency: %f ]",
+            return std::format( "[ CloudMedium bounds: {} renderFromMedium: {} phase: {} "
+                "sigma_a_spec: {} sigma_s_spec: {} density: {} wispiness: {} "
+                "frequency: {} ]",
                 bounds, renderFromMedium, phase, sigma_a_spec, sigma_s_spec,
                 density, wispiness, frequency );
         }
@@ -640,9 +640,9 @@ namespace pbrt
             bool abort = true )
         {
             if ( abort )
-                LOG_FATAL( "%p: %s (%s:%d)", ptr, msg, file, line );
+                NLOG_FATAL( "{}: {} ({}:{})", ptr, msg, file, line );
             else
-                LOG_ERROR( "%p: %s (%s:%d)", ptr, msg, file, line );
+                NLOG_ERROR( "{}: {} ({}:{})", ptr, msg, file, line );
         }
 
         NanoVDBBuffer( ) = default;

@@ -42,7 +42,7 @@ namespace pbrto
     PBRT_CPU_GPU inline bool Refract( Vector3f wi, Normal3f n, Float eta, Float* etap,
         Vector3f* wt )
     {
-        Float cosTheta_i = Dot( n, wi );
+        Float cosTheta_i = ScalarDot( n, wi );
         // Potentially flip interface orientation for Snell's law
         if ( cosTheta_i < 0 )
         {

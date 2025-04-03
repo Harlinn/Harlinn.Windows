@@ -108,9 +108,32 @@ namespace pbrto
             case SpectrumType::Illuminant:
                 return "Illuminant";
             default:
-                LOG_FATAL( "Unhandled SpectrumType" );
+                NLOG_FATAL( "Unhandled SpectrumType" );
         }
     }
+
+}
+
+namespace std
+{
+    template<typename CharT>
+    struct formatter<pbrto::SpectrumType, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( pbrto::SpectrumType value, FormatContext& ctx ) const
+        {
+            return std::format_to( ctx.out( ), "{}", pbrto::ToString( value ) );
+        }
+    };
+}
+
+namespace pbrto
+{
 
     // NamedTextures Definition
     struct NamedTextures

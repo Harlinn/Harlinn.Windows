@@ -223,6 +223,11 @@ namespace pbrto
             return ( i == 0 ) ? x : y;
         }
 
+        std::string ToString( ) const
+        {
+            return std::format( "[ x: {} y: {} ]", x, y );
+        }
+
 
     };
 
@@ -472,6 +477,12 @@ namespace pbrto
         { 
             return { -x, -y, -z }; 
         }
+
+        std::string ToString( ) const
+        {
+            return std::format( "[ x: {} y: {} z: {} ]", x, y, z );
+        }
+
     };
 
     // Tuple3 Inline Functions
@@ -638,15 +649,14 @@ namespace pbrto
         template<typename U>
         Vector2( const Vector2<U>& other )
             : Base( static_cast< Float >( other.x ), static_cast< Float >( other.y ) )
-        {
-        }
+        { }
 
+        
         template<Math::Internal::SimdType T>
             requires std::is_same_v<Traits, typename T::Traits>
         Vector2( const T& other ) noexcept
             : Base( other )
-        {
-        }
+        { }
 
     };
     template<>
@@ -690,6 +700,7 @@ namespace pbrto
             return Vector3<double>( static_cast< double >( x ), static_cast< double >( y ), static_cast< double >( z ) );
         }
 
+
     };
 
 
@@ -717,7 +728,34 @@ namespace pbrto
             : Base( other )
         {
         }
+
+        explicit operator Vector2<Float>( ) const
+        {
+            return Vector2<Float>( static_cast<float>( x ), static_cast< float >( y ) );
+        }
+
+        std::string ToString( ) const
+        {
+            return std::format( "[ x: {} y: {} ]", x, y );
+        }
+
     };
+
+    inline Vector2<float> ToVector2f( const Vector2<float>::Simd& other )
+    {
+        return Vector2<float>( other );
+    }
+
+    inline Vector2<float> ToVector2f( const Vector2<Int32>& other )
+    {
+        return Vector2<float>( static_cast< Float >( other.x ), static_cast< Float >( other.y ) );
+    }
+    inline Vector2<float> ToVector2f( const Vector2<Int32>::Simd& other )
+    {
+        Vector2<Int32> tmp( other );
+        return Vector2<float>( static_cast< Float >( tmp.x ), static_cast< Float >( tmp.y ) );
+    }
+
 
     template<>
     class Vector3<Int32> : public Math::Vector<Int32, 3>
@@ -754,6 +792,13 @@ namespace pbrto
             : Base( static_cast< Int32 >( pi.x ), static_cast< Int32 >( pi.y ), static_cast< Int32 >( pi.z ) )
         {
         }
+
+        explicit operator Vector3<Float>( ) const
+        {
+            return Vector3<Float>( static_cast< float >( x ), static_cast< float >( y ), static_cast< float >( z ) );
+        }
+
+
     };
 
 
@@ -819,7 +864,25 @@ namespace pbrto
             return Vector3f( x.Width( ) / 2, y.Width( ) / 2, z.Width( ) / 2 );
         }
         bool IsExact( ) const { return x.Width( ) == 0 && y.Width( ) == 0 && z.Width( ) == 0; }
+
     };
+
+
+    inline Vector3<float> ToVector3f( const Vector3<float>::Simd& other )
+    {
+        return Vector3<float>( other );
+    }
+
+    inline Vector3<float> ToVector3f( const Vector3<Int32>& other )
+    {
+        return Vector3<float>( static_cast< Float >( other.x ), static_cast< Float >( other.y ), static_cast< Float >( other.z ) );
+    }
+    inline Vector3<float> ToVector3f( const Vector3<Int32>::Simd& other )
+    {
+        Vector3<Int32> tmp( other );
+        return Vector3<float>( static_cast< Float >( tmp.x ), static_cast< Float >( tmp.y ), static_cast< Float >( tmp.z ) );
+    }
+
 
     // Point2 Definition
     template <typename T>
@@ -930,6 +993,7 @@ namespace pbrto
             : Base( other )
         {
         }
+
     };
 
     template <>
@@ -959,6 +1023,7 @@ namespace pbrto
             : Base( other )
         {
         }
+
     };
 
 
@@ -1082,6 +1147,7 @@ namespace pbrto
             NDCHECK( !p.HasNaN( ) );
             return { x - p.x, y - p.y, z - p.z };
         }
+
     };
 
     template <>
@@ -1123,6 +1189,7 @@ namespace pbrto
         {
             return Vector3<double>( static_cast< double >( x ), static_cast< double >( y ), static_cast< double >( z ) );
         }
+
     };
 
     template <>
@@ -1164,6 +1231,7 @@ namespace pbrto
         {
             return Vector3<Float>( static_cast< Float >( x ), static_cast< Float >( y ), static_cast< Float >( z ) );
         }
+
     };
 
 
@@ -1351,10 +1419,10 @@ namespace pbrto
     };
 
     template <>
-    class Normal3<Float> : public Math::Tuple3< Normal3<Float>, Float>
+    class Normal3<Float> : public Math::Normal3f
     {
     public:
-        using Base = Math::Tuple3< Normal3<Float>, Float>;
+        using Base = Math::Normal3f;
         Normal3( ) = default;
         Normal3( Float x, Float y, Float z )
             : Base( x, y, z )
@@ -1377,6 +1445,7 @@ namespace pbrto
             : Base( other )
         {
         }
+
     };
 
     inline Point2i ToPoint2i( const Vector2<float>::Simd& other )
@@ -1389,6 +1458,18 @@ namespace pbrto
     {
         Point2<float> tmp( other );
         return Point2i( static_cast< int >( tmp.x ), static_cast< int >( tmp.y ) );
+    }
+
+    inline Vector2i ToVector2i( const Point2<float>::Simd& other )
+    {
+        Point2<float> tmp( other );
+        return Vector2i( static_cast< int >( tmp.x ), static_cast< int >( tmp.y ) );
+    }
+
+    inline Vector2i ToVector2i( const Point2<Int32>::Simd& other )
+    {
+        Point2<Int32> tmp( other );
+        return Point2i( tmp.x, tmp.y );
     }
 
 
@@ -1610,7 +1691,7 @@ namespace pbrto
     template <typename T>
     inline Float AngleBetween( const Normal3<T>& a, const Normal3<T>& b )
     {
-        if ( Dot( a, b ) < 0 )
+        if ( ScalarDot( a, b ) < 0 )
         {
             return Pi - 2 * SafeASin( ScalarLength( a + b ) / 2.f );
         }
@@ -1683,6 +1764,7 @@ namespace pbrto
     }
 
     // Point3 Inline Functions
+    /*
     template <typename T>
     inline auto Distance( const Point3<T>& p1, const Point3<T>& p2 )
     {
@@ -1694,18 +1776,17 @@ namespace pbrto
     {
         return LengthSquared( p1 - p2 );
     }
-
+    */
     // Normal3 Inline Functions
+    /*
     template <typename T>
-    inline auto LengthSquared( const Normal3<T>& n ) ->
-        typename TupleLength<T>::type
+    inline auto LengthSquared( const Normal3<T>& n ) -> typename TupleLength<T>::type
     {
         return Sqr( n.x ) + Sqr( n.y ) + Sqr( n.z );
     }
 
     template <typename T>
-    inline auto Length( const Normal3<T>& n )
-        -> typename TupleLength<T>::type
+    inline auto Length( const Normal3<T>& n ) -> typename TupleLength<T>::type
     {
         if constexpr ( std::is_floating_point_v<T> )
         {
@@ -1723,7 +1804,7 @@ namespace pbrto
     {
         return n / Length( n );
     }
-
+    
     template <typename T>
     inline auto Dot( const Normal3<T>& n, const Vector3<T>& v ) ->
         typename TupleLength<T>::type
@@ -1773,6 +1854,7 @@ namespace pbrto
         NDCHECK( !n1.HasNaN( ) && !n2.HasNaN( ) );
         return abs( ScalarDot( n1, n2 ) );
     }
+    */
 
     template <typename T>
     inline Normal3<T> FaceForward( const Normal3<T>& n, const Vector3<T>& v )
@@ -1822,8 +1904,10 @@ namespace pbrto
     {
         return ( ScalarDot( v, n2 ) < 0.f ) ? Vector3<Float>( -v ) : v;
     }
+    
 
     // Quaternion Inline Functions
+    /*
     inline Quaternion operator*( Float f, const Quaternion& q )
     {
         return q * f;
@@ -1863,7 +1947,7 @@ namespace pbrto
         return q1 * ( 1 - t ) * SinXOverX( ( 1 - t ) * theta ) / sinThetaOverTheta +
             q2 * t * SinXOverX( t * theta ) / sinThetaOverTheta;
     }
-
+    */
     // Bounds2 Definition
     template <typename T>
     class Bounds2
@@ -2128,7 +2212,7 @@ namespace pbrto
         {
             auto o = p - pMin;
             auto oOverDiff = o / ( pMax - pMin );
-            return Traits::Select( o.simd, oOverDiff.simd, Traits::Greater( pMax, pMin ) );
+            return Traits::Select( o.simd, oOverDiff.simd, Traits::Greater( pMax.simd, pMin.simd ) );
         }
 
 
@@ -2334,38 +2418,56 @@ namespace pbrto
     template <typename T>
     inline bool Overlaps( const Bounds3<T>& b1, const Bounds3<T>& b2 )
     {
-        bool x = ( b1.pMax.x >= b2.pMin.x ) && ( b1.pMin.x <= b2.pMax.x );
-        bool y = ( b1.pMax.y >= b2.pMin.y ) && ( b1.pMin.y <= b2.pMax.y );
-        bool z = ( b1.pMax.z >= b2.pMin.z ) && ( b1.pMin.z <= b2.pMax.z );
+        Point3<T> b1pMin( b1.pMin );
+        Point3<T> b1pMax( b1.pMax );
+        Point3<T> b2pMin( b1.pMin );
+        Point3<T> b2pMax( b1.pMax );
+
+        bool x = ( b1pMax.x >= b2pMin.x ) && ( b1pMin.x <= b2pMax.x );
+        bool y = ( b1pMax.y >= b2pMin.y ) && ( b1pMin.y <= b2pMax.y );
+        bool z = ( b1pMax.z >= b2pMin.z ) && ( b1pMin.z <= b2pMax.z );
         return ( x && y && z );
     }
 
     template <typename T>
     inline bool Inside( const Point3<T>& p, const Bounds3<T>& b )
     {
+        Point3<T> pMin( b.pMin );
+        Point3<T> pMax( b.pMax );
         return ( 
-            p.x >= b.pMin.x( ) &&
-            p.x <= b.pMax.x( ) &&
-            p.y >= b.pMin.y( ) &&
-            p.y <= b.pMax.y( ) &&
-            p.z >= b.pMin.z( ) &&
-            p.z <= b.pMax.z( ) );
+            p.x >= pMin.x &&
+            p.x <= pMax.x &&
+            p.y >= pMin.y &&
+            p.y <= pMax.y &&
+            p.z >= pMin.z &&
+            p.z <= pMax.z );
     }
 
     template <typename T>
     inline bool InsideExclusive( const Point3<T>& p, const Bounds3<T>& b )
     {
-        return ( p.x >= b.pMin.x && p.x < b.pMax.x && p.y >= b.pMin.y && p.y < b.pMax.y &&
-            p.z >= b.pMin.z && p.z < b.pMax.z );
+        Point3<T> pMin( b.pMin );
+        Point3<T> pMax( b.pMax );
+        return ( 
+            p.x >= pMin.x &&
+            p.x < pMax.x &&
+            p.y >= pMin.y &&
+            p.y < pMax.y &&
+            p.z >= pMin.z &&
+            p.z < pMax.z );
     }
 
     template <typename T, typename U>
     inline auto DistanceSquared( const Point3<T>& p, const Bounds3<U>& b )
     {
         using TDist = decltype( T{} - U{} );
-        TDist dx = std::max<TDist>( { 0, b.pMin.x - p.x, p.x - b.pMax.x } );
-        TDist dy = std::max<TDist>( { 0, b.pMin.y - p.y, p.y - b.pMax.y } );
-        TDist dz = std::max<TDist>( { 0, b.pMin.z - p.z, p.z - b.pMax.z } );
+
+        Point3<T> pMin( b.pMin );
+        Point3<T> pMax( b.pMax );
+
+        TDist dx = Math::Max<TDist>( 0.f, pMin.x - p.x, p.x - pMax.x );
+        TDist dy = Math::Max<TDist>( 0.f, pMin.y - p.y, p.y - pMax.y );
+        TDist dz = Math::Max<TDist>( 0.f, pMin.z - p.z, p.z - pMax.z );
         return Sqr( dx ) + Sqr( dy ) + Sqr( dz );
     }
 
@@ -2381,8 +2483,8 @@ namespace pbrto
     inline Bounds3<T> Expand( const Bounds3<T>& b, U delta )
     {
         Bounds3<T> ret;
-        ret.pMin = b.pMin - Vector3<T>( delta, delta, delta );
-        ret.pMax = b.pMax + Vector3<T>( delta, delta, delta );
+        ret.pMin = b.pMin - Vector3<T>::Simd( delta, delta, delta );
+        ret.pMax = b.pMax + Vector3<T>::Simd( delta, delta, delta );
         return ret;
     }
 
@@ -2419,10 +2521,11 @@ namespace pbrto
     {
         const Bounds3f& bounds = *this;
         // Check for ray intersection against $x$ and $y$ slabs
-        Float tMin = ( bounds[ dirIsNeg[ 0 ] ].x - o.x ) * invDir.x;
-        Float tMax = ( bounds[ 1 - dirIsNeg[ 0 ] ].x - o.x ) * invDir.x;
-        Float tyMin = ( bounds[ dirIsNeg[ 1 ] ].y - o.y ) * invDir.y;
-        Float tyMax = ( bounds[ 1 - dirIsNeg[ 1 ] ].y - o.y ) * invDir.y;
+        Float tMin = ( bounds[ dirIsNeg[ 0 ] ].x() - o.x ) * invDir.x;
+        Float tMax = ( bounds[ 1 - dirIsNeg[ 0 ] ].x( ) - o.x ) * invDir.x;
+        Float tyMin = ( bounds[ dirIsNeg[ 1 ] ].y( ) - o.y ) * invDir.y;
+        Float tyMax = ( bounds[ 1 - dirIsNeg[ 1 ] ].y( ) - o.y ) * invDir.y;
+
         // Update _tMax_ and _tyMax_ to ensure robust bounds intersection
         tMax *= 1 + 2 * gamma( 3 );
         tyMax *= 1 + 2 * gamma( 3 );
@@ -2435,8 +2538,8 @@ namespace pbrto
             tMax = tyMax;
 
         // Check for ray intersection against $z$ slab
-        Float tzMin = ( bounds[ dirIsNeg[ 2 ] ].z - o.z ) * invDir.z;
-        Float tzMax = ( bounds[ 1 - dirIsNeg[ 2 ] ].z - o.z ) * invDir.z;
+        Float tzMin = ( bounds[ dirIsNeg[ 2 ] ].z( ) - o.z ) * invDir.z;
+        Float tzMax = ( bounds[ 1 - dirIsNeg[ 2 ] ].z( ) - o.z ) * invDir.z;
         // Update _tzMax_ to ensure robust bounds intersection
         tzMax *= 1 + 2 * gamma( 3 );
 
@@ -2635,6 +2738,10 @@ namespace pbrto
             return Normalize( v );
         }
 
+        std::string ToString( ) const
+        {
+            return std::format( "[ OctahedralVector x: {} y: {} ]", x, y );
+        }
     private:
         // OctahedralVector Private Methods
         static Float Sign( Float v )
@@ -2844,6 +2951,11 @@ namespace pbrto
         Normal3f FromLocal( const Normal3f::Simd& z ) const
         {
             return FromLocal( Normal3f( z ) );
+        }
+
+        std::string ToString( ) const
+        {
+            return std::format( "[ Frame x: {} y: {} z: {} ]", x, y, z );
         }
         
     };

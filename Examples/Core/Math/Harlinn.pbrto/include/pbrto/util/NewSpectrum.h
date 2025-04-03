@@ -358,6 +358,13 @@ namespace pbrto
 
     };
 
+    inline SampledSpectrum Sqr( const SampledSpectrum& sampledSpectrum )
+    {
+        return sampledSpectrum * sampledSpectrum;
+    }
+
+
+
     // SampledWavelengths Definitions
     class SampledWavelengths
     {

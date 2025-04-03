@@ -32,7 +32,7 @@
 #ifdef RGB
 #undef RGB
 #endif
-
+#pragma warning( disable : 4305 )
 namespace pbrt
 {
 

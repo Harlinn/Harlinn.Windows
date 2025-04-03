@@ -115,9 +115,6 @@ namespace pbrto
 
         inline Normal3<float>::Simd ApplyInverse( const Normal3<float>::Simd& n ) const;
 
-        std::string ToString( ) const;
-
-
         const SquareMatrix<4>& GetMatrix( ) const
         {
             return m;
@@ -129,19 +126,22 @@ namespace pbrto
         }
 
 
-            const SquareMatrix<4>& GetInverseMatrix( ) const
+        const SquareMatrix<4>& GetInverseMatrix( ) const
         {
             return mInv;
         }
 
-        PBRT_CPU_GPU
-            const SquareMatrix<4>::Simd& GetInverseMatrixSimd( ) const
+        const SquareMatrix<4>::Simd& GetInverseMatrixSimd( ) const
         {
             return mInv_;
         }
 
-        PBRT_CPU_GPU
-            bool operator==( const Transform& t ) const
+        std::string ToString( ) const
+        {
+            return std::format( "[ m: {} mInv: {} ]", m, mInv );
+        }
+
+        bool operator==( const Transform& t ) const
         {
             return t.m_ == m_;
         }
@@ -638,16 +638,15 @@ namespace pbrto
         DerivativeTerm c1[ 3 ], c2[ 3 ], c3[ 3 ], c4[ 3 ], c5[ 3 ];
     };
 
-}  // namespace pbrt
+}
 
 namespace std
 {
 
     template <>
-    struct hash<pbrt::Transform>
+    struct hash<pbrto::Transform>
     {
-        PBRT_CPU_GPU
-            size_t operator()( const pbrto::Transform& t ) const
+        size_t operator()( const pbrto::Transform& t ) const
         {
             pbrto::SquareMatrix<4> m = t.GetMatrix( );
             return pbrto::Hash( m );

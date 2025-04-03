@@ -114,16 +114,18 @@ namespace pbrto
     protected:
         // ParserTarget Protected Methods
         template <typename... Args>
-        void ErrorExitDeferred( const char* fmt, Args &&...args ) const
+        void ErrorExitDeferred( const std::format_string<Args...> fmt, Args&&... args ) const
         {
             errorExit = true;
-            Error( fmt, std::forward<Args>( args )... );
+            auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
+            Error( nullptr, s.c_str() );
         }
         template <typename... Args>
-        void ErrorExitDeferred( const FileLoc* loc, const char* fmt, Args &&...args ) const
+        void ErrorExitDeferred( const FileLoc* loc, const std::format_string<Args...> fmt, Args&&... args ) const
         {
             errorExit = true;
-            Error( loc, fmt, std::forward<Args>( args )... );
+            auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
+            Error( loc, s.c_str( ) );
         }
 
         mutable bool errorExit = false;

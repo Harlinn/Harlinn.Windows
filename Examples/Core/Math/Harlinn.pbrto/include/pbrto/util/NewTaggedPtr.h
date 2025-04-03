@@ -915,7 +915,7 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ TaggedPointer ptr: 0x{:x} tag: {} ]", ptr( ), Tag( ) );
+            return std::format( "[ TaggedPointer ptr: {} tag: {} ]", ptr( ), Tag( ) );
         }
 
         PBRT_CPU_GPU

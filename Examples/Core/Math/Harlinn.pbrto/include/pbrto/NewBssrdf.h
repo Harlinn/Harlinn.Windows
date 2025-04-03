@@ -147,14 +147,9 @@ namespace pbrto
             rho = SafeDiv( sigma_s, sigma_t );
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Sp( Point3f pi ) const
+        SampledSpectrum Sp( Point3f pi ) const
         {
-#ifdef PBRT_USES_HCCMATH
             return Sr( ScalarDistance( po, pi ) );
-#else
-            return Sr( Distance( po, pi ) );
-#endif
         }
 
         PBRT_CPU_GPU
@@ -349,7 +344,7 @@ namespace pbrto
         }
     }
 
-    PBRT_CPU_GPU inline pstdo::optional<BSSRDFProbeSegment> BSSRDF::SampleSp( Float u1, Point2f u2 ) const
+    PBRT_CPU_GPU inline pstdo::optional<BSSRDFProbeSegment> BSSRDF::SampleSp( Float u1, const Point2f& u2 ) const
     {
         auto sample = [ & ]( auto ptr ) { return ptr->SampleSp( u1, u2 ); };
         return Dispatch( sample );

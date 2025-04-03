@@ -201,7 +201,7 @@ namespace pbrto
                 if ( !n.empty( ) )
                 {
                     Normal3f nn = n[ v[ 0 ] ] + n[ v[ 1 ] ];
-                    if ( LengthSquared( nn ) > 0 )
+                    if ( ScalarLengthSquared( nn ) > 0 )
                         nn = Normalize( nn );
                     n.push_back( nn );
                 }

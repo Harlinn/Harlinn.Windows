@@ -35,7 +35,7 @@
 #include <pbrto/NewLights.h>
 #include <pbrto/NewLightSamplers.h>
 #include <pbrto/util/NewLowDiscrepancy.h>
-#include <pbrto/util/pstd.h>
+#include <pbrto/util/NewPStd.h>
 #include <pbrto/util/NewRng.h>
 #include <pbrto/util/NewSampling.h>
 
@@ -63,7 +63,7 @@ namespace pbrto
         {
             // Integrator constructor implementation
             Bounds3f sceneBounds = aggregate ? aggregate.Bounds( ) : Bounds3f( );
-            LOG_VERBOSE( "Scene bounds %s", sceneBounds );
+            NLOG_VERBOSE( "Scene bounds {}", sceneBounds );
             for ( auto& light : lights )
             {
                 light.Preprocess( sceneBounds );
@@ -187,7 +187,7 @@ namespace pbrto
             Vector3f wp = SampleUniformSphere( u );
 
             // Evaluate BSDF at surface for sampled direction
-            SampledSpectrum fcos = bsdf.f( wo, wp ) * AbsDot( wp, isect.shading.n );
+            SampledSpectrum fcos = bsdf.f( wo, wp ) * ScalarAbsDot( wp, isect.shading.n );
             if ( !fcos )
             {
                 return Le;

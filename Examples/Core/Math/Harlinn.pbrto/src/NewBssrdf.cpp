@@ -1,0 +1,176 @@
+#include "pch.h"
+
+/*
+   Copyright 2024-2025 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+
+// pbrt is Copyright(c) 1998-2020 Matt Pharr, Wenzel Jakob, and Greg Humphreys.
+// The pbrt source code is licensed under the Apache License, Version 2.0.
+// SPDX: Apache-2.0
+
+#include <pbrto/NewBssrdf.h>
+
+#include <pbrto/NewMedia.h>
+#include <pbrto/NewShapes.h>
+#include <pbrto/util/NewMath.h>
+#include <pbrto/util/NewMemory.h>
+#include <pbrto/util/NewParallel.h>
+#include <pbrto/util/NewSampling.h>
+
+#include <cmath>
+
+namespace pbrto
+{
+
+    std::string TabulatedBSSRDF::ToString( ) const
+    {
+        return std::format( "[ TabulatedBSSRDF po: {} eta: {} ns: {} sigma_t: {} rho: {} table: {} ]", po, eta, ns, sigma_t, rho, *table );
+    }
+
+    // BSSRDF Function Definitions
+    Float BeamDiffusionMS( Float sigma_s, Float sigma_a, Float g, Float eta, Float r )
+    {
+        const int nSamples = 100;
+        Float Ed = 0;
+        // Precompute information for dipole integrand
+        // Compute reduced scattering coefficients $\sigmaps, \sigmapt$ and albedo $\rhop$
+        Float sigmap_s = sigma_s * ( 1 - g );
+        Float sigmap_t = sigma_a + sigmap_s;
+        Float rhop = sigmap_s / sigmap_t;
+
+        // Compute non-classical diffusion coefficient $D_\roman{G}$ using Equation
+        // $(\ref{eq:diffusion-coefficient-grosjean})$
+        Float D_g = ( 2 * sigma_a + sigmap_s ) / ( 3 * sigmap_t * sigmap_t );
+
+        // Compute effective transport coefficient $\sigmatr$ based on $D_\roman{G}$
+        Float sigma_tr = SafeSqrt( sigma_a / D_g );
+
+        // Determine linear extrapolation distance $\depthextrapolation$ using Equation
+        // $(\ref{eq:dipole-boundary-condition})$
+        Float fm1 = FresnelMoment1( eta ), fm2 = FresnelMoment2( eta );
+        Float ze = -2 * D_g * ( 1 + 3 * fm2 ) / ( 1 - 2 * fm1 );
+
+        // Determine exitance scale factors using Equations $(\ref{eq:kp-exitance-phi})$ and
+        // $(\ref{eq:kp-exitance-e})$
+        Float cPhi = 0.25f * ( 1 - 2 * fm1 ), cE = 0.5f * ( 1 - 3 * fm2 );
+
+        for ( int i = 0; i < nSamples; ++i )
+        {
+            // Sample real point source depth $\depthreal$
+            Float zr = SampleExponential( ( i + 0.5f ) / nSamples, sigmap_t );
+
+            // Evaluate dipole integrand $E_{\roman{d}}$ at $\depthreal$ and add to _Ed_
+            Float zv = -zr + 2 * ze;
+            Float dr = Math::Sqrt( Sqr( r ) + Sqr( zr ) ), dv = Math::Sqrt( Sqr( r ) + Sqr( zv ) );
+
+            // Compute dipole fluence rate $\dipole(r)$ using Equation
+            // $(\ref{eq:diffusion-dipole})$
+            Float phiD =
+                Inv4Pi / D_g * ( FastExp( -sigma_tr * dr ) / dr - FastExp( -sigma_tr * dv ) / dv );
+
+            // Compute dipole vector irradiance $-\N{}\cdot\dipoleE(r)$ using Equation
+            // $(\ref{eq:diffusion-dipole-vector-irradiance-normal})$
+            Float EDn =
+                Inv4Pi * ( zr * ( 1 + sigma_tr * dr ) * FastExp( -sigma_tr * dr ) / ( FastPow<3>( dr ) ) -
+                    zv * ( 1 + sigma_tr * dv ) * FastExp( -sigma_tr * dv ) / ( FastPow<3>( dv ) ) );
+
+            // Add contribution from dipole for depth $\depthreal$ to _Ed_
+            Float E = phiD * cPhi + EDn * cE;
+            Float kappa = 1 - FastExp( -2 * sigmap_t * ( dr + zr ) );
+            Ed += kappa * rhop * rhop * E;
+        }
+        return Ed / nSamples;
+    }
+
+    Float BeamDiffusionSS( Float sigma_s, Float sigma_a, Float g, Float eta, Float r )
+    {
+        // Compute material parameters and minimum $t$ below the critical angle
+        Float sigma_t = sigma_a + sigma_s, rho = sigma_s / sigma_t;
+        Float tCrit = r * SafeSqrt( Sqr( eta ) - 1 );
+
+        Float Ess = 0;
+        const int nSamples = 100;
+        for ( int i = 0; i < nSamples; ++i )
+        {
+            // Evaluate single-scattering integrand and add to _Ess_
+            Float ti = tCrit + SampleExponential( ( i + 0.5f ) / nSamples, sigma_t );
+            // Determine length $d$ of connecting segment and $\cos\theta_\roman{o}$
+#ifdef PBRT_USES_HCCMATH_SQRT
+            Float d = Math::Sqrt( Sqr( r ) + Sqr( ti ) );
+#else
+            Float d = std::sqrt( Sqr( r ) + Sqr( ti ) );
+#endif
+            Float cosTheta_o = ti / d;
+
+            // Add contribution of single scattering at depth $t$
+            Ess += rho * FastExp( -sigma_t * ( d + tCrit ) ) / Sqr( d ) *
+                HenyeyGreenstein( cosTheta_o, g ) * ( 1 - FrDielectric( -cosTheta_o, eta ) ) *
+                std::abs( cosTheta_o );
+        }
+        return Ess / nSamples;
+    }
+
+    void ComputeBeamDiffusionBSSRDF( Float g, Float eta, BSSRDFTable* t )
+    {
+        // Choose radius values of the diffusion profile discretization
+        t->radiusSamples[ 0 ] = 0;
+        t->radiusSamples[ 1 ] = 2.5e-3f;
+        for ( int i = 2; i < t->radiusSamples.size( ); ++i )
+            t->radiusSamples[ i ] = t->radiusSamples[ i - 1 ] * 1.2f;
+
+        // Choose albedo values of the diffusion profile discretization
+        for ( int i = 0; i < t->rhoSamples.size( ); ++i )
+            t->rhoSamples[ i ] =
+            ( 1 - FastExp( -8 * i / ( Float )( t->rhoSamples.size( ) - 1 ) ) ) / ( 1 - FastExp( -8 ) );
+
+        ParallelFor( 0, t->rhoSamples.size( ), [ & ]( int i ) {
+            // Compute the diffusion profile for the _i_th albedo sample
+            // Compute scattering profile for chosen albedo $\rho$
+            size_t nSamples = t->radiusSamples.size( );
+            for ( int j = 0; j < nSamples; ++j )
+            {
+                Float rho = t->rhoSamples[ i ], r = t->radiusSamples[ j ];
+                t->profile[ i * nSamples + j ] = 2 * Pi * r *
+                    ( BeamDiffusionSS( rho, 1 - rho, g, eta, r ) +
+                        BeamDiffusionMS( rho, 1 - rho, g, eta, r ) );
+            }
+
+            // Compute effective albedo $\rho_{\roman{eff}}$ and CDF for importance sampling
+            t->rhoEff[ i ] = IntegrateCatmullRom(
+                t->radiusSamples,
+                pstdo::span<const Float>( &t->profile[ i * nSamples ], nSamples ),
+                pstdo::span<Float>( &t->profileCDF[ i * nSamples ], nSamples ) );
+            } );
+    }
+
+    // BSSRDFTable Method Definitions
+    BSSRDFTable::BSSRDFTable( int nRhoSamples, int nRadiusSamples, Allocator alloc )
+        : rhoSamples( nRhoSamples, alloc ),
+        radiusSamples( nRadiusSamples, alloc ),
+        profile( nRadiusSamples* nRhoSamples, alloc ),
+        rhoEff( nRhoSamples, alloc ),
+        profileCDF( nRadiusSamples* nRhoSamples, alloc )
+    {
+    }
+
+    std::string BSSRDFTable::ToString( ) const
+    {
+        return std::format( "[ BSSRDFTable rhoSamples: {} radiusSamples: {} profile: {} "
+            "rhoEff: {} profileCDF: {} ]",
+            rhoSamples, radiusSamples, profile, rhoEff, profileCDF );
+    }
+
+}

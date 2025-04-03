@@ -754,10 +754,10 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf(
-                "[ MLTSampler rng: %s sigma: %f largeStepProbability: %f "
-                "streamCount: %d X: %s currentIteration: %d largeStep: %s "
-                "lastLargeStepIteration: %d streamIndex: %d sampleIndex: %d ] ",
+            return std::format(
+                "[ MLTSampler rng: {} sigma: {} largeStepProbability: {} "
+                "streamCount: {} X: {} currentIteration: {} largeStep: {} "
+                "lastLargeStepIteration: {} streamIndex: {} sampleIndex: {} ] ",
                 rng, sigma, largeStepProbability, streamCount, X, currentIteration, largeStep,
                 lastLargeStepIteration, streamIndex, sampleIndex );
         }
@@ -783,8 +783,8 @@ namespace pbrto
 
             std::string ToString( ) const
             {
-                return StringPrintf( "[ PrimarySample lastModificationIteration: %d "
-                    "valueBackup: %f modifyBackup: %d ]",
+                return std::format( "[ PrimarySample lastModificationIteration: {} "
+                    "valueBackup: {} modifyBackup: {} ]",
                     lastModificationIteration, valueBackup, modifyBackup );
             }
 
@@ -836,7 +836,7 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf( "[ DebugMLTSampler %s u: %s ]",
+            return std::format( "[ DebugMLTSampler {} u: {} ]",
                 ( ( const MLTSampler* )this )->ToString( ), u );
         }
 
@@ -880,20 +880,19 @@ namespace pbrto
 
     // Sampler Inline Functions
     template <typename S>
-    inline PBRT_CPU_GPU CameraSample GetCameraSample( S sampler, Point2i pPixel,
-        Filter filter )
+    inline CameraSample GetCameraSample( S sampler, Point2i pPixel, Filter filter )
     {
         FilterSample fs = filter.Sample( sampler.GetPixel2D( ) );
         CameraSample cs;
         // Initialize _CameraSample_ member variables
-        cs.pFilm = pPixel + fs.p + Vector2f( 0.5f, 0.5f );
+        cs.pFilm = Point2f(pPixel) + fs.p + Vector2f( 0.5f, 0.5f );
         cs.time = sampler.Get1D( );
         cs.pLens = sampler.Get2D( );
         cs.filterWeight = fs.weight;
 
         if ( GetOptions( ).disablePixelJitter )
         {
-            cs.pFilm = pPixel + Vector2f( 0.5f, 0.5f );
+            cs.pFilm = Point2f(pPixel) + Vector2f( 0.5f, 0.5f );
             cs.time = 0.5f;
             cs.pLens = Point2f( 0.5f, 0.5f );
             cs.filterWeight = 1;

@@ -7269,6 +7269,67 @@ namespace Harlinn::Common::Core::Math
         return DifferenceOfProducts( Simd(Traits::Load( v1.values )), Simd( Traits::Load( v2.values )), Simd( Traits::Load( v3.values )), Simd( Traits::Load( v4.values ) ) );
     }
 
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
+    template<typename S, Internal::SimdType T, typename U, Internal::SimdType V>
+        requires Internal::IsCompatible<T,V> && IsArithmetic<S> && IsArithmetic<U>
+    inline T DifferenceOfProducts( S v1, const T& v2, U v3, const V& v4 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ValueType = typename Traits::Type;
+        
+        auto v34 = static_cast< ValueType >(v3) * v4;
+        return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
+    }
+
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
+    template<typename S, Internal::SimdType T, typename U, Internal::TupleType V>
+        requires Internal::IsCompatible<T, V>&& IsArithmetic<S>&& IsArithmetic<U>
+    inline T DifferenceOfProducts( S v1, const T& v2, U v3, const V& v4 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ValueType = typename Traits::Type;
+
+        auto v34 = static_cast< ValueType >( v3 ) * v4;
+        return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
+    }
+
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
+    template<typename S, Internal::TupleType T, typename U, Internal::SimdType V>
+        requires Internal::IsCompatible<T, V>&& IsArithmetic<S>&& IsArithmetic<U>
+    inline typename T::Simd DifferenceOfProducts( S v1, const T& v2, U v3, const V& v4 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ValueType = typename Traits::Type;
+
+        auto v34 = static_cast< ValueType >( v3 ) * v4;
+        return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
+    }
+
+    /// <summary>
+    /// Calculates the difference between the product of the first and the second argument, 
+    /// and the product of the third and fourth argument.
+    /// </summary>
+    template<typename S, Internal::TupleType T, typename U, Internal::TupleType V>
+        requires Internal::IsCompatible<T, V>&& IsArithmetic<S>&& IsArithmetic<U>
+    inline typename T::Simd DifferenceOfProducts( S v1, const T& v2, U v3, const V& v4 ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using ValueType = typename Traits::Type;
+
+        auto v34 = static_cast< ValueType >( v3 ) * v4;
+        return FMA( static_cast< ValueType >( v1 ), v2, -v34 );
+    }
+
+
     // SumOfProducts
 
     
@@ -12771,6 +12832,22 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename Quaternion<T>::Traits;
         return Traits::Dot( Traits::Load( q1.values ), Traits::Load( q2.values ) );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarDot( const QuaternionSimd<Quaternion<T>>& q1, const Quaternion<T>& q2 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        return Traits::First( Traits::Dot( q1.simd, Traits::Load( q2.values ) ) );
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    typename T ScalarDot( const Quaternion<T>& q1, const Quaternion<T>& q2 ) noexcept
+    {
+        using Traits = typename Quaternion<T>::Traits;
+        return Traits::First( Traits::Dot( Traits::Load( q1.values ), Traits::Load( q2.values ) ) );
     }
     
 
@@ -19945,6 +20022,50 @@ namespace std
     };
 
 
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Normal3f, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Normal3f& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x, value.y, value.z );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x, value.y, value.z );
+            }
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Math::Normal3f::Simd, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::Math::Normal3f::Simd& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}; {}; {}]", value.x( ), value.y( ), value.z( ) );
+            }
+        }
+    };
 
 
 

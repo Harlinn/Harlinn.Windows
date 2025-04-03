@@ -305,6 +305,28 @@ namespace pbrto
     enum class RandomizeStrategy { None, PermuteDigits, FastOwen, Owen };
 
     std::string ToString( RandomizeStrategy r );
+}
+
+namespace std
+{
+    template<typename CharT>
+    struct formatter<pbrto::RandomizeStrategy, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( pbrto::RandomizeStrategy value, FormatContext& ctx ) const
+        {
+            return std::format_to( ctx.out( ), "{}", pbrto::ToString( value ) );
+        }
+    };
+}
+
+namespace pbrto
+{
 
     PBRT_CPU_GPU
         inline uint64_t SobolIntervalToIndex( uint32_t m, uint64_t frame, Point2i p )

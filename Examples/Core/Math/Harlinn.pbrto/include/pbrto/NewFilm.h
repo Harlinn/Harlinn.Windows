@@ -227,8 +227,7 @@ namespace pbrto
             NCHECK_LE( pixelBounds.pMax.x, fullResolution.x );
             NCHECK_GE( pixelBounds.pMin.y, 0 );
             NCHECK_LE( pixelBounds.pMax.y, fullResolution.y );
-            LOG_VERBOSE( "Created film with full resolution %s, pixelBounds %s",
-                fullResolution, pixelBounds );
+            NLOG_VERBOSE( "Created film with full resolution {}, pixelBounds {}", fullResolution, pixelBounds );
         }
 
         PBRT_CPU_GPU
@@ -529,7 +528,7 @@ namespace pbrto
         PBRT_CPU_GPU
             RGB ToOutputRGB( SampledSpectrum L, const SampledWavelengths& lambda ) const
         {
-            LOG_FATAL( "ToOutputRGB() is unimplemented. But that's ok since it's only used "
+            NLOG_FATAL( "ToOutputRGB() is unimplemented. But that's ok since it's only used "
                 "in the SPPM integrator, which is inherently very much based on "
                 "RGB output." );
             return {};

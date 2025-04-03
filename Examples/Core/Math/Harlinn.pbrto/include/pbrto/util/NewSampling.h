@@ -926,37 +926,6 @@ namespace pbrto
             return Lerp( delta, cdf[ offset ], cdf[ offset + 1 ] );
         }
     };
-}
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::PiecewiseConstant1D, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( const pbrto::PiecewiseConstant1D& value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                return std::format_to( ctx.out( ), L"[ PiecewiseConstant1D func : {} cdf: {} "
-                    "min: {} max: {} funcInt: {} ]",
-                    value.func, value.cdf, value.min, value.max, value.funcInt );
-            }
-            else
-            {
-                return std::format_to( ctx.out( ), "[ PiecewiseConstant1D func : {} cdf: {} "
-                    "min: {} max: {} funcInt: {} ]",
-                    value.func, value.cdf, value.min, value.max, value.funcInt );
-            }
-        }
-    };
-}
-namespace pbrto
-{
 
     // PiecewiseConstant2D Definition
     class PiecewiseConstant2D
@@ -1079,38 +1048,6 @@ namespace pbrto
     private:
         
     };
-
-}
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::PiecewiseConstant2D, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( const pbrto::PiecewiseConstant2D& value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                return std::format_to( ctx.out( ), L"[ PiecewiseConstant2D domain: {} pConditionalV: {} "
-                    "pMarginal: {} ]",
-                    value.domain, value.pConditionalV, value.pMarginal );
-            }
-            else
-            {
-                return std::format_to( ctx.out( ), "[ PiecewiseConstant2D domain: {} pConditionalV: {} "
-                    "pMarginal: {} ]",
-                    value.domain, value.pConditionalV, value.pMarginal );
-            }
-        }
-    };
-}
-namespace pbrto
-{
 
     // AliasTable Definition
     class AliasTable
@@ -1708,7 +1645,7 @@ namespace pbrto
             bool normalize = true, bool build_cdf = true )
             : m_size( xSize, ySize ),
             m_patch_size( 1.f / ( xSize - 1 ), 1.f / ( ySize - 1 ) ),
-            m_inv_patch_size( m_size - Vector2i( 1, 1 ) ),
+            m_inv_patch_size( ToVector2f( m_size - Vector2i( 1, 1 ) ) ),
             m_param_values( alloc ),
             m_data( alloc ),
             m_marginal_cdf( alloc ),
@@ -1792,11 +1729,7 @@ namespace pbrto
 
                 for ( uint32_t slice = 0; slice < slices; ++slice )
                 {
-#ifdef PBRT_USES_HCCMATH
                     float normalization = 1.f / ScalarHProd( m_inv_patch_size );
-#else
-                    float normalization = 1.f / HProd( m_inv_patch_size );
-#endif
                     if ( normalize )
                     {
                         double sum = 0.0;
@@ -1881,7 +1814,7 @@ namespace pbrto
 
             sample.y -= fetch_marginal( row );
 
-            uint32_t slice_size = HProd( m_size );
+            uint32_t slice_size = ScalarHProd( m_size );
             offset = row * m_size.x;
             if ( Dimension != 0 )
                 offset += slice_offset * slice_size;
@@ -1930,15 +1863,9 @@ namespace pbrto
             sample.x = is_const ? ( 2.f * sample.x )
                 : ( c0 - SafeSqrt( c0 * c0 - 2.f * sample.x * ( c0 - c1 ) ) );
             sample.x /= is_const ? ( c0 + c1 ) : ( c0 - c1 );
-#ifdef PBRT_USES_HCCMATH
             return {
                 Point2f( ( col + sample.x ) * m_patch_size.x, ( row + sample.y ) * m_patch_size.y ),
                 ( ( 1.f - sample.x ) * c0 + sample.x * c1 ) * ScalarHProd( m_inv_patch_size ) };
-#else
-            return {
-                Point2f( ( col + sample.x ) * m_patch_size.x, ( row + sample.y ) * m_patch_size.y ),
-                ( ( 1.f - sample.x ) * c0 + sample.x * c1 ) * HProd( m_inv_patch_size ) };
-#endif
         }
 
         /// Inverse of the mapping implemented in \c Sample()
@@ -1978,11 +1905,11 @@ namespace pbrto
             /* Fetch values at corners of bilinear patch */
             sample.x *= m_inv_patch_size.x;
             sample.y *= m_inv_patch_size.y;
-            Vector2i pos = Min( Vector2i( sample ), m_size - Vector2i( 2, 2 ) );
+            Vector2i pos = Min( ToVector2i( sample ), m_size - Vector2i( 2, 2 ) );
             sample -= Vector2f( pos );
 
             uint32_t offset = pos.x + pos.y * m_size.x;
-            uint32_t slice_size = HProd( m_size );
+            uint32_t slice_size = ScalarHProd( m_size );
             if ( Dimension != 0 )
                 offset += slice_offset * slice_size;
 
@@ -2030,11 +1957,7 @@ namespace pbrto
 
             sample.y +=
                 lookup<Dimension>( m_marginal_cdf.data( ), offset, m_size.y, param_weight );
-#ifdef PBRT_USES_HCCMATH
             return { sample, pdf * ScalarHProd( m_inv_patch_size ) };
-#else
-            return { sample, pdf * HProd( m_inv_patch_size ) };
-#endif
         }
 
         /**
@@ -2078,14 +2001,14 @@ namespace pbrto
             /* Compute linear interpolation weights */
             pos.x *= m_inv_patch_size.x;
             pos.y *= m_inv_patch_size.y;
-            Vector2i offset = Min( Vector2i( pos ), m_size - Vector2i( 2, 2 ) );
+            Vector2i offset = Min( ToVector2i( pos ), m_size - Vector2i( 2, 2 ) );
 
-            Vector2f w1 = Vector2f( pos ) - Vector2f( Vector2i( offset ) ),
-                w0 = Vector2f( 1, 1 ) - w1;
+            Vector2f w1 = Vector2f( pos ) - ToVector2f( offset );
+            Vector2f w0 = Vector2f( 1, 1 ) - w1;
 
             uint32_t index = offset.x + offset.y * m_size.x;
 
-            uint32_t size = HProd( m_size );
+            uint32_t size = ScalarHProd( m_size );
             if ( Dimension != 0 )
                 index += slice_offset * size;
 
@@ -2095,13 +2018,8 @@ namespace pbrto
                 lookup<Dimension>( m_data.data( ) + m_size.x, index, size, param_weight ),
                 v11 = lookup<Dimension>( m_data.data( ) + m_size.x + 1, index, size,
                     param_weight );
-#ifdef PBRT_USES_HCCMATH
             return FMA( w0.y, FMA( w0.x, v00, w1.x * v10 ), w1.y * FMA( w0.x, v01, w1.x * v11 ) ) *
                 ScalarHProd( m_inv_patch_size );
-#else
-            return FMA( w0.y, FMA( w0.x, v00, w1.x * v10 ), w1.y * FMA( w0.x, v01, w1.x * v11 ) ) *
-                HProd( m_inv_patch_size );
-#endif
         }
 
         PBRT_CPU_GPU

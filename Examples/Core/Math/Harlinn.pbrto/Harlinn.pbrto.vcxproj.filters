@@ -585,6 +585,9 @@
     <ClInclude Include="include\pbrto\NewOptions.h">
       <Filter>include\pbrto</Filter>
     </ClInclude>
+    <ClInclude Include="include\pbrto\NewShapes.h">
+      <Filter>include\pbrto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -933,6 +936,75 @@
       <Filter>src\util</Filter>
     </ClCompile>
     <ClCompile Include="src\NewOptions.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\NewAggregates.cpp">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\NewIntegrators.cpp">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\NewPrimitive.cpp">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\NewRender.cpp">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewBsdf.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewBssrdf.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewBxdfs.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewCameras.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewFilm.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewFilters.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewInteraction.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewLights.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewLightSamplers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewMaterials.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewMedia.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewParamDict.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewParser.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewPbrt.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewRay.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewSamplers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewShapes.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NewTextures.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

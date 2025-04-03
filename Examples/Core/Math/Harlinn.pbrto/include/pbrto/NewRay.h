@@ -98,8 +98,10 @@ namespace pbrto
         // Find vector _offset_ to corner of error bounds and compute initial _po_
         Float d = ScalarDot( Abs( n ), pi.Error( ) );
         Vector3f offset = d * Vector3f( n );
-        if ( Dot( w, n ) < 0 )
+        if ( ScalarDot( w, n ) < 0 )
+        {
             offset = -offset;
+        }
         Point3f po = Point3f( pi ) + offset;
 
         // Round offset point _po_ away from _p_

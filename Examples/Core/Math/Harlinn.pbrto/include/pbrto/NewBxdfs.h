@@ -436,11 +436,9 @@ namespace pbrto
             NCHECK_RARE( 1e-5f, LengthSquared( wm ) == 0 );
             if ( LengthSquared( wm ) == 0 )
                 return 0;
-#ifdef PBRT_USES_HCCMATH
+
             wm = FaceForward( Normal3f( Normalize( wm ) ), Normal3f( 0, 0, 1 ) );
-#else
-            wm = FaceForward( Normalize( wm ), Normal3f( 0, 0, 1 ) );
-#endif
+
             return mfDistrib.PDF( wo, wm ) / ( 4 * AbsDot( wo, wm ) );
         }
 
@@ -1025,7 +1023,7 @@ namespace pbrto
         {
             if ( std::abs( dz ) <= std::numeric_limits<Float>::min( ) )
                 return 1;
-            return FastExp( -std::abs( dz / w.z ) );
+            return Math::FastExp( -std::abs( dz / w.z ) );
         }
 
         // LayeredBxDF Private Members
@@ -1100,20 +1098,16 @@ namespace pbrto
             Float sinTheta_o, Float v )
         {
             Float a = cosTheta_i * cosTheta_o / v, b = sinTheta_i * sinTheta_o / v;
-#ifdef PBRT_USES_HCCMATH_LOG
+
             Float mp = ( v <= .1 )
                 ? ( FastExp( LogI0( a ) - b - 1 / v + 0.6931f + Math::Log( 1 / ( 2 * v ) ) ) )
                 : ( FastExp( -b ) * I0( a ) ) / ( std::sinh( 1 / v ) * 2 * v );
-#else
-            Float mp = ( v <= .1 )
-                ? ( FastExp( LogI0( a ) - b - 1 / v + 0.6931f + std::log( 1 / ( 2 * v ) ) ) )
-                : ( FastExp( -b ) * I0( a ) ) / ( std::sinh( 1 / v ) * 2 * v );
-#endif
+
             NDCHECK( !IsInf( mp ) && !IsNaN( mp ) );
             return mp;
         }
 
-        PBRT_CPU_GPU static pstdo::array<SampledSpectrum, pMax + 1> Ap( Float cosTheta_o,
+        static pstdo::array<SampledSpectrum, pMax + 1> Ap( Float cosTheta_o,
             Float eta, Float h,
             SampledSpectrum T )
         {
@@ -1296,20 +1290,12 @@ namespace pbrto
         Float eta;
     };
 
-#ifdef PBRT_USES_HCCMATH_SQRT
     PBRT_CPU_GPU inline SampledSpectrum BxDF::f( const Vector3f& wo, const Vector3f& wi, TransportMode mode ) const
-#else
-    PBRT_CPU_GPU inline SampledSpectrum BxDF::f( Vector3f wo, Vector3f wi, TransportMode mode ) const
-#endif
     {
         auto f = [ & ]( auto ptr ) -> SampledSpectrum { return ptr->f( wo, wi, mode ); };
         return Dispatch( f );
     }
-#ifdef PBRT_USES_HCCMATH_SQRT
     PBRT_CPU_GPU inline pstdo::optional<BSDFSample> BxDF::Sample_f( const Vector3f& wo, Float uc, const Point2f& u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
-#else
-    PBRT_CPU_GPU inline pstdo::optional<BSDFSample> BxDF::Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
-#endif
     {
         auto sample_f = [ & ]( auto ptr ) -> pstdo::optional<BSDFSample> {
             return ptr->Sample_f( wo, uc, u, mode, sampleFlags );
@@ -1317,11 +1303,7 @@ namespace pbrto
         return Dispatch( sample_f );
     }
 
-#ifdef PBRT_USES_HCCMATH_SQRT
     PBRT_CPU_GPU inline Float BxDF::PDF( const Vector3f& wo, const Vector3f& wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
-#else
-    PBRT_CPU_GPU inline Float BxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
-#endif
     {
         auto pdf = [ & ]( auto ptr ) { return ptr->PDF( wo, wi, mode, sampleFlags ); };
         return Dispatch( pdf );

@@ -349,7 +349,7 @@ namespace pbrto
             FloatTexture GetDisplacement( ) const
         {
 #ifndef PBRT_IS_GPU_CODE
-            LOG_FATAL( "Shouldn't be called" );
+            NLOG_FATAL( "Shouldn't be called" );
 #endif
             return nullptr;
         }
@@ -358,7 +358,7 @@ namespace pbrto
             const Image* GetNormalMap( ) const
         {
 #ifndef PBRT_IS_GPU_CODE
-            LOG_FATAL( "Shouldn't be called" );
+            NLOG_FATAL( "Shouldn't be called" );
 #endif
             return nullptr;
         }
@@ -372,7 +372,7 @@ namespace pbrto
             SampledWavelengths& lambda ) const
         {
 #ifndef PBRT_IS_GPU_CODE
-            LOG_FATAL( "Shouldn't be called" );
+            NLOG_FATAL( "Shouldn't be called" );
 #endif
         }
 
@@ -391,7 +391,7 @@ namespace pbrto
             SampledWavelengths& lambda ) const
         {
 #ifndef PBRT_IS_GPU_CODE
-            LOG_FATAL( "MixMaterial::GetBxDF() shouldn't be called" );
+            NLOG_FATAL( "MixMaterial::GetBxDF() shouldn't be called" );
 #endif
         }
 

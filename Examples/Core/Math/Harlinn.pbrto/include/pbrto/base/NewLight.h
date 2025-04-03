@@ -36,7 +36,10 @@ namespace pbrto
 {
 
     // LightType Definition
-    enum class LightType { DeltaPosition, DeltaDirection, Area, Infinite };
+    enum class LightType 
+    { 
+        DeltaPosition, DeltaDirection, Area, Infinite 
+    };
 
     // Light Source Types
     class PointLight;

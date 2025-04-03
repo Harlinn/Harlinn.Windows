@@ -280,7 +280,7 @@ namespace pbrto
         Interaction ret;
         ret.pi = ( *this )( in.pi );
         ret.n = ( *this )( in.n );
-        if ( LengthSquared( ret.n ) > 0 )
+        if ( ScalarLengthSquared( ret.n ) > 0 )
             ret.n = Normalize( ret.n );
         ret.uv = in.uv;
         ret.wo = ( *this )( in.wo );
@@ -297,7 +297,7 @@ namespace pbrto
         Transform t = Inverse( *this );
         ret.pi = t( in.pi );
         ret.n = t( in.n );
-        if ( LengthSquared( ret.n ) > 0 )
+        if ( ScalarLengthSquared( ret.n ) > 0 )
             ret.n = Normalize( ret.n );
         ret.uv = in.uv;
         ret.wo = t( in.wo );
@@ -343,11 +343,6 @@ namespace pbrto
         return ret;
     }
 
-    std::string Transform::ToString( ) const
-    {
-        return std::format( "[ m: {} mInv: {} ]", m, mInv );
-    }
-
     // AnimatedTransform Method Definitions
     AnimatedTransform::AnimatedTransform( const Transform& startTransform, Float startTime,
         const Transform& endTransform, Float endTime )
@@ -366,14 +361,14 @@ namespace pbrto
         endTransform.Decompose( &T[ 1 ], &Rm, &S[ 1 ] );
         R[ 1 ] = Quaternion( Transform( Rm ) );
         // Flip _R[1]_ if needed to select shortest path
-        if ( Dot( R[ 0 ], R[ 1 ] ) < 0 )
+        if ( ScalarDot( R[ 0 ], R[ 1 ] ) < 0 )
             R[ 1 ] = -R[ 1 ];
 
-        hasRotation = Dot( R[ 0 ], R[ 1 ] ) < 0.9995f;
+        hasRotation = ScalarDot( R[ 0 ], R[ 1 ] ) < 0.9995f;
         // Compute terms of motion derivative function
         if ( hasRotation )
         {
-            Float cosTheta = Dot( R[ 0 ], R[ 1 ] );
+            Float cosTheta = ScalarDot( R[ 0 ], R[ 1 ] );
             Float theta = Math::SafeACos( cosTheta );
 
             Quaternion qperp = Normalize( R[ 1 ] - R[ 0 ] * cosTheta );
@@ -1066,7 +1061,7 @@ namespace pbrto
         Vector3f trans = ( 1 - dt ) * T[ 0 ] + dt * T[ 1 ];
 
         // Interpolate rotation at _dt_
-        Quaternion rotate = Slerp( dt, R[ 0 ], R[ 1 ] );
+        Quaternion rotate = Math::Slerp( R[ 0 ], R[ 1 ], dt );
 
         // Interpolate scale at _dt_
         SquareMatrix<4> scale = ( 1 - dt ) * S[ 0 ] + dt * S[ 1 ];
@@ -1095,7 +1090,7 @@ namespace pbrto
         if ( !actuallyAnimated )
             return Bounds3f( startTransform( p ) );
         Bounds3f bounds( startTransform( p ), endTransform( p ) );
-        Float cosTheta = Dot( R[ 0 ], R[ 1 ] );
+        Float cosTheta = ScalarDot( R[ 0 ], R[ 1 ] );
         Float theta = Math::SafeACos( cosTheta );
 
         for ( int c = 0; c < 3; ++c )

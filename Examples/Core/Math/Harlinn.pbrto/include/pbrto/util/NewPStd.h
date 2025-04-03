@@ -947,7 +947,7 @@ namespace pstdo
         }
         void pop_back( )
         {
-            DCHECK( !empty( ) );
+            NDCHECK( !empty( ) );
             alloc.destroy( ptr + nStored - 1 );
             --nStored;
         }
@@ -1299,6 +1299,61 @@ namespace std
             }
         }
     };
+
+    template<typename T, typename CharT>
+        requires requires( const T& t )
+    {
+        { t.ToString( ) }->same_as<basic_string<CharT>>;
+    }
+    struct formatter<const T*, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const T* value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"{}", value ? value->ToString( ).c_str() : L"<nullptr>" );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "{}", value? value->ToString( ).c_str( ) : "<nullptr>" );
+            }
+        }
+    };
+
+
+    template<typename T, typename CharT>
+        requires requires( const T& t )
+    {
+        { pbrto::ToString( t ) }->same_as<basic_string<CharT>>;
+    }
+    struct formatter<T, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const T& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"{}", pbrto::ToString( value ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "{}", pbrto::ToString( value ) );
+            }
+        }
+    };
+
+
 
     template<typename CharT, formattable<CharT> T >
     struct formatter<pstdo::optional<T>, CharT>

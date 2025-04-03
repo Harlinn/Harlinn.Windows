@@ -61,8 +61,7 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf( "[ SceneEntity name: %s parameters: %s loc: %s ]", name,
-                parameters, loc );
+            return std::format( "[ SceneEntity name: {} parameters: {} loc: {} ]", name, parameters, loc );
         }
 
         // SceneEntity Public Members
@@ -83,8 +82,7 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf( "[ TransformedSeneEntity name: %s parameters: %s loc: %s "
-                "renderFromObject: %s ]",
+            return std::format( "[ TransformedSeneEntity name: {} parameters: {} loc: {} renderFromObject: {} ]",
                 name, parameters, loc, renderFromObject );
         }
 
@@ -107,8 +105,7 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf( "[ CameraSeneEntity name: %s parameters: %s loc: %s "
-                "cameraTransform: %s medium: %s ]",
+            return std::format( "[ CameraSeneEntity name: {} parameters: {} loc: {} cameraTransform: {} medium: {} ]",
                 name, parameters, loc, cameraTransform, medium );
         }
 
@@ -138,11 +135,11 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf(
-                "[ ShapeSeneEntity name: %s parameters: %s loc: %s "
-                "renderFromObject: %s objectFromRender: %s reverseOrientation: %s "
-                "materialIndex: %d materialName: %s lightIndex: %d "
-                "insideMedium: %s outsideMedium: %s]",
+            return std::format(
+                "[ ShapeSeneEntity name: {} parameters: {} loc: {} "
+                "renderFromObject: {} objectFromRender: {} reverseOrientation: {} "
+                "materialIndex: {} materialName: {} lightIndex: {} "
+                "insideMedium: {} outsideMedium: {}]",
                 name, parameters, loc, *renderFromObject, *objectFromRender,
                 reverseOrientation, materialIndex, materialName, lightIndex, insideMedium,
                 outsideMedium );
@@ -178,10 +175,10 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf(
-                "[ AnimatedShapeSeneEntity name: %s parameters: %s loc: %s "
-                "renderFromObject: %s reverseOrientation: %s materialIndex: %d "
-                "materialName: %s insideMedium: %s outsideMedium: %s]",
+            return std::format(
+                "[ AnimatedShapeSeneEntity name: {} parameters: {} loc: {} "
+                "renderFromObject: {} reverseOrientation: {} materialIndex: {} "
+                "materialName: {} insideMedium: {} outsideMedium: {}]",
                 name, parameters, loc, renderFromObject, reverseOrientation, materialIndex,
                 materialName, insideMedium, outsideMedium );
         }
@@ -204,8 +201,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf( "[ InstanceDefinitionSceneEntity name: %s loc: %s "
-                " shapes: %s animatedShapes: %s ]",
+            return std::format( "[ InstanceDefinitionSceneEntity name: {} loc: {} "
+                " shapes: {} animatedShapes: {} ]",
                 name, loc, shapes, animatedShapes );
         }
 
@@ -230,8 +227,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf( "[ LightSeneEntity name: %s parameters: %s loc: %s "
-                "renderFromObject: %s medium: %s ]",
+            return std::format( "[ LightSeneEntity name: {} parameters: {} loc: {} "
+                "renderFromObject: {} medium: {} ]",
                 name, parameters, loc, renderFromObject, medium );
         }
 
@@ -259,9 +256,9 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return StringPrintf(
-                "[ InstanceSeneEntity name: %s loc: %s "
-                "renderFromInstanceAnim: %s renderFromInstance: %s ]",
+            return std::format(
+                "[ InstanceSeneEntity name: {} loc: {} "
+                "renderFromInstanceAnim: {} renderFromInstance: {} ]",
                 name, loc,
                 renderFromInstanceAnim ? renderFromInstanceAnim->ToString( )
                 : std::string( "nullptr" ),
@@ -346,7 +343,7 @@ namespace pbrto
                     camera = *c;
             }
             cameraJobMutex.unlock( );
-            LOG_VERBOSE( "Retrieved Camera from future" );
+            NLOG_VERBOSE( "Retrieved Camera from future" );
             return camera;
         }
 
@@ -360,7 +357,7 @@ namespace pbrto
                     sampler = *s;
             }
             samplerJobMutex.unlock( );
-            LOG_VERBOSE( "Retrieved Sampler from future" );
+            NLOG_VERBOSE( "Retrieved Sampler from future" );
             return sampler;
         }
 
@@ -538,7 +535,7 @@ namespace pbrto
         // BasicSceneBuilder Private Methods
         class Transform RenderFromObject( int index ) const
         {
-            return pbrt::Transform( ( renderFromWorld * graphicsState.ctm[ index ] ).GetMatrix( ) );
+            return pbrto::Transform( ( renderFromWorld * graphicsState.ctm[ index ] ).GetMatrix( ) );
         }
 
         AnimatedTransform RenderFromObject( ) const
