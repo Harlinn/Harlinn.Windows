@@ -41,6 +41,26 @@ namespace Harlinn::Util::Test
         return true;
     }
 
+    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>& m1, const Common::Core::Math::SquareMatrix<float, 4>::Simd& m2simd, float epsilon = 0.0001f )
+    {
+        Common::Core::Math::SquareMatrix<float, 4> m2( m2simd );
+        return Equal( m1, m2 );
+    }
+
+    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>::Simd& m1simd, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
+    {
+        Common::Core::Math::SquareMatrix<float, 4> m1( m1simd );
+        return Equal( m1, m2 );
+    }
+
+    inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>::Simd& m1simd, const Common::Core::Math::SquareMatrix<float, 4>::Simd& m2simd, float epsilon = 0.0001f )
+    {
+        Common::Core::Math::SquareMatrix<float, 4> m1( m1simd );
+        Common::Core::Math::SquareMatrix<float, 4> m2( m2simd );
+        return Equal( m1, m2 );
+    }
+
+
 #ifndef PBRT_USES_HCCMATH
     inline bool Equal( const pbrt::SquareMatrix<4>& m1, const pbrt::SquareMatrix<4>& m2, float epsilon = 0.0001f )
     {
@@ -310,6 +330,278 @@ namespace Harlinn::Util::Test
         return true;
     }
 #endif
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const pbrto::Vector3f& v1, const T& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const T& v1, const pbrto::Vector3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = v1[ i ];
+            float value2 = ( &v2.x )[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const pbrto::Point3f& v1, const T& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const T& v1, const pbrto::Point3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = v1[ i ];
+            float value2 = ( &v2.x )[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const pbrto::Normal3f& v1, const T& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const T& v1, const pbrto::Normal3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = v1[ i ];
+            float value2 = ( &v2.x )[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrto::Vector3f& v1, const pbrto::Vector3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrto::Vector3f& v1, const pbrt::Vector3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = v1[ i ];
+            float value2 = ( &v2.x )[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    inline bool Equal( const pbrt::Vector3f& v1, const pbrto::Vector3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    inline bool Equal( const pbrt::Vector3f& v1, const pbrt::Vector3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrto::Point3f& v1, const pbrto::Point3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    inline bool Equal( const pbrto::Point3f& v1, const pbrt::Point3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrt::Point3f& v1, const pbrto::Point3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrt::Point3f& v1, const pbrt::Point3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrto::Normal3f& v1, const pbrto::Normal3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrto::Normal3f& v1, const pbrt::Normal3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrt::Normal3f& v1, const pbrto::Normal3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrt::Normal3f& v1, const pbrt::Normal3f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
 }

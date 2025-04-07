@@ -21,6 +21,7 @@
 #include <HWDef.h>
 #include <DirectXMath.h>
 #include <pbrto/util/transform.h>
+#include <pbrto/util/NewTransform.h>
 #include <HCCTransformations.h>
 
 #ifdef BUILDING_HARLINN_UTIL_TEST

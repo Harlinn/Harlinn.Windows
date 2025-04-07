@@ -82,10 +82,8 @@ namespace pbrto
             FileLoc loc ) = 0;
         virtual void MakeNamedMedium( const std::string& name, ParsedParameterVector params,
             FileLoc loc ) = 0;
-        virtual void MediumInterface( const std::string& insideName,
-            const std::string& outsideName, FileLoc loc ) = 0;
-        virtual void Sampler( const std::string& name, ParsedParameterVector params,
-            FileLoc loc ) = 0;
+        virtual void MediumInterface( const std::string& insideName, const std::string& outsideName, FileLoc loc ) = 0;
+        virtual void Sampler( const std::string& name, ParsedParameterVector params, FileLoc loc ) = 0;
 
         virtual void WorldBegin( FileLoc loc ) = 0;
         virtual void AttributeBegin( FileLoc loc ) = 0;

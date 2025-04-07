@@ -23,9 +23,9 @@ namespace pbrt
 {
 
     // Random Number Declarations
-#define PCG32_DEFAULT_STATE 0x853c49e6748fea9bULL
-#define PCG32_DEFAULT_STREAM 0xda3e39cb94b95bdbULL
-#define PCG32_MULT 0x5851f42d4c957f2dULL
+    constexpr uint64_t PCG32_DEFAULT_STATE = 0x853c49e6748fea9bULL;
+    constexpr uint64_t PCG32_DEFAULT_STREAM = 0xda3e39cb94b95bdbULL;
+    constexpr uint64_t PCG32_MULT = 0x5851f42d4c957f2dULL;
 
 // RNG Definition
     class RNG

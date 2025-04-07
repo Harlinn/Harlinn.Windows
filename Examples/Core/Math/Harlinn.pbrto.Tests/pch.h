@@ -20,6 +20,8 @@
 #include <HCCTestUtils.h>
 #include <pbrto/util/vecmath.h>
 #include <pbrto/util/transform.h>
+#include <pbrto/util/NewVecmath.h>
+#include <pbrto/util/NewTransform.h>
 #include <DirectXMath.h>
 
 #define BOOST_TEST_DYN_LINK
@@ -32,8 +34,3 @@ template<typename ValueT, size_t N >
 using RandomGenerator = Harlinn::Common::Core::Test::Generators::RandomGenerator<ValueT, N>;
 
 using Harlinn::Common::Core::Test::Deviation;
-
-
-
-
-

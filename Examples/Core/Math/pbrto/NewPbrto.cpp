@@ -2,30 +2,29 @@
 // The pbrt source code is licensed under the Apache License, Version 2.0.
 // SPDX: Apache-2.0
 
-#include <pbrto/pbrt.h>
+#include <pbrto/NewPbrt.h>
 
-#include <pbrto/cpu/render.h>
+#include <pbrto/cpu/NewRender.h>
 #ifdef PBRT_BUILD_GPU_RENDERER
 #include <pbrto/gpu/memory.h>
 #endif  // PBRT_BUILD_GPU_RENDERER
-#include <pbrto/options.h>
-#include <pbrto/parser.h>
-#include <pbrto/scene.h>
-#include <pbrto/util/args.h>
-#include <pbrto/util/check.h>
-#include <pbrto/util/error.h>
-#include <pbrto/util/log.h>
-#include <pbrto/util/memory.h>
-#include <pbrto/util/parallel.h>
-#include <pbrto/util/print.h>
-#include <pbrto/util/spectrum.h>
-#include <pbrto/util/string.h>
-#include <pbrto/wavefront/wavefront.h>
+#include <pbrto/NewOptions.h>
+#include <pbrto/NewParser.h>
+#include <pbrto/NewScene.h>
+#include <pbrto/util/NewArgs.h>
+#include <pbrto/util/NewCheck.h>
+#include <pbrto/util/NewError.h>
+#include <pbrto/util/NewLog.h>
+#include <pbrto/util/NewMemory.h>
+#include <pbrto/util/NewParallel.h>
+#include <pbrto/util/NewSpectrum.h>
+#include <pbrto/util/NewString.h>
+#include <pbrto/wavefront/NewWavefront.h>
 
 #include <string>
 #include <vector>
 
-using namespace pbrt;
+using namespace pbrto;
 
 static void usage( const std::string& msg = {} )
 {
@@ -103,8 +102,9 @@ NSpectrumSamples );
 }
 
 // main program
-int main( int argc, char* argv[ ] )
+int NewMain( int argc, char* argv[ ] )
 {
+    bool useNew = false;
     // Convert command-line arguments to vector of strings
     std::vector<std::string> args = GetCommandLineArguments( argv );
 
@@ -138,7 +138,7 @@ int main( int argc, char* argv[ ] )
                 usage( "Didn't find four values after --cropwindow" );
                 return 1;
             }
-            options.cropWindow = Bounds2f( pbrt::Point2f( c[ 0 ], c[ 2 ] ), pbrt::Point2f( c[ 1 ], c[ 3 ] ) );
+            options.cropWindow = Bounds2f( pbrto::Point2f( c[ 0 ], c[ 2 ] ), pbrto::Point2f( c[ 1 ], c[ 3 ] ) );
         }
         else if ( ParseArg( &iter, args.end( ), "pixel", &pixel, onError ) )
         {
@@ -149,7 +149,7 @@ int main( int argc, char* argv[ ] )
                 return 1;
             }
             options.pixelBounds =
-                Bounds2i( pbrt::Point2i( p[ 0 ], p[ 1 ] ), pbrt::Point2i( p[ 0 ] + 1, p[ 1 ] + 1 ) );
+                Bounds2i( pbrto::Point2i( p[ 0 ], p[ 1 ] ), pbrto::Point2i( p[ 0 ] + 1, p[ 1 ] + 1 ) );
         }
         else if ( ParseArg( &iter, args.end( ), "pixelbounds", &pixelBounds, onError ) )
         {
@@ -159,7 +159,7 @@ int main( int argc, char* argv[ ] )
                 usage( "Didn't find four integer values after --pixelbounds" );
                 return 1;
             }
-            options.pixelBounds = Bounds2i( pbrt::Point2i( p[ 0 ], p[ 2 ] ), pbrt::Point2i( p[ 1 ], p[ 3 ] ) );
+            options.pixelBounds = Bounds2i( pbrto::Point2i( p[ 0 ], p[ 2 ] ), pbrto::Point2i( p[ 1 ], p[ 3 ] ) );
         }
         else if ( ParseArg( &iter, args.end( ), "pixelmaterial", &pixelMaterial,
             onError ) )
@@ -170,7 +170,7 @@ int main( int argc, char* argv[ ] )
                 usage( "Didn't find two values after --pixelmaterial" );
                 return 1;
             }
-            options.pixelMaterial = pbrt::Point2i( p[ 0 ], p[ 1 ] );
+            options.pixelMaterial = pbrto::Point2i( p[ 0 ], p[ 1 ] );
         }
         else if (
 #ifdef PBRT_BUILD_GPU_RENDERER
@@ -203,6 +203,7 @@ int main( int argc, char* argv[ ] )
                 onError ) ||
             ParseArg( &iter, args.end( ), "mse-reference-out", &options.mseReferenceOutput,
                 onError ) ||
+            ParseArg( &iter, args.end( ), "new", &useNew, onError ) ||
             ParseArg( &iter, args.end( ), "nthreads", &options.nThreads, onError ) ||
             ParseArg( &iter, args.end( ), "outfile", &options.imageFile, onError ) ||
             ParseArg( &iter, args.end( ), "pixelstats", &options.recordPixelStatistics,
@@ -228,7 +229,7 @@ int main( int argc, char* argv[ ] )
         }
         else
         {
-            usage( StringPrintf( "argument \"%s\" unknown", *iter ) );
+            usage( std::format( "argument \"{}\" unknown", *iter ) );
             return 1;
         }
     }
@@ -311,12 +312,14 @@ int main( int argc, char* argv[ ] )
         ParseFiles( &builder, filenames );
 
         // Render the scene
+        /*
         if ( Options->useGPU || Options->wavefront )
             RenderWavefront( scene );
         else
+        */
             RenderCPU( scene );
 
-        LOG_VERBOSE( "Memory used after post-render cleanup: %s", GetCurrentRSS( ) );
+        NLOG_VERBOSE( "Memory used after post-render cleanup: %s", GetCurrentRSS( ) );
         // Clean up after rendering the scene
         CleanupPBRT( );
     }

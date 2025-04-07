@@ -1101,23 +1101,7 @@ namespace pbrto
         // Recursively initialize kd-tree node's children
         Float tSplit = edges[ bestAxis ][ bestOffset ].t;
         Bounds3f bounds0 = nodeBounds, bounds1 = nodeBounds;
-        switch ( bestAxis )
-        {
-            case 0:
-                bounds0.pMax.SetX( tSplit );
-                bounds1.pMin.SetX( tSplit );
-                break;
-            case 1:
-                bounds0.pMax.SetY( tSplit );
-                bounds1.pMin.SetY( tSplit );
-                break;
-            default:
-                bounds0.pMax.SetZ( tSplit );
-                bounds1.pMin.SetZ( tSplit );
-                break;
-        }
-        
-
+        bounds0.pMax[ bestAxis ] = bounds1.pMin[ bestAxis ] = tSplit;
         buildTree( nodeNum + 1, bounds0, allPrimBounds, prims0.subspan( 0, n0 ), depth - 1,
             edges, prims0, prims1.subspan( n1 ), badRefines );
         int aboveChild = nextFreeNode;

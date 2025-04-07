@@ -54,10 +54,11 @@ namespace pbrto
 
     public:
         // Transform Public Methods
-        Transform( ) = default;
+        Transform( )
+            : m_( SquareMatrix<4>::Simd::Identity() ), mInv_( SquareMatrix<4>::Simd::Identity( ) )
+        { }
 
-        PBRT_CPU_GPU
-            Transform( const SquareMatrix<4>& m )
+        Transform( const SquareMatrix<4>& m )
             : m( m ) , m_( Math::Transpose( m ) )
 
         {
@@ -210,45 +211,10 @@ namespace pbrto
 
         SurfaceInteraction ApplyInverse( const SurfaceInteraction& in ) const;
 
-        Point3fi operator()( const Point3fi& p ) const
-        {
-            using Traits = SquareMatrix<4>::Traits;
-            using Point3Simd = Point3<float>::Simd;
-            using Point3Traits = Point3<float>::Traits;
+        Point3fi operator()( const Point3fi& p ) const;
+        Point3fi ApplyInverse( const Point3fi& p ) const;
 
-            constexpr Float gammaValue = gamma( 3 );
-            constexpr Float gammaPlusOneValue = gammaValue + 1.f;
-
-            Traits::SIMDType gammaVector = Point3Traits::Set( gammaValue, gammaValue, gammaValue );
-            Traits::SIMDType gammaVectorPlussOne = Point3Traits::Set( gammaPlusOneValue, gammaPlusOneValue, gammaPlusOneValue );
-
-            Point3Simd point( static_cast< Point3<float> >( p ) );
-
-            Point3Simd result = Traits::TransformPoint( point.simd, m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ], m_.simd[ 3 ] );
-
-            Point3Simd vOutError;
-            if ( p.IsExact( ) )
-            {
-                vOutError.simd = Traits::Mul( gammaVector, Traits::Abs( result.simd ) );
-            }
-            else
-            {
-                Traits::SIMDType vInError = Point3Traits::Load( p.Error( ).values );
-                vOutError.simd = Traits::Add( Traits::Mul( gammaVectorPlussOne, Traits::Abs( Traits::TransformPoint( vInError, m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ], m_.simd[ 3 ] ) ) ),
-                    Traits::Mul( gammaVector, Traits::Abs( result.simd ) ) );
-            }
-
-            return Point3fi( Point3f( result ), Point3f( vOutError ) );
-
-        }
-
-        PBRT_CPU_GPU
-            Vector3fi operator()( const Vector3fi& v ) const;
-        PBRT_CPU_GPU
-            Point3fi ApplyInverse( const Point3fi& p ) const;
-
-    private:
-
+        Vector3fi operator()( const Vector3fi& v ) const;
     };
 
     // Transform Function Declarations
@@ -323,7 +289,7 @@ namespace pbrto
 
 
 
-    PBRT_CPU_GPU inline Vector3fi Transform::operator()( const Vector3fi& v ) const
+    inline Vector3fi Transform::operator()( const Vector3fi& v ) const
     {
         using Traits = Vector3<float>::Traits;
         using Vector3Simd = Vector3<float>::Simd;
@@ -347,11 +313,38 @@ namespace pbrto
             vOutError.simd = Traits::Add( Traits::Mul( gammaVectorPlussOne, Traits::Abs( Traits::TransformNormal( vInError, m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ] ) ) ),
                 Traits::Mul( gammaVector, Traits::Abs( result.simd ) ) );
         }
-
-
-
         return Vector3fi( Vector3f( result ), Vector3f( vOutError ) );
     }
+
+    inline Point3fi Transform::operator()( const Point3fi& p ) const
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        using Point3Simd = Point3<float>::Simd;
+        using Point3Traits = Point3<float>::Traits;
+
+        constexpr Float gammaValue = gamma( 3 );
+        constexpr Float gammaPlusOneValue = gammaValue + 1.f;
+
+        Traits::SIMDType gammaVector = Point3Traits::Set( gammaValue, gammaValue, gammaValue );
+        Traits::SIMDType gammaVectorPlussOne = Point3Traits::Set( gammaPlusOneValue, gammaPlusOneValue, gammaPlusOneValue );
+
+        Point3Simd point( static_cast< Point3<float> >( p ) );
+
+        Point3Simd result = Traits::TransformPoint( point.simd, m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ], m_.simd[ 3 ] );
+
+        Point3Simd vOutError;
+        if ( p.IsExact( ) )
+        {
+            vOutError.simd = Traits::Mul( gammaVector, Traits::Abs( result.simd ) );
+        }
+        else
+        {
+            Traits::SIMDType vInError = Point3Traits::Load( p.Error( ).values );
+            vOutError.simd = Traits::Add( Traits::Mul( gammaVectorPlussOne, Traits::Abs( Traits::TransformPoint( vInError, m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ], m_.simd[ 3 ] ) ) ), Traits::Mul( gammaVector, Traits::Abs( result.simd ) ) );
+        }
+        return Point3fi( Point3f( result ), Point3f( vOutError ) );
+    }
+
 
 
     // Transform Inline Methods
@@ -380,6 +373,7 @@ namespace pbrto
         using Vector3Simd = Vector3<float>::Simd;
 
         Vector3Simd result = Vector3<float>::Traits::TransformNormal( Vector3<float>::Traits::Load( v.data( ) ), m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ] );
+        //Vector3Simd result = Vector3<float>::Traits::TransformVector( Vector3<float>::Traits::Load( v.data( ) ), m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ], m_.simd[ 3 ] );
         return result;
     }
     inline Vector3<float>::Simd Transform::operator()( const typename Vector3<float>::Simd& v ) const
@@ -388,25 +382,31 @@ namespace pbrto
         using Vector3Simd = Vector3<float>::Simd;
 
         Vector3Simd result = Vector3<float>::Traits::TransformNormal( v.simd, m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ] );
+        //Vector3Simd result = Vector3<float>::Traits::TransformVector( v.simd, m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ], m_.simd[ 3 ] );
         return result;
+    }
+
+    inline Normal3<float>::Simd Transform::operator()( const typename Normal3<float>::Simd& n ) const
+    {
+        using Traits = Vector3<float>::Traits;
+
+        auto result = Traits::Dot<0b01110001>( mInv_.simd[ 0 ], n.simd );
+        result = Traits::Add( Traits::Dot<0b01110010>( mInv_.simd[ 1 ], n.simd ), result );
+        result = Traits::Add( Traits::Dot<0b01110100>( mInv_.simd[ 2 ], n.simd ), result );
+        return Normal3<float>::Simd( result );
     }
 
     PBRT_CPU_GPU inline Normal3<float>::Simd Transform::operator()( const Normal3<float>& n ) const
     {
         using Traits = Vector3<float>::Traits;
-        using Normal3Simd = Normal3<float>::Simd;
-
-        Normal3Simd result = Normal3<float>::Traits::TransformNormal( Normal3<float>::Traits::Load( n.data( ) ), mInv_.simd[ 0 ], mInv_.simd[ 1 ], mInv_.simd[ 2 ] );
-        return result;
+        auto nSimd = Traits::Load( n.values );
+        
+        auto result = Traits::Dot<0b01110001>( mInv_.simd[ 0 ], nSimd );
+        result = Traits::Add( Traits::Dot<0b01110010>( mInv_.simd[ 1 ], nSimd ), result);
+        result = Traits::Add( Traits::Dot<0b01110100>( mInv_.simd[ 2 ], nSimd ), result );
+        return Normal3<float>::Simd( result );
     }
-    inline Normal3<float>::Simd Transform::operator()( const typename Normal3<float>::Simd& n ) const
-    {
-        using Traits = Vector3<float>::Traits;
-        using Normal3Simd = Normal3<float>::Simd;
-
-        Normal3Simd result = Normal3<float>::Traits::TransformNormal( n.simd, mInv_.simd[ 0 ], mInv_.simd[ 1 ], mInv_.simd[ 2 ] );
-        return result;
-    }
+    
 
     PBRT_CPU_GPU inline Ray Transform::operator()( const Ray& r, Float* tMax ) const
     {
@@ -492,20 +492,37 @@ namespace pbrto
 
     PBRT_CPU_GPU inline Normal3<float>::Simd Transform::ApplyInverse( const Normal3<float>& n ) const
     {
+        /*
         using Traits = Vector3<float>::Traits;
         using Normal3Simd = Normal3<float>::Simd;
 
         Normal3Simd result = Normal3<float>::Traits::TransformNormal( Normal3<float>::Traits::Load( n.data( ) ), m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ] );
         return result;
+        */
+        using Traits = Vector3<float>::Traits;
+        auto nSimd = Traits::Load( n.values );
+
+        auto result = Traits::Dot<0b01110001>( m_.simd[ 0 ], nSimd );
+        result = Traits::Add( Traits::Dot<0b01110010>( m_.simd[ 1 ], nSimd ), result );
+        result = Traits::Add( Traits::Dot<0b01110100>( m_.simd[ 2 ], nSimd ), result );
+        return Normal3<float>::Simd( result );
     }
 
     inline Normal3<float>::Simd Transform::ApplyInverse( const Normal3<float>::Simd& n ) const
     {
+        /*
         using Traits = Vector3<float>::Traits;
         using Normal3Simd = Normal3<float>::Simd;
 
         Normal3Simd result = Normal3<float>::Traits::TransformNormal( n.simd, m_.simd[ 0 ], m_.simd[ 1 ], m_.simd[ 2 ] );
         return result;
+        */
+        using Traits = Vector3<float>::Traits;
+
+        auto result = Traits::Dot<0b01110001>( m_.simd[ 0 ], n.simd );
+        result = Traits::Add( Traits::Dot<0b01110010>( m_.simd[ 1 ], n.simd ), result );
+        result = Traits::Add( Traits::Dot<0b01110100>( m_.simd[ 2 ], n.simd ), result );
+        return Normal3<float>::Simd( result );
     }
 
 
@@ -528,7 +545,7 @@ namespace pbrto
 
     PBRT_CPU_GPU inline RayDifferential Transform::ApplyInverse( const RayDifferential& r, Float* tMax ) const
     {
-        Ray tr = ApplyInverse( Ray( r ), tMax );
+        Ray tr = ApplyInverse( static_cast< const Ray& >( r ), tMax );
         RayDifferential ret( tr.o, tr.d, tr.time, tr.medium );
         ret.hasDifferentials = r.hasDifferentials;
         ret.rxOrigin = ApplyInverse( r.rxOrigin );
@@ -586,7 +603,10 @@ namespace pbrto
         PBRT_CPU_GPU
             SurfaceInteraction ApplyInverse( const SurfaceInteraction& it ) const;
         PBRT_CPU_GPU
-            bool HasScale( ) const { return startTransform.HasScale( ) || endTransform.HasScale( ); }
+            bool HasScale( ) const 
+        { 
+            return startTransform.HasScale( ) || endTransform.HasScale( ); 
+        }
 
         std::string ToString( ) const;
 
@@ -666,11 +686,11 @@ namespace std
         {
             if constexpr ( is_same_v<CharT, wchar_t> )
             {
-                return std::format_to( ctx.out( ), L"[ m: {} mInv: {} ]", t.GetMatrixSimd(), t.GetInverseMatrixSimd( ) );
+                return std::format_to( ctx.out( ), L"[ m: {} mInv: {}, m_: {} mInv_: {} ]", t.GetMatrix( ), t.GetInverseMatrix( ), t.GetMatrixSimd(), t.GetInverseMatrixSimd( ) );
             }
             else
             {
-                return std::format_to( ctx.out( ), "[ m: {} mInv: {} ]", t.GetMatrixSimd( ), t.GetInverseMatrixSimd( ) );
+                return std::format_to( ctx.out( ), "[ m: {} mInv: {}, m_: {} mInv_: {} ]", t.GetMatrix( ), t.GetInverseMatrix( ), t.GetMatrixSimd( ), t.GetInverseMatrixSimd( ) );
             }
         }
     };

@@ -87,7 +87,7 @@ namespace pbrt
         template <typename T>
         PBRT_CPU_GPU inline Normal3<T> ApplyInverse( Normal3<T> ) const;
 
-        std::string ToString( ) const;
+        PBRTO_EXPORT std::string ToString( ) const;
 
 
         PBRT_CPU_GPU
@@ -234,6 +234,11 @@ namespace pbrt
                     std::abs( m[ 2 ][ 2 ] ) * pInError.z ) +
                     gamma( 3 ) * ( std::abs( m[ 2 ][ 0 ] * x ) + std::abs( m[ 2 ][ 1 ] * y ) +
                         std::abs( m[ 2 ][ 2 ] * z ) + std::abs( m[ 2 ][ 3 ] ) );
+            }
+
+            if ( xp != 0.f && yp != 0.f, zp != 0.f )
+            {
+                DebugBreak( );
             }
 
             if ( wp == 1 )
@@ -483,9 +488,17 @@ namespace pbrt
     {
             T x = n.x, y = n.y, z = n.z;
             return Normal3<T>( 
-                mInv[ 0 ][ 0 ] * x + mInv[ 1 ][ 0 ] * y + mInv[ 2 ][ 0 ] * z,
-                mInv[ 0 ][ 1 ] * x + mInv[ 1 ][ 1 ] * y + mInv[ 2 ][ 1 ] * z,
-                mInv[ 0 ][ 2 ] * x + mInv[ 1 ][ 2 ] * y + mInv[ 2 ][ 2 ] * z );
+                mInv[ 0 ][ 0 ] * x + 
+                mInv[ 1 ][ 0 ] * y + 
+                mInv[ 2 ][ 0 ] * z,
+
+                mInv[ 0 ][ 1 ] * x + 
+                mInv[ 1 ][ 1 ] * y + 
+                mInv[ 2 ][ 1 ] * z,
+
+                mInv[ 0 ][ 2 ] * x + 
+                mInv[ 1 ][ 2 ] * y + 
+                mInv[ 2 ][ 2 ] * z );
     }
 
     PBRT_CPU_GPU inline Ray Transform::operator()( const Ray& r, Float* tMax ) const

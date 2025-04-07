@@ -6016,6 +6016,21 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_add_ps( rmm1, rmm2 );
             }
         }
+        template<int mask>
+        static SIMDType Dot( SIMDType a, SIMDType b ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_dp_ps( a, b, mask );
+            }
+            else
+            {
+                __m256 rmm1 = _mm256_dp_ps( a, b, mask );
+                __m256 rmm2 = _mm256_permute2f128_ps( rmm1, rmm1, 1 );
+                return _mm256_add_ps( rmm1, rmm2 );
+            }
+        }
+
 
         static SIMDType Cross( SIMDType a, SIMDType b ) noexcept
         {

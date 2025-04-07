@@ -40,6 +40,7 @@ namespace pbrto
     // clang-format off
     PBRTO_EXPORT Transform Translate( const Vector3f& delta )
     {
+        /*
         SquareMatrix<4> m( 1, 0, 0, delta.x,
             0, 1, 0, delta.y,
             0, 0, 1, delta.z,
@@ -49,12 +50,22 @@ namespace pbrto
             0, 0, 1, -delta.z,
             0, 0, 0, 1 );
         return Transform( m, minv );
+        */
+
+        SquareMatrix<4>::Simd mSimd = Math::Translation( delta );
+        SquareMatrix<4>::Simd mInvSimd = Math::Translation( -delta );
+        SquareMatrix<4> m = Math::Transpose( mSimd );
+        SquareMatrix<4> mInv = Math::Transpose( mInvSimd );
+
+        return Transform( m, mInv, mSimd, mInvSimd );
+
     }
     // clang-format on
 
     // clang-format off
     PBRTO_EXPORT Transform Scale( Float x, Float y, Float z )
     {
+        /*
         SquareMatrix<4> m( x, 0, 0, 0,
             0, y, 0, 0,
             0, 0, z, 0,
@@ -64,6 +75,16 @@ namespace pbrto
             0, 0, 1 / z, 0,
             0, 0, 0, 1 );
         return Transform( m, minv );
+        */
+
+        SquareMatrix<4>::Simd mSimd = Math::Scaling( x, y, z );
+        SquareMatrix<4>::Simd mInvSimd = Math::Scaling( 1.f / x, 1.f / y, 1.f / z );
+
+        SquareMatrix<4> m = Math::Transpose( mSimd );
+        SquareMatrix<4> mInv = Math::Transpose( mInvSimd );
+
+        return Transform( m, mInv, mSimd, mInvSimd );
+
     }
     // clang-format on
 
@@ -145,7 +166,7 @@ namespace pbrto
         Bounds3f bt;
         for ( int i = 0; i < 8; ++i )
         {
-            bt = Union( bt, ( *this )( b.Corner( i ) ) );
+            bt = Union( bt, Point3f(( *this )( b.Corner( i ) )) );
         }
         return bt;
     }

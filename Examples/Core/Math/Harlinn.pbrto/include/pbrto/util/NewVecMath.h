@@ -1949,13 +1949,11 @@ namespace pbrto
     }
     */
     // Bounds2 Definition
+    // Bounds2 Definition
     template <typename T>
     class Bounds2
     {
     public:
-        static constexpr T MinNum = std::numeric_limits<T>::lowest( );
-        static constexpr T MaxNum = std::numeric_limits<T>::max( );
-
         // Bounds2 Public Members
         Point2<T> pMin;
         Point2<T> pMax;
@@ -1963,15 +1961,19 @@ namespace pbrto
         // Bounds2 Public Methods
 
         Bounds2( )
-            : pMin( MaxNum, MaxNum ), pMax( MinNum, MinNum )
-        { }
-        explicit Bounds2( const Point2<T>& p )
+        {
+            T minNum = std::numeric_limits<T>::lowest( );
+            T maxNum = std::numeric_limits<T>::max( );
+            pMin = Point2<T>( maxNum, maxNum );
+            pMax = Point2<T>( minNum, minNum );
+        }
+        explicit Bounds2( Point2<T> p )
             : pMin( p ), pMax( p )
         {
         }
 
         Bounds2( const Point2<T>& p1, const Point2<T>& p2 )
-            : pMin( Math::Min( p1, p2 ) ), pMax( Math::Max( p1, p2 ) )
+            : pMin( Min( p1, p2 ) ), pMax( Max( p1, p2 ) )
         {
         }
 
@@ -2015,13 +2017,9 @@ namespace pbrto
         {
             Vector2<T> diag = Diagonal( );
             if ( diag.x > diag.y )
-            {
                 return 0;
-            }
             else
-            {
                 return 1;
-            }
         }
 
         Point2<T> operator[]( int i ) const
@@ -2048,12 +2046,12 @@ namespace pbrto
             NDCHECK( corner >= 0 && corner < 4 );
             return Point2<T>( ( *this )[ ( corner & 1 ) ].x, ( *this )[ ( corner & 2 ) ? 1 : 0 ].y );
         }
-        Point2<T> Lerp( const Point2f& t ) const
+        Point2<T> Lerp( Point2f t ) const
         {
             return Point2<T>( pbrto::Lerp( t.x, pMin.x, pMax.x ),
                 pbrto::Lerp( t.y, pMin.y, pMax.y ) );
         }
-        Vector2<T> Offset( const Point2<T>& p ) const
+        Vector2<T> Offset( Point2<T> p ) const
         {
             Vector2<T> o = p - pMin;
             if ( pMax.x > pMin.x )
@@ -2068,10 +2066,7 @@ namespace pbrto
             *rad = Inside( *c, *this ) ? Distance( *c, pMax ) : 0;
         }
 
-        std::string ToString( ) const 
-        { 
-            return std::format( "[ {} - {} ]", pMin, pMax ); 
-        }
+        std::string ToString( ) const { return std::format( "[ {} - {} ]", pMin, pMax ); }
 
 
     };
@@ -2082,112 +2077,60 @@ namespace pbrto
     {
     public:
         // Bounds3 Public Members
-        using Traits = Point3<T>::Traits;
-        static constexpr T minNum = std::numeric_limits<T>::lowest( );
-        static constexpr T maxNum = std::numeric_limits<T>::max( );
-        Point3<T>::Simd pMin;
-        Point3<T>::Simd pMax;
+        Point3<T> pMin;
+        Point3<T> pMax;
         // Bounds3 Public Methods
+
         Bounds3( )
-            : pMin( maxNum, maxNum, maxNum ), pMax( minNum, minNum, minNum )
         {
+            T minNum = std::numeric_limits<T>::lowest( );
+            T maxNum = std::numeric_limits<T>::max( );
+            pMin = Point3<T>( maxNum, maxNum, maxNum );
+            pMax = Point3<T>( minNum, minNum, minNum );
         }
-        explicit Bounds3( const Point3<T>& p )
+
+        explicit Bounds3( Point3<T> p )
             : pMin( p ), pMax( p )
         {
         }
-        explicit Bounds3( const Point3<T>::Simd& p )
-            : pMin( p ), pMax( p )
+
+        Bounds3( Point3<T> p1, Point3<T> p2 )
+            : pMin( Min( p1, p2 ) ), pMax( Max( p1, p2 ) )
         {
         }
 
-
-        Bounds3( const Point3<T>& p1, const Point3<T>& p2 )
-            : pMin( Math::Min( p1, p2 ) ), pMax( Math::Max( p1, p2 ) )
-        {
-        }
-        Bounds3( const Point3<T>::Simd& p1, const Point3<T>::Simd& p2 )
-            : pMin( Math::Min( p1, p2 ) ), pMax( Math::Max( p1, p2 ) )
-        {
-        }
-
-
-        typename Point3<T>::Simd operator[]( size_t i ) const
+        Point3<T> operator[]( int i ) const
         {
             NDCHECK( i == 0 || i == 1 );
             return ( i == 0 ) ? pMin : pMax;
         }
-
-        typename Point3<T>::Simd& operator[]( size_t i )
+        Point3<T>& operator[]( int i )
         {
             NDCHECK( i == 0 || i == 1 );
             return ( i == 0 ) ? pMin : pMax;
         }
-        Point3<T>::Simd Corner( int corner ) const
+        Point3<T> Corner( int corner ) const
         {
             NDCHECK( corner >= 0 && corner < 8 );
-            switch ( corner )
-            {
-                case 0:
-                {
-                    return pMin;
-                }
-                break;
-                case 1:
-                {
-                    return Traits::Permute<4, 1, 2, 3>( pMin.simd, pMax.simd );
-                }
-                break;
-                case 2:
-                {
-                    return Traits::Permute<0, 5, 2, 3>( pMin.simd, pMax.simd );
-                }
-                break;
-                case 3:
-                {
-                    return Traits::Permute<4, 5, 2, 3>( pMin.simd, pMax.simd );
-                }
-                break;
-                case 4:
-                {
-                    return Traits::Permute<0, 1, 6, 3>( pMin.simd, pMax.simd );
-                }
-                break;
-                case 5:
-                {
-                    return Traits::Permute<4, 1, 6, 3>( pMin.simd, pMax.simd );
-                }
-                break;
-                case 6:
-                {
-                    return Traits::Permute<0, 5, 6, 3>( pMin.simd, pMax.simd );
-                }
-                break;
-                case 7:
-                {
-                    return pMax;
-                }
-                break;
-            }
-
-            return Traits::Zero( );
+            return Point3<T>( ( *this )[ ( corner & 1 ) ].x, ( *this )[ ( corner & 2 ) ? 1 : 0 ].y,
+                ( *this )[ ( corner & 4 ) ? 1 : 0 ].z );
         }
 
-        Vector3<T>::Simd Diagonal( ) const
+        Vector3<T> Diagonal( ) const
         {
             return pMax - pMin;
         }
 
         T SurfaceArea( ) const
         {
-            auto d = Diagonal( );
-            return 2.f * Traits::First( Traits::HSum( Traits::Mul( d.simd, Traits::Swizzle<3, 0, 2, 1>( d.simd ) ) ) );
+            Vector3<T> d = Diagonal( );
+            return 2 * ( d.x * d.y + d.x * d.z + d.y * d.z );
         }
 
         T Volume( ) const
         {
-            auto d = Diagonal( );
-            return Traits::First( Traits::HProd( d.simd ) );
+            Vector3<T> d = Diagonal( );
+            return d.x * d.y * d.z;
         }
 
         int MaxDimension( ) const
@@ -2202,24 +2145,28 @@ namespace pbrto
         }
 
 
-        Point3f::Simd Lerp( const Point3f::Simd& t ) const
+        Point3f Lerp( Point3f t ) const
         {
-            return Math::Lerp( t, pMin, pMax );
+            return Point3f( pbrto::Lerp( t.x, pMin.x, pMax.x ), pbrto::Lerp( t.y, pMin.y, pMax.y ),
+                pbrto::Lerp( t.z, pMin.z, pMax.z ) );
         }
 
-
-        Vector3f::Simd Offset( const Point3f::Simd& p ) const
+        Vector3f Offset( Point3f p ) const
         {
-            auto o = p - pMin;
-            auto oOverDiff = o / ( pMax - pMin );
-            return Traits::Select( o.simd, oOverDiff.simd, Traits::Greater( pMax.simd, pMin.simd ) );
+            Vector3f o = p - pMin;
+            if ( pMax.x > pMin.x )
+                o.x /= pMax.x - pMin.x;
+            if ( pMax.y > pMin.y )
+                o.y /= pMax.y - pMin.y;
+            if ( pMax.z > pMin.z )
+                o.z /= pMax.z - pMin.z;
+            return o;
         }
-
 
         void BoundingSphere( Point3<T>* center, Float* radius ) const
         {
-            * center = ( pMin + pMax ) / 2;
-            * radius = Inside( *center, *this ) ? ScalarDistance( *center, pMax ) : 0;
+            *center = ( pMin + pMax ) / 2;
+            *radius = Inside( *center, *this ) ? ScalarDistance( *center, pMax ) : 0;
         }
 
         bool IsEmpty( ) const
@@ -2252,8 +2199,12 @@ namespace pbrto
         {
             return b.pMin != pMin || b.pMax != pMax;
         }
-        bool IntersectP( const Point3f& o, const Vector3f& d, Float tMax = Infinity, Float* hitt0 = nullptr, Float* hitt1 = nullptr ) const;
-        bool IntersectP( const Point3f& o, const Vector3f& d, Float tMax, const Vector3f& invDir, const std::array<int, 3>& dirIsNeg ) const;
+
+        bool IntersectP( Point3f o, Vector3f d, Float tMax = Infinity, Float* hitt0 = nullptr, Float* hitt1 = nullptr ) const;
+        bool IntersectP( Point3f o, Vector3f d, Float tMax, Vector3f invDir, const std::array<int, 3>& dirIsNeg ) const;
+
+        std::string ToString( ) const { return std::format( "[ {} - {} ]", pMin, pMax ); }
+
 
     };
 
@@ -2265,16 +2216,11 @@ namespace pbrto
 
     class Bounds2iIterator : public std::forward_iterator_tag
     {
-        Point2i p;
-        const Bounds2i* bounds;
     public:
         Bounds2iIterator( const Bounds2i& b, const Point2i& pt )
             : p( pt ), bounds( &b )
-        { }
-
-        Bounds2iIterator( const Bounds2i& b, const Point2i::Simd& pt )
-            : p( pt ), bounds( &b )
-        { }
+        {
+        }
 
         Bounds2iIterator operator++( )
         {
@@ -2308,7 +2254,8 @@ namespace pbrto
                 ++p.y;
             }
         }
-        
+        Point2i p;
+        const Bounds2i* bounds;
     };
 
     // Bounds2 Inline Functions
@@ -2341,7 +2288,7 @@ namespace pbrto
     }
 
     template <typename T>
-    inline bool Inside( const Point2<T>& pt, const Bounds2<T>& b )
+    inline bool Inside( Point2<T> pt, const Bounds2<T>& b )
     {
         return (
             pt.x >= b.pMin.x &&
@@ -2361,13 +2308,9 @@ namespace pbrto
     }
 
     template <typename T>
-    inline bool InsideExclusive( const Point2<T>& pt, const Bounds2<T>& b )
+    inline bool InsideExclusive( Point2<T> pt, const Bounds2<T>& b )
     {
-        return (
-            pt.x >= b.pMin.x &&
-            pt.x < b.pMax.x &&
-            pt.y >= b.pMin.y &&
-            pt.y < b.pMax.y );
+        return ( pt.x >= b.pMin.x && pt.x < b.pMax.x && pt.y >= b.pMin.y && pt.y < b.pMax.y );
     }
 
     template <typename T, typename U>
@@ -2381,7 +2324,7 @@ namespace pbrto
 
     // Bounds3 Inline Functions
     template <typename T>
-    inline Bounds3<T> Union( const Bounds3<T>& b, const Point3<T>& p )
+    PBRT_CPU_GPU inline Bounds3<T> Union( const Bounds3<T>& b, Point3<T> p )
     {
         Bounds3<T> ret;
         ret.pMin = Min( b.pMin, p );
@@ -2389,16 +2332,8 @@ namespace pbrto
         return ret;
     }
 
-    inline Bounds3<Float> Union( const Bounds3<Float>& b, const Point3<Float>::Simd& p )
-    {
-        Bounds3<Float> ret;
-        ret.pMin = Min( b.pMin, p );
-        ret.pMax = Max( b.pMax, p );
-        return ret;
-    }
-
     template <typename T>
-    inline Bounds3<T> Union( const Bounds3<T>& b1, const Bounds3<T>& b2 )
+    PBRT_CPU_GPU inline Bounds3<T> Union( const Bounds3<T>& b1, const Bounds3<T>& b2 )
     {
         Bounds3<T> ret;
         ret.pMin = Min( b1.pMin, b2.pMin );
@@ -2407,7 +2342,7 @@ namespace pbrto
     }
 
     template <typename T>
-    inline Bounds3<T> Intersect( const Bounds3<T>& b1, const Bounds3<T>& b2 )
+    PBRT_CPU_GPU inline Bounds3<T> Intersect( const Bounds3<T>& b1, const Bounds3<T>& b2 )
     {
         Bounds3<T> b;
         b.pMin = Max( b1.pMin, b2.pMin );
@@ -2416,80 +2351,57 @@ namespace pbrto
     }
 
     template <typename T>
-    inline bool Overlaps( const Bounds3<T>& b1, const Bounds3<T>& b2 )
+    PBRT_CPU_GPU inline bool Overlaps( const Bounds3<T>& b1, const Bounds3<T>& b2 )
     {
-        Point3<T> b1pMin( b1.pMin );
-        Point3<T> b1pMax( b1.pMax );
-        Point3<T> b2pMin( b1.pMin );
-        Point3<T> b2pMax( b1.pMax );
-
-        bool x = ( b1pMax.x >= b2pMin.x ) && ( b1pMin.x <= b2pMax.x );
-        bool y = ( b1pMax.y >= b2pMin.y ) && ( b1pMin.y <= b2pMax.y );
-        bool z = ( b1pMax.z >= b2pMin.z ) && ( b1pMin.z <= b2pMax.z );
+        bool x = ( b1.pMax.x >= b2.pMin.x ) && ( b1.pMin.x <= b2.pMax.x );
+        bool y = ( b1.pMax.y >= b2.pMin.y ) && ( b1.pMin.y <= b2.pMax.y );
+        bool z = ( b1.pMax.z >= b2.pMin.z ) && ( b1.pMin.z <= b2.pMax.z );
         return ( x && y && z );
     }
 
     template <typename T>
-    inline bool Inside( const Point3<T>& p, const Bounds3<T>& b )
+    PBRT_CPU_GPU inline bool Inside( Point3<T> p, const Bounds3<T>& b )
     {
-        Point3<T> pMin( b.pMin );
-        Point3<T> pMax( b.pMax );
-        return ( 
-            p.x >= pMin.x &&
-            p.x <= pMax.x &&
-            p.y >= pMin.y &&
-            p.y <= pMax.y &&
-            p.z >= pMin.z &&
-            p.z <= pMax.z );
+        return ( p.x >= b.pMin.x && p.x <= b.pMax.x && p.y >= b.pMin.y && p.y <= b.pMax.y &&
+            p.z >= b.pMin.z && p.z <= b.pMax.z );
     }
 
     template <typename T>
-    inline bool InsideExclusive( const Point3<T>& p, const Bounds3<T>& b )
+    PBRT_CPU_GPU inline bool InsideExclusive( Point3<T> p, const Bounds3<T>& b )
     {
-        Point3<T> pMin( b.pMin );
-        Point3<T> pMax( b.pMax );
-        return ( 
-            p.x >= pMin.x &&
-            p.x < pMax.x &&
-            p.y >= pMin.y &&
-            p.y < pMax.y &&
-            p.z >= pMin.z &&
-            p.z < pMax.z );
+        return ( p.x >= b.pMin.x && p.x < b.pMax.x && p.y >= b.pMin.y && p.y < b.pMax.y &&
+            p.z >= b.pMin.z && p.z < b.pMax.z );
     }
 
     template <typename T, typename U>
-    inline auto DistanceSquared( const Point3<T>& p, const Bounds3<U>& b )
+    PBRT_CPU_GPU inline auto DistanceSquared( Point3<T> p, const Bounds3<U>& b )
     {
         using TDist = decltype( T{} - U{} );
-
-        Point3<T> pMin( b.pMin );
-        Point3<T> pMax( b.pMax );
-
-        TDist dx = Math::Max<TDist>( 0.f, pMin.x - p.x, p.x - pMax.x );
-        TDist dy = Math::Max<TDist>( 0.f, pMin.y - p.y, p.y - pMax.y );
-        TDist dz = Math::Max<TDist>( 0.f, pMin.z - p.z, p.z - pMax.z );
+        TDist dx = std::max<TDist>( { 0, b.pMin.x - p.x, p.x - b.pMax.x } );
+        TDist dy = std::max<TDist>( { 0, b.pMin.y - p.y, p.y - b.pMax.y } );
+        TDist dz = std::max<TDist>( { 0, b.pMin.z - p.z, p.z - b.pMax.z } );
         return Sqr( dx ) + Sqr( dy ) + Sqr( dz );
     }
 
     template <typename T, typename U>
-    inline auto Distance( const Point3<T>& p, const Bounds3<U>& b )
+    PBRT_CPU_GPU inline auto Distance( Point3<T> p, const Bounds3<U>& b )
     {
         auto dist2 = DistanceSquared( p, b );
         using TDist = typename TupleLength<decltype( dist2 )>::type;
-        return Math::Sqrt( TDist( dist2 ) );
+        return std::sqrt( TDist( dist2 ) );
     }
 
     template <typename T, typename U>
-    inline Bounds3<T> Expand( const Bounds3<T>& b, U delta )
+    PBRT_CPU_GPU inline Bounds3<T> Expand( const Bounds3<T>& b, U delta )
     {
         Bounds3<T> ret;
-        ret.pMin = b.pMin - Vector3<T>::Simd( delta, delta, delta );
-        ret.pMax = b.pMax + Vector3<T>::Simd( delta, delta, delta );
+        ret.pMin = b.pMin - Vector3<T>( delta, delta, delta );
+        ret.pMax = b.pMax + Vector3<T>( delta, delta, delta );
         return ret;
     }
 
     template <typename T>
-    inline bool Bounds3<T>::IntersectP( const Point3f& o, const Vector3f& d, Float tMax, Float* hitt0, Float* hitt1 ) const
+    PBRT_CPU_GPU inline bool Bounds3<T>::IntersectP( Point3f o, Vector3f d, Float tMax, Float* hitt0, Float* hitt1 ) const
     {
         Float t0 = 0, t1 = tMax;
         for ( int i = 0; i < 3; ++i )
@@ -2517,15 +2429,14 @@ namespace pbrto
     }
 
     template <typename T>
-    inline bool Bounds3<T>::IntersectP( const Point3f& o, const Vector3f& d, Float raytMax, const Vector3f& invDir, const std::array<int, 3>& dirIsNeg ) const
+    PBRT_CPU_GPU inline bool Bounds3<T>::IntersectP( Point3f o, Vector3f d, Float raytMax, Vector3f invDir, const std::array<int, 3>& dirIsNeg ) const
     {
         const Bounds3f& bounds = *this;
         // Check for ray intersection against $x$ and $y$ slabs
-        Float tMin = ( bounds[ dirIsNeg[ 0 ] ].x() - o.x ) * invDir.x;
-        Float tMax = ( bounds[ 1 - dirIsNeg[ 0 ] ].x( ) - o.x ) * invDir.x;
-        Float tyMin = ( bounds[ dirIsNeg[ 1 ] ].y( ) - o.y ) * invDir.y;
-        Float tyMax = ( bounds[ 1 - dirIsNeg[ 1 ] ].y( ) - o.y ) * invDir.y;
-
+        Float tMin = ( bounds[ dirIsNeg[ 0 ] ].x - o.x ) * invDir.x;
+        Float tMax = ( bounds[ 1 - dirIsNeg[ 0 ] ].x - o.x ) * invDir.x;
+        Float tyMin = ( bounds[ dirIsNeg[ 1 ] ].y - o.y ) * invDir.y;
+        Float tyMax = ( bounds[ 1 - dirIsNeg[ 1 ] ].y - o.y ) * invDir.y;
         // Update _tMax_ and _tyMax_ to ensure robust bounds intersection
         tMax *= 1 + 2 * gamma( 3 );
         tyMax *= 1 + 2 * gamma( 3 );
@@ -2538,8 +2449,8 @@ namespace pbrto
             tMax = tyMax;
 
         // Check for ray intersection against $z$ slab
-        Float tzMin = ( bounds[ dirIsNeg[ 2 ] ].z( ) - o.z ) * invDir.z;
-        Float tzMax = ( bounds[ 1 - dirIsNeg[ 2 ] ].z( ) - o.z ) * invDir.z;
+        Float tzMin = ( bounds[ dirIsNeg[ 2 ] ].z - o.z ) * invDir.z;
+        Float tzMax = ( bounds[ 1 - dirIsNeg[ 2 ] ].z - o.z ) * invDir.z;
         // Update _tzMax_ to ensure robust bounds intersection
         tzMax *= 1 + 2 * gamma( 3 );
 
@@ -2553,12 +2464,14 @@ namespace pbrto
         return ( tMin < raytMax ) && ( tMax > 0 );
     }
 
-    inline Bounds2iIterator begin( const Bounds2i& b )
+    PBRT_CPU_GPU
+        inline Bounds2iIterator begin( const Bounds2i& b )
     {
         return Bounds2iIterator( b, b.pMin );
     }
 
-    inline Bounds2iIterator end( const Bounds2i& b )
+    PBRT_CPU_GPU
+        inline Bounds2iIterator end( const Bounds2i& b )
     {
         // Normally, the ending point is at the minimum x value and one past
         // the last valid y value.
@@ -2567,14 +2480,12 @@ namespace pbrto
         // equal the start point so that any attempt to iterate over the bounds
         // exits out immediately.
         if ( b.pMin.x >= b.pMax.x || b.pMin.y >= b.pMax.y )
-        {
             pEnd = b.pMin;
-        }
         return Bounds2iIterator( b, pEnd );
     }
 
     template <typename T>
-    inline Bounds2<T> Union( const Bounds2<T>& b, const Point2<T>& p )
+    PBRT_CPU_GPU inline Bounds2<T> Union( const Bounds2<T>& b, Point2<T> p )
     {
         // Be careful to not run the two-point Bounds constructor.
         Bounds2<T> ret;

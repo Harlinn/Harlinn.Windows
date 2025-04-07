@@ -1,4 +1,3 @@
-#pragma once
 /*
    Copyright 2024-2025 Espen Harlinn
 
@@ -15,25 +14,20 @@
    limitations under the License.
 */
 
-#include <HCCVectorMath.h>
-#include <HCCString.h>
-#include <HCCTestUtils.h>
-#include <pbrto/util/vecmath.h>
-#include <pbrto/util/transform.h>
-#include <DirectXMath.h>
+#include <HCCApplication.h>
 
+#define BOOST_TEST_MODULE Harlinn.Common.Core.Tests
+#define BOOST_TEST_NO_MAIN
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
-#include <HUTFixture.h>
-#include <HUTVectorMath.h>
 
-template<typename ValueT, size_t N >
-using RandomGenerator = Harlinn::Common::Core::Test::Generators::RandomGenerator<ValueT, N>;
-
-using Harlinn::Common::Core::Test::Deviation;
-
-
-
-
+int main( int argc, char* argv[ ], char* envp[ ] )
+{
+    auto application = std::make_shared<Harlinn::Common::Core::Application>( );
+    application->Start( );
+    auto result = boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
+    application->Stop( );
+    return result;
+}
 
