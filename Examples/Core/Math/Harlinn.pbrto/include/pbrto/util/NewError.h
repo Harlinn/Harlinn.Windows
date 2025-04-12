@@ -24,6 +24,7 @@
 // SPDX: Apache-2.0
 
 #include <pbrto/NewPbrt.h>
+#include <pbrto/util/NewPrint.h>
 #include <pbrto/util/NewPStd.h>
 
 
@@ -39,69 +40,68 @@ namespace pbrto
     {
         FileLoc( ) = default;
         FileLoc( std::string_view filename ) : filename( filename ) {}
+        PBRTO_EXPORT
         std::string ToString( ) const;
 
         std::string_view filename;
         int line = 1, column = 0;
     };
 
-    PBRTO_EXPORT void SuppressErrorMessages( );
+    PBRTO_EXPORT
+    void SuppressErrorMessages( );
 
     // Error Reporting Function Declarations
-    PBRTO_EXPORT void Warning( const FileLoc* loc, const char* message );
-    PBRTO_EXPORT void Error( const FileLoc* loc, const char* message );
-    [[noreturn]] PBRTO_EXPORT void ErrorExit( const FileLoc* loc, const char* message );
+    PBRTO_EXPORT
+    void Warning( const FileLoc* loc, const char* message );
+    PBRTO_EXPORT
+    void Error( const FileLoc* loc, const char* message );
 
-    /*
+    [[noreturn]]
+    void PBRTO_EXPORT
+    ErrorExit( const FileLoc* loc, const char* message );
+
     template <typename... Args>
     inline void Warning( const char* fmt, Args &&...args );
     template <typename... Args>
     inline void Error( const char* fmt, Args &&...args );
     template <typename... Args>
     [[noreturn]] inline void ErrorExit( const char* fmt, Args &&...args );
-    */
 
     // Error Reporting Inline Functions
     template <typename... Args>
-    inline void Warning( const FileLoc* loc, const std::format_string<Args...> fmt, Args&&... args )
+    inline void Warning( const FileLoc* loc, const char* fmt, Args &&...args )
     {
-        auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-        Warning( loc, s.c_str() );
+        Warning( loc, StringPrintf( fmt, std::forward<Args>( args )... ).c_str( ) );
     }
 
     template <typename... Args>
-    inline void Warning( const std::format_string<Args...> fmt, Args&&... args )
+    inline void Warning( const char* fmt, Args &&...args )
     {
-        auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-        Warning( nullptr, s.c_str( ) );
+        Warning( nullptr, StringPrintf( fmt, std::forward<Args>( args )... ).c_str( ) );
     }
 
     template <typename... Args>
-    inline void Error( const std::format_string<Args...> fmt, Args&&... args )
+    inline void Error( const char* fmt, Args &&...args )
     {
-        auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-        Error( nullptr, s.c_str( ) );
+        Error( nullptr, StringPrintf( fmt, std::forward<Args>( args )... ).c_str( ) );
     }
 
     template <typename... Args>
-    inline void Error( const FileLoc* loc, const std::format_string<Args...> fmt, Args&&... args )
+    inline void Error( const FileLoc* loc, const char* fmt, Args &&...args )
     {
-        auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-        Error( loc, s.c_str( ) );
+        Error( loc, StringPrintf( fmt, std::forward<Args>( args )... ).c_str( ) );
     }
 
     template <typename... Args>
-    [[noreturn]] inline void ErrorExit( const std::format_string<Args...> fmt, Args&&... args )
+    [[noreturn]] inline void ErrorExit( const char* fmt, Args &&...args )
     {
-        auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-        ErrorExit( nullptr, s.c_str( ) );
+        ErrorExit( nullptr, StringPrintf( fmt, std::forward<Args>( args )... ).c_str( ) );
     }
 
     template <typename... Args>
-    [[noreturn]] inline void ErrorExit( const FileLoc* loc, const std::format_string<Args...> fmt, Args&&... args )
+    [[noreturn]] inline void ErrorExit( const FileLoc* loc, const char* fmt, Args &&...args )
     {
-        auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-        ErrorExit( loc, s.c_str( ) );
+        ErrorExit( loc, StringPrintf( fmt, std::forward<Args>( args )... ).c_str( ) );
     }
 
     PBRTO_EXPORT int LastError( );

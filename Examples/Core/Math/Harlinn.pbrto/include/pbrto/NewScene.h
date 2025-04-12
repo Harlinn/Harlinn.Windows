@@ -61,7 +61,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ SceneEntity name: {} parameters: {} loc: {} ]", name, parameters, loc );
+            return StringPrintf( "[ SceneEntity name: %s parameters: %s loc: %s ]", name,
+                parameters, loc );
         }
 
         // SceneEntity Public Members
@@ -82,7 +83,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ TransformedSeneEntity name: {} parameters: {} loc: {} renderFromObject: {} ]",
+            return StringPrintf( "[ TransformedSeneEntity name: %s parameters: %s loc: %s "
+                "renderFromObject: %s ]",
                 name, parameters, loc, renderFromObject );
         }
 
@@ -105,7 +107,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ CameraSeneEntity name: {} parameters: {} loc: {} cameraTransform: {} medium: {} ]",
+            return StringPrintf( "[ CameraSeneEntity name: %s parameters: %s loc: %s "
+                "cameraTransform: %s medium: %s ]",
                 name, parameters, loc, cameraTransform, medium );
         }
 
@@ -135,11 +138,11 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format(
-                "[ ShapeSeneEntity name: {} parameters: {} loc: {} "
-                "renderFromObject: {} objectFromRender: {} reverseOrientation: {} "
-                "materialIndex: {} materialName: {} lightIndex: {} "
-                "insideMedium: {} outsideMedium: {}]",
+            return StringPrintf(
+                "[ ShapeSeneEntity name: %s parameters: %s loc: %s "
+                "renderFromObject: %s objectFromRender: %s reverseOrientation: %s "
+                "materialIndex: %d materialName: %s lightIndex: %d "
+                "insideMedium: %s outsideMedium: %s]",
                 name, parameters, loc, *renderFromObject, *objectFromRender,
                 reverseOrientation, materialIndex, materialName, lightIndex, insideMedium,
                 outsideMedium );
@@ -175,10 +178,10 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format(
-                "[ AnimatedShapeSeneEntity name: {} parameters: {} loc: {} "
-                "renderFromObject: {} reverseOrientation: {} materialIndex: {} "
-                "materialName: {} insideMedium: {} outsideMedium: {}]",
+            return StringPrintf(
+                "[ AnimatedShapeSeneEntity name: %s parameters: %s loc: %s "
+                "renderFromObject: %s reverseOrientation: %s materialIndex: %d "
+                "materialName: %s insideMedium: %s outsideMedium: %s]",
                 name, parameters, loc, renderFromObject, reverseOrientation, materialIndex,
                 materialName, insideMedium, outsideMedium );
         }
@@ -201,8 +204,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ InstanceDefinitionSceneEntity name: {} loc: {} "
-                " shapes: {} animatedShapes: {} ]",
+            return StringPrintf( "[ InstanceDefinitionSceneEntity name: %s loc: %s "
+                " shapes: %s animatedShapes: %s ]",
                 name, loc, shapes, animatedShapes );
         }
 
@@ -227,8 +230,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ LightSeneEntity name: {} parameters: {} loc: {} "
-                "renderFromObject: {} medium: {} ]",
+            return StringPrintf( "[ LightSeneEntity name: %s parameters: %s loc: %s "
+                "renderFromObject: %s medium: %s ]",
                 name, parameters, loc, renderFromObject, medium );
         }
 
@@ -256,9 +259,9 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format(
-                "[ InstanceSeneEntity name: {} loc: {} "
-                "renderFromInstanceAnim: {} renderFromInstance: {} ]",
+            return StringPrintf(
+                "[ InstanceSeneEntity name: %s loc: %s "
+                "renderFromInstanceAnim: %s renderFromInstance: %s ]",
                 name, loc,
                 renderFromInstanceAnim ? renderFromInstanceAnim->ToString( )
                 : std::string( "nullptr" ),
@@ -314,24 +317,38 @@ namespace pbrto
     {
     public:
         // BasicScene Public Methods
-        PBRTO_EXPORT BasicScene( );
+        PBRTO_EXPORT
+            BasicScene( );
 
-        PBRTO_EXPORT void SetOptions( SceneEntity filter, SceneEntity film, CameraSceneEntity camera,
-            SceneEntity sampler, SceneEntity integrator, SceneEntity accelerator );
+        PBRTO_EXPORT
+            void SetOptions( SceneEntity filter, SceneEntity film, CameraSceneEntity camera,
+                SceneEntity sampler, SceneEntity integrator, SceneEntity accelerator );
 
-        PBRTO_EXPORT void AddNamedMaterial( std::string name, SceneEntity material );
-        PBRTO_EXPORT int AddMaterial( SceneEntity material );
-        PBRTO_EXPORT void AddMedium( MediumSceneEntity medium );
-        PBRTO_EXPORT void AddFloatTexture( std::string name, TextureSceneEntity texture );
-        PBRTO_EXPORT void AddSpectrumTexture( std::string name, TextureSceneEntity texture );
-        PBRTO_EXPORT void AddLight( LightSceneEntity light );
-        PBRTO_EXPORT int AddAreaLight( SceneEntity light );
-        PBRTO_EXPORT void AddShapes( pstdo::span<ShapeSceneEntity> shape );
-        PBRTO_EXPORT void AddAnimatedShape( AnimatedShapeSceneEntity shape );
-        PBRTO_EXPORT void AddInstanceDefinition( InstanceDefinitionSceneEntity instance );
-        PBRTO_EXPORT void AddInstanceUses( pstdo::span<InstanceSceneEntity> in );
+        PBRTO_EXPORT
+            void AddNamedMaterial( std::string name, SceneEntity material );
+        PBRTO_EXPORT
+            int AddMaterial( SceneEntity material );
+        PBRTO_EXPORT
+            void AddMedium( MediumSceneEntity medium );
+        PBRTO_EXPORT
+            void AddFloatTexture( std::string name, TextureSceneEntity texture );
+        PBRTO_EXPORT
+            void AddSpectrumTexture( std::string name, TextureSceneEntity texture );
+        PBRTO_EXPORT
+            void AddLight( LightSceneEntity light );
+        PBRTO_EXPORT
+            int AddAreaLight( SceneEntity light );
+        PBRTO_EXPORT
+            void AddShapes( pstdo::span<ShapeSceneEntity> shape );
+        PBRTO_EXPORT
+            void AddAnimatedShape( AnimatedShapeSceneEntity shape );
+        PBRTO_EXPORT
+            void AddInstanceDefinition( InstanceDefinitionSceneEntity instance );
+        PBRTO_EXPORT
+            void AddInstanceUses( pstdo::span<InstanceSceneEntity> in );
 
-        PBRTO_EXPORT void Done( );
+        PBRTO_EXPORT
+            void Done( );
 
         Camera GetCamera( )
         {
@@ -361,28 +378,34 @@ namespace pbrto
             return sampler;
         }
 
-        PBRTO_EXPORT void CreateMaterials( const NamedTextures& sceneTextures,
-            std::map<std::string, Material>* namedMaterials,
-            std::vector<Material>* materials );
+        PBRTO_EXPORT
+            void CreateMaterials( const NamedTextures& sceneTextures,
+                std::map<std::string, Material>* namedMaterials,
+                std::vector<Material>* materials );
 
-        PBRTO_EXPORT std::vector<Light> CreateLights(
-            const NamedTextures& textures,
-            std::map<int, pstdo::vector<Light>*>* shapeIndexToAreaLights );
+        PBRTO_EXPORT
+            std::vector<Light> CreateLights(
+                const NamedTextures& textures,
+                std::map<int, pstdo::vector<Light>*>* shapeIndexToAreaLights );
 
-        PBRTO_EXPORT std::map<std::string, Medium> CreateMedia( );
+        PBRTO_EXPORT
+            std::map<std::string, Medium> CreateMedia( );
 
-        PBRTO_EXPORT Primitive CreateAggregate(
-            const NamedTextures& textures,
-            const std::map<int, pstdo::vector<Light>*>& shapeIndexToAreaLights,
-            const std::map<std::string, Medium>& media,
-            const std::map<std::string, Material>& namedMaterials,
-            const std::vector<Material>& materials );
+        PBRTO_EXPORT
+            Primitive CreateAggregate(
+                const NamedTextures& textures,
+                const std::map<int, pstdo::vector<Light>*>& shapeIndexToAreaLights,
+                const std::map<std::string, Medium>& media,
+                const std::map<std::string, Material>& namedMaterials,
+                const std::vector<Material>& materials );
 
-        PBRTO_EXPORT std::unique_ptr<Integrator> CreateIntegrator( Camera camera, Sampler sampler,
-            Primitive accel,
-            std::vector<Light> lights ) const;
+        PBRTO_EXPORT
+            std::unique_ptr<Integrator> CreateIntegrator( Camera camera, Sampler sampler,
+                Primitive accel,
+                std::vector<Light> lights ) const;
 
-        PBRTO_EXPORT NamedTextures CreateTextures( );
+        PBRTO_EXPORT
+            NamedTextures CreateTextures( );
 
         // BasicScene Public Members
         SceneEntity integrator, accelerator;
@@ -394,9 +417,11 @@ namespace pbrto
 
     private:
         // BasicScene Private Methods
-        Medium GetMedium( const std::string& name, const FileLoc* loc );
+        PBRTO_EXPORT
+            Medium GetMedium( const std::string& name, const FileLoc* loc );
 
-        void startLoadingNormalMaps( const ParameterDictionary& parameters );
+        PBRTO_EXPORT
+            void startLoadingNormalMaps( const ParameterDictionary& parameters );
 
         // BasicScene Private Members
         AsyncJob<Sampler>* samplerJob = nullptr;
@@ -441,58 +466,101 @@ namespace pbrto
     {
     public:
         // BasicSceneBuilder Public Methods
-        PBRTO_EXPORT BasicSceneBuilder( BasicScene* scene );
-        PBRTO_EXPORT void Option( const std::string& name, const std::string& value, FileLoc loc );
-        PBRTO_EXPORT void Identity( FileLoc loc );
-        PBRTO_EXPORT void Translate( Float dx, Float dy, Float dz, FileLoc loc );
-        PBRTO_EXPORT void Rotate( Float angle, Float ax, Float ay, Float az, FileLoc loc );
-        PBRTO_EXPORT void Scale( Float sx, Float sy, Float sz, FileLoc loc );
-        PBRTO_EXPORT void LookAt( Float ex, Float ey, Float ez, Float lx, Float ly, Float lz, Float ux,
-            Float uy, Float uz, FileLoc loc );
-        PBRTO_EXPORT void ConcatTransform( Float transform[ 16 ], FileLoc loc );
-        PBRTO_EXPORT void Transform( Float transform[ 16 ], FileLoc loc );
-        PBRTO_EXPORT void CoordinateSystem( const std::string&, FileLoc loc );
-        PBRTO_EXPORT void CoordSysTransform( const std::string&, FileLoc loc );
-        PBRTO_EXPORT void ActiveTransformAll( FileLoc loc );
-        PBRTO_EXPORT void ActiveTransformEndTime( FileLoc loc );
-        PBRTO_EXPORT void ActiveTransformStartTime( FileLoc loc );
-        PBRTO_EXPORT void TransformTimes( Float start, Float end, FileLoc loc );
-        PBRTO_EXPORT void ColorSpace( const std::string& n, FileLoc loc );
-        PBRTO_EXPORT void PixelFilter( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Film( const std::string& type, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Sampler( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Accelerator( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Integrator( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Camera( const std::string&, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void MakeNamedMedium( const std::string& name, ParsedParameterVector params,
-            FileLoc loc );
-        PBRTO_EXPORT void MediumInterface( const std::string& insideName, const std::string& outsideName,
-            FileLoc loc );
-        PBRTO_EXPORT void WorldBegin( FileLoc loc );
-        PBRTO_EXPORT void AttributeBegin( FileLoc loc );
-        PBRTO_EXPORT void AttributeEnd( FileLoc loc );
-        PBRTO_EXPORT void Attribute( const std::string& target, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Texture( const std::string& name, const std::string& type,
-            const std::string& texname, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Material( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void MakeNamedMaterial( const std::string& name, ParsedParameterVector params,
-            FileLoc loc );
-        PBRTO_EXPORT void NamedMaterial( const std::string& name, FileLoc loc );
-        PBRTO_EXPORT void LightSource( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void AreaLightSource( const std::string& name, ParsedParameterVector params,
-            FileLoc loc );
-        PBRTO_EXPORT void Shape( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void ReverseOrientation( FileLoc loc );
-        PBRTO_EXPORT void ObjectBegin( const std::string& name, FileLoc loc );
-        PBRTO_EXPORT void ObjectEnd( FileLoc loc );
-        PBRTO_EXPORT void ObjectInstance( const std::string& name, FileLoc loc );
+        PBRTO_EXPORT
+            BasicSceneBuilder( BasicScene* scene );
+        PBRTO_EXPORT
+            void Option( const std::string& name, const std::string& value, FileLoc loc );
+        PBRTO_EXPORT
+            void Identity( FileLoc loc );
+        PBRTO_EXPORT
+            void Translate( Float dx, Float dy, Float dz, FileLoc loc );
+        PBRTO_EXPORT
+            void Rotate( Float angle, Float ax, Float ay, Float az, FileLoc loc );
+        PBRTO_EXPORT
+            void Scale( Float sx, Float sy, Float sz, FileLoc loc );
+        PBRTO_EXPORT
+            void LookAt( Float ex, Float ey, Float ez, Float lx, Float ly, Float lz, Float ux,
+                Float uy, Float uz, FileLoc loc );
+        PBRTO_EXPORT
+            void ConcatTransform( Float transform[ 16 ], FileLoc loc );
+        PBRTO_EXPORT
+            void Transform( Float transform[ 16 ], FileLoc loc );
+        PBRTO_EXPORT
+            void CoordinateSystem( const std::string&, FileLoc loc );
+        PBRTO_EXPORT
+            void CoordSysTransform( const std::string&, FileLoc loc );
+        PBRTO_EXPORT
+            void ActiveTransformAll( FileLoc loc );
+        PBRTO_EXPORT
+            void ActiveTransformEndTime( FileLoc loc );
+        PBRTO_EXPORT
+            void ActiveTransformStartTime( FileLoc loc );
+        PBRTO_EXPORT
+            void TransformTimes( Float start, Float end, FileLoc loc );
+        PBRTO_EXPORT
+            void ColorSpace( const std::string& n, FileLoc loc );
+        PBRTO_EXPORT
+            void PixelFilter( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Film( const std::string& type, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Sampler( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Accelerator( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Integrator( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Camera( const std::string&, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void MakeNamedMedium( const std::string& name, ParsedParameterVector params,
+                FileLoc loc );
+        PBRTO_EXPORT
+            void MediumInterface( const std::string& insideName, const std::string& outsideName,
+                FileLoc loc );
+        PBRTO_EXPORT
+            void WorldBegin( FileLoc loc );
+        PBRTO_EXPORT
+            void AttributeBegin( FileLoc loc );
+        PBRTO_EXPORT
+            void AttributeEnd( FileLoc loc );
+        PBRTO_EXPORT
+            void Attribute( const std::string& target, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Texture( const std::string& name, const std::string& type,
+                const std::string& texname, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Material( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void MakeNamedMaterial( const std::string& name, ParsedParameterVector params,
+                FileLoc loc );
+        PBRTO_EXPORT
+            void NamedMaterial( const std::string& name, FileLoc loc );
+        PBRTO_EXPORT
+            void LightSource( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void AreaLightSource( const std::string& name, ParsedParameterVector params,
+                FileLoc loc );
+        PBRTO_EXPORT
+            void Shape( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void ReverseOrientation( FileLoc loc );
+        PBRTO_EXPORT
+            void ObjectBegin( const std::string& name, FileLoc loc );
+        PBRTO_EXPORT
+            void ObjectEnd( FileLoc loc );
+        PBRTO_EXPORT
+            void ObjectInstance( const std::string& name, FileLoc loc );
 
-        PBRTO_EXPORT void EndOfFiles( );
+        PBRTO_EXPORT
+            void EndOfFiles( );
 
-        PBRTO_EXPORT BasicSceneBuilder* CopyForImport( );
-        PBRTO_EXPORT void MergeImported( BasicSceneBuilder* );
+        PBRTO_EXPORT
+            BasicSceneBuilder* CopyForImport( );
+        PBRTO_EXPORT
+            void MergeImported( BasicSceneBuilder* );
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        PBRTO_EXPORT
+            std::string ToString( ) const;
 
     private:
         // BasicSceneBuilder::GraphicsState Definition

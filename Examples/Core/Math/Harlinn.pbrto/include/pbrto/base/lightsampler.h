@@ -11,45 +11,40 @@
 
 #include <string>
 
-namespace pbrt
-{
+namespace pbrt {
 
-    // SampledLight Definition
-    struct SampledLight
-    {
-        Light light;
-        Float p = 0;
-        std::string ToString( ) const;
-    };
+// SampledLight Definition
+struct SampledLight {
+    Light light;
+    Float p = 0;
+    std::string ToString() const;
+};
 
-    class UniformLightSampler;
-    class PowerLightSampler;
-    class BVHLightSampler;
-    class ExhaustiveLightSampler;
+class UniformLightSampler;
+class PowerLightSampler;
+class BVHLightSampler;
+class ExhaustiveLightSampler;
 
-    // LightSampler Definition
-    class LightSampler : public TaggedPointer<UniformLightSampler, PowerLightSampler, ExhaustiveLightSampler, BVHLightSampler>
-    {
-    public:
-        // LightSampler Interface
-        using TaggedPointer::TaggedPointer;
+// LightSampler Definition
+class LightSampler : public TaggedPointer<UniformLightSampler, PowerLightSampler,
+                                          ExhaustiveLightSampler, BVHLightSampler> {
+  public:
+    // LightSampler Interface
+    using TaggedPointer::TaggedPointer;
 
-        static LightSampler Create( const std::string& name, pstd::span<const Light> lights, Allocator alloc );
+    static LightSampler Create(const std::string &name, pstd::span<const Light> lights,
+                               Allocator alloc);
 
-        std::string ToString( ) const;
+    std::string ToString() const;
 
-        PBRT_CPU_GPU 
-        inline pstd::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const;
+    PBRT_CPU_GPU inline pstd::optional<SampledLight> Sample(const LightSampleContext &ctx,
+                                                            Float u) const;
 
-        PBRT_CPU_GPU 
-        inline Float PMF( const LightSampleContext& ctx, Light light ) const;
+    PBRT_CPU_GPU inline Float PMF(const LightSampleContext &ctx, Light light) const;
 
-        PBRT_CPU_GPU 
-        inline pstd::optional<SampledLight> Sample( Float u ) const;
-
-        PBRT_CPU_GPU 
-        inline Float PMF( Light light ) const;
-    };
+    PBRT_CPU_GPU inline pstd::optional<SampledLight> Sample(Float u) const;
+    PBRT_CPU_GPU inline Float PMF(Light light) const;
+};
 
 }  // namespace pbrt
 

@@ -41,12 +41,12 @@ namespace pbrto
 
     std::string RGB::ToString( ) const
     {
-        return std::format( "[ {} {} {} ]", r, g, b );
+        return StringPrintf( "[ %f %f %f ]", r, g, b );
     }
 
     std::string RGBSigmoidPolynomial::ToString( ) const
     {
-        return std::format( "[ RGBSigmoidPolynomial c0: {} c1: {} c2: {} ]", c0, c1, c2 );
+        return StringPrintf( "[ RGBSigmoidPolynomial c0: %f c1: %f c2: %f ]", c0, c1, c2 );
     }
 
     // RGBToSpectrumTable Method Definitions
@@ -57,10 +57,9 @@ namespace pbrto
 
         // Handle uniform _rgb_ values
         if ( rgb[ 0 ] == rgb[ 1 ] && rgb[ 1 ] == rgb[ 2 ] )
-        {
             return RGBSigmoidPolynomial( 0, 0,
-                ( rgb[ 0 ] - .5f ) / Math::Sqrt( rgb[ 0 ] * ( 1 - rgb[ 0 ] ) ) );
-        }
+                ( rgb[ 0 ] - .5f ) / std::sqrt( rgb[ 0 ] * ( 1 - rgb[ 0 ] ) ) );
+
         // Find maximum component and compute remapped component values
         int maxc =
             ( rgb[ 0 ] > rgb[ 1 ] ) ? ( ( rgb[ 0 ] > rgb[ 2 ] ) ? 0 : 2 ) : ( ( rgb[ 1 ] > rgb[ 2 ] ) ? 1 : 2 );
@@ -202,23 +201,25 @@ namespace pbrto
             id = "(ACES2065_1) ";
         NCHECK( !id.empty( ) );
 
-        return std::format( "[ RGBToSpectrumTable res: {} {}]", res, id );
+        return StringPrintf( "[ RGBToSpectrumTable res: %d %s]", res, id );
     }
 
     std::string XYZ::ToString( ) const
     {
-        return std::format( "[ {} {} {} ]", X, Y, Z );
+        return StringPrintf( "[ %f %f %f ]", X, Y, Z );
     }
 
     // ColorEncoding Method Definitions
-    PBRT_CPU_GPU void sRGBColorEncoding::FromLinear( const std::span<const Float>& vin, const std::span<uint8_t>& vout ) const
+    PBRT_CPU_GPU void sRGBColorEncoding::FromLinear( pstdo::span<const Float> vin,
+        pstdo::span<uint8_t> vout ) const
     {
         NDCHECK_EQ( vin.size( ), vout.size( ) );
         for ( size_t i = 0; i < vin.size( ); ++i )
             vout[ i ] = LinearToSRGB8( vin[ i ] );
     }
 
-    PBRT_CPU_GPU void sRGBColorEncoding::ToLinear( const std::span<const uint8_t>& vin, const std::span<Float>& vout ) const
+    PBRT_CPU_GPU void sRGBColorEncoding::ToLinear( pstdo::span<const uint8_t> vin,
+        pstdo::span<Float> vout ) const
     {
         NDCHECK_EQ( vin.size( ), vout.size( ) );
         for ( size_t i = 0; i < vin.size( ); ++i )
@@ -273,7 +274,7 @@ namespace pbrto
 
             ColorEncoding enc = alloc.new_object<GammaColorEncoding>( gamma );
             cache[ gamma ] = enc;
-            NLOG_VERBOSE( "Added ColorEncoding {} for gamma {} -> {}", name, gamma, enc );
+            NLOG_VERBOSE( "Added ColorEncoding %s for gamma %f -> %s", name, gamma, enc );
             return enc;
         }
     }
@@ -292,7 +293,8 @@ namespace pbrto
         }
     }
 
-    PBRT_CPU_GPU void GammaColorEncoding::ToLinear( const std::span<const uint8_t>& vin, const std::span<Float>& vout ) const
+    PBRT_CPU_GPU void GammaColorEncoding::ToLinear( pstdo::span<const uint8_t> vin,
+        pstdo::span<Float> vout ) const
     {
         NDCHECK_EQ( vin.size( ), vout.size( ) );
         for ( size_t i = 0; i < vin.size( ); ++i )
@@ -304,7 +306,8 @@ namespace pbrto
         return std::pow( v, gamma );
     }
 
-    PBRT_CPU_GPU void GammaColorEncoding::FromLinear( const std::span<const Float>& vin, const std::span<uint8_t>& vout ) const
+    PBRT_CPU_GPU void GammaColorEncoding::FromLinear( pstdo::span<const Float> vin,
+        pstdo::span<uint8_t> vout ) const
     {
         NDCHECK_EQ( vin.size( ), vout.size( ) );
         for ( size_t i = 0; i < vin.size( ); ++i )
@@ -314,7 +317,7 @@ namespace pbrto
 
     std::string GammaColorEncoding::ToString( ) const
     {
-        return std::format( "[ GammaColorEncoding gamma: {} ]", gamma );
+        return StringPrintf( "[ GammaColorEncoding gamma: %f ]", gamma );
     }
 
     PBRT_CONST Float SRGBToLinearLUT[ 256 ] = {

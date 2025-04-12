@@ -37,61 +37,7 @@ namespace pbrto
 {
 
     // FilterFunction Definition
-    enum class FilterFunction 
-    { 
-        Point, Bilinear, Trilinear, EWA 
-    };
-
-}
-
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::FilterFunction, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( pbrto::FilterFunction value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                switch ( value )
-                {
-                    case pbrto::FilterFunction::EWA:
-                        return std::format_to( ctx.out( ), L"EWA" );
-                    case pbrto::FilterFunction::Trilinear:
-                        return std::format_to( ctx.out( ), L"trilinear" );
-                    case pbrto::FilterFunction::Bilinear:
-                        return std::format_to( ctx.out( ), L"bilinear" );
-                    default:
-                        return std::format_to( ctx.out( ), L"point" );
-                }
-
-            }
-            else
-            {
-                switch ( value )
-                {
-                    case pbrto::FilterFunction::EWA:
-                        return std::format_to( ctx.out( ), "EWA" );
-                    case pbrto::FilterFunction::Trilinear:
-                        return std::format_to( ctx.out( ), "trilinear" );
-                    case pbrto::FilterFunction::Bilinear:
-                        return std::format_to( ctx.out( ), "bilinear" );
-                    default:
-                        return std::format_to( ctx.out( ), "point" );
-                }
-            }
-        }
-    };
-}
-
-namespace pbrto
-{
+    enum class FilterFunction { Point, Bilinear, Trilinear, EWA };
 
     inline pstdo::optional<FilterFunction> ParseFilter( const std::string& f )
     {

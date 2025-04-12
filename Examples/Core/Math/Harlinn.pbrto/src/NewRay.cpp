@@ -27,12 +27,12 @@ namespace pbrto
 
     std::string Ray::ToString( ) const
     {
-        return std::format( "[ o: {} d: {} time: {}, medium: {} ]", o, d, time, medium );
+        return StringPrintf( "[ o: %s d: %s time: %f, medium: %s ]", o, d, time, medium );
     }
 
     std::string RayDifferential::ToString( ) const
     {
-        return std::format( "[ ray: {} differentials: {} xo: {} xd: {} yo: {} yd: {} ]",
+        return StringPrintf( "[ ray: %s differentials: %s xo: %s xd: %s yo: %s yd: %s ]",
             ( ( const Ray& )( *this ) ), hasDifferentials ? "true" : "false",
             rxOrigin, rxDirection, ryOrigin, ryDirection );
     }

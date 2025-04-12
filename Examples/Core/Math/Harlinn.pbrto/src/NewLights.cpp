@@ -57,13 +57,13 @@ namespace pbrto
     // Light Method Definitions
     std::string LightLiSample::ToString( ) const
     {
-        return std::format( "[ LightLiSample L: {} wi: {} pdf: {} pLight: {} ]", L, wi, pdf,
+        return StringPrintf( "[ LightLiSample L: %s wi: %s pdf: %f pLight: %s ]", L, wi, pdf,
             pLight );
     }
 
     std::string LightLeSample::ToString( ) const
     {
-        return std::format( "[ LightLeSample L: {} ray: {} intr: {} pdfPos: {} pdfDir: {} ]",
+        return StringPrintf( "[ LightLeSample L: %s ray: %s intr: %s pdfPos: %f pdfDir: %f ]",
             L, ray, intr, pdfPos, pdfDir );
     }
 
@@ -95,7 +95,7 @@ namespace pbrto
 
     std::string LightBase::BaseToString( ) const
     {
-        return std::format( "type: {} mediumInterface: {} renderFromLight: {}", type,
+        return StringPrintf( "type: %s mediumInterface: %s renderFromLight: %s", type,
             mediumInterface, renderFromLight );
     }
 
@@ -123,8 +123,8 @@ namespace pbrto
 
     std::string LightBounds::ToString( ) const
     {
-        return std::format( "[ LightBounds bounds: {} w: {} phi: {} "
-            "cosTheta_o: {} cosTheta_e: {} twoSided: {} ]",
+        return StringPrintf( "[ LightBounds bounds: %s w: %s phi: %f "
+            "cosTheta_o: %f cosTheta_e: %f twoSided: %s ]",
             bounds, w, phi, cosTheta_o, cosTheta_e, twoSided );
     }
 
@@ -135,7 +135,6 @@ namespace pbrto
         // Compute clamped squared distance to reference point
         Point3f pc = ( bounds.pMin + bounds.pMax ) / 2;
         Float d2 = ScalarDistanceSquared( p, pc );
-
         d2 = std::max( d2, ScalarLength( bounds.Diagonal( ) ) / 2 );
 
         // Define cosine and sine clamped subtraction lambdas
@@ -155,7 +154,7 @@ namespace pbrto
 
         // Compute sine and cosine of angle to vector _w_, $\theta_\roman{w}$
         Vector3f wi = Normalize( p - pc );
-        Float cosTheta_w = Dot( Vector3f( w ), wi );
+        Float cosTheta_w = ScalarDot( Vector3f( w ), wi );
         if ( twoSided )
             cosTheta_w = std::abs( cosTheta_w );
         Float sinTheta_w = SafeSqrt( 1 - Sqr( cosTheta_w ) );
@@ -198,10 +197,8 @@ namespace pbrto
     {
         Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
         Float phi = 4 * Pi * scale * I->MaxValue( );
-        constexpr Float cosPi = Math::Cos( Pi );
-        constexpr Float cosPiOver2 = Math::Cos( Pi / 2.f );
-        return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, cosPi, cosPiOver2, false );
-
+        return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, std::cos( Pi ),
+            std::cos( Pi / 2 ), false );
     }
 
     PBRT_CPU_GPU pstdo::optional<LightLeSample> PointLight::SampleLe( Point2f u1, Point2f u2,
@@ -221,7 +218,7 @@ namespace pbrto
 
     std::string PointLight::ToString( ) const
     {
-        return std::format( "[ PointLight {} I: {} scale: {} ]", BaseToString( ), I? I->ToString().c_str() : "<nullptr>", scale );
+        return StringPrintf( "[ PointLight %s I: %s scale: %f ]", BaseToString( ), I, scale );
     }
 
     PointLight* PointLight::Create( const Transform& renderFromLight, Medium medium,
@@ -280,7 +277,8 @@ namespace pbrto
 
     std::string DistantLight::ToString( ) const
     {
-        return std::format( "[ DistantLight {} Lemit: {} scale: {} ]", BaseToString( ), Lemit, scale );
+        return StringPrintf( "[ DistantLight %s Lemit: %s scale: %f ]", BaseToString( ), Lemit,
+            scale );
     }
 
     DistantLight* DistantLight::Create( const Transform& renderFromLight,
@@ -368,7 +366,6 @@ namespace pbrto
         Vector3f wi = Normalize( p - ctx.p( ) );
         Vector3f wl = renderFromLight.ApplyInverse( Vector3f( -wi ) );
         SampledSpectrum Li = I( wl, lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
-
         if ( !Li )
             return {};
         return LightLiSample( Li, wi, 1, Interaction( p, &mediumInterface ) );
@@ -382,7 +379,8 @@ namespace pbrto
 
     std::string ProjectionLight::ToString( ) const
     {
-        return std::format( "[ ProjectionLight {} scale: {} A: {} ]", BaseToString( ), scale, A );
+        return StringPrintf( "[ ProjectionLight %s scale: %f A: %f ]", BaseToString( ), scale,
+            A );
     }
 
     PBRT_CPU_GPU SampledSpectrum ProjectionLight::I( Vector3f w, const SampledWavelengths& lambda ) const
@@ -444,9 +442,7 @@ namespace pbrto
 
         Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
         Vector3f w = Normalize( renderFromLight( Vector3f( 0, 0, 1 ) ) );
-        constexpr auto cosZero = Math::Cos( 0.f );
-        return LightBounds( Bounds3f( p, p ), w, phi, cosZero, cosTotalWidth, false );
-
+        return LightBounds( Bounds3f( p, p ), w, phi, std::cos( 0.f ), cosTotalWidth, false );
     }
 
     PBRT_CPU_GPU pstdo::optional<LightLeSample> ProjectionLight::SampleLe( Point2f u1, Point2f u2,
@@ -496,7 +492,8 @@ namespace pbrto
             return;
         }
 
-        *pdfDir = distrib.PDF( Point2f( ps.x, ps.y ) ) * screenBounds.Area( ) / ( A * FastPow<3>( CosTheta( w ) ) );
+        *pdfDir = distrib.PDF( Point2f( ps.x, ps.y ) ) * screenBounds.Area( ) /
+            ( A * FastPow<3>( CosTheta( w ) ) );
     }
 
     ProjectionLight* ProjectionLight::Create( const Transform& renderFromLight, Medium medium,
@@ -514,12 +511,12 @@ namespace pbrto
         ImageAndMetadata imageAndMetadata = Image::Read( texname, alloc );
         if ( imageAndMetadata.image.HasAnyInfinitePixels( ) )
             ErrorExit(
-                loc, "{}: image has infinite pixel values and so is not suitable as a light.",
+                loc, "%s: image has infinite pixel values and so is not suitable as a light.",
                 texname );
         if ( imageAndMetadata.image.HasAnyNaNPixels( ) )
             ErrorExit(
                 loc,
-                "{}: image has not-a-number pixel values and so is not suitable as a light.",
+                "%s: image has not-a-number pixel values and so is not suitable as a light.",
                 texname );
 
         const RGBColorSpace* colorSpace = imageAndMetadata.metadata.GetColorSpace( );
@@ -600,9 +597,8 @@ namespace pbrto
     {
         Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
         Vector3f wi = Normalize( p - ctx.p( ) );
-
-        SampledSpectrum L = I( renderFromLight.ApplyInverse( Vector3f( -wi ) ), lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
-
+        SampledSpectrum L =
+            I( renderFromLight.ApplyInverse( Vector3f( -wi ) ), lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
         return LightLiSample( L, wi, 1, Interaction( p, &mediumInterface ) );
     }
 
@@ -633,11 +629,8 @@ namespace pbrto
 
         Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
         // Bound it as an isotropic point light.
-        constexpr Float cosPi = Math::Cos( Pi );
-        constexpr Float cosPiOver2 = Math::Cos( Pi / 2.f );
-
-        return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, cosPi, cosPiOver2, false );
-
+        return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, std::cos( Pi ),
+            std::cos( Pi / 2 ), false );
     }
 
     PBRT_CPU_GPU pstdo::optional<LightLeSample> GoniometricLight::SampleLe( Point2f u1, Point2f u2,
@@ -665,7 +658,7 @@ namespace pbrto
 
     std::string GoniometricLight::ToString( ) const
     {
-        return std::format( "[ GoniometricLight {} Iemit: {} scale: {} ]", BaseToString( ),
+        return StringPrintf( "[ GoniometricLight %s Iemit: %s scale: %f ]", BaseToString( ),
             Iemit, scale );
     }
 
@@ -691,17 +684,17 @@ namespace pbrto
             if ( imageAndMetadata.image.HasAnyInfinitePixels( ) )
                 ErrorExit(
                     loc,
-                    "{}: image has infinite pixel values and so is not suitable as a light.",
+                    "%s: image has infinite pixel values and so is not suitable as a light.",
                     texname );
             if ( imageAndMetadata.image.HasAnyNaNPixels( ) )
                 ErrorExit( loc,
-                    "{}: image has not-a-number pixel values and so is not suitable as "
+                    "%s: image has not-a-number pixel values and so is not suitable as "
                     "a light.",
                     texname );
 
             if ( imageAndMetadata.image.Resolution( ).x !=
                 imageAndMetadata.image.Resolution( ).y )
-                ErrorExit( "{}: image resolution ({}, {}) is non-square. It's unlikely "
+                ErrorExit( "%s: image resolution (%d, %d) is non-square. It's unlikely "
                     "this is an equal-area environment map.",
                     texname, imageAndMetadata.image.Resolution( ).x,
                     imageAndMetadata.image.Resolution( ).y );
@@ -712,7 +705,7 @@ namespace pbrto
             if ( rgbDesc )
             {
                 if ( yDesc )
-                    ErrorExit( "{}: has both \"R\", \"G\", and \"B\" or \"Y\" "
+                    ErrorExit( "%s: has both \"R\", \"G\", and \"B\" or \"Y\" "
                         "channels.",
                         texname );
                 image = Image( imageAndMetadata.image.Format( ),
@@ -728,7 +721,7 @@ namespace pbrto
                 image = imageAndMetadata.image;
             else
                 ErrorExit( loc,
-                    "{}: has neither \"R\", \"G\", and \"B\" or \"Y\" "
+                    "%s: has neither \"R\", \"G\", and \"B\" or \"Y\" "
                     "channels.",
                     texname );
         }
@@ -889,8 +882,8 @@ namespace pbrto
         phi *= scale * area * Pi;
 
         DirectionCone nb = shape.NormalBounds( );
-        constexpr Float cosPiOver2 = Math::Cos( Pi / 2.f );
-        return LightBounds( shape.Bounds( ), nb.w, phi, nb.cosTheta, cosPiOver2, twoSided );
+        return LightBounds( shape.Bounds( ), nb.w, phi, nb.cosTheta, std::cos( Pi / 2 ),
+            twoSided );
     }
 
     PBRT_CPU_GPU pstdo::optional<LightLeSample> DiffuseAreaLight::SampleLe( Point2f u1, Point2f u2,
@@ -955,8 +948,8 @@ namespace pbrto
 
     std::string DiffuseAreaLight::ToString( ) const
     {
-        return std::format( "[ DiffuseAreaLight {} Lemit: {} scale: {} shape: {} alpha: {} "
-            "twoSided: {} area: {} image: {} ]",
+        return StringPrintf( "[ DiffuseAreaLight %s Lemit: %s scale: %f shape: %s alpha: %s "
+            "twoSided: %s area: %f image: %s ]",
             BaseToString( ), Lemit, scale, shape, alpha,
             twoSided ? "true" : "false", area, image );
     }
@@ -984,18 +977,18 @@ namespace pbrto
             if ( im.image.HasAnyInfinitePixels( ) )
                 ErrorExit(
                     loc,
-                    "{}: image has infinite pixel values and so is not suitable as a light.",
+                    "%s: image has infinite pixel values and so is not suitable as a light.",
                     filename );
             if ( im.image.HasAnyNaNPixels( ) )
                 ErrorExit( loc,
-                    "{}: image has not-a-number pixel values and so is not suitable as "
+                    "%s: image has not-a-number pixel values and so is not suitable as "
                     "a light.",
                     filename );
 
             ImageChannelDesc channelDesc = im.image.GetChannelDesc( { "R", "G", "B" } );
             if ( !channelDesc )
                 ErrorExit( loc,
-                    "{}: Image provided to \"diffuse\" area light must have "
+                    "%s: Image provided to \"diffuse\" area light must have "
                     "R, G, and B channels.",
                     filename );
             image = im.image.SelectChannels( channelDesc, alloc );
@@ -1111,7 +1104,7 @@ namespace pbrto
 
     std::string UniformInfiniteLight::ToString( ) const
     {
-        return std::format( "[ UniformInfiniteLight {} Lemit: {} ]", BaseToString( ), Lemit );
+        return StringPrintf( "[ UniformInfiniteLight %s Lemit: %s ]", BaseToString( ), Lemit );
     }
 
     // ImageInfiniteLight Method Definitions
@@ -1129,13 +1122,13 @@ namespace pbrto
         // Initialize sampling PDFs for image infinite area light
         ImageChannelDesc channelDesc = image.GetChannelDesc( { "R", "G", "B" } );
         if ( !channelDesc )
-            ErrorExit( "{}: image used for ImageInfiniteLight doesn't have R, G, B "
+            ErrorExit( "%s: image used for ImageInfiniteLight doesn't have R, G, B "
                 "channels.",
                 filename );
         NCHECK_EQ( 3, channelDesc.size( ) );
         NCHECK( channelDesc.IsIdentity( ) );
         if ( image.Resolution( ).x != image.Resolution( ).y )
-            ErrorExit( "{}: image resolution ({}, {}) is non-square. It's unlikely "
+            ErrorExit( "%s: image resolution (%d, %d) is non-square. It's unlikely "
                 "this is an equal area environment map.",
                 filename, image.Resolution( ).x, image.Resolution( ).y );
         Array2D<Float> d = image.GetSamplingDistribution( );
@@ -1221,7 +1214,7 @@ namespace pbrto
 
     std::string ImageInfiniteLight::ToString( ) const
     {
-        return std::format( "[ ImageInfiniteLight {} scale: {} ]", BaseToString( ), scale );
+        return StringPrintf( "[ ImageInfiniteLight %s scale: %f ]", BaseToString( ), scale );
     }
 
     // PortalImageInfiniteLight Method Definitions
@@ -1238,19 +1231,19 @@ namespace pbrto
     {
         ImageChannelDesc channelDesc = equalAreaImage.GetChannelDesc( { "R", "G", "B" } );
         if ( !channelDesc )
-            ErrorExit( "{}: image used for PortalImageInfiniteLight doesn't have R, "
+            ErrorExit( "%s: image used for PortalImageInfiniteLight doesn't have R, "
                 "G, B channels.",
                 filename );
         NCHECK_EQ( 3, channelDesc.size( ) );
         NCHECK( channelDesc.IsIdentity( ) );
 
         if ( equalAreaImage.Resolution( ).x != equalAreaImage.Resolution( ).y )
-            ErrorExit( "{}: image resolution ({}, {}) is non-square. It's unlikely "
+            ErrorExit( "%s: image resolution (%d, %d) is non-square. It's unlikely "
                 "this is an equal area environment map.",
                 filename, equalAreaImage.Resolution( ).x, equalAreaImage.Resolution( ).y );
 
         if ( p.size( ) != 4 )
-            ErrorExit( "Expected 4 vertices for infinite light portal but given {}", p.size( ) );
+            ErrorExit( "Expected 4 vertices for infinite light portal but given %d", p.size( ) );
         for ( int i = 0; i < 4; ++i )
             portal[ i ] = p[ i ];
 
@@ -1261,11 +1254,11 @@ namespace pbrto
         Vector3f p32 = Normalize( portal[ 2 ] - portal[ 3 ] );
         Vector3f p03 = Normalize( portal[ 3 ] - portal[ 0 ] );
         // Do opposite edges have the same direction?
-        if ( std::abs( Dot( p01, p32 ) - 1 ) > .001 || std::abs( Dot( p12, p03 ) - 1 ) > .001 )
+        if ( std::abs( ScalarDot( p01, p32 ) - 1 ) > .001 || std::abs( ScalarDot( p12, p03 ) - 1 ) > .001 )
             Error( "Infinite light portal isn't a planar quadrilateral" );
         // Sides perpendicular?
-        if ( std::abs( Dot( p01, p12 ) ) > .001 || std::abs( Dot( p12, p32 ) ) > .001 ||
-            std::abs( Dot( p32, p03 ) ) > .001 || std::abs( Dot( p03, p01 ) ) > .001 )
+        if ( std::abs( ScalarDot( p01, p12 ) ) > .001 || std::abs( ScalarDot( p12, p32 ) ) > .001 ||
+            std::abs( ScalarDot( p32, p03 ) ) > .001 || std::abs( ScalarDot( p03, p01 ) ) > .001 )
             Error( "Infinite light portal isn't a planar quadrilateral" );
         portalFrame = Frame::FromXY( p03, p01 );
 
@@ -1424,7 +1417,7 @@ namespace pbrto
 
         // Cosine to account for projected area of portal w.r.t. ray direction.
         Normal3f n = Normal3f( portalFrame.z );
-        Float pdfPos = 1 / ( Area( ) * AbsDot( n, w ) );
+        Float pdfPos = 1 / ( Area( ) * ScalarAbsDot( n, w ) );
 #else
         // Compute infinite light sample ray
         Frame wFrame = Frame::FromZ( -w );
@@ -1459,7 +1452,7 @@ namespace pbrto
 
 #if 0
         Normal3f n = Normal3f( portalFrame.z );
-        *pdfPos = 1 / ( Area( ) * AbsDot( n, w ) );
+        *pdfPos = 1 / ( Area( ) * ScalarAbsDot( n, w ) );
 #else
         * pdfPos = 1 / ( Pi * Sqr( sceneRadius ) );
 #endif
@@ -1469,8 +1462,8 @@ namespace pbrto
 
     std::string PortalImageInfiniteLight::ToString( ) const
     {
-        return std::format( "[ PortalImageInfiniteLight {} filename:{} scale: {} portal: {} "
-            " portalFrame: {} ]",
+        return StringPrintf( "[ PortalImageInfiniteLight %s filename:%s scale: %f portal: %s "
+            " portalFrame: %s ]",
             BaseToString( ), filename, scale, portal, portalFrame );
     }
 
@@ -1481,9 +1474,8 @@ namespace pbrto
         : LightBase( LightType::DeltaPosition, renderFromLight, mediumInterface ),
         Iemit( LookupSpectrum( Iemit ) ),
         scale( scale ),
-        cosFalloffEnd( Math::Cos( Deg2Rad( totalWidth ) ) ),
-        cosFalloffStart( Math::Cos( Deg2Rad( falloffStart ) ) )
-
+        cosFalloffEnd( std::cos( Radians( totalWidth ) ) ),
+        cosFalloffStart( std::cos( Radians( falloffStart ) ) )
     {
         NCHECK_LE( falloffStart, totalWidth );
     }
@@ -1570,8 +1562,8 @@ namespace pbrto
 
     std::string SpotLight::ToString( ) const
     {
-        return std::format(
-            "[ SpotLight {} Iemit: {} cosFalloffStart: {} cosFalloffEnd: {} ]",
+        return StringPrintf(
+            "[ SpotLight %s Iemit: %s cosFalloffStart: %f cosFalloffEnd: %f ]",
             BaseToString( ), Iemit, cosFalloffStart, cosFalloffEnd );
     }
 
@@ -1599,9 +1591,10 @@ namespace pbrto
         Float phi_v = parameters.GetOneFloat( "power", -1 );
         if ( phi_v > 0 )
         {
-            Float cosFalloffEnd = Math::Cos( Deg2Rad( coneangle ) );
-            Float cosFalloffStart = Math::Cos( Deg2Rad( coneangle - conedelta ) );
-            Float k_e = 2 * Pi * ( ( 1 - cosFalloffStart ) + ( cosFalloffStart - cosFalloffEnd ) / 2 );
+            Float cosFalloffEnd = std::cos( Radians( coneangle ) );
+            Float cosFalloffStart = std::cos( Radians( coneangle - conedelta ) );
+            Float k_e =
+                2 * Pi * ( ( 1 - cosFalloffStart ) + ( cosFalloffStart - cosFalloffEnd ) / 2 );
             sc *= phi_v / k_e;
         }
 
@@ -1759,12 +1752,12 @@ namespace pbrto
 
                     if ( imageAndMetadata.image.HasAnyInfinitePixels( ) )
                         ErrorExit( loc,
-                            "{}: image has infinite pixel values and so is not "
+                            "%s: image has infinite pixel values and so is not "
                             "suitable as a light.",
                             filename );
                     if ( imageAndMetadata.image.HasAnyNaNPixels( ) )
                         ErrorExit( loc,
-                            "{}: image has not-a-number pixel values and so is not "
+                            "%s: image has not-a-number pixel values and so is not "
                             "suitable as a light.",
                             filename );
                 }
@@ -1775,7 +1768,7 @@ namespace pbrto
                     imageAndMetadata.image.GetChannelDesc( { "R", "G", "B" } );
                 if ( !channelDesc )
                     ErrorExit( loc,
-                        "{}: image provided to \"infinite\" light must "
+                        "%s: image provided to \"infinite\" light must "
                         "have R, G, and B channels.",
                         filename );
 
@@ -1833,10 +1826,10 @@ namespace pbrto
             }
         }
         else
-            ErrorExit( loc, "{}: light type unknown.", name );
+            ErrorExit( loc, "%s: light type unknown.", name );
 
         if ( !light )
-            ErrorExit( loc, "{}: unable to create light.", name );
+            ErrorExit( loc, "%s: unable to create light.", name );
 
         parameters.ReportUnused( );
         return light;
@@ -1853,10 +1846,10 @@ namespace pbrto
             DiffuseAreaLight::Create( renderFromLight, mediumInterface.outside, parameters,
                 parameters.ColorSpace( ), loc, alloc, shape, alpha );
         else
-            ErrorExit( loc, "{}: area light type unknown.", name );
+            ErrorExit( loc, "%s: area light type unknown.", name );
 
         if ( !area )
-            ErrorExit( loc, "{}: unable to create area light.", name );
+            ErrorExit( loc, "%s: unable to create area light.", name );
 
         parameters.ReportUnused( );
         return area;

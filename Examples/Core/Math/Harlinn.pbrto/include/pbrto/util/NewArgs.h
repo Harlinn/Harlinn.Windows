@@ -23,6 +23,7 @@
 // SPDX: Apache-2.0
 
 #include <pbrto/NewPbrt.h>
+#include <pbrto/util/NewPrint.h>
 #include <pbrto/util/NewPStd.h>
 #include <pbrto/util/NewString.h>
 
@@ -217,7 +218,7 @@ namespace pbrto
             std::string value = arg.substr( name.size( ) + 1 );
             if ( !initArg( value, out ) )
             {
-                onError( std::format( "invalid value \"{}\" for --{} argument", value, name ) );
+                onError( StringPrintf( "invalid value \"%s\" for --%s argument", value, name ) );
                 return false;
             }
             return true;
@@ -232,12 +233,12 @@ namespace pbrto
             ++( *iter );
             if ( *iter == end )
             {
-                onError( std::format( "missing value after --{} argument", arg ) );
+                onError( StringPrintf( "missing value after --%s argument", arg ) );
                 return false;
             }
             if ( !initArg( **iter, out ) )
             {
-                onError( std::format( "invalid value \"{}\" for --{} argument", **iter, name ) );
+                onError( StringPrintf( "invalid value \"%s\" for --%s argument", **iter, name ) );
                 return false;
             }
             return true;
@@ -247,7 +248,8 @@ namespace pbrto
     }
 
     // Command-line Argument Utility Functions
-    PBRTO_EXPORT std::vector<std::string> GetCommandLineArguments( char* argv[ ] );
+    PBRTO_EXPORT
+        std::vector<std::string> GetCommandLineArguments( char* argv[ ] );
 
 }
 

@@ -50,10 +50,9 @@ namespace pbrto
 
         // Initialize XYZ color space conversion matrices
         SquareMatrix<3> rgb( R.X, G.X, B.X, R.Y, G.Y, B.Y, R.Z, G.Z, B.Z );
-        SquareMatrix<3> rgbI = Inverse( rgb );
-        XYZ C = rgbI * W;
+        XYZ C = SquareMatrix<3>(Math::Inverse( rgb )) * W;
         XYZFromRGB = rgb * SquareMatrix<3>::Diag( C[ 0 ], C[ 1 ], C[ 2 ] );
-        RGBFromXYZ = Inverse( XYZFromRGB );
+        RGBFromXYZ = Math::Inverse( XYZFromRGB );
     }
 
     SquareMatrix<3> ConvertRGBColorSpace( const RGBColorSpace& from, const RGBColorSpace& to )
@@ -140,9 +139,9 @@ namespace pbrto
 
     std::string RGBColorSpace::ToString( ) const
     {
-        return std::format( "[ RGBColorSpace r: {} g: {} b: {} w: {} illuminant: "
-            "{} RGBToXYZ: {} XYZToRGB: {} ]",
-            r, g, b, w, illuminant.ToString(), XYZFromRGB, RGBFromXYZ );
+        return StringPrintf( "[ RGBColorSpace r: %s g: %s b: %s w: %s illuminant: "
+            "%s RGBToXYZ: %s XYZToRGB: %s ]",
+            r, g, b, w, illuminant, XYZFromRGB, RGBFromXYZ );
     }
 
 }

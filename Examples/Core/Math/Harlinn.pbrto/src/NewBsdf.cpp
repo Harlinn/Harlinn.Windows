@@ -30,13 +30,14 @@ namespace pbrto
 
     std::string BSDFSample::ToString( ) const
     {
-        return std::format( "[ BSDFSample f: {} wi: {} pdf: {} flags: {} ]", f, wi, pdf, flags );
+        return StringPrintf( "[ BSDFSample f: %s wi: %s pdf: %s flags: %s ]", f, wi, pdf,
+            flags );
     }
 
     // BSDF Method Definitions
     std::string BSDF::ToString( ) const
     {
-        return std::format( "[ BSDF bxdf: {} shadingFrame: {} ]", bxdf, shadingFrame );
+        return StringPrintf( "[ BSDF bxdf: %s shadingFrame: %s ]", bxdf, shadingFrame );
     }
 
 }

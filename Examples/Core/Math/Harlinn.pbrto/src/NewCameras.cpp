@@ -71,40 +71,44 @@ namespace pbrto
             default:
                 NLOG_FATAL( "Unhandled rendering coordinate space" );
         }
-        NLOG_VERBOSE( "World-space position: {}", worldFromRender( Point3f( 0, 0, 0 ) ) );
+        NLOG_VERBOSE( "World-space position: %s", worldFromRender( Point3f( 0, 0, 0 ) ) );
         // Compute _renderFromCamera_ transformation
         Transform renderFromWorld = Inverse( worldFromRender );
         Transform rfc[ 2 ] = { renderFromWorld * worldFromCamera.startTransform,
                             renderFromWorld * worldFromCamera.endTransform };
-        renderFromCamera = AnimatedTransform( rfc[ 0 ], worldFromCamera.startTime, rfc[ 1 ], worldFromCamera.endTime );
+        renderFromCamera = AnimatedTransform( rfc[ 0 ], worldFromCamera.startTime, rfc[ 1 ],
+            worldFromCamera.endTime );
     }
 
     std::string CameraTransform::ToString( ) const
     {
-        return std::format( "[ CameraTransform renderFromCamera: {} worldFromRender: {} ]", renderFromCamera, worldFromRender );
+        return StringPrintf( "[ CameraTransform renderFromCamera: %s worldFromRender: %s ]",
+            renderFromCamera, worldFromRender );
     }
 
     // Camera Method Definitions
-    pstdo::optional<CameraRayDifferential> Camera::GenerateRayDifferential(
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> Camera::GenerateRayDifferential(
         CameraSample sample, SampledWavelengths& lambda ) const
     {
         auto gen = [ & ]( auto ptr ) { return ptr->GenerateRayDifferential( sample, lambda ); };
         return Dispatch( gen );
     }
 
-    SampledSpectrum Camera::We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 ) const
+    PBRT_CPU_GPU SampledSpectrum Camera::We( const Ray& ray, SampledWavelengths& lambda,
+        Point2f* pRaster2 ) const
     {
         auto we = [ & ]( auto ptr ) { return ptr->We( ray, lambda, pRaster2 ); };
         return Dispatch( we );
     }
 
-    void Camera::PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
+    PBRT_CPU_GPU void Camera::PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
     {
         auto pdf = [ & ]( auto ptr ) { return ptr->PDF_We( ray, pdfPos, pdfDir ); };
         return Dispatch( pdf );
     }
 
-    pstdo::optional<CameraWiSample> Camera::SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU pstdo::optional<CameraWiSample> Camera::SampleWi( const Interaction& ref, Point2f u,
+        SampledWavelengths& lambda ) const
     {
         auto sample = [ & ]( auto ptr ) { return ptr->SampleWi( ref, u, lambda ); };
         return Dispatch( sample );
@@ -141,7 +145,8 @@ namespace pbrto
                 "the system may crash as a result of this." );
     }
 
-    pstdo::optional<CameraRayDifferential> CameraBase::GenerateRayDifferential( Camera camera, CameraSample sample, SampledWavelengths& lambda )
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> CameraBase::GenerateRayDifferential(
+        Camera camera, CameraSample sample, SampledWavelengths& lambda )
     {
         // Generate regular camera ray _cr_ for ray differential
         pstdo::optional<CameraRay> cr = camera.GenerateRay( sample, lambda );
@@ -205,11 +210,11 @@ namespace pbrto
                 continue;
 
             RayDifferential& ray = crd->ray;
-            Vector3f dox = CameraFromRender( Point3f( ray.rxOrigin - ray.o ), ray.time );
-            if ( Length( dox ) < Length( minPosDifferentialX ) )
+            Vector3f dox = CameraFromRender( Vector3f( ray.rxOrigin - ray.o ), ray.time );
+            if ( ScalarLength( dox ) < ScalarLength( minPosDifferentialX ) )
                 minPosDifferentialX = dox;
-            Vector3f doy = CameraFromRender( Point3f( ray.ryOrigin - ray.o ), ray.time );
-            if ( Length( doy ) < Length( minPosDifferentialY ) )
+            Vector3f doy = CameraFromRender( Vector3f( ray.ryOrigin - ray.o ), ray.time );
+            if ( ScalarLength( doy ) < ScalarLength( minPosDifferentialY ) )
                 minPosDifferentialY = doy;
 
             ray.d = Normalize( ray.d );
@@ -220,14 +225,17 @@ namespace pbrto
             Vector3f df = f.ToLocal( ray.d );  // should be (0, 0, 1);
             Vector3f dxf = Normalize( f.ToLocal( ray.rxDirection ) );
             Vector3f dyf = Normalize( f.ToLocal( ray.ryDirection ) );
+
             if ( ScalarLength( dxf - df ) < ScalarLength( minDirDifferentialX ) )
                 minDirDifferentialX = dxf - df;
             if ( ScalarLength( dyf - df ) < ScalarLength( minDirDifferentialY ) )
                 minDirDifferentialY = dyf - df;
         }
 
-        NLOG_VERBOSE( "Camera min pos differentials: {}, {}", minPosDifferentialX, minPosDifferentialY );
-        NLOG_VERBOSE( "Camera min dir differentials: {}, {}", minDirDifferentialX, minDirDifferentialY );
+        NLOG_VERBOSE( "Camera min pos differentials: %s, %s", minPosDifferentialX,
+            minPosDifferentialY );
+        NLOG_VERBOSE( "Camera min dir differentials: %s, %s", minDirDifferentialX,
+            minDirDifferentialY );
     }
 
     void CameraBase::InitMetadata( ImageMetadata* metadata ) const
@@ -237,9 +245,9 @@ namespace pbrto
 
     std::string CameraBase::ToString( ) const
     {
-        return std::format( "cameraTransform: {} shutterOpen: {} shutterClose: {} film: {} "
-            "medium: {} minPosDifferentialX: {} minPosDifferentialY: {} "
-            "minDirDifferentialX: {} minDirDifferentialY: {} ",
+        return StringPrintf( "cameraTransform: %s shutterOpen: %f shutterClose: %f film: %s "
+            "medium: %s minPosDifferentialX: %s minPosDifferentialY: %s "
+            "minDirDifferentialX: %s minDirDifferentialY: %s ",
             cameraTransform, shutterOpen, shutterClose, film,
             medium ? medium.ToString( ).c_str( ) : "(nullptr)",
             minPosDifferentialX, minPosDifferentialY, minDirDifferentialX,
@@ -248,7 +256,7 @@ namespace pbrto
 
     std::string CameraSample::ToString( ) const
     {
-        return std::format( "[ CameraSample pFilm: {} pLens: {} time: {} filterWeight: {} ]",
+        return StringPrintf( "[ CameraSample pFilm: %s pLens: %s time: %f filterWeight: %f ]",
             pFilm, pLens, time, filterWeight );
     }
 
@@ -268,9 +276,9 @@ namespace pbrto
     std::string ProjectiveCamera::BaseToString( ) const
     {
         return CameraBase::ToString( ) +
-            std::format( "screenFromCamera: {} cameraFromRaster: {} "
-                "rasterFromScreen: {} screenFromRaster: {} "
-                "lensRadius: {} focalDistance: {}",
+            StringPrintf( "screenFromCamera: %s cameraFromRaster: %s "
+                "rasterFromScreen: %s screenFromRaster: %s "
+                "lensRadius: %f focalDistance: %f",
                 screenFromCamera, cameraFromRaster, rasterFromScreen,
                 screenFromRaster, lensRadius, focalDistance );
     }
@@ -293,10 +301,10 @@ namespace pbrto
             camera = SphericalCamera::Create( parameters, cameraTransform, film, medium, loc,
                 alloc );
         else
-            ErrorExit( loc, "{}: camera type unknown.", name );
+            ErrorExit( loc, "%s: camera type unknown.", name );
 
         if ( !camera )
-            ErrorExit( loc, "{}: unable to create camera.", name );
+            ErrorExit( loc, "%s: unable to create camera.", name );
 
         parameters.ReportUnused( );
         return camera;
@@ -313,7 +321,7 @@ namespace pbrto
         shutterClose = parameters.GetOneFloat( "shutterclose", 1.f );
         if ( shutterClose < shutterOpen )
         {
-            Warning( loc, "Shutter close time {} < shutter open {}.  Swapping them.",
+            Warning( loc, "Shutter close time %f < shutter open %f.  Swapping them.",
                 shutterClose, shutterOpen );
             pstdo::swap( shutterClose, shutterOpen );
         }
@@ -346,7 +354,8 @@ namespace pbrto
         return CameraRay{ RenderFromCamera( ray ) };
     }
 
-    pstdo::optional<CameraRayDifferential> OrthographicCamera::GenerateRayDifferential(CameraSample sample, SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> OrthographicCamera::GenerateRayDifferential(
+        CameraSample sample, SampledWavelengths& lambda ) const
     {
         // Compute main orthographic viewing ray
         // Compute raster and camera sample positions
@@ -399,7 +408,7 @@ namespace pbrto
 
     std::string OrthographicCamera::ToString( ) const
     {
-        return std::format( "[ OrthographicCamera {} dxCamera: {} dyCamera: {} ]",
+        return StringPrintf( "[ OrthographicCamera %s dxCamera: %s dyCamera: %s ]",
             BaseToString( ), dxCamera, dyCamera );
     }
 
@@ -465,7 +474,8 @@ namespace pbrto
         Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
         Point3f pCamera = cameraFromRaster( pFilm );
 
-        Ray ray( Point3f( 0, 0, 0 ), Normalize( Vector3f( pCamera ) ), SampleTime( sample.time ), medium );
+        Ray ray( Point3f( 0, 0, 0 ), Normalize( Vector3f( pCamera ) ), SampleTime( sample.time ),
+            medium );
         // Modify ray for depth of field
         if ( lensRadius > 0 )
         {
@@ -484,7 +494,8 @@ namespace pbrto
         return CameraRay{ RenderFromCamera( ray ) };
     }
 
-    pstdo::optional<CameraRayDifferential> PerspectiveCamera::GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU pstdo::optional<CameraRayDifferential> PerspectiveCamera::GenerateRayDifferential(
+        CameraSample sample, SampledWavelengths& lambda ) const
     {
         // Compute raster and camera sample positions
         Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );
@@ -541,8 +552,8 @@ namespace pbrto
 
     std::string PerspectiveCamera::ToString( ) const
     {
-        return std::format( "[ PerspectiveCamera {} dxCamera: {} dyCamera: {} A: "
-            "{} cosTotalWidth: {} ]",
+        return StringPrintf( "[ PerspectiveCamera %s dxCamera: %s dyCamera: %s A: "
+            "%f cosTotalWidth: %f ]",
             BaseToString( ), dxCamera, dyCamera, A, cosTotalWidth );
     }
 
@@ -551,7 +562,8 @@ namespace pbrto
         Film film, Medium medium, const FileLoc* loc,
         Allocator alloc )
     {
-        CameraBaseParameters cameraBaseParameters( cameraTransform, film, medium, parameters, loc );
+        CameraBaseParameters cameraBaseParameters( cameraTransform, film, medium, parameters,
+            loc );
 
         Float lensradius = parameters.GetOneFloat( "lensradius", 0.f );
         Float focaldistance = parameters.GetOneFloat( "focaldistance", 1e6 );
@@ -600,10 +612,11 @@ namespace pbrto
             lensradius, focaldistance );
     }
 
-    SampledSpectrum PerspectiveCamera::We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRasterOut ) const
+    PBRT_CPU_GPU SampledSpectrum PerspectiveCamera::We( const Ray& ray, SampledWavelengths& lambda,
+        Point2f* pRasterOut ) const
     {
         // Check if ray is forward-facing with respect to the camera
-        Float cosTheta = Dot( ray.d, RenderFromCamera( Vector3f( 0, 0, 1 ), ray.time ) );
+        Float cosTheta = ScalarDot( ray.d, RenderFromCamera( Vector3f( 0, 0, 1 ), ray.time ) );
         if ( cosTheta <= cosTotalWidth )
             return SampledSpectrum( 0. );
 
@@ -631,7 +644,7 @@ namespace pbrto
     PBRT_CPU_GPU void PerspectiveCamera::PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const
     {
         // Return zero PDF values if ray direction is not front-facing
-        Float cosTheta = Dot( ray.d, RenderFromCamera( Vector3f( 0, 0, 1 ), ray.time ) );
+        Float cosTheta = ScalarDot( ray.d, RenderFromCamera( Vector3f( 0, 0, 1 ), ray.time ) );
         if ( cosTheta <= cosTotalWidth )
         {
             *pdfPos = *pdfDir = 0;
@@ -668,7 +681,7 @@ namespace pbrto
 
         // Find incident direction to camera _wi_ at _ref_
         Vector3f wi = lensIntr.p( ) - ref.p( );
-        Float dist = Length( wi );
+        Float dist = ScalarLength( wi );
         wi /= dist;
 
         // Compute PDF for importance arriving at _ref_
@@ -695,14 +708,7 @@ namespace pbrto
         {
             // Compute ray direction using equirectangular mapping
             Float theta = Pi * uv[ 1 ], phi = 2 * Pi * uv[ 0 ];
-#ifdef PBRT_USES_HCCMATH_SINCOS
-            Float sinTheta;
-            Float cosTheta;
-            Math::SinCos( theta, &sinTheta, &cosTheta );
-            dir = SphericalDirection( sinTheta, cosTheta, phi );
-#else
             dir = SphericalDirection( std::sin( theta ), std::cos( theta ), phi );
-#endif
 
         }
         else
@@ -787,7 +793,7 @@ namespace pbrto
 
     std::string SphericalCamera::ToString( ) const
     {
-        return std::format( "[ SphericalCamera %s mapping: %s ]", CameraBase::ToString( ),
+        return StringPrintf( "[ SphericalCamera %s mapping: %s ]", CameraBase::ToString( ),
             mapping == EquiRectangular ? "EquiRectangular" : "EqualArea" );
     }
 
@@ -804,11 +810,7 @@ namespace pbrto
         // Compute film's physical extent
         Float aspect = ( Float )film.FullResolution( ).y / ( Float )film.FullResolution( ).x;
         Float diagonal = film.Diagonal( );
-#ifdef PBRT_USES_HCCMATH_SQRT
-        Float x = Math::Sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
-#else
         Float x = std::sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
-#endif
         Float y = aspect * x;
         physicalExtent = Bounds2f( Point2f( -x / 2, -y / 2 ), Point2f( x / 2, y / 2 ) );
 
@@ -961,9 +963,9 @@ namespace pbrto
     {
         Float pz[ 2 ], fz[ 2 ];
         ComputeThickLensApproximation( pz, fz );
-        NLOG_VERBOSE( "Cardinal points: p' = {} f' = {}, p = {} f = {}.\n", pz[ 0 ], fz[ 0 ], pz[ 1 ],
+        NLOG_VERBOSE( "Cardinal points: p' = %f f' = %f, p = %f f = %f.\n", pz[ 0 ], fz[ 0 ], pz[ 1 ],
             fz[ 1 ] );
-        NLOG_VERBOSE( "Effective focal length {}\n", fz[ 0 ] - pz[ 0 ] );
+        NLOG_VERBOSE( "Effective focal length %f\n", fz[ 0 ] - pz[ 0 ] );
         // Compute translation of lens, _delta_, to focus at _focusDistance_
         Float f = fz[ 0 ] - pz[ 0 ];
         Float z = -focusDistance;
@@ -972,7 +974,7 @@ namespace pbrto
             ErrorExit( "Coefficient must be positive. It looks focusDistance %f "
                 " is too short for a given lenses configuration",
                 focusDistance );
-        Float delta = ( pz[ 1 ] - z + pz[ 0 ] - Math::Sqrt( c ) ) / 2;
+        Float delta = ( pz[ 1 ] - z + pz[ 0 ] - std::sqrt( c ) ) / 2;
 
         return elementInterfaces.back( ).thickness + delta;
     }
@@ -1005,13 +1007,13 @@ namespace pbrto
         // Return degenerate bounds if no rays made it through the lens system
         if ( pupilBounds.IsDegenerate( ) )
         {
-            NLOG_VERBOSE( "Unable to find exit pupil in x = [{},{}] on film.", filmX0, filmX1 );
+            NLOG_VERBOSE( "Unable to find exit pupil in x = [%f,%f] on film.", filmX0, filmX1 );
             return pupilBounds;
         }
 
         // Expand bounds to account for sample spacing
         pupilBounds =
-            Expand( pupilBounds, 2 * Length( projRearBounds.Diagonal( ) ) / Math::Sqrt( static_cast< Float >( nSamples ) ) );
+            Expand( pupilBounds, 2 * ScalarLength( projRearBounds.Diagonal( ) ) / std::sqrt( nSamples ) );
 
         return pupilBounds;
     }
@@ -1020,8 +1022,7 @@ namespace pbrto
         Point2f uLens ) const
     {
         // Find exit pupil bound for sample distance from film center
-        Float rFilm = Math::Sqrt( Sqr( pFilm.x ) + Sqr( pFilm.y ) );
-
+        Float rFilm = std::sqrt( Sqr( pFilm.x ) + Sqr( pFilm.y ) );
         int rIndex = rFilm / ( film.Diagonal( ) / 2 ) * exitPupilBounds.size( );
         rIndex = std::min<int>( exitPupilBounds.size( ) - 1, rIndex );
         Bounds2f pupilBounds = exitPupilBounds[ rIndex ];
@@ -1067,8 +1068,7 @@ namespace pbrto
         ray.d = Normalize( ray.d );
 
         // Compute weighting for _RealisticCamera_ ray
-        Float cosTheta = Normal3f( Normalize( rFilm.d ) ).z;
-
+        Float cosTheta = Normalize( rFilm.d ).z();
         weight *= FastPow<4>( cosTheta ) / ( eps->pdf * Sqr( LensRearZ( ) ) );
 
         return CameraRay{ ray, SampledSpectrum( weight ) };
@@ -1078,12 +1078,12 @@ namespace pbrto
 
     std::string RealisticCamera::LensElementInterface::ToString( ) const
     {
-        return std::format( "[ LensElementInterface curvatureRadius: %f thickness: %f "
+        return StringPrintf( "[ LensElementInterface curvatureRadius: %f thickness: %f "
             "eta: %f apertureRadius: %f ]",
             curvatureRadius, thickness, eta, apertureRadius );
     }
 
-    Float RealisticCamera::TraceLensesFromScene( const Ray& rCamera, Ray* rOut ) const
+    PBRT_CPU_GPU Float RealisticCamera::TraceLensesFromScene( const Ray& rCamera, Ray* rOut ) const
     {
         Float elementZ = -LensFrontZ( );
         // Transform _rCamera_ from camera to lens system space
@@ -1456,7 +1456,7 @@ namespace pbrto
 
     std::string RealisticCamera::ToString( ) const
     {
-        return std::format(
+        return StringPrintf(
             "[ RealisticCamera %s elementInterfaces: %s exitPupilBounds: %s ]",
             CameraBase::ToString( ), elementInterfaces, exitPupilBounds );
     }
@@ -1558,17 +1558,10 @@ namespace pbrto
             else if ( apertureName == "pentagon" )
             {
                 // https://mathworld.wolfram.com/RegularPentagon.html
-#ifdef PBRT_USES_HCCMATH_SQRT
-                constexpr Float c1 = ( Math::Sqrt( 5.f ) - 1 ) / 4;
-                constexpr Float c2 = ( Math::Sqrt( 5.f ) + 1 ) / 4;
-                constexpr Float s1 = Math::Sqrt( 10.f + 2.f * Math::Sqrt( 5.f ) ) / 4;
-                constexpr Float s2 = Math::Sqrt( 10.f - 2.f * Math::Sqrt( 5.f ) ) / 4;
-#else
                 Float c1 = ( std::sqrt( 5.f ) - 1 ) / 4;
                 Float c2 = ( std::sqrt( 5.f ) + 1 ) / 4;
                 Float s1 = std::sqrt( 10.f + 2.f * std::sqrt( 5.f ) ) / 4;
                 Float s2 = std::sqrt( 10.f - 2.f * std::sqrt( 5.f ) ) / 4;
-#endif
                 // Vertices in CW order.
                 Point2f vert[ 5 ] = { Point2f( 0, 1 ), {s1, c1}, {s2, -c2}, {-s2, -c2}, {-s1, c1} };
                 // Scale down slightly
@@ -1583,20 +1576,9 @@ namespace pbrto
                 for ( int i = 0; i < 10; ++i )
                 {
                     // inner radius: https://math.stackexchange.com/a/2136996
-#ifdef PBRT_USES_HCCMATH_SINCOS
-                    constexpr auto gr = Math::Cos( Deg2Rad( 72.f ) ) / Math::Cos( Deg2Rad( 36.f ) );
-
-                    Float r = ( i & 1 ) ? 1.f : gr;
-                    Float sinV;
-                    Float cosV;
-                    Math::SinCos( Pi * i / 5.f, &sinV, &cosV );
-
-                    vert[ i ] = Point2f( r * cosV, r * sinV );
-#else
                     Float r =
                         ( i & 1 ) ? 1.f : ( std::cos( Radians( 72.f ) ) / std::cos( Radians( 36.f ) ) );
                     vert[ i ] = Point2f( r * std::cos( Pi * i / 5.f ), r * std::sin( Pi * i / 5.f ) );
-#endif
                 }
                 std::reverse( vert.begin( ), vert.end( ) );
                 apertureImage = rasterize( vert );

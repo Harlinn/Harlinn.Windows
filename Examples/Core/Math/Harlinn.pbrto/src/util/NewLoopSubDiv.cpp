@@ -166,7 +166,9 @@ namespace pbrto
     }
 
     // LoopSubdiv Function Definitions
-    TriangleMesh* LoopSubdivide( const Transform* renderFromObject, bool reverseOrientation, int nLevels, const pstdo::span<const int>& vertexIndices, const pstdo::span<const Point3f>& p, Allocator alloc )
+    TriangleMesh* LoopSubdivide( const Transform* renderFromObject, bool reverseOrientation,
+        int nLevels, pstdo::span<const int> vertexIndices,
+        pstdo::span<const Point3f> p, Allocator alloc )
     {
         std::vector<SDVertex*> vertices;
         std::vector<SDFace*> faces;
@@ -404,12 +406,8 @@ namespace pbrto
                 // Compute tangents of interior face
                 for ( int j = 0; j < valence; ++j )
                 {
-                    Float alpha = 2.f * Pi * j / valence;
-                    Float sinAlpha;
-                    Float cosAlpha;
-                    Math::SinCos( alpha, &sinAlpha, &cosAlpha );
-                    S += cosAlpha * Vector3f( pRing[ j ] );
-                    T += sinAlpha * Vector3f( pRing[ j ] );
+                    S += std::cos( 2 * Pi * j / valence ) * Vector3f( pRing[ j ] );
+                    T += std::sin( 2 * Pi * j / valence ) * Vector3f( pRing[ j ] );
                 }
             }
             else
@@ -426,11 +424,10 @@ namespace pbrto
                 else
                 {
                     Float theta = Pi / float( valence - 1 );
-                    T = Vector3f( Math::Sin( theta ) * ( pRing[ 0 ] + pRing[ valence - 1 ] ) );
-
+                    T = Vector3f( std::sin( theta ) * ( pRing[ 0 ] + pRing[ valence - 1 ] ) );
                     for ( int k = 1; k < valence - 1; ++k )
                     {
-                        Float wt = ( 2 * Math::Cos( theta ) - 2 ) * Math::Sin( ( k )*theta );
+                        Float wt = ( 2 * std::cos( theta ) - 2 ) * std::sin( ( k )*theta );
                         T += Vector3f( wt * pRing[ k ] );
                     }
                     T = -T;

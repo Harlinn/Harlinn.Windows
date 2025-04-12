@@ -67,7 +67,7 @@ namespace pbrto
                 for ( int digitValue = 0; digitValue < base; ++digitValue )
                 {
                     int index = digitIndex * base + digitValue;
-                    permutations[ index ] = PermutationElement( digitValue, base, static_cast< uint32_t >( dseed ) );
+                    permutations[ index ] = PermutationElement( digitValue, base, dseed );
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace pbrto
         {
             // Permute least significant digit from _a_ and update _reversedDigits_
             uint64_t next = a / base;
-            int digitValue = static_cast< int >( a - next * base );
+            int digitValue = a - next * base;
             reversedDigits = reversedDigits * base + perm.Permute( digitIndex, digitValue );
             invBaseM *= invBase;
             ++digitIndex;
@@ -179,8 +179,8 @@ namespace pbrto
         {
             // Compute Owen-scrambled digit for _digitIndex_
             uint64_t next = a / base;
-            int digitValue = static_cast< int >( a - next * base );
-            uint32_t digitHash = static_cast< uint32_t >( MixBits( hash ^ reversedDigits ) );
+            int digitValue = a - next * base;
+            uint32_t digitHash = MixBits( hash ^ reversedDigits );
             digitValue = PermutationElement( digitValue, base, digitHash );
             reversedDigits = reversedDigits * base + digitValue;
             invBaseM *= invBase;
@@ -305,28 +305,6 @@ namespace pbrto
     enum class RandomizeStrategy { None, PermuteDigits, FastOwen, Owen };
 
     std::string ToString( RandomizeStrategy r );
-}
-
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::RandomizeStrategy, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( pbrto::RandomizeStrategy value, FormatContext& ctx ) const
-        {
-            return std::format_to( ctx.out( ), "{}", pbrto::ToString( value ) );
-        }
-    };
-}
-
-namespace pbrto
-{
 
     PBRT_CPU_GPU
         inline uint64_t SobolIntervalToIndex( uint32_t m, uint64_t frame, Point2i p )

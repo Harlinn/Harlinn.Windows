@@ -14,53 +14,59 @@
 #include <map>
 #include <string>
 
-namespace pbrt
-{
-    struct MaterialEvalContext;
+namespace pbrt {
 
-    // Material Declarations
-    class CoatedDiffuseMaterial;
-    class CoatedConductorMaterial;
-    class ConductorMaterial;
-    class DielectricMaterial;
-    class DiffuseMaterial;
-    class DiffuseTransmissionMaterial;
-    class HairMaterial;
-    class MeasuredMaterial;
-    class SubsurfaceMaterial;
-    class ThinDielectricMaterial;
-    class MixMaterial;
+struct MaterialEvalContext;
 
-    // Material Definition
-    class Material : public TaggedPointer< CoatedDiffuseMaterial, CoatedConductorMaterial, ConductorMaterial, DielectricMaterial, DiffuseMaterial, DiffuseTransmissionMaterial, HairMaterial, MeasuredMaterial, SubsurfaceMaterial, ThinDielectricMaterial, MixMaterial >
-    {
-    public:
-        // Material Interface
-        using TaggedPointer::TaggedPointer;
+// Material Declarations
+class CoatedDiffuseMaterial;
+class CoatedConductorMaterial;
+class ConductorMaterial;
+class DielectricMaterial;
+class DiffuseMaterial;
+class DiffuseTransmissionMaterial;
+class HairMaterial;
+class MeasuredMaterial;
+class SubsurfaceMaterial;
+class ThinDielectricMaterial;
+class MixMaterial;
 
-        static Material Create( const std::string& name, const TextureParameterDictionary& parameters, Image* normalMap, /*const */ std::map<std::string, Material>& namedMaterials, const FileLoc* loc, Allocator alloc );
+// Material Definition
+class Material
+    : public TaggedPointer<  // Material Types
+          CoatedDiffuseMaterial, CoatedConductorMaterial, ConductorMaterial,
+          DielectricMaterial, DiffuseMaterial, DiffuseTransmissionMaterial, HairMaterial,
+          MeasuredMaterial, SubsurfaceMaterial, ThinDielectricMaterial, MixMaterial
 
-        std::string ToString( ) const;
+          > {
+  public:
+    // Material Interface
+    using TaggedPointer::TaggedPointer;
 
-        template <typename TextureEvaluator>
-        inline BSDF GetBSDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda, ScratchBuffer& buf ) const;
+    static Material Create(const std::string &name,
+                           const TextureParameterDictionary &parameters, Image *normalMap,
+                           /*const */ std::map<std::string, Material> &namedMaterials,
+                           const FileLoc *loc, Allocator alloc);
 
-        template <typename TextureEvaluator>
-        inline BSSRDF GetBSSRDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda, ScratchBuffer& buf ) const;
+    std::string ToString() const;
 
-        template <typename TextureEvaluator>
-        PBRT_CPU_GPU 
-        inline bool CanEvaluateTextures( TextureEvaluator texEval ) const;
+    template <typename TextureEvaluator>
+    inline BSDF GetBSDF(TextureEvaluator texEval, MaterialEvalContext ctx,
+                        SampledWavelengths &lambda, ScratchBuffer &buf) const;
 
-        PBRT_CPU_GPU 
-        inline const Image* GetNormalMap( ) const;
+    template <typename TextureEvaluator>
+    inline BSSRDF GetBSSRDF(TextureEvaluator texEval, MaterialEvalContext ctx,
+                            SampledWavelengths &lambda, ScratchBuffer &buf) const;
 
-        PBRT_CPU_GPU 
-        inline FloatTexture GetDisplacement( ) const;
+    template <typename TextureEvaluator>
+    PBRT_CPU_GPU inline bool CanEvaluateTextures(TextureEvaluator texEval) const;
 
-        PBRT_CPU_GPU 
-        inline bool HasSubsurfaceScattering( ) const;
-    };
+    PBRT_CPU_GPU inline const Image *GetNormalMap() const;
+
+    PBRT_CPU_GPU inline FloatTexture GetDisplacement() const;
+
+    PBRT_CPU_GPU inline bool HasSubsurfaceScattering() const;
+};
 
 }  // namespace pbrt
 

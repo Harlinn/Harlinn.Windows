@@ -48,21 +48,21 @@ namespace pbrto
 
     std::string TextureEvalContext::ToString( ) const
     {
-        return std::format(
-            "[ TextureEvalContext p: {} dpdx: {} dpdy: {} n: {} uv: {} dudx: {} dudy: {} "
-            "dvdx: {} dvdy: {} faceIndex: {} ]",
+        return StringPrintf(
+            "[ TextureEvalContext p: %s dpdx: %s dpdy: %s n: %s uv: %s dudx: %f dudy: %f "
+            "dvdx: %f dvdy: %f faceIndex: %d ]",
             p, dpdx, dpdy, n, uv, dudx, dudy, dvdx, dvdy, faceIndex );
     }
 
     std::string TexCoord2D::ToString( ) const
     {
-        return std::format( "[ TexCoord2D st: {} dsdx: {} dsdy: {} dtdx: {} dtdy: {} ]", st,
+        return StringPrintf( "[ TexCoord2D st: %s dsdx: %f dsdy: %f dtdx: %f dtdy: %f ]", st,
             dsdx, dsdy, dtdx, dtdy );
     }
 
     std::string TexCoord3D::ToString( ) const
     {
-        return std::format( "[ TexCoord3D p: {} dpdx: {} dpdy: {} ]", p, dpdx, dpdy );
+        return StringPrintf( "[ TexCoord3D p: %s dpdx: %s dpdy: %s ]", p, dpdx, dpdy );
     }
 
     TextureMapping2D TextureMapping2D::Create( const ParameterDictionary& parameters,
@@ -90,7 +90,7 @@ namespace pbrto
                 parameters.GetOneFloat( "udelta", 0.f ), parameters.GetOneFloat( "vdelta", 0.f ) );
         else
         {
-            Error( loc, "2D texture mapping \"{}\" unknown", type );
+            Error( loc, "2D texture mapping \"%s\" unknown", type );
             return alloc.new_object<UVMapping>( );
         }
     }
@@ -122,34 +122,34 @@ namespace pbrto
 
     std::string UVMapping::ToString( ) const
     {
-        return std::format( "[ UVMapping su: {} sv: {} du: {} dv: {} ]", su, sv, du, dv );
+        return StringPrintf( "[ UVMapping su: %f sv: %f du: %f dv: %f ]", su, sv, du, dv );
     }
 
     std::string SphericalMapping::ToString( ) const
     {
-        return std::format( "[ SphericalMapping textureFromRender: {} ]", textureFromRender );
+        return StringPrintf( "[ SphericalMapping textureFromRender: %s ]", textureFromRender );
     }
 
     std::string CylindricalMapping::ToString( ) const
     {
-        return std::format( "[ CylindricalMapping textureFromRender: {} ]",
+        return StringPrintf( "[ CylindricalMapping textureFromRender: %s ]",
             textureFromRender );
     }
 
     std::string PlanarMapping::ToString( ) const
     {
-        return std::format( "[ PlanarMapping vs: {} vt: {} ds: {} dt: {}]", vs, vt, ds, dt );
+        return StringPrintf( "[ PlanarMapping vs: %s vt: %s ds: %f dt: %f]", vs, vt, ds, dt );
     }
 
     std::string PointTransformMapping::ToString( ) const
     {
-        return std::format( "[ PointTransformMapping textureFromRender: {} ]",
+        return StringPrintf( "[ PointTransformMapping textureFromRender: %s ]",
             textureFromRender );
     }
 
     std::string FloatConstantTexture::ToString( ) const
     {
-        return std::format( "[ FloatConstantTexture value: {} ]", value );
+        return StringPrintf( "[ FloatConstantTexture value: %f ]", value );
     }
 
     FloatConstantTexture* FloatConstantTexture::Create(
@@ -161,7 +161,7 @@ namespace pbrto
 
     std::string SpectrumConstantTexture::ToString( ) const
     {
-        return std::format( "[ SpectrumConstantTexture value: {} ]", value );
+        return StringPrintf( "[ SpectrumConstantTexture value: %s ]", value );
     }
 
     SpectrumConstantTexture* SpectrumConstantTexture::Create(
@@ -188,8 +188,8 @@ namespace pbrto
 
     std::string FloatBilerpTexture::ToString( ) const
     {
-        return std::format(
-            "[ FloatBilerpTexture mapping: {} v00: {} v01: {} v10: {} v11: {} ]", mapping,
+        return StringPrintf(
+            "[ FloatBilerpTexture mapping: %s v00: %f v01: %f v10: %f v11: %f ]", mapping,
             v00, v01, v10, v11 );
     }
 
@@ -213,8 +213,8 @@ namespace pbrto
 
     std::string SpectrumBilerpTexture::ToString( ) const
     {
-        return std::format(
-            "[ SpectrumBilerpTexture mapping: {} v00: {} v01: {} v10: {} v11: {} ]", mapping,
+        return StringPrintf(
+            "[ SpectrumBilerpTexture mapping: %s v00: %s v01: %s v10: %s v11: %s ]", mapping,
             v00, v01, v10, v11 );
     }
 
@@ -266,7 +266,7 @@ namespace pbrto
         int dim = parameters.GetOneInt( "dimension", 2 );
         if ( dim != 2 && dim != 3 )
         {
-            Error( loc, "{} dimensional checkerboard texture not supported", dim );
+            Error( loc, "%d dimensional checkerboard texture not supported", dim );
             return nullptr;
         }
         FloatTexture tex1 = parameters.GetFloatTexture( "tex1", 1.f, alloc );
@@ -290,8 +290,8 @@ namespace pbrto
 
     std::string FloatCheckerboardTexture::ToString( ) const
     {
-        return std::format( "[ FloatCheckerboardTexture map2D: {} map3D: {} "
-            "tex[0]: {} tex[1]: {} ",
+        return StringPrintf( "[ FloatCheckerboardTexture map2D: %s map3D: %s "
+            "tex[0]: %s tex[1]: %s ",
             map2D ? map2D.ToString( ).c_str( ) : "(nullptr)",
             map3D ? map3D.ToString( ).c_str( ) : "(nullptr)", tex[ 0 ], tex[ 1 ] );
     }
@@ -303,7 +303,7 @@ namespace pbrto
         int dim = parameters.GetOneInt( "dimension", 2 );
         if ( dim != 2 && dim != 3 )
         {
-            Error( loc, "{} dimensional checkerboard texture not supported", dim );
+            Error( loc, "%d dimensional checkerboard texture not supported", dim );
             return nullptr;
         }
 
@@ -333,8 +333,8 @@ namespace pbrto
 
     std::string SpectrumCheckerboardTexture::ToString( ) const
     {
-        return std::format( "[ SpectrumCheckerboardTexture map2D: {} map3D: {} "
-            "tex[0]: {} tex[1]: {} ",
+        return StringPrintf( "[ SpectrumCheckerboardTexture map2D: %s map3D: %s "
+            "tex[0]: %s tex[1]: %s ",
             map2D ? map2D.ToString( ).c_str( ) : "(nullptr)",
             map3D ? map3D.ToString( ).c_str( ) : "(nullptr)", tex[ 0 ], tex[ 1 ] );
     }
@@ -353,7 +353,7 @@ namespace pbrto
             Float sCenter = sCell + maxShift * Noise( sCell + 1.5f, tCell + 2.8f );
             Float tCenter = tCell + maxShift * Noise( sCell + 4.5f, tCell + 9.8f );
             Vector2f dst = st - Point2f( sCenter, tCenter );
-            if ( LengthSquared( dst ) < Sqr( radius ) )
+            if ( ScalarLengthSquared( dst ) < Sqr( radius ) )
                 return true;
         }
         return false;
@@ -374,7 +374,7 @@ namespace pbrto
 
     std::string FloatDotsTexture::ToString( ) const
     {
-        return std::format( "[ FloatDotsTexture mapping: {} insideDot: {} outsideDot: {} ]",
+        return StringPrintf( "[ FloatDotsTexture mapping: %s insideDot: %s outsideDot: %s ]",
             mapping, insideDot, outsideDot );
     }
 
@@ -395,8 +395,8 @@ namespace pbrto
 
     std::string SpectrumDotsTexture::ToString( ) const
     {
-        return std::format(
-            "[ SpectrumDotsTexture mapping: {} insideDot: {} outsideDot: {} ]", mapping,
+        return StringPrintf(
+            "[ SpectrumDotsTexture mapping: %s insideDot: %s outsideDot: %s ]", mapping,
             insideDot, outsideDot );
     }
 
@@ -414,7 +414,7 @@ namespace pbrto
 
     std::string FBmTexture::ToString( ) const
     {
-        return std::format( "[ FBmTexture mapping: {} omega: {} octaves: {} ]", mapping,
+        return StringPrintf( "[ FBmTexture mapping: %s omega: %f octaves: %d ]", mapping,
             omega, octaves );
     }
 
@@ -453,22 +453,22 @@ namespace pbrto
 
     std::string SpectrumImageTexture::ToString( ) const
     {
-        return std::format( "[ SpectrumImageTexture filename: {} mapping: {} scale: {} "
-            "invert: {} mipmap: {} ]",
+        return StringPrintf( "[ SpectrumImageTexture filename: %s mapping: %s scale: %f "
+            "invert: %s mipmap: %s ]",
             filename, mapping, scale, invert, *mipmap );
     }
 
     std::string FloatImageTexture::ToString( ) const
     {
-        return std::format(
-            "[ FloatImageTexture filename: {} mapping: {} scale: {} invert: {} mipmap: {} ]",
+        return StringPrintf(
+            "[ FloatImageTexture filename: %s mapping: %s scale: %f invert: %s mipmap: %s ]",
             filename, mapping, scale, invert, *mipmap );
     }
 
     std::string TexInfo::ToString( ) const
     {
-        return std::format(
-            "[ TexInfo filename: {} filterOptions: {} wrapMode: {} encoding: {} ]", filename,
+        return StringPrintf(
+            "[ TexInfo filename: %s filterOptions: %s wrapMode: %s encoding: %s ]", filename,
             filterOptions, wrapMode, encoding );
     }
 
@@ -492,12 +492,12 @@ namespace pbrto
         if ( ff )
             filterOptions.filter = *ff;
         else
-            Error( loc, "{}: filter function unknown", filter );
+            Error( loc, "%s: filter function unknown", filter );
 
         std::string wrapString = parameters.GetOneString( "wrap", "repeat" );
         pstdo::optional<WrapMode> wrapMode = ParseWrapMode( wrapString.c_str( ) );
         if ( !wrapMode )
-            ErrorExit( "{}: wrap mode unknown", wrapString );
+            ErrorExit( "%s: wrap mode unknown", wrapString );
         Float scale = parameters.GetOneFloat( "scale", 1.f );
         bool invert = parameters.GetOneBool( "invert", false );
         std::string filename = ResolveFilename( parameters.GetOneString( "filename", "" ) );
@@ -527,12 +527,12 @@ namespace pbrto
         if ( ff )
             filterOptions.filter = *ff;
         else
-            Error( loc, "{}: filter function unknown", filter );
+            Error( loc, "%s: filter function unknown", filter );
 
         std::string wrapString = parameters.GetOneString( "wrap", "repeat" );
         pstdo::optional<WrapMode> wrapMode = ParseWrapMode( wrapString.c_str( ) );
         if ( !wrapMode )
-            ErrorExit( "{}: wrap mode unknown", wrapString );
+            ErrorExit( "%s: wrap mode unknown", wrapString );
         Float scale = parameters.GetOneFloat( "scale", 1.f );
         bool invert = parameters.GetOneBool( "invert", false );
         std::string filename = ResolveFilename( parameters.GetOneString( "filename", "" ) );
@@ -554,8 +554,7 @@ namespace pbrto
         c.p *= scale;
         Float marble =
             c.p.y + variation * FBm( c.p, scale * c.dpdx, scale * c.dpdy, omega, octaves );
-        Float t = .5f + .5f * Math::Sin( marble );
-
+        Float t = .5f + .5f * std::sin( marble );
         // Evaluate marble spline at $t$ to compute color _rgb_
         const RGB colors[ ] = {
             {.58f, .58f, .6f}, {.58f, .58f, .6f}, {.58f, .58f, .6f},
@@ -576,8 +575,8 @@ namespace pbrto
 
     std::string MarbleTexture::ToString( ) const
     {
-        return std::format( "[ MarbleTexture mapping: {} octaves: {} omega: {} "
-            "scale: {} variation: {} ]",
+        return StringPrintf( "[ MarbleTexture mapping: %s octaves: %d omega: %f "
+            "scale: %f variation: %f ]",
             mapping, octaves, omega, scale, variation );
     }
 
@@ -596,13 +595,13 @@ namespace pbrto
     // MixTexture Method Definitions
     std::string FloatMixTexture::ToString( ) const
     {
-        return std::format( "[ FloatMixTexture tex1: {} tex2: {} amount: {} ]", tex1, tex2,
+        return StringPrintf( "[ FloatMixTexture tex1: %s tex2: %s amount: %s ]", tex1, tex2,
             amount );
     }
 
     std::string SpectrumMixTexture::ToString( ) const
     {
-        return std::format( "[ SpectrumMixTexture tex1: {} tex2: {} amount: {} ]", tex1, tex2,
+        return StringPrintf( "[ SpectrumMixTexture tex1: %s tex2: %s amount: %s ]", tex1, tex2,
             amount );
     }
 
@@ -630,13 +629,13 @@ namespace pbrto
 
     std::string FloatDirectionMixTexture::ToString( ) const
     {
-        return std::format( "[ FloatDirectionMixTexture tex1: {} tex2: {} dir: {} ]", tex1,
+        return StringPrintf( "[ FloatDirectionMixTexture tex1: %s tex2: %s dir: %s ]", tex1,
             tex2, dir );
     }
 
     std::string SpectrumDirectionMixTexture::ToString( ) const
     {
-        return std::format( "[ SpectrumDirectionMixTexture tex1: {} tex2: {} dir: {} ]", tex1,
+        return StringPrintf( "[ SpectrumDirectionMixTexture tex1: %s tex2: %s dir: %s ]", tex1,
             tex2, dir );
     }
 
@@ -676,7 +675,7 @@ namespace pbrto
 
     struct : public PtexErrorHandler
     {
-        void reportError( const char* error ) override { Error( "{}", error ); }
+        void reportError( const char* error ) override { Error( "%s", error ); }
     } errorHandler;
 
     // PtexTexture Method Definitions
@@ -704,11 +703,11 @@ namespace pbrto
         Ptex::String error;
         Ptex::PtexTexture* texture = cache->get( filename.c_str( ), error );
         if ( !texture )
-            Error( "{}", error.c_str() );
+            Error( "%s", error );
         else
         {
             if ( texture->numChannels( ) != 1 && texture->numChannels( ) != 3 )
-                Error( "{}: only one and three channel ptex textures are supported", filename );
+                Error( "%s: only one and three channel ptex textures are supported", filename );
             else
                 valid = true;
             texture->release( );
@@ -761,8 +760,7 @@ namespace pbrto
 
             // Handle Float == double.
             Float fResult[ 3 ];
-            //encoding.ToLinear( pstdo::MakeConstSpan( result8, nc ), pstdo::MakeSpan( fResult, nc ) );
-            encoding.ToLinear( std::span<const uint8_t>( result8, nc ), std::span( fResult, nc ) );
+            encoding.ToLinear( pstdo::MakeConstSpan( result8, nc ), pstdo::MakeSpan( fResult, nc ) );
             for ( int c = 0; c < nc; ++c )
                 result[ c ] = fResult[ c ];
         }
@@ -775,24 +773,24 @@ namespace pbrto
 
     std::string PtexTextureBase::BaseToString( ) const
     {
-        return std::format( "valid: {} filename: {} encoding: {} scale: {}", valid, filename,
+        return StringPrintf( "valid: %s filename: %s encoding: %s scale: %f", valid, filename,
             encoding, scale );
     }
 
     std::string FloatPtexTexture::ToString( ) const
     {
-        return std::format( "[ FloatPtexTexture {} ]", BaseToString( ) );
+        return StringPrintf( "[ FloatPtexTexture %s ]", BaseToString( ) );
     }
 
     std::string SpectrumPtexTexture::ToString( ) const
     {
-        return std::format( "[ SpectrumPtexTexture {} ]", BaseToString( ) );
+        return StringPrintf( "[ SpectrumPtexTexture %s ]", BaseToString( ) );
     }
 
     Float FloatPtexTexture::Evaluate( TextureEvalContext ctx ) const
     {
 #ifdef PBRT_IS_GPU_CODE
-        LOG_FATAL( "Ptex not supported with GPU renderer" );
+        NLOG_FATAL( "Ptex not supported with GPU renderer" );
         return 0;
 #else
         float result[ 3 ];
@@ -808,7 +806,7 @@ namespace pbrto
         SampledWavelengths lambda ) const
     {
 #ifdef PBRT_IS_GPU_CODE
-        LOG_FATAL( "Ptex not supported with GPU renderer" );
+        NLOG_FATAL( "Ptex not supported with GPU renderer" );
         return SampledSpectrum( 0 );
 #else
         float result[ 3 ];
@@ -914,7 +912,7 @@ namespace pbrto
 
     std::string GPUFloatPtexTexture::ToString( ) const
     {
-        return std::format( "[ GPUFloatPtexTexture faceValues: {} ]", faceValues );
+        return StringPrintf( "[ GPUFloatPtexTexture faceValues: %s ]", faceValues );
     }
 
     GPUSpectrumPtexTexture::GPUSpectrumPtexTexture( const std::string& filename,
@@ -988,19 +986,19 @@ namespace pbrto
 
     std::string GPUSpectrumPtexTexture::ToString( ) const
     {
-        return std::format( "[ GPUSpectrumPtexTexture spectrumType: {} faceValues: {} ]",
+        return StringPrintf( "[ GPUSpectrumPtexTexture spectrumType: %s faceValues: %s ]",
             spectrumType, faceValues );
     }
 
     // ScaledTexture Method Definitions
     std::string FloatScaledTexture::ToString( ) const
     {
-        return std::format( "[ FloatScaledTexture tex: {} scale: {} ]", tex, scale );
+        return StringPrintf( "[ FloatScaledTexture tex: %s scale: %s ]", tex, scale );
     }
 
     std::string SpectrumScaledTexture::ToString( ) const
     {
-        return std::format( "[ SpectrumScaledTexture tex: {} scale: {} ]", tex, scale );
+        return StringPrintf( "[ SpectrumScaledTexture tex: %s scale: %s ]", tex, scale );
     }
 
     FloatTexture FloatScaledTexture::Create( const Transform& renderFromTexture,
@@ -1086,7 +1084,7 @@ namespace pbrto
     // WindyTexture Method Definitions
     std::string WindyTexture::ToString( ) const
     {
-        return std::format( "[ WindyTexture mapping: {} ]", mapping );
+        return StringPrintf( "[ WindyTexture mapping: %s ]", mapping );
     }
 
     WindyTexture* WindyTexture::Create( const Transform& renderFromTexture,
@@ -1102,8 +1100,8 @@ namespace pbrto
     // WrinkledTexture Method Definitions
     std::string WrinkledTexture::ToString( ) const
     {
-        return std::format( "[ WrinkledTexture mapping: {} octaves: {} "
-            "omega: {} ]",
+        return StringPrintf( "[ WrinkledTexture mapping: %s octaves: %d "
+            "omega: %f ]",
             mapping, octaves, omega );
     }
 
@@ -1161,7 +1159,7 @@ namespace pbrto
                 channelDesc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
                 break;
             default:
-                LOG_FATAL( "Unhandled PixelFormat" );
+                NLOG_FATAL( "Unhandled PixelFormat" );
         }
 
         MIPMap mipmap( image, colorSpace, WrapMode::Clamp /* TODO */, Allocator( ),
@@ -1193,7 +1191,7 @@ namespace pbrto
                     pitch = levelImage.Resolution( ).x * sizeof( float );
                     break;
                 default:
-                    LOG_FATAL( "Unhandled PixelFormat" );
+                    NLOG_FATAL( "Unhandled PixelFormat" );
             }
 
             gpuImageTextureBytes += pitch * levelImage.Resolution( ).y;
@@ -1215,7 +1213,7 @@ namespace pbrto
         else if ( mode == "black" )
             return cudaAddressModeBorder;
         else
-            ErrorExit( "{}: texture wrap mode not supported", mode );
+            ErrorExit( "%s: texture wrap mode not supported", mode );
     }
 
     GPUSpectrumImageTexture* GPUSpectrumImageTexture::Create(
@@ -1231,12 +1229,12 @@ namespace pbrto
         if ( ff )
             filterOptions.filter = *ff;
         else
-            Error( loc, "{}: filter function unknown", filter );
+            Error( loc, "%s: filter function unknown", filter );
 
         std::string wrapString = parameters.GetOneString( "wrap", "repeat" );
         pstdo::optional<WrapMode> wrapMode = ParseWrapMode( wrapString.c_str( ) );
         if ( !wrapMode )
-            ErrorExit( "{}: wrap mode unknown", wrapString );
+            ErrorExit( "%s: wrap mode unknown", wrapString );
         Float scale = parameters.GetOneFloat( "scale", 1.f );
         bool invert = parameters.GetOneBool( "invert", false );
         std::string filename = ResolveFilename( parameters.GetOneString( "filename", "" ) );
@@ -1256,7 +1254,7 @@ namespace pbrto
         auto rgbIter = rgbTextureCache.find( filename );
         if ( rgbIter != rgbTextureCache.end( ) )
         {
-            LOG_VERBOSE( "Found {} in RGB tex array cache!", filename );
+            NLOG_VERBOSE( "Found %s in RGB tex array cache!", filename );
             mipArray = rgbIter->second.mipArray;
             readMode = rgbIter->second.readMode;
             nMIPMapLevels = rgbIter->second.nMIPMapLevels;
@@ -1270,7 +1268,7 @@ namespace pbrto
             // GPUFloatImageTexture converted it to single channel
             if ( lumIter != lumTextureCache.end( ) && lumIter->second.originallySingleChannel )
             {
-                LOG_VERBOSE( "Found {} in luminance tex array cache!", filename );
+                NLOG_VERBOSE( "Found %s in luminance tex array cache!", filename );
                 mipArray = lumIter->second.mipArray;
                 readMode = lumIter->second.readMode;
                 nMIPMapLevels = lumIter->second.nMIPMapLevels;
@@ -1424,7 +1422,7 @@ namespace pbrto
                                 break;
                             }
                             default:
-                                LOG_FATAL( "Unexpected PixelFormat" );
+                                NLOG_FATAL( "Unexpected PixelFormat" );
                         }
 
                         textureCacheMutex.lock( );
@@ -1445,7 +1443,7 @@ namespace pbrto
                     }
                     else
                     {
-                        Warning( loc, "{}: unable to decipher image format", filename );
+                        Warning( loc, "%s: unable to decipher image format", filename );
                         return nullptr;
                     }
                 }  // profile scope
@@ -1486,8 +1484,8 @@ namespace pbrto
 
     std::string GPUSpectrumImageTexture::ToString( ) const
     {
-        return std::format(
-            "[ GPUSpectrumImageTexture filename: {} mapping: {} scale: {} invert: {} ]",
+        return StringPrintf(
+            "[ GPUSpectrumImageTexture filename: %s mapping: %s scale: %f invert: %s ]",
             filename, mapping, scale, invert );
     }
 
@@ -1504,12 +1502,12 @@ namespace pbrto
         if ( ff )
             filterOptions.filter = *ff;
         else
-            Error( loc, "{}: filter function unknown", filter );
+            Error( loc, "%s: filter function unknown", filter );
 
         std::string wrapString = parameters.GetOneString( "wrap", "repeat" );
         pstdo::optional<WrapMode> wrapMode = ParseWrapMode( wrapString.c_str( ) );
         if ( !wrapMode )
-            ErrorExit( "{}: wrap mode unknown", wrapString );
+            ErrorExit( "%s: wrap mode unknown", wrapString );
         Float scale = parameters.GetOneFloat( "scale", 1.f );
         bool invert = parameters.GetOneBool( "invert", false );
         std::string filename = ResolveFilename( parameters.GetOneString( "filename", "" ) );
@@ -1526,7 +1524,7 @@ namespace pbrto
         auto iter = lumTextureCache.find( filename );
         if ( iter != lumTextureCache.end( ) )
         {
-            LOG_VERBOSE( "Found {} in luminance tex array cache!", filename );
+            NLOG_VERBOSE( "Found %s in luminance tex array cache!", filename );
             mipArray = iter->second.mipArray;
             readMode = iter->second.readMode;
             nMIPMapLevels = iter->second.nMIPMapLevels;
@@ -1573,7 +1571,7 @@ namespace pbrto
                     convertedImage = true;
                 }
                 else
-                    ErrorExit( loc, "{}: {} channel image, without RGB channels.", filename,
+                    ErrorExit( loc, "%s: %d channel image, without RGB channels.", filename,
                         image.NChannels( ) );
             }
 
@@ -1620,8 +1618,8 @@ namespace pbrto
 
     std::string GPUFloatImageTexture::ToString( ) const
     {
-        return std::format(
-            "[ GPUFloatImageTexture filename: {} mapping: {} scale: {} invert: {} ]",
+        return StringPrintf(
+            "[ GPUFloatImageTexture filename: %s mapping: %s scale: %f invert: %s ]",
             filename, mapping, scale, invert );
     }
 
@@ -1670,10 +1668,10 @@ namespace pbrto
                 tex = FloatPtexTexture::Create( renderFromTexture, parameters, loc, alloc );
         }
         else
-            ErrorExit( loc, "{}: float texture type unknown.", name );
+            ErrorExit( loc, "%s: float texture type unknown.", name );
 
         if ( !tex )
-            ErrorExit( loc, "{}: unable to create texture.", name );
+            ErrorExit( loc, "%s: unable to create texture.", name );
 
         ++nTextures;
 
@@ -1730,10 +1728,10 @@ namespace pbrto
                     loc, alloc );
         }
         else
-            ErrorExit( loc, "{}: spectrum texture type unknown.", name );
+            ErrorExit( loc, "%s: spectrum texture type unknown.", name );
 
         if ( !tex )
-            ErrorExit( loc, "{}: unable to create texture.", name );
+            ErrorExit( loc, "%s: unable to create texture.", name );
 
         ++nTextures;
 

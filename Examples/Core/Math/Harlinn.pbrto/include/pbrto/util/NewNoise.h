@@ -28,11 +28,16 @@
 namespace pbrto
 {
 
-    PBRTO_EXPORT Float Noise( Float x, Float y = .5f, Float z = .5f );
-    PBRTO_EXPORT Float Noise( const Point3f& p );
-    PBRTO_EXPORT Vector3f DNoise( const Point3f& p );
-    PBRTO_EXPORT Float FBm( const Point3f& p, const Vector3f& dpdx, const Vector3f& dpdy, Float omega, int octaves );
-    PBRTO_EXPORT Float Turbulence( const Point3f& p, const Vector3f& dpdx, const Vector3f& dpdy, Float omega, int octaves );
+    PBRT_CPU_GPU
+        Float Noise( Float x, Float y = .5f, Float z = .5f );
+    PBRT_CPU_GPU
+        Float Noise( Point3f p );
+    PBRT_CPU_GPU
+        Vector3f DNoise( Point3f p );
+    PBRT_CPU_GPU
+        Float FBm( Point3f p, Vector3f dpdx, Vector3f dpdy, Float omega, int octaves );
+    PBRT_CPU_GPU
+        Float Turbulence( Point3f p, Vector3f dpdx, Vector3f dpdy, Float omega, int octaves );
 
 }
 

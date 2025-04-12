@@ -202,7 +202,7 @@ namespace pbrto
                 if ( p->bools.empty( ) )
                     ErrorExit(
                         &p->loc,
-                        "\"{}\": non-Boolean values provided for Boolean-valued parameter",
+                        "\"%s\": non-Boolean values provided for Boolean-valued parameter",
                         p->name );
             }
             else if ( p->type == ParameterTypeTraits<ParameterType::Float>::typeName ||
@@ -217,7 +217,7 @@ namespace pbrto
                 if ( p->ints.empty( ) && p->floats.empty( ) )
                     ErrorExit(
                         &p->loc,
-                        "\"{}\": non-numeric values provided for numeric-valued parameter",
+                        "\"%s\": non-numeric values provided for numeric-valued parameter",
                         p->name );
             }
             else if ( p->type == ParameterTypeTraits<ParameterType::String>::typeName ||
@@ -226,19 +226,19 @@ namespace pbrto
                 if ( p->strings.empty( ) )
                     ErrorExit(
                         &p->loc,
-                        "\"{}\": non-string values provided for string-valued parameter",
+                        "\"%s\": non-string values provided for string-valued parameter",
                         p->name );
             }
             else if ( p->type == "spectrum" )
             {
                 if ( p->strings.empty( ) && p->ints.empty( ) && p->floats.empty( ) )
                     ErrorExit( &p->loc,
-                        "\"{}\": expecting string or numeric-valued parameter for "
+                        "\"%s\": expecting string or numeric-valued parameter for "
                         "spectrum parameter",
                         p->name );
             }
             else
-                ErrorExit( &p->loc, "\"{}\": unknown parameter type", p->type );
+                ErrorExit( &p->loc, "\"%s\": unknown parameter type", p->type );
         }
     }
 
@@ -264,9 +264,9 @@ namespace pbrto
 
             // Issue error if an incorrect number of parameter values were provided
             if ( values.empty( ) )
-                ErrorExit( &p->loc, "No values provided for parameter \"{}\".", name );
+                ErrorExit( &p->loc, "No values provided for parameter \"%s\".", name );
             if ( values.size( ) != traits::nPerItem )
-                ErrorExit( &p->loc, "Expected {} values for parameter \"{}\".",
+                ErrorExit( &p->loc, "Expected %d values for parameter \"%s\".",
                     traits::nPerItem, name );
 
             // Return parameter values as _ReturnType_
@@ -336,7 +336,7 @@ namespace pbrto
             if ( !s.empty( ) )
             {
                 if ( s.size( ) > 1 )
-                    ErrorExit( &p->loc, "More than one value provided for parameter \"{}\".",
+                    ErrorExit( &p->loc, "More than one value provided for parameter \"%s\".",
                         name );
                 return s[ 0 ];
             }
@@ -357,9 +357,9 @@ namespace pbrto
         C convert )
     {
         if ( values.empty( ) )
-            ErrorExit( &param.loc, "No values provided for \"{}\".", param.name );
+            ErrorExit( &param.loc, "No values provided for \"%s\".", param.name );
         if ( values.size( ) % nPerItem )
-            ErrorExit( &param.loc, "Number of values provided for \"{}\" not a multiple of {}",
+            ErrorExit( &param.loc, "Number of values provided for \"%s\" not a multiple of %d",
                 param.name, nPerItem );
 
         param.lookedUp = true;
@@ -465,12 +465,12 @@ namespace pbrto
                         const RGBColorSpace& cs =
                             param.colorSpace ? *param.colorSpace : *colorSpace;
                         if ( rgb.r < 0 || rgb.g < 0 || rgb.b < 0 )
-                            ErrorExit( loc, "RGB parameter \"{}\" has negative component.",
+                            ErrorExit( loc, "RGB parameter \"%s\" has negative component.",
                                 param.name );
                         if ( spectrumType == SpectrumType::Albedo )
                         {
                             if ( rgb.r > 1 || rgb.g > 1 || rgb.b > 1 )
-                                ErrorExit( loc, "RGB parameter \"{}\" has > 1 component.",
+                                ErrorExit( loc, "RGB parameter \"%s\" has > 1 component.",
                                     param.name );
                             return alloc.new_object<RGBAlbedoSpectrum>( cs, rgb );
                         }
@@ -493,7 +493,7 @@ namespace pbrto
         else if ( param.type == "spectrum" && !param.floats.empty( ) )
         {
             if ( param.floats.size( ) % 2 != 0 )
-                ErrorExit( &param.loc, "Found odd number of values for \"{}\"", param.name );
+                ErrorExit( &param.loc, "Found odd number of values for \"%s\"", param.name );
 
             int nSamples = param.floats.size( ) / 2;
             if ( nSamples == 1 )
@@ -510,8 +510,8 @@ namespace pbrto
                         {
                             if ( i > 0 && v[ 2 * i ] <= lambda[ i - 1 ] )
                                 ErrorExit( &param.loc,
-                                    "Spectrum description invalid: at {}'th entry, "
-                                    "wavelengths aren't increasing: {} >= {}.",
+                                    "Spectrum description invalid: at %d'th entry, "
+                                    "wavelengths aren't increasing: %f >= %f.",
                                     i - 1, lambda[ i - 1 ], v[ 2 * i ] );
                             lambda[ i ] = v[ 2 * i ];
                             value[ i ] = v[ 2 * i + 1 ];
@@ -529,7 +529,7 @@ namespace pbrto
 
                     spd = readSpectrumFromFile( *s, alloc );
                     if ( !spd )
-                        ErrorExit( &param.loc, "{}: unable to read valid spectrum file", *s );
+                        ErrorExit( &param.loc, "%s: unable to read valid spectrum file", *s );
                     return spd;
                 } );
 
@@ -566,9 +566,9 @@ namespace pbrto
                 continue;
 
             if ( p->strings.empty( ) )
-                ErrorExit( &p->loc, "No string values provided for parameter \"{}\".", name );
+                ErrorExit( &p->loc, "No string values provided for parameter \"%s\".", name );
             if ( p->strings.size( ) > 1 )
-                ErrorExit( &p->loc, "More than one value provided for parameter \"{}\".",
+                ErrorExit( &p->loc, "More than one value provided for parameter \"%s\".",
                     name );
             p->lookedUp = true;
             return p->strings[ 0 ];
@@ -584,7 +584,7 @@ namespace pbrto
             if ( p->name == name && p->type == "rgb" )
             {
                 if ( p->floats.size( ) % 3 )
-                    ErrorExit( &p->loc, "Number of values given for \"rgb\" parameter {} "
+                    ErrorExit( &p->loc, "Number of values given for \"rgb\" parameter %d "
                         "\"name\" isn't a multiple of 3." );
 
                 std::vector<RGB> rgb( p->floats.size( ) / 3 );
@@ -606,7 +606,7 @@ namespace pbrto
             if ( p->name == name && p->type == "rgb" )
             {
                 if ( p->floats.size( ) < 3 )
-                    ErrorExit( &p->loc, "Insufficient values for \"rgb\" parameter \"{}\".",
+                    ErrorExit( &p->loc, "Insufficient values for \"rgb\" parameter \"%s\".",
                         p->name );
                 return RGB( p->floats[ 0 ], p->floats[ 1 ], p->floats[ 2 ] );
             }
@@ -749,14 +749,14 @@ namespace pbrto
                 // It's shadowed by another parameter; that's fine.
             }
             else
-                ErrorExit( &p->loc, "\"{}\": unused parameter.", p->name );
+                ErrorExit( &p->loc, "\"%s\": unused parameter.", p->name );
         }
     }
 
     std::string ParameterDictionary::ToParameterDefinition( const ParsedParameter* p,
         int indentCount )
     {
-        std::string s = std::format( "\"{} {}\" [ ", p->type, p->name );
+        std::string s = StringPrintf( "\"%s %s\" [ ", p->type, p->name );
         int continuationIndent = indentCount + 10 + p->type.size( ) + p->name.size( );
         int column = indentCount + 4 + s.size( );
         auto printOne = [ & ]( const std::string& val ) {
@@ -771,9 +771,9 @@ namespace pbrto
             };
 
         for ( Float v : p->floats )
-            printOne( std::format( "{} ", v ) );
+            printOne( StringPrintf( "%f ", v ) );
         for ( int i : p->ints )
-            printOne( std::format( "{} ", i ) );
+            printOne( StringPrintf( "%i ", i ) );
         for ( const auto& str : p->strings )
             printOne( '"' + str + "\" " );
         for ( bool b : p->bools )
@@ -811,7 +811,7 @@ namespace pbrto
         {
             s += "[ " + p->ToString( ) + "] ";
         }
-        s += std::format( "colorSpace: {} ",
+        s += StringPrintf( "colorSpace: %s ",
             colorSpace ? colorSpace->ToString( ).c_str( ) : "<nullptr>" );
         s += "]";
         return s;
@@ -980,11 +980,11 @@ namespace pbrto
             if ( p->type == "texture" )
             {
                 if ( p->strings.empty( ) )
-                    ErrorExit( &p->loc, "No texture name provided for parameter \"{}\".",
+                    ErrorExit( &p->loc, "No texture name provided for parameter \"%s\".",
                         name );
                 if ( p->strings.size( ) != 1 )
                     ErrorExit( &p->loc,
-                        "More than one texture name provided for parameter \"{}\".",
+                        "More than one texture name provided for parameter \"%s\".",
                         name );
 
                 p->lookedUp = true;
@@ -993,20 +993,20 @@ namespace pbrto
                     return iter->second;
 
                 ErrorExit( &p->loc,
-                    R"(Couldn't find spectrum texture named "{}" for parameter "{}")",
+                    R"(Couldn't find spectrum texture named "%s" for parameter "%s")",
                     p->strings[ 0 ], p->name );
             }
             else if ( p->type == "rgb" )
             {
                 if ( p->floats.size( ) != 3 )
                     ErrorExit( &p->loc,
-                        "Didn't find three values for \"rgb\" parameter \"{}\".",
+                        "Didn't find three values for \"rgb\" parameter \"%s\".",
                         p->name );
                 p->lookedUp = true;
 
                 RGB rgb( p->floats[ 0 ], p->floats[ 1 ], p->floats[ 2 ] );
                 if ( rgb.r < 0 || rgb.g < 0 || rgb.b < 0 )
-                    ErrorExit( &p->loc, "Negative value provided for RGB parameter \"{}\".",
+                    ErrorExit( &p->loc, "Negative value provided for RGB parameter \"%s\".",
                         p->name );
                 Spectrum s;
                 if ( spectrumType == SpectrumType::Illuminant )
@@ -1018,7 +1018,7 @@ namespace pbrto
                     NCHECK( spectrumType == SpectrumType::Albedo );
                     if ( rgb.r > 1 || rgb.g > 1 || rgb.b > 1 )
                         ErrorExit( &p->loc,
-                            "RGB parameter \"{}\" used as an albedo has > 1 component.",
+                            "RGB parameter \"%s\" used as an albedo has > 1 component.",
                             p->name );
                     s = alloc.new_object<RGBAlbedoSpectrum>( *dict->ColorSpace( ), rgb );
                 }
@@ -1054,11 +1054,11 @@ namespace pbrto
             if ( p->type == "texture" )
             {
                 if ( p->strings.empty( ) )
-                    ErrorExit( &p->loc, "No texture name provided for parameter \"{}\".",
+                    ErrorExit( &p->loc, "No texture name provided for parameter \"%s\".",
                         name );
                 if ( p->strings.size( ) != 1 )
                     ErrorExit( &p->loc,
-                        "More than one texture name provided for parameter \"{}\".",
+                        "More than one texture name provided for parameter \"%s\".",
                         name );
 
                 p->lookedUp = true;
@@ -1067,7 +1067,7 @@ namespace pbrto
                     return iter->second;
 
                 ErrorExit( &p->loc,
-                    R"(Couldn't find float texture named "{}" for parameter "{}")",
+                    R"(Couldn't find float texture named "%s" for parameter "%s")",
                     p->strings[ 0 ], p->name );
             }
             else if ( p->type == "float" )

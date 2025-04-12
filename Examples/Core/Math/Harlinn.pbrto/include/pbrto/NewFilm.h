@@ -93,7 +93,6 @@ namespace pbrto
             }
 
             // Initialize _XYZFromSensorRGB_ using linear least squares
-
             pstdo::optional<SquareMatrix<3>> m =
                 LinearLeastSquares( rgbCamera, xyzOutput, nSwatchReflectances );
             if ( !m )
@@ -227,7 +226,8 @@ namespace pbrto
             NCHECK_LE( pixelBounds.pMax.x, fullResolution.x );
             NCHECK_GE( pixelBounds.pMin.y, 0 );
             NCHECK_LE( pixelBounds.pMax.y, fullResolution.y );
-            NLOG_VERBOSE( "Created film with full resolution {}, pixelBounds {}", fullResolution, pixelBounds );
+            NLOG_VERBOSE( "Created film with full resolution %s, pixelBounds %s",
+                fullResolution, pixelBounds );
         }
 
         PBRT_CPU_GPU

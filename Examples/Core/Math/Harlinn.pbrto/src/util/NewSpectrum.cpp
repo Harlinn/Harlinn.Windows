@@ -39,6 +39,8 @@
 #include <cmath>
 #include <map>
 
+#pragma warning( disable : 4305 )
+
 // I don't know how this is happening (somehow via wingdi.h?), but not cool,
 // Windows, not cool...
 #ifdef RGB
@@ -113,15 +115,16 @@ namespace pbrto
     {
         std::string name = FindMatchingNamedSpectrum( this );
         if ( !name.empty( ) )
-            return std::format( "\"{}\"", name );
+            return StringPrintf( "\"%s\"", name );
 
         std::string ret = "[ PiecewiseLinearSpectrum ";
         for ( size_t i = 0; i < lambdas.size( ); ++i )
-            ret += std::format( "{} {} ", lambdas[ i ], values[ i ] );
+            ret += StringPrintf( "%f %f ", lambdas[ i ], values[ i ] );
         return ret + " ]";
     }
 
-    pstdo::optional<Spectrum> PiecewiseLinearSpectrum::Read( const std::string& fn, Allocator alloc )
+    pstdo::optional<Spectrum> PiecewiseLinearSpectrum::Read( const std::string& fn,
+        Allocator alloc )
     {
         std::vector<Float> vals = ReadFloatFile( fn );
         if ( vals.empty( ) )
@@ -192,7 +195,7 @@ namespace pbrto
 
     std::string BlackbodySpectrum::ToString( ) const
     {
-        return std::format( "[ BlackbodySpectrum T: {} ]", T );
+        return StringPrintf( "[ BlackbodySpectrum T: %f ]", T );
     }
 
     PBRT_CPU_GPU SampledSpectrum ConstantSpectrum::Sample( const SampledWavelengths& ) const
@@ -202,16 +205,16 @@ namespace pbrto
 
     std::string ConstantSpectrum::ToString( ) const
     {
-        return std::format( "[ ConstantSpectrum c: {} ]", c );
+        return StringPrintf( "[ ConstantSpectrum c: %f ]", c );
     }
 
     std::string DenselySampledSpectrum::ToString( ) const
     {
-        std::string s = std::format( "[ DenselySampledSpectrum lambda_min: {} lambda_max: {} "
+        std::string s = StringPrintf( "[ DenselySampledSpectrum lambda_min: %d lambda_max: %d "
             "values: [ ",
             lambda_min, lambda_max );
         for ( int i = 0; i < values.size( ); ++i )
-            s += std::format( "{} ", values[ i ] );
+            s += StringPrintf( "%f ", values[ i ] );
         s += "] ]";
         return s;
     }
@@ -221,7 +224,7 @@ namespace pbrto
         std::string str = "[ ";
         for ( int i = 0; i < NSpectrumSamples; ++i )
         {
-            str += std::format( "{}", values[ i ] );
+            str += StringPrintf( "%f", values[ i ] );
             if ( i + 1 < NSpectrumSamples )
                 str += ", ";
         }
@@ -233,15 +236,15 @@ namespace pbrto
     {
         std::string r = "[ SampledWavelengths lambda: [";
         for ( size_t i = 0; i < lambda.size( ); ++i )
-            r += std::format( " {}{}", lambda[ i ], i != lambda.size( ) - 1 ? ',' : ' ' );
+            r += StringPrintf( " %f%c", lambda[ i ], i != lambda.size( ) - 1 ? ',' : ' ' );
         r += "] pdf: [";
         for ( size_t i = 0; i < lambda.size( ); ++i )
-            r += std::format( " {}{}", pdf[ i ], i != pdf.size( ) - 1 ? ',' : ' ' );
+            r += StringPrintf( " %f%c", pdf[ i ], i != pdf.size( ) - 1 ? ',' : ' ' );
         r += "] ]";
         return r;
     }
 
-    XYZ SampledSpectrum::ToXYZ( const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU XYZ SampledSpectrum::ToXYZ( const SampledWavelengths& lambda ) const
     {
         // Sample the $X$, $Y$, and $Z$ matching curves at _lambda_
         SampledSpectrum X = Spectra::X( ).Sample( lambda );
@@ -255,35 +258,35 @@ namespace pbrto
             CIE_Y_integral;
     }
 
-    Float SampledSpectrum::y( const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU Float SampledSpectrum::y( const SampledWavelengths& lambda ) const
     {
         SampledSpectrum Ys = Spectra::Y( ).Sample( lambda );
         SampledSpectrum pdf = lambda.PDF( );
         return SafeDiv( Ys * *this, pdf ).Average( ) / CIE_Y_integral;
     }
 
-    RGB SampledSpectrum::ToRGB( const SampledWavelengths& lambda,
+    PBRT_CPU_GPU RGB SampledSpectrum::ToRGB( const SampledWavelengths& lambda,
         const RGBColorSpace& cs ) const
     {
         XYZ xyz = ToXYZ( lambda );
         return cs.ToRGB( xyz );
     }
 
-    RGBAlbedoSpectrum::RGBAlbedoSpectrum( const RGBColorSpace& cs, RGB rgb )
+    PBRT_CPU_GPU RGBAlbedoSpectrum::RGBAlbedoSpectrum( const RGBColorSpace& cs, RGB rgb )
     {
         NDCHECK_LE( std::max( { rgb.r, rgb.g, rgb.b } ), 1 );
         NDCHECK_GE( std::min( { rgb.r, rgb.g, rgb.b } ), 0 );
         rsp = cs.ToRGBCoeffs( rgb );
     }
 
-    RGBUnboundedSpectrum::RGBUnboundedSpectrum( const RGBColorSpace& cs, RGB rgb )
+    PBRT_CPU_GPU RGBUnboundedSpectrum::RGBUnboundedSpectrum( const RGBColorSpace& cs, RGB rgb )
     {
         Float m = std::max( { rgb.r, rgb.g, rgb.b } );
         scale = 2 * m;
         rsp = cs.ToRGBCoeffs( scale ? rgb / scale : RGB( 0, 0, 0 ) );
     }
 
-    RGBIlluminantSpectrum::RGBIlluminantSpectrum( const RGBColorSpace& cs, RGB rgb )
+    PBRT_CPU_GPU RGBIlluminantSpectrum::RGBIlluminantSpectrum( const RGBColorSpace& cs, RGB rgb )
         : illuminant( &cs.illuminant )
     {
         Float m = std::max( { rgb.r, rgb.g, rgb.b } );
@@ -293,22 +296,21 @@ namespace pbrto
 
     std::string RGBAlbedoSpectrum::ToString( ) const
     {
-        return std::format( "[ RGBAlbedoSpectrum rsp: {} ]", rsp );
+        return StringPrintf( "[ RGBAlbedoSpectrum rsp: %s ]", rsp );
     }
 
     std::string RGBUnboundedSpectrum::ToString( ) const
     {
-        return std::format( "[ RGBUnboundedSpectrum rsp: {} ]", rsp );
+        return StringPrintf( "[ RGBUnboundedSpectrum rsp: %s ]", rsp );
     }
 
     std::string RGBIlluminantSpectrum::ToString( ) const
     {
-        return std::format( "[ RGBIlluminantSpectrum: rsp: {} scale: {} illuminant: {} ]",
+        return StringPrintf( "[ RGBIlluminantSpectrum: rsp: %s scale: %f illuminant: %s ]",
             rsp, scale,
             illuminant ? illuminant->ToString( ) : std::string( "(nullptr)" ) );
     }
 
-#pragma warning( disable : 4305 )
     namespace
     {
 
@@ -2598,10 +2600,10 @@ namespace pbrto
             // Convert CCT to xy
             Float x;
             if ( cct <= 7000 )
-                x = -4.607f * 1e9f / Math::FastPow<3>( cct ) + 2.9678f * 1e6f / Sqr( cct ) +
+                x = -4.607f * 1e9f / FastPow<3>( cct ) + 2.9678f * 1e6f / Sqr( cct ) +
                 0.09911f * 1e3f / cct + 0.244063f;
             else
-                x = -2.0064f * 1e9f / Math::FastPow<3>( cct ) + 1.9018f * 1e6f / Sqr( cct ) +
+                x = -2.0064f * 1e9f / FastPow<3>( cct ) + 1.9018f * 1e6f / Sqr( cct ) +
                 0.24748f * 1e3f / cct + 0.23704f;
             Float y = -3 * x * x + 2.870f * x - 0.275f;
 

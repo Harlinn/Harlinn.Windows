@@ -64,7 +64,7 @@ namespace pbrto
 
     std::string MIPMapFilterOptions::ToString( ) const
     {
-        return std::format( "[ MIPMapFilterOptions filter: {} maxAnisotropy: {} ]", filter,
+        return StringPrintf( "[ MIPMapFilterOptions filter: %s maxAnisotropy: %f ]", filter,
             maxAnisotropy );
     }
 
@@ -219,7 +219,7 @@ namespace pbrto
     {
         NCHECK( colorSpace );
         pyramid = Image::GeneratePyramid( std::move( image ), wrapMode, alloc );
-        if ( pbrto::Options->disableImageTextures )
+        if ( Options->disableImageTextures )
         {
             Image top = pyramid.back( );
             pyramid.clear( );
@@ -297,9 +297,9 @@ namespace pbrto
             }
         }
         // Compute EWA ellipse axes
-        if ( LengthSquared( dst0 ) < LengthSquared( dst1 ) )
+        if ( ScalarLengthSquared( dst0 ) < ScalarLengthSquared( dst1 ) )
             pstdo::swap( dst0, dst1 );
-        Float longerVecLength = Length( dst0 ), shorterVecLength = Length( dst1 );
+        Float longerVecLength = ScalarLength( dst0 ), shorterVecLength = Length( dst1 );
 
         // Clamp ellipse vector ratio if too large
         if ( shorterVecLength * options.maxAnisotropy < longerVecLength &&
@@ -455,14 +455,14 @@ namespace pbrto
                 // Return alpha
                 return pyramid[ level ].BilerpChannel( st, 3, wrapMode );
             default:
-                NLOG_FATAL( "Unexpected number of image channels: {}", pyramid[ level ].NChannels( ) );
+                NLOG_FATAL( "Unexpected number of image channels: %d", pyramid[ level ].NChannels( ) );
         }
     }
 
     std::string MIPMap::ToString( ) const
     {
-        return std::format( "[ MIPMap pyramid: {} colorSpace: {} wrapMode: {} "
-            "options: {} ]",
+        return StringPrintf( "[ MIPMap pyramid: %s colorSpace: %s wrapMode: %s "
+            "options: %s ]",
             pyramid, colorSpace->ToString( ), wrapMode, options );
     }
 

@@ -53,7 +53,7 @@ namespace pbrto
         // Find the merged cone's axis and return cone union
         Float theta_r = theta_o - theta_a;
         Vector3f wr = Cross( a.w, b.w );
-        if ( LengthSquared( wr ) == 0 )
+        if ( ScalarLengthSquared( wr ) == 0 )
             return DirectionCone::EntireSphere( );
         Vector3f w = Rotate( Degrees( theta_r ), wr )( a.w );
         return DirectionCone( w, Math::Cos( theta_o ) );

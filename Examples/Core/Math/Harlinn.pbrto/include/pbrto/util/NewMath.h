@@ -406,6 +406,11 @@ namespace pbrto
         return std::bit_cast< Interval >( Math::Sqr( i ) );
     }
 
+    inline pstdo::complex<float> Sqr( const pstdo::complex<float>& i )
+    {
+        return i * i;
+    }
+
 
 
     PBRT_CPU_GPU
@@ -431,5 +436,31 @@ namespace pbrto
 
 
 }
+
+namespace std
+{
+    template<typename CharT>
+    struct formatter<pbrto::Interval, CharT>
+    {
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return ctx.begin( );
+        }
+
+        template <typename FormatContext>
+        auto format( const pbrto::Interval& value, FormatContext& ctx ) const
+        {
+            if constexpr ( is_same_v<CharT, wchar_t> )
+            {
+                return std::format_to( ctx.out( ), L"[{}, {}]", value.LowerBound( ), value.UpperBound( ) );
+            }
+            else
+            {
+                return std::format_to( ctx.out( ), "[{}, {}]", value.LowerBound( ), value.UpperBound( ) );
+            }
+        }
+    };
+}
+
 
 #endif

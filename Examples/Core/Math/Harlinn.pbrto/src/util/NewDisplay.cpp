@@ -113,7 +113,7 @@ namespace pbrto
             WSADATA wsaData;
             int err = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
             if ( err != NO_ERROR )
-                NLOG_FATAL( "Unable to initialize WinSock: {}", ErrorString( err ) );
+                NLOG_FATAL( "Unable to initialize WinSock: %s", ErrorString( err ) );
 #else
             // We don't care about getting a SIGPIPE if the display server goes
             // away...
@@ -123,7 +123,7 @@ namespace pbrto
 
         size_t split = hostname.find_last_of( ':' );
         if ( split == std::string::npos )
-            ErrorExit( "Expected \"host:port\" for display server address. Given \"{}\".",
+            ErrorExit( "Expected \"host:port\" for display server address. Given \"%s\".",
                 hostname );
         address = std::string( hostname.begin( ), hostname.begin( ) + split );
         port = std::string( hostname.begin( ) + split + 1, hostname.end( ) );
@@ -142,7 +142,7 @@ namespace pbrto
         hints.ai_socktype = SOCK_STREAM;
         int err = getaddrinfo( address.c_str( ), port.c_str( ), &hints, &addrinfo );
         if ( err )
-            ErrorExit( "%s", gai_strerrorA( err ) );
+            ErrorExit( "%s", gai_strerror( err ) );
 
         socketFd = INVALID_SOCKET;
         for ( struct addrinfo* ptr = addrinfo; ptr; ptr = ptr->ai_next )
@@ -150,7 +150,7 @@ namespace pbrto
             socketFd = socket( ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol );
             if ( socketFd == INVALID_SOCKET )
             {
-                NLOG_VERBOSE( "socket() failed: {}", ErrorString( ) );
+                NLOG_VERBOSE( "socket() failed: %s", ErrorString( ) );
                 continue;
             }
 
@@ -161,7 +161,7 @@ namespace pbrto
             if ( setsockopt( socketFd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof( timeout ) ) ==
                 SOCKET_ERROR )
             {
-                LOG_VERBOSE( "setsockopt() failed: %s", ErrorString( ) );
+                NLOG_VERBOSE( "setsockopt() failed: %s", ErrorString( ) );
             }
 #endif  // PBRT_IS_LINUX
 
@@ -175,7 +175,7 @@ namespace pbrto
                 if ( err == SocketError::ConnRefused )
                     NLOG_VERBOSE( "Connection refused. Will try again..." );
                 else
-                    NLOG_VERBOSE( "connect() failed: {}", ErrorString( err ) );
+                    NLOG_VERBOSE( "connect() failed: %s", ErrorString( err ) );
 
                 closeSocket( socketFd );
                 socketFd = INVALID_SOCKET;
@@ -230,7 +230,7 @@ namespace pbrto
         if ( bytesSent == message.size( ) )
             return true;
 
-        NLOG_ERROR( "send to display server failed: {}", ErrorString( ) );
+        NLOG_ERROR( "send to display server failed: %s", ErrorString( ) );
         Disconnect( );
         return false;
     }
@@ -309,9 +309,9 @@ namespace pbrto
         : resolution( resolution ), getTileValues( getTileValues ), channelNames( channelNames )
     {
 #ifdef PBRT_IS_WINDOWS
-        title = std::format( "{} ({})", baseTitle, GetCurrentThreadId( ) );
+        title = StringPrintf( "%s (%d)", baseTitle, GetCurrentThreadId( ) );
 #else
-        title = std::format( "{} ({})", baseTitle, getpid( ) );
+        title = StringPrintf( "%s (%d)", baseTitle, getpid( ) );
 #endif
 
         int nTiles = ( ( resolution.x + tileSize - 1 ) / tileSize ) *
@@ -523,7 +523,7 @@ namespace pbrto
                 channelNames = { "R", "G", "B" };
             else
                 for ( int i = 0; i < image.NChannels( ); ++i )
-                    channelNames.push_back( std::format( "channel {}", i ) );
+                    channelNames.push_back( StringPrintf( "channel %d", i ) );
         }
 
         return DisplayItem( title, image.Resolution( ), channelNames, getValues );
@@ -536,7 +536,7 @@ namespace pbrto
 
         std::lock_guard<std::mutex> lock( mutex );
         if ( !item.Display( *channel ) )
-            NLOG_ERROR( "Unable to display static content \"{}\".", title );
+            NLOG_ERROR( "Unable to display static content \"%s\".", title );
     }
 
     void DisplayDynamic( std::string title, const Image& image,
@@ -554,7 +554,7 @@ namespace pbrto
 
         std::lock_guard<std::mutex> lock( mutex );
         if ( !item.Display( *channel ) )
-            NLOG_ERROR( "Unable to display static content \"{}\".", title );
+            NLOG_ERROR( "Unable to display static content \"%s\".", title );
     }
 
     void DisplayDynamic(

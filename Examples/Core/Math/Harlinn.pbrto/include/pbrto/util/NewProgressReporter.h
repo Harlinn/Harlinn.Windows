@@ -42,26 +42,43 @@ namespace pbrto
     // Timer Definition
     class Timer
     {
-        using clock = std::chrono::steady_clock;
-        clock::time_point start;
     public:
-        Timer( ) 
-            : start( clock::now( ) )
-        { }
-
+        Timer( ) { start = clock::now( ); }
         double ElapsedSeconds( ) const
         {
             clock::time_point now = clock::now( );
-            int64_t elapseduS = std::chrono::duration_cast< std::chrono::microseconds >( now - start ).count( );
+            int64_t elapseduS =
+                std::chrono::duration_cast< std::chrono::microseconds >( now - start ).count( );
             return elapseduS / 1000000.;
         }
 
         std::string ToString( ) const;
+
+    private:
+        using clock = std::chrono::steady_clock;
+        clock::time_point start;
     };
 
     // ProgressReporter Definition
     class ProgressReporter
     {
+    public:
+        // ProgressReporter Public Methods
+        ProgressReporter( ) : quiet( true ) {}
+        ProgressReporter( int64_t totalWork, std::string title, bool quiet, bool gpu = false );
+
+        ~ProgressReporter( );
+
+        void Update( int64_t num = 1 );
+        void Done( );
+        double ElapsedSeconds( ) const;
+
+        std::string ToString( ) const;
+
+    private:
+        // ProgressReporter Private Methods
+        void printBar( );
+
         // ProgressReporter Private Members
         int64_t totalWork;
         std::string title;
@@ -77,27 +94,6 @@ namespace pbrto
         std::atomic<size_t> gpuEventsLaunchedOffset;
         int gpuEventsFinishedOffset;
 #endif
-    public:
-        // ProgressReporter Public Methods
-        ProgressReporter( ) 
-            : quiet( true ) 
-        { }
-
-        ProgressReporter( int64_t totalWork, std::string title, bool quiet, bool gpu = false );
-
-        ~ProgressReporter( );
-
-        void Update( int64_t num = 1 );
-        void Done( );
-        double ElapsedSeconds( ) const;
-
-        std::string ToString( ) const;
-
-    private:
-        // ProgressReporter Private Methods
-        void printBar( );
-
-        
     };
     // ProgressReporter Inline Method Definitions
     inline double ProgressReporter::ElapsedSeconds( ) const
@@ -114,7 +110,7 @@ namespace pbrto
             {
                 while ( num-- > 0 )
                 {
-                    NCHECK_EQ( cudaEventRecord( gpuEvents[ gpuEventsLaunchedOffset ] ),
+                    CHECK_EQ( cudaEventRecord( gpuEvents[ gpuEventsLaunchedOffset ] ),
                         cudaSuccess );
                     ++gpuEventsLaunchedOffset;
                 }

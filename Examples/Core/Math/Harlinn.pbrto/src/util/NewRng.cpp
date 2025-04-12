@@ -29,6 +29,6 @@ namespace pbrto
 {
     std::string RNG::ToString( ) const
     {
-        return std::format( "[ RNG state: {} inc: {} ]", state, inc );
+        return StringPrintf( "[ RNG state: %" PRIu64 " inc: %" PRIu64 " ]", state, inc );
     }
 }

@@ -6531,7 +6531,7 @@ namespace Harlinn::Common::Core::Math
     constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::First( Dot(v1,v2).simd );
+        return Traits::First( Math::Dot(v1,v2).simd );
     }
 
     template<Internal::TupleType T, Internal::SimdType U>
@@ -6539,7 +6539,7 @@ namespace Harlinn::Common::Core::Math
     constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::First( Dot( v1, v2 ).simd );
+        return Traits::First( Math::Dot( v1, v2 ).simd );
     }
 
     template<Internal::SimdType T, Internal::TupleType U>
@@ -6547,29 +6547,23 @@ namespace Harlinn::Common::Core::Math
     constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::First( Dot( v1, v2 ).simd );
+        return Traits::First( Math::Dot( v1, v2 ).simd );
     }
 
-    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::value_type>
+    template<Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
-    constexpr inline ResultT ScalarDot( const T& v1, const U& v2 ) noexcept
+    constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
     {
-        using Traits = typename T::Traits;
-        auto vec1 = Traits::Load( v1.values );
-        auto vec2 = Traits::Load( v1.values );
         if constexpr ( T::Size == 2 )
         {
-            //return Traits::First( _mm_dp_ps( vec1, vec2, 0b00110001 ) );
             return v1.x * v2.x + v1.y * v2.y;
         }
         else if constexpr ( T::Size == 3 )
         {
-            //return Traits::First( _mm_dp_ps( vec1, vec2, 0b01110001 ) );
             return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
         }
         else if constexpr ( T::Size == 4 )
         {
-            //return Traits::First( _mm_dp_ps( vec1, vec2, 0b11110001 ) );
             return v1.x* v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
         }
     }
@@ -6595,7 +6589,7 @@ namespace Harlinn::Common::Core::Math
     inline T AbsDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Abs( Dot( v1, v2 ).simd );
+        return Traits::Abs( Math::Dot( v1, v2 ).simd );
     }
 
     /// <summary>
@@ -6606,7 +6600,7 @@ namespace Harlinn::Common::Core::Math
     inline T AbsDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Abs( Dot( v1, v2 ).simd );
+        return Traits::Abs( Math::Dot( v1, v2 ).simd );
     }
 
     /// <summary>
@@ -6617,18 +6611,18 @@ namespace Harlinn::Common::Core::Math
     inline T AbsDot( const U& v1, const T& v2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Abs( Dot( v1, v2 ).simd );
+        return Traits::Abs( Math::Dot( v1, v2 ).simd );
     }
 
     /// <summary>
     /// Calculates the absolute value of the dot product between v1 and v2.
     /// </summary>
-    template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+    template<Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<T, U>
-    inline ResultT AbsDot( const T& v1, const U& v2 ) noexcept
+    inline typename T::Simd AbsDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Abs( Dot( v1, v2 ).simd );
+        return Traits::Abs( Math::Dot( v1, v2 ).simd );
     }
 
     // ScalarAbsDot
@@ -6640,8 +6634,7 @@ namespace Harlinn::Common::Core::Math
         requires Internal::IsCompatible<T, U>
     inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
     {
-        using Traits = typename T::Traits;
-        return Traits::First( AbsDot( v1, v2 ).simd );
+        return Math::Abs( ScalarDot( v1, v2 ) );
     }
 
     /// <summary>
@@ -6651,8 +6644,7 @@ namespace Harlinn::Common::Core::Math
         requires Internal::IsCompatible<T, U>
     inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
     {
-        using Traits = typename T::Traits;
-        return Traits::First( AbsDot( v1, v2 ).simd );
+        return Math::Abs( ScalarDot( v1, v2 ) );
     }
 
     /// <summary>
@@ -6662,8 +6654,7 @@ namespace Harlinn::Common::Core::Math
         requires Internal::IsCompatible<T, U>
     inline auto ScalarAbsDot( const U& v1, const T& v2 ) noexcept
     {
-        using Traits = typename T::Traits;
-        return Traits::First( AbsDot( v1, v2 ).simd );
+        return Math::Abs( ScalarDot( v1, v2 ) );
     }
 
     /// <summary>
@@ -6673,8 +6664,7 @@ namespace Harlinn::Common::Core::Math
         requires Internal::IsCompatible<T, U>
     inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
     {
-        using Traits = typename T::Traits;
-        return Traits::First( AbsDot( v1, v2 ).simd );
+        return Math::Abs( ScalarDot( v1, v2 ) );
     }
 
 
@@ -11575,7 +11565,7 @@ namespace Harlinn::Common::Core::Math
 
     // https://www.iquilezles.org/www/articles/ibilinear/ibilinear.htm,
     // with a fix for perfect quads
-    inline Point2f InvertBilinear( const Point2f& p, const std::span<const Point2f>& vert )
+    inline Point2f InvertBilinear( const Point2f& p, const std::array<Point2f,4>& vert )
     {
         using FloatT = typename Point2f::value_type;
         // The below assumes a quad (vs uv parametric layout) in v....
@@ -13712,6 +13702,21 @@ namespace Harlinn::Common::Core::Math
             return static_cast< FloatT >( 2. ) * SafeASin( halfLength );
         }
     }
+
+    template<Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<T, U>
+    constexpr inline auto ScalarAngleBetween( const T& v1, const U& v2 )
+    {
+        return ScalarAngleBetween( v1, typename U::Simd( v2 ) );
+    }
+
+    template<Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<T, U>
+    constexpr inline auto ScalarAngleBetween( const T& v1, const U& v2 )
+    {
+        return ScalarAngleBetween( typename T::Simd( v1 ), v2 );
+    }
+
 
 
     template<typename DerivedT, typename FloatT>
@@ -20195,9 +20200,23 @@ namespace std
         }
     };
 
+}
 
-
-
+namespace Harlinn::Common::Core::Math
+{
+    template<typename CharT, size_t N>
+    inline auto operator<<( std::basic_ostream<CharT>& os, const SquareMatrix<float, N>& value )
+    {
+        if constexpr ( std::is_same_v<CharT, wchar_t> )
+        {
+            os << std::format( L"{}", value );
+        }
+        else
+        {
+            os << std::format( "{}", value );
+        }
+        return os;
+    }
 }
 
 

@@ -46,16 +46,16 @@ namespace pbrto
 
     std::string MaterialEvalContext::ToString( ) const
     {
-        return std::format( "[ MaterialEvalContext {} wo: {} ns: {} dpdus: {} ]",
+        return StringPrintf( "[ MaterialEvalContext %s wo: %s ns: %s dpdus: %s ]",
             TextureEvalContext::ToString( ), wo, ns, dpdus );
     }
 
     std::string NormalBumpEvalContext::ToString( ) const
     {
-        return std::format(
-            "[ NormalBumpEvalContext p: {} uv: {} shading.n: {} shading.dpdu: {} "
-            "shading.dpdv: {} shading.dndu: {} shading.dndv: {} dudx: {} "
-            "dudy: {} dvdx: {} dvdy: {} dpdx: {} dpdy: {} faceIndex: {} ]",
+        return StringPrintf(
+            "[ NormalBumpEvalContext p: %s uv: %s shading.n: %s shading.dpdu: %s "
+            "shading.dpdv: %s shading.dndu: %s shading.dndv: %s dudx: %f "
+            "dudy: %f dvdx: %f dvdy: %f dpdx: %s dpdy: %s faceIndex: %d ]",
             p, uv, shading.n, shading.dpdu, shading.dpdv, shading.dndu, shading.dndv, dudx,
             dudy, dvdx, dvdy, dpdx, dpdy, faceIndex );
     }
@@ -63,9 +63,9 @@ namespace pbrto
     // DielectricMaterial Method Definitions
     std::string DielectricMaterial::ToString( ) const
     {
-        return std::format(
-            "[ DielectricMaterial displacement: {} normalMap: {} uRoughness: {} "
-            "vRoughness: {} eta: {} remapRoughness: {} ]",
+        return StringPrintf(
+            "[ DielectricMaterial displacement: %s normalMap: %s uRoughness: %s "
+            "vRoughness: %s eta: %s remapRoughness: %s ]",
             displacement, normalMap ? normalMap->ToString( ) : std::string( "(nullptr)" ),
             uRoughness, vRoughness, eta, remapRoughness );
     }
@@ -99,8 +99,8 @@ namespace pbrto
     // ThinDielectricMaterial Method Definitions
     std::string ThinDielectricMaterial::ToString( ) const
     {
-        return std::format(
-            "[ ThinDielectricMaterial displacement: {} normalMap: {} eta: {} ]", displacement,
+        return StringPrintf(
+            "[ ThinDielectricMaterial displacement: %s normalMap: %s eta: %s ]", displacement,
             normalMap ? normalMap->ToString( ) : std::string( "(nullptr)" ), eta );
     }
 
@@ -124,7 +124,7 @@ namespace pbrto
     // MixMaterial Method Definitions
     std::string MixMaterial::ToString( ) const
     {
-        return std::format( "[ MixMaterial materials: [ {} {} ] amount: {} ]", materials[ 0 ],
+        return StringPrintf( "[ MixMaterial materials: [ %s %s ] amount: %s ]", materials[ 0 ],
             materials[ 1 ], amount );
     }
 
@@ -154,8 +154,8 @@ namespace pbrto
     // HairMaterial Method Definitions
     std::string HairMaterial::ToString( ) const
     {
-        return std::format( "[ HairMaterial sigma_a: {} color: {} eumelanin: {} "
-            "pheomelanin: {} eta: {} beta_m: {} beta_n: {} alpha: {} ]",
+        return StringPrintf( "[ HairMaterial sigma_a: %s color: %s eumelanin: %s "
+            "pheomelanin: %s eta: %s beta_m: %s beta_n: %s alpha: %s ]",
             sigma_a, color, eumelanin, pheomelanin, eta, beta_m, beta_n,
             alpha );
     }
@@ -222,8 +222,8 @@ namespace pbrto
     // DiffuseMaterial Method Definitions
     std::string DiffuseMaterial::ToString( ) const
     {
-        return std::format(
-            "[ DiffuseMaterial displacement: {} normapMap: {} reflectance: {} ]",
+        return StringPrintf(
+            "[ DiffuseMaterial displacement: %s normapMap: %s reflectance: %s ]",
             displacement, normalMap ? normalMap->ToString( ) : std::string( "(nullptr)" ),
             reflectance );
     }
@@ -245,9 +245,9 @@ namespace pbrto
     // ConductorMaterial Method Definitions
     std::string ConductorMaterial::ToString( ) const
     {
-        return std::format( "[ ConductorMaterial displacement: {} normalMap: {} eta: {} "
-            "k: {} reflectance: {} uRoughness: {} vRoughness: {} "
-            "remapRoughness: {} ]",
+        return StringPrintf( "[ ConductorMaterial displacement: %s normalMap: %s eta: %s "
+            "k: %s reflectance: %s uRoughness: %s vRoughness: %s "
+            "remapRoughness: %s ]",
             displacement,
             normalMap ? normalMap->ToString( ) : std::string( "(nullptr)" ), eta,
             k, reflectance, uRoughness, vRoughness, remapRoughness );
@@ -335,9 +335,9 @@ namespace pbrto
 
     std::string CoatedDiffuseMaterial::ToString( ) const
     {
-        return std::format(
-            "[ CoatedDiffuseMaterial displacement: {} normalMap: {} reflectance: {} "
-            "uRoughness: {} vRoughness: {} thickness: {} eta: {} remapRoughness: {} ]",
+        return StringPrintf(
+            "[ CoatedDiffuseMaterial displacement: %s normalMap: %s reflectance: %s "
+            "uRoughness: %s vRoughness: %s thickness: %s eta: %s remapRoughness: %s ]",
             displacement, normalMap ? normalMap->ToString( ) : std::string( "(nullptr)" ),
             reflectance, uRoughness, vRoughness, thickness, eta, remapRoughness );
     }
@@ -451,12 +451,12 @@ namespace pbrto
 
     std::string CoatedConductorMaterial::ToString( ) const
     {
-        return std::format(
-            "[ CoatedConductorMaterial displacement: {} normalMap: {} "
-            "interfaceURoughness: {} interfaceVRoughness: {} thickness: {} "
-            "interfaceEta: {} g: {} albedo: {} conductorURoughness: {} "
-            "conductorVRoughness: {} conductorEta: {} k: {} "
-            "conductorReflectance: {} remapRoughness: {} maxDepth: {} nSamples: {} ]",
+        return StringPrintf(
+            "[ CoatedConductorMaterial displacement: %s normalMap: %s "
+            "interfaceURoughness: %s interfaceVRoughness: %s thickness: %s "
+            "interfaceEta: %s g: %s albedo: %s conductorURoughness: %s "
+            "conductorVRoughness: %s conductorEta: %s k: %s "
+            "conductorReflectance: %s remapRoughness: %s maxDepth: %d nSamples: %d ]",
             displacement, normalMap ? normalMap->ToString( ) : std::string( "(nullptr)" ),
             interfaceURoughness, interfaceVRoughness, thickness, interfaceEta, g, albedo,
             conductorURoughness, conductorVRoughness, conductorEta, k, reflectance,
@@ -543,10 +543,10 @@ namespace pbrto
     // SubsurfaceMaterial Method Definitions
     std::string SubsurfaceMaterial::ToString( ) const
     {
-        return std::format( "[ SubsurfaceMaterial displacement: {} normalMap: {} scale: {} "
-            "sigma_a: {} sigma_s: {} reflectance: {} mfp: {} uRoughness: {} "
-            "vRoughness: {} scale: {} eta: {} remapRoughness: {} ]",
-            displacement, normalMap? normalMap->ToString().c_str():"<nullptr>", scale, sigma_a, sigma_s, reflectance, mfp,
+        return StringPrintf( "[ SubsurfaceMaterial displacement: %s normalMap: %s scale: %f "
+            "sigma_a: %s sigma_s: %s reflectance: %s mfp: %s uRoughness: %s "
+            "vRoughness: %s scale: %f eta: %f remapRoughness: %s ]",
+            displacement, normalMap, scale, sigma_a, sigma_s, reflectance, mfp,
             uRoughness, vRoughness, scale, eta, remapRoughness );
     }
 
@@ -565,7 +565,7 @@ namespace pbrto
             // 1. By name
             Spectrum sig_a, sig_s;
             if ( !GetMediumScatteringProperties( name, &sig_a, &sig_s, alloc ) )
-                ErrorExit( loc, "{}: named medium not found.", name );
+                ErrorExit( loc, "%s: named medium not found.", name );
             if ( g != 0 )
                 Warning( loc, "Non-zero \"g\" ignored with named scattering coefficients." );
             g = 0; /* Enforce g=0 (the database specifies reduced scattering
@@ -632,8 +632,8 @@ namespace pbrto
     // DiffuseTransmissionMaterial Method Definitions
     std::string DiffuseTransmissionMaterial::ToString( ) const
     {
-        return std::format( "[ DiffuseTransmissionMaterial displacement: {} reflectance: {} "
-            "transmittance: {} scale: {} ]",
+        return StringPrintf( "[ DiffuseTransmissionMaterial displacement: %s reflectance: %s "
+            "transmittance: %s scale: %f ]",
             displacement, reflectance, transmittance, scale );
     }
 
@@ -669,7 +669,7 @@ namespace pbrto
 
     std::string MeasuredMaterial::ToString( ) const
     {
-        return std::format( "[ MeasuredMaterial displacement: {} normalMap: {} ]",
+        return StringPrintf( "[ MeasuredMaterial displacement: %s normalMap: %s ]",
             displacement,
             normalMap ? normalMap->ToString( ) : std::string( "(nullptr)" ) );
     }
@@ -708,7 +708,7 @@ namespace pbrto
         Material material;
         if ( name.empty( ) || name == "none" )
         {
-            Warning( loc, "Material \"{}\" is deprecated; use \"interface\" instead.",
+            Warning( loc, "Material \"%s\" is deprecated; use \"interface\" instead.",
                 name.c_str( ) );
             return nullptr;
         }
@@ -746,20 +746,20 @@ namespace pbrto
             {
                 auto iter = namedMaterials.find( materialNames[ i ] );
                 if ( iter == namedMaterials.end( ) )
-                    ErrorExit( "{}: named material not found.", materialNames[ i ] );
+                    ErrorExit( "%s: named material not found.", materialNames[ i ] );
                 materials[ i ] = iter->second;
 
                 if ( materials[ i ] == nullptr )
-                    ErrorExit( "{}: an \"interface\" material cannot be used as an element of "
+                    ErrorExit( "%s: an \"interface\" material cannot be used as an element of "
                         "the \"mix\" material.", materialNames[ i ] );
             }
             material = MixMaterial::Create( materials, parameters, loc, alloc );
         }
         else
-            ErrorExit( loc, "{}: material type unknown.", name );
+            ErrorExit( loc, "%s: material type unknown.", name );
 
         if ( !material )
-            ErrorExit( loc, "{}: unable to create material.", name );
+            ErrorExit( loc, "%s: unable to create material.", name );
 
         parameters.ReportUnused( );
         ++nMaterialsCreated;

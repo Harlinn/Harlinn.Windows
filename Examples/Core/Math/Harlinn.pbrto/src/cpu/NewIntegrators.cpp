@@ -71,12 +71,13 @@ namespace pbrto
         Primitive aggregate, std::vector<Light> lights, const FileLoc* loc )
     {
         int maxDepth = parameters.GetOneInt( "maxdepth", 5 );
-        return std::make_unique<RandomWalkIntegrator>( maxDepth, camera, sampler, aggregate, lights );
+        return std::make_unique<RandomWalkIntegrator>( maxDepth, camera, sampler, aggregate,
+            lights );
     }
 
     std::string RandomWalkIntegrator::ToString( ) const
     {
-        return std::format( "[ RandomWalkIntegrator maxDepth: {} ]", maxDepth );
+        return StringPrintf( "[ RandomWalkIntegrator maxDepth: %d ]", maxDepth );
     }
 
     // Integrator Method Definitions
@@ -90,13 +91,11 @@ namespace pbrto
         {
             std::vector<int> c = SplitStringToInts( Options->debugStart, ',' );
             if ( c.empty( ) )
-            {
-                ErrorExit( "Didn't find integer values after --debugstart: {}", Options->debugStart );
-            }
+                ErrorExit( "Didn't find integer values after --debugstart: %s",
+                    Options->debugStart );
             if ( c.size( ) != 3 )
-            {
-                ErrorExit( "Didn't find three integer values after --debugstart: {}", Options->debugStart );
-            }
+                ErrorExit( "Didn't find three integer values after --debugstart: %s",
+                    Options->debugStart );
 
             Point2i pPixel( c[ 0 ], c[ 1 ] );
             int sampleIndex = c[ 2 ];
@@ -113,8 +112,8 @@ namespace pbrto
         thread_local Point2i threadPixel;
         thread_local int threadSampleIndex;
         CheckCallbackScope _( [ & ]( ) {
-            return std::format( "Rendering failed at pixel ({}, {}) sample {}. Debug with "
-                "\"--debugstart {},{},{}\"\n",
+            return StringPrintf( "Rendering failed at pixel (%d, %d) sample %d. Debug with "
+                "\"--debugstart %d,%d,%d\"\n",
                 threadPixel.x, threadPixel.y, threadSampleIndex,
                 threadPixel.x, threadPixel.y, threadSampleIndex );
             } );
@@ -126,14 +125,14 @@ namespace pbrto
 
         Bounds2i pixelBounds = camera.GetFilm( ).PixelBounds( );
         int spp = samplerPrototype.SamplesPerPixel( );
-        ProgressReporter progress( int64_t( spp ) * pixelBounds.Area( ), "Rendering", Options->quiet );
+        ProgressReporter progress( int64_t( spp ) * pixelBounds.Area( ), "Rendering",
+            Options->quiet );
 
         int waveStart = 0, waveEnd = 1, nextWaveSize = 1;
 
         if ( Options->recordPixelStatistics )
-        {
-            StatsEnablePixelStats( pixelBounds, RemoveExtension( camera.GetFilm( ).GetFilename( ) ) );
-        }
+            StatsEnablePixelStats( pixelBounds,
+                RemoveExtension( camera.GetFilm( ).GetFilename( ) ) );
         // Handle MSE reference image, if provided
         pstdo::optional<Image> referenceImage;
         FILE* mseOutFile = nullptr;
@@ -142,12 +141,14 @@ namespace pbrto
             auto mse = Image::Read( Options->mseReferenceImage );
             referenceImage = mse.image;
 
-            Bounds2i msePixelBounds = mse.metadata.pixelBounds ? *mse.metadata.pixelBounds : Bounds2i( Point2i( 0, 0 ), referenceImage->Resolution( ) );
-
+            Bounds2i msePixelBounds =
+                mse.metadata.pixelBounds
+                ? *mse.metadata.pixelBounds
+                : Bounds2i( Point2i( 0, 0 ), referenceImage->Resolution( ) );
             if ( !Inside( pixelBounds, msePixelBounds ) )
-            {
-                ErrorExit( "Output image pixel bounds {} aren't inside the MSE image's pixel bounds {}.", pixelBounds, msePixelBounds );
-            }
+                ErrorExit( "Output image pixel bounds %s aren't inside the MSE "
+                    "image's pixel bounds %s.",
+                    pixelBounds, msePixelBounds );
 
             // Transform the pixelBounds of the image we're rendering to the
             // coordinate system with msePixelBounds.pMin at the origin, which
@@ -161,9 +162,7 @@ namespace pbrto
 
             mseOutFile = FOpenWrite( Options->mseReferenceOutput );
             if ( !mseOutFile )
-            {
-                ErrorExit( "{}: {}", Options->mseReferenceOutput, ErrorString( ) );
-            }
+                ErrorExit( "%s: %s", Options->mseReferenceOutput, ErrorString( ) );
         }
 
         // Connect to display server if needed
@@ -196,7 +195,6 @@ namespace pbrto
                 PBRT_DBG( "Starting image tile (%d,%d)-(%d,%d) waveStart %d, waveEnd %d\n",
                     tileBounds.pMin.x, tileBounds.pMin.y, tileBounds.pMax.x,
                     tileBounds.pMax.y, waveStart, waveEnd );
-
                 for ( Point2i pPixel : tileBounds )
                 {
                     StatsReportPixelStart( pPixel );
@@ -212,7 +210,8 @@ namespace pbrto
 
                     StatsReportPixelEnd( pPixel );
                 }
-                PBRT_DBG( "Finished image tile (%d,%d)-(%d,%d)\n", tileBounds.pMin.x, tileBounds.pMin.y, tileBounds.pMax.x, tileBounds.pMax.y );
+                PBRT_DBG( "Finished image tile (%d,%d)-(%d,%d)\n", tileBounds.pMin.x,
+                    tileBounds.pMin.y, tileBounds.pMax.x, tileBounds.pMax.y );
                 progress.Update( ( waveEnd - waveStart ) * tileBounds.Area( ) );
                 } );
 
@@ -227,7 +226,7 @@ namespace pbrto
             // Optionally write current image to disk
             if ( waveStart == spp || Options->writePartialImages || referenceImage )
             {
-                NLOG_VERBOSE( "Writing image with spp = {}", waveStart );
+                NLOG_VERBOSE( "Writing image with spp = %d", waveStart );
                 ImageMetadata metadata;
                 metadata.renderTimeSeconds = progress.ElapsedSeconds( );
                 metadata.samplesPerPixel = waveStart;
@@ -257,7 +256,8 @@ namespace pbrto
     }
 
     // RayIntegrator Method Definitions
-    void RayIntegrator::EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler, ScratchBuffer& scratchBuffer )
+    void RayIntegrator::EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler,
+        ScratchBuffer& scratchBuffer )
     {
         // Sample wavelengths for the ray
         Float lu = sampler.Get1D( );
@@ -279,16 +279,11 @@ namespace pbrto
         if ( cameraRay )
         {
             // Double check that the ray's direction is normalized.
-            NDCHECK_GT( Length( cameraRay->ray.d ), .999f );
-            NDCHECK_LT( Length( cameraRay->ray.d ), 1.001f );
+            NDCHECK_GT( ScalarLength( cameraRay->ray.d ), .999f );
+            NDCHECK_LT( ScalarLength( cameraRay->ray.d ), 1.001f );
             // Scale camera ray differentials based on image sampling rate
-#ifdef PBRT_USES_HCCMATH_SQRT
-            Float rayDiffScale =
-                std::max<Float>( .125f, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
-#else
             Float rayDiffScale =
                 std::max<Float>( .125f, 1 / std::sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
-#endif
             if ( !Options->disablePixelJitter )
                 cameraRay->ray.ScaleDifferentials( rayDiffScale );
 
@@ -301,15 +296,15 @@ namespace pbrto
             // Issue warning if unexpected radiance value is returned
             if ( L.HasNaNs( ) )
             {
-                NLOG_ERROR( "Not-a-number radiance value returned for pixel ({}, "
-                    "{}), sample {}. Setting to black.",
+                NLOG_ERROR( "Not-a-number radiance value returned for pixel (%d, "
+                    "%d), sample %d. Setting to black.",
                     pPixel.x, pPixel.y, sampleIndex );
                 L = SampledSpectrum( 0.f );
             }
             else if ( IsInf( L.y( lambda ) ) )
             {
-                NLOG_ERROR( "Infinite radiance value returned for pixel ({}, {}), "
-                    "sample {}. Setting to black.",
+                NLOG_ERROR( "Infinite radiance value returned for pixel (%d, %d), "
+                    "sample %d. Setting to black.",
                     pPixel.x, pPixel.y, sampleIndex );
                 L = SampledSpectrum( 0.f );
             }
@@ -367,7 +362,7 @@ namespace pbrto
         Ray ray =
             p0.IsSurfaceInteraction( ) ? p0.AsSurface( ).SpawnRayTo( p1 ) : p0.SpawnRayTo( p1 );
         SampledSpectrum Tr( 1.f ), inv_w( 1.f );
-        if ( LengthSquared( ray.d ) == 0 )
+        if ( ScalarLengthSquared( ray.d ) == 0 )
             return Tr;
 
         while ( true )
@@ -415,13 +410,13 @@ namespace pbrto
 
     std::string Integrator::ToString( ) const
     {
-        std::string s = std::format( "[ Integrator aggregate: {} lights[{}]: [ ", aggregate,
+        std::string s = StringPrintf( "[ Integrator aggregate: %s lights[%d]: [ ", aggregate,
             lights.size( ) );
         for ( const auto& l : lights )
-            s += std::format( "{}, ", l.ToString( ) );
-        s += std::format( "] infiniteLights[{}]: [ ", infiniteLights.size( ) );
+            s += StringPrintf( "%s, ", l.ToString( ) );
+        s += StringPrintf( "] infiniteLights[%d]: [ ", infiniteLights.size( ) );
         for ( const auto& l : infiniteLights )
-            s += std::format( "{}, ", l.ToString( ) );
+            s += StringPrintf( "%s, ", l.ToString( ) );
         return s + " ]";
     }
 
@@ -548,8 +543,8 @@ namespace pbrto
 
     std::string SimplePathIntegrator::ToString( ) const
     {
-        return std::format( "[ SimplePathIntegrator maxDepth: {} sampleLights: {} "
-            "sampleBSDF: {} ]",
+        return StringPrintf( "[ SimplePathIntegrator maxDepth: %d sampleLights: %s "
+            "sampleBSDF: %s ]",
             maxDepth, sampleLights, sampleBSDF );
     }
 
@@ -675,7 +670,8 @@ namespace pbrto
 
     std::string LightPathIntegrator::ToString( ) const
     {
-        return std::format( "[ LightPathIntegrator maxDepth: {} lightSampler: {} ]", maxDepth, lightSampler );
+        return StringPrintf( "[ LightPathIntegrator maxDepth: %d lightSampler: %s ]", maxDepth,
+            lightSampler );
     }
 
     std::unique_ptr<LightPathIntegrator> LightPathIntegrator::Create(
@@ -864,9 +860,7 @@ namespace pbrto
         if ( IsReflective( flags ) && !IsTransmissive( flags ) )
             ctx.pi = intr.OffsetRayOrigin( intr.wo );
         else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
-        {
-            ctx.pi = intr.OffsetRayOrigin( Vector3f( -intr.wo ) );
-        }
+            ctx.pi = intr.OffsetRayOrigin( ToPoint3f( -intr.wo ) );
 
         // Choose a light source for the direct lighting calculation
         Float u = sampler.Get1D( );
@@ -902,7 +896,8 @@ namespace pbrto
 
     std::string PathIntegrator::ToString( ) const
     {
-        return std::format( "[ PathIntegrator maxDepth: {} lightSampler: {} regularize: {} ]", maxDepth, lightSampler, regularize );
+        return StringPrintf( "[ PathIntegrator maxDepth: %d lightSampler: %s regularize: %s ]",
+            maxDepth, lightSampler, regularize );
     }
 
     std::unique_ptr<PathIntegrator> PathIntegrator::Create(
@@ -1047,7 +1042,7 @@ namespace pbrto
 
     std::string SimpleVolPathIntegrator::ToString( ) const
     {
-        return std::format( "[ SimpleVolPathIntegrator maxDepth: %d ] ", maxDepth );
+        return StringPrintf( "[ SimpleVolPathIntegrator maxDepth: %d ] ", maxDepth );
     }
 
     std::unique_ptr<SimpleVolPathIntegrator> SimpleVolPathIntegrator::Create(
@@ -1078,7 +1073,9 @@ namespace pbrto
         while ( true )
         {
             // Sample segment of volumetric scattering path
-            PBRT_DBG( "%s\n", std::format( "Path tracer depth %d, current L = {}, beta = {}\n", depth, L, beta ) .c_str( ) );
+            PBRT_DBG( "%s\n", StringPrintf( "Path tracer depth %d, current L = %s, beta = %s\n",
+                depth, L, beta )
+                .c_str( ) );
             pstdo::optional<ShapeIntersection> si = Intersect( ray );
             if ( ray.medium )
             {
@@ -1307,7 +1304,9 @@ namespace pbrto
             else
                 r_l = r_u / bs->pdf;
 
-            PBRT_DBG( "%s\n", std::format( "Sampled BSDF, f = {}, pdf = {} -> beta = {}", bs->f, bs->pdf, beta ) .c_str( ) );
+            PBRT_DBG( "%s\n", StringPrintf( "Sampled BSDF, f = %s, pdf = %f -> beta = %s",
+                bs->f, bs->pdf, beta )
+                .c_str( ) );
             NDCHECK( IsInf( beta.y( lambda ) ) == false );
             // Update volumetric integrator path state after surface scattering
             specularBounce = bs->IsSpecular( );
@@ -1423,9 +1422,7 @@ namespace pbrto
             if ( IsReflective( flags ) && !IsTransmissive( flags ) )
                 ctx.pi = intr.OffsetRayOrigin( intr.wo );
             else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
-            {
-                ctx.pi = intr.OffsetRayOrigin( Vector3f( -intr.wo ) );
-            }
+                ctx.pi = intr.OffsetRayOrigin( ToPoint3f( -intr.wo ) );
 
         }
         else
@@ -1539,7 +1536,9 @@ namespace pbrto
 
     std::string VolPathIntegrator::ToString( ) const
     {
-        return std::format( "[ VolPathIntegrator maxDepth: {} lightSampler: {} regularize: {} ]", maxDepth, lightSampler, regularize );
+        return StringPrintf(
+            "[ VolPathIntegrator maxDepth: %d lightSampler: %s regularize: %s ]", maxDepth,
+            lightSampler, regularize );
     }
 
     std::unique_ptr<VolPathIntegrator> VolPathIntegrator::Create(
@@ -1585,7 +1584,7 @@ namespace pbrto
 
             // Compute coordinate frame based on true geometry, not shading
             // geometry.
-            Normal3f n = FaceForward( isect.n, Vector3f( -ray.d ) );
+            Normal3f n = FaceForward( isect.n, ToVector3f( -ray.d ) );
 
             Vector3f wi;
             Float pdf;
@@ -1610,7 +1609,8 @@ namespace pbrto
             Ray r = isect.SpawnRay( wi );
             if ( !IntersectP( r, maxDist ) )
             {
-                return illumScale * illuminant.Sample( lambda ) * ScalarDot( wi, n ) / ( Pi * pdf );
+                return illumScale * illuminant.Sample( lambda ) *
+                    ScalarDot( wi, n ) / ( Pi * pdf );
             }
         }
         return SampledSpectrum( 0. );
@@ -1618,7 +1618,8 @@ namespace pbrto
 
     std::string AOIntegrator::ToString( ) const
     {
-        return std::format( "[ AOIntegrator cosSample: {} maxDist: {} illuminant: {} ]", cosSample, maxDist, illuminant );
+        return StringPrintf( "[ AOIntegrator cosSample: %s maxDist: %f illuminant: %s ]",
+            cosSample, maxDist, illuminant );
     }
 
     std::unique_ptr<AOIntegrator> AOIntegrator::Create( const ParameterDictionary& parameters,
@@ -1629,7 +1630,8 @@ namespace pbrto
     {
         bool cosSample = parameters.GetOneBool( "cossample", true );
         Float maxDist = parameters.GetOneFloat( "maxdistance", Infinity );
-        return std::make_unique<AOIntegrator>( cosSample, maxDist, camera, sampler, aggregate, lights, illuminant );
+        return std::make_unique<AOIntegrator>( cosSample, maxDist, camera, sampler, aggregate,
+            lights, illuminant );
     }
 
     // BDPT Utility Function Declarations
@@ -1815,7 +1817,7 @@ namespace pbrto
         SampledSpectrum f( const Vertex& next, TransportMode mode ) const
         {
             Vector3f wi = next.p( ) - p( );
-            if ( LengthSquared( wi ) == 0 )
+            if ( ScalarLengthSquared( wi ) == 0 )
                 return {};
             wi = Normalize( wi );
             switch ( type )
@@ -1870,7 +1872,7 @@ namespace pbrto
             if ( !IsLight( ) )
                 return SampledSpectrum( 0.f );
             Vector3f w = v.p( ) - p( );
-            if ( LengthSquared( w ) == 0 )
+            if ( ScalarLengthSquared( w ) == 0 )
                 return SampledSpectrum( 0. );
             w = Normalize( w );
             if ( IsInfiniteLight( ) )
@@ -1906,7 +1908,8 @@ namespace pbrto
                     s += "medium";
                     break;
             }
-            s += std::format( " connectible: {} p: {} ng: {} pdfFwd: {} pdfRev: {} beta: {}", IsConnectible( ), p( ), ng( ), pdfFwd, pdfRev, beta );
+            s += StringPrintf( " connectible: %s p: %s ng: %s pdfFwd: %f pdfRev: %f beta: %s",
+                IsConnectible( ), p( ), ng( ), pdfFwd, pdfRev, beta );
             switch ( type )
             {
                 case VertexType::Camera:
@@ -1933,13 +1936,11 @@ namespace pbrto
                 return pdf;
 
             Vector3f w = next.p( ) - p( );
-            if ( LengthSquared( w ) == 0 )
+            if ( ScalarLengthSquared( w ) == 0 )
                 return 0;
-            Float invDist2 = 1 / LengthSquared( w );
+            Float invDist2 = 1 / ScalarLengthSquared( w );
             if ( next.IsOnSurface( ) )
-            {
-                pdf *= ScalarAbsDot( next.ng( ), w * Math::Sqrt( invDist2 ) );
-            }
+                pdf *= ScalarAbsDot( next.ng( ), w * std::sqrt( invDist2 ) );
             return pdf * invDist2;
         }
 
@@ -1950,14 +1951,14 @@ namespace pbrto
                 return PDFLight( integrator, next );
             // Compute directions to preceding and next vertex
             Vector3f wn = next.p( ) - p( );
-            if ( LengthSquared( wn ) == 0 )
+            if ( ScalarLengthSquared( wn ) == 0 )
                 return 0;
             wn = Normalize( wn );
             Vector3f wp;
             if ( prev )
             {
                 wp = prev->p( ) - p( );
-                if ( LengthSquared( wp ) == 0 )
+                if ( ScalarLengthSquared( wp ) == 0 )
                     return 0;
                 wp = Normalize( wp );
             }
@@ -1982,9 +1983,8 @@ namespace pbrto
         Float PDFLight( const Integrator& integrator, const Vertex& v ) const
         {
             Vector3f w = v.p( ) - p( );
-            Float invDist2 = 1 / LengthSquared( w );
-            w *= Math::Sqrt( invDist2 );
-
+            Float invDist2 = 1 / ScalarLengthSquared( w );
+            w *= std::sqrt( invDist2 );
             // Compute sampling density _pdf_ for light type
             Float pdf;
             if ( IsInfiniteLight( ) )
@@ -2028,7 +2028,7 @@ namespace pbrto
             LightSampler lightSampler )
         {
             Vector3f w = v.p( ) - p( );
-            if ( LengthSquared( w ) == 0 )
+            if ( ScalarLengthSquared( w ) == 0 )
                 return 0.;
             w = Normalize( w );
             if ( IsInfiniteLight( ) )
@@ -2348,7 +2348,9 @@ namespace pbrto
                 vertex.delta = true;
                 pdfRev = pdfFwd = 0;
             }
-            PBRT_DBG( "%s\n", std::format( "Random walk beta after shading normal correction {}", beta ) .c_str( ) );
+            PBRT_DBG( "%s\n",
+                StringPrintf( "Random walk beta after shading normal correction %s", beta )
+                .c_str( ) );
             prev.pdfRev = vertex.ConvertDensity( pdfRev, prev );
         }
         return bounces;
@@ -2358,8 +2360,8 @@ namespace pbrto
         const Vertex& v1, const SampledWavelengths& lambda )
     {
         Vector3f d = v0.p( ) - v1.p( );
-        Float g = 1 / LengthSquared( d );
-        d *= Math::Sqrt( g );
+        Float g = 1 / ScalarLengthSquared( d );
+        d *= std::sqrt( g );
         if ( v0.IsOnSurface( ) )
             g *= ScalarAbsDot( v0.ns( ), d );
         if ( v1.IsOnSurface( ) )
@@ -2475,7 +2477,8 @@ namespace pbrto
                     if ( t == 0 || ( s == 1 && t == 1 ) )
                         continue;
 
-                    std::string filename = std::format( "bdpt_d{:02}i_s{:02}i_t{:02}i.exr", depth, s, t );
+                    std::string filename =
+                        StringPrintf( "bdpt_d%02i_s%02i_t%02i.exr", depth, s, t );
 
                     FilmBaseParameters p(
                         camera.GetFilm( ).FullResolution( ),
@@ -2532,7 +2535,10 @@ namespace pbrto
                 SampledSpectrum Lpath =
                     ConnectBDPT( *this, lambda, lightVertices, cameraVertices, s, t,
                         lightSampler, camera, sampler, &pFilmNew, &misWeight );
-                PBRT_DBG( "%s\n", std::format( "Connect bdpt s: {}, t: {}, Lpath: {}, misWeight: {}\n", s, t, Lpath, misWeight ) .c_str( ) );
+                PBRT_DBG( "%s\n",
+                    StringPrintf( "Connect bdpt s: %d, t: %d, Lpath: %s, misWeight: %f\n",
+                        s, t, Lpath, misWeight )
+                    .c_str( ) );
                 if ( Lpath && ( visualizeStrategies || visualizeWeights ) )
                 {
                     SampledSpectrum value;
@@ -2554,7 +2560,8 @@ namespace pbrto
                         // scenes where the camera has a finite aperture, since
                         // we don't have the CameraSample either so just have
                         // to pass (0.5,0.5) in for the lens sample...
-                        pstdo::optional<CameraWiSample> cs = camera.SampleWi( Interaction( ray( 100.f ), nullptr ), Point2f( 0.5f, 0.5f ), lambda );
+                        pstdo::optional<CameraWiSample> cs =
+                            camera.SampleWi( Interaction( ray( 100.f ), nullptr ), Point2f( 0.5f, 0.5f ), lambda );
                         NCHECK_RARE( 1e-3, !cs );
                         if ( cs )
                             weightFilms[ BufferIndex( s, t ) ].AddSplat( cs->pRaster, value, lambda );
@@ -2649,9 +2656,7 @@ namespace pbrto
                         if ( IsReflective( flags ) && !IsTransmissive( flags ) )
                             ctx.pi = si.OffsetRayOrigin( si.wo );
                         else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
-                        {
-                            ctx.pi = si.OffsetRayOrigin( Vector3f( -si.wo ) );
-                        }
+                            ctx.pi = si.OffsetRayOrigin( ToVector3f( -si.wo ) );
                     }
                     else
                         ctx = LightSampleContext( pt.GetInteraction( ) );
@@ -2669,7 +2674,8 @@ namespace pbrto
                             L *= ScalarAbsDot( lightWeight->wi, pt.ns( ) );
                         // Only check visibility if the path would carry radiance.
                         if ( L )
-                            L *= integrator.Tr( pt.GetInteraction( ), lightWeight->pLight, lambda );
+                            L *= integrator.Tr( pt.GetInteraction( ), lightWeight->pLight,
+                                lambda );
                     }
                 }
             }
@@ -2684,13 +2690,14 @@ namespace pbrto
                 L = qs.beta * qs.f( pt, TransportMode::Importance ) *
                     pt.f( qs, TransportMode::Radiance ) * pt.beta;
                 PBRT_DBG( "%s\n",
-                    std::format(
-                        "General connect s: {}, t: {}, qs: {}, pt: {}, qs.f(pt): {}, "
-                        "pt.f(qs): {}, G: {}, dist^2: {}",
+                    StringPrintf(
+                        "General connect s: %d, t: %d, qs: %s, pt: %s, qs.f(pt): %s, "
+                        "pt.f(qs): %s, G: %s, dist^2: %f",
                         s, t, qs, pt, qs.f( pt, TransportMode::Importance ),
                         pt.f( qs, TransportMode::Radiance ),
                         G( integrator, sampler, qs, pt, lambda ),
-                        DistanceSquared( qs.p( ), pt.p( ) ) ) .c_str( ) );
+                        DistanceSquared( qs.p( ), pt.p( ) ) )
+                    .c_str( ) );
                 if ( L )
                     L *= G( integrator, sampler, qs, pt, lambda );
             }
@@ -2715,8 +2722,8 @@ namespace pbrto
 
     std::string BDPTIntegrator::ToString( ) const
     {
-        return std::format( "[ BDPTIntegrator maxDepth: {} visualizeStrategies: {} "
-            "visualizeWeights: {} regularize: {} lightSampler: {} ]",
+        return StringPrintf( "[ BDPTIntegrator maxDepth: %d visualizeStrategies: %s "
+            "visualizeWeights: %s regularize: %s lightSampler: %s ]",
             maxDepth, visualizeStrategies, visualizeWeights, regularize,
             lightSampler );
     }
@@ -2791,13 +2798,8 @@ namespace pbrto
             camera.GenerateRayDifferential( cameraSample, *lambda );
         if ( !crd || !crd->weight )
             return SampledSpectrum( 0.f );
-#ifdef PBRT_USES_HCCMATH_SQRT
-        Float rayDiffScale =
-            std::max<Float>( .125, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
-#else
         Float rayDiffScale =
             std::max<Float>( .125, 1 / std::sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
-#endif
         crd->ray.ScaleDifferentials( rayDiffScale );
 
         if ( GenerateCameraSubpath( *this, crd->ray, *lambda, &sampler, scratchBuffer, t,
@@ -2855,7 +2857,7 @@ namespace pbrto
         thread_local MLTSampler* threadSampler = nullptr;
         thread_local int threadDepth;
         CheckCallbackScope _( [ & ]( ) -> std::string {
-            return std::format( "Rendering failed. Debug with --debugstart {},{}\"\n",
+            return StringPrintf( "Rendering failed. Debug with --debugstart %d,%s\"\n",
                 threadDepth, threadSampler->DumpState( ) );
             } );
 
@@ -3009,9 +3011,9 @@ namespace pbrto
 
     std::string MLTIntegrator::ToString( ) const
     {
-        return std::format( "[ MLTIntegrator camera: {} maxDepth: {} nBootstrap: {} "
-            "nChains: {} mutationsPerPixel: {} sigma: {} "
-            "largeStepProbability: {} lightSampler: {} regularize: {} ]",
+        return StringPrintf( "[ MLTIntegrator camera: %s maxDepth: %d nBootstrap: %d "
+            "nChains: %d mutationsPerPixel: %d sigma: %f "
+            "largeStepProbability: %f lightSampler: %s regularize: %s ]",
             camera, maxDepth, nBootstrap, nChains, mutationsPerPixel, sigma,
             largeStepProbability, lightSampler, regularize );
     }
@@ -3117,11 +3119,7 @@ namespace pbrto
         // Define variables for commonly used values in SPPM rendering
         int nIterations = samplerPrototype.SamplesPerPixel( );
         ProgressReporter progress( 2 * nIterations, "Rendering", Options->quiet );
-#ifdef PBRT_USES_HCCMATH_SQRT
-        const Float invSqrtSPP = 1.f / Math::Sqrt( static_cast< Float >( nIterations ) );
-#else
         const Float invSqrtSPP = 1.f / std::sqrt( nIterations );
-#endif
         Film film = camera.GetFilm( );
         Bounds2i pixelBounds = film.PixelBounds( );
         int nPixels = pixelBounds.Area( );
@@ -3460,7 +3458,8 @@ namespace pbrto
                                 {
                                     ++visiblePointsChecked;
                                     SPPMPixel& pixel = *node->pixel;
-                                    if ( ScalarDistanceSquared( pixel.vp.p, isect.p( ) ) > Sqr( pixel.radius ) )
+                                    if ( ScalarDistanceSquared( pixel.vp.p, isect.p( ) ) >
+                                        Sqr( pixel.radius ) )
                                         continue;
                                     // Update _pixel_ $\Phi$ and $m$ for nearby photon
                                     Vector3f wi = -photonRay.d;
@@ -3526,7 +3525,7 @@ namespace pbrto
                     // Compute new photon count and search radius given photons
                     Float gamma = ( Float )2 / ( Float )3;
                     Float nNew = p.n + gamma * m;
-                    Float rNew = p.radius * Math::Sqrt( nNew / ( p.n + m ) );
+                    Float rNew = p.radius * std::sqrt( nNew / ( p.n + m ) );
 
                     // Update $\tau$ for pixel
                     RGB Phi_i( p.Phi_i[ 0 ], p.Phi_i[ 1 ], p.Phi_i[ 2 ] );
@@ -3620,9 +3619,7 @@ namespace pbrto
         if ( IsReflective( flags ) && !IsTransmissive( flags ) )
             ctx.pi = intr.OffsetRayOrigin( intr.wo );
         else if ( IsTransmissive( flags ) && !IsReflective( flags ) )
-        {
             ctx.pi = intr.OffsetRayOrigin( Vector3f( -intr.wo ) );
-        }
 
         // Choose a light source for the direct lighting calculation
         Float u = sampler.Get1D( );
@@ -3658,9 +3655,9 @@ namespace pbrto
 
     std::string SPPMIntegrator::ToString( ) const
     {
-        return std::format( "[ SPPMIntegrator camera: {} initialSearchRadius: {} "
-            "maxDepth: {} photonsPerIteration: {} "
-            "colorSpace: {} digitPermutations: (elided) ]",
+        return StringPrintf( "[ SPPMIntegrator camera: %s initialSearchRadius: %f "
+            "maxDepth: %d photonsPerIteration: %d "
+            "colorSpace: %s digitPermutations: (elided) ]",
             camera, initialSearchRadius, maxDepth, photonsPerIteration,
             *colorSpace );
     }
@@ -3706,7 +3703,7 @@ namespace pbrto
         }
         static double disk( Point2f p )
         {
-            return Distance( p, Point2f( 0.5, 0.5 ) ) < 0.5 ? ( 1 / ( Pi * Sqr( 0.5 ) ) ) : 0;
+            return ScalarDistance( p, Point2f( 0.5, 0.5 ) ) < 0.5 ? ( 1 / ( Pi * Sqr( 0.5 ) ) ) : 0;
         }
         static double checkerboard( Point2f p )
         {
@@ -3716,14 +3713,9 @@ namespace pbrto
         }
         static double rotatedCheckerboard( Point2f p )
         {
-
-            constexpr double angle = Deg2Rad( 45. );
-            constexpr double nrm = 1.00006866455078125;
-
-            constexpr double sa = Math::Sin( angle );
-            constexpr double ca = Math::Cos( angle );
-            
-
+            double angle = Radians( 45.f );
+            double nrm = 1.00006866455078125;
+            static double sa = std::sin( angle ), ca = std::cos( angle );
             return ( double )checkerboard(
                 { Float( 10 + p.x * ca - p.y * sa ), Float( 10 + p.x * sa + p.y * ca ) } ) /
                 nrm;
@@ -3731,10 +3723,9 @@ namespace pbrto
         static double gaussian( Point2f p )
         {
             auto Gaussian = []( double x, double mu = 0, double sigma = 1 ) {
-                return 1 / Math::Sqrt( 2 * Pi * sigma * sigma ) *
-                    Math::Exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
+                return 1 / std::sqrt( 2 * Pi * sigma * sigma ) *
+                    std::exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
                 };
-
             auto GaussianIntegral = []( double x0, double x1, double mu = 0, double sigma = 1 ) {
                 double sigmaRoot2 = sigma * double( 1.414213562373095 );
                 return 0.5f *
@@ -3754,7 +3745,7 @@ namespace pbrto
     {
         std::string funcName = parameters.GetOneString( "function", "step" );
         std::string defaultOut = Options->imageFile.empty( )
-            ? std::format( "{}-mse.txt", funcName )
+            ? StringPrintf( "%s-mse.txt", funcName )
             : Options->imageFile;
         std::string outputFilename = parameters.GetOneString( "filename", defaultOut );
 
@@ -3773,7 +3764,7 @@ namespace pbrto
             func = funcs::gaussian;
 
         if ( !func )
-            ErrorExit( loc, "{}: function for FunctionIntegrator unknown", funcName );
+            ErrorExit( loc, "%s: function for FunctionIntegrator unknown", funcName );
 
         if ( sampler.Is<SobolSampler>( ) )
             ErrorExit( loc, "\"sobol\" sampler should be replaced with \"paddedsobol\" for "
@@ -3848,13 +3839,8 @@ namespace pbrto
             if ( skipBad )
             {
                 int nSamples = sampleIndex + 1;
-#ifdef PBRT_USES_HCCMATH_SQRT
-                if ( isStratified && Sqr( int( Math::Sqrt( static_cast< Float >( nSamples ) ) ) ) != nSamples )
-                {
-#else
                 if ( isStratified && Sqr( int( std::sqrt( nSamples ) ) ) != nSamples )
                 {
-#endif
                     prog.Update( );
                     continue;
                 }
@@ -3881,18 +3867,14 @@ namespace pbrto
                     if ( nSamples != 1 || n2 != n3 )
                         reportResult = false;
                 }
-                }
+            }
 
             ++nTakenSamples;
 
             if ( isStratified )
             {
                 int spp = sampleIndex + 1;
-#ifdef PBRT_USES_HCCMATH_SQRT
-                int factor = int( Math::Sqrt( static_cast< Float >( spp ) ) );
-#else
                 int factor = int( std::sqrt( spp ) );
-#endif
 
                 while ( ( spp % factor ) != 0 )
                     --factor;
@@ -4018,33 +4000,33 @@ namespace pbrto
                     sumSE += Sqr( v / nTakenSamples - 1 );
                 Float mse = sumSE / nPixels;
 
-                result += std::format( "{} {}\n", sampleIndex + 1, mse );
+                result += StringPrintf( "%d %f\n", sampleIndex + 1, mse );
             }
             prog.Update( );
-            }
+        }
 
         // Make sure that it's basically one...
         double sum = std::accumulate( sumv.begin( ), sumv.end( ), 0. );
         double avg = sum / ( double( sumv.size( ) ) * double( nTakenSamples ) );
         if ( avg < 0.999 || avg > 1.001 )
-            Warning( "Average estimate is {}, which is suspiciously far from 1.", avg );
+            Warning( "Average estimate is %f, which is suspiciously far from 1.", avg );
 
         prog.Done( );
 
         WriteFileContents( outputFilename, result );
-        }
+    }
 
     std::string FunctionIntegrator::ToString( ) const
     {
-        return std::format(
-            "[ FunctionIntegrator outputFilename: {} camera: {} baseSampler: {} ]",
+        return StringPrintf(
+            "[ FunctionIntegrator outputFilename: %s camera: %s baseSampler: %s ]",
             outputFilename, camera, baseSampler );
     }
 
     std::unique_ptr<Integrator> Integrator::Create(
-        const std::string & name, const ParameterDictionary & parameters, Camera camera,
+        const std::string& name, const ParameterDictionary& parameters, Camera camera,
         Sampler sampler, Primitive aggregate, std::vector<Light> lights,
-        const RGBColorSpace * colorSpace, const FileLoc * loc )
+        const RGBColorSpace* colorSpace, const FileLoc* loc )
     {
         std::unique_ptr<Integrator> integrator;
         if ( name == "path" )
@@ -4079,10 +4061,10 @@ namespace pbrto
             integrator = SPPMIntegrator::Create( parameters, colorSpace, camera, sampler,
                 aggregate, lights, loc );
         else
-            ErrorExit( loc, "{}: integrator type unknown.", name );
+            ErrorExit( loc, "%s: integrator type unknown.", name );
 
         if ( !integrator )
-            ErrorExit( loc, "{}: unable to create integrator.", name );
+            ErrorExit( loc, "%s: unable to create integrator.", name );
 
         parameters.ReportUnused( );
         return integrator;

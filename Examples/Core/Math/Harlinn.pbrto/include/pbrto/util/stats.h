@@ -11,84 +11,106 @@
 #include <limits>
 #include <string>
 
-namespace pbrt
-{
+namespace pbrt {
 
-    class StatsAccumulator;
-    class PixelStatsAccumulator;
-    // StatRegisterer Definition
-    class StatRegisterer
-    {
-    public:
-        // StatRegisterer Public Methods
-        using AccumFunc = void ( * )( StatsAccumulator& );
-        using PixelAccumFunc = void ( * )( Point2i p, int counterIndex, PixelStatsAccumulator& );
-        PBRTO_EXPORT StatRegisterer( AccumFunc func, PixelAccumFunc = {} );
+class StatsAccumulator;
+class PixelStatsAccumulator;
+// StatRegisterer Definition
+class StatRegisterer {
+  public:
+    // StatRegisterer Public Methods
+    using AccumFunc = void (*)(StatsAccumulator &);
+    using PixelAccumFunc = void (*)(Point2i p, int counterIndex, PixelStatsAccumulator &);
 
-        PBRTO_EXPORT static void CallCallbacks( StatsAccumulator& accum );
-        PBRTO_EXPORT static void CallPixelCallbacks( Point2i p, PixelStatsAccumulator& accum );
-    };
+    PBRTO_EXPORT
+    StatRegisterer(AccumFunc func, PixelAccumFunc = {});
 
-    PBRTO_EXPORT void StatsEnablePixelStats( const Bounds2i& b, const std::string& baseName );
-    PBRTO_EXPORT void StatsReportPixelStart( Point2i p );
-    PBRTO_EXPORT void StatsReportPixelEnd( Point2i p );
+    PBRTO_EXPORT
+    static void CallCallbacks(StatsAccumulator &accum);
 
-    PBRTO_EXPORT void PrintStats( FILE* dest );
-    PBRTO_EXPORT void StatsWritePixelImages( );
-    PBRTO_EXPORT bool PrintCheckRare( FILE* dest );
-    PBRTO_EXPORT void ClearStats( );
-    PBRTO_EXPORT void ReportThreadStats( );
+    PBRTO_EXPORT
+    static void CallPixelCallbacks(Point2i p, PixelStatsAccumulator &accum);
+};
 
-    // StatsAccumulator Definition
-    class StatsAccumulator
-    {
-    public:
-        // StatsAccumulator Public Methods
-        PBRTO_EXPORT StatsAccumulator( );
+PBRTO_EXPORT
+void StatsEnablePixelStats(const Bounds2i &b, const std::string &baseName);
+PBRTO_EXPORT
+void StatsReportPixelStart(Point2i p);
+PBRTO_EXPORT
+void StatsReportPixelEnd(Point2i p);
 
-        PBRTO_EXPORT void ReportCounter( const char* name, int64_t val );
-        PBRTO_EXPORT void ReportMemoryCounter( const char* name, int64_t val );
-        PBRTO_EXPORT void ReportPercentage( const char* name, int64_t num, int64_t denom );
-        PBRTO_EXPORT void ReportRatio( const char* name, int64_t num, int64_t denom );
-        PBRTO_EXPORT void ReportRareCheck( const char* condition, Float maxFrequency, int64_t numTrue,
-            int64_t total );
+void PrintStats(FILE *dest);
+void StatsWritePixelImages();
+bool PrintCheckRare(FILE *dest);
+void ClearStats();
+PBRTO_EXPORT
+void ReportThreadStats();
 
-        PBRTO_EXPORT void ReportIntDistribution( const char* name, int64_t sum, int64_t count, int64_t min,
-            int64_t max );
-        PBRTO_EXPORT void ReportFloatDistribution( const char* name, double sum, int64_t count, double min,
-            double max );
+// StatsAccumulator Definition
+class StatsAccumulator {
+  public:
+    // StatsAccumulator Public Methods
+    PBRTO_EXPORT
+    StatsAccumulator();
 
-        PBRTO_EXPORT void AccumulatePixelStats( const PixelStatsAccumulator& accum );
-        PBRTO_EXPORT void WritePixelImages( ) const;
+    PBRTO_EXPORT
+    void ReportCounter(const char *name, int64_t val);
+    PBRTO_EXPORT
+    void ReportMemoryCounter(const char *name, int64_t val);
+    PBRTO_EXPORT
+    void ReportPercentage(const char *name, int64_t num, int64_t denom);
+    PBRTO_EXPORT
+    void ReportRatio(const char *name, int64_t num, int64_t denom);
+    PBRTO_EXPORT
+    void ReportRareCheck(const char *condition, Float maxFrequency, int64_t numTrue,
+                         int64_t total);
 
-        PBRTO_EXPORT void Print( FILE* file );
-        PBRTO_EXPORT bool PrintCheckRare( FILE* dest );
-        PBRTO_EXPORT void Clear( );
+    PBRTO_EXPORT
+    void ReportIntDistribution(const char *name, int64_t sum, int64_t count, int64_t min,
+                               int64_t max);
+    PBRTO_EXPORT
+    void ReportFloatDistribution(const char *name, double sum, int64_t count, double min,
+                                 double max);
 
-    private:
-        // StatsAccumulator Private Data
-        struct Stats;
-        Stats* stats = nullptr;
-    };
+    PBRTO_EXPORT
+    void AccumulatePixelStats(const PixelStatsAccumulator &accum);
+    PBRTO_EXPORT
+    void WritePixelImages() const;
 
-    // PixelStatsAccumulator Definition
-    class PixelStatsAccumulator
-    {
-    public:
-        PBRTO_EXPORT PixelStatsAccumulator( );
+    PBRTO_EXPORT
+    void Print(FILE *file);
+    PBRTO_EXPORT
+    bool PrintCheckRare(FILE *dest);
+    PBRTO_EXPORT
+    void Clear();
 
-        PBRTO_EXPORT void ReportPixelMS( Point2i p, float ms );
-        PBRTO_EXPORT void ReportCounter( Point2i p, int counterIndex, const char* name, int64_t val );
-        PBRTO_EXPORT void ReportRatio( Point2i p, int counterIndex, const char* name, int64_t num,
-            int64_t denom );
+  private:
+    // StatsAccumulator Private Data
+    struct Stats;
+    Stats *stats = nullptr;
+};
 
-    private:
-        friend class StatsAccumulator;
-        struct PixelStats;
-        PixelStats* stats = nullptr;
-    };
+// PixelStatsAccumulator Definition
+class PixelStatsAccumulator {
+  public:
+    PBRTO_EXPORT 
+    PixelStatsAccumulator();
 
-    // Statistics Macros
+    PBRTO_EXPORT
+    void ReportPixelMS(Point2i p, float ms);
+    PBRTO_EXPORT
+    void ReportCounter(Point2i p, int counterIndex, const char *name, int64_t val);
+    PBRTO_EXPORT
+    void ReportRatio(Point2i p, int counterIndex, const char *name, int64_t num,
+                     int64_t denom);
+
+  private:
+    friend class StatsAccumulator;
+    struct PixelStats;
+    PixelStats *stats = nullptr;
+};
+
+// Statistics Macros
 #define STAT_COUNTER(title, var)                                       \
     static thread_local int64_t var;                                   \
     static StatRegisterer STATS_REG##var([](StatsAccumulator &accum) { \
@@ -118,19 +140,17 @@ namespace pbrt
         var = 0;                                                       \
     });
 
-    struct StatIntDistribution
-    {
-        int64_t sum = 0, count = 0;
-        int64_t min = std::numeric_limits<int64_t>::max( );
-        int64_t max = std::numeric_limits<int64_t>::lowest( );
-        void operator<<( int64_t value )
-        {
-            sum += value;
-            count += 1;
-            min = ( value < min ) ? value : min;
-            max = ( value > max ) ? value : max;
-        }
-    };
+struct StatIntDistribution {
+    int64_t sum = 0, count = 0;
+    int64_t min = std::numeric_limits<int64_t>::max();
+    int64_t max = std::numeric_limits<int64_t>::lowest();
+    void operator<<(int64_t value) {
+        sum += value;
+        count += 1;
+        min = (value < min) ? value : min;
+        max = (value > max) ? value : max;
+    }
+};
 
 #define STAT_INT_DISTRIBUTION(title, var)                                         \
     static thread_local StatIntDistribution var;                                  \

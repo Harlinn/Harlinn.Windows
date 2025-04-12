@@ -56,7 +56,7 @@ namespace pbrto
     {
         Point3f pObj = Point3f( 0, 0, 0 ) + radius * SampleUniformSphere( u );
         // Reproject _pObj_ to sphere surface and compute _pObjError_
-        pObj *= radius / Distance( pObj, Point3f( 0, 0, 0 ) );
+        pObj *= radius / ScalarDistance( pObj, Point3f( 0, 0, 0 ) );
         Vector3f pObjError = gamma( 5 ) * Abs( ( Vector3f )pObj );
 
         // Compute surface normal for sphere sample and return _ShapeSample_
@@ -65,13 +65,8 @@ namespace pbrto
         if ( reverseOrientation )
             n *= -1;
         // Compute $(u, v)$ coordinates for sphere sample
-#ifdef PBRT_USES_HCCMATH_SQRT
-        Float theta = Math::SafeACos( pObj.z / radius );
-        Float phi = Math::ATan2( pObj.y, pObj.x );
-#else
         Float theta = SafeACos( pObj.z / radius );
         Float phi = std::atan2( pObj.y, pObj.x );
-#endif
         if ( phi < 0 )
             phi += 2 * Pi;
         Point2f uv( phi / phiMax, ( theta - thetaZMin ) / ( thetaZMax - thetaZMin ) );
@@ -82,11 +77,11 @@ namespace pbrto
 
     std::string Sphere::ToString( ) const
     {
-        return std::format( "[ Sphere renderFromObject: {} "
-            "objectFromRender: {} reverseOrientation: {} "
-            "transformSwapsHandedness: {} radius: {} zMin: {} "
-            "zMax: {} thetaMin: {} "
-            "thetaMax: {} phiMax: {} ]",
+        return StringPrintf( "[ Sphere renderFromObject: %s "
+            "objectFromRender: %s reverseOrientation: %s "
+            "transformSwapsHandedness: %s radius: %f zMin: %f "
+            "zMax: %f thetaMin: %f "
+            "thetaMax: %f phiMax: %f ]",
             *renderFromObject, *objectFromRender, reverseOrientation,
             transformSwapsHandedness, radius, zMin, zMax, thetaZMin,
             thetaZMax, phiMax );
@@ -122,11 +117,11 @@ namespace pbrto
 
     std::string Disk::ToString( ) const
     {
-        return std::format(
-            "[ Disk renderFromObject: {} objectFromRender: {} "
-            "reverseOrientation: {} "
-            "transformSwapsHandedness: {} height: {} radius: {} innerRadius: {} "
-            "phiMax: {} ]",
+        return StringPrintf(
+            "[ Disk renderFromObject: %s objectFromRender: %s "
+            "reverseOrientation: %s "
+            "transformSwapsHandedness: %s height: %f radius: %f innerRadius: %f "
+            "phiMax: %f ]",
             *renderFromObject, *objectFromRender, reverseOrientation,
             transformSwapsHandedness, height, radius, innerRadius, phiMax );
     }
@@ -147,15 +142,15 @@ namespace pbrto
     PBRT_CPU_GPU Bounds3f Cylinder::Bounds( ) const
     {
         return ( *renderFromObject )(
-            Bounds3f( Point3f::Simd{ -radius, -radius, zMin }, Point3f::Simd{ radius, radius, zMax } ) );
+            Bounds3f( { -radius, -radius, zMin }, { radius, radius, zMax } ) );
     }
 
     std::string Cylinder::ToString( ) const
     {
-        return std::format( "[ Cylinder renderFromObject: {} objectFromRender: {} "
-            "reverseOrientation: {} "
-            "transformSwapsHandedness: {} radius: {} zMin: {} zMax: {} "
-            "phiMax: {} ]",
+        return StringPrintf( "[ Cylinder renderFromObject: %s objectFromRender: %s "
+            "reverseOrientation: %s "
+            "transformSwapsHandedness: %s radius: %f zMin: %f zMax: %f "
+            "phiMax: %f ]",
             *renderFromObject, *objectFromRender, reverseOrientation,
             transformSwapsHandedness, radius, zMin, zMax, phiMax );
     }
@@ -177,7 +172,7 @@ namespace pbrto
 
     std::string TriangleIntersection::ToString( ) const
     {
-        return std::format( "[ TriangleIntersection b0: {} b1: {} b2: {} t: {} ]", b0, b1, b2,
+        return StringPrintf( "[ TriangleIntersection b0: %f b1: %f b2: %f t: %f ]", b0, b1, b2,
             t );
     }
 
@@ -204,7 +199,7 @@ namespace pbrto
         Point3f p2 )
     {
         // Return no intersection if triangle is degenerate
-        if ( ScalarLengthSquared( Math::Cross( p2 - p0, p1 - p0 ) ) == 0 )
+        if ( ScalarLengthSquared( Cross( p2 - p0, p1 - p0 ) ) == 0 )
             return {};
 
         // Transform triangle vertices to ray coordinate space
@@ -408,7 +403,7 @@ namespace pbrto
         const Point3f& p1 = mesh->p[ v[ 1 ] ];
         const Point3f& p2 = mesh->p[ v[ 2 ] ];
 
-        return std::format( "[ Triangle meshIndex: {} triIndex: {} -> p [ {} {} {} ] ]",
+        return StringPrintf( "[ Triangle meshIndex: %d triIndex: %d -> p [ %s %s %s ] ]",
             meshIndex, triIndex, p0, p1, p2 );
     }
 
@@ -435,7 +430,7 @@ namespace pbrto
         else if ( ( vi.size( ) % 3 ) != 0u )
         {
             Error( loc,
-                "Number of vertex indices {} not a multiple of 3. Discarding {} "
+                "Number of vertex indices %d not a multiple of 3. Discarding %d "
                 "excess.",
                 int( vi.size( ) ), int( vi.size( ) % 3 ) );
             while ( ( vi.size( ) % 3 ) != 0u )
@@ -474,7 +469,7 @@ namespace pbrto
             if ( vi[ i ] >= P.size( ) )
             {
                 Error( loc,
-                    "trianglemesh has out of-bounds vertex index {} ({} \"P\" "
+                    "trianglemesh has out of-bounds vertex index %d (%d \"P\" "
                     "values were given. Discarding this mesh.",
                     vi[ i ], ( int )P.size( ) );
                 return {};
@@ -484,7 +479,7 @@ namespace pbrto
         if ( !faceIndices.empty( ) && faceIndices.size( ) != vi.size( ) / 3 )
         {
             Error( loc,
-                "Number of face indices {} does not match number of triangles {}. "
+                "Number of face indices %d does not match number of triangles %d. "
                 "Discarding face indices.",
                 int( faceIndices.size( ) ), int( vi.size( ) / 3 ) );
             faceIndices = {};
@@ -537,18 +532,18 @@ namespace pbrto
             n[ 0 ] = Normalize( norm[ 0 ] );
             n[ 1 ] = Normalize( norm[ 1 ] );
             normalAngle = AngleBetween( n[ 0 ], n[ 1 ] );
-            invSinNormalAngle = 1 / Math::Sin( normalAngle );
+            invSinNormalAngle = 1 / std::sin( normalAngle );
         }
         ++nCurves;
     }
 
     std::string CurveCommon::ToString( ) const
     {
-        return std::format(
-            "[ CurveCommon type: {} cpObj: {} width: {} n: {} normalAngle: {} "
-            "invSinNormalAngle: {} renderFromObject: {} "
-            "objectFromRender: {} "
-            "reverseOrientation: {} transformSwapsHandedness: {} ]",
+        return StringPrintf(
+            "[ CurveCommon type: %s cpObj: %s width: %s n: %s normalAngle: %f "
+            "invSinNormalAngle: %f renderFromObject: %s "
+            "objectFromRender: %s "
+            "reverseOrientation: %s transformSwapsHandedness: %s ]",
             type, pstdo::MakeSpan( cpObj ), pstdo::MakeSpan( width ), pstdo::MakeSpan( n ),
             normalAngle, invSinNormalAngle, *renderFromObject, *objectFromRender,
             reverseOrientation, transformSwapsHandedness );
@@ -602,9 +597,7 @@ namespace pbrto
         Float avgWidth = ( width0 + width1 ) * 0.5f;
         Float approxLength = 0.f;
         for ( int i = 0; i < 3; ++i )
-        {
             approxLength += ScalarDistance( cpObj[ i ], cpObj[ i + 1 ] );
-        }
         return approxLength * avgWidth;
     }
 
@@ -635,12 +628,12 @@ namespace pbrto
 
         // Project curve control points to plane perpendicular to ray
         Vector3f dx = Cross( ray.d, cpObj[ 3 ] - cpObj[ 0 ] );
-        if ( LengthSquared( dx ) == 0 )
+        if ( ScalarLengthSquared( dx ) == 0 )
         {
             Vector3f dy;
             CoordinateSystem( ray.d, &dx, &dy );
         }
-        Transform rayFromObject = pbrto::LookAt( ray.o, ray.o + ray.d, dx );
+        Transform rayFromObject = LookAt( ray.o, Point3f( ray.o + ray.d ), dx );
         pstdo::array<Point3f, 4> cp = { rayFromObject( cpObj[ 0 ] ), rayFromObject( cpObj[ 1 ] ),
                                       rayFromObject( cpObj[ 2 ] ), rayFromObject( cpObj[ 3 ] ) };
 
@@ -649,7 +642,7 @@ namespace pbrto
             Lerp( uMax, common->width[ 0 ], common->width[ 1 ] ) );
         Bounds3f curveBounds = Union( Bounds3f( cp[ 0 ], cp[ 1 ] ), Bounds3f( cp[ 2 ], cp[ 3 ] ) );
         curveBounds = Expand( curveBounds, 0.5f * maxWidth );
-        Bounds3f rayBounds( Point3f( 0, 0, 0 ), Point3f( 0, 0, Length( ray.d ) * tMax ) );
+        Bounds3f rayBounds( Point3f( 0, 0, 0 ), Point3f( 0, 0, ScalarLength( ray.d ) * tMax ) );
         if ( !Overlaps( rayBounds, curveBounds ) )
             return false;
 
@@ -679,7 +672,7 @@ namespace pbrto
         const Transform& objectFromRay, Float u0, Float u1,
         int depth, pstdo::optional<ShapeIntersection>* si ) const
     {
-        Float rayLength = Length( ray.d );
+        Float rayLength = ScalarLength( ray.d );
         if ( depth > 0 )
         {
             // Split curve segment into subsegments and test for intersection
@@ -695,7 +688,7 @@ namespace pbrto
                 Bounds3f curveBounds =
                     Union( Bounds3f( cps[ 0 ], cps[ 1 ] ), Bounds3f( cps[ 2 ], cps[ 3 ] ) );
                 curveBounds = Expand( curveBounds, 0.5f * maxWidth );
-                Bounds3f rayBounds( Point3f( 0, 0, 0 ), Point3f( 0, 0, Length( ray.d ) * tMax ) );
+                Bounds3f rayBounds( Point3f( 0, 0, 0 ), Point3f( 0, 0, ScalarLength( ray.d ) * tMax ) );
                 if ( !Overlaps( rayBounds, curveBounds ) )
                     continue;
 
@@ -724,7 +717,7 @@ namespace pbrto
 
             // Find line $w$ that gives minimum distance to sample point
             Vector2f segmentDir = Point2f( cp[ 3 ].x, cp[ 3 ].y ) - Point2f( cp[ 0 ].x, cp[ 0 ].y );
-            Float denom = LengthSquared( segmentDir );
+            Float denom = ScalarLengthSquared( segmentDir );
             if ( denom == 0 )
                 return false;
             Float w = ScalarDot( -Vector2f( cp[ 0 ].x, cp[ 0 ].y ), segmentDir ) / denom;
@@ -740,11 +733,10 @@ namespace pbrto
                     nHit = common->n[ 0 ];
                 else
                 {
-
                     Float sin0 =
-                        Math::Sin( ( 1 - u ) * common->normalAngle ) * common->invSinNormalAngle;
+                        std::sin( ( 1 - u ) * common->normalAngle ) * common->invSinNormalAngle;
                     Float sin1 =
-                        Math::Sin( u * common->normalAngle ) * common->invSinNormalAngle;
+                        std::sin( u * common->normalAngle ) * common->invSinNormalAngle;
                     nHit = sin0 * common->n[ 0 ] + sin1 * common->n[ 1 ];
                 }
                 hitWidth *= ScalarAbsDot( nHit, ray.d ) / rayLength;
@@ -772,7 +764,7 @@ namespace pbrto
 
                 // Initialize _SurfaceInteraction_ _intr_ for curve intersection
                 // Compute $v$ coordinate of curve intersection point
-                Float ptCurveDist = Math::Sqrt( ptCurveDist2 );
+                Float ptCurveDist = std::sqrt( ptCurveDist2 );
                 Float edgeFunc = dpcdw.x * -pc.y + pc.x * dpcdw.y;
                 Float v = ( edgeFunc > 0 ) ? 0.5f + ptCurveDist / hitWidth
                     : 0.5f - ptCurveDist / hitWidth;
@@ -845,7 +837,7 @@ namespace pbrto
 
     std::string Curve::ToString( ) const
     {
-        return std::format( "[ Curve common: {} uMin: {} uMax: {} ]", *common, uMin, uMax );
+        return StringPrintf( "[ Curve common: %s uMin: %f uMax: %f ]", *common, uMin, uMax );
     }
 
     pstdo::vector<Shape> Curve::Create( const Transform* renderFromObject,
@@ -861,7 +853,7 @@ namespace pbrto
         int degree = parameters.GetOneInt( "degree", 3 );
         if ( degree != 2 && degree != 3 )
         {
-            Error( loc, "Invalid degree {}: only degree 2 and 3 curves are supported.",
+            Error( loc, "Invalid degree %d: only degree 2 and 3 curves are supported.",
                 degree );
             return {};
         }
@@ -870,7 +862,7 @@ namespace pbrto
         if ( basis != "bezier" && basis != "bspline" )
         {
             Error( loc,
-                "Invalid basis \"{}\": only \"bezier\" and \"bspline\" are "
+                "Invalid basis \"%s\": only \"bezier\" and \"bspline\" are "
                 "supported.",
                 basis );
             return {};
@@ -886,8 +878,8 @@ namespace pbrto
             if ( ( ( cp.size( ) - 1 - degree ) % degree ) != 0 )
             {
                 Error( loc,
-                    "Invalid number of control points {}: for the degree {} "
-                    "Bezier basis {} + n * {} are required, for n >= 0.",
+                    "Invalid number of control points %d: for the degree %d "
+                    "Bezier basis %d + n * %d are required, for n >= 0.",
                     ( int )cp.size( ), degree, degree + 1, degree );
                 return {};
             }
@@ -898,8 +890,8 @@ namespace pbrto
             if ( cp.size( ) < degree + 1 )
             {
                 Error( loc,
-                    "Invalid number of control points {}: for the degree {} "
-                    "b-spline basis, must have >= {}.",
+                    "Invalid number of control points %d: for the degree %d "
+                    "b-spline basis, must have >= %d.",
                     int( cp.size( ) ), degree, degree + 1 );
                 return {};
             }
@@ -916,7 +908,7 @@ namespace pbrto
             type = CurveType::Cylinder;
         else
         {
-            Error( loc, R"(Unknown curve type "{}".  Using "cylinder".)", curveType );
+            Error( loc, R"(Unknown curve type "%s".  Using "cylinder".)", curveType );
             type = CurveType::Cylinder;
         }
 
@@ -931,9 +923,9 @@ namespace pbrto
             else if ( n.size( ) != nSegments + 1 )
             {
                 Error( loc,
-                    "Invalid number of normals {}: must provide {} normals for "
+                    "Invalid number of normals %d: must provide %d normals for "
                     "ribbon "
-                    "curves with {} segments.",
+                    "curves with %d segments.",
                     int( n.size( ) ), nSegments + 1, nSegments );
                 return {};
             }
@@ -1021,7 +1013,7 @@ namespace pbrto
     // BilinearPatch Method Definitions
     std::string BilinearIntersection::ToString( ) const
     {
-        return std::format( "[ BilinearIntersection uv: {} t: {}", uv, t );
+        return StringPrintf( "[ BilinearIntersection uv: %s t: %f", uv, t );
     }
 
     BilinearPatchMesh* BilinearPatch::CreateMesh( const Transform* renderFromObject,
@@ -1048,7 +1040,7 @@ namespace pbrto
         else if ( ( vertexIndices.size( ) % 4 ) != 0u )
         {
             Error( loc,
-                "Number of vertex indices {} not a multiple of 4. Discarding {} "
+                "Number of vertex indices %d not a multiple of 4. Discarding %d "
                 "excess.",
                 int( vertexIndices.size( ) ), int( vertexIndices.size( ) % 4 ) );
             while ( ( vertexIndices.size( ) % 4 ) != 0u )
@@ -1081,7 +1073,7 @@ namespace pbrto
             if ( vertexIndices[ i ] >= P.size( ) )
             {
                 Error( loc,
-                    "Bilinear patch mesh has out of-bounds vertex index {} ({} "
+                    "Bilinear patch mesh has out of-bounds vertex index %d (%d "
                     "\"P\" "
                     "values were given. Discarding this mesh.",
                     vertexIndices[ i ], ( int )P.size( ) );
@@ -1092,8 +1084,8 @@ namespace pbrto
         if ( !faceIndices.empty( ) && faceIndices.size( ) != vertexIndices.size( ) / 4 )
         {
             Error( loc,
-                "Number of face indices {} does not match number of bilinear "
-                "patches {}. "
+                "Number of face indices %d does not match number of bilinear "
+                "patches %d. "
                 "Discarding face indices.",
                 int( faceIndices.size( ) ), int( vertexIndices.size( ) / 4 ) );
             faceIndices = {};
@@ -1174,15 +1166,11 @@ namespace pbrto
         // Store area of bilinear patch in _area_
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ];
-        Point3f p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ];
-        Point3f p11 = mesh->p[ v[ 3 ] ];
+        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         if ( IsRectangle( mesh ) )
-        {
             area = ScalarDistance( p00, p01 ) * ScalarDistance( p00, p10 );
-        }
         else
         {
             // Compute approximate area of bilinear patch
@@ -1201,13 +1189,9 @@ namespace pbrto
             }
             area = 0;
             for ( int i = 0; i < na; ++i )
-            {
                 for ( int j = 0; j < na; ++j )
-                {
                     area += 0.5f * ScalarLength( Cross( p[ i + 1 ][ j + 1 ] - p[ i ][ j ],
                         p[ i + 1 ][ j ] - p[ i ][ j + 1 ] ) );
-                }
-            }
         }
     }
 
@@ -1273,7 +1257,7 @@ namespace pbrto
 
         // Compute average normal and return normal bounds for patch
         Vector3f n = Normalize( n00 + n10 + n01 + n11 );
-        Float cosTheta = std::min( { Dot( n, n00 ), Dot( n, n01 ), Dot( n, n10 ), Dot( n, n11 ) } );
+        Float cosTheta = std::min( { ScalarDot( n, n00 ), ScalarDot( n, n01 ), ScalarDot( n, n10 ), ScalarDot( n, n11 ) } );
         return DirectionCone( n, Clamp( cosTheta, -1, 1 ) );
     }
 
@@ -1324,8 +1308,11 @@ namespace pbrto
             // Sample patch $(u,v)$ with approximate uniform area sampling
             // Initialize _w_ array with differential area at bilinear patch corners
             pstdo::array<Float, 4> w = {
-                ScalarLength( Cross( p10 - p00, p01 - p00 ) ), ScalarLength( Cross( p10 - p00, p11 - p10 ) ),
-                ScalarLength( Cross( p01 - p00, p11 - p01 ) ), ScalarLength( Cross( p11 - p10, p11 - p01 ) ) };
+                ScalarLength( Cross( p10 - p00, p01 - p00 ) ), 
+                ScalarLength( Cross( p10 - p00, p11 - p10 ) ),
+                ScalarLength( Cross( p01 - p00, p11 - p01 ) ), 
+                ScalarLength( Cross( p11 - p10, p11 - p01 ) ) };
+
             uv = SampleBilinear( u, w );
             pdf = BilinearPDF( uv, w );
 
@@ -1339,7 +1326,7 @@ namespace pbrto
         Point3f p = Lerp( uv[ 0 ], pu0, pu1 );
         Vector3f dpdu = pu1 - pu0;
         Vector3f dpdv = Lerp( uv[ 0 ], p01, p11 ) - Lerp( uv[ 0 ], p00, p10 );
-        if ( LengthSquared( dpdu ) == 0 || LengthSquared( dpdv ) == 0 )
+        if ( ScalarLengthSquared( dpdu ) == 0 || ScalarLengthSquared( dpdv ) == 0 )
             return {};
 
         Point2f st = uv;
@@ -1369,7 +1356,7 @@ namespace pbrto
 
         // Return _ShapeSample_ for sampled bilinear patch point
         return ShapeSample{ Interaction( Point3fi( p, pError ), n, st ),
-                           pdf / Length( Cross( dpdu, dpdv ) ) };
+                           pdf / ScalarLength( Cross( dpdu, dpdv ) ) };
     }
 
     PBRT_CPU_GPU Float BilinearPatch::PDF( const Interaction& intr ) const
@@ -1386,7 +1373,8 @@ namespace pbrto
         {
             Point2f uv00 = mesh->uv[ v[ 0 ] ], uv10 = mesh->uv[ v[ 1 ] ];
             Point2f uv01 = mesh->uv[ v[ 2 ] ], uv11 = mesh->uv[ v[ 3 ] ];
-            uv = InvertBilinear( uv, { uv00, uv10, uv01, uv11 } );
+            std::array<Point2f, 4> vert{ uv00, uv10, uv01, uv11 };
+            uv = InvertBilinear( uv, vert );
         }
 
         // Compute PDF for sampling the $(u,v)$ coordinates given by _intr.uv_
@@ -1397,8 +1385,10 @@ namespace pbrto
         {
             // Initialize _w_ array with differential area at bilinear patch corners
             pstdo::array<Float, 4> w = {
-                ScalarLength( Cross( p10 - p00, p01 - p00 ) ), ScalarLength( Cross( p10 - p00, p11 - p10 ) ),
-                ScalarLength( Cross( p01 - p00, p11 - p01 ) ), ScalarLength( Cross( p11 - p10, p11 - p01 ) ) };
+                ScalarLength( Cross( p10 - p00, p01 - p00 ) ), 
+                ScalarLength( Cross( p10 - p00, p11 - p10 ) ),
+                ScalarLength( Cross( p01 - p00, p11 - p01 ) ), 
+                ScalarLength( Cross( p11 - p10, p11 - p01 ) ) };
 
             pdf = BilinearPDF( uv, w );
         }
@@ -1411,7 +1401,7 @@ namespace pbrto
         Vector3f dpdv = Lerp( uv[ 0 ], p01, p11 ) - Lerp( uv[ 0 ], p00, p10 );
 
         // Return final bilinear patch area sampling PDF
-        return pdf / Length( Cross( dpdu, dpdv ) );
+        return pdf / ScalarLength( Cross( dpdu, dpdv ) );
     }
 
     PBRT_CPU_GPU pstdo::optional<ShapeSample> BilinearPatch::Sample( const ShapeSampleContext& ctx,
@@ -1434,7 +1424,7 @@ namespace pbrto
             NDCHECK( ss.has_value( ) );
             ss->intr.time = ctx.time;
             Vector3f wi = ss->intr.p( ) - ctx.p( );
-            if ( LengthSquared( wi ) == 0 )
+            if ( ScalarLengthSquared( wi ) == 0 )
                 return {};
             wi = Normalize( wi );
 
@@ -1452,10 +1442,10 @@ namespace pbrto
         {
             // Compute $\cos\theta$ weights for rectangle seen from reference point
             pstdo::array<Float, 4> w =
-                pstdo::array<Float, 4>{ std::max<Float>( 0.01, ScalarAbsDot( v00, ctx.ns ) ),
+                pstdo::array<Float, 4>{std::max<Float>( 0.01, ScalarAbsDot( v00, ctx.ns ) ),
                 std::max<Float>( 0.01, ScalarAbsDot( v10, ctx.ns ) ),
                 std::max<Float>( 0.01, ScalarAbsDot( v01, ctx.ns ) ),
-                std::max<Float>( 0.01, ScalarAbsDot( v11, ctx.ns ) ) };
+                std::max<Float>( 0.01, ScalarAbsDot( v11, ctx.ns ) )};
 
             u = SampleBilinear( u, w );
             pdf *= BilinearPDF( u, w );
@@ -1529,10 +1519,10 @@ namespace pbrto
             {
                 // Compute $\cos\theta$ weights for rectangle seen from reference point
                 pstdo::array<Float, 4> w =
-                    pstdo::array<Float, 4>{ std::max<Float>( 0.01, ScalarAbsDot( v00, ctx.ns ) ),
+                    pstdo::array<Float, 4>{std::max<Float>( 0.01, ScalarAbsDot( v00, ctx.ns ) ),
                     std::max<Float>( 0.01, ScalarAbsDot( v10, ctx.ns ) ),
                     std::max<Float>( 0.01, ScalarAbsDot( v01, ctx.ns ) ),
-                    std::max<Float>( 0.01, ScalarAbsDot( v11, ctx.ns ) ) };
+                    std::max<Float>( 0.01, ScalarAbsDot( v11, ctx.ns ) )};
 
                 Point2f u = InvertSphericalRectangleSample( ctx.p( ), p00, p10 - p00, p01 - p00,
                     isect->intr.p( ) );
@@ -1545,7 +1535,7 @@ namespace pbrto
 
     std::string BilinearPatch::ToString( ) const
     {
-        return std::format( "[ BilinearPatch meshIndex: {} blpIndex: {} area: {} ]",
+        return StringPrintf( "[ BilinearPatch meshIndex: %d blpIndex: %d area: %f ]",
             meshIndex, blpIndex, area );
     }
 
@@ -1610,10 +1600,10 @@ namespace pbrto
             {
                 auto iter = floatTextures.find( displacementTexName );
                 if ( iter == floatTextures.end( ) )
-                    ErrorExit( loc, "{}: no such texture defined.", displacementTexName );
+                    ErrorExit( loc, "%s: no such texture defined.", displacementTexName );
                 FloatTexture displacement = iter->second;
 
-                NLOG_VERBOSE( "Starting to displace mesh \"{}\" with \"{}\"", filename,
+                NLOG_VERBOSE( "Starting to displace mesh \"%s\" with \"%s\"", filename,
                     displacementTexName );
 
                 int origTriCount = plyMesh.triIndices.size( ) / 3;
@@ -1635,7 +1625,7 @@ namespace pbrto
                     },
                     loc );
 
-                NLOG_VERBOSE( "Finished displacing mesh \"{}\" with \"{}\" -> {} tris",
+                NLOG_VERBOSE( "Finished displacing mesh \"%s\" with \"%s\" -> %d tris",
                     filename, displacementTexName, plyMesh.triIndices.size( ) / 3 );
 
                 displacedTrisDelta += plyMesh.triIndices.size( ) / 3 - origTriCount;
@@ -1681,10 +1671,10 @@ namespace pbrto
             shapes = Triangle::CreateTriangles( mesh, alloc );
         }
         else
-            ErrorExit( loc, "{}: shape type unknown.", name );
+            ErrorExit( loc, "%s: shape type unknown.", name );
 
         if ( shapes.empty( ) )
-            ErrorExit( loc, "{}: unable to create shape.", name );
+            ErrorExit( loc, "%s: unable to create shape.", name );
 
         return shapes;
     }
@@ -1701,12 +1691,12 @@ namespace pbrto
     // Shape Method Definitions
     std::string ShapeSample::ToString( ) const
     {
-        return std::format( "[ ShapeSample intr: {} pdf: {} ]", intr, pdf );
+        return StringPrintf( "[ ShapeSample intr: %s pdf: %f ]", intr, pdf );
     }
 
     std::string ShapeIntersection::ToString( ) const
     {
-        return std::format( "[ ShapeIntersection intr: {} tHit: {} ]", intr, tHit );
+        return StringPrintf( "[ ShapeIntersection intr: %s tHit: %f ]", intr, tHit );
     }
 
 }

@@ -20,73 +20,69 @@
 #include <set>
 #include <string>
 
-namespace pbrt
-{
+namespace pbrt {
 
-    enum DisplayState { EXIT, RESET, NONE };
+enum DisplayState { EXIT, RESET, NONE };
 
-    class GUI
-    {
-    public:
-        GUI( std::string title, Vector2i resolution, Bounds3f sceneBounds );
-        ~GUI( );
+class GUI {
+  public:
+    GUI(std::string title, Vector2i resolution, Bounds3f sceneBounds);
+    ~GUI();
 
-        RGB* MapFramebuffer( )
-        {
+    RGB *MapFramebuffer() {
 #ifdef PBRT_BUILD_GPU_RENDERER
-            if ( cudaFramebuffer )
-                return cudaFramebuffer->Map( );
-            else
+        if (cudaFramebuffer)
+            return cudaFramebuffer->Map();
+        else
 #endif  // PBRT_BUILD_GPU_RENDERER
-                return cpuFramebuffer;
-        }
-        void UnmapFramebuffer( )
-        {
+            return cpuFramebuffer;
+    }
+    void UnmapFramebuffer() {
 #ifdef PBRT_BUILD_GPU_RENDERER
-            if ( cudaFramebuffer )
-                cudaFramebuffer->Unmap( );
+        if (cudaFramebuffer)
+            cudaFramebuffer->Unmap();
 #endif  // PBRT_BUILD_GPU_RENDERER
-        }
+    }
 
-        DisplayState RefreshDisplay( );
+    DisplayState RefreshDisplay();
 
-        // It's a little messy that the state of values controlled via the UI
-        // are just public variables here but it's probably not worth putting
-        // an abstraction layer on top of all this at this point.
-        Transform GetCameraTransform( ) const { return movingFromCamera; }
-        Float exposure = 1.f;
-        bool printCameraTransform = false;
+    // It's a little messy that the state of values controlled via the UI
+    // are just public variables here but it's probably not worth putting
+    // an abstraction layer on top of all this at this point.
+    Transform GetCameraTransform() const { return movingFromCamera; }
+    Float exposure = 1.f;
+    bool printCameraTransform = false;
 
-        void keyboardCallback( GLFWwindow* window, int key, int scan, int action, int mods );
-        void cursorPosCallback( GLFWwindow* window, double xpos, double ypos );
-        void mouseButtonCallback( GLFWwindow* window, int button, int action, int mods );
+    void keyboardCallback(GLFWwindow *window, int key, int scan, int action, int mods);
+    void cursorPosCallback(GLFWwindow *window, double xpos, double ypos);
+    void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
 
-        static void Initialize( );
-        static Point2i GetResolution( );
+    static void Initialize();
+    static Point2i GetResolution();
 
-    private:
-        bool processKeys( );
-        bool processMouse( );
-        bool process( );
+  private:
+    bool processKeys();
+    bool processMouse();
+    bool process();
 
-        std::set<char> keysDown;
-        Float moveScale = 1.f;
-        Transform movingFromCamera;
-        Vector2i resolution;
-        bool recordFrames = false;
-        int frameNumber = 0;
-        bool pressed = false;
-        Float xoffset = 0.f;
-        Float yoffset = 0.f;
-        double lastX = 0.f;
-        double lastY = 0.f;
+    std::set<char> keysDown;
+    Float moveScale = 1.f;
+    Transform movingFromCamera;
+    Vector2i resolution;
+    bool recordFrames = false;
+    int frameNumber = 0;
+    bool pressed = false;
+    Float xoffset = 0.f;
+    Float yoffset = 0.f;
+    double lastX = 0.f;
+    double lastY = 0.f;
 
 #ifdef PBRT_BUILD_GPU_RENDERER
-        CUDAOutputBuffer<RGB>* cudaFramebuffer = nullptr;
+    CUDAOutputBuffer<RGB> *cudaFramebuffer = nullptr;
 #endif
-        RGB* cpuFramebuffer = nullptr;
-        GLFWwindow* window = nullptr;
-    };
+    RGB *cpuFramebuffer = nullptr;
+    GLFWwindow *window = nullptr;
+};
 
 }  // namespace pbrt
 

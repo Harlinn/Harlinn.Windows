@@ -97,9 +97,9 @@ namespace pbrto
         {
             if ( !filename.empty( ) )
                 Warning( loc,
-                    "Output filename supplied on command line, \"{}\" will "
+                    "Output filename supplied on command line, \"%s\" will "
                     "override "
-                    "filename provided in scene description file, \"{}\".",
+                    "filename provided in scene description file, \"%s\".",
                     Options->imageFile, filename );
             filename = Options->imageFile;
         }
@@ -142,7 +142,7 @@ namespace pbrto
         else if ( !pb.empty( ) )
         {
             if ( pb.size( ) != 4 )
-                Error( loc, "{} values supplied for \"pixelbounds\". Expected 4.",
+                Error( loc, "%d values supplied for \"pixelbounds\". Expected 4.",
                     int( pb.size( ) ) );
             else
             {
@@ -161,7 +161,7 @@ namespace pbrto
             if ( Intersect( crop, Bounds2f( Point2f( 0, 0 ), Point2f( 1, 1 ) ) ) != crop )
             {
                 Error( loc,
-                    "Film crop window {} is not in [0,1] range; did you "
+                    "Film crop window %s is not in [0,1] range; did you "
                     "mean to use \"pixelbounds\"? Clamping to valid range.",
                     crop );
                 crop = Intersect( crop, Bounds2f( Point2f( 0, 0 ), Point2f( 1, 1 ) ) );
@@ -205,12 +205,12 @@ namespace pbrto
                         pstdo::ceil( fullResolution.y * crop.pMax.y ) ) );
             }
             else
-                Error( loc, "{} values supplied for \"cropwindow\". Expected 4.",
+                Error( loc, "%d values supplied for \"cropwindow\". Expected 4.",
                     ( int )cr.size( ) );
         }
 
         if ( pixelBounds.IsEmpty( ) )
-            ErrorExit( loc, "Degenerate pixel bounds provided to film: {}.", pixelBounds );
+            ErrorExit( loc, "Degenerate pixel bounds provided to film: %s.", pixelBounds );
 
         diagonal = parameters.GetOneFloat( "diagonal", 35. );
     }
@@ -219,14 +219,14 @@ namespace pbrto
     PBRT_CPU_GPU Bounds2f FilmBase::SampleBounds( ) const
     {
         Vector2f radius = filter.Radius( );
-        return Bounds2f( ToVector2f( pixelBounds.pMin ) - radius + Vector2f( 0.5f, 0.5f ),
-            ToVector2f( pixelBounds.pMax ) + radius - Vector2f( 0.5f, 0.5f ) );
+        return Bounds2f( ToPoint2f( ToPoint2f( pixelBounds.pMin ) - radius + Vector2f( 0.5f, 0.5f ) ),
+            ToPoint2f( pixelBounds.pMax ) + radius - Vector2f( 0.5f, 0.5f ) );
     }
 
     std::string FilmBase::BaseToString( ) const
     {
-        return std::format( "fullResolution: {} diagonal: {} filter: {} filename: {} "
-            "pixelBounds: {}",
+        return StringPrintf( "fullResolution: %s diagonal: %f filter: %s filename: %s "
+            "pixelBounds: %s",
             fullResolution, diagonal, filter, filename, pixelBounds );
     }
 
@@ -249,8 +249,8 @@ namespace pbrto
 
     std::string VisibleSurface::ToString( ) const
     {
-        return std::format( "[ VisibleSurface set: {} p: {} n: {} ns: {} dpdx: {} dpdy: {} "
-            "time: {} albedo: {} ]",
+        return StringPrintf( "[ VisibleSurface set: %s p: %s n: %s ns: %s dpdx: %f dpdy: %f "
+            "time: %f albedo: %s ]",
             set, p, n, ns, dpdx, dpdy, time, albedo );
     }
 
@@ -563,14 +563,12 @@ namespace pbrto
         Vector2f radius = filter.Radius( );
         Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - radius ) ),
             ToPoint2i( Floor( pDiscrete + radius ) ) + Vector2i( 1, 1 ) );
-
         splatBounds = Intersect( splatBounds, pixelBounds );
 
         for ( Point2i pi : splatBounds )
         {
             // Evaluate filter at _pi_ and add splat contribution
-            Float wt = filter.Evaluate( Point2f( p - Point2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
-
+            Float wt = filter.Evaluate( Point2f( p - ToPoint2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
             if ( wt != 0 )
             {
                 Pixel& pixel = pixels[ pi ];
@@ -583,7 +581,7 @@ namespace pbrto
     void RGBFilm::WriteImage( ImageMetadata metadata, Float splatScale )
     {
         Image image = GetImage( &metadata, splatScale );
-        NLOG_VERBOSE( "Writing image {} with bounds {}", filename, pixelBounds );
+        NLOG_VERBOSE( "Writing image %s with bounds %s", filename, pixelBounds );
         image.Write( filename, metadata );
     }
 
@@ -614,7 +612,7 @@ namespace pbrto
             } );
 
         if ( nClamped.load( ) > 0 )
-            Warning( "{} pixel values clamped to maximum fp16 value.", nClamped.load( ) );
+            Warning( "%d pixel values clamped to maximum fp16 value.", nClamped.load( ) );
 
         metadata->pixelBounds = pixelBounds;
         metadata->fullResolution = fullResolution;
@@ -625,8 +623,8 @@ namespace pbrto
 
     std::string RGBFilm::ToString( ) const
     {
-        return std::format(
-            "[ RGBFilm {} colorSpace: {} maxComponentValue: {} writeFP16: {} ]",
+        return StringPrintf(
+            "[ RGBFilm %s colorSpace: %s maxComponentValue: %f writeFP16: %s ]",
             BaseToString( ), *colorSpace, maxComponentValue, writeFP16 );
     }
 
@@ -646,7 +644,7 @@ namespace pbrto
     }
 
     // GBufferFilm Method Definitions
-    void GBufferFilm::AddSample( Point2i pFilm, SampledSpectrum L,
+    PBRT_CPU_GPU void GBufferFilm::AddSample( Point2i pFilm, SampledSpectrum L,
         const SampledWavelengths& lambda,
         const VisibleSurface* visibleSurface, Float weight )
     {
@@ -736,13 +734,10 @@ namespace pbrto
         Point2f pDiscrete = p + Vector2f( 0.5, 0.5 );
         Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - filter.Radius( ) ) ),
             ToPoint2i( Floor( pDiscrete + filter.Radius( ) ) ) + Vector2i( 1, 1 ) );
-
         splatBounds = Intersect( splatBounds, pixelBounds );
         for ( Point2i pi : splatBounds )
         {
-
-            Float wt = filter.Evaluate( Point2f( p - Point2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
-
+            Float wt = filter.Evaluate( Point2f( p - ToPoint2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
             if ( wt != 0 )
             {
                 Pixel& pixel = pixels[ pi ];
@@ -755,7 +750,7 @@ namespace pbrto
     void GBufferFilm::WriteImage( ImageMetadata metadata, Float splatScale )
     {
         Image image = GetImage( &metadata, splatScale );
-        NLOG_VERBOSE( "Writing image %s with bounds {}", filename, pixelBounds );
+        NLOG_VERBOSE( "Writing image %s with bounds %s", filename, pixelBounds );
         image.Write( filename, metadata );
     }
 
@@ -852,10 +847,9 @@ namespace pbrto
                 { albedoRgb[ 0 ], albedoRgb[ 1 ], albedoRgb[ 2 ] } );
 
             Normal3f n =
-                ScalarLengthSquared( pixel.nSum ) > 0 ? Normal3f( Normalize( pixel.nSum ) ) : Normal3f( 0, 0, 0 );
+                ScalarLengthSquared( pixel.nSum ) > 0 ? Normal3f(Normalize( pixel.nSum )) : Normal3f( 0, 0, 0 );
             Normal3f ns =
-                ScalarLengthSquared( pixel.nsSum ) > 0 ? Normal3f( Normalize( pixel.nsSum ) ) : Normal3f( 0, 0, 0 );
-
+                ScalarLengthSquared( pixel.nsSum ) > 0 ? Normal3f(Normalize( pixel.nsSum )) : Normal3f( 0, 0, 0 );
             image.SetChannels( pOffset, pDesc, { pt.x, pt.y, pt.z } );
             image.SetChannels( pOffset, dzDesc, { std::abs( dzdx ), std::abs( dzdy ) } );
             image.SetChannels( pOffset, nDesc, { n.x, n.y, n.z } );
@@ -872,7 +866,7 @@ namespace pbrto
             } );
 
         if ( nClamped.load( ) > 0 )
-            Warning( "{} pixel values clamped to maximum fp16 value.", nClamped.load( ) );
+            Warning( "%d pixel values clamped to maximum fp16 value.", nClamped.load( ) );
 
         metadata->pixelBounds = pixelBounds;
         metadata->fullResolution = fullResolution;
@@ -883,8 +877,8 @@ namespace pbrto
 
     std::string GBufferFilm::ToString( ) const
     {
-        return std::format( "[ GBufferFilm {} outputFromRender: {} applyInverse: {} "
-            "colorSpace: {} maxComponentValue: {} writeFP16: {} ]",
+        return StringPrintf( "[ GBufferFilm %s outputFromRender: %s applyInverse: %s "
+            "colorSpace: %s maxComponentValue: %f writeFP16: %s ]",
             BaseToString( ), outputFromRender, applyInverse, *colorSpace,
             maxComponentValue, writeFP16 );
     }
@@ -904,7 +898,7 @@ namespace pbrto
         FilmBaseParameters filmBaseParameters( parameters, filter, sensor, loc );
 
         if ( !HasExtension( filmBaseParameters.filename, "exr" ) )
-            ErrorExit( loc, "{}: EXR is the only format supported by the GBufferFilm.",
+            ErrorExit( loc, "%s: EXR is the only format supported by the GBufferFilm.",
                 filmBaseParameters.filename );
 
         std::string coordinateSystem = parameters.GetOneString( "coordinatesystem", "camera" );
@@ -919,7 +913,7 @@ namespace pbrto
             outputFromRender = AnimatedTransform( cameraTransform.WorldFromRender( ) );
         else
             ErrorExit( loc,
-                "{}: unknown coordinate system for GBufferFilm. (Expecting \"camera\" "
+                "%s: unknown coordinate system for GBufferFilm. (Expecting \"camera\" "
                 "or \"world\".)",
                 coordinateSystem );
 
@@ -1019,16 +1013,13 @@ namespace pbrto
         Vector2f radius = filter.Radius( );
         Bounds2i splatBounds( ToPoint2i( Floor( pDiscrete - radius ) ),
             ToPoint2i( Floor( pDiscrete + radius ) ) + Vector2i( 1, 1 ) );
-
         splatBounds = Intersect( splatBounds, pixelBounds );
 
         // Splat both RGB and spectral bucket contributions.
         for ( Point2i pi : splatBounds )
         {
             // Evaluate filter at _pi_ and add splat contribution
-
-            Float wt = filter.Evaluate( Point2f( p - Point2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
-
+            Float wt = filter.Evaluate( Point2f( p - ToVector2f( pi ) - Vector2f( 0.5, 0.5 ) ) );
             if ( wt != 0 )
             {
                 Pixel& pixel = pixels[ pi ];
@@ -1048,7 +1039,7 @@ namespace pbrto
     void SpectralFilm::WriteImage( ImageMetadata metadata, Float splatScale )
     {
         Image image = GetImage( &metadata, splatScale );
-        NLOG_VERBOSE( "Writing image {} with bounds {}", filename, pixelBounds );
+        NLOG_VERBOSE( "Writing image %s with bounds %s", filename, pixelBounds );
         image.Write( filename, metadata );
     }
 
@@ -1064,7 +1055,7 @@ namespace pbrto
             // The OpenEXR spectral layout takes the bucket center (and then
             // determines bucket widths based on the neighbor wavelengths).
             std::string lambda =
-                std::format( "{:.3}nm", Lerp( ( i + 0.5f ) / nBuckets, lambdaMin, lambdaMax ) );
+                StringPrintf( "%.3fnm", Lerp( ( i + 0.5f ) / nBuckets, lambdaMin, lambdaMax ) );
             // Convert any '.' to ',' in the number since OpenEXR uses '.' for
             // separating layers.
             std::replace( lambda.begin( ), lambda.end( ), '.', ',' );
@@ -1115,7 +1106,7 @@ namespace pbrto
             } );
 
         if ( nClamped.load( ) > 0 )
-            Warning( "{} pixel values clamped to maximum fp16 value.", nClamped.load( ) );
+            Warning( "%d pixel values clamped to maximum fp16 value.", nClamped.load( ) );
 
         metadata->pixelBounds = pixelBounds;
         metadata->fullResolution = fullResolution;
@@ -1131,8 +1122,8 @@ namespace pbrto
 
     std::string SpectralFilm::ToString( ) const
     {
-        return std::format( "[ SpectralFilm {} lambdaMin: {} lambdaMax: {} nBuckets: {} "
-            "writeFP16: {} maxComponentValue: {} ]",
+        return StringPrintf( "[ SpectralFilm %s lambdaMin: %f lambdaMax: %f nBuckets: %d "
+            "writeFP16: %s maxComponentValue: %f ]",
             BaseToString( ), lambdaMin, lambdaMax, nBuckets, writeFP16,
             maxComponentValue );
     }
@@ -1148,12 +1139,19 @@ namespace pbrto
         bool writeFP16 = parameters.GetOneBool( "savefp16", true );
 
         if ( !HasExtension( filmBaseParameters.filename, "exr" ) )
-            ErrorExit( loc, "{}: EXR is the only output format supported by the SpectralFilm.",
+            ErrorExit( loc, "%s: EXR is the only output format supported by the SpectralFilm.",
                 filmBaseParameters.filename );
 
         int nBuckets = parameters.GetOneInt( "nbuckets", 16 );
         Float lambdaMin = parameters.GetOneFloat( "lambdamin", Lambda_min );
         Float lambdaMax = parameters.GetOneFloat( "lambdamax", Lambda_max );
+        if ( lambdaMin < Lambda_min || lambdaMax > Lambda_max )
+            ErrorExit( "Unfortunately pbrt must be recompiled to render wavelengths "
+                "beyond the [%f,%f] range ([%f,%f] was specified). Please "
+                "update Lambda_min and/or Lambda_max as necessary in "
+                "src/pbrt/util/spectrum.h and recompile.", Lambda_min, Lambda_max,
+                lambdaMin, lambdaMax );
+
         Float maxComponentValue = parameters.GetOneFloat( "maxcomponentvalue", Infinity );
 
         return alloc.new_object<SpectralFilm>( filmBaseParameters, lambdaMin, lambdaMax,
@@ -1176,10 +1174,10 @@ namespace pbrto
             film = SpectralFilm::Create( parameters, exposureTime, filter,
                 parameters.ColorSpace( ), loc, alloc );
         else
-            ErrorExit( loc, "{}: film type unknown.", name );
+            ErrorExit( loc, "%s: film type unknown.", name );
 
         if ( !film )
-            ErrorExit( loc, "{}: unable to create film.", name );
+            ErrorExit( loc, "%s: unable to create film.", name );
 
         parameters.ReportUnused( );
         return film;

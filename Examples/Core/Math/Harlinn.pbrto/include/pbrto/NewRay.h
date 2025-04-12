@@ -16,23 +16,7 @@ namespace pbrto
     class Ray
     {
     public:
-        // Ray Public Members
-        Point3f o;
-        Vector3f d;
-
-        Float time = 0;
-        Medium medium = nullptr;
-
         // Ray Public Methods
-        Ray( ) = default;
-
-        PBRT_CPU_GPU
-            Ray( Point3f o, Vector3f d, Float time = 0.f, Medium medium = nullptr )
-            : o( o ), d( d ), time( time ), medium( medium )
-        {
-        }
-
-
         PBRT_CPU_GPU
             bool HasNaN( ) const { return ( o.HasNaN( ) || d.HasNaN( ) ); }
 
@@ -41,35 +25,34 @@ namespace pbrto
         PBRT_CPU_GPU
             Point3f operator()( Float t ) const { return o + d * t; }
 
+        Ray( ) = default;
+        PBRT_CPU_GPU
+            Ray( Point3f o, Vector3f d, Float time = 0.f, Medium medium = nullptr )
+            : o( o ), d( d ), time( time ), medium( medium )
+        {
+        }
 
-
-
+        // Ray Public Members
+        Point3f o;
+        Vector3f d;
+        Float time = 0;
+        Medium medium = nullptr;
     };
 
     // RayDifferential Definition
     class RayDifferential : public Ray
     {
     public:
-        // RayDifferential Public Members
-        bool hasDifferentials = false;
-
-        Point3f rxOrigin, ryOrigin;
-        Vector3f rxDirection, ryDirection;
-
         // RayDifferential Public Methods
         RayDifferential( ) = default;
         PBRT_CPU_GPU
-
             RayDifferential( Point3f o, Vector3f d, Float time = 0.f, Medium medium = nullptr )
             : Ray( o, d, time, medium )
         {
         }
 
         PBRT_CPU_GPU
-            explicit RayDifferential( const Ray& ray )
-            : Ray( ray )
-        {
-        }
+            explicit RayDifferential( const Ray& ray ) : Ray( ray ) {}
 
         void ScaleDifferentials( Float s )
         {
@@ -88,20 +71,40 @@ namespace pbrto
         }
         std::string ToString( ) const;
 
-
+        // RayDifferential Public Members
+        bool hasDifferentials = false;
+        Point3f rxOrigin, ryOrigin;
+        Vector3f rxDirection, ryDirection;
     };
 
     // Ray Inline Functions
-    PBRT_CPU_GPU
-    inline Point3f OffsetRayOrigin( Point3fi pi, Normal3f n, Vector3f w )
+    PBRT_CPU_GPU inline Point3f OffsetRayOrigin( const Point3fi& pi, const Normal3f& n, const Vector3f& w )
     {
         // Find vector _offset_ to corner of error bounds and compute initial _po_
         Float d = ScalarDot( Abs( n ), pi.Error( ) );
         Vector3f offset = d * Vector3f( n );
         if ( ScalarDot( w, n ) < 0 )
-        {
             offset = -offset;
+        Point3f po = Point3f( pi ) + offset;
+
+        // Round offset point _po_ away from _p_
+        for ( int i = 0; i < 3; ++i )
+        {
+            if ( offset[ i ] > 0 )
+                po[ i ] = NextFloatUp( po[ i ] );
+            else if ( offset[ i ] < 0 )
+                po[ i ] = NextFloatDown( po[ i ] );
         }
+
+        return po;
+    }
+    PBRT_CPU_GPU inline Point3f OffsetRayOrigin( const Point3fi& pi, const Normal3f& n, const Vector3f::Simd& w )
+    {
+        // Find vector _offset_ to corner of error bounds and compute initial _po_
+        Float d = ScalarDot( Abs( n ), pi.Error( ) );
+        Vector3f offset = d * Vector3f( n );
+        if ( ScalarDot( w, n ) < 0 )
+            offset = -offset;
         Point3f po = Point3f( pi ) + offset;
 
         // Round offset point _po_ away from _p_
@@ -116,6 +119,7 @@ namespace pbrto
         return po;
     }
 
+
     PBRT_CPU_GPU inline Ray SpawnRay( Point3fi pi, Normal3f n, Float time, Vector3f d )
     {
         return Ray( OffsetRayOrigin( pi, n, d ), d, time );
@@ -126,13 +130,15 @@ namespace pbrto
         Vector3f d = pTo - Point3f( pFrom );
         return SpawnRay( pFrom, n, time, d );
     }
-    PBRT_CPU_GPU inline Ray SpawnRayTo( Point3fi pFrom, Normal3f nFrom, Float time, Point3fi pTo, Normal3f nTo )
+
+    PBRT_CPU_GPU inline Ray SpawnRayTo( Point3fi pFrom, Normal3f nFrom, Float time,
+        Point3fi pTo, Normal3f nTo )
     {
-        Point3f pf = OffsetRayOrigin( pFrom, nFrom, Point3f( pTo ) - Point3f( pFrom ) );
-        Point3f pt = OffsetRayOrigin( pTo, nTo, pf - Point3f( pTo ) );
+        Point3f pf = OffsetRayOrigin( pFrom, nFrom, ToVector3f( Point3f( pTo ) - Point3f( pFrom ) ) );
+        Point3f pt = OffsetRayOrigin( pTo, nTo, ToVector3f( pf - Point3f( pTo ) ) );
         return Ray( pf, pt - pf, time );
     }
 
-}  // namespace pbrt
+}
 
 #endif

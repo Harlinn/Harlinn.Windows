@@ -34,26 +34,26 @@ namespace pbrto
 {
 
     // File and Filename Function Declarations
-    std::string ReadFileContents( const std::string& filename );
-    std::string ReadDecompressedFileContents( const std::string& filename );
-    bool WriteFileContents( const std::string& filename, const std::string& contents );
+    std::string ReadFileContents( std::string filename );
+    std::string ReadDecompressedFileContents( std::string filename );
+    bool WriteFileContents( std::string filename, const std::string& contents );
 
-    std::vector<Float> ReadFloatFile( const std::string& filename );
+    std::vector<Float> ReadFloatFile( std::string filename );
 
-    bool FileExists( const std::string& filename );
-    bool RemoveFile( const std::string& filename );
+    bool FileExists( std::string filename );
+    bool RemoveFile( std::string filename );
 
-    std::string ResolveFilename( const std::string& filename );
-    void SetSearchDirectory( const std::string& filename );
+    std::string ResolveFilename( std::string filename );
+    void SetSearchDirectory( std::string filename );
 
-    bool HasExtension( const std::string& filename, const std::string& ext );
-    std::string RemoveExtension( const std::string& filename );
+    bool HasExtension( std::string filename, std::string ext );
+    std::string RemoveExtension( std::string filename );
 
-    std::vector<std::string> MatchingFilenames( const std::string& filename );
+    std::vector<std::string> MatchingFilenames( std::string filename );
 
-    FILE* FOpenRead( const std::string& filename );
-    FILE* FOpenWrite( const std::string& filename );
+    FILE* FOpenRead( std::string filename );
+    FILE* FOpenWrite( std::string filename );
 
-};
+}
 
 #endif

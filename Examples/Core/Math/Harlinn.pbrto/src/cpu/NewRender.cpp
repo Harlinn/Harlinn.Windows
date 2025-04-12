@@ -41,7 +41,8 @@
 namespace pbrto
 {
 
-    PBRTO_EXPORT void RenderCPU( BasicScene& parsedScene )
+    PBRTO_EXPORT
+        void RenderCPU( BasicScene& parsedScene )
     {
         Allocator alloc;
         ThreadLocal<Allocator> threadAllocators( []( ) { return Allocator( ); } );
@@ -121,14 +122,14 @@ namespace pbrto
                 "to render them correctly.",
                 parsedScene.integrator.name );
 
-        NLOG_VERBOSE( "Memory used after scene creation: {}", GetCurrentRSS( ) );
+        NLOG_VERBOSE( "Memory used after scene creation: %d", GetCurrentRSS( ) );
 
         if ( Options->pixelMaterial )
         {
             SampledWavelengths lambda = SampledWavelengths::SampleUniform( 0.5f );
 
             CameraSample cs;
-            cs.pFilm = Point2f(*Options->pixelMaterial) + Vector2f( 0.5f, 0.5f );
+            cs.pFilm = Point2f( *Options->pixelMaterial ) + Vector2f( 0.5f, 0.5f );
             cs.time = 0.5f;
             cs.pLens = Point2f( 0.5f, 0.5f );
             cs.filterWeight = 1;
@@ -155,23 +156,23 @@ namespace pbrto
                 else
                 {
                     Transform worldFromRender = camera.GetCameraTransform( ).WorldFromRender( );
-                    PrintLn( "Intersection depth {}\n", depth );
-                    PrintLn( "World-space p: {}\n", worldFromRender( intr.p( ) ) );
-                    PrintLn( "World-space n: {}\n", worldFromRender( intr.n ) );
-                    PrintLn( "World-space ns: {}\n", worldFromRender( intr.shading.n ) );
-                    PrintLn( "Distance from camera: {}\n", ScalarDistance( intr.p( ), cr->ray.o ) );
+                    Printf( "Intersection depth %d\n", depth );
+                    Printf( "World-space p: %s\n", worldFromRender( intr.p( ) ) );
+                    Printf( "World-space n: %s\n", worldFromRender( intr.n ) );
+                    Printf( "World-space ns: %s\n", worldFromRender( intr.shading.n ) );
+                    Printf( "Distance from camera: %f\n", ScalarDistance( intr.p( ), cr->ray.o ) );
 
                     bool isNamed = false;
                     for ( const auto& mtl : namedMaterials )
                         if ( mtl.second == intr.material )
                         {
-                            PrintLn( "Named material: {}\n\n", mtl.first );
+                            Printf( "Named material: %s\n\n", mtl.first );
                             isNamed = true;
                             break;
                         }
                     if ( !isNamed )
                         // If we didn't find a named material, dump out the whole thing.
-                        PrintLn( "{}\n\n", intr.material.ToString( ) );
+                        Printf( "%s\n\n", intr.material.ToString( ) );
 
                     ++depth;
                     ray = intr.SpawnRay( ray.d );
@@ -184,7 +185,7 @@ namespace pbrto
         // Render!
         integrator->Render( );
 
-        NLOG_VERBOSE( "Memory used after rendering: {}", GetCurrentRSS( ) );
+        NLOG_VERBOSE( "Memory used after rendering: %s", GetCurrentRSS( ) );
 
         PtexTextureBase::ReportStats( );
         ImageTextureBase::ClearCache( );

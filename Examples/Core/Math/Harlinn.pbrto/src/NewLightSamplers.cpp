@@ -44,24 +44,24 @@ namespace pbrto
 
     std::string SampledLight::ToString( ) const
     {
-        return std::format( "[ SampledLight light: {} p: {} ]",
+        return StringPrintf( "[ SampledLight light: %s p: %f ]",
             light ? light.ToString( ).c_str( ) : "(nullptr)", p );
     }
 
     std::string CompactLightBounds::ToString( ) const
     {
-        return std::format(
-            "[ CompactLightBounds qb: [ [ {} {} {} ] [ {} {} {} ] ] w: {} ({}) phi: {} "
-            "qCosTheta_o: {} ({}) qCosTheta_e: {} ({}) twoSided: {} ]",
+        return StringPrintf(
+            "[ CompactLightBounds qb: [ [ %u %u %u ] [ %u %u %u ] ] w: %s (%s) phi: %f "
+            "qCosTheta_o: %u (%f) qCosTheta_e: %u (%f) twoSided: %u ]",
             qb[ 0 ][ 0 ], qb[ 0 ][ 1 ], qb[ 0 ][ 2 ], qb[ 1 ][ 0 ], qb[ 1 ][ 1 ], qb[ 1 ][ 2 ], w, Vector3f( w ), phi,
             qCosTheta_o, CosTheta_o( ), qCosTheta_e, CosTheta_e( ), twoSided );
     }
 
     std::string CompactLightBounds::ToString( const Bounds3f& allBounds ) const
     {
-        return std::format(
-            "[ CompactLightBounds b: {} qb: [ [ {} {} {} ] [ {} {} {} ] ] w: {} ({}) phi: {} "
-            "qCosTheta_o: {} ({}) qCosTheta_e: {} ({}) twoSided: {} ]",
+        return StringPrintf(
+            "[ CompactLightBounds b: %s qb: [ [ %u %u %u ] [ %u %u %u ] ] w: %s (%s) phi: %f "
+            "qCosTheta_o: %u (%f) qCosTheta_e: %u (%f) twoSided: %u ]",
             Bounds( allBounds ), qb[ 0 ][ 0 ], qb[ 0 ][ 1 ], qb[ 0 ][ 2 ], qb[ 1 ][ 0 ], qb[ 1 ][ 1 ], qb[ 1 ][ 2 ], w,
             Vector3f( w ), phi, qCosTheta_o, CosTheta_o( ), qCosTheta_e, CosTheta_e( ), twoSided );
     }
@@ -79,7 +79,7 @@ namespace pbrto
             return alloc.new_object<ExhaustiveLightSampler>( lights, alloc );
         else
         {
-            Error( R"(Light sample distribution type "{}" unknown. Using "bvh".)",
+            Error( R"(Light sample distribution type "%s" unknown. Using "bvh".)",
                 name.c_str( ) );
             return alloc.new_object<BVHLightSampler>( lights, alloc );
         }
@@ -124,7 +124,7 @@ namespace pbrto
 
     std::string PowerLightSampler::ToString( ) const
     {
-        return std::format( "[ PowerLightSampler aliasTable: {} ]", aliasTable );
+        return StringPrintf( "[ PowerLightSampler aliasTable: %s ]", aliasTable );
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -279,13 +279,13 @@ namespace pbrto
 
     std::string BVHLightSampler::ToString( ) const
     {
-        return std::format( "[ BVHLightSampler nodes: {} ]", nodes );
+        return StringPrintf( "[ BVHLightSampler nodes: %s ]", nodes );
     }
 
     std::string LightBVHNode::ToString( ) const
     {
-        return std::format(
-            "[ LightBVHNode lightBounds: {} childOrLightIndex: {} isLeaf: {} ]", lightBounds,
+        return StringPrintf(
+            "[ LightBVHNode lightBounds: %s childOrLightIndex: %d isLeaf: %d ]", lightBounds,
             childOrLightIndex, isLeaf );
     }
 
@@ -365,7 +365,7 @@ namespace pbrto
 
     std::string ExhaustiveLightSampler::ToString( ) const
     {
-        return std::format( "[ ExhaustiveLightSampler lightBounds: {}]", lightBounds );
+        return StringPrintf( "[ ExhaustiveLightSampler lightBounds: %s]", lightBounds );
     }
 
 }

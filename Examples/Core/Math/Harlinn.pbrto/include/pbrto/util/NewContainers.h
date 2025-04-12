@@ -290,18 +290,20 @@ namespace pbrto
             return *this;
         }
 
-        T& operator[]( Point2i p )
+        PBRT_CPU_GPU
+            T& operator[]( Point2i p )
         {
             NDCHECK( InsideExclusive( p, extent ) );
             p.x -= extent.pMin.x;
             p.y -= extent.pMin.y;
             return values[ p.x + ( extent.pMax.x - extent.pMin.x ) * p.y ];
         }
-        T& operator()( int x, int y ) { return ( *this )[ {x, y} ]; }
+        PBRT_CPU_GPU T& operator()( int x, int y ) { return ( *this )[ {x, y} ]; }
 
-        const T& operator()( int x, int y ) const { return ( *this )[ {x, y} ]; }
-
-        const T& operator[]( Point2i p ) const
+        PBRT_CPU_GPU
+            const T& operator()( int x, int y ) const { return ( *this )[ {x, y} ]; }
+        PBRT_CPU_GPU
+            const T& operator[]( Point2i p ) const
         {
             NDCHECK( InsideExclusive( p, extent ) );
             p.x -= extent.pMin.x;
@@ -309,30 +311,38 @@ namespace pbrto
             return values[ p.x + ( extent.pMax.x - extent.pMin.x ) * p.y ];
         }
 
-        int size( ) const { return extent.Area( ); }
+        PBRT_CPU_GPU
+            int size( ) const { return extent.Area( ); }
+        PBRT_CPU_GPU
+            int XSize( ) const { return extent.pMax.x - extent.pMin.x; }
+        PBRT_CPU_GPU
+            int YSize( ) const { return extent.pMax.y - extent.pMin.y; }
 
-        int XSize( ) const { return extent.pMax.x - extent.pMin.x; }
-        int YSize( ) const { return extent.pMax.y - extent.pMin.y; }
+        PBRT_CPU_GPU
+            iterator begin( ) { return values; }
+        PBRT_CPU_GPU
+            iterator end( ) { return begin( ) + size( ); }
 
-        iterator begin( ) { return values; }
-        iterator end( ) { return begin( ) + size( ); }
+        PBRT_CPU_GPU
+            const_iterator begin( ) const { return values; }
+        PBRT_CPU_GPU
+            const_iterator end( ) const { return begin( ) + size( ); }
 
-        const_iterator begin( ) const { return values; }
-        const_iterator end( ) const { return begin( ) + size( ); }
-
-        operator pstdo::span<T>( ) { return pstdo::span<T>( values, size( ) ); }
-        operator pstdo::span<const T>( ) const { return pstdo::span<const T>( values, size( ) ); }
+        PBRT_CPU_GPU
+            operator pstdo::span<T>( ) { return pstdo::span<T>( values, size( ) ); }
+        PBRT_CPU_GPU
+            operator pstdo::span<const T>( ) const { return pstdo::span<const T>( values, size( ) ); }
 
         std::string ToString( ) const
         {
-            std::string s = std::format( "[ Array2D extent: {} values: [", extent );
+            std::string s = StringPrintf( "[ Array2D extent: %s values: [", extent );
             for ( int y = extent.pMin.y; y < extent.pMax.y; ++y )
             {
                 s += " [ ";
                 for ( int x = extent.pMin.x; x < extent.pMax.x; ++x )
                 {
                     T value = ( *this )( x, y );
-                    s += std::format( "{}, ", value );
+                    s += StringPrintf( "%s, ", value );
                 }
                 s += "], ";
             }
@@ -913,7 +923,6 @@ namespace pbrto
             // Compute voxel coordinates and offsets for _p_
             Point3f pSamples( p.x * nx - .5f, p.y * ny - .5f, p.z * nz - .5f );
             Point3i pi = ToPoint3i( Floor( pSamples ) );
-
             Vector3f d = pSamples - ToPoint3f( pi );
 
             // Return trilinearly interpolated voxel values
@@ -928,11 +937,11 @@ namespace pbrto
             return Lerp( d.z, Lerp( d.y, d00, d10 ), Lerp( d.y, d01, d11 ) );
         }
 
-        T Lookup( Point3f p ) const
+        PBRT_CPU_GPU
+            T Lookup( Point3f p ) const
         {
             // Compute voxel coordinates and offsets for _p_
             Point3f pSamples( p.x * nx - .5f, p.y * ny - .5f, p.z * nz - .5f );
-
             Point3i pi = ToPoint3i( Floor( pSamples ) );
             Vector3f d = pSamples - ToPoint3f( pi );
 
@@ -948,7 +957,7 @@ namespace pbrto
         }
 
         template <typename F>
-        auto Lookup( const Point3i& p, F convert ) const
+        PBRT_CPU_GPU auto Lookup( const Point3i& p, F convert ) const
         {
             Bounds3i sampleBounds( Point3i( 0, 0, 0 ), Point3i( nx, ny, nz ) );
             if ( !InsideExclusive( p, sampleBounds ) )
@@ -956,7 +965,8 @@ namespace pbrto
             return convert( values[ ( p.z * ny + p.y ) * nx + p.x ] );
         }
 
-        T Lookup( const Point3i& p ) const
+        PBRT_CPU_GPU
+            T Lookup( const Point3i& p ) const
         {
             Bounds3i sampleBounds( Point3i( 0, 0, 0 ), Point3i( nx, ny, nz ) );
             if ( !InsideExclusive( p, sampleBounds ) )
@@ -967,15 +977,12 @@ namespace pbrto
         template <typename F>
         Float MaxValue( const Bounds3f& bounds, F convert ) const
         {
-            Point3f pMin( bounds.pMin );
-            Point3f pMax( bounds.pMax );
-            Point3f ps[ 2 ] = { Point3f( pMin.x * nx - .5f, pMin.y * ny - .5f,
-                                     pMin.z * nz - .5f ),
-                             Point3f( pMax.x * nx - .5f, pMax.y * ny - .5f,
-                                     pMax.z * nz - .5f ) };
-
+            Point3f ps[ 2 ] = { Point3f( bounds.pMin.x * nx - .5f, bounds.pMin.y * ny - .5f,
+                                     bounds.pMin.z * nz - .5f ),
+                             Point3f( bounds.pMax.x * nx - .5f, bounds.pMax.y * ny - .5f,
+                                     bounds.pMax.z * nz - .5f ) };
             Point3i pi[ 2 ] = { Max( ToPoint3i( Floor( ps[ 0 ] ) ), Point3i( 0, 0, 0 ) ),
-                                Min( ToPoint3i( Floor( ps[ 1 ] ) ) + Vector3i( 1, 1, 1 ),
+                             Min( ToPoint3i( Floor( ps[ 1 ] ) ) + Vector3i( 1, 1, 1 ),
                                  Point3i( nx - 1, ny - 1, nz - 1 ) ) };
 
             Float maxValue = Lookup( Point3i( pi[ 0 ] ), convert );
@@ -994,7 +1001,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ SampledGrid nx: {} ny: {} nz: {} values: {} ]", nx, ny, nz, values );
+            return StringPrintf( "[ SampledGrid nx: %d ny: %d nz: %d values: %s ]", nx, ny, nz,
+                values );
         }
 
     private:

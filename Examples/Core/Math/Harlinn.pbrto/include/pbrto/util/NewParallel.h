@@ -58,12 +58,11 @@ namespace pbrto
     {
     public:
         // ThreadLocal Public Methods
-        ThreadLocal( ) 
-            : hashTable( 4 * RunningThreads( ) ), create( []( ) { return T( ); } ) 
-        { }
+        ThreadLocal( ) : hashTable( 4 * RunningThreads( ) ), create( []( ) { return T( ); } ) {}
         ThreadLocal( std::function<T( void )>&& c )
             : hashTable( 4 * RunningThreads( ) ), create( c )
-        { }
+        {
+        }
 
         T& Get( );
 
@@ -150,9 +149,7 @@ namespace pbrto
         for ( auto& entry : hashTable )
         {
             if ( entry )
-            {
                 func( entry->value );
-            }
         }
         mutex.unlock( );
     }
@@ -351,7 +348,7 @@ namespace pbrto
     protected:
         std::string BaseToString( ) const
         {
-            return std::format( "activeWorkers: %d removed: %s", activeWorkers, removed );
+            return StringPrintf( "activeWorkers: %d removed: %s", activeWorkers, removed );
         }
 
     private:
@@ -470,7 +467,7 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ AsyncJob started: {} ]", started );
+            return StringPrintf( "[ AsyncJob started: %s ]", started );
         }
 
     private:

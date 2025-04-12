@@ -51,11 +51,9 @@
 namespace pbrto
 {
 
-    using namespace boost;
-
     static filesystem::path searchDirectory;
 
-    void SetSearchDirectory( const std::string& filename )
+    void SetSearchDirectory( std::string filename )
     {
         filesystem::path path( filename );
         if ( !path.is_directory( ) )
@@ -63,14 +61,14 @@ namespace pbrto
         searchDirectory = path;
     }
 
-    static bool IsAbsolutePath( const std::string& filename )
+    static bool IsAbsolutePath( std::string filename )
     {
         if ( filename.empty( ) )
             return false;
         return filesystem::path( filename ).is_absolute( );
     }
 
-    bool HasExtension( const std::string& filename, const std::string& e )
+    bool HasExtension( std::string filename, std::string e )
     {
         std::string ext = e;
         if ( !ext.empty( ) && ext[ 0 ] == '.' )
@@ -83,7 +81,7 @@ namespace pbrto
             []( char a, char b ) { return std::tolower( a ) == std::tolower( b ); } );
     }
 
-    std::string RemoveExtension( const std::string& filename )
+    std::string RemoveExtension( std::string filename )
     {
         std::string ext = filesystem::path( filename ).extension( );
         if ( ext.empty( ) )
@@ -93,7 +91,7 @@ namespace pbrto
         return f;
     }
 
-    std::string ResolveFilename( const std::string& filename )
+    std::string ResolveFilename( std::string filename )
     {
         if ( searchDirectory.empty( ) || filename.empty( ) || IsAbsolutePath( filename ) )
             return filename;
@@ -104,7 +102,7 @@ namespace pbrto
         return filename;
     }
 
-    std::vector<std::string> MatchingFilenames( const std::string& filenameBase )
+    std::vector<std::string> MatchingFilenames( std::string filenameBase )
     {
         std::vector<std::string> filenames;
 
@@ -134,7 +132,7 @@ namespace pbrto
         return filenames;
     }
 
-    bool FileExists( const std::string& filename )
+    bool FileExists( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         std::ifstream ifs( WStringFromUTF8( filename ).c_str( ) );
@@ -144,7 +142,7 @@ namespace pbrto
         return ( bool )ifs;
     }
 
-    bool RemoveFile( const std::string& filename )
+    bool RemoveFile( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         return _wremove( WStringFromUTF8( filename ).c_str( ) ) == 0;
@@ -153,7 +151,7 @@ namespace pbrto
 #endif
     }
 
-    std::string ReadFileContents( const std::string& filename )
+    std::string ReadFileContents( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         std::ifstream ifs( WStringFromUTF8( filename ).c_str( ), std::ios::binary );
@@ -179,7 +177,7 @@ namespace pbrto
 #endif
     }
 
-    std::string ReadDecompressedFileContents( const std::string& filename )
+    std::string ReadDecompressedFileContents( std::string filename )
     {
         std::string compressed = ReadFileContents( filename );
 
@@ -213,7 +211,7 @@ namespace pbrto
             {
                 case LIBDEFLATE_SUCCESS:
                     NCHECK_EQ( actualOut, decompressed.size( ) );
-                    NLOG_VERBOSE( "Decompressed {} from {} to {} bytes", filename,
+                    NLOG_VERBOSE( "Decompressed %s from %d to %d bytes", filename,
                         compressed.size( ), decompressed.size( ) );
                     return decompressed;
 
@@ -241,7 +239,7 @@ namespace pbrto
         }
     }
 
-    FILE* FOpenRead( const std::string& filename )
+    FILE* FOpenRead( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         return _wfopen( WStringFromUTF8( filename ).c_str( ), L"rb" );
@@ -250,7 +248,7 @@ namespace pbrto
 #endif
     }
 
-    FILE* FOpenWrite( const std::string& filename )
+    FILE* FOpenWrite( std::string filename )
     {
 #ifdef PBRT_IS_WINDOWS
         return _wfopen( WStringFromUTF8( filename ).c_str( ), L"wb" );
@@ -259,7 +257,7 @@ namespace pbrto
 #endif
     }
 
-    std::vector<Float> ReadFloatFile( const std::string& filename )
+    std::vector<Float> ReadFloatFile( std::string filename )
     {
         FILE* f = FOpenRead( filename );
         if ( f == nullptr )
@@ -329,7 +327,7 @@ namespace pbrto
         return values;
     }
 
-    bool WriteFileContents( const std::string& filename, const std::string& contents )
+    bool WriteFileContents( std::string filename, const std::string& contents )
     {
 #ifdef PBRT_IS_WINDOWS
         std::ofstream out( WStringFromUTF8( filename ).c_str( ), std::ios::binary );

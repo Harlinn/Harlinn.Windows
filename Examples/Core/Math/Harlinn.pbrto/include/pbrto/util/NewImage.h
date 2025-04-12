@@ -46,52 +46,7 @@ namespace pbrto
 
     // PixelFormat Definition
     enum class PixelFormat { U256, Half, Float };
-}
 
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::PixelFormat, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( pbrto::PixelFormat value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                switch ( value )
-                {
-                    case pbrto::PixelFormat::U256:
-                        return std::format_to( ctx.out( ), L"U256" );
-                    case pbrto::PixelFormat::Half:
-                        return std::format_to( ctx.out( ), L"Half" );
-                    default:
-                        return std::format_to( ctx.out( ), L"Float" );
-                }
-                
-            }
-            else
-            {
-                switch ( value )
-                {
-                    case pbrto::PixelFormat::U256:
-                        return std::format_to( ctx.out( ), "U256" );
-                    case pbrto::PixelFormat::Half:
-                        return std::format_to( ctx.out( ), "Half" );
-                    default:
-                        return std::format_to( ctx.out( ), "Float" );
-                }
-            }
-        }
-    };
-}
-
-namespace pbrto
-{
     // PixelFormat Inline Functions
     PBRT_CPU_GPU inline bool Is8Bit( PixelFormat format )
     {
@@ -120,59 +75,6 @@ namespace pbrto
 
     // WrapMode Definitions
     enum class WrapMode { Black, Clamp, Repeat, OctahedralSphere };
-
-}
-
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::WrapMode, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( pbrto::WrapMode value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                switch ( value )
-                {
-                    case pbrto::WrapMode::Black:
-                        return std::format_to( ctx.out( ), L"black" );
-                    case pbrto::WrapMode::Clamp:
-                        return std::format_to( ctx.out( ), L"clamp" );
-                    case pbrto::WrapMode::Repeat:
-                        return std::format_to( ctx.out( ), L"repeat" );
-                    default:
-                        return std::format_to( ctx.out( ), L"octahedralsphere" );
-                }
-
-            }
-            else
-            {
-                switch ( value )
-                {
-                    case pbrto::WrapMode::Black:
-                        return std::format_to( ctx.out( ), "black" );
-                    case pbrto::WrapMode::Clamp:
-                        return std::format_to( ctx.out( ), "clamp" );
-                    case pbrto::WrapMode::Repeat:
-                        return std::format_to( ctx.out( ), "repeat" );
-                    default:
-                        return std::format_to( ctx.out( ), "octahedralsphere" );
-                }
-            }
-        }
-    };
-}
-
-namespace pbrto
-{
-
-
     struct WrapMode2D
     {
         PBRT_CPU_GPU
@@ -270,7 +172,7 @@ namespace pbrto
                     p[ c ] = Mod( p[ c ], resolution[ c ] );
                     break;
                 case WrapMode::Clamp:
-                    p[ c ] = Math::Clamp( p[ c ], 0, resolution[ c ] - 1 );
+                    p[ c ] = Clamp( p[ c ], 0, resolution[ c ] - 1 );
                     break;
                 case WrapMode::Black:
                     return false;
@@ -359,27 +261,26 @@ namespace pbrto
     // Image Definition
     class Image
     {
-        // Image Private Members
-        PixelFormat format;
-        Point2i resolution;
-        pstdo::vector<std::string> channelNames;
-
-        ColorEncoding encoding = nullptr;
-        pstdo::vector<uint8_t> p8;
-        pstdo::vector<Half> p16;
-        pstdo::vector<float> p32;
-
     public:
         // Image Public Methods
         Image( Allocator alloc = {} )
-            : p8( alloc ), p16( alloc ), p32( alloc ), format( PixelFormat::U256 ), resolution( 0, 0 )
+            : p8( alloc ),
+            p16( alloc ),
+            p32( alloc ),
+            format( PixelFormat::U256 ),
+            resolution( 0, 0 )
         {
         }
-        Image( pstdo::vector<uint8_t> p8, Point2i resolution, pstdo::span<const std::string> channels, ColorEncoding encoding );
-        Image( pstdo::vector<Half> p16, Point2i resolution, pstdo::span<const std::string> channels );
-        Image( pstdo::vector<float> p32, Point2i resolution, pstdo::span<const std::string> channels );
+        Image( pstdo::vector<uint8_t> p8, Point2i resolution,
+            pstdo::span<const std::string> channels, ColorEncoding encoding );
+        Image( pstdo::vector<Half> p16, Point2i resolution,
+            pstdo::span<const std::string> channels );
+        Image( pstdo::vector<float> p32, Point2i resolution,
+            pstdo::span<const std::string> channels );
 
-        Image( PixelFormat format, Point2i resolution, pstdo::span<const std::string> channelNames, ColorEncoding encoding = nullptr, Allocator alloc = {} );
+        Image( PixelFormat format, Point2i resolution,
+            pstdo::span<const std::string> channelNames, ColorEncoding encoding = nullptr,
+            Allocator alloc = {} );
 
         PBRT_CPU_GPU
             PixelFormat Format( ) const { return format; }
@@ -572,7 +473,14 @@ namespace pbrto
 
         std::unique_ptr<uint8_t[ ]> QuantizePixelsToU256( int* nOutOfGamut ) const;
 
-
+        // Image Private Members
+        PixelFormat format;
+        Point2i resolution;
+        pstdo::vector<std::string> channelNames;
+        ColorEncoding encoding = nullptr;
+        pstdo::vector<uint8_t> p8;
+        pstdo::vector<Half> p16;
+        pstdo::vector<float> p32;
     };
 
     // Image Inline Method Definitions

@@ -77,7 +77,8 @@ namespace pbrto
             static clock::time_point start = clock::now( );
 
             clock::time_point now = clock::now( );
-            int64_t elapseduS = std::chrono::duration_cast< std::chrono::microseconds >( now - start ).count( );
+            int64_t elapseduS =
+                std::chrono::duration_cast< std::chrono::microseconds >( now - start ).count( );
             return elapseduS / 1000000.;
         }
 
@@ -90,7 +91,7 @@ namespace pbrto
             return GetCurrentThreadId( );
 #elif defined(PBRT_IS_OSX)
             uint64_t tid;
-            NCHECK_EQ( pthread_threadid_np( pthread_self( ), &tid ), 0 );
+            CHECK_EQ( pthread_threadid_np( pthread_self( ), &tid ), 0 );
             return tid;
 #else
 #error "Need to define GetThreadIndex() for system"
@@ -105,8 +106,10 @@ namespace pbrto
     namespace logging
     {
 
-        PBRTO_EXPORT LogLevel logLevel = LogLevel::Error;
-        PBRTO_EXPORT FILE* logFile;
+        PBRTO_EXPORT
+            LogLevel logLevel = LogLevel::Error;
+        PBRTO_EXPORT
+            FILE* logFile;
 
     }  // namespace logging
 
@@ -121,7 +124,7 @@ namespace pbrto
     static std::atomic<bool> shutdownLogUtilization;
     static std::thread logUtilizationThread;
 
-    PBRTO_EXPORT void InitLogging( LogLevel level, std::string logFile, bool logUtilization, bool useGPU )
+    void InitLogging( LogLevel level, std::string logFile, bool logUtilization, bool useGPU )
     {
         logging::logLevel = level;
         if ( !logFile.empty( ) )
@@ -179,7 +182,7 @@ namespace pbrto
                 Usage usage;
 #ifdef PBRT_IS_LINUX
                 std::ifstream stat( "/proc/stat" );
-                NCHECK( ( bool )stat );
+                CHECK( ( bool )stat );
 
                 std::string line;
                 while ( std::getline( stat, line ) )
@@ -190,7 +193,7 @@ namespace pbrto
                     std::string_view tail( line.c_str( ) + 5 );
                     std::vector<int64_t> values = SplitStringToInt64s( tail, ' ' );
 
-                    NCHECK_GE( values.size( ), 4 );
+                    CHECK_GE( values.size( ), 4 );
                     usage.user = values[ 0 ];
                     usage.nice = values[ 1 ];
                     usage.system = values[ 2 ];
@@ -200,17 +203,17 @@ namespace pbrto
                 }
 
                 std::ifstream io( "/proc/self/io" );
-                NCHECK( ( bool )io );
+                CHECK( ( bool )io );
                 while ( std::getline( io, line ) )
                 {
                     if ( line.compare( 0, 7, "rchar: " ) == 0 )
-                        NCHECK( Atoi( line.data( ) + 7, &usage.readRequest ) );
+                        CHECK( Atoi( line.data( ) + 7, &usage.readRequest ) );
                     if ( line.compare( 0, 7, "wchar: " ) == 0 )
-                        NCHECK( Atoi( line.data( ) + 7, &usage.writeRequest ) );
+                        CHECK( Atoi( line.data( ) + 7, &usage.writeRequest ) );
                     if ( line.compare( 0, 12, "read_bytes: " ) == 0 )
-                        NCHECK( Atoi( line.data( ) + 12, &usage.readActual ) );
+                        CHECK( Atoi( line.data( ) + 12, &usage.readActual ) );
                     if ( line.compare( 0, 13, "write_bytes: " ) == 0 )
-                        NCHECK( Atoi( line.data( ) + 13, &usage.writeActual ) );
+                        CHECK( Atoi( line.data( ) + 13, &usage.writeActual ) );
                 }
 #elif defined(PBRT_IS_OSX)
                 // possibly useful:
@@ -258,12 +261,12 @@ namespace pbrto
                 // call to LoadLibraryW(L"nvapi64.dll") will be a good idea on
                 // windows...
                 if ( nvmlInit_v2( ) != NVML_SUCCESS )
-                    LOG_ERROR( "Unable to initialize NVML" );
+                    NLOG_ERROR( "Unable to initialize NVML" );
 
                 int deviceIndex = Options->gpuDevice ? *Options->gpuDevice : 0;
                 nvmlDevice_t device;
                 if ( nvmlDeviceGetHandleByIndex_v2( deviceIndex, &device ) != NVML_SUCCESS )
-                    LOG_ERROR( "Unable to get NVML device" );
+                    NLOG_ERROR( "Unable to get NVML device" );
 #endif
 
                 while ( !shutdownLogUtilization )
@@ -278,15 +281,15 @@ namespace pbrto
                         ( currentUsage.user + currentUsage.nice + currentUsage.system +
                             currentUsage.idle ) -
                         ( prevUsage.user + prevUsage.nice + prevUsage.system + prevUsage.idle );
-                    NLOG_VERBOSE( "CPU: Memory used {} MB. "
-                        "Core activity: {:.4f} user {:.4f} nice {:.4f} system {:.4f} idle",
+                    NLOG_VERBOSE( "CPU: Memory used %d MB. "
+                        "Core activity: %.4f user %.4f nice %.4f system %.4f idle",
                         GetCurrentRSS( ) / ( 1024 * 1024 ),
                         double( currentUsage.user - prevUsage.user ) / delta,
                         double( currentUsage.nice - prevUsage.nice ) / delta,
                         double( currentUsage.system - prevUsage.system ) / delta,
                         double( currentUsage.idle - prevUsage.idle ) / delta );
                     NLOG_VERBOSE(
-                        "IO: read request {} read actual {} write request {} write actual {}",
+                        "IO: read request %d read actual %d write request %d write actual %d",
                         currentUsage.readRequest - prevUsage.readRequest,
                         currentUsage.readActual - prevUsage.readActual,
                         currentUsage.writeRequest - prevUsage.writeRequest,
@@ -299,7 +302,7 @@ namespace pbrto
                     nvmlUtilization_t utilization;
                     if ( nvmlDeviceGetMemoryInfo( device, &info ) == NVML_SUCCESS &&
                         nvmlDeviceGetUtilizationRates( device, &utilization ) == NVML_SUCCESS )
-                        LOG_VERBOSE(
+                        NLOG_VERBOSE(
                             "GPU: Memory used %d MB. SM activity: %d memory activity: %d",
                             info.used / ( 1024 * 1024 ), utilization.gpu, utilization.memory );
 #endif
@@ -311,7 +314,7 @@ namespace pbrto
         }
     }
 
-    PBRTO_EXPORT void ShutdownLogging( )
+    void ShutdownLogging( )
     {
         if ( logUtilizationThread.get_id( ) != std::thread::id( ) )
         {
@@ -337,7 +340,8 @@ namespace pbrto
     }
 #endif
 
-    PBRTO_EXPORT LogLevel LogLevelFromString( const std::string& s )
+    PBRTO_EXPORT
+        LogLevel LogLevelFromString( const std::string& s )
     {
         if ( s == "verbose" )
             return LogLevel::Verbose;
@@ -348,7 +352,8 @@ namespace pbrto
         return LogLevel::Invalid;
     }
 
-    PBRTO_EXPORT std::string ToString( LogLevel level )
+    PBRTO_EXPORT
+        std::string ToString( LogLevel level )
     {
         switch ( level )
         {
@@ -363,7 +368,9 @@ namespace pbrto
         }
     }
 
-    PBRTO_EXPORT void Log( LogLevel level, const char* file, int line, const AnsiString& s )
+
+    PBRTO_EXPORT
+        void Log( LogLevel level, const char* file, int line, const char* s )
     {
 #ifdef PBRT_IS_GPU_CODE
         auto strlen = []( const char* ptr ) {
@@ -411,7 +418,7 @@ namespace pbrto
             item.message[ i ] = *s;
         item.message[ i ] = '\0';
 #else
-        auto len = s.Length();
+        int len = strlen( s );
         if ( len == 0 )
             return;
         std::string levelString = ( level == LogLevel::Verbose ) ? "" : ( ToString( level ) + " " );
@@ -423,12 +430,12 @@ namespace pbrto
         if ( logging::logFile )
         {
             fprintf( logging::logFile, "[ " LOG_BASE_FMT " %s:%d ] %s%s\n", LOG_BASE_ARGS,
-                shortfile.c_str( ), line, levelString.c_str( ), s.c_str() );
+                shortfile.c_str( ), line, levelString.c_str( ), s );
             fflush( logging::logFile );
         }
         else
             fprintf( stderr, "[ " LOG_BASE_FMT " %s:%d ] %s%s\n", LOG_BASE_ARGS,
-                shortfile.c_str( ), line, levelString.c_str( ), s.c_str( ) );
+                shortfile.c_str( ), line, levelString.c_str( ), s );
 #endif
     }
 
@@ -441,8 +448,14 @@ namespace pbrto
 #endif
 #endif
 
-    PBRTO_EXPORT void LogFatal( LogLevel level, const char* file, int line, const AnsiString& s )
+    PBRTO_EXPORT
+        void LogFatal( LogLevel level, const char* file, int line, const char* s )
     {
+#ifdef PBRT_IS_GPU_CODE
+        Log( LogLevel::Fatal, file, line, s );
+        __threadfence( );
+        asm( "trap;" );
+#else
         static std::mutex mutex;
         std::lock_guard<std::mutex> lock( mutex );
 
@@ -450,11 +463,11 @@ namespace pbrto
         const char* fileStart = strstr( file, "pbrt/" );
         std::string shortfile( fileStart ? ( fileStart + 5 ) : file );
         fprintf( stderr, "[ " LOG_BASE_FMT " %s:%d ] %s %s\n", LOG_BASE_ARGS,
-            shortfile.c_str( ), line, ToString( level ).c_str( ), s.c_str() );
+            shortfile.c_str( ), line, ToString( level ).c_str( ), s );
 
-        pbrto::CheckCallbackScope::Fail( );
+        CheckCallbackScope::Fail( );
         abort( );
-
+#endif
     }
 
 }

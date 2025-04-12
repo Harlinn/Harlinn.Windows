@@ -111,7 +111,7 @@ namespace pbrto
         DisplayStatic( const std::string& title, pstdo::span<const T> values,
             const std::vector<std::string>& channelNames, int xResolution )
     {
-        NCHECK_EQ( 0, values.size( ) % xResolution );
+        CHECK_EQ( 0, values.size( ) % xResolution );
         int yResolution = values.size( ) / xResolution;
         DisplayStatic( title, { xResolution, yResolution }, channelNames,
             [ = ]( Bounds2i b, pstdo::span<pstdo::span<float>> displayValue ) {
@@ -132,7 +132,7 @@ namespace pbrto
         DisplayDynamic( const std::string& title, pstdo::span<const T> values,
             const std::vector<std::string>& channelNames, int xResolution )
     {
-        NCHECK_EQ( 0, values.size( ) % xResolution );
+        CHECK_EQ( 0, values.size( ) % xResolution );
         int yResolution = values.size( ) / xResolution;
         DisplayDynamic( title, { xResolution, yResolution }, channelNames,
             [ = ]( Bounds2i b, pstdo::span<pstdo::span<float>> displayValue ) {

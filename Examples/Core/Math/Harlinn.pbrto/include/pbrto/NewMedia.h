@@ -67,7 +67,7 @@ namespace pbrto
             HGPhaseFunction( Float g ) : g( g ) {}
 
         PBRT_CPU_GPU
-            Float p( Vector3f wo, Vector3f wi ) const { return HenyeyGreenstein( Dot( wo, wi ), g ); }
+            Float p( Vector3f wo, Vector3f wi ) const { return HenyeyGreenstein( ScalarDot( wo, wi ), g ); }
 
         PBRT_CPU_GPU
             pstdo::optional<PhaseFunctionSample> Sample_p( Vector3f wo, Point2f u ) const
@@ -166,50 +166,35 @@ namespace pbrto
     // DDAMajorantIterator Definition
     class DDAMajorantIterator
     {
-        // DDAMajorantIterator Private Members
-        SampledSpectrum sigma_t;
-        Float tMin = Infinity;
-        Float tMax = -Infinity;
-        const MajorantGrid* grid;
-        Float nextCrossingT[ 3 ];
-        Float deltaT[ 3 ];
-        int step[ 3 ];
-        int voxelLimit[ 3 ];
-        int voxel[ 3 ];
     public:
         // DDAMajorantIterator Public Methods
         DDAMajorantIterator( ) = default;
         PBRT_CPU_GPU
-            DDAMajorantIterator( Ray ray, Float tMin, Float tMax, const MajorantGrid* grid, SampledSpectrum sigma_t )
+            DDAMajorantIterator( Ray ray, Float tMin, Float tMax, const MajorantGrid* grid,
+                SampledSpectrum sigma_t )
             : tMin( tMin ), tMax( tMax ), grid( grid ), sigma_t( sigma_t )
         {
             // Set up 3D DDA for ray through the majorant grid
             Vector3f diag = grid->bounds.Diagonal( );
-#ifdef PBRT_USES_HCCMATH
-            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ), Vector3f( ray.d / diag ) );
-#else
-            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ), Vector3f( ray.d.x / diag.x, ray.d.y / diag.y, ray.d.z / diag.z ) );
-#endif
+            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ),
+                Vector3f( ray.d.x / diag.x, ray.d.y / diag.y, ray.d.z / diag.z ) );
             Point3f gridIntersect = rayGrid( tMin );
-#ifdef PBRT_USES_HCCMATH
             for ( int axis = 0; axis < 3; ++axis )
             {
                 // Initialize ray stepping parameters for _axis_
                 // Compute current voxel for axis and handle negative zero direction
-                voxel[ axis ] = Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
-
-
+                voxel[ axis ] =
+                    Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
                 deltaT[ axis ] = 1 / ( std::abs( rayGrid.d[ axis ] ) * grid->res[ axis ] );
-
                 if ( rayGrid.d[ axis ] == -0.f )
-                {
                     rayGrid.d[ axis ] = 0.f;
-                }
+
                 if ( rayGrid.d[ axis ] >= 0 )
                 {
                     // Handle ray with positive direction for voxel stepping
                     Float nextVoxelPos = Float( voxel[ axis ] + 1 ) / grid->res[ axis ];
-                    nextCrossingT[ axis ] = tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
+                    nextCrossingT[ axis ] =
+                        tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
                     step[ axis ] = 1;
                     voxelLimit[ axis ] = grid->res[ axis ];
 
@@ -218,44 +203,12 @@ namespace pbrto
                 {
                     // Handle ray with negative direction for voxel stepping
                     Float nextVoxelPos = Float( voxel[ axis ] ) / grid->res[ axis ];
-                    nextCrossingT[ axis ] = tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
+                    nextCrossingT[ axis ] =
+                        tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
                     step[ axis ] = -1;
                     voxelLimit[ axis ] = -1;
                 }
             }
-#else
-            for ( int axis = 0; axis < 3; ++axis )
-            {
-                // Initialize ray stepping parameters for _axis_
-                // Compute current voxel for axis and handle negative zero direction
-                voxel[ axis ] = Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
-
-
-                deltaT[ axis ] = 1 / ( std::abs( rayGrid.d[ axis ] ) * grid->res[ axis ] );
-
-                if ( rayGrid.d[ axis ] == -0.f )
-                {
-                    rayGrid.d[ axis ] = 0.f;
-                }
-                if ( rayGrid.d[ axis ] >= 0 )
-                {
-                    // Handle ray with positive direction for voxel stepping
-                    Float nextVoxelPos = Float( voxel[ axis ] + 1 ) / grid->res[ axis ];
-                    nextCrossingT[ axis ] = tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
-                    step[ axis ] = 1;
-                    voxelLimit[ axis ] = grid->res[ axis ];
-
-                }
-                else
-                {
-                    // Handle ray with negative direction for voxel stepping
-                    Float nextVoxelPos = Float( voxel[ axis ] ) / grid->res[ axis ];
-                    nextCrossingT[ axis ] = tMin + ( nextVoxelPos - gridIntersect[ axis ] ) / rayGrid.d[ axis ];
-                    step[ axis ] = -1;
-                    voxelLimit[ axis ] = -1;
-                }
-            }
-#endif
         }
 
         PBRT_CPU_GPU
@@ -290,7 +243,12 @@ namespace pbrto
         std::string ToString( ) const;
 
     private:
-
+        // DDAMajorantIterator Private Members
+        SampledSpectrum sigma_t;
+        Float tMin = Infinity, tMax = -Infinity;
+        const MajorantGrid* grid;
+        Float nextCrossingT[ 3 ], deltaT[ 3 ];
+        int step[ 3 ], voxelLimit[ 3 ], voxel[ 3 ];
     };
 
     // HomogeneousMedium Definition
@@ -537,9 +495,9 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ CloudMedium bounds: {} renderFromMedium: {} phase: {} "
-                "sigma_a_spec: {} sigma_s_spec: {} density: {} wispiness: {} "
-                "frequency: {} ]",
+            return StringPrintf( "[ CloudMedium bounds: %s renderFromMedium: %s phase: %s "
+                "sigma_a_spec: %s sigma_s_spec: %s density: %f wispiness: %f "
+                "frequency: %f ]",
                 bounds, renderFromMedium, phase, sigma_a_spec, sigma_s_spec,
                 density, wispiness, frequency );
         }
@@ -640,9 +598,9 @@ namespace pbrto
             bool abort = true )
         {
             if ( abort )
-                NLOG_FATAL( "{}: {} ({}:{})", ptr, msg, file, line );
+                NLOG_FATAL( "%p: %s (%s:%d)", ptr, msg, file, line );
             else
-                NLOG_ERROR( "{}: {} ({}:{})", ptr, msg, file, line );
+                NLOG_ERROR( "%p: %s (%s:%d)", ptr, msg, file, line );
         }
 
         NanoVDBBuffer( ) = default;
@@ -861,7 +819,7 @@ namespace pbrto
         const SampledWavelengths& lambda, F callback )
     {
         // Normalize ray direction and update _tMax_ accordingly
-        tMax *= Length( ray.d );
+        tMax *= ScalarLength( ray.d );
         ray.d = Normalize( ray.d );
 
         // Initialize _MajorantIterator_ for ray majorant sampling

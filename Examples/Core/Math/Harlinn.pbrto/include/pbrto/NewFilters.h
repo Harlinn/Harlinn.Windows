@@ -127,16 +127,18 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        Float Evaluate( Point2f p ) const
+        PBRT_CPU_GPU
+            Float Evaluate( Point2f p ) const
         {
-            return ( std::max<Float>( 0.f, Gaussian( p.x, 0.f, sigma ) - expX ) *
-                std::max<Float>( 0.f, Gaussian( p.y, 0.f, sigma ) - expY ) );
+            return ( std::max<Float>( 0, Gaussian( p.x, 0.f, sigma ) - expX ) *
+                std::max<Float>( 0, Gaussian( p.y, 0.f, sigma ) - expY ) );
         }
 
-        Float Integral( ) const
+        PBRT_CPU_GPU
+            Float Integral( ) const
         {
-            return ( ( GaussianIntegral( -radius.x, radius.x, 0.f, sigma ) - 2 * radius.x * expX ) *
-                ( GaussianIntegral( -radius.y, radius.y, 0.f, sigma ) - 2 * radius.y * expY ) );
+            return ( ( GaussianIntegral( -radius.x, radius.x, 0.f, sigma ) - 2.f * radius.x * expX ) *
+                ( GaussianIntegral( -radius.y, radius.y, 0.f, sigma ) - 2.f * radius.y * expY ) );
         }
 
         PBRT_CPU_GPU

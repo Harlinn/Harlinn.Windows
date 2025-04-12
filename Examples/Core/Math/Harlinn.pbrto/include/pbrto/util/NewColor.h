@@ -182,13 +182,13 @@ namespace pbrto
     };
 
     PBRT_CPU_GPU
-    inline RGB max( RGB a, RGB b )
+        inline RGB max( RGB a, RGB b )
     {
         return RGB( std::max( a.r, b.r ), std::max( a.g, b.g ), std::max( a.b, b.b ) );
     }
 
     PBRT_CPU_GPU
-    inline RGB Lerp( Float t, RGB s1, RGB s2 )
+        inline RGB Lerp( Float t, RGB s1, RGB s2 )
     {
         return ( 1 - t ) * s1 + t * s2;
     }
@@ -197,7 +197,8 @@ namespace pbrto
     template <typename U, typename V>
     PBRT_CPU_GPU inline RGB Clamp( RGB rgb, U min, V max )
     {
-        return RGB( Math::Clamp( rgb.r, min, max ), Math::Clamp( rgb.g, min, max ), Math::Clamp( rgb.b, min, max ) );
+        return RGB( pbrto::Clamp( rgb.r, min, max ), pbrto::Clamp( rgb.g, min, max ),
+            pbrto::Clamp( rgb.b, min, max ) );
     }
     PBRT_CPU_GPU inline RGB ClampZero( RGB rgb )
     {
@@ -361,22 +362,22 @@ namespace pbrto
         return s * a;
     }
 
-
     template <typename U, typename V>
     PBRT_CPU_GPU inline XYZ Clamp( const XYZ& xyz, U min, V max )
     {
-        return XYZ( Math::Clamp( xyz.X, min, max ), Math::Clamp( xyz.Y, min, max ), Math::Clamp( xyz.Z, min, max ) );
+        return XYZ( pbrto::Clamp( xyz.X, min, max ), pbrto::Clamp( xyz.Y, min, max ),
+            pbrto::Clamp( xyz.Z, min, max ) );
     }
 
     PBRT_CPU_GPU
-    inline XYZ ClampZero( const XYZ& xyz )
+        inline XYZ ClampZero( const XYZ& xyz )
     {
         return XYZ( std::max<Float>( 0, xyz.X ), std::max<Float>( 0, xyz.Y ),
             std::max<Float>( 0, xyz.Z ) );
     }
 
     PBRT_CPU_GPU
-    inline XYZ Lerp( Float t, const XYZ& s1, const XYZ& s2 )
+        inline XYZ Lerp( Float t, const XYZ& s1, const XYZ& s2 )
     {
         return ( 1 - t ) * s1 + t * s2;
     }
@@ -413,8 +414,8 @@ namespace pbrto
             static Float s( Float x )
         {
             if ( IsInf( x ) )
-                return x > static_cast< Float >( 0 ) ? static_cast< Float >( 1 ) : static_cast< Float >( 0 );
-            return static_cast< Float >( .5 ) + x / ( static_cast< Float >( 2 ) * Math::Sqrt( static_cast< Float >( 1 ) + Sqr( x ) ) );
+                return x > 0 ? 1 : 0;
+            return .5f + x / ( 2 * std::sqrt( 1 + Sqr( x ) ) );
         };
 
         // RGBSigmoidPolynomial Private Members
@@ -459,19 +460,18 @@ namespace pbrto
     class sRGBColorEncoding;
     class GammaColorEncoding;
 
-    
-
-
-    class ColorEncoding : public TaggedPointer<LinearColorEncoding, sRGBColorEncoding, GammaColorEncoding>
+    class ColorEncoding
+        : public TaggedPointer<LinearColorEncoding, sRGBColorEncoding, GammaColorEncoding>
     {
     public:
         using TaggedPointer::TaggedPointer;
-        
         // ColorEncoding Interface
-        void ToLinear( const std::span<const uint8_t>& vin, const std::span<Float>& vout ) const;
-        void FromLinear( const std::span<const Float>& vin, const std::span<uint8_t>& vout ) const;
+        PBRT_CPU_GPU inline void ToLinear( pstdo::span<const uint8_t> vin,
+            pstdo::span<Float> vout ) const;
+        PBRT_CPU_GPU inline void FromLinear( pstdo::span<const Float> vin,
+            pstdo::span<uint8_t> vout ) const;
 
-        Float ToFloatLinear( Float v ) const;
+        PBRT_CPU_GPU inline Float ToFloatLinear( Float v ) const;
 
         std::string ToString( ) const;
 
@@ -486,30 +486,24 @@ namespace pbrto
     class LinearColorEncoding
     {
     public:
-        void ToLinear( const std::span<const uint8_t>& vin, const std::span<Float>& vout ) const
+        PBRT_CPU_GPU
+            void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const
         {
             NDCHECK_EQ( vin.size( ), vout.size( ) );
             for ( size_t i = 0; i < vin.size( ); ++i )
-            {
                 vout[ i ] = vin[ i ] / 255.f;
-            }
         }
 
-        void FromLinear( const std::span<const Float>& vin, const std::span<uint8_t>& vout ) const
+        PBRT_CPU_GPU
+            Float ToFloatLinear( Float v ) const { return v; }
+
+        PBRT_CPU_GPU
+            void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const
         {
             NDCHECK_EQ( vin.size( ), vout.size( ) );
             for ( size_t i = 0; i < vin.size( ); ++i )
-            {
-                vout[ i ] = uint8_t( Math::Clamp( vin[ i ] * 255.f + 0.5f, 0.f, 255.f ) );
-            }
+                vout[ i ] = uint8_t( Clamp( vin[ i ] * 255.f + 0.5f, 0, 255 ) );
         }
-
-        Float ToFloatLinear( Float v ) const 
-        { 
-            return v; 
-        }
-
-        
 
         std::string ToString( ) const { return "[ LinearColorEncoding ]"; }
     };
@@ -518,9 +512,12 @@ namespace pbrto
     {
     public:
         // sRGBColorEncoding Public Methods
-        void ToLinear( const std::span<const uint8_t>& vin, const std::span<Float>& vout ) const;
-        Float ToFloatLinear( Float v ) const;
-        void FromLinear( const std::span<const Float>& vin, const std::span<uint8_t>& vout ) const;
+        PBRT_CPU_GPU
+            void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const;
+        PBRT_CPU_GPU
+            Float ToFloatLinear( Float v ) const;
+        PBRT_CPU_GPU
+            void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const;
 
         std::string ToString( ) const { return "[ sRGBColorEncoding ]"; }
     };
@@ -528,11 +525,15 @@ namespace pbrto
     class GammaColorEncoding
     {
     public:
-        GammaColorEncoding( Float gamma );
+        PBRT_CPU_GPU
+            GammaColorEncoding( Float gamma );
 
-        void ToLinear( const std::span<const uint8_t>& vin, const std::span<Float>& vout ) const;
-        Float ToFloatLinear( Float v ) const;
-        void FromLinear( const std::span<const Float>& vin, const std::span<uint8_t>& vout ) const;
+        PBRT_CPU_GPU
+            void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const;
+        PBRT_CPU_GPU
+            Float ToFloatLinear( Float v ) const;
+        PBRT_CPU_GPU
+            void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const;
 
         std::string ToString( ) const;
 
@@ -542,7 +543,8 @@ namespace pbrto
         pstdo::array<Float, 1024> inverseLUT;
     };
 
-    inline void ColorEncoding::ToLinear( const std::span<const uint8_t>& vin, const std::span<Float>& vout ) const
+    inline void ColorEncoding::ToLinear( pstdo::span<const uint8_t> vin,
+        pstdo::span<Float> vout ) const
     {
         auto tolin = [ & ]( auto ptr ) { return ptr->ToLinear( vin, vout ); };
         Dispatch( tolin );
@@ -554,37 +556,41 @@ namespace pbrto
         return Dispatch( tfl );
     }
 
-    inline void ColorEncoding::FromLinear( const std::span<const Float>& vin, const std::span<uint8_t>& vout ) const
+    inline void ColorEncoding::FromLinear( pstdo::span<const Float> vin,
+        pstdo::span<uint8_t> vout ) const
     {
         auto fl = [ & ]( auto ptr ) { return ptr->FromLinear( vin, vout ); };
         Dispatch( fl );
     }
 
-    constexpr inline Float LinearToSRGB( Float value )
+    PBRT_CPU_GPU
+        inline Float LinearToSRGB( Float value )
     {
         if ( value <= 0.0031308f )
             return 12.92f * value;
         // Minimax polynomial approximation from enoki's color.h.
-        float sqrtValue = Math::SafeSqrt( value );
-        float p = Math::EvaluatePolynomial( sqrtValue, -0.0016829072605308378f, 0.03453868659826638f,
+        float sqrtValue = SafeSqrt( value );
+        float p = EvaluatePolynomial( sqrtValue, -0.0016829072605308378f, 0.03453868659826638f,
             0.7642611304733891f, 2.0041169284241644f,
             0.7551545191665577f, -0.016202083165206348f );
-        float q = Math::EvaluatePolynomial( sqrtValue, 4.178892964897981e-7f,
+        float q = EvaluatePolynomial( sqrtValue, 4.178892964897981e-7f,
             -0.00004375359692957097f, 0.03467195408529984f,
             0.6085338522168684f, 1.8970238036421054f, 1.f );
         return p / q * value;
     }
 
-    constexpr inline uint8_t LinearToSRGB8( Float value, Float dither = 0.f )
+    PBRT_CPU_GPU
+        inline uint8_t LinearToSRGB8( Float value, Float dither = 0 )
     {
-        if ( value <= 0.f )
+        if ( value <= 0 )
             return 0;
-        if ( value >= 1.f )
+        if ( value >= 1 )
             return 255;
-        return static_cast< uint8_t >( Math::Clamp( Math::Round( 255.f * LinearToSRGB( value ) + dither ), 0.f, 255.f ) );
+        return Clamp( pstdo::round( 255.f * LinearToSRGB( value ) + dither ), 0, 255 );
     }
 
-    constexpr inline Float SRGBToLinear( float value )
+    PBRT_CPU_GPU
+        inline Float SRGBToLinear( float value )
     {
         if ( value <= 0.04045f )
             return value * ( 1 / 12.92f );
@@ -599,7 +605,8 @@ namespace pbrto
 
     extern PBRT_CONST Float SRGBToLinearLUT[ 256 ];
 
-    inline Float SRGB8ToLinear( uint8_t value )
+    PBRT_CPU_GPU
+        inline Float SRGB8ToLinear( uint8_t value )
     {
         return SRGBToLinearLUT[ value ];
     }
@@ -607,23 +614,19 @@ namespace pbrto
     // White Balance Definitions
     // clang-format off
     // These are the Bradford transformation matrices.
-    const SquareMatrix<3> LMSFromXYZ(
-        static_cast< Float >( 0.8951 ), static_cast< Float >( 0.2664 ), static_cast< Float >( -0.1614 ),
-        static_cast< Float >( -0.7502 ), static_cast< Float >( 1.7135 ), static_cast< Float >( 0.0367 ),
-        static_cast< Float >( 0.0389 ), static_cast< Float >( -0.0685 ), static_cast< Float >( 1.0296 ) );
-    const SquareMatrix<3> XYZFromLMS(
-        static_cast< Float >( 0.986993 ), static_cast< Float >( -0.147054 ), static_cast< Float >( 0.159963 ),
-        static_cast< Float >( 0.432305 ), static_cast< Float >( 0.51836 ), static_cast< Float >( 0.0492912 ),
-        static_cast< Float >( -0.00852866 ), static_cast< Float >( 0.0400428 ), static_cast< Float >( 0.968487 ) );
+    const SquareMatrix<3> LMSFromXYZ( 0.8951, 0.2664, -0.1614,
+        -0.7502, 1.7135, 0.0367,
+        0.0389, -0.0685, 1.0296 );
+    const SquareMatrix<3> XYZFromLMS( 0.986993, -0.147054, 0.159963,
+        0.432305, 0.51836, 0.0492912,
+        -0.00852866, 0.0400428, 0.968487 );
     // clang-format on
 
-    inline SquareMatrix<3> WhiteBalance( const Point2f& srcWhite, const Point2f& targetWhite )
+    inline SquareMatrix<3> WhiteBalance( Point2f srcWhite, Point2f targetWhite )
     {
         // Find LMS coefficients for source and target white
-        XYZ srcXYZ = XYZ::FromxyY( srcWhite ); 
-        XYZ dstXYZ = XYZ::FromxyY( targetWhite );
-        auto srcLMS = LMSFromXYZ * srcXYZ;
-        auto dstLMS = LMSFromXYZ * dstXYZ;
+        XYZ srcXYZ = XYZ::FromxyY( srcWhite ), dstXYZ = XYZ::FromxyY( targetWhite );
+        auto srcLMS = LMSFromXYZ * srcXYZ, dstLMS = LMSFromXYZ * dstXYZ;
 
         // Return white balancing matrix for source and target white
         SquareMatrix<3> LMScorrect = SquareMatrix<3>::Diag(

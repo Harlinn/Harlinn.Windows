@@ -48,34 +48,28 @@ namespace pbrto
 // RNG Definition
     class RNG
     {
-        // RNG Private Members
-        uint64_t state = PCG32_DEFAULT_STATE;
-        uint64_t inc = PCG32_DEFAULT_STREAM;
     public:
         // RNG Public Methods
-        RNG( ) 
-        { }
-        RNG( uint64_t seqIndex, uint64_t offset ) 
-        { 
-            SetSequence( seqIndex, offset ); 
-        }
-        RNG( uint64_t seqIndex ) 
-        { 
-            SetSequence( seqIndex ); 
-        }
+        PBRT_CPU_GPU
+            RNG( ) : state( PCG32_DEFAULT_STATE ), inc( PCG32_DEFAULT_STREAM ) {}
+        PBRT_CPU_GPU
+            RNG( uint64_t seqIndex, uint64_t offset ) { SetSequence( seqIndex, offset ); }
+        PBRT_CPU_GPU
+            RNG( uint64_t seqIndex ) { SetSequence( seqIndex ); }
 
-        void SetSequence( uint64_t sequenceIndex, uint64_t offset );
-
-        void SetSequence( uint64_t sequenceIndex )
+        PBRT_CPU_GPU
+            void SetSequence( uint64_t sequenceIndex, uint64_t offset );
+        PBRT_CPU_GPU
+            void SetSequence( uint64_t sequenceIndex )
         {
             SetSequence( sequenceIndex, MixBits( sequenceIndex ) );
         }
 
         template <typename T>
-        T Uniform( );
+        PBRT_CPU_GPU T Uniform( );
 
         template <typename T>
-        typename std::enable_if_t<std::is_integral_v<T>, T> Uniform( T b )
+        PBRT_CPU_GPU typename std::enable_if_t<std::is_integral_v<T>, T> Uniform( T b )
         {
             T threshold = ( ~b + 1u ) % b;
             while ( true )
@@ -86,25 +80,30 @@ namespace pbrto
             }
         }
 
-        void Advance( int64_t idelta );
-
-        int64_t operator-( const RNG& other ) const;
+        PBRT_CPU_GPU
+            void Advance( int64_t idelta );
+        PBRT_CPU_GPU
+            int64_t operator-( const RNG& other ) const;
 
         std::string ToString( ) const;
 
     private:
-        
+        // RNG Private Members
+        uint64_t state, inc;
     };
 
     // RNG Inline Method Definitions
     template <typename T>
-    inline T RNG::Uniform( )
+    PBRT_CPU_GPU inline T RNG::Uniform( )
     {
         return T::unimplemented;
     }
 
     template <>
-    inline uint32_t RNG::Uniform<uint32_t>( )
+    PBRT_CPU_GPU inline uint32_t RNG::Uniform<uint32_t>( );
+
+    template <>
+    PBRT_CPU_GPU inline uint32_t RNG::Uniform<uint32_t>( )
     {
         uint64_t oldstate = state;
         state = oldstate * PCG32_MULT + inc;
@@ -114,14 +113,14 @@ namespace pbrto
     }
 
     template <>
-    inline uint64_t RNG::Uniform<uint64_t>( )
+    PBRT_CPU_GPU inline uint64_t RNG::Uniform<uint64_t>( )
     {
         uint64_t v0 = Uniform<uint32_t>( ), v1 = Uniform<uint32_t>( );
         return ( v0 << 32 ) | v1;
     }
 
     template <>
-    inline int32_t RNG::Uniform<int32_t>( )
+    PBRT_CPU_GPU inline int32_t RNG::Uniform<int32_t>( )
     {
         // https://stackoverflow.com/a/13208789
         uint32_t v = Uniform<uint32_t>( );
@@ -133,7 +132,7 @@ namespace pbrto
     }
 
     template <>
-    inline int64_t RNG::Uniform<int64_t>( )
+    PBRT_CPU_GPU inline int64_t RNG::Uniform<int64_t>( )
     {
         // https://stackoverflow.com/a/13208789
         uint64_t v = Uniform<uint64_t>( );
@@ -145,7 +144,7 @@ namespace pbrto
             std::numeric_limits<int64_t>::min( );
     }
 
-    inline void RNG::SetSequence( uint64_t sequenceIndex, uint64_t seed )
+    PBRT_CPU_GPU inline void RNG::SetSequence( uint64_t sequenceIndex, uint64_t seed )
     {
         state = 0u;
         inc = ( sequenceIndex << 1u ) | 1u;
@@ -155,18 +154,18 @@ namespace pbrto
     }
 
     template <>
-    inline float RNG::Uniform<float>( )
+    PBRT_CPU_GPU inline float RNG::Uniform<float>( )
     {
         return std::min<float>( OneMinusEpsilon, Uniform<uint32_t>( ) * 0x1p-32f );
     }
 
     template <>
-    inline double RNG::Uniform<double>( )
+    PBRT_CPU_GPU inline double RNG::Uniform<double>( )
     {
         return std::min<double>( OneMinusEpsilon, Uniform<uint64_t>( ) * 0x1p-64 );
     }
 
-    inline void RNG::Advance( int64_t idelta )
+    PBRT_CPU_GPU inline void RNG::Advance( int64_t idelta )
     {
         uint64_t curMult = PCG32_MULT, curPlus = inc, accMult = 1u;
         uint64_t accPlus = 0u, delta = ( uint64_t )idelta;
@@ -184,7 +183,8 @@ namespace pbrto
         state = accMult * state + accPlus;
     }
 
-    inline int64_t RNG::operator-( const RNG& other ) const
+    PBRT_CPU_GPU
+        inline int64_t RNG::operator-( const RNG& other ) const
     {
         NCHECK_EQ( inc, other.inc );
         uint64_t curMult = PCG32_MULT, curPlus = inc, curState = other.state;

@@ -48,7 +48,9 @@ namespace pbrto
     class KdTreeAggregate;
 
     // Primitive Definition
-    class Primitive : public TaggedPointer<SimplePrimitive, GeometricPrimitive, TransformedPrimitive, AnimatedPrimitive, BVHAggregate, KdTreeAggregate>
+    class Primitive
+        : public TaggedPointer<SimplePrimitive, GeometricPrimitive, TransformedPrimitive,
+        AnimatedPrimitive, BVHAggregate, KdTreeAggregate>
     {
     public:
         // Primitive Interface
@@ -56,50 +58,51 @@ namespace pbrto
 
         Bounds3f Bounds( ) const;
 
-        pstdo::optional<ShapeIntersection> Intersect( const Ray& r, Float tMax = Infinity ) const;
+        pstdo::optional<ShapeIntersection> Intersect( const Ray& r,
+            Float tMax = Infinity ) const;
         bool IntersectP( const Ray& r, Float tMax = Infinity ) const;
     };
 
     // GeometricPrimitive Definition
     class GeometricPrimitive
     {
+    public:
+        // GeometricPrimitive Public Methods
+        GeometricPrimitive( Shape shape, Material material, Light areaLight,
+            const MediumInterface& mediumInterface,
+            FloatTexture alpha = nullptr );
+        Bounds3f Bounds( ) const;
+        pstdo::optional<ShapeIntersection> Intersect( const Ray& r, Float tMax ) const;
+        bool IntersectP( const Ray& r, Float tMax ) const;
+
+    private:
         // GeometricPrimitive Private Members
         Shape shape;
         Material material;
         Light areaLight;
         MediumInterface mediumInterface;
         FloatTexture alpha;
-    public:
-        // GeometricPrimitive Public Methods
-        GeometricPrimitive( Shape shape, Material material, Light areaLight, const MediumInterface& mediumInterface, FloatTexture alpha = nullptr );
-        Bounds3f Bounds( ) const;
-        pstdo::optional<ShapeIntersection> Intersect( const Ray& r, Float tMax ) const;
-        bool IntersectP( const Ray& r, Float tMax ) const;
     };
 
     // SimplePrimitive Definition
     class SimplePrimitive
     {
-        // SimplePrimitive Private Members
-        Shape shape;
-        Material material;
     public:
         // SimplePrimitive Public Methods
-
-        SimplePrimitive( Shape shape, Material material );
-
         Bounds3f Bounds( ) const;
         pstdo::optional<ShapeIntersection> Intersect( const Ray& r, Float tMax ) const;
         bool IntersectP( const Ray& r, Float tMax ) const;
+        SimplePrimitive( Shape shape, Material material );
 
+    private:
+        // SimplePrimitive Private Members
+        Shape shape;
+        Material material;
     };
 
     // TransformedPrimitive Definition
     class TransformedPrimitive
     {
-        // TransformedPrimitive Private Members
-        Primitive primitive;
-        const Transform* renderFromPrimitive;
     public:
         // TransformedPrimitive Public Methods
         TransformedPrimitive( Primitive primitive, const Transform* renderFromPrimitive )
@@ -111,30 +114,32 @@ namespace pbrto
         pstdo::optional<ShapeIntersection> Intersect( const Ray& r, Float tMax ) const;
         bool IntersectP( const Ray& r, Float tMax ) const;
 
-        Bounds3f Bounds( ) const
-        {
-            return ( *renderFromPrimitive )( primitive.Bounds( ) );
-        }
+        Bounds3f Bounds( ) const { return ( *renderFromPrimitive )( primitive.Bounds( ) ); }
+
+    private:
+        // TransformedPrimitive Private Members
+        Primitive primitive;
+        const Transform* renderFromPrimitive;
     };
 
     // AnimatedPrimitive Definition
     class AnimatedPrimitive
     {
-        // AnimatedPrimitive Private Members
-        Primitive primitive;
-        AnimatedTransform renderFromPrimitive;
     public:
         // AnimatedPrimitive Public Methods
-        AnimatedPrimitive( Primitive primitive, const AnimatedTransform& renderFromPrimitive );
-
         Bounds3f Bounds( ) const
         {
             return renderFromPrimitive.MotionBounds( primitive.Bounds( ) );
         }
 
-
+        AnimatedPrimitive( Primitive primitive, const AnimatedTransform& renderFromPrimitive );
         pstdo::optional<ShapeIntersection> Intersect( const Ray& r, Float tMax ) const;
         bool IntersectP( const Ray& r, Float tMax ) const;
+
+    private:
+        // AnimatedPrimitive Private Members
+        Primitive primitive;
+        AnimatedTransform renderFromPrimitive;
     };
 
 }

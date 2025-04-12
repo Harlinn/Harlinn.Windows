@@ -31,7 +31,9 @@ namespace pbrto
 {
 
     // LoopSubdiv Declarations
-    TriangleMesh* LoopSubdivide( const Transform* renderFromObject, bool reverseOrientation, int nLevels, const pstdo::span<const int>& vertexIndices, const pstdo::span<const Point3f>& p, Allocator alloc );
+    TriangleMesh* LoopSubdivide( const Transform* renderFromObject, bool reverseOrientation,
+        int nLevels, pstdo::span<const int> vertexIndices,
+        pstdo::span<const Point3f> p, Allocator alloc );
 
 }
 

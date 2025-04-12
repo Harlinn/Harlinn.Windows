@@ -127,7 +127,7 @@ namespace pbrto
         ns = frame.FromLocal( ns );
 
         // Find $\dpdu$ and $\dpdv$ that give shading normal
-        Float ulen = Length( ctx.shading.dpdu ), vlen = Length( ctx.shading.dpdv );
+        Float ulen = ScalarLength( ctx.shading.dpdu ), vlen = ScalarLength( ctx.shading.dpdv );
         *dpdu = Normalize( GramSchmidt( ctx.shading.dpdu, ns ) ) * ulen;
         *dpdv = Normalize( Cross( ns, *dpdu ) ) * vlen;
     }

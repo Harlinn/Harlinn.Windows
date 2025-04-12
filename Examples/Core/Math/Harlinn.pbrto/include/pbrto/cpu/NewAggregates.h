@@ -35,7 +35,8 @@
 namespace pbrto
 {
 
-    Primitive CreateAccelerator( const std::string& name, std::vector<Primitive> prims, const ParameterDictionary& parameters );
+    Primitive CreateAccelerator( const std::string& name, std::vector<Primitive> prims,
+        const ParameterDictionary& parameters );
 
     struct BVHBuildNode;
     struct BVHPrimitive;
@@ -47,43 +48,45 @@ namespace pbrto
     {
     public:
         // BVHAggregate Public Types
-        enum class SplitMethod
-        {
-            SAH,
-            HLBVH,
-            Middle,
-            EqualCounts
-        };
+        enum class SplitMethod { SAH, HLBVH, Middle, EqualCounts };
+
+        // BVHAggregate Public Methods
+        BVHAggregate( std::vector<Primitive> p, int maxPrimsInNode = 1,
+            SplitMethod splitMethod = SplitMethod::SAH );
+
+        static BVHAggregate* Create( std::vector<Primitive> prims,
+            const ParameterDictionary& parameters );
+
+        Bounds3f Bounds( ) const;
+        pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax ) const;
+        bool IntersectP( const Ray& ray, Float tMax ) const;
+
     private:
+        // BVHAggregate Private Methods
+        BVHBuildNode* buildRecursive( ThreadLocal<Allocator>& threadAllocators,
+            pstdo::span<BVHPrimitive> bvhPrimitives,
+            std::atomic<int>* totalNodes,
+            std::atomic<int>* orderedPrimsOffset,
+            std::vector<Primitive>& orderedPrims );
+        BVHBuildNode* buildHLBVH( Allocator alloc,
+            const std::vector<BVHPrimitive>& primitiveInfo,
+            std::atomic<int>* totalNodes,
+            std::vector<Primitive>& orderedPrims );
+        BVHBuildNode* emitLBVH( BVHBuildNode*& buildNodes,
+            const std::vector<BVHPrimitive>& primitiveInfo,
+            MortonPrimitive* mortonPrims, int nPrimitives, int* totalNodes,
+            std::vector<Primitive>& orderedPrims,
+            std::atomic<int>* orderedPrimsOffset, int bitIndex );
+        BVHBuildNode* buildUpperSAH( Allocator alloc,
+            std::vector<BVHBuildNode*>& treeletRoots, int start,
+            int end, std::atomic<int>* totalNodes ) const;
+        int flattenBVH( BVHBuildNode* node, int* offset );
+
         // BVHAggregate Private Members
         int maxPrimsInNode;
         std::vector<Primitive> primitives;
         SplitMethod splitMethod;
         LinearBVHNode* nodes = nullptr;
-    public:
-        // BVHAggregate Public Methods
-        PBRTO_EXPORT
-            BVHAggregate( std::vector<Primitive> p, int maxPrimsInNode = 1, SplitMethod splitMethod = SplitMethod::SAH );
-
-        PBRTO_EXPORT
-            static BVHAggregate* Create( std::vector<Primitive> prims, const ParameterDictionary& parameters );
-
-        PBRTO_EXPORT
-            Bounds3f Bounds( ) const;
-
-        PBRTO_EXPORT
-            pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax ) const;
-
-        PBRTO_EXPORT
-            bool IntersectP( const Ray& ray, Float tMax ) const;
-
-    private:
-        // BVHAggregate Private Methods
-        BVHBuildNode* buildRecursive( ThreadLocal<Allocator>& threadAllocators, pstdo::span<BVHPrimitive> bvhPrimitives, std::atomic<int>* totalNodes, std::atomic<int>* orderedPrimsOffset, std::vector<Primitive>& orderedPrims );
-        BVHBuildNode* buildHLBVH( Allocator alloc, const std::vector<BVHPrimitive>& primitiveInfo, std::atomic<int>* totalNodes, std::vector<Primitive>& orderedPrims );
-        BVHBuildNode* emitLBVH( BVHBuildNode*& buildNodes, const std::vector<BVHPrimitive>& primitiveInfo, MortonPrimitive* mortonPrims, int nPrimitives, int* totalNodes, std::vector<Primitive>& orderedPrims, std::atomic<int>* orderedPrimsOffset, int bitIndex );
-        BVHBuildNode* buildUpperSAH( Allocator alloc, std::vector<BVHBuildNode*>& treeletRoots, int start, int end, std::atomic<int>* totalNodes ) const;
-        int flattenBVH( BVHBuildNode* node, int* offset );
     };
 
     struct KdTreeNode;
@@ -92,45 +95,34 @@ namespace pbrto
     // KdTreeAggregate Definition
     class KdTreeAggregate
     {
+    public:
+        // KdTreeAggregate Public Methods
+        KdTreeAggregate( std::vector<Primitive> p, int isectCost = 5, int traversalCost = 1,
+            Float emptyBonus = 0.5, int maxPrims = 1, int maxDepth = -1 );
+        static KdTreeAggregate* Create( std::vector<Primitive> prims,
+            const ParameterDictionary& parameters );
+        pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax ) const;
+
+        Bounds3f Bounds( ) const { return bounds; }
+
+        bool IntersectP( const Ray& ray, Float tMax ) const;
+
+    private:
+        // KdTreeAggregate Private Methods
+        void buildTree( int nodeNum, const Bounds3f& bounds,
+            const std::vector<Bounds3f>& primBounds,
+            pstdo::span<const int> primNums, int depth,
+            std::vector<BoundEdge> edges[ 3 ], pstdo::span<int> prims0,
+            pstdo::span<int> prims1, int badRefines );
+
         // KdTreeAggregate Private Members
-        int isectCost;
-        int traversalCost;
-        int maxPrims;
+        int isectCost, traversalCost, maxPrims;
         Float emptyBonus;
         std::vector<Primitive> primitives;
         std::vector<int> primitiveIndices;
         KdTreeNode* nodes;
-        int nAllocedNodes;
-        int nextFreeNode;
+        int nAllocedNodes, nextFreeNode;
         Bounds3f bounds;
-    public:
-        // KdTreeAggregate Public Methods
-        PBRTO_EXPORT
-            KdTreeAggregate( std::vector<Primitive> p, int isectCost = 5, int traversalCost = 1, Float emptyBonus = 0.5, int maxPrims = 1, int maxDepth = -1 );
-
-        PBRTO_EXPORT
-            static KdTreeAggregate* Create( std::vector<Primitive> prims, const ParameterDictionary& parameters );
-
-        PBRTO_EXPORT
-            pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax ) const;
-
-        PBRTO_EXPORT
-#ifdef PBRT_USES_HCCMATH
-            const Bounds3f& Bounds( ) const
-#else
-            Bounds3f Bounds( ) const
-#endif
-        {
-            return bounds;
-        }
-
-        PBRTO_EXPORT bool IntersectP( const Ray& ray, Float tMax ) const;
-
-    private:
-        // KdTreeAggregate Private Methods
-        void buildTree( int nodeNum, const Bounds3f& bounds, const std::vector<Bounds3f>& primBounds, pstdo::span<const int> primNums, int depth, std::vector<BoundEdge> edges[ 3 ], pstdo::span<int> prims0, pstdo::span<int> prims1, int badRefines );
-
-
     };
 
 }

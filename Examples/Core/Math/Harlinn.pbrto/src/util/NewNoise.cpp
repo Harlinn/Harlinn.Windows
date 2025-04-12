@@ -31,8 +31,10 @@
 namespace pbrto
 {
 
-    inline Float Grad( int x, int y, int z, Float dx, Float dy, Float dz );
-    inline Float NoiseWeight( Float t );
+    PBRT_CPU_GPU
+        inline Float Grad( int x, int y, int z, Float dx, Float dy, Float dz );
+    PBRT_CPU_GPU
+        inline Float NoiseWeight( Float t );
 
     // Perlin Noise Data
     static constexpr int NoisePermSize = 256;
@@ -71,7 +73,7 @@ namespace pbrto
     };
 
     // Noise Function Definitions
-    PBRTO_EXPORT Float Noise( Float x, Float y, Float z )
+    Float Noise( Float x, Float y, Float z )
     {
         // Compute noise cell coordinates and offsets
         // Avoid overflow when computing deltas if the coordinates are too large to store in
@@ -106,7 +108,7 @@ namespace pbrto
         return Lerp( wz, y0, y1 );
     }
 
-    PBRTO_EXPORT Float Noise( const Point3f& p )
+    Float Noise( Point3f p )
     {
         return Noise( p.x, p.y, p.z );
     }
@@ -125,7 +127,7 @@ namespace pbrto
         return 6 * FastPow<5>( t ) - 15 * FastPow<4>( t ) + 10 * FastPow<3>( t );
     }
 
-    PBRTO_EXPORT Vector3f DNoise( const Point3f& p )
+    Vector3f DNoise( Point3f p )
     {
         Float delta = .01f;
         Float n = Noise( p );
@@ -134,10 +136,10 @@ namespace pbrto
         return ( noiseDelta - Point3f( n, n, n ) ) / delta;
     }
 
-    PBRTO_EXPORT Float FBm( const Point3f& p, const Vector3f& dpdx, const Vector3f& dpdy, Float omega, int maxOctaves )
+    Float FBm( Point3f p, Vector3f dpdx, Vector3f dpdy, Float omega, int maxOctaves )
     {
         // Compute number of octaves for antialiased FBm
-        Float len2 = std::max( LengthSquared( dpdx ), LengthSquared( dpdy ) );
+        Float len2 = std::max( ScalarLengthSquared( dpdx ), ScalarLengthSquared( dpdy ) );
         Float n = Clamp( -1 - Log2( len2 ) / 2, 0, maxOctaves );
         int nInt = pstdo::floor( n );
 
@@ -155,10 +157,10 @@ namespace pbrto
         return sum;
     }
 
-    PBRTO_EXPORT Float Turbulence( const Point3f& p, const Vector3f& dpdx, const Vector3f& dpdy, Float omega, int maxOctaves )
+    Float Turbulence( Point3f p, Vector3f dpdx, Vector3f dpdy, Float omega, int maxOctaves )
     {
         // Compute number of octaves for antialiased FBm
-        Float len2 = std::max( LengthSquared( dpdx ), LengthSquared( dpdy ) );
+        Float len2 = std::max( ScalarLengthSquared( dpdx ), ScalarLengthSquared( dpdy ) );
         Float n = Clamp( -1 - Log2( len2 ) / 2, 0, maxOctaves );
         int nInt = pstdo::floor( n );
 

@@ -5,10 +5,10 @@
 #ifndef PBRT_PBRT_H
 #define PBRT_PBRT_H
 
+#include "pbrtodef.h"
+
 #include <stdint.h>
 #include <cstddef>
-#include <pbrto/pbrtodef.h>
-
 
 #ifdef PBRT_IS_WINDOWS
 #ifndef UNICODE
@@ -37,7 +37,7 @@
 #endif
 #else
 #define PBRT_CONST const
-#define PBRT_CPU_GPU 
+#define PBRT_CPU_GPU
 #define PBRT_GPU
 #endif
 
@@ -72,123 +72,118 @@
 // From ABSL_ARRAYSIZE
 #define PBRT_ARRAYSIZE(array) (sizeof(::pbrt::detail::ArraySizeHelper(array)))
 
-namespace pbrt
-{
-    namespace detail
-    {
+namespace pbrt {
+namespace detail {
 
-        template <typename T, uint64_t N>
-        auto ArraySizeHelper( const T( &array )[ N ] ) -> char( & )[ N ];
+template <typename T, uint64_t N>
+auto ArraySizeHelper(const T (&array)[N]) -> char (&)[N];
 
-    }  // namespace detail
+}  // namespace detail
 }  // namespace pbrt
 
-namespace pstd
-{
+namespace pstd {
 
-    namespace pmr
-    {
-        template <typename T>
-        class polymorphic_allocator;
-    }
+namespace pmr {
+template <typename T>
+class polymorphic_allocator;
+}
 
 }  // namespace pstd
 
-namespace pbrt
-{
+namespace pbrt {
 
-    // Float Type Definitions
+// Float Type Definitions
 #ifdef PBRT_FLOAT_AS_DOUBLE
-    using Float = double;
+using Float = double;
 #else
-    using Float = float;
+using Float = float;
 #endif
 
 #ifdef PBRT_FLOAT_AS_DOUBLE
-    using FloatBits = uint64_t;
+using FloatBits = uint64_t;
 #else
-    using FloatBits = uint32_t;
+using FloatBits = uint32_t;
 #endif  // PBRT_FLOAT_AS_DOUBLE
-    static_assert( sizeof( Float ) == sizeof( FloatBits ),
-        "Float and FloatBits must have the same size" );
+static_assert(sizeof(Float) == sizeof(FloatBits),
+              "Float and FloatBits must have the same size");
 
-    template <typename T>
-    class Vector2;
-    template <typename T>
-    class Vector3;
-    template <typename T>
-    class Point3;
-    template <typename T>
-    class Point2;
-    template <typename T>
-    class Normal3;
-    using Point2f = Point2<Float>;
-    using Point2i = Point2<int>;
-    using Point3f = Point3<Float>;
-    using Vector2f = Vector2<Float>;
-    using Vector2i = Vector2<int>;
-    using Vector3f = Vector3<Float>;
+template <typename T>
+class Vector2;
+template <typename T>
+class Vector3;
+template <typename T>
+class Point3;
+template <typename T>
+class Point2;
+template <typename T>
+class Normal3;
+using Point2f = Point2<Float>;
+using Point2i = Point2<int>;
+using Point3f = Point3<Float>;
+using Vector2f = Vector2<Float>;
+using Vector2i = Vector2<int>;
+using Vector3f = Vector3<Float>;
 
-    template <typename T>
-    class Bounds2;
-    using Bounds2f = Bounds2<Float>;
-    using Bounds2i = Bounds2<int>;
-    template <typename T>
-    class Bounds3;
-    using Bounds3f = Bounds3<Float>;
-    using Bounds3i = Bounds3<int>;
+template <typename T>
+class Bounds2;
+using Bounds2f = Bounds2<Float>;
+using Bounds2i = Bounds2<int>;
+template <typename T>
+class Bounds3;
+using Bounds3f = Bounds3<Float>;
+using Bounds3i = Bounds3<int>;
 
-    class AnimatedTransform;
-    class BilinearPatchMesh;
-    class Interaction;
-    class Interaction;
-    class MediumInteraction;
-    class Ray;
-    class RayDifferential;
-    class SurfaceInteraction;
-    class SurfaceInteraction;
-    class Transform;
-    class TriangleMesh;
+class AnimatedTransform;
+class BilinearPatchMesh;
+class Interaction;
+class Interaction;
+class MediumInteraction;
+class Ray;
+class RayDifferential;
+class SurfaceInteraction;
+class SurfaceInteraction;
+class Transform;
+class TriangleMesh;
 
-    class RGB;
-    class RGBColorSpace;
-    class RGBSigmoidPolynomial;
-    class RGBIlluminantSpectrum;
-    class SampledSpectrum;
-    class SampledWavelengths;
-    class SpectrumWavelengths;
-    class XYZ;
-    enum class SpectrumType;
+class RGB;
+class RGBColorSpace;
+class RGBSigmoidPolynomial;
+class RGBIlluminantSpectrum;
+class SampledSpectrum;
+class SampledWavelengths;
+class SpectrumWavelengths;
+class XYZ;
+enum class SpectrumType;
 
-    class BSDF;
-    class CameraTransform;
-    class Image;
-    class ParameterDictionary;
-    struct NamedTextures;
-    class TextureParameterDictionary;
-    struct ImageMetadata;
-    struct MediumInterface;
-    struct PBRTOptions;
+class BSDF;
+class CameraTransform;
+class Image;
+class ParameterDictionary;
+struct NamedTextures;
+class TextureParameterDictionary;
+struct ImageMetadata;
+struct MediumInterface;
+struct PBRTOptions;
 
-    class PiecewiseConstant1D;
-    class PiecewiseConstant2D;
-    class ProgressReporter;
-    class RNG;
-    struct FileLoc;
-    class Interval;
-    template <typename T>
-    class Array2D;
+class PiecewiseConstant1D;
+class PiecewiseConstant2D;
+class ProgressReporter;
+class RNG;
+struct FileLoc;
+class Interval;
+template <typename T>
+class Array2D;
 
-    template <typename T>
-    struct SOA;
-    class ScratchBuffer;
+template <typename T>
+struct SOA;
+class ScratchBuffer;
 
-    // Define _Allocator_
-    using Allocator = pstd::pmr::polymorphic_allocator<std::byte>;
+// Define _Allocator_
+using Allocator = pstd::pmr::polymorphic_allocator<std::byte>;
 
-    // Initialization and Cleanup Function Declarations
-    PBRTO_EXPORT void InitPBRT( const PBRTOptions& opt );
-    PBRTO_EXPORT void CleanupPBRT( );
+// Initialization and Cleanup Function Declarations
+PBRTO_EXPORT void InitPBRT(const PBRTOptions &opt);
+PBRTO_EXPORT void CleanupPBRT();
 
 }  // namespace pbrt
 

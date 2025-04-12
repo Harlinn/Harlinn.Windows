@@ -15,60 +15,64 @@
 
 #include <string>
 
-namespace pbrt
-{
+namespace pbrt {
 
-    // Camera Declarations
-    struct CameraRay;
-    struct CameraRayDifferential;
-    struct CameraWiSample;
+// Camera Declarations
+struct CameraRay;
+struct CameraRayDifferential;
+struct CameraWiSample;
 
-    struct CameraSample;
-    class CameraTransform;
+struct CameraSample;
+class CameraTransform;
 
-    class PerspectiveCamera;
-    class OrthographicCamera;
-    class SphericalCamera;
-    class RealisticCamera;
+class PerspectiveCamera;
+class OrthographicCamera;
+class SphericalCamera;
+class RealisticCamera;
 
-    // Camera Definition
-    class Camera : public TaggedPointer<PerspectiveCamera, OrthographicCamera, SphericalCamera, RealisticCamera>
-    {
-    public:
-        // Camera Interface
-        using TaggedPointer::TaggedPointer;
+// Camera Definition
+class Camera : public TaggedPointer<PerspectiveCamera, OrthographicCamera,
+                                    SphericalCamera, RealisticCamera> {
+  public:
+    // Camera Interface
+    using TaggedPointer::TaggedPointer;
 
-        static Camera Create( const std::string& name, const ParameterDictionary& parameters, Medium medium, const CameraTransform& cameraTransform, Film film, const FileLoc* loc, Allocator alloc );
+    static Camera Create(const std::string &name, const ParameterDictionary &parameters,
+                         Medium medium, const CameraTransform &cameraTransform, Film film,
+                         const FileLoc *loc, Allocator alloc);
 
-        std::string ToString( ) const;
+    std::string ToString() const;
 
-        PBRT_CPU_GPU 
-        inline pstd::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
+    PBRT_CPU_GPU inline pstd::optional<CameraRay> GenerateRay(
+        CameraSample sample, SampledWavelengths &lambda) const;
 
-        PBRT_CPU_GPU
-        pstd::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
+    PBRT_CPU_GPU
+    pstd::optional<CameraRayDifferential> GenerateRayDifferential(
+        CameraSample sample, SampledWavelengths &lambda) const;
 
-        PBRT_CPU_GPU inline Film GetFilm( ) const;
+    PBRT_CPU_GPU inline Film GetFilm() const;
 
-        PBRT_CPU_GPU inline Float SampleTime( Float u ) const;
+    PBRT_CPU_GPU inline Float SampleTime(Float u) const;
 
-        void InitMetadata( ImageMetadata* metadata ) const;
+    void InitMetadata(ImageMetadata *metadata) const;
 
-        PBRT_CPU_GPU 
-        inline const CameraTransform& GetCameraTransform( ) const;
+    PBRT_CPU_GPU inline const CameraTransform &GetCameraTransform() const;
 
-        PBRT_CPU_GPU
-        void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const;
+    PBRT_CPU_GPU
+    void Approximate_dp_dxy(Point3f p, Normal3f n, Float time, int samplesPerPixel,
+                            Vector3f *dpdx, Vector3f *dpdy) const;
 
-        PBRT_CPU_GPU
-        SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRasterOut = nullptr ) const;
+    PBRT_CPU_GPU
+    SampledSpectrum We(const Ray &ray, SampledWavelengths &lambda,
+                       Point2f *pRasterOut = nullptr) const;
 
-        PBRT_CPU_GPU
-        void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
+    PBRT_CPU_GPU
+    void PDF_We(const Ray &ray, Float *pdfPos, Float *pdfDir) const;
 
-        PBRT_CPU_GPU
-        pstd::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const;
-    };
+    PBRT_CPU_GPU
+    pstd::optional<CameraWiSample> SampleWi(const Interaction &ref, Point2f u,
+                                            SampledWavelengths &lambda) const;
+};
 
 }  // namespace pbrt
 

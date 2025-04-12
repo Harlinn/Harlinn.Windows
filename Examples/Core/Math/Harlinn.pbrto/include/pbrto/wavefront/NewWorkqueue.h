@@ -27,7 +27,7 @@
 
 #include <pbrto/NewOptions.h>
 #ifdef PBRT_BUILD_GPU_RENDERER
-#include <pbrt/gpu/util.h>
+#include <pbrto/gpu/util.h>
 #endif  // PBRT_BUILD_GPU_RENDERER
 #include <pbrto/util/NewParallel.h>
 #include <pbrto/util/NewPStd.h>
@@ -155,7 +155,7 @@ namespace pbrto
                 func( ( *q )[ index ] );
             } );
 #else
-            LOG_FATAL( "Options->useGPU was set without PBRT_BUILD_GPU_RENDERER enabled" );
+            NLOG_FATAL( "Options->useGPU was set without PBRT_BUILD_GPU_RENDERER enabled" );
 #endif
 
         }

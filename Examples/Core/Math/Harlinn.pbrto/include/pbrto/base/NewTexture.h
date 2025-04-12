@@ -49,17 +49,27 @@ namespace pbrto
     class WrinkledTexture;
 
     // FloatTexture Definition
-    class FloatTexture : public TaggedPointer< FloatImageTexture, GPUFloatImageTexture, FloatMixTexture, FloatDirectionMixTexture, FloatScaledTexture, FloatConstantTexture, FloatBilerpTexture, FloatCheckerboardTexture, FloatDotsTexture, FBmTexture, FloatPtexTexture, GPUFloatPtexTexture, WindyTexture, WrinkledTexture >
+    class FloatTexture
+        : public TaggedPointer<  // FloatTextures
+        FloatImageTexture, GPUFloatImageTexture, FloatMixTexture,
+        FloatDirectionMixTexture, FloatScaledTexture, FloatConstantTexture,
+        FloatBilerpTexture, FloatCheckerboardTexture, FloatDotsTexture, FBmTexture,
+        FloatPtexTexture, GPUFloatPtexTexture, WindyTexture, WrinkledTexture
+
+        >
     {
     public:
         // FloatTexture Interface
         using TaggedPointer::TaggedPointer;
 
-        static FloatTexture Create( const std::string& name, const Transform& renderFromTexture, const TextureParameterDictionary& parameters, const FileLoc* loc, Allocator alloc, bool gpu );
+        static FloatTexture Create( const std::string& name,
+            const Transform& renderFromTexture,
+            const TextureParameterDictionary& parameters,
+            const FileLoc* loc, Allocator alloc, bool gpu );
 
         std::string ToString( ) const;
 
-        inline Float Evaluate( TextureEvalContext ctx ) const;
+        PBRT_CPU_GPU inline Float Evaluate( TextureEvalContext ctx ) const;
     };
 
     class RGBConstantTexture;
@@ -78,17 +88,29 @@ namespace pbrto
     class SpectrumScaledTexture;
 
     // SpectrumTexture Definition
-    class SpectrumTexture : public TaggedPointer< SpectrumImageTexture, GPUSpectrumImageTexture, SpectrumMixTexture, SpectrumDirectionMixTexture, SpectrumScaledTexture, SpectrumConstantTexture, SpectrumBilerpTexture, SpectrumCheckerboardTexture, MarbleTexture, SpectrumDotsTexture, SpectrumPtexTexture, GPUSpectrumPtexTexture >
+    class SpectrumTexture
+        : public TaggedPointer<  // SpectrumTextures
+        SpectrumImageTexture, GPUSpectrumImageTexture, SpectrumMixTexture,
+        SpectrumDirectionMixTexture, SpectrumScaledTexture, SpectrumConstantTexture,
+        SpectrumBilerpTexture, SpectrumCheckerboardTexture, MarbleTexture,
+        SpectrumDotsTexture, SpectrumPtexTexture, GPUSpectrumPtexTexture
+
+        >
     {
     public:
         // SpectrumTexture Interface
         using TaggedPointer::TaggedPointer;
 
-        static SpectrumTexture Create( const std::string& name, const Transform& renderFromTexture, const TextureParameterDictionary& parameters, SpectrumType spectrumType, const FileLoc* loc, Allocator alloc, bool gpu );
+        static SpectrumTexture Create( const std::string& name,
+            const Transform& renderFromTexture,
+            const TextureParameterDictionary& parameters,
+            SpectrumType spectrumType, const FileLoc* loc,
+            Allocator alloc, bool gpu );
 
         std::string ToString( ) const;
 
-        inline SampledSpectrum Evaluate( TextureEvalContext ctx, SampledWavelengths lambda ) const;
+        PBRT_CPU_GPU inline SampledSpectrum Evaluate( TextureEvalContext ctx,
+            SampledWavelengths lambda ) const;
     };
 
 }

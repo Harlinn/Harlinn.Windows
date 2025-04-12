@@ -46,17 +46,6 @@ namespace pbrto
     class ParsedParameter
     {
     public:
-        // ParsedParameter Public Members
-        std::string type, name;
-        FileLoc loc;
-        pstdo::vector<Float> floats;
-        pstdo::vector<int> ints;
-        pstdo::vector<std::string> strings;
-        pstdo::vector<uint8_t> bools;
-        mutable bool lookedUp = false;
-        mutable const RGBColorSpace* colorSpace = nullptr;
-        bool mayBeUnused = false;
-
         // ParsedParameter Public Methods
         ParsedParameter( FileLoc loc ) : loc( loc ) {}
 
@@ -67,7 +56,16 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-
+        // ParsedParameter Public Members
+        std::string type, name;
+        FileLoc loc;
+        pstdo::vector<Float> floats;
+        pstdo::vector<int> ints;
+        pstdo::vector<std::string> strings;
+        pstdo::vector<uint8_t> bools;
+        mutable bool lookedUp = false;
+        mutable const RGBColorSpace* colorSpace = nullptr;
+        bool mayBeUnused = false;
     };
 
     // ParsedParameterVector Definition
@@ -90,12 +88,7 @@ namespace pbrto
     };
 
     // SpectrumType Definition
-    enum class SpectrumType
-    {
-        Illuminant,
-        Albedo,
-        Unbounded
-    };
+    enum class SpectrumType { Illuminant, Albedo, Unbounded };
 
     inline std::string ToString( SpectrumType t )
     {
@@ -112,29 +105,6 @@ namespace pbrto
         }
     }
 
-}
-
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::SpectrumType, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( pbrto::SpectrumType value, FormatContext& ctx ) const
-        {
-            return std::format_to( ctx.out( ), "{}", pbrto::ToString( value ) );
-        }
-    };
-}
-
-namespace pbrto
-{
-
     // NamedTextures Definition
     struct NamedTextures
     {
@@ -145,23 +115,19 @@ namespace pbrto
     };
 
     template <ParameterType PT>
-    struct ParameterTypeTraits
-    {
-    };
+    struct ParameterTypeTraits {};
 
     // ParameterDictionary Definition
     class ParameterDictionary
     {
-        // ParameterDictionary Private Members
-        ParsedParameterVector params;
-        const RGBColorSpace* colorSpace = nullptr;
-        int nOwnedParams;
     public:
         // ParameterDictionary Public Methods
         ParameterDictionary( ) = default;
         ParameterDictionary( ParsedParameterVector params, const RGBColorSpace* colorSpace );
 
-        ParameterDictionary( ParsedParameterVector params0, const ParsedParameterVector& params1, const RGBColorSpace* colorSpace );
+        ParameterDictionary( ParsedParameterVector params0,
+            const ParsedParameterVector& params1,
+            const RGBColorSpace* colorSpace );
 
         std::string GetTexture( const std::string& name ) const;
 
@@ -209,7 +175,8 @@ namespace pbrto
         Vector3f GetOneVector3f( const std::string& name, Vector3f def ) const;
         Normal3f GetOneNormal3f( const std::string& name, Normal3f def ) const;
 
-        Spectrum GetOneSpectrum( const std::string& name, Spectrum def, SpectrumType spectrumType, Allocator alloc ) const;
+        Spectrum GetOneSpectrum( const std::string& name, Spectrum def,
+            SpectrumType spectrumType, Allocator alloc ) const;
 
         std::vector<Float> GetFloatArray( const std::string& name ) const;
         std::vector<int> GetIntArray( const std::string& name ) const;
@@ -231,21 +198,31 @@ namespace pbrto
         friend class TextureParameterDictionary;
         // ParameterDictionary Private Methods
         template <ParameterType PT>
-        typename ParameterTypeTraits<PT>::ReturnType lookupSingle( const std::string& name, typename ParameterTypeTraits<PT>::ReturnType defaultValue ) const;
+        typename ParameterTypeTraits<PT>::ReturnType lookupSingle(
+            const std::string& name,
+            typename ParameterTypeTraits<PT>::ReturnType defaultValue ) const;
 
         template <ParameterType PT>
-        std::vector<typename ParameterTypeTraits<PT>::ReturnType> lookupArray( const std::string& name ) const;
+        std::vector<typename ParameterTypeTraits<PT>::ReturnType> lookupArray(
+            const std::string& name ) const;
 
         template <typename ReturnType, typename G, typename C>
-        std::vector<ReturnType> lookupArray( const std::string& name, ParameterType type, const char* typeName, int nPerItem, G getValues, C convert ) const;
+        std::vector<ReturnType> lookupArray( const std::string& name, ParameterType type,
+            const char* typeName, int nPerItem, G getValues,
+            C convert ) const;
 
-        std::vector<Spectrum> extractSpectrumArray( const ParsedParameter& param, SpectrumType spectrumType, Allocator alloc ) const;
+        std::vector<Spectrum> extractSpectrumArray( const ParsedParameter& param,
+            SpectrumType spectrumType,
+            Allocator alloc ) const;
 
         void remove( const std::string& name, const char* typeName );
         void checkParameterTypes( );
         static std::string ToParameterDefinition( const ParsedParameter* p, int indentCount );
 
-
+        // ParameterDictionary Private Members
+        ParsedParameterVector params;
+        const RGBColorSpace* colorSpace = nullptr;
+        int nOwnedParams;
     };
 
     // TextureParameterDictionary Definition

@@ -47,7 +47,7 @@ namespace pbrto
         auto va = a;                                                                   \
         auto vb = b;                                                                   \
         if (!(va op vb))                                                               \
-            NLOG_FATAL("Check failed: {} " #op " {} with {} = {}, {} = {}", #a, #b, #a, \
+            NLOG_FATAL("Check failed: %s " #op " %s with %s = %s, %s = %s", #a, #b, #a, \
                       va, #b, vb);                                                     \
     } while (false) /* swallow semicolon */
 
@@ -94,9 +94,9 @@ namespace pbrto
 
 #define NCHECK_RARE(freq, condition)                                                     \
     static_assert(std::is_floating_point<decltype(freq)>::value,                        \
-                  "Expected floating-point frequency as first argument to NCHECK_RARE"); \
+                  "Expected floating-point frequency as first argument to CHECK_RARE"); \
     static_assert(std::is_integral<decltype(condition)>::value,                         \
-                  "Expected Boolean condition as second argument to NCHECK_RARE");       \
+                  "Expected Boolean condition as second argument to CHECK_RARE");       \
     do {                                                                                \
         static thread_local int64_t numTrue, total;                                     \
         static StatRegisterer reg([](StatsAccumulator &accum) {                         \
@@ -111,7 +111,7 @@ namespace pbrto
     } while (0)
 
 #ifdef PBRT_DEBUG_BUILD
-#define NDCHECK_RARE(freq, condition) NCHECK_RARE(freq, condition)
+#define NDCHECK_RARE(freq, condition) CHECK_RARE(freq, condition)
 #else
 #define NDCHECK_RARE(freq, condition)
 #endif  // NDEBUG

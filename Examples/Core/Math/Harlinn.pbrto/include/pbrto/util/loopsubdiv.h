@@ -9,13 +9,12 @@
 
 #include <pbrto/util/pstd.h>
 
-namespace pbrt
-{
+namespace pbrt {
 
-    // LoopSubdiv Declarations
-    TriangleMesh* LoopSubdivide( const Transform* renderFromObject, bool reverseOrientation,
-        int nLevels, pstd::span<const int> vertexIndices,
-        pstd::span<const Point3f> p, Allocator alloc );
+// LoopSubdiv Declarations
+TriangleMesh *LoopSubdivide(const Transform *renderFromObject, bool reverseOrientation,
+                            int nLevels, pstd::span<const int> vertexIndices,
+                            pstd::span<const Point3f> p, Allocator alloc);
 
 }  // namespace pbrt
 

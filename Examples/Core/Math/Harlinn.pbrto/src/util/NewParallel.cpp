@@ -40,12 +40,12 @@ namespace pbrto
 
     std::string AtomicFloat::ToString( ) const
     {
-        return std::format( "%f", float( *this ) );
+        return StringPrintf( "%f", float( *this ) );
     }
 
     std::string AtomicDouble::ToString( ) const
     {
-        return std::format( "%f", double( *this ) );
+        return StringPrintf( "%f", double( *this ) );
     }
 
     // Barrier Method Definitions
@@ -214,7 +214,7 @@ namespace pbrto
 
     std::string ThreadPool::ToString( ) const
     {
-        std::string s = std::format( "[ ThreadPool threads.size(): {} shutdownThreads: {} ",
+        std::string s = StringPrintf( "[ ThreadPool threads.size(): %d shutdownThreads: %s ",
             threads.size( ), shutdownThreads );
         if ( mutex.try_lock( ) )
         {
@@ -260,8 +260,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ ParallelForLoop1D nextIndex: {} endIndex: {} "
-                "chunkSize: {} ]",
+            return StringPrintf( "[ ParallelForLoop1D nextIndex: %d endIndex: %d "
+                "chunkSize: %d ]",
                 nextIndex, endIndex, chunkSize );
         }
 
@@ -289,8 +289,8 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ ParallelForLoop2D extent: {} nextStart: {} "
-                "chunkSize: {} ]",
+            return StringPrintf( "[ ParallelForLoop2D extent: %s nextStart: %s "
+                "chunkSize: %d ]",
                 extent, nextStart, chunkSize );
         }
 
@@ -375,15 +375,10 @@ namespace pbrto
         // Want at least 8 tiles per thread, subject to not too big and not too
         // small.
         // TODO: should we do non-square?
-#ifdef PBRT_USES_HCCMATH_SQRT
-        int tileSize = Clamp( int( Math::Sqrt( static_cast< Float >( extent.Diagonal( ).x * extent.Diagonal( ).y /
-            ( 8 * RunningThreads( ) ) ) ) ),
-            1, 32 );
-#else
         int tileSize = Clamp( int( std::sqrt( extent.Diagonal( ).x * extent.Diagonal( ).y /
             ( 8 * RunningThreads( ) ) ) ),
             1, 32 );
-#endif
+
         ParallelForLoop2D loop( extent, tileSize, std::move( func ) );
         std::unique_lock<std::mutex> lock = ParallelJob::threadPool->AddToJobList( &loop );
 

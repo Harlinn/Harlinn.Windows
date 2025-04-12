@@ -47,8 +47,8 @@ namespace pbrto
         CPUAggregate( BasicScene& scene, NamedTextures& textures,
             const std::map<int, pstdo::vector<Light>*>& shapeIndexToAreaLights,
             const std::map<std::string, Medium>& media,
-            const std::map<std::string, pbrt::Material>& namedMaterials,
-            const std::vector<pbrt::Material>& materials );
+            const std::map<std::string, pbrto::Material>& namedMaterials,
+            const std::vector<pbrto::Material>& materials );
 
         Bounds3f Bounds( ) const { return aggregate ? aggregate.Bounds( ) : Bounds3f( ); }
 

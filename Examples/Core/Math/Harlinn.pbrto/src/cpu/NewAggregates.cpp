@@ -216,7 +216,7 @@ namespace pbrto
         // Convert BVH into compact representation in _nodes_ array
         bvhPrimitives.resize( 0 );
         bvhPrimitives.shrink_to_fit( );
-        NLOG_VERBOSE( "BVH created with {} nodes for {} primitives ({:.2} MB)",
+        NLOG_VERBOSE( "BVH created with %d nodes for %d primitives (%.2f MB)",
             totalNodes.load( ), ( int )primitives.size( ),
             float( totalNodes.load( ) * sizeof( LinearBVHNode ) ) / ( 1024.f * 1024.f ) );
         treeBytes += totalNodes * sizeof( LinearBVHNode ) + sizeof( *this ) +
@@ -612,9 +612,7 @@ namespace pbrto
             return {};
         pstdo::optional<ShapeIntersection> si;
         Vector3f invDir( 1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z );
-
-        std::array<int, 3> dirIsNeg = { int( invDir.x < 0 ), int( invDir.y < 0 ), int( invDir.z < 0 ) };
-
+        int dirIsNeg[3] = {int( invDir.x < 0 ), int( invDir.y < 0 ), int( invDir.z < 0 )};
         // Follow ray through BVH nodes to find primitive intersections
         int toVisitOffset = 0, currentNodeIndex = 0;
         int nodesToVisit[ 64 ];
@@ -677,10 +675,8 @@ namespace pbrto
         if ( !nodes )
             return false;
         Vector3f invDir( 1.f / ray.d.x, 1.f / ray.d.y, 1.f / ray.d.z );
-
-        std::array<int, 3> dirIsNeg = { static_cast< int >( invDir.x < 0 ), static_cast< int >( invDir.y < 0 ),
+        int dirIsNeg[3] = {static_cast< int >( invDir.x < 0 ), static_cast< int >( invDir.y < 0 ),
                            static_cast< int >( invDir.z < 0 ) };
-
         int nodesToVisit[ 64 ];
         int toVisitOffset = 0, currentNodeIndex = 0;
         int nodesVisited = 0;
@@ -1323,17 +1319,20 @@ namespace pbrto
         return false;
     }
 
-    KdTreeAggregate* KdTreeAggregate::Create( std::vector<Primitive> prims, const ParameterDictionary& parameters )
+    KdTreeAggregate* KdTreeAggregate::Create( std::vector<Primitive> prims,
+        const ParameterDictionary& parameters )
     {
         int isectCost = parameters.GetOneInt( "intersectcost", 5 );
         int travCost = parameters.GetOneInt( "traversalcost", 1 );
         Float emptyBonus = parameters.GetOneFloat( "emptybonus", 0.5f );
         int maxPrims = parameters.GetOneInt( "maxprims", 1 );
         int maxDepth = parameters.GetOneInt( "maxdepth", -1 );
-        return new KdTreeAggregate( std::move( prims ), isectCost, travCost, emptyBonus, maxPrims, maxDepth );
+        return new KdTreeAggregate( std::move( prims ), isectCost, travCost, emptyBonus,
+            maxPrims, maxDepth );
     }
 
-    Primitive CreateAccelerator( const std::string& name, std::vector<Primitive> prims, const ParameterDictionary& parameters )
+    Primitive CreateAccelerator( const std::string& name, std::vector<Primitive> prims,
+        const ParameterDictionary& parameters )
     {
         Primitive accel = nullptr;
         if ( name == "bvh" )

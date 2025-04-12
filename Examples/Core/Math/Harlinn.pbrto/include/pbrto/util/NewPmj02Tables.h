@@ -55,8 +55,8 @@ namespace pbrto
 #else
     // Double precision is key here for the pixel sample sorting, but not
     // necessary otherwise.
-        return Point2f( pmj02bnSamples[ setIndex ][ sampleIndex ][ 0 ] * 0x1p-32f,
-            pmj02bnSamples[ setIndex ][ sampleIndex ][ 1 ] * 0x1p-32f );
+        return Point2f( pmj02bnSamples[ setIndex ][ sampleIndex ][ 0 ] * 0x1p-32,
+            pmj02bnSamples[ setIndex ][ sampleIndex ][ 1 ] * 0x1p-32 );
 #endif
     }
 

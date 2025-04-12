@@ -104,29 +104,29 @@ namespace pbrto
     std::string TriangleMesh::ToString( ) const
     {
         std::string np = "(nullptr)";
-        return std::format(
-            "[ TriangleMesh reverseOrientation: {} transformSwapsHandedness: {} "
-            "nTriangles: {} nVertices: {} vertexIndices: {} p: {} n: {} "
-            "s: {} uv: {} faceIndices: {} ]",
+        return StringPrintf(
+            "[ TriangleMesh reverseOrientation: %s transformSwapsHandedness: %s "
+            "nTriangles: %d nVertices: %d vertexIndices: %s p: %s n: %s "
+            "s: %s uv: %s faceIndices: %s ]",
             reverseOrientation, transformSwapsHandedness, nTriangles, nVertices,
-            vertexIndices ? std::format( "{}", pstdo::MakeSpan( vertexIndices, 3 * nTriangles ) )
+            vertexIndices ? StringPrintf( "%s", pstdo::MakeSpan( vertexIndices, 3 * nTriangles ) )
             : np,
-            p ? std::format( "{}", pstdo::MakeSpan( p, nVertices ) ) : np,
-            n ? std::format( "{}", pstdo::MakeSpan( n, nVertices ) ) : np,
-            s ? std::format( "{}", pstdo::MakeSpan( s, nVertices ) ) : np,
-            uv ? std::format( "{}", pstdo::MakeSpan( uv, nVertices ) ) : np,
-            faceIndices ? std::format( "{}", pstdo::MakeSpan( faceIndices, nTriangles ) ) : np );
+            p ? StringPrintf( "%s", pstdo::MakeSpan( p, nVertices ) ) : np,
+            n ? StringPrintf( "%s", pstdo::MakeSpan( n, nVertices ) ) : np,
+            s ? StringPrintf( "%s", pstdo::MakeSpan( s, nVertices ) ) : np,
+            uv ? StringPrintf( "%s", pstdo::MakeSpan( uv, nVertices ) ) : np,
+            faceIndices ? StringPrintf( "%s", pstdo::MakeSpan( faceIndices, nTriangles ) ) : np );
     }
 
     static void PlyErrorCallback( p_ply, const char* message )
     {
-        Error( "PLY writing error: {}", message );
+        Error( "PLY writing error: %s", message );
     }
 
     bool TriangleMesh::WritePLY( std::string filename ) const
     {
         if ( s )
-            Warning( R"({}: PLY mesh will be missing tangent vectors "S".)", filename );
+            Warning( R"(%s: PLY mesh will be missing tangent vectors "S".)", filename );
 
         return pbrto::WritePLY(
             filename, pstdo::span<const int>( vertexIndices, 3 * nTriangles ),
@@ -273,18 +273,18 @@ namespace pbrto
     std::string BilinearPatchMesh::ToString( ) const
     {
         std::string np = "(nullptr)";
-        return std::format(
-            "[ BilinearMatchMesh reverseOrientation: {} transformSwapsHandedness: "
-            "{} "
-            "nPatches: {} nVertices: {} vertexIndices: {} p: {} n: {} "
-            "uv: {} faceIndices: {} ]",
+        return StringPrintf(
+            "[ BilinearMatchMesh reverseOrientation: %s transformSwapsHandedness: "
+            "%s "
+            "nPatches: %d nVertices: %d vertexIndices: %s p: %s n: %s "
+            "uv: %s faceIndices: %s ]",
             reverseOrientation, transformSwapsHandedness, nPatches, nVertices,
-            vertexIndices ? std::format( "{}", pstdo::MakeSpan( vertexIndices, 4 * nPatches ) )
+            vertexIndices ? StringPrintf( "%s", pstdo::MakeSpan( vertexIndices, 4 * nPatches ) )
             : np,
-            p ? std::format( "{}", pstdo::MakeSpan( p, nVertices ) ) : np,
-            n ? std::format( "{}", pstdo::MakeSpan( n, nVertices ) ) : np,
-            uv ? std::format( "{}", pstdo::MakeSpan( uv, nVertices ) ) : np,
-            faceIndices ? std::format( "{}", pstdo::MakeSpan( faceIndices, nPatches ) ) : np );
+            p ? StringPrintf( "%s", pstdo::MakeSpan( p, nVertices ) ) : np,
+            n ? StringPrintf( "%s", pstdo::MakeSpan( n, nVertices ) ) : np,
+            uv ? StringPrintf( "%s", pstdo::MakeSpan( uv, nVertices ) ) : np,
+            faceIndices ? StringPrintf( "%s", pstdo::MakeSpan( faceIndices, nPatches ) ) : np );
     }
 
     struct FaceCallbackContext
@@ -528,8 +528,8 @@ namespace pbrto
 
     std::string TriQuadMesh::ToString( ) const
     {
-        return std::format( "[ TriQuadMesh p: {} n: {} uv: {} faceIndices: {} triIndices: {} "
-            "quadIndices: {} ]",
+        return StringPrintf( "[ TriQuadMesh p: %s n: %s uv: %s faceIndices: %s triIndices: %s "
+            "quadIndices: %s ]",
             p, n, uv, faceIndices, triIndices, quadIndices );
     }
 

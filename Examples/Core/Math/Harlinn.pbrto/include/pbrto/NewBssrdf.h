@@ -147,10 +147,8 @@ namespace pbrto
             rho = SafeDiv( sigma_s, sigma_t );
         }
 
-        SampledSpectrum Sp( Point3f pi ) const
-        {
-            return Sr( ScalarDistance( po, pi ) );
-        }
+        PBRT_CPU_GPU
+            SampledSpectrum Sp( Point3f pi ) const { return Sr( ScalarDistance( po, pi ) ); }
 
         PBRT_CPU_GPU
             SampledSpectrum Sr( Float r ) const
@@ -261,19 +259,11 @@ namespace pbrto
             pstdo::optional<Float> r_max = SampleSr( 0.999f );
             if ( !r_max || *r >= *r_max )
                 return {};
-#ifdef PBRT_USES_HCCMATH_SQRT
-            Float l = 2 * Math::Sqrt( Sqr( *r_max ) - Sqr( *r ) );
-#else
             Float l = 2 * std::sqrt( Sqr( *r_max ) - Sqr( *r ) );
-#endif
+
             // Return BSSRDF sampling ray segment
-#ifdef PBRT_USES_HCCMATH_SINCOS
-            Point3f pStart =
-                po + *r * ( f.x * Math::Cos( phi ) + f.y * Math::Sin( phi ) ) - l * f.z / 2;
-#else
             Point3f pStart =
                 po + *r * ( f.x * std::cos( phi ) + f.y * std::sin( phi ) ) - l * f.z / 2;
-#endif
             Point3f pTarget = pStart + l * f.z;
             return BSSRDFProbeSegment{ pStart, pTarget };
         }
@@ -289,15 +279,10 @@ namespace pbrto
             Normal3f nLocal = f.ToLocal( ni );
 
             // Compute BSSRDF profile radius under projection along each axis
-#ifdef PBRT_USES_HCCMATH_SQRT
-            Float rProj[ 3 ] = { Math::Sqrt( Sqr( dLocal.y ) + Sqr( dLocal.z ) ),
-                              Math::Sqrt( Sqr( dLocal.z ) + Sqr( dLocal.x ) ),
-                              Math::Sqrt( Sqr( dLocal.x ) + Sqr( dLocal.y ) ) };
-#else
             Float rProj[ 3 ] = { std::sqrt( Sqr( dLocal.y ) + Sqr( dLocal.z ) ),
                               std::sqrt( Sqr( dLocal.z ) + Sqr( dLocal.x ) ),
                               std::sqrt( Sqr( dLocal.x ) + Sqr( dLocal.y ) ) };
-#endif
+
             // Return combined probability from all BSSRDF sampling strategies
             SampledSpectrum pdf( 0.f );
             Float axisProb[ 3 ] = { .25f, .25f, .5f };
@@ -344,7 +329,7 @@ namespace pbrto
         }
     }
 
-    PBRT_CPU_GPU inline pstdo::optional<BSSRDFProbeSegment> BSSRDF::SampleSp( Float u1, const Point2f& u2 ) const
+    PBRT_CPU_GPU inline pstdo::optional<BSSRDFProbeSegment> BSSRDF::SampleSp( Float u1, Point2f u2 ) const
     {
         auto sample = [ & ]( auto ptr ) { return ptr->SampleSp( u1, u2 ); };
         return Dispatch( sample );

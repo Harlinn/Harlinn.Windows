@@ -58,7 +58,8 @@ namespace pbrto
 
     std::string TrowbridgeReitzDistribution::ToString( ) const
     {
-        return std::format( "[ TrowbridgeReitzDistribution alpha_x: {} alpha_y: {} ]", alpha_x, alpha_y );
+        return StringPrintf( "[ TrowbridgeReitzDistribution alpha_x: %f alpha_y: %f ]",
+            alpha_x, alpha_y );
     }
 
 }

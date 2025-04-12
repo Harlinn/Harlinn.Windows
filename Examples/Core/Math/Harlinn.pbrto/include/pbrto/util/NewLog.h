@@ -34,62 +34,13 @@ namespace pbrto
     // LogLevel Definition
     enum class LogLevel { Verbose, Error, Fatal, Invalid };
 
-}
+    PBRTO_EXPORT
+        std::string ToString( LogLevel level );
+    PBRTO_EXPORT
+        LogLevel LogLevelFromString( const std::string& s );
 
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::LogLevel, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( pbrto::LogLevel value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                switch ( value )
-                {
-                    case pbrto::LogLevel::Verbose:
-                        return std::format_to( ctx.out( ), L"VERBOSE" );
-                    case pbrto::LogLevel::Error:
-                        return std::format_to( ctx.out( ), L"ERROR" );
-                    case pbrto::LogLevel::Fatal:
-                        return std::format_to( ctx.out( ), L"FATAL" );
-                    default:
-                        return std::format_to( ctx.out( ), L"UNKNOWN" );
-                }
-
-            }
-            else
-            {
-                switch ( value )
-                {
-                    case pbrto::LogLevel::Verbose:
-                        return std::format_to( ctx.out( ), "VERBOSE" );
-                    case pbrto::LogLevel::Error:
-                        return std::format_to( ctx.out( ), "ERROR" );
-                    case pbrto::LogLevel::Fatal:
-                        return std::format_to( ctx.out( ), "FATAL" );
-                    default:
-                        return std::format_to( ctx.out( ), "UNKNOWN" );
-                }
-            }
-        }
-    };
-}
-
-namespace pbrto
-{
-
-    PBRTO_EXPORT std::string ToString( LogLevel level );
-    PBRTO_EXPORT LogLevel LogLevelFromString( const std::string& s );
-
-    PBRTO_EXPORT void ShutdownLogging( );
-    PBRTO_EXPORT void InitLogging( LogLevel level, std::string logFile, bool logUtilization, bool useGPU );
+    void ShutdownLogging( );
+    void InitLogging( LogLevel level, std::string logFile, bool logUtilization, bool useGPU );
 
 #ifdef PBRT_BUILD_GPU_RENDERER
 
@@ -108,18 +59,31 @@ namespace pbrto
     // LogLevel Global Variable Declaration
     namespace logging
     {
-        PBRTO_EXPORT extern LogLevel logLevel;
-        PBRTO_EXPORT extern FILE* logFile;
+        PBRTO_EXPORT
+            extern LogLevel logLevel;
+        PBRTO_EXPORT
+            extern FILE* logFile;
     }  // namespace logging
 
     // Logging Function Declarations
-    PBRTO_EXPORT void Log( LogLevel level, const char* file, int line, const AnsiString& s );
+    PBRT_CPU_GPU
+        PBRTO_EXPORT
+        void Log( LogLevel level, const char* file, int line, const char* s );
 
-    [[noreturn]]
-    PBRTO_EXPORT void LogFatal( LogLevel level, const char* file, int line, const AnsiString& s );
 
-#define TO_STRING(x) TO_STRING2(x)
-#define TO_STRING2(x) #x
+    PBRT_CPU_GPU [[noreturn]] void PBRTO_EXPORT LogFatal( LogLevel level, const char* file, int line,
+        const char* s );
+
+    template <typename... Args>
+    PBRT_CPU_GPU inline void Log( LogLevel level, const char* file, int line, const char* fmt,
+        Args &&...args );
+
+    template <typename... Args>
+    PBRT_CPU_GPU [[noreturn]] inline void LogFatal( LogLevel level, const char* file, int line,
+        const char* fmt, Args &&...args );
+
+#define NTO_STRING(x) NTO_STRING2(x)
+#define NTO_STRING2(x) #x
 
 #ifdef PBRT_IS_GPU_CODE
 
@@ -138,7 +102,7 @@ namespace pbrto
 
 #else
 
-        // Logging Macros
+    // Logging Macros
 #define NLOG_VERBOSE(...)                             \
     (pbrto::LogLevel::Verbose >= logging::logLevel && \
      (pbrto::Log(LogLevel::Verbose, __FILE__, __LINE__, __VA_ARGS__), true))
@@ -152,20 +116,35 @@ namespace pbrto
 
 #endif
 
+}  // namespace pbrt
+
+#include <pbrto/util/NewPrint.h>
+
+namespace pbrto
+{
 
     template <typename... Args>
-    inline void Log( LogLevel level, const char* file, int line, const std::format_string<Args...> fmt, Args&&... args )
+    inline void Log( LogLevel level, const char* file, int line, const char* fmt,
+        Args &&...args )
     {
-        auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-        Log( level, file, line, s );
+#ifdef PBRT_IS_GPU_CODE
+        Log( level, file, line, fmt );  // just the format string #yolo
+#else
+        std::string s = StringPrintf( fmt, std::forward<Args>( args )... );
+        Log( level, file, line, s.c_str( ) );
+#endif
     }
 
     template <typename... Args>
-    inline void LogFatal( LogLevel level, const char* file, int line, const std::format_string<Args...> fmt, Args&&... args )
+    inline void LogFatal( LogLevel level, const char* file, int line, const char* fmt,
+        Args &&...args )
     {
-        auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-        LogFatal( level, file, line, s );
-
+#ifdef PBRT_IS_GPU_CODE
+        LogFatal( level, file, line, fmt );  // just the format string #yolo
+#else
+        std::string s = StringPrintf( fmt, std::forward<Args>( args )... );
+        LogFatal( level, file, line, s.c_str( ) );
+#endif
     }
 
 }

@@ -30,7 +30,8 @@
 namespace pbrto
 {
 
-    PBRTO_EXPORT std::vector<std::string> GetCommandLineArguments( char* argv[ ] )
+    PBRTO_EXPORT
+        std::vector<std::string> GetCommandLineArguments( char* argv[ ] )
     {
         std::vector<std::string> argStrings;
 #ifdef PBRT_IS_WINDOWS

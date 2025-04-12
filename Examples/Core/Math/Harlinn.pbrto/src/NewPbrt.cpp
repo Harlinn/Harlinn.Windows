@@ -72,7 +72,8 @@ namespace pbrto
 #endif  // PBRT_IS_WINDOWS
 
     // API Function Definitions
-    PBRTO_EXPORT void InitPBRT( const PBRTOptions& opt )
+    PBRTO_EXPORT
+        void InitPBRT( const PBRTOptions& opt )
     {
         Options = new PBRTOptions( opt );
         // API Initialization
@@ -154,7 +155,8 @@ namespace pbrto
             ConnectToDisplayServer( Options->displayServer );
     }
 
-    PBRTO_EXPORT void CleanupPBRT( )
+    PBRTO_EXPORT
+        void CleanupPBRT( )
     {
         ForEachThread( ReportThreadStats );
 

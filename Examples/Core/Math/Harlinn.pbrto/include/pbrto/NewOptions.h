@@ -35,54 +35,8 @@ namespace pbrto
     // RenderingCoordinateSystem Definition
     enum class RenderingCoordinateSystem { Camera, CameraWorld, World };
 
-}
-
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::RenderingCoordinateSystem, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( pbrto::RenderingCoordinateSystem value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                switch ( value )
-                {
-                    case pbrto::RenderingCoordinateSystem::Camera:
-                        return std::format_to( ctx.out( ), L"RenderingCoordinateSystem::Camera" );
-                    case pbrto::RenderingCoordinateSystem::CameraWorld:
-                        return std::format_to( ctx.out( ), L"RenderingCoordinateSystem::CameraWorld" );
-                    default:
-                        return std::format_to( ctx.out( ), L"RenderingCoordinateSystem::World" );
-                }
-
-            }
-            else
-            {
-                switch ( value )
-                {
-                    case pbrto::RenderingCoordinateSystem::Camera:
-                        return std::format_to( ctx.out( ), "RenderingCoordinateSystem::Camera" );
-                    case pbrto::RenderingCoordinateSystem::CameraWorld:
-                        return std::format_to( ctx.out( ), "RenderingCoordinateSystem::CameraWorld" );
-                    default:
-                        return std::format_to( ctx.out( ), "RenderingCoordinateSystem::World" );
-                }
-            }
-        }
-    };
-}
-
-namespace pbrto
-{
-
-    std::string ToString( const RenderingCoordinateSystem& );
+    PBRTO_EXPORT
+        std::string ToString( const RenderingCoordinateSystem& );
 
     // BasicPBRTOptions Definition
     struct BasicPBRTOptions
@@ -123,11 +77,13 @@ namespace pbrto
         pstdo::optional<Point2i> pixelMaterial;
         Float displacementEdgeScale = 1;
 
-        PBRTO_EXPORT std::string ToString( ) const;
+        PBRTO_EXPORT
+            std::string ToString( ) const;
     };
 
     // Options Global Variable Declaration
-    PBRTO_EXPORT extern PBRTOptions* Options;
+    PBRTO_EXPORT
+        extern PBRTOptions* Options;
 
 #if defined(PBRT_BUILD_GPU_RENDERER)
 #if defined(__CUDACC__)

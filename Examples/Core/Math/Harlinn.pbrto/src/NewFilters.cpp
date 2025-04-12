@@ -41,7 +41,7 @@ namespace pbrto
     // Box Filter Method Definitions
     std::string BoxFilter::ToString( ) const
     {
-        return std::format( "[ BoxFilter radius: {} ]", radius );
+        return StringPrintf( "[ BoxFilter radius: %s ]", radius );
     }
 
     BoxFilter* BoxFilter::Create( const ParameterDictionary& parameters, const FileLoc* loc,
@@ -55,8 +55,8 @@ namespace pbrto
     // Gaussian Filter Method Definitions
     std::string GaussianFilter::ToString( ) const
     {
-        return std::format(
-            "[ GaussianFilter radius: {} sigma: {} expX: {} expY: {} sampler: {} ]", radius,
+        return StringPrintf(
+            "[ GaussianFilter radius: %s sigma: %f expX: %f expY: %f sampler: %s ]", radius,
             sigma, expX, expY, sampler );
     }
 
@@ -73,7 +73,7 @@ namespace pbrto
     // Mitchell Filter Method Definitions
     std::string MitchellFilter::ToString( ) const
     {
-        return std::format( "[ MitchellFilter radius: {} b: {} c: {} sampler: {} ]", radius,
+        return StringPrintf( "[ MitchellFilter radius: %s b: %f c: %f sampler: %s ]", radius,
             b, c, sampler );
     }
 
@@ -111,7 +111,7 @@ namespace pbrto
 
     std::string LanczosSincFilter::ToString( ) const
     {
-        return std::format( "[ LanczosSincFilter radius: {} tau: {} sampler: {} ]", radius,
+        return StringPrintf( "[ LanczosSincFilter radius: %s tau: %f sampler: %s ]", radius,
             tau, sampler );
     }
 
@@ -127,7 +127,7 @@ namespace pbrto
     // Triangle Filter Method Definitions
     std::string TriangleFilter::ToString( ) const
     {
-        return std::format( "[ TriangleFilter radius: {} ]", radius );
+        return StringPrintf( "[ TriangleFilter radius: %s ]", radius );
     }
 
     TriangleFilter* TriangleFilter::Create( const ParameterDictionary& parameters,
@@ -154,10 +154,10 @@ namespace pbrto
         else if ( name == "triangle" )
             filter = TriangleFilter::Create( parameters, loc, alloc );
         else
-            ErrorExit( loc, "{}: filter type unknown.", name );
+            ErrorExit( loc, "%s: filter type unknown.", name );
 
         if ( !filter )
-            ErrorExit( loc, "{}: unable to create filter.", name );
+            ErrorExit( loc, "%s: unable to create filter.", name );
 
         parameters.ReportUnused( );
         return filter;
@@ -184,8 +184,8 @@ namespace pbrto
 
     std::string FilterSampler::ToString( ) const
     {
-
-        return std::format( "[ FilterSampler domain: {} f: {} distrib: {} ]", domain, f.ToString(), distrib );
+        return StringPrintf( "[ FilterSampler domain: %s f: %s distrib: %s ]", domain, f,
+            distrib );
     }
 
 }

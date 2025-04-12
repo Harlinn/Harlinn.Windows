@@ -2956,7 +2956,7 @@ static void BenchmarkFloatAddRoundUp( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::AddRoundUp( FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::AddAdjustUp( FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatAddRoundUp );
@@ -2979,7 +2979,7 @@ static void BenchmarkFloatAddRoundDown( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::AddRoundDown( FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::AddAdjustDown( FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatAddRoundDown );
@@ -3001,7 +3001,7 @@ static void BenchmarkFloatSubRoundUp( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::SubRoundUp( FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::SubAdjustUp( FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatSubRoundUp );
@@ -3024,7 +3024,7 @@ static void BenchmarkFloatSubRoundDown( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::SubRoundDown( FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::SubAdjustDown( FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatSubRoundDown );
@@ -3047,7 +3047,7 @@ static void BenchmarkFloatMulRoundUp( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::MulRoundUp( FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::MulAdjustUp( FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatMulRoundUp );
@@ -3070,7 +3070,7 @@ static void BenchmarkFloatMulRoundDown( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::MulRoundDown( FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::MulAdjustDown( FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatMulRoundDown );
@@ -3092,7 +3092,7 @@ static void BenchmarkFloatDivRoundUp( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::DivRoundUp( FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::DivAdjustUp( FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatDivRoundUp );
@@ -3115,7 +3115,7 @@ static void BenchmarkFloatDivRoundDown( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::DivRoundDown( FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::DivAdjustDown( FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatDivRoundDown );
@@ -3137,7 +3137,7 @@ static void BenchmarkFloatSqrtRoundUp( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::SqrtRoundUp( FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::SqrtAdjustUp( FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatSqrtRoundUp );
@@ -3159,7 +3159,7 @@ static void BenchmarkFloatSqrtRoundDown( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::SqrtRoundDown( FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::SqrtAdjustDown( FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatSqrtRoundDown );
@@ -3181,7 +3181,7 @@ static void BenchmarkFloatFMARoundUp( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FMARoundUp( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::FMAAdjustUp( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatFMARoundUp );
@@ -3204,7 +3204,7 @@ static void BenchmarkFloatFMARoundDown( benchmark::State& state )
     FloatGenerator.Reset( );
     for ( auto _ : state )
     {
-        benchmark::DoNotOptimize( Math::FMARoundDown( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) ) );
+        benchmark::DoNotOptimize( Math::FMAAdjustDown( FloatGenerator( ), FloatGenerator( ), FloatGenerator( ) ) );
     }
 }
 BENCHMARK( BenchmarkFloatFMARoundDown );

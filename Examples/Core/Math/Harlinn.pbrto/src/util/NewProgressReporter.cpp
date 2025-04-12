@@ -47,8 +47,8 @@ namespace pbrto
 
     std::string Timer::ToString( ) const
     {
-        return std::format(
-            "[ Timer start(ns): {} ]",
+        return StringPrintf(
+            "[ Timer start(ns): %d ]",
             std::chrono::duration_cast< std::chrono::nanoseconds >( start.time_since_epoch( ) )
             .count( ) );
     }
@@ -151,7 +151,7 @@ namespace pbrto
                     else if ( err == cudaErrorNotReady )
                         break;
                     else
-                        LOG_FATAL( "CUDA error: %s", cudaGetErrorString( err ) );
+                        NLOG_FATAL( "CUDA error: %s", cudaGetErrorString( err ) );
                 }
                 workDone = gpuEventsFinishedOffset;
             }
@@ -193,7 +193,7 @@ namespace pbrto
                     cudaError_t err =
                         cudaEventSynchronize( gpuEvents[ gpuEventsFinishedOffset ] );
                     if ( err != cudaSuccess )
-                        LOG_FATAL( "CUDA error: %s", cudaGetErrorString( err ) );
+                        NLOG_FATAL( "CUDA error: %s", cudaGetErrorString( err ) );
                 }
                 workDone = gpuEvents.size( );
             }
@@ -215,9 +215,9 @@ namespace pbrto
 
     std::string ProgressReporter::ToString( ) const
     {
-        return std::format( "[ ProgressReporter totalWork: {} title: {} "
-            "timer: {} workDone: {} exitThread: {}",
-            totalWork, title, timer, workDone.load(), exitThread.load( ) );
+        return StringPrintf( "[ ProgressReporter totalWork: %d title: %s "
+            "timer: %s workDone: %d exitThread: %s",
+            totalWork, title, timer, workDone, exitThread );
     }
 
     static int TerminalWidth( )

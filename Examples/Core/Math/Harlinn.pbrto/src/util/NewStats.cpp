@@ -41,7 +41,6 @@
 
 namespace pbrto
 {
-    using namespace std::literals::string_literals;
 
     // ThreadStatsState Definition
     struct ThreadStatsState
@@ -66,7 +65,8 @@ namespace pbrto
     std::string pixelStatsBaseName;
 
     // Statistics Function Definitions
-    void ReportThreadStats( )
+    PBRTO_EXPORT
+        void ReportThreadStats( )
     {
         static std::mutex mutex;
         std::lock_guard<std::mutex> lock( mutex );
@@ -78,7 +78,8 @@ namespace pbrto
         }
     }
 
-    PBRTO_EXPORT void StatsReportPixelStart( Point2i p )
+    PBRTO_EXPORT
+        void StatsReportPixelStart( Point2i p )
     {
         if ( !pixelStatsEnabled )
             return;
@@ -88,7 +89,8 @@ namespace pbrto
         threadStatsState.start = std::chrono::steady_clock::now( );
     }
 
-    PBRTO_EXPORT void StatsReportPixelEnd( Point2i p )
+    PBRTO_EXPORT
+        void StatsReportPixelEnd( Point2i p )
     {
         if ( !pixelStatsEnabled )
             return;
@@ -105,7 +107,8 @@ namespace pbrto
         StatRegisterer::CallPixelCallbacks( p, tss.accum );
     }
 
-    PBRTO_EXPORT void StatsEnablePixelStats( const Bounds2i& b, const std::string& baseName )
+    PBRTO_EXPORT
+        void StatsEnablePixelStats( const Bounds2i& b, const std::string& baseName )
     {
         pixelStatsEnabled = true;
         imageBounds = b;
@@ -161,9 +164,7 @@ namespace pbrto
     {
         Point2i res = Point2i( imageBounds.Diagonal( ) );
         if ( stats->time.Resolution( ) != res )
-        {
             stats->time = Image( PixelFormat::Float, res, { "ms" } );
-        }
 
         Point2i pp = Point2i( p - imageBounds.pMin );
         stats->time.SetChannel( pp, 0, stats->time.GetChannel( pp, 0 ) + ms );
@@ -182,9 +183,7 @@ namespace pbrto
         Image& im = stats->counterImages[ statIndex ];
         Point2i res = Point2i( imageBounds.Diagonal( ) );
         if ( im.Resolution( ) != res )
-        {
             im = Image( PixelFormat::Float, res, { "count" } );
-        }
 
         Point2i pp = Point2i( p - imageBounds.pMin );
         im.SetChannel( pp, 0, im.GetChannel( pp, 0 ) + val );
@@ -203,9 +202,7 @@ namespace pbrto
         Image& im = stats->ratioImages[ statIndex ];
         Point2i res = Point2i( imageBounds.Diagonal( ) );
         if ( im.Resolution( ) != res )
-        {
             im = Image( PixelFormat::Float, res, { "numerator", "denominator", "ratio" } );
-        }
 
         Point2i pp = Point2i( p - imageBounds.pMin );
         im.SetChannel( pp, 0, im.GetChannel( pp, 0 ) + num );
@@ -380,17 +377,17 @@ namespace pbrto
         }
     }
 
-    PBRTO_EXPORT void PrintStats( FILE* dest )
+    void PrintStats( FILE* dest )
     {
         statsAccumulator.Print( dest );
     }
 
-    PBRTO_EXPORT bool PrintCheckRare( FILE* dest )
+    bool PrintCheckRare( FILE* dest )
     {
         return statsAccumulator.PrintCheckRare( dest );
     }
 
-    PBRTO_EXPORT void ClearStats( )
+    void ClearStats( )
     {
         statsAccumulator.Clear( );
     }
@@ -421,21 +418,21 @@ namespace pbrto
             std::string category, title;
             getCategoryAndTitle( counter.first, &category, &title );
             toPrint[ category ].push_back(
-                std::format( "{: >42}               {:12}", title, counter.second ) );
+                StringPrintf( "%-42s               %12" PRIu64, title, counter.second ) );
         }
 
         size_t totalMemoryReported = 0;
         auto printBytes = []( size_t bytes ) -> std::string {
             float kb = ( double )bytes / 1024.;
             if ( std::abs( kb ) < 1024. )
-                return std::format( "{:9.2} kB", kb );
+                return StringPrintf( "%9.2f kB", kb );
 
             float mib = kb / 1024.;
             if ( std::abs( mib ) < 1024. )
-                return std::format( "{:9.2} MiB", mib );
+                return StringPrintf( "%9.2f MiB", mib );
 
             float gib = mib / 1024.;
-            return std::format( "{:9.2} GiB", gib );
+            return StringPrintf( "%9.2f GiB", gib );
             };
 
         for ( auto& counter : stats->memoryCounters )
@@ -447,11 +444,11 @@ namespace pbrto
             std::string category, title;
             getCategoryAndTitle( counter.first, &category, &title );
             toPrint[ category ].push_back(
-                std::format( "{: >42}                  {}", title, printBytes( counter.second ) ) );
+                StringPrintf( "%-42s                  %s", title, printBytes( counter.second ) ) );
         }
         int64_t unreportedBytes = GetCurrentRSS( ) - totalMemoryReported;
         if ( unreportedBytes > 0 )
-            toPrint[ "Memory" ].push_back( std::format( "{: >42}                  {}",
+            toPrint[ "Memory" ].push_back( StringPrintf( "%-42s                  %s",
                 "Unreported / unused",
                 printBytes( unreportedBytes ) ) );
 
@@ -463,8 +460,8 @@ namespace pbrto
             std::string category, title;
             getCategoryAndTitle( name, &category, &title );
             double avg = ( double )distrib.second.sum / ( double )distrib.second.count;
-            toPrint[ category ].push_back( std::format(
-                "{: >42}                      {:.3} avg [range {} - {}]",
+            toPrint[ category ].push_back( StringPrintf(
+                "%-42s                      %.3f avg [range %" PRIu64 " - %" PRIu64 "]",
                 title, avg, distrib.second.min, distrib.second.max ) );
         }
         for ( auto& distrib : stats->floatDistributions )
@@ -476,7 +473,7 @@ namespace pbrto
             getCategoryAndTitle( name, &category, &title );
             double avg = ( double )distrib.second.sum / ( double )distrib.second.count;
             toPrint[ category ].push_back(
-                std::format( "{: >42}                      {:.3} avg [range {} - {}]", title,
+                StringPrintf( "%-42s                      %.3f avg [range %f - %f]", title,
                     avg, distrib.second.min, distrib.second.max ) );
         }
         for ( auto& percentage : stats->percentages )
@@ -488,7 +485,7 @@ namespace pbrto
             std::string category, title;
             getCategoryAndTitle( percentage.first, &category, &title );
             toPrint[ category ].push_back(
-                std::format( "{: >42}{:12} / {:12} ({:.2}%)", title, num, denom,
+                StringPrintf( "%-42s%12" PRIu64 " / %12" PRIu64 " (%.2f%%)", title, num, denom,
                     ( 100.f * num ) / denom ) );
         }
         for ( auto& ratio : stats->ratios )
@@ -500,7 +497,7 @@ namespace pbrto
             std::string category, title;
             getCategoryAndTitle( ratio.first, &category, &title );
             toPrint[ category ].push_back(
-                std::format( "{: >42}{:12} / {:12} ({:.2}x)", title, num, denom,
+                StringPrintf( "%-42s%12" PRIu64 " / %12" PRIu64 " (%.2fx)", title, num, denom,
                     ( double )num / ( double )denom ) );
         }
 
@@ -512,7 +509,7 @@ namespace pbrto
         }
     }
 
-    PBRTO_EXPORT void StatsWritePixelImages( )
+    void StatsWritePixelImages( )
     {
         statsAccumulator.WritePixelImages( );
     }
@@ -522,12 +519,16 @@ namespace pbrto
         // FIXME: do this where?
         NCHECK( stats->pixelTime.Write( pixelStatsBaseName + "-time.exr" ) );
 
+        auto rewriteSlashes = []( std::string s ) {
+            for ( size_t i = 0; i < s.size( ); ++i )
+                if ( s[ i ] == '/' )
+                    s[ i ] = '_';
+            return s;
+            };
+
         for ( size_t i = 0; i < stats->pixelCounterImages.size( ); ++i )
         {
-            std::string n = pixelStatsBaseName + "-" + stats->pixelCounterNames[ i ] + ".exr";
-            for ( size_t j = 0; j < n.size( ); ++j )
-                if ( n[ j ] == '/' )
-                    n[ j ] = '_';
+            std::string n = pixelStatsBaseName + "-" + rewriteSlashes( stats->pixelCounterNames[ i ] ) + ".exr";
 
             auto AllZero = []( const Image& im ) {
                 for ( int y = 0; y < im.Resolution( ).y; ++y )
@@ -542,10 +543,7 @@ namespace pbrto
 
         for ( size_t i = 0; i < stats->pixelRatioImages.size( ); ++i )
         {
-            std::string n = pixelStatsBaseName + "-" + stats->pixelRatioNames[ i ] + ".exr";
-            for ( size_t j = 0; j < n.size( ); ++j )
-                if ( n[ j ] == '/' )
-                    n[ j ] = '_';
+            std::string n = pixelStatsBaseName + "-" + rewriteSlashes( stats->pixelRatioNames[ i ] ) + ".exr";
 
             auto AllZero = []( const Image& im ) {
                 for ( int y = 0; y < im.Resolution( ).y; ++y )

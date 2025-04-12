@@ -588,6 +588,9 @@
     <ClInclude Include="include\pbrto\NewShapes.h">
       <Filter>include\pbrto</Filter>
     </ClInclude>
+    <ClInclude Include="include\pbrto\util\NewPrint.h">
+      <Filter>include\pbrto\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -1007,6 +1010,12 @@
     <ClCompile Include="src\NewTextures.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\NewFloat.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\NewPrint.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme\LICENSE.txt">
@@ -1020,5 +1029,10 @@
     <None Include="Readme\THIRD_PARTY.md">
       <Filter>Readme</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="src\visualstudio.natvis">
+      <Filter>src</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

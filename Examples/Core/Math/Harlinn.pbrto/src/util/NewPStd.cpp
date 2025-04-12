@@ -71,7 +71,8 @@ namespace pstdo
 
         static NewDeleteResource* ndr;
 
-        memory_resource* new_delete_resource( ) noexcept
+        PBRTO_EXPORT
+            memory_resource* new_delete_resource( ) noexcept
         {
             if ( !ndr )
                 ndr = new NewDeleteResource;
@@ -80,14 +81,16 @@ namespace pstdo
 
         static memory_resource* defaultMemoryResource = new_delete_resource( );
 
-        memory_resource* set_default_resource( memory_resource* r ) noexcept
+        PBRTO_EXPORT
+            memory_resource* set_default_resource( memory_resource* r ) noexcept
         {
             memory_resource* orig = defaultMemoryResource;
             defaultMemoryResource = r;
             return orig;
         }
 
-        memory_resource* get_default_resource( ) noexcept
+        PBRTO_EXPORT
+            memory_resource* get_default_resource( ) noexcept
         {
             return defaultMemoryResource;
         }

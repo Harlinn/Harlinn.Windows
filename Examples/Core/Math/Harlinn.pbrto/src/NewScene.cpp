@@ -55,7 +55,7 @@ namespace pbrto
     {
         std::string s = "[ ";
         for ( const auto& iter : m )
-            s += std::format( "{}:{} ", iter.first, iter.second );
+            s += StringPrintf( "%s:%s ", iter.first, iter.second );
         s += "]";
         return s;
     }
@@ -63,14 +63,14 @@ namespace pbrto
     template <typename T, typename U>
     static std::string ToString( const std::pair<T, U>& p )
     {
-        return std::format( "[ std::pair first: {} second: {} ]", p.first, p.second );
+        return StringPrintf( "[ std::pair first: %s second: %s ]", p.first, p.second );
     }
 
     std::string BasicSceneBuilder::ToString( ) const
     {
-        return std::format(
-            "[ BasicSceneBuilder camera: {} film: {} sampler: {} integrator: {} "
-            "filter: {} accelerator: {} ]",
+        return StringPrintf(
+            "[ BasicSceneBuilder camera: %s film: %s sampler: %s integrator: %s "
+            "filter: %s accelerator: %s ]",
             camera, film, sampler, integrator, filter, accelerator );
     }
 
@@ -84,7 +84,7 @@ namespace pbrto
     if (currentBlock == BlockState::WorldBlock) {              \
         ErrorExit(&loc,                                        \
                   "Options cannot be set inside world block; " \
-                  "\"{}\" is not allowed.",                    \
+                  "\"%s\" is not allowed.",                    \
                   func);                                       \
         return;                                                \
     } else /* swallow trailing semicolon */
@@ -92,7 +92,7 @@ namespace pbrto
     if (currentBlock == BlockState::OptionsBlock) {                \
         ErrorExit(&loc,                                            \
                   "Scene description must be inside world block; " \
-                  "\"{}\" is not allowed.",                        \
+                  "\"%s\" is not allowed.",                        \
                   func);                                           \
         return;                                                    \
     } else /* swallow trailing semicolon */
@@ -134,7 +134,7 @@ namespace pbrto
         if ( const RGBColorSpace* cs = RGBColorSpace::GetNamed( name ) )
             graphicsState.colorSpace = cs;
         else
-            Error( &loc, "{}: color space unknown", name );
+            Error( &loc, "%s: color space unknown", name );
     }
 
     void BasicSceneBuilder::Identity( FileLoc loc )
@@ -160,7 +160,7 @@ namespace pbrto
         if ( namedCoordinateSystems.find( name ) != namedCoordinateSystems.end( ) )
             graphicsState.ctm = namedCoordinateSystems[ name ];
         else
-            Warning( &loc, "Couldn't find named coordinate system \"{}\"", name );
+            Warning( &loc, "Couldn't find named coordinate system \"%s\"", name );
     }
 
     void BasicSceneBuilder::Camera( const std::string& name, ParsedParameterVector params,
@@ -206,7 +206,7 @@ namespace pbrto
 
         if ( pushStack.back( ).first == 'o' )
             ErrorExitDeferred( &loc,
-                "Mismatched nesting: open ObjectBegin from {} at AttributeEnd",
+                "Mismatched nesting: open ObjectBegin from %s at AttributeEnd",
                 pushStack.back( ).second );
         else
             NCHECK_EQ( pushStack.back( ).first, 'a' );
@@ -241,7 +241,7 @@ namespace pbrto
         {
             ErrorExitDeferred(
                 &loc,
-                "Unknown attribute target \"{}\". Must be \"shape\", \"light\", "
+                "Unknown attribute target \"%s\". Must be \"shape\", \"light\", "
                 "\"material\", \"medium\", or \"texture\".",
                 target );
             return;
@@ -286,7 +286,7 @@ namespace pbrto
         // Issue error if medium _name_ is multiply defined
         if ( mediumNames.find( name ) != mediumNames.end( ) )
         {
-            ErrorExitDeferred( &loc, "Named medium \"{}\" redefined.", name );
+            ErrorExitDeferred( &loc, "Named medium \"%s\" redefined.", name );
             return;
         }
         mediumNames.insert( name );
@@ -377,7 +377,7 @@ namespace pbrto
 
         if ( instanceNames.find( name ) != instanceNames.end( ) )
         {
-            ErrorExitDeferred( &loc, "{}: trying to redefine an object instance", name );
+            ErrorExitDeferred( &loc, "%s: trying to redefine an object instance", name );
             return;
         }
         instanceNames.insert( name );
@@ -407,7 +407,7 @@ namespace pbrto
 
         if ( pushStack.back( ).first == 'a' )
             ErrorExitDeferred( &loc,
-                "Mismatched nesting: open AttributeBegin from {} at ObjectEnd",
+                "Mismatched nesting: open AttributeBegin from %s at ObjectEnd",
                 pushStack.back( ).second );
         else
             NCHECK_EQ( pushStack.back( ).first, 'o' );
@@ -553,7 +553,7 @@ namespace pbrto
             for ( const auto& item : imported )
             {
                 if ( base.find( item ) != base.end( ) )
-                    ErrorExitDeferred( "{}: multiply defined {}.", item, name );
+                    ErrorExitDeferred( "%s: multiply defined %s.", item, name );
                 base.insert( std::move( item ) );
             }
             imported.clear( );
@@ -575,7 +575,7 @@ namespace pbrto
             else if ( value == "false" )
                 Options->disablePixelJitter = false;
             else
-                ErrorExitDeferred( &loc, "{}: expected \"true\" or \"false\" for option value",
+                ErrorExitDeferred( &loc, "%s: expected \"true\" or \"false\" for option value",
                     value );
         }
         else if ( nName == "disabletexturefiltering" )
@@ -585,7 +585,7 @@ namespace pbrto
             else if ( value == "false" )
                 Options->disableTextureFiltering = false;
             else
-                ErrorExitDeferred( &loc, "{}: expected \"true\" or \"false\" for option value",
+                ErrorExitDeferred( &loc, "%s: expected \"true\" or \"false\" for option value",
                     value );
         }
         else if ( nName == "disablewavelengthjitter" )
@@ -595,30 +595,30 @@ namespace pbrto
             else if ( value == "false" )
                 Options->disableWavelengthJitter = false;
             else
-                ErrorExitDeferred( &loc, "{}: expected \"true\" or \"false\" for option value",
+                ErrorExitDeferred( &loc, "%s: expected \"true\" or \"false\" for option value",
                     value );
         }
         else if ( nName == "displacementedgescale" )
         {
             if ( !Atof( value, &Options->displacementEdgeScale ) )
-                ErrorExitDeferred( &loc, "{}: expected floating-point option value", value );
+                ErrorExitDeferred( &loc, "%s: expected floating-point option value", value );
         }
         else if ( nName == "msereferenceimage" )
         {
             if ( value.size( ) < 3 || value.front( ) != '"' || value.back( ) != '"' )
-                ErrorExitDeferred( &loc, "{}: expected quoted string for option value", value );
+                ErrorExitDeferred( &loc, "%s: expected quoted string for option value", value );
             Options->mseReferenceImage = value.substr( 1, value.size( ) - 2 );
         }
         else if ( nName == "msereferenceout" )
         {
             if ( value.size( ) < 3 || value.front( ) != '"' || value.back( ) != '"' )
-                ErrorExitDeferred( &loc, "{}: expected quoted string for option value", value );
+                ErrorExitDeferred( &loc, "%s: expected quoted string for option value", value );
             Options->mseReferenceOutput = value.substr( 1, value.size( ) - 2 );
         }
         else if ( nName == "rendercoordsys" )
         {
             if ( value.size( ) < 3 || value.front( ) != '"' || value.back( ) != '"' )
-                ErrorExitDeferred( &loc, "{}: expected quoted string for option value", value );
+                ErrorExitDeferred( &loc, "%s: expected quoted string for option value", value );
             std::string renderCoordSys = value.substr( 1, value.size( ) - 2 );
             if ( renderCoordSys == "camera" )
                 Options->renderingSpace = RenderingCoordinateSystem::Camera;
@@ -627,7 +627,7 @@ namespace pbrto
             else if ( renderCoordSys == "world" )
                 Options->renderingSpace = RenderingCoordinateSystem::World;
             else
-                ErrorExit( "{}: unknown rendering coordinate system.", renderCoordSys );
+                ErrorExit( "%s: unknown rendering coordinate system.", renderCoordSys );
         }
         else if ( nName == "seed" )
         {
@@ -640,7 +640,7 @@ namespace pbrto
             else if ( value == "false" )
                 Options->forceDiffuse = false;
             else
-                ErrorExitDeferred( &loc, "{}: expected \"true\" or \"false\" for option value",
+                ErrorExitDeferred( &loc, "%s: expected \"true\" or \"false\" for option value",
                     value );
         }
         else if ( nName == "pixelstats" )
@@ -650,7 +650,7 @@ namespace pbrto
             else if ( value == "false" )
                 Options->recordPixelStatistics = false;
             else
-                ErrorExitDeferred( &loc, "{}: expected \"true\" or \"false\" for option value",
+                ErrorExitDeferred( &loc, "%s: expected \"true\" or \"false\" for option value",
                     value );
         }
         else if ( nName == "wavefront" )
@@ -660,11 +660,11 @@ namespace pbrto
             else if ( value == "false" )
                 Options->wavefront = false;
             else
-                ErrorExitDeferred( &loc, "{}: expected \"true\" or \"false\" for option value",
+                ErrorExitDeferred( &loc, "%s: expected \"true\" or \"false\" for option value",
                     value );
         }
         else
-            ErrorExitDeferred( &loc, "{}: unknown option", name );
+            ErrorExitDeferred( &loc, "%s: unknown option", name );
 
 #ifdef PBRT_BUILD_GPU_RENDERER
         CopyOptionsToGPU( );
@@ -783,7 +783,7 @@ namespace pbrto
         if ( type != "float" && type != "spectrum" )
         {
             ErrorExitDeferred(
-                &loc, "{}: texture type unknown. Must be \"float\" or \"spectrum\".", type );
+                &loc, "%s: texture type unknown. Must be \"float\" or \"spectrum\".", type );
             return;
         }
 
@@ -791,7 +791,7 @@ namespace pbrto
             ( type == "float" ) ? floatTextureNames : spectrumTextureNames;
         if ( names.find( name ) != names.end( ) )
         {
-            ErrorExitDeferred( &loc, "Redefining texture \"{}\".", name );
+            ErrorExitDeferred( &loc, "Redefining texture \"%s\".", name );
             return;
         }
         names.insert( name );
@@ -828,7 +828,7 @@ namespace pbrto
 
         if ( namedMaterialNames.find( name ) != namedMaterialNames.end( ) )
         {
-            ErrorExitDeferred( &loc, "{}: named material redefined.", name );
+            ErrorExitDeferred( &loc, "%s: named material redefined.", name );
             return;
         }
         namedMaterialNames.insert( name );
@@ -945,7 +945,7 @@ namespace pbrto
             {
                 auto fiter = mediumJobs.find( name );
                 if ( fiter == mediumJobs.end( ) )
-                    ErrorExit( loc, "{}: medium is not defined.", name );
+                    ErrorExit( loc, "%s: medium is not defined.", name );
 
                 pstdo::optional<Medium> m = fiter->second->TryGetResult( &mediaMutex );
                 if ( m )
@@ -1036,7 +1036,7 @@ namespace pbrto
             Image& image = immeta.image;
             ImageChannelDesc rgbDesc = image.GetChannelDesc( { "R", "G", "B" } );
             if ( !rgbDesc )
-                ErrorExit( "{}: normal map image must contain R, G, and B channels", filename );
+                ErrorExit( "%s: normal map image must contain R, G, and B channels", filename );
             Image* normalMap = alloc.new_object<Image>( alloc );
             *normalMap = image.SelectChannels( rgbDesc );
 
@@ -1069,7 +1069,7 @@ namespace pbrto
         }
         if ( !FileExists( filename ) )
         {
-            Error( &texture.loc, "{}: file not found.", filename );
+            Error( &texture.loc, "%s: file not found.", filename );
             ++nMissingTextures;
             return;
         }
@@ -1116,7 +1116,7 @@ namespace pbrto
         }
         if ( !FileExists( filename ) )
         {
-            Error( &texture.loc, "{}: file not found.", filename );
+            Error( &texture.loc, "%s: file not found.", filename );
             ++nMissingTextures;
             return;
         }
@@ -1205,12 +1205,12 @@ namespace pbrto
         std::set<std::string> unusedFloatTextures, unusedSpectrumTextures;
         for ( const auto f : floatTextures )
         {
-            NCHECK( unusedFloatTextures.find( f.first ) == unusedFloatTextures.end( ) );
+            CHECK( unusedFloatTextures.find( f.first ) == unusedFloatTextures.end( ) );
             unusedFloatTextures.insert( f.first );
         }
         for ( const auto s : spectrumTextures )
         {
-            NCHECK( unusedSpectrumTextures.find( s.first ) == unusedSpectrumTextures.end( ) );
+            CHECK( unusedSpectrumTextures.find( s.first ) == unusedSpectrumTextures.end( ) );
             unusedSpectrumTextures.insert( s.first );
         }
 
@@ -1250,18 +1250,18 @@ namespace pbrto
                 checkVec( as.parameters.GetParameterVector( ) );
         }
 
-        NLOG_VERBOSE( "Scene stats: {} shapes, {} animated shapes, {} instance definitions, "
-            "{} instance uses, {} float textures, {} spectrum textures, "
-            "{} named materials, {} materials",
+        NLOG_VERBOSE( "Scene stats: %d shapes, %d animated shapes, %d instance definitions, "
+            "%d instance uses, %d float textures, %d spectrum textures, "
+            "%d named materials, %d materials",
             shapes.size( ), animatedShapes.size( ), instanceDefinitions.size( ),
             instances.size( ), floatTextures.size( ),
             spectrumTextures.size( ), namedMaterials.size( ), materials.size( ) );
 
         // And complain about what's left.
         for ( const std::string& s : unusedFloatTextures )
-            NLOG_VERBOSE( "{}: float texture unused in scene", s );
+            NLOG_VERBOSE( "%s: float texture unused in scene", s );
         for ( const std::string& s : unusedSpectrumTextures )
-            NLOG_VERBOSE( "{}: spectrum texture unused in scene", s );
+            NLOG_VERBOSE( "%s: spectrum texture unused in scene", s );
 #endif
     }
 
@@ -1269,7 +1269,7 @@ namespace pbrto
         std::map<std::string, pbrto::Material>* namedMaterialsOut,
         std::vector<pbrto::Material>* materialsOut )
     {
-        NLOG_VERBOSE( "Starting to consume {} normal map futures", normalMapJobs.size( ) );
+        NLOG_VERBOSE( "Starting to consume %d normal map futures", normalMapJobs.size( ) );
         std::lock_guard<std::mutex> lock( materialMutex );
         for ( auto& job : normalMapJobs )
         {
@@ -1288,7 +1288,7 @@ namespace pbrto
 
             if ( namedMaterialsOut->find( name ) != namedMaterialsOut->end( ) )
             {
-                ErrorExit( &mtl.loc, "{}: trying to redefine named material.", name );
+                ErrorExit( &mtl.loc, "%s: trying to redefine named material.", name );
                 continue;
             }
 
@@ -1296,7 +1296,7 @@ namespace pbrto
             if ( type.empty( ) )
             {
                 ErrorExit( &mtl.loc,
-                    "{}: \"string type\" not provided in named material's parameters.",
+                    "%s: \"string type\" not provided in named material's parameters.",
                     name );
                 continue;
             }
@@ -1341,7 +1341,7 @@ namespace pbrto
         NamedTextures textures;
 
         if ( nMissingTextures > 0 )
-            ErrorExit( "{} missing textures", nMissingTextures );
+            ErrorExit( "%d missing textures", nMissingTextures );
 
         // Consume futures
         NLOG_VERBOSE( "Starting to consume texture futures" );
@@ -1431,7 +1431,7 @@ namespace pbrto
 
             auto iter = mediaMap.find( s );
             if ( iter == mediaMap.end( ) )
-                ErrorExit( loc, "{}: medium not defined", s );
+                ErrorExit( loc, "%s: medium not defined", s );
             return iter->second;
             };
 
@@ -1452,7 +1452,7 @@ namespace pbrto
                         return iter->second;
                     }
                     else
-                        ErrorExit( loc, "{}: couldn't find float texture for \"alpha\" parameter.",
+                        ErrorExit( loc, "%s: couldn't find float texture for \"alpha\" parameter.",
                             alphaTexName );
                 }
                 else if ( Float alpha = parameters.GetOneFloat( "alpha", 1.f ); alpha < 1.f )
@@ -1478,7 +1478,7 @@ namespace pbrto
                     std::find_if( namedMaterials.begin( ), namedMaterials.end( ),
                         [ & ]( auto iter ) { return iter.first == sh.materialName; } );
                 if ( iter == namedMaterials.end( ) )
-                    ErrorExit( &sh.loc, "{}: no named material defined.", sh.materialName );
+                    ErrorExit( &sh.loc, "%s: no named material defined.", sh.materialName );
                 NCHECK( iter->second.parameters.GetStringArray( "type" ).size( ) > 0 );
                 materialName = iter->second.parameters.GetOneString( "type", "" );
             }
@@ -1545,7 +1545,7 @@ namespace pbrto
 
             auto iter = media.find( s );
             if ( iter == media.end( ) )
-                ErrorExit( loc, "{}: medium not defined", s );
+                ErrorExit( loc, "%s: medium not defined", s );
             return iter->second;
             };
 
@@ -1559,7 +1559,7 @@ namespace pbrto
                         iter != textures.floatTextures.end( ) )
                         return iter->second;
                     else
-                        ErrorExit( loc, "{}: couldn't find float texture for \"alpha\" parameter.",
+                        ErrorExit( loc, "%s: couldn't find float texture for \"alpha\" parameter.",
                             alphaTexName );
                 }
                 else if ( Float alpha = parameters.GetOneFloat( "alpha", 1.f ); alpha < 1.f )
@@ -1597,7 +1597,7 @@ namespace pbrto
                 {
                     auto iter = namedMaterials.find( sh.materialName );
                     if ( iter == namedMaterials.end( ) )
-                        ErrorExit( &sh.loc, "{}: no named material defined.", sh.materialName );
+                        ErrorExit( &sh.loc, "%s: no named material defined.", sh.materialName );
                     mtl = iter->second;
                 }
                 else
@@ -1661,7 +1661,7 @@ namespace pbrto
                 {
                     auto iter = namedMaterials.find( sh.materialName );
                     if ( iter == namedMaterials.end( ) )
-                        ErrorExit( &sh.loc, "{}: no named material defined.", sh.materialName );
+                        ErrorExit( &sh.loc, "%s: no named material defined.", sh.materialName );
                     mtl = iter->second;
                 }
                 else
@@ -1759,7 +1759,7 @@ namespace pbrto
         {
             auto iter = instanceDefinitions.find( inst.name );
             if ( iter == instanceDefinitions.end( ) )
-                ErrorExit( &inst.loc, "{}: object instance not defined", inst.name );
+                ErrorExit( &inst.loc, "%s: object instance not defined", inst.name );
 
             if ( !iter->second )
                 // empty instance

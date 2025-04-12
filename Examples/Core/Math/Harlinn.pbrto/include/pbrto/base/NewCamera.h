@@ -49,21 +49,25 @@ namespace pbrto
     class RealisticCamera;
 
     // Camera Definition
-    class Camera : public TaggedPointer<PerspectiveCamera, OrthographicCamera, SphericalCamera, RealisticCamera>
+    class Camera : public TaggedPointer<PerspectiveCamera, OrthographicCamera,
+        SphericalCamera, RealisticCamera>
     {
     public:
         // Camera Interface
         using TaggedPointer::TaggedPointer;
 
-        static Camera Create( const std::string& name, const ParameterDictionary& parameters, Medium medium, const CameraTransform& cameraTransform, Film film, const FileLoc* loc, Allocator alloc );
+        static Camera Create( const std::string& name, const ParameterDictionary& parameters,
+            Medium medium, const CameraTransform& cameraTransform, Film film,
+            const FileLoc* loc, Allocator alloc );
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            inline pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU inline pstdo::optional<CameraRay> GenerateRay(
+            CameraSample sample, SampledWavelengths& lambda ) const;
 
         PBRT_CPU_GPU
-            pstdo::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
+            pstdo::optional<CameraRayDifferential> GenerateRayDifferential(
+                CameraSample sample, SampledWavelengths& lambda ) const;
 
         PBRT_CPU_GPU inline Film GetFilm( ) const;
 
@@ -71,20 +75,22 @@ namespace pbrto
 
         void InitMetadata( ImageMetadata* metadata ) const;
 
-        PBRT_CPU_GPU
-            inline const CameraTransform& GetCameraTransform( ) const;
+        PBRT_CPU_GPU inline const CameraTransform& GetCameraTransform( ) const;
 
         PBRT_CPU_GPU
-            void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel, Vector3f* dpdx, Vector3f* dpdy ) const;
+            void Approximate_dp_dxy( Point3f p, Normal3f n, Float time, int samplesPerPixel,
+                Vector3f* dpdx, Vector3f* dpdy ) const;
 
         PBRT_CPU_GPU
-            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRasterOut = nullptr ) const;
+            SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda,
+                Point2f* pRasterOut = nullptr ) const;
 
         PBRT_CPU_GPU
             void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
 
         PBRT_CPU_GPU
-            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u, SampledWavelengths& lambda ) const;
+            pstdo::optional<CameraWiSample> SampleWi( const Interaction& ref, Point2f u,
+                SampledWavelengths& lambda ) const;
     };
 
 }

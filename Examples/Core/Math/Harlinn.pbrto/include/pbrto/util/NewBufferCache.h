@@ -137,6 +137,6 @@ namespace pbrto
 
     void InitBufferCaches( );
 
-}  // namespace pbrt
+}
 
 #endif

@@ -69,7 +69,7 @@ namespace pbrto
 
     static void glfwErrorCallback( int error, const char* desc )
     {
-        NLOG_ERROR( "GLFW [{}]: {}", error, desc );
+        NLOG_ERROR( "GLFW [%d]: %s", error, desc );
     }
 
     void GUI::keyboardCallback( GLFWwindow* window, int key, int scan, int action, int mods )
@@ -279,7 +279,7 @@ namespace pbrto
         moveScale = ScalarLength( sceneBounds.Diagonal( ) ) / 1000.f;
 
         glfwSetErrorCallback( glfwErrorCallback );
-        if ( pbrto::Options->fullscreen )
+        if ( Options->fullscreen )
         {
             window = glfwCreateWindow( resolution.x, resolution.y, "pbrt", glfwGetPrimaryMonitor( ), NULL );
         }
@@ -372,7 +372,7 @@ namespace pbrto
                     []( Image image, int frameNumber ) {
                         // TODO: set metadata for e.g. current camera position...
                         ImageMetadata metadata;
-                        image.Write( std::format( "pbrt-frame{:05}.exr", frameNumber ),
+                        image.Write( StringPrintf( "pbrt-frame%05d.exr", frameNumber ),
                             metadata );
                         return 0;  // FIXME: RunAsync() doesn't like lambdas that return
                         // void..

@@ -83,18 +83,18 @@ namespace pbrto
     // BxDF Method Definitions
     std::string DiffuseBxDF::ToString( ) const
     {
-        return std::format( "[ DiffuseBxDF R: {} ]", R );
+        return StringPrintf( "[ DiffuseBxDF R: %s ]", R );
     }
     std::string DiffuseTransmissionBxDF::ToString( ) const
     {
-        return std::format( "[ DiffuseTransmissionBxDF R: {} T: {} ]", R, T );
+        return StringPrintf( "[ DiffuseTransmissionBxDF R: %s T: %s ]", R, T );
     }
 
     template <typename TopBxDF, typename BottomBxDF, bool twoSided>
     std::string LayeredBxDF<TopBxDF, BottomBxDF, twoSided>::ToString( ) const
     {
-        return std::format(
-            "[ LayeredBxDF top: {} bottom: {} thickness: {} albedo: {} g: {} ]", top, bottom,
+        return StringPrintf(
+            "[ LayeredBxDF top: %s bottom: %s thickness: %f albedo: %s g: %f ]", top, bottom,
             thickness, albedo, g );
     }
 
@@ -149,7 +149,7 @@ namespace pbrto
         {
             // Sample rough dielectric BSDF
             Vector3f wm = mfDistrib.Sample_wm( wo, u );
-            Float R = FrDielectric( Dot( wo, wm ), eta );
+            Float R = FrDielectric( ScalarDot( wo, wm ), eta );
             Float T = 1 - R;
             // Compute probabilities _pr_ and _pt_ for sampling reflection and transmission
             Float pr = R, pt = T;
@@ -168,7 +168,7 @@ namespace pbrto
                 if ( !SameHemisphere( wo, wi ) )
                     return {};
                 // Compute PDF of rough dielectric reflection
-                pdf = mfDistrib.PDF( wo, wm ) / ( 4 * AbsDot( wo, wm ) ) * pr / ( pr + pt );
+                pdf = mfDistrib.PDF( wo, wm ) / ( 4 * ScalarAbsDot( wo, wm ) ) * pr / ( pr + pt );
 
                 NDCHECK( !IsNaN( pdf ) );
                 SampledSpectrum f( mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) * R /
@@ -186,14 +186,14 @@ namespace pbrto
                 if ( SameHemisphere( wo, wi ) || wi.z == 0 || tir )
                     return {};
                 // Compute PDF of rough dielectric transmission
-                Float denom = Sqr( Dot( wi, wm ) + Dot( wo, wm ) / etap );
-                Float dwm_dwi = AbsDot( wi, wm ) / denom;
+                Float denom = Sqr( ScalarDot( wi, wm ) + Dot( wo, wm ) / etap );
+                Float dwm_dwi = ScalarAbsDot( wi, wm ) / denom;
                 pdf = mfDistrib.PDF( wo, wm ) * dwm_dwi * pt / ( pr + pt );
 
                 NCHECK( !IsNaN( pdf ) );
                 // Evaluate BRDF and return _BSDFSample_ for rough transmission
                 SampledSpectrum ft( T * mfDistrib.D( wm ) * mfDistrib.G( wo, wi ) *
-                    std::abs( Dot( wi, wm ) * Dot( wo, wm ) /
+                    std::abs( ScalarDot( wi, wm ) * ScalarDot( wo, wm ) /
                         ( CosTheta( wi ) * CosTheta( wo ) * denom ) ) );
                 // Account for non-symmetry with transmission to different medium
                 if ( mode == TransportMode::Radiance )
@@ -216,16 +216,16 @@ namespace pbrto
         if ( !reflect )
             etap = cosTheta_o > 0 ? eta : ( 1 / eta );
         Vector3f wm = wi * etap + wo;
-        NCHECK_RARE( 1e-5f, LengthSquared( wm ) == 0 );
-        if ( cosTheta_i == 0 || cosTheta_o == 0 || LengthSquared( wm ) == 0 )
+        NCHECK_RARE( 1e-5f, ScalarLengthSquared( wm ) == 0 );
+        if ( cosTheta_i == 0 || cosTheta_o == 0 || ScalarLengthSquared( wm ) == 0 )
             return {};
-        wm = FaceForward( Normal3f( Normalize( wm ) ), Normal3f( 0, 0, 1 ) );
+        wm = FaceForward( Normalize( wm ), Normal3f( 0, 0, 1 ) );
 
         // Discard backfacing microfacets
-        if ( Dot( wm, wi ) * cosTheta_i < 0 || Dot( wm, wo ) * cosTheta_o < 0 )
+        if ( ScalarDot( wm, wi ) * cosTheta_i < 0 || ScalarDot( wm, wo ) * cosTheta_o < 0 )
             return {};
 
-        Float F = FrDielectric( Dot( wo, wm ), eta );
+        Float F = FrDielectric( ScalarDot( wo, wm ), eta );
         if ( reflect )
         {
             // Compute reflection at rough dielectric interface
@@ -236,9 +236,9 @@ namespace pbrto
         else
         {
             // Compute transmission at rough dielectric interface
-            Float denom = Sqr( Dot( wi, wm ) + Dot( wo, wm ) / etap ) * cosTheta_i * cosTheta_o;
+            Float denom = Sqr( ScalarDot( wi, wm ) + ScalarDot( wo, wm ) / etap ) * cosTheta_i * cosTheta_o;
             Float ft = mfDistrib.D( wm ) * ( 1 - F ) * mfDistrib.G( wo, wi ) *
-                std::abs( Dot( wi, wm ) * Dot( wo, wm ) / denom );
+                std::abs( ScalarDot( wi, wm ) * ScalarDot( wo, wm ) / denom );
             // Account for non-symmetry with transmission to different medium
             if ( mode == TransportMode::Radiance )
                 ft /= Sqr( etap );
@@ -260,16 +260,17 @@ namespace pbrto
         if ( !reflect )
             etap = cosTheta_o > 0 ? eta : ( 1 / eta );
         Vector3f wm = wi * etap + wo;
-        NCHECK_RARE( 1e-5f, LengthSquared( wm ) == 0 );
-        if ( cosTheta_i == 0 || cosTheta_o == 0 || LengthSquared( wm ) == 0 )
+        NCHECK_RARE( 1e-5f, ScalarLengthSquared( wm ) == 0 );
+        if ( cosTheta_i == 0 || cosTheta_o == 0 || ScalarLengthSquared( wm ) == 0 )
             return {};
-        wm = FaceForward( Normal3f( Normalize( wm ) ), Normal3f( 0, 0, 1 ) );
+        wm = FaceForward( Normalize( wm ), Normal3f( 0, 0, 1 ) );
+
         // Discard backfacing microfacets
-        if ( Dot( wm, wi ) * cosTheta_i < 0 || Dot( wm, wo ) * cosTheta_o < 0 )
+        if ( ScalarDot( wm, wi ) * cosTheta_i < 0 || ScalarDot( wm, wo ) * cosTheta_o < 0 )
             return {};
 
         // Determine Fresnel reflectance of rough dielectric boundary
-        Float R = FrDielectric( Dot( wo, wm ), eta );
+        Float R = FrDielectric( ScalarDot( wo, wm ), eta );
         Float T = 1 - R;
 
         // Compute probabilities _pr_ and _pt_ for sampling reflection and transmission
@@ -286,14 +287,14 @@ namespace pbrto
         if ( reflect )
         {
             // Compute PDF of rough dielectric reflection
-            pdf = mfDistrib.PDF( wo, wm ) / ( 4 * AbsDot( wo, wm ) ) * pr / ( pr + pt );
+            pdf = mfDistrib.PDF( wo, wm ) / ( 4 * ScalarAbsDot( wo, wm ) ) * pr / ( pr + pt );
 
         }
         else
         {
             // Compute PDF of rough dielectric transmission
-            Float denom = Sqr( Dot( wi, wm ) + Dot( wo, wm ) / etap );
-            Float dwm_dwi = AbsDot( wi, wm ) / denom;
+            Float denom = Sqr( ScalarDot( wi, wm ) + ScalarDot( wo, wm ) / etap );
+            Float dwm_dwi = ScalarAbsDot( wi, wm ) / denom;
             pdf = mfDistrib.PDF( wo, wm ) * dwm_dwi * pt / ( pr + pt );
         }
         return pdf;
@@ -301,18 +302,18 @@ namespace pbrto
 
     std::string DielectricBxDF::ToString( ) const
     {
-        return std::format( "[ DielectricBxDF eta: {} mfDistrib: {} ]", eta,
+        return StringPrintf( "[ DielectricBxDF eta: %f mfDistrib: %s ]", eta,
             mfDistrib.ToString( ) );
     }
 
     std::string ThinDielectricBxDF::ToString( ) const
     {
-        return std::format( "[ ThinDielectricBxDF eta: {} ]", eta );
+        return StringPrintf( "[ ThinDielectricBxDF eta: %f ]", eta );
     }
 
     std::string ConductorBxDF::ToString( ) const
     {
-        return std::format( "[ ConductorBxDF mfDistrib: {} eta: {} k: {} ]", mfDistrib, eta,
+        return StringPrintf( "[ ConductorBxDF mfDistrib: %s eta: %s k: %s ]", mfDistrib, eta,
             k );
     }
 
@@ -337,8 +338,8 @@ namespace pbrto
         static const Float SqrtPiOver8 = 0.626657069f;
         s = SqrtPiOver8 * ( 0.265f * beta_n + 1.194f * Sqr( beta_n ) + 5.372f * FastPow<22>( beta_n ) );
         NDCHECK( !IsNaN( s ) );
-        sin2kAlpha[ 0 ] = Math::Sin( Radians( alpha ) );
 
+        sin2kAlpha[ 0 ] = std::sin( Radians( alpha ) );
         cos2kAlpha[ 0 ] = SafeSqrt( 1 - Sqr( sin2kAlpha[ 0 ] ) );
         for ( int i = 1; i < pMax; ++i )
         {
@@ -492,13 +493,8 @@ namespace pbrto
         cosThetap_o = std::abs( cosThetap_o );
 
         // Sample $M_p$ to compute $\thetai$
-#ifdef PBRT_USES_HCCMATH_LOG
-        Float cosTheta = 1 + v[ p ] * Math::Log( std::max<Float>( u[ 0 ], 1e-5 ) +
-            ( 1 - u[ 0 ] ) * FastExp( -2 / v[ p ] ) );
-#else
         Float cosTheta = 1 + v[ p ] * std::log( std::max<Float>( u[ 0 ], 1e-5 ) +
             ( 1 - u[ 0 ] ) * FastExp( -2 / v[ p ] ) );
-#endif
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
         Float cosPhi = std::cos( 2 * Pi * u[ 1 ] );
         Float sinTheta_i = -cosTheta * sinThetap_o + sinTheta * cosPhi * cosThetap_o;
@@ -519,11 +515,7 @@ namespace pbrto
 
         // Compute _wi_ from sampled hair scattering angles
         Float phi_i = phi_o + dphi;
-#ifdef PBRT_USES_HCCMATH_SINCOS
-        Vector3f wi( sinTheta_i, cosTheta_i * Math::Cos( phi_i ), cosTheta_i * Math::Sin( phi_i ) );
-#else
         Vector3f wi( sinTheta_i, cosTheta_i * std::cos( phi_i ), cosTheta_i * std::sin( phi_i ) );
-#endif
 
         // Compute PDF for sampled hair scattering direction _wi_
         Float pdf = 0;
@@ -649,19 +641,17 @@ namespace pbrto
     {
         SampledSpectrum sigma_a;
         for ( int i = 0; i < NSpectrumSamples; ++i )
-        {
             sigma_a[ i ] =
-                Sqr( Math::Log( c[ i ] ) / ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
-                    10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
-                    0.245f * FastPow<5>( beta_n ) ) );
-        }
+            Sqr( std::log( c[ i ] ) / ( 5.969f - 0.215f * beta_n + 2.532f * Sqr( beta_n ) -
+                10.73f * FastPow<3>( beta_n ) + 5.574f * FastPow<4>( beta_n ) +
+                0.245f * FastPow<5>( beta_n ) ) );
         return sigma_a;
     }
 
     std::string HairBxDF::ToString( ) const
     {
-        return std::format(
-            "[ HairBxDF h: {} eta: {} beta_m: {} beta_n: {} v[0]: {} s: {} sigma_a: {} ]", h,
+        return StringPrintf(
+            "[ HairBxDF h: %f eta: %f beta_m: %f beta_n: %f v[0]: %f s: %f sigma_a: %s ]", h,
             eta, beta_m, beta_n, v[ 0 ], s, sigma_a );
     }
 
@@ -836,7 +826,7 @@ namespace pbrto
     do {                                             \
         if (!(cond)) {                               \
             fclose(file);                            \
-            ErrorExit("{}: Tensor: " msg, filename); \
+            ErrorExit("%s: Tensor: " msg, filename); \
         }                                            \
     } while (0)
 
@@ -989,7 +979,7 @@ namespace pbrto
 
         std::string ToString( ) const
         {
-            return std::format( "[ MeasuredBxDFData filename: {} ]", filename );
+            return StringPrintf( "[ MeasuredBxDFData filename: %s ]", filename );
         }
 
         std::string filename;
@@ -1125,7 +1115,7 @@ namespace pbrto
 
         // Determine half-direction vector $\wm$
         Vector3f wm = wi + wo;
-        if ( LengthSquared( wm ) == 0 )
+        if ( ScalarLengthSquared( wm ) == 0 )
             return SampledSpectrum( 0 );
         wm = Normalize( wm );
 
@@ -1181,11 +1171,7 @@ namespace pbrto
         Float phi_m = u2phi( u_wm.y ), theta_m = u2theta( u_wm.x );
         if ( brdf->isotropic )
             phi_m += phi_o;
-
-        Float sinTheta_m;
-        Float cosTheta_m;
-        Math::SinCos( theta_m, &sinTheta_m, &cosTheta_m );
-
+        Float sinTheta_m = std::sin( theta_m ), cosTheta_m = std::cos( theta_m );
         Vector3f wm = SphericalDirection( sinTheta_m, cosTheta_m, phi_m );
         Vector3f wi = Reflect( wo, wm );
         if ( wi.z <= 0 )
@@ -1198,7 +1184,7 @@ namespace pbrto
 
         Point2f u_wo( theta2u( theta_o ), phi2u( phi_o ) );
         fr *= brdf->ndf.Evaluate( u_wm ) / ( 4 * brdf->sigma.Evaluate( u_wo ) * AbsCosTheta( wi ) );
-        pdf /= 4 * Dot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x * sinTheta_m, 1e-6f );
+        pdf /= 4 * ScalarDot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x * sinTheta_m, 1e-6f );
 
         // Handle interactions in lower hemisphere
         if ( flipWi )
@@ -1221,7 +1207,7 @@ namespace pbrto
         }
 
         Vector3f wm = wi + wo;
-        if ( LengthSquared( wm ) == 0 )
+        if ( ScalarLengthSquared( wm ) == 0 )
             return 0;
         wm = Normalize( wm );
 
@@ -1238,24 +1224,25 @@ namespace pbrto
         Float vndfPDF = ui.pdf;
 
         Float pdf = brdf->luminance.Evaluate( sample, phi_o, theta_o );
-        Float sinTheta_m = Math::Sqrt( Sqr( wm.x ) + Sqr( wm.y ) );
+        Float sinTheta_m = std::sqrt( Sqr( wm.x ) + Sqr( wm.y ) );
         Float jacobian =
-            4.f * Dot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x * sinTheta_m, 1e-6f );
+            4.f * ScalarDot( wo, wm ) * std::max<Float>( 2 * Sqr( Pi ) * u_wm.x * sinTheta_m, 1e-6f );
         return vndfPDF * pdf / jacobian;
     }
 
     std::string MeasuredBxDF::ToString( ) const
     {
-        return std::format( "[ MeasuredBxDF brdf: {} ]", *brdf );
+        return StringPrintf( "[ MeasuredBxDF brdf: %s ]", *brdf );
     }
 
     std::string NormalizedFresnelBxDF::ToString( ) const
     {
-        return std::format( "[ NormalizedFresnelBxDF eta: {} ]", eta );
+        return StringPrintf( "[ NormalizedFresnelBxDF eta: %f ]", eta );
     }
 
     // BxDF Method Definitions
-    PBRT_CPU_GPU SampledSpectrum BxDF::rho( const Vector3f& wo, const pstdo::span<const Float>& uc, const pstdo::span<const Point2f>& u2 ) const
+    PBRT_CPU_GPU SampledSpectrum BxDF::rho( Vector3f wo, pstdo::span<const Float> uc,
+        pstdo::span<const Point2f> u2 ) const
     {
         if ( wo.z == 0 )
             return {};
@@ -1271,7 +1258,8 @@ namespace pbrto
         return r / uc.size( );
     }
 
-    SampledSpectrum BxDF::rho( const pstdo::span<const Point2f>& u1, const pstdo::span<const Float>& uc, const pstdo::span<const Point2f>& u2 ) const
+    SampledSpectrum BxDF::rho( pstdo::span<const Point2f> u1, pstdo::span<const Float> uc,
+        pstdo::span<const Point2f> u2 ) const
     {
         NDCHECK_EQ( uc.size( ), u1.size( ) );
         NDCHECK_EQ( u1.size( ), u2.size( ) );

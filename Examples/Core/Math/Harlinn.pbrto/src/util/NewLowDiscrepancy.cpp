@@ -31,14 +31,14 @@ namespace pbrto
 
     std::string DigitPermutation::ToString( ) const
     {
-        std::string s = std::format(
-            "[ DigitPermitation base: {} nDigits: {} permutations: ", base, nDigits );
+        std::string s = StringPrintf(
+            "[ DigitPermitation base: %d nDigits: %d permutations: ", base, nDigits );
         for ( int digitIndex = 0; digitIndex < nDigits; ++digitIndex )
         {
-            s += std::format( "[{}] ( ", digitIndex );
+            s += StringPrintf( "[%d] ( ", digitIndex );
             for ( int digitValue = 0; digitValue < base; ++digitValue )
             {
-                s += std::format( "{}", permutations[ digitIndex * base + digitValue ] );
+                s += StringPrintf( "%d", permutations[ digitIndex * base + digitValue ] );
                 if ( digitValue != base - 1 )
                     s += ", ";
             }
@@ -67,14 +67,14 @@ namespace pbrto
     }
 
     // Low Discrepancy Function Definitions
-    pstdo::vector<DigitPermutation>* ComputeRadicalInversePermutations( uint32_t seed, Allocator alloc )
+    pstdo::vector<DigitPermutation>* ComputeRadicalInversePermutations( uint32_t seed,
+        Allocator alloc )
     {
-        pstdo::vector<DigitPermutation>* perms = alloc.new_object<pstdo::vector<DigitPermutation>>( alloc );
+        pstdo::vector<DigitPermutation>* perms =
+            alloc.new_object<pstdo::vector<DigitPermutation>>( alloc );
         perms->resize( PrimeTableSize );
         for ( int i = 0; i < PrimeTableSize; ++i )
-        {
             ( *perms )[ i ] = DigitPermutation( Primes[ i ], seed, alloc );
-        }
         return perms;
     }
 

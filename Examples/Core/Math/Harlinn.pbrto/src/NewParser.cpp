@@ -93,10 +93,10 @@ namespace pbrto
         str += std::string( "\"" ) + type + " " + name + std::string( "\" [ " );
         if ( !floats.empty( ) )
             for ( Float d : floats )
-                str += std::format( "{} ", d );
+                str += StringPrintf( "%f ", d );
         else if ( !ints.empty( ) )
             for ( int i : ints )
-                str += std::format( "{} ", i );
+                str += StringPrintf( "%d ", i );
         else if ( !strings.empty( ) )
             for ( const auto& s : strings )
                 str += '\"' + s + "\" ";
@@ -117,7 +117,7 @@ namespace pbrto
 
     std::string Token::ToString( ) const
     {
-        return std::format( "[ Token token: {} loc: {} ]", toString( token ), loc );
+        return StringPrintf( "[ Token token: %s loc: %s ]", toString( token ), loc );
     }
 
     NSTAT_MEMORY_COUNTER( "Memory/Tokenizer buffers", tokenizerMemory );
@@ -146,7 +146,7 @@ namespace pbrto
             case '\"':
                 return '\"';
             default:
-                ErrorExit( &loc, "unexpected escaped character \"{}\"", ch );
+                ErrorExit( &loc, "unexpected escaped character \"%c\"", ch );
         }
         return 0;  // NOTREACHED
     }
@@ -181,14 +181,14 @@ namespace pbrto
         int fd = open( filename.c_str( ), O_RDONLY );
         if ( fd == -1 )
         {
-            errorCallback( std::format( "{}: {}", filename, ErrorString( ) ).c_str( ), nullptr );
+            errorCallback( StringPrintf( "%s: %s", filename, ErrorString( ) ).c_str( ), nullptr );
             return nullptr;
         }
 
         struct stat stat;
         if ( fstat( fd, &stat ) != 0 )
         {
-            errorCallback( std::format( "{}: {}", filename, ErrorString( ) ).c_str( ), nullptr );
+            errorCallback( StringPrintf( "%s: %s", filename, ErrorString( ) ).c_str( ), nullptr );
             return nullptr;
         }
 
@@ -204,11 +204,11 @@ namespace pbrto
 
         void* ptr = mmap( nullptr, len, PROT_READ, MAP_PRIVATE | MAP_NORESERVE, fd, 0 );
         if ( ptr == MAP_FAILED )
-            errorCallback( std::format( "{}: {}", filename, ErrorString( ) ).c_str( ), nullptr );
+            errorCallback( StringPrintf( "%s: %s", filename, ErrorString( ) ).c_str( ), nullptr );
 
         if ( close( fd ) != 0 )
         {
-            errorCallback( std::format( "{}: {}", filename, ErrorString( ) ).c_str( ), nullptr );
+            errorCallback( StringPrintf( "%s: %s", filename, ErrorString( ) ).c_str( ), nullptr );
             return nullptr;
         }
 
@@ -221,7 +221,7 @@ namespace pbrto
                 NULL, ::GetLastError( ), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
                 ( LPSTR )&messageBuffer, 0, NULL );
 
-            errorCallback( std::format( "{}: {}", filename, messageBuffer ).c_str( ), nullptr );
+            errorCallback( StringPrintf( "%s: %s", filename, messageBuffer ).c_str( ), nullptr );
 
             LocalFree( messageBuffer );
             return nullptr;
@@ -291,10 +291,10 @@ namespace pbrto
 #ifdef PBRT_HAVE_MMAP
         if ( unmapPtr && unmapLength > 0 )
             if ( munmap( unmapPtr, unmapLength ) != 0 )
-                errorCallback( std::format( "munmap: {}", ErrorString( ) ).c_str( ), nullptr );
+                errorCallback( StringPrintf( "munmap: %s", ErrorString( ) ).c_str( ), nullptr );
 #elif defined(PBRT_IS_WINDOWS)
         if ( unmapPtr && UnmapViewOfFile( unmapPtr ) == 0 )
-            errorCallback( std::format( "UnmapViewOfFile: {}", ErrorString( ) ).c_str( ),
+            errorCallback( StringPrintf( "UnmapViewOfFile: %s", ErrorString( ) ).c_str( ),
                 nullptr );
 #endif
     }
@@ -418,7 +418,7 @@ namespace pbrto
         while ( index < t.token.size( ) )
         {
             if ( !( t.token[ index ] >= '0' && t.token[ index ] <= '9' ) )
-                ErrorExit( &t.loc, "\"{}\": expected a number", t.token[ index ] );
+                ErrorExit( &t.loc, "\"%c\": expected a number", t.token[ index ] );
             value = 10 * value + ( t.token[ index ] - '0' );
             ++index;
 
@@ -426,7 +426,7 @@ namespace pbrto
                 ErrorExit( &t.loc,
                     "Numeric value too large to represent as a 32-bit integer." );
             else if ( value < std::numeric_limits<int>::lowest( ) )
-                Warning( &t.loc, "Numeric value {} too low to represent as a 32-bit integer." );
+                Warning( &t.loc, "Numeric value %d too low to represent as a 32-bit integer." );
         }
 
         return negate ? -value : value;
@@ -438,7 +438,7 @@ namespace pbrto
         if ( t.token.size( ) == 1 )
         {
             if ( !( t.token[ 0 ] >= '0' && t.token[ 0 ] <= '9' ) )
-                ErrorExit( &t.loc, "\"{}\": expected a number", t.token[ 0 ] );
+                ErrorExit( &t.loc, "\"%c\": expected a number", t.token[ 0 ] );
             return t.token[ 0 ] - '0';
         }
 
@@ -480,7 +480,7 @@ namespace pbrto
             val = floatParser.StringToDouble( bufp, t.token.size( ), &length );
 
         if ( length == 0 )
-            ErrorExit( &t.loc, "{}: expected a number", toString( t.token ) );
+            ErrorExit( &t.loc, "%s: expected a number", toString( t.token ) );
 
         return val;
     }
@@ -493,7 +493,7 @@ namespace pbrto
     static std::string_view dequoteString( const Token& t )
     {
         if ( !isQuotedString( t.token ) )
-            ErrorExit( &t.loc, "\"{}\": expected quoted string", toString( t.token ) );
+            ErrorExit( &t.loc, "\"%s\": expected quoted string", toString( t.token ) );
 
         std::string_view str = t.token;
         str.remove_prefix( 1 );
@@ -541,7 +541,7 @@ namespace pbrto
 
             auto typeBegin = skipSpace( decl.begin( ) );
             if ( typeBegin == decl.end( ) )
-                ErrorExit( &t->loc, "Parameter \"{}\" doesn't have a type declaration?!",
+                ErrorExit( &t->loc, "Parameter \"%s\" doesn't have a type declaration?!",
                     std::string( decl.begin( ), decl.end( ) ) );
 
             // Find end of type declaration
@@ -560,7 +560,7 @@ namespace pbrto
 
             auto nameBegin = skipSpace( typeEnd );
             if ( nameBegin == decl.end( ) )
-                ErrorExit( &t->loc, "Unable to find parameter name from \"{}\"",
+                ErrorExit( &t->loc, "Unable to find parameter name from \"%s\"",
                     std::string( decl.begin( ), decl.end( ) ) );
 
             auto nameEnd = skipToSpace( nameBegin );
@@ -680,7 +680,7 @@ namespace pbrto
                         param->bools.push_back( false );
                     else
                         Error( &param->loc,
-                            "{}: neither \"true\" nor \"false\" in bool "
+                            "%s: neither \"true\" nor \"false\" in bool "
                             "parameter list.",
                             b );
                 }
@@ -703,7 +703,7 @@ namespace pbrto
 
         std::vector<std::pair<AsyncJob<int>*, BasicSceneBuilder*>> imports;
 
-        NLOG_VERBOSE( "Started parsing {}",
+        NLOG_VERBOSE( "Started parsing %s",
             std::string( t->loc.filename.begin( ), t->loc.filename.end( ) ) );
         std::vector<std::unique_ptr<Tokenizer>> fileStack;
         fileStack.push_back( std::move( t ) );
@@ -711,7 +711,7 @@ namespace pbrto
         pstdo::optional<Token> ungetToken;
 
         auto parseError = [ & ]( const char* msg, const FileLoc* loc ) {
-            ErrorExit( loc, "{}", msg );
+            ErrorExit( loc, "%s", msg );
             };
 
         // nextToken is a little helper function that handles the file stack,
@@ -736,7 +736,7 @@ namespace pbrto
             if ( !tok )
             {
                 // We've reached EOF in the current file. Anything more to parse?
-                NLOG_VERBOSE( "Finished parsing {}",
+                NLOG_VERBOSE( "Finished parsing %s",
                     std::string( fileStack.back( )->loc.filename.begin( ),
                         fileStack.back( )->loc.filename.end( ) ) );
                 fileStack.pop_back( );
@@ -747,7 +747,7 @@ namespace pbrto
                 // Swallow comments, unless --format or --toply was given, in
                 // which case they're printed to stdout.
                 if ( formatting )
-                    printf( "{}{}\n",
+                    printf( "%s%s\n",
                         dynamic_cast< FormattingParserTarget* >( target )->indent( ).c_str( ),
                         toString( tok->token ).c_str( ) );
                 return nextToken( flags );
@@ -774,14 +774,14 @@ namespace pbrto
                     ParsedParameterVector parameterVector = parseParameters(
                         nextToken, unget, formatting, [ & ]( const Token& t, const char* msg ) {
                             std::string token = toString( t.token );
-                            std::string str = std::format( "{}: {}", token, msg );
+                            std::string str = StringPrintf( "%s: %s", token, msg );
                             parseError( str.c_str( ), &t.loc );
                         } );
                     ( target->*apiFunc )( n, std::move( parameterVector ), loc );
             };
 
         auto syntaxError = [ & ]( const Token& t ) {
-            ErrorExit( &t.loc, "Unknown directive: {}", toString( t.token ) );
+            ErrorExit( &t.loc, "Unknown directive: %s", toString( t.token ) );
             };
 
         pstdo::optional<Token> tok;
@@ -869,7 +869,7 @@ namespace pbrto
                         Token filenameToken = *nextToken( TokenRequired );
                         std::string filename = toString( dequoteString( filenameToken ) );
                         if ( formatting )
-                            PrintLn( "{}Include \"{}\"\n",
+                            Printf( "%sInclude \"%s\"\n",
                                 dynamic_cast< FormattingParserTarget* >( target )->indent( ),
                                 filename );
                         else
@@ -879,7 +879,7 @@ namespace pbrto
                                 Tokenizer::CreateFromFile( filename, parseError );
                             if ( tinc )
                             {
-                                NLOG_VERBOSE( "Started parsing {}",
+                                NLOG_VERBOSE( "Started parsing %s",
                                     std::string( tinc->loc.filename.begin( ),
                                         tinc->loc.filename.end( ) ) );
                                 fileStack.push_back( std::move( tinc ) );
@@ -891,7 +891,7 @@ namespace pbrto
                         Token filenameToken = *nextToken( TokenRequired );
                         std::string filename = toString( dequoteString( filenameToken ) );
                         if ( formatting )
-                            PrintLn( "{}Import \"{}\"\n",
+                            Printf( "%sImport \"%s\"\n",
                                 dynamic_cast< FormattingParserTarget* >( target )->indent( ),
                                 filename );
                         else
@@ -924,7 +924,7 @@ namespace pbrto
                                         Tokenizer::CreateFromFile( filename, parseError );
                                     if ( timport )
                                         parse( importBuilder, std::move( timport ) );
-                                    NLOG_VERBOSE( "Elapsed time to parse \"{}\": {:.2}s", filename,
+                                    NLOG_VERBOSE( "Elapsed time to parse \"%s\": %.2fs", filename,
                                         timer.ElapsedSeconds( ) );
                                     return 0;
                                     };
@@ -1119,7 +1119,7 @@ namespace pbrto
                         ParsedParameterVector params = parseParameters(
                             nextToken, unget, formatting, [ & ]( const Token& t, const char* msg ) {
                                 std::string token = toString( t.token );
-                                std::string str = std::format( "{}: {}", token, msg );
+                                std::string str = StringPrintf( "%s: %s", token, msg );
                                 parseError( str.c_str( ), &t.loc );
                             } );
 
@@ -1145,7 +1145,7 @@ namespace pbrto
 
         for ( auto& import : imports )
         {
-import.first->Wait();
+            import.first->Wait();
 
             BasicSceneBuilder* builder = dynamic_cast< BasicSceneBuilder* >( target );
             NCHECK( builder );
@@ -1154,10 +1154,11 @@ import.first->Wait();
         }
     }
 
-    PBRTO_EXPORT void ParseFiles( ParserTarget* target, pstdo::span<const std::string> filenames )
+    PBRTO_EXPORT
+        void ParseFiles( ParserTarget* target, pstdo::span<const std::string> filenames )
     {
         auto tokError = []( const char* msg, const FileLoc* loc ) {
-            ErrorExit( loc, "{}", msg );
+            ErrorExit( loc, "%s", msg );
             };
 
         // Process scene description
@@ -1185,10 +1186,11 @@ import.first->Wait();
         target->EndOfFiles( );
     }
 
-    PBRTO_EXPORT void ParseString( ParserTarget* target, std::string str )
+    PBRTO_EXPORT
+        void ParseString( ParserTarget* target, std::string str )
     {
         auto tokError = []( const char* msg, const FileLoc* loc ) {
-            ErrorExit( loc, "{}", msg );
+            ErrorExit( loc, "%s", msg );
             };
         std::unique_ptr<Tokenizer> t = Tokenizer::CreateFromString( std::move( str ), tokError );
         if ( !t )
@@ -1209,86 +1211,86 @@ import.first->Wait();
         FileLoc loc )
     {
         std::string nName = normalizeArg( name );
-        PrintLn( "{}Option \"{}\" {}\n", indent( ), name, value );
+        Printf( "%sOption \"%s\" %s\n", indent( ), name, value );
     }
 
     void FormattingParserTarget::Identity( FileLoc loc )
     {
-        PrintLn( "{}Identity\n", indent( ) );
+        Printf( "%sIdentity\n", indent( ) );
     }
 
     void FormattingParserTarget::Translate( Float dx, Float dy, Float dz, FileLoc loc )
     {
-        PrintLn( "{}Translate {} {} {}\n", indent( ), dx, dy, dz );
+        Printf( "%sTranslate %f %f %f\n", indent( ), dx, dy, dz );
     }
 
     void FormattingParserTarget::Rotate( Float angle, Float ax, Float ay, Float az,
         FileLoc loc )
     {
-        PrintLn( "{}Rotate {} {} {} {}\n", indent( ), angle, ax, ay, az );
+        Printf( "%sRotate %f %f %f %f\n", indent( ), angle, ax, ay, az );
     }
 
     void FormattingParserTarget::Scale( Float sx, Float sy, Float sz, FileLoc loc )
     {
-        PrintLn( "{}Scale {} {} {}\n", indent( ), sx, sy, sz );
+        Printf( "%sScale %f %f %f\n", indent( ), sx, sy, sz );
     }
 
     void FormattingParserTarget::LookAt( Float ex, Float ey, Float ez, Float lx, Float ly,
         Float lz, Float ux, Float uy, Float uz, FileLoc loc )
     {
-        PrintLn( "{}LookAt {} {} {}\n{}    {} {} {}\n{}    {} {} {}\n", indent( ), ex, ey, ez,
+        Printf( "%sLookAt %f %f %f\n%s    %f %f %f\n%s    %f %f %f\n", indent( ), ex, ey, ez,
             indent( ), lx, ly, lz, indent( ), ux, uy, uz );
     }
 
     void FormattingParserTarget::ConcatTransform( Float transform[ 16 ], FileLoc loc )
     {
-        PrintLn( "{}ConcatTransform [ ", indent( ) );
+        Printf( "%sConcatTransform [ ", indent( ) );
         for ( int i = 0; i < 16; ++i )
-            PrintLn( "{} ", transform[ i ] );
-        PrintLn( " ]\n" );
+            Printf( "%f ", transform[ i ] );
+        Printf( " ]\n" );
     }
 
     void FormattingParserTarget::Transform( Float transform[ 16 ], FileLoc loc )
     {
-        PrintLn( "{}Transform [ ", indent( ) );
+        Printf( "%sTransform [ ", indent( ) );
         for ( int i = 0; i < 16; ++i )
-            PrintLn( "{} ", transform[ i ] );
-        PrintLn( " ]\n" );
+            Printf( "%f ", transform[ i ] );
+        Printf( " ]\n" );
     }
 
     void FormattingParserTarget::CoordinateSystem( const std::string& name, FileLoc loc )
     {
-        PrintLn( "{}CoordinateSystem \"{}\"\n", indent( ), name );
+        Printf( "%sCoordinateSystem \"%s\"\n", indent( ), name );
     }
 
     void FormattingParserTarget::CoordSysTransform( const std::string& name, FileLoc loc )
     {
-        PrintLn( "{}CoordSysTransform \"{}\"\n", indent( ), name );
+        Printf( "%sCoordSysTransform \"%s\"\n", indent( ), name );
     }
 
     void FormattingParserTarget::ActiveTransformAll( FileLoc loc )
     {
-        PrintLn( "{}ActiveTransform All\n", indent( ) );
+        Printf( "%sActiveTransform All\n", indent( ) );
     }
 
     void FormattingParserTarget::ActiveTransformEndTime( FileLoc loc )
     {
-        PrintLn( "{}ActiveTransform EndTime\n", indent( ) );
+        Printf( "%sActiveTransform EndTime\n", indent( ) );
     }
 
     void FormattingParserTarget::ActiveTransformStartTime( FileLoc loc )
     {
-        PrintLn( "{}ActiveTransform StartTime\n", indent( ) );
+        Printf( "%sActiveTransform StartTime\n", indent( ) );
     }
 
     void FormattingParserTarget::TransformTimes( Float start, Float end, FileLoc loc )
     {
-        PrintLn( "{}TransformTimes {} {}\n", indent( ), start, end );
+        Printf( "%sTransformTimes %f %f\n", indent( ), start, end );
     }
 
     void FormattingParserTarget::ColorSpace( const std::string& n, FileLoc loc )
     {
-        PrintLn( "{}ColorSpace \"{}\"\n", indent( ), n );
+        Printf( "%sColorSpace \"%s\"\n", indent( ), n );
     }
 
     void FormattingParserTarget::PixelFilter( const std::string& name,
@@ -1303,13 +1305,13 @@ import.first->Wait();
             if ( xr.size( ) == 1 )
             {
                 dict.RemoveFloat( "xwidth" );
-                extra += std::format( "{}\"float xradius\" [ {} ]\n", indent( 1 ), xr[ 0 ] );
+                extra += StringPrintf( "%s\"float xradius\" [ %f ]\n", indent( 1 ), xr[ 0 ] );
             }
             std::vector<Float> yr = dict.GetFloatArray( "ywidth" );
             if ( yr.size( ) == 1 )
             {
                 dict.RemoveFloat( "ywidth" );
-                extra += std::format( "{}\"float yradius\" [ {} ]\n", indent( 1 ), yr[ 0 ] );
+                extra += StringPrintf( "%s\"float yradius\" [ %f ]\n", indent( 1 ), yr[ 0 ] );
             }
 
             if ( name == "gaussian" )
@@ -1318,18 +1320,13 @@ import.first->Wait();
                 if ( alpha.size( ) == 1 )
                 {
                     dict.RemoveFloat( "alpha" );
-#ifdef PBRT_USES_HCCMATH_SQRT
-                    extra += std::format( "{}\"float sigma\" [ {} ]\n", indent( 1 ),
-                        1 / Math::Sqrt( 2 * alpha[ 0 ] ) );
-#else
-                    extra += std::format( "{}\"float sigma\" [ {} ]\n", indent( 1 ),
+                    extra += StringPrintf( "%s\"float sigma\" [ %f ]\n", indent( 1 ),
                         1 / std::sqrt( 2 * alpha[ 0 ] ) );
-#endif
                 }
             }
         }
 
-        PrintLn( "{}PixelFilter \"{}\"\n", indent( ), name );
+        Printf( "%sPixelFilter \"%s\"\n", indent( ), name );
         std::cout << extra << dict.ToParameterList( catIndentCount );
     }
 
@@ -1346,20 +1343,20 @@ import.first->Wait();
             {
                 dict.RemoveFloat( "maxsampleluminance" );
                 extra +=
-                    std::format( "{}\"float maxcomponentvalue\" [ {} ]\n", indent( 1 ), m[ 0 ] );
+                    StringPrintf( "%s\"float maxcomponentvalue\" [ %f ]\n", indent( 1 ), m[ 0 ] );
             }
             std::vector<Float> s = dict.GetFloatArray( "scale" );
             if ( !s.empty( ) )
             {
                 dict.RemoveFloat( "scale" );
-                extra += std::format( "{}\"float iso\" [ {} ]\n", indent( 1 ), 100 * s[ 0 ] );
+                extra += StringPrintf( "%s\"float iso\" [ %f ]\n", indent( 1 ), 100 * s[ 0 ] );
             }
         }
 
         if ( upgrade && type == "image" )
-            PrintLn( "{}Film \"rgb\"\n", indent( ) );
+            Printf( "%sFilm \"rgb\"\n", indent( ) );
         else
-            PrintLn( "{}Film \"{}\"\n", indent( ), type );
+            Printf( "%sFilm \"%s\"\n", indent( ), type );
         std::cout << extra << dict.ToParameterList( catIndentCount );
     }
 
@@ -1371,16 +1368,16 @@ import.first->Wait();
         if ( upgrade )
         {
             if ( name == "lowdiscrepancy" || name == "02sequence" )
-                PrintLn( "{}Sampler \"paddedsobol\"\n", indent( ) );
+                Printf( "%sSampler \"paddedsobol\"\n", indent( ) );
             else if ( name == "maxmindist" )
-                PrintLn( "{}Sampler \"pmj02bn\"\n", indent( ) );
+                Printf( "%sSampler \"pmj02bn\"\n", indent( ) );
             else if ( name == "random" )
-                PrintLn( "{}Sampler \"independent\"\n", indent( ) );
+                Printf( "%sSampler \"independent\"\n", indent( ) );
             else
-                PrintLn( "{}Sampler \"{}\"\n", indent( ), name );
+                Printf( "%sSampler \"%s\"\n", indent( ), name );
         }
         else
-            PrintLn( "{}Sampler \"{}\"\n", indent( ), name );
+            Printf( "%sSampler \"%s\"\n", indent( ), name );
         std::cout << dict.ToParameterList( catIndentCount );
     }
 
@@ -1389,7 +1386,7 @@ import.first->Wait();
     {
         ParameterDictionary dict( std::move( params ), RGBColorSpace::sRGB );
 
-        PrintLn( "{}Accelerator \"{}\"\n{}", indent( ), name,
+        Printf( "%sAccelerator \"%s\"\n%s", indent( ), name,
             dict.ToParameterList( catIndentCount ) );
     }
 
@@ -1427,11 +1424,11 @@ import.first->Wait();
 
         if ( upgrade && name == "directlighting" )
         {
-            PrintLn( "{}Integrator \"path\"\n", indent( ) );
+            Printf( "%sIntegrator \"path\"\n", indent( ) );
             extra += indent( 1 ) + "\"integer maxdepth\" [ 1 ]\n";
         }
         else
-            PrintLn( "{}Integrator \"{}\"\n", indent( ), name );
+            Printf( "%sIntegrator \"%s\"\n", indent( ), name );
         std::cout << extra << dict.ToParameterList( catIndentCount );
     }
 
@@ -1441,10 +1438,10 @@ import.first->Wait();
         ParameterDictionary dict( std::move( params ), RGBColorSpace::sRGB );
 
         if ( upgrade && name == "environment" )
-            PrintLn( "{}Camera \"spherical\" \"string mapping\" \"equirectangular\"\n",
+            Printf( "%sCamera \"spherical\" \"string mapping\" \"equirectangular\"\n",
                 indent( ) );
         else
-            PrintLn( "{}Camera \"{}\"\n", indent( ), name );
+            Printf( "%sCamera \"%s\"\n", indent( ), name );
         if ( upgrade && name == "realistic" )
             dict.RemoveBool( "simpleweighting" );
 
@@ -1456,10 +1453,10 @@ import.first->Wait();
     {
         ParameterDictionary dict( params, RGBColorSpace::sRGB );
         if ( upgrade && name == "heterogeneous" )
-            PrintLn( "{}MakeNamedMedium \"{}\"\n{}\n", indent( ), "uniformgrid",
+            Printf( "%sMakeNamedMedium \"%s\"\n%s\n", indent( ), "uniformgrid",
                 dict.ToParameterList( catIndentCount ) );
         else
-            PrintLn( "{}MakeNamedMedium \"{}\"\n{}\n", indent( ), name,
+            Printf( "%sMakeNamedMedium \"%s\"\n%s\n", indent( ), name,
                 dict.ToParameterList( catIndentCount ) );
     }
 
@@ -1467,31 +1464,31 @@ import.first->Wait();
         const std::string& outsideName,
         FileLoc loc )
     {
-        PrintLn( "{}MediumInterface \"{}\" \"{}\"\n", indent( ), insideName, outsideName );
+        Printf( "%sMediumInterface \"%s\" \"%s\"\n", indent( ), insideName, outsideName );
     }
 
     void FormattingParserTarget::WorldBegin( FileLoc loc )
     {
-        PrintLn( "\n\nWorldBegin\n\n" );
+        Printf( "\n\nWorldBegin\n\n" );
     }
 
     void FormattingParserTarget::AttributeBegin( FileLoc loc )
     {
-        PrintLn( "\n{}AttributeBegin\n", indent( ) );
+        Printf( "\n%sAttributeBegin\n", indent( ) );
         catIndentCount += 4;
     }
 
     void FormattingParserTarget::AttributeEnd( FileLoc loc )
     {
         catIndentCount -= 4;
-        PrintLn( "{}AttributeEnd\n", indent( ) );
+        Printf( "%sAttributeEnd\n", indent( ) );
     }
 
     void FormattingParserTarget::Attribute( const std::string& target,
         ParsedParameterVector params, FileLoc loc )
     {
         ParameterDictionary dict( params, RGBColorSpace::sRGB );
-        PrintLn( "{}Attribute \"{}\" ", indent( ), target );
+        Printf( "%sAttribute \"%s\" ", indent( ), target );
         if ( params.size( ) == 1 )
             // just one; put it on the same line
             std::cout << dict.ToParameterList( 0 ) << '\n';
@@ -1502,7 +1499,7 @@ import.first->Wait();
     void FormattingParserTarget::TransformBegin( FileLoc loc )
     {
         Warning( &loc, "Rewriting \"TransformBegin\" to \"AttributeBegin\"." );
-        PrintLn( "{}AttributeBegin\n", indent( ) );
+        Printf( "%sAttributeBegin\n", indent( ) );
         catIndentCount += 4;
     }
 
@@ -1510,7 +1507,7 @@ import.first->Wait();
     {
         catIndentCount -= 4;
         Warning( &loc, "Rewriting \"TransformEnd\" to \"AttributeEnd\"." );
-        PrintLn( "{}AttributeEnd\n", indent( ) );
+        Printf( "%sAttributeEnd\n", indent( ) );
     }
 
     void FormattingParserTarget::Texture( const std::string& name, const std::string& type,
@@ -1522,8 +1519,8 @@ import.first->Wait();
             if ( definedTextures.find( name ) != definedTextures.end( ) )
             {
                 static int count = 0;
-                Warning( &loc, "{}: renaming multiply-defined texture", name );
-                definedTextures[ name ] = std::format( "{}-renamed-{}", name, count++ );
+                Warning( &loc, "%s: renaming multiply-defined texture", name );
+                definedTextures[ name ] = StringPrintf( "%s-renamed-%d", name, count++ );
             }
             else
                 definedTextures[ name ] = name;
@@ -1559,7 +1556,7 @@ import.first->Wait();
                             ErrorExitDeferred(
                                 &p->loc,
                                 "Two \"rgb\" textures found for \"scale\" "
-                                "texture \"{}\". Please manually edit the file to "
+                                "texture \"%s\". Please manually edit the file to "
                                 "upgrade.",
                                 name );
                             return;
@@ -1567,14 +1564,14 @@ import.first->Wait();
                         if ( p->floats.size( ) != 3 )
                         {
                             ErrorExitDeferred(
-                                &p->loc, "Didn't find 3 values for \"rgb\" \"{}\".", p->name );
+                                &p->loc, "Didn't find 3 values for \"rgb\" \"%s\".", p->name );
                             return;
                         }
                         if ( p->floats[ 0 ] != p->floats[ 1 ] || p->floats[ 1 ] != p->floats[ 2 ] )
                         {
                             ErrorExitDeferred( &p->loc,
                                 "Non-constant \"rgb\" value found for "
-                                "\"scale\" texture parameter \"{}\". Please "
+                                "\"scale\" texture parameter \"%s\". Please "
                                 "manually "
                                 "edit the file to upgrade.",
                                 p->name );
@@ -1593,7 +1590,7 @@ import.first->Wait();
                             ErrorExitDeferred(
                                 &p->loc,
                                 "Two textures found for \"scale\" "
-                                "texture \"{}\". Please manually edit the file to "
+                                "texture \"%s\". Please manually edit the file to "
                                 "upgrade.",
                                 name );
                             return;
@@ -1630,7 +1627,7 @@ import.first->Wait();
                 {
                     dict.RemoveFloat( "gamma" );
                     extra +=
-                        indent( 1 ) + std::format( "\"string encoding \" \"gamma {}\" ", gamma );
+                        indent( 1 ) + StringPrintf( "\"string encoding \" \"gamma %f\" ", gamma );
                 }
                 else
                 {
@@ -1648,14 +1645,14 @@ import.first->Wait();
         if ( upgrade )
         {
             if ( type == "color" )
-                PrintLn( "{}Texture \"{}\" \"spectrum\" \"{}\"\n", indent( ),
+                Printf( "%sTexture \"%s\" \"spectrum\" \"%s\"\n", indent( ),
                     definedTextures[ name ], texname );
             else
-                PrintLn( "{}Texture \"{}\" \"{}\" \"{}\"\n", indent( ), definedTextures[ name ],
+                Printf( "%sTexture \"%s\" \"%s\" \"%s\"\n", indent( ), definedTextures[ name ],
                     type, texname );
         }
         else
-            PrintLn( "{}Texture \"{}\" \"{}\" \"{}\"\n", indent( ), name, type, texname );
+            Printf( "%sTexture \"%s\" \"%s\" \"%s\"\n", indent( ), name, type, texname );
 
         std::cout << extra << dict.ToParameterList( catIndentCount );
     }
@@ -1673,12 +1670,12 @@ import.first->Wait();
             if ( !dict->GetTexture( "eta" ).empty( ) )
             {
                 ErrorExitDeferred(
-                    &loc, R"(Material "{}" has both "index" and "eta" parameters.)", name );
+                    &loc, R"(Material "%s" has both "index" and "eta" parameters.)", name );
                 return "";
             }
 
             dict->RemoveTexture( "index" );
-            return indent( 1 ) + std::format( "\"texture eta\" \"{}\"\n", tex );
+            return indent( 1 ) + StringPrintf( "\"texture eta\" \"%s\"\n", tex );
         }
         else
         {
@@ -1693,13 +1690,13 @@ import.first->Wait();
             if ( !dict->GetFloatArray( "eta" ).empty( ) )
             {
                 ErrorExitDeferred(
-                    &loc, R"(Material "{}" has both "index" and "eta" parameters.)", name );
+                    &loc, R"(Material "%s" has both "index" and "eta" parameters.)", name );
                 return "";
             }
 
             Float value = index[ 0 ];
             dict->RemoveFloat( "index" );
-            return indent( 1 ) + std::format( "\"float eta\" [ {} ]\n", value );
+            return indent( 1 ) + StringPrintf( "\"float eta\" [ %f ]\n", value );
         }
     }
 
@@ -1719,7 +1716,7 @@ import.first->Wait();
                 !dict->GetSpectrumArray( paramName, SpectrumType::Unbounded, {} ).empty( ) )
                 Warning( &loc,
                     "Parameter is being removed when converting "
-                    "to \"{}\" material: {}",
+                    "to \"%s\" material: %s",
                     *name, dict->ToParameterDefinition( paramName ) );
             dict->RemoveSpectrum( paramName );
             dict->RemoveTexture( paramName );
@@ -1768,19 +1765,19 @@ import.first->Wait();
             if ( rgb )
             {
                 if ( rgb->r == rgb->g && rgb->g == rgb->b )
-                    extra += indent( 1 ) + std::format( "\"float amount\" [ {} ]\n", rgb->r );
+                    extra += indent( 1 ) + StringPrintf( "\"float amount\" [ %f ]\n", rgb->r );
                 else
                 {
                     Float avg = ( rgb->r + rgb->g + rgb->b ) / 3;
-                    Warning( &loc, "Changing RGB \"amount\" ({}, {}, {}) to scalar average {}",
+                    Warning( &loc, "Changing RGB \"amount\" (%f, %f, %f) to scalar average %f",
                         rgb->r, rgb->g, rgb->b, avg );
-                    extra += indent( 1 ) + std::format( "\"float amount\" [ {} ]\n", avg );
+                    extra += indent( 1 ) + StringPrintf( "\"float amount\" [ %f ]\n", avg );
                 }
             }
             else if ( dict->GetSpectrumArray( "amount", SpectrumType::Unbounded, {} ).size( ) >
                 0 )
                 ErrorExitDeferred(
-                    &loc, "Unable to update non-RGB spectrum \"amount\" to a scalar: {}",
+                    &loc, "Unable to update non-RGB spectrum \"amount\" to a scalar: %s",
                     dict->ToParameterDefinition( "amount" ) );
 
             dict->RemoveSpectrum( "amount" );
@@ -1800,7 +1797,7 @@ import.first->Wait();
 
             // Note: swapped order vs pbrt-v3!
             extra +=
-                indent( 1 ) + std::format( "\"string materials\" [ \"{}\" \"{}\" ]\n", m2, m1 );
+                indent( 1 ) + StringPrintf( "\"string materials\" [ \"%s\" \"%s\" ]\n", m2, m1 );
         }
         else if ( *name == "substrate" )
         {
@@ -1904,23 +1901,23 @@ import.first->Wait();
             if ( !d1.GetTexture( "reflectance" ).empty( ) &&
                 !d2.GetTexture( "transmittance" ).empty( ) )
             {
-                PrintLn( "{}Material \"diffusetransmission\"\n", indent( ) );
-                PrintLn( "{}\"texture reflectance\" \"{}\"\n", indent( 1 ), d1.GetTexture( "reflectance" ) );
-                PrintLn( "{}\"texture transmittance\" \"{}\"\n", indent( 1 ), d2.GetTexture( "transmittance" ) );
+                Printf( "%sMaterial \"diffusetransmission\"\n", indent( ) );
+                Printf( "%s\"texture reflectance\" \"%s\"\n", indent( 1 ), d1.GetTexture( "reflectance" ) );
+                Printf( "%s\"texture transmittance\" \"%s\"\n", indent( 1 ), d2.GetTexture( "transmittance" ) );
 
                 if ( !d1.GetTexture( "displacement" ).empty( ) )
-                    PrintLn( "{}\"texture displacement\" \"{}\"\n", indent( 1 ), d1.GetTexture( "displacement" ) );
+                    Printf( "%s\"texture displacement\" \"%s\"\n", indent( 1 ), d1.GetTexture( "displacement" ) );
                 else if ( !d2.GetTexture( "displacement" ).empty( ) )
-                    PrintLn( "{}\"texture displacement\" \"{}\"\n", indent( 1 ), d2.GetTexture( "displacement" ) );
+                    Printf( "%s\"texture displacement\" \"%s\"\n", indent( 1 ), d2.GetTexture( "displacement" ) );
 
-                PrintLn( "{}\"float scale\" 0.5\n", indent( 1 ) );
+                Printf( "%s\"float scale\" 0.5\n", indent( 1 ) );
 
                 return;
             }
         }
 #endif
 
-        PrintLn( "{}Material \"{}\"\n", indent( ), newName );
+        Printf( "%sMaterial \"%s\"\n", indent( ), newName );
         std::cout << extra << dict.ToParameterList( catIndentCount );
     }
 
@@ -1937,15 +1934,15 @@ import.first->Wait();
             if ( definedNamedMaterials.find( name ) != definedNamedMaterials.end( ) )
             {
                 static int count = 0;
-                Warning( &loc, "{}: renaming multiply-defined named material", name );
-                definedNamedMaterials[ name ] = std::format( "{}-renamed-{}", name, count++ );
+                Warning( &loc, "%s: renaming multiply-defined named material", name );
+                definedNamedMaterials[ name ] = StringPrintf( "%s-renamed-%d", name, count++ );
             }
             else
                 definedNamedMaterials[ name ] = name;
-            PrintLn( "{}MakeNamedMaterial \"{}\"\n", indent( ), definedNamedMaterials[ name ] );
+            Printf( "%sMakeNamedMaterial \"%s\"\n", indent( ), definedNamedMaterials[ name ] );
         }
         else
-            PrintLn( "{}MakeNamedMaterial \"{}\"\n", indent( ), name );
+            Printf( "%sMakeNamedMaterial \"%s\"\n", indent( ), name );
 
         std::string extra;
         if ( upgrade )
@@ -1953,7 +1950,7 @@ import.first->Wait();
             std::string matName = dict.GetOneString( "type", "" );
             extra = upgradeMaterial( &matName, &dict, loc );
             dict.RemoveString( "type" );
-            extra = indent( 1 ) + std::format( "\"string type\" [ \"{}\" ]\n", matName ) + extra;
+            extra = indent( 1 ) + StringPrintf( "\"string type\" [ \"%s\" ]\n", matName ) + extra;
         }
         std::cout << extra << dict.ToParameterList( catIndentCount );
 
@@ -1963,7 +1960,7 @@ import.first->Wait();
 
     void FormattingParserTarget::NamedMaterial( const std::string& name, FileLoc loc )
     {
-        PrintLn( "{}NamedMaterial \"{}\"\n", indent( ), name );
+        Printf( "%sNamedMaterial \"%s\"\n", indent( ), name );
     }
 
     static bool upgradeRGBToScale( ParameterDictionary* dict, const char* name,
@@ -1990,7 +1987,7 @@ import.first->Wait();
             return "";
 
         dict->RemoveString( "mapname" );
-        return scene.indent( 1 ) + std::format( "\"string filename\" \"{}\"\n", n );
+        return scene.indent( 1 ) + StringPrintf( "\"string filename\" \"%s\"\n", n );
     }
 
     void FormattingParserTarget::LightSource( const std::string& name,
@@ -1998,7 +1995,7 @@ import.first->Wait();
     {
         ParameterDictionary dict( params, RGBColorSpace::sRGB );
 
-        PrintLn( "{}LightSource \"{}\"\n", indent( ), name );
+        Printf( "%sLightSource \"%s\"\n", indent( ), name );
 
         std::string extra;
         if ( upgrade )
@@ -2049,7 +2046,7 @@ import.first->Wait();
             {
                 totalScale *= dict.GetOneFloat( "scale", 1.f );
                 dict.RemoveFloat( "scale" );
-                PrintLn( "{}\"float scale\" [{}]\n", indent( 1 ), totalScale );
+                Printf( "%s\"float scale\" [%f]\n", indent( 1 ), totalScale );
             }
         }
 
@@ -2076,16 +2073,16 @@ import.first->Wait();
             totalScale *= dict.UpgradeBlackbody( "L" );
 
             if ( name == "area" )
-                PrintLn( "{}AreaLightSource \"diffuse\"\n", indent( ) );
+                Printf( "%sAreaLightSource \"diffuse\"\n", indent( ) );
             else
-                PrintLn( "{}AreaLightSource \"{}\"\n", indent( ), name );
+                Printf( "%sAreaLightSource \"%s\"\n", indent( ), name );
             dict.RemoveInt( "nsamples" );
         }
         else
-            PrintLn( "{}AreaLightSource \"{}\"\n", indent( ), name );
+            Printf( "%sAreaLightSource \"%s\"\n", indent( ), name );
 
         if ( totalScale != 1 )
-            PrintLn( "{}\"float scale\" [{}]\n", indent( 1 ), totalScale );
+            Printf( "%s\"float scale\" [%f]\n", indent( 1 ), totalScale );
         std::cout << extra << dict.ToParameterList( catIndentCount );
     }
 
@@ -2119,7 +2116,7 @@ import.first->Wait();
         std::string s = scene.indent( 1 ) + "\"point2 uv\" [ ";
         for ( size_t i = 0; i < uv.size( ); ++i )
         {
-            s += std::format( "{} {} ", uv[ i ][ 0 ], uv[ i ][ 1 ] );
+            s += StringPrintf( "%f %f ", uv[ i ][ 0 ], uv[ i ][ 1 ] );
             if ( ( i + 1 ) % 4 == 0 )
             {
                 s += "\n";
@@ -2142,20 +2139,20 @@ import.first->Wait();
             if ( vi.size( ) < 500 )
             {
                 // It's a small mesh; don't bother with a PLY file after all.
-                PrintLn( "{}Shape \"{}\"\n", indent( ), name );
+                Printf( "%sShape \"%s\"\n", indent( ), name );
                 std::cout << dict.ToParameterList( catIndentCount );
             }
             else
             {
                 static int count = 1;
                 const char* plyPrefix = getenv( "PLY_PREFIX" ) ? getenv( "PLY_PREFIX" ) : "mesh";
-                std::string fn = std::format( "{}_{:05}.ply", plyPrefix, count++ );
+                std::string fn = StringPrintf( "%s_%05d.ply", plyPrefix, count++ );
 
                 class Transform identity;
                 const TriangleMesh* mesh =
                     Triangle::CreateMesh( &identity, false, dict, &loc, Allocator( ) );
                 if ( !mesh->WritePLY( fn ) )
-                    ErrorExit( &loc, "{}: unable to write PLY file.", fn );
+                    ErrorExit( &loc, "%s: unable to write PLY file.", fn );
 
                 dict.RemoveInt( "indices" );
                 dict.RemovePoint3f( "P" );
@@ -2164,13 +2161,13 @@ import.first->Wait();
                 dict.RemoveVector3f( "S" );
                 dict.RemoveInt( "faceIndices" );
 
-                PrintLn( "{}Shape \"plymesh\" \"string filename\" \"{}\"\n", indent( ), fn );
+                Printf( "%sShape \"plymesh\" \"string filename\" \"%s\"\n", indent( ), fn );
                 std::cout << dict.ToParameterList( catIndentCount );
             }
             return;
         }
 
-        PrintLn( "{}Shape \"{}\"\n", indent( ), name );
+        Printf( "%sShape \"%s\"\n", indent( ), name );
 
         if ( upgrade )
         {
@@ -2197,7 +2194,7 @@ import.first->Wait();
                 auto levels = dict.GetIntArray( "nlevels" );
                 if ( !levels.empty( ) )
                 {
-                    PrintLn( "{}\"integer levels\" [ {} ]\n", indent( 1 ), levels[ 0 ] );
+                    Printf( "%s\"integer levels\" [ %d ]\n", indent( 1 ), levels[ 0 ] );
                     dict.RemoveInt( "nlevels" );
                 }
             }
@@ -2221,7 +2218,7 @@ import.first->Wait();
 
     void FormattingParserTarget::ReverseOrientation( FileLoc loc )
     {
-        PrintLn( "{}ReverseOrientation\n", indent( ) );
+        Printf( "%sReverseOrientation\n", indent( ) );
     }
 
     void FormattingParserTarget::ObjectBegin( const std::string& name, FileLoc loc )
@@ -2231,20 +2228,20 @@ import.first->Wait();
             if ( definedObjectInstances.find( name ) != definedObjectInstances.end( ) )
             {
                 static int count = 0;
-                Warning( &loc, "{}: renaming multiply-defined object instance", name );
-                definedObjectInstances[ name ] = std::format( "{}-renamed-{}", name, count++ );
+                Warning( &loc, "%s: renaming multiply-defined object instance", name );
+                definedObjectInstances[ name ] = StringPrintf( "%s-renamed-%d", name, count++ );
             }
             else
                 definedObjectInstances[ name ] = name;
-            PrintLn( "{}ObjectBegin \"{}\"\n", indent( ), definedObjectInstances[ name ] );
+            Printf( "%sObjectBegin \"%s\"\n", indent( ), definedObjectInstances[ name ] );
         }
         else
-            PrintLn( "{}ObjectBegin \"{}\"\n", indent( ), name );
+            Printf( "%sObjectBegin \"%s\"\n", indent( ), name );
     }
 
     void FormattingParserTarget::ObjectEnd( FileLoc loc )
     {
-        PrintLn( "{}ObjectEnd\n", indent( ) );
+        Printf( "%sObjectEnd\n", indent( ) );
     }
 
     void FormattingParserTarget::ObjectInstance( const std::string& name, FileLoc loc )
@@ -2253,13 +2250,13 @@ import.first->Wait();
         {
             if ( definedObjectInstances.find( name ) == definedObjectInstances.end( ) )
                 // this is legit if we're upgrading multiple files separately...
-                PrintLn( "{}ObjectInstance \"{}\"\n", indent( ), name );
+                Printf( "%sObjectInstance \"%s\"\n", indent( ), name );
             else
                 // use the most recent renaming of it
-                PrintLn( "{}ObjectInstance \"{}\"\n", indent( ), definedObjectInstances[ name ] );
+                Printf( "%sObjectInstance \"%s\"\n", indent( ), definedObjectInstances[ name ] );
         }
         else
-            PrintLn( "{}ObjectInstance \"{}\"\n", indent( ), name );
+            Printf( "%sObjectInstance \"%s\"\n", indent( ), name );
     }
 
     void FormattingParserTarget::EndOfFiles( ) {}

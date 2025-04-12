@@ -40,7 +40,8 @@
 namespace pbrto
 {
 
-    PBRTO_EXPORT size_t GetCurrentRSS( );
+    PBRTO_EXPORT
+        size_t GetCurrentRSS( );
 
     class TrackedMemoryResource : public pstdo::pmr::memory_resource
     {

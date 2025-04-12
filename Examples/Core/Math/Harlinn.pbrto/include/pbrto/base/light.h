@@ -15,74 +15,84 @@
 
 #include <string>
 
-namespace pbrt
-{
+namespace pbrt {
 
-    // LightType Definition
-    enum class LightType { DeltaPosition, DeltaDirection, Area, Infinite };
+// LightType Definition
+enum class LightType { DeltaPosition, DeltaDirection, Area, Infinite };
 
-    // Light Source Types
-    class PointLight;
-    class DistantLight;
-    class ProjectionLight;
-    class GoniometricLight;
-    class DiffuseAreaLight;
-    class UniformInfiniteLight;
-    class ImageInfiniteLight;
-    class PortalImageInfiniteLight;
-    class SpotLight;
+class PointLight;
+class DistantLight;
+class ProjectionLight;
+class GoniometricLight;
+class DiffuseAreaLight;
+class UniformInfiniteLight;
+class ImageInfiniteLight;
+class PortalImageInfiniteLight;
+class SpotLight;
 
-    class LightSampleContext;
-    class LightBounds;
-    class CompactLightBounds;
-    struct LightLiSample;
-    struct LightLeSample;
+class LightSampleContext;
+class LightBounds;
+class CompactLightBounds;
+struct LightLiSample;
+struct LightLeSample;
 
-    // Light Definition
-    class Light : public TaggedPointer< PointLight, DistantLight, ProjectionLight, GoniometricLight, SpotLight, DiffuseAreaLight, UniformInfiniteLight, ImageInfiniteLight, PortalImageInfiniteLight>
-    {
-    public:
-        // Light Interface
-        using TaggedPointer::TaggedPointer;
+// Light Definition
+class Light : public TaggedPointer<  // Light Source Types
+                  PointLight, DistantLight, ProjectionLight, GoniometricLight, SpotLight,
+                  DiffuseAreaLight, UniformInfiniteLight, ImageInfiniteLight,
+                  PortalImageInfiniteLight
 
-        static Light Create( const std::string& name, const ParameterDictionary& parameters, const Transform& renderFromLight, const CameraTransform& cameraTransform, Medium outsideMedium, const FileLoc* loc, Allocator alloc );
-        static Light CreateArea( const std::string& name, const ParameterDictionary& parameters, const Transform& renderFromLight, const MediumInterface& mediumInterface, const Shape shape, FloatTexture alpha, const FileLoc* loc, Allocator alloc );
+                  > {
+  public:
+    // Light Interface
+    using TaggedPointer::TaggedPointer;
 
-        SampledSpectrum Phi( SampledWavelengths lambda ) const;
+    static Light Create(const std::string &name, const ParameterDictionary &parameters,
+                        const Transform &renderFromLight,
+                        const CameraTransform &cameraTransform, Medium outsideMedium,
+                        const FileLoc *loc, Allocator alloc);
+    static Light CreateArea(const std::string &name,
+                            const ParameterDictionary &parameters,
+                            const Transform &renderFromLight,
+                            const MediumInterface &mediumInterface, const Shape shape,
+                            FloatTexture alpha, const FileLoc *loc, Allocator alloc);
 
-        PBRT_CPU_GPU 
-        inline LightType Type( ) const;
+    SampledSpectrum Phi(SampledWavelengths lambda) const;
 
-        PBRT_CPU_GPU 
-        inline pstd::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF = false ) const;
+    PBRT_CPU_GPU inline LightType Type() const;
 
-        PBRT_CPU_GPU 
-        inline Float PDF_Li( LightSampleContext ctx, Vector3f wi, bool allowIncompletePDF = false ) const;
+    PBRT_CPU_GPU inline pstd::optional<LightLiSample> SampleLi(
+        LightSampleContext ctx, Point2f u, SampledWavelengths lambda,
+        bool allowIncompletePDF = false) const;
 
-        std::string ToString( ) const;
+    PBRT_CPU_GPU inline Float PDF_Li(LightSampleContext ctx, Vector3f wi,
+                                     bool allowIncompletePDF = false) const;
 
-        // AreaLights only
-        PBRT_CPU_GPU 
-        inline SampledSpectrum L( Point3f p, Normal3f n, Point2f uv, Vector3f w, const SampledWavelengths& lambda ) const;
+    std::string ToString() const;
 
-        // InfiniteLights only
-        PBRT_CPU_GPU 
-        inline SampledSpectrum Le( const Ray& ray, const SampledWavelengths& lambda ) const;
+    // AreaLights only
+    PBRT_CPU_GPU inline SampledSpectrum L(Point3f p, Normal3f n, Point2f uv, Vector3f w,
+                                          const SampledWavelengths &lambda) const;
 
-        void Preprocess( const Bounds3f& sceneBounds );
+    // InfiniteLights only
+    PBRT_CPU_GPU inline SampledSpectrum Le(const Ray &ray,
+                                           const SampledWavelengths &lambda) const;
 
-        pstd::optional<LightBounds> Bounds( ) const;
+    void Preprocess(const Bounds3f &sceneBounds);
 
-        PBRT_CPU_GPU
-        pstd::optional<LightLeSample> SampleLe( Point2f u1, Point2f u2, SampledWavelengths& lambda, Float time ) const;
+    pstd::optional<LightBounds> Bounds() const;
 
-        PBRT_CPU_GPU
-        void PDF_Le( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
+    PBRT_CPU_GPU
+    pstd::optional<LightLeSample> SampleLe(Point2f u1, Point2f u2,
+                                           SampledWavelengths &lambda, Float time) const;
 
-        // AreaLights only
-        PBRT_CPU_GPU
-        void PDF_Le( const Interaction& intr, Vector3f w, Float* pdfPos, Float* pdfDir ) const;
-    };
+    PBRT_CPU_GPU
+    void PDF_Le(const Ray &ray, Float *pdfPos, Float *pdfDir) const;
+
+    // AreaLights only
+    PBRT_CPU_GPU
+    void PDF_Le(const Interaction &intr, Vector3f w, Float *pdfPos, Float *pdfDir) const;
+};
 
 }  // namespace pbrt
 

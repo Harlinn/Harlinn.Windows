@@ -297,6 +297,7 @@
     <ClInclude Include="include\pbrto\util\NewParallel.h" />
     <ClInclude Include="include\pbrto\util\NewPmj02Tables.h" />
     <ClInclude Include="include\pbrto\util\NewPrimes.h" />
+    <ClInclude Include="include\pbrto\util\NewPrint.h" />
     <ClInclude Include="include\pbrto\util\NewProgressReporter.h" />
     <ClInclude Include="include\pbrto\util\NewPStd.h" />
     <ClInclude Include="include\pbrto\util\NewRng.h" />
@@ -446,6 +447,7 @@
     <ClCompile Include="src\util\NewDisplay.cpp" />
     <ClCompile Include="src\util\NewError.cpp" />
     <ClCompile Include="src\util\NewFile.cpp" />
+    <ClCompile Include="src\util\NewFloat.cpp" />
     <ClCompile Include="src\util\NewGui.cpp" />
     <ClCompile Include="src\util\NewImage.cpp" />
     <ClCompile Include="src\util\NewLog.cpp" />
@@ -459,6 +461,7 @@
     <ClCompile Include="src\util\NewParallel.cpp" />
     <ClCompile Include="src\util\NewPmj02Tables.cpp" />
     <ClCompile Include="src\util\NewPrimes.cpp" />
+    <ClCompile Include="src\util\NewPrint.cpp" />
     <ClCompile Include="src\util\NewProgressReporter.cpp" />
     <ClCompile Include="src\util\NewPStd.cpp" />
     <ClCompile Include="src\util\NewRgbSpectrum_aces.cpp" />
@@ -547,6 +550,9 @@
   <ItemGroup>
     <None Include="Readme\README.md" />
     <None Include="Readme\THIRD_PARTY.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="src\visualstudio.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

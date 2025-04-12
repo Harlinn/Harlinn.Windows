@@ -37,7 +37,9 @@ namespace pbrto
 
     std::string TabulatedBSSRDF::ToString( ) const
     {
-        return std::format( "[ TabulatedBSSRDF po: {} eta: {} ns: {} sigma_t: {} rho: {} table: {} ]", po, eta, ns, sigma_t, rho, *table );
+        return StringPrintf(
+            "[ TabulatedBSSRDF po: %s eta: %f ns: %s sigma_t: %s rho: %s table: %s ]", po,
+            eta, ns, sigma_t, rho, *table );
     }
 
     // BSSRDF Function Definitions
@@ -74,8 +76,7 @@ namespace pbrto
 
             // Evaluate dipole integrand $E_{\roman{d}}$ at $\depthreal$ and add to _Ed_
             Float zv = -zr + 2 * ze;
-            Float dr = Math::Sqrt( Sqr( r ) + Sqr( zr ) ), dv = Math::Sqrt( Sqr( r ) + Sqr( zv ) );
-
+            Float dr = std::sqrt( Sqr( r ) + Sqr( zr ) ), dv = std::sqrt( Sqr( r ) + Sqr( zv ) );
             // Compute dipole fluence rate $\dipole(r)$ using Equation
             // $(\ref{eq:diffusion-dipole})$
             Float phiD =
@@ -108,11 +109,7 @@ namespace pbrto
             // Evaluate single-scattering integrand and add to _Ess_
             Float ti = tCrit + SampleExponential( ( i + 0.5f ) / nSamples, sigma_t );
             // Determine length $d$ of connecting segment and $\cos\theta_\roman{o}$
-#ifdef PBRT_USES_HCCMATH_SQRT
-            Float d = Math::Sqrt( Sqr( r ) + Sqr( ti ) );
-#else
             Float d = std::sqrt( Sqr( r ) + Sqr( ti ) );
-#endif
             Float cosTheta_o = ti / d;
 
             // Add contribution of single scattering at depth $t$
@@ -168,8 +165,8 @@ namespace pbrto
 
     std::string BSSRDFTable::ToString( ) const
     {
-        return std::format( "[ BSSRDFTable rhoSamples: {} radiusSamples: {} profile: {} "
-            "rhoEff: {} profileCDF: {} ]",
+        return StringPrintf( "[ BSSRDFTable rhoSamples: %s radiusSamples: %s profile: %s "
+            "rhoEff: %s profileCDF: %s ]",
             rhoSamples, radiusSamples, profile, rhoEff, profileCDF );
     }
 

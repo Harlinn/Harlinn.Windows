@@ -42,15 +42,15 @@ namespace pbrto
 
     static bool quiet = false;
 
-    PBRTO_EXPORT void SuppressErrorMessages( )
+    void SuppressErrorMessages( )
     {
         quiet = true;
     }
 
     std::string FileLoc::ToString( ) const
     {
-        auto s = std::string( filename.data( ), filename.size( ) );
-        return std::format( "{}:{}:{}", s, line, column );
+        return StringPrintf( "%s:%d:%d", std::string( filename.data( ), filename.size( ) ), line,
+            column );
     }
 
     static void processError( const char* errorType, const FileLoc* loc, const char* message )
@@ -73,26 +73,29 @@ namespace pbrto
         if ( errorString != lastError )
         {
             fprintf( stderr, "%s\n", errorString.c_str( ) );
-            NLOG_VERBOSE( "{}", errorString );
+            NLOG_VERBOSE( "%s", errorString );
             lastError = errorString;
         }
     }
 
-    PBRTO_EXPORT void Warning( const FileLoc* loc, const char* message )
+    PBRTO_EXPORT
+        void Warning( const FileLoc* loc, const char* message )
     {
         if ( quiet )
             return;
         processError( "Warning", loc, message );
     }
 
-    PBRTO_EXPORT void Error( const FileLoc* loc, const char* message )
+    PBRTO_EXPORT
+        void Error( const FileLoc* loc, const char* message )
     {
         if ( quiet )
             return;
         processError( "Error", loc, message );
     }
 
-    PBRTO_EXPORT void ErrorExit( const FileLoc* loc, const char* message )
+    PBRTO_EXPORT
+        void ErrorExit( const FileLoc* loc, const char* message )
     {
         processError( "Error", loc, message );
         DisconnectFromDisplayServer( );
@@ -103,7 +106,7 @@ namespace pbrto
 #endif
     }
 
-    PBRTO_EXPORT int LastError( )
+    int LastError( )
     {
 #ifdef PBRT_IS_WINDOWS
         return GetLastError( );
@@ -112,7 +115,7 @@ namespace pbrto
 #endif
     }
 
-    PBRTO_EXPORT std::string ErrorString( int errorId )
+    std::string ErrorString( int errorId )
     {
 #ifdef PBRT_IS_WINDOWS
         char* s = NULL;
@@ -121,12 +124,12 @@ namespace pbrto
             NULL, errorId, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), ( LPSTR )&s, 0,
             NULL );
 
-        std::string result = std::format( "{} ({})", s, errorId );
+        std::string result = StringPrintf( "%s (%d)", s, errorId );
         LocalFree( s );
 
         return result;
 #else
-        return std::format( "{} ({})", strerror( errorId ), errorId );
+        return StringPrintf( "%s (%d)", strerror( errorId ), errorId );
 #endif
     }
 

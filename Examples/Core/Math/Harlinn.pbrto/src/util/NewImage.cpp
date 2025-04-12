@@ -108,22 +108,21 @@ namespace pbrto
 
     std::string ImageChannelValues::ToString( ) const
     {
-        return std::format( "[ ImageChannelValues {} ]", ( ( InlinedVector<Float, 4> & ) * this ) );
+        return StringPrintf( "[ ImageChannelValues %s ]", ( ( InlinedVector<Float, 4> & ) * this ) );
     }
 
     std::string ImageChannelDesc::ToString( ) const
     {
-        return std::format( "[ ImageChannelDesc offset: {} ]", offset );
+        return StringPrintf( "[ ImageChannelDesc offset: %s ]", offset );
     }
 
     std::string ImageMetadata::ToString( ) const
     {
-        return std::format( "[ ImageMetadata renderTimeSeconds: {} cameraFromWorld: {} "
-            "NDCFromWorld: {} pixelBounds: {} fullResolution: {} "
-            "samplesPerPixel: {} MSE: {} colorSpace: {} ]",
+        return StringPrintf( "[ ImageMetadata renderTimeSeconds: %s cameraFromWorld: %s "
+            "NDCFromWorld: %s pixelBounds: %s fullResolution: %s "
+            "samplesPerPixel: %s MSE: %s colorSpace: %s ]",
             renderTimeSeconds, cameraFromWorld, NDCFromWorld, pixelBounds,
             fullResolution, samplesPerPixel, MSE, colorSpace );
-        
     }
 
     const RGBColorSpace* ImageMetadata::GetColorSpace( ) const
@@ -202,9 +201,7 @@ namespace pbrto
         // Compute filter weights
         std::vector<Float> wts( 2 * halfWidth + 1, Float( 0 ) );
         for ( int d = 0; d < 2 * halfWidth + 1; ++d )
-        {
-            wts[ d ] = Math::Gaussian( static_cast<float>(d - halfWidth), 0.f, sigma );
-        }
+            wts[ d ] = Gaussian( static_cast<Float>( d - halfWidth ), 0.f, sigma );
 
         // Normalize weights
         Float wtSum = std::accumulate( wts.begin( ), wts.end( ), Float( 0 ) );
@@ -941,8 +938,8 @@ namespace pbrto
         std::vector<Float> fx, fy;
         for ( int i = 0; i <= halfWidth; ++i )
         {
-            fx.push_back( Gaussian( static_cast<float>( i ), 0.f, xySigma[ 0 ] ) );
-            fy.push_back( Gaussian( static_cast< float >( i ), 0.f, xySigma[ 1 ] ) );
+            fx.push_back( Gaussian( static_cast<Float>( i ), 0.f, xySigma[ 0 ] ) );
+            fy.push_back( Gaussian( static_cast< Float >( i ), 0.f, xySigma[ 1 ] ) );
         }
 
         ParallelFor( 0, resolution.y, [ & ]( int64_t y0, int64_t y1 ) {
@@ -1110,11 +1107,13 @@ namespace pbrto
                 }
                 else
                 {
-                    std::string err = std::format( "{}: ignoring additional channels for this image format: ", name );
+                    std::string err = StringPrintf( "%s: ignoring additional channels for this "
+                        "image format: ",
+                        name );
                     for ( const auto& ch : outImage.ChannelNames( ) )
                         if ( ch != "R" && ch != "G" && ch != "B" )
-                            err += std::format( "\"{}\" ", ch );
-                    Error( "{}", err );
+                            err += StringPrintf( "\"%s\" ", ch );
+                    Error( "%s", err );
                 }
 
                 outImage = outImage.SelectChannels( desc );
@@ -1317,7 +1316,7 @@ namespace pbrto
             file.setFrameBuffer( imageToFrameBuffer( image, image.AllChannelsDesc( ), dw ) );
             file.readPixels( dw.min.y, dw.max.y );
 
-            NLOG_VERBOSE( "Read EXR image %s ({} x {})", name, width, height );
+            NLOG_VERBOSE( "Read EXR image %s (%d x %d)", name, width, height );
             return ImageAndMetadata{ std::move( image ), metadata };
         }
         catch ( const std::exception& e )
@@ -1612,8 +1611,8 @@ namespace pbrto
 
     std::string Image::ToString( ) const
     {
-        return std::format( "[ Image format: {} resolution: {} channelNames: {} "
-            "encoding: {} ]",
+        return StringPrintf( "[ Image format: %s resolution: %s channelNames: %s "
+            "encoding: %s ]",
             format, resolution, channelNames,
             encoding ? encoding.ToString( ).c_str( ) : "(nullptr)" );
     }
@@ -1897,7 +1896,7 @@ namespace pbrto
                 rgb32[ i ] *= std::abs( scale );
 
         fclose( fp );
-        NLOG_VERBOSE( "Read PFM image %s ({} x {})", filename, width, height );
+        NLOG_VERBOSE( "Read PFM image %s (%d x %d)", filename, width, height );
         metadata.colorSpace = RGBColorSpace::sRGB;
         if ( nChannels == 1 )
             return ImageAndMetadata{ Image( std::move( rgb32 ), {width, height}, {"Y"} ),

@@ -55,28 +55,29 @@ namespace pbrto
     class DebugMLTSampler;
 
     // Sampler Definition
-    class Sampler : public TaggedPointer< PMJ02BNSampler, IndependentSampler, StratifiedSampler, HaltonSampler, PaddedSobolSampler, SobolSampler, ZSobolSampler, MLTSampler, DebugMLTSampler >
+    class Sampler
+        : public TaggedPointer<  // Sampler Types
+        PMJ02BNSampler, IndependentSampler, StratifiedSampler, HaltonSampler,
+        PaddedSobolSampler, SobolSampler, ZSobolSampler, MLTSampler, DebugMLTSampler
+
+        >
     {
     public:
         // Sampler Interface
         using TaggedPointer::TaggedPointer;
 
-        static Sampler Create( const std::string& name, const ParameterDictionary& parameters, Point2i fullResolution, const FileLoc* loc, Allocator alloc );
+        static Sampler Create( const std::string& name, const ParameterDictionary& parameters,
+            Point2i fullResolution, const FileLoc* loc, Allocator alloc );
 
-        PBRT_CPU_GPU
-            inline int SamplesPerPixel( ) const;
+        PBRT_CPU_GPU inline int SamplesPerPixel( ) const;
 
-        PBRT_CPU_GPU
-            inline void StartPixelSample( Point2i p, int sampleIndex, int dimension = 0 );
+        PBRT_CPU_GPU inline void StartPixelSample( Point2i p, int sampleIndex,
+            int dimension = 0 );
 
-        PBRT_CPU_GPU
-            inline Float Get1D( );
+        PBRT_CPU_GPU inline Float Get1D( );
+        PBRT_CPU_GPU inline Point2f Get2D( );
 
-        PBRT_CPU_GPU
-            inline Point2f Get2D( );
-
-        PBRT_CPU_GPU
-            inline Point2f GetPixel2D( );
+        PBRT_CPU_GPU inline Point2f GetPixel2D( );
 
         Sampler Clone( Allocator alloc = {} );
 

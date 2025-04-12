@@ -20,40 +20,38 @@
 #include <map>
 #include <string>
 
-namespace pbrt
-{
+namespace pbrt {
 
-    class CPUAggregate : public WavefrontAggregate
-    {
-    public:
-        CPUAggregate( BasicScene& scene, NamedTextures& textures,
-            const std::map<int, pstd::vector<Light>*>& shapeIndexToAreaLights,
-            const std::map<std::string, Medium>& media,
-            const std::map<std::string, pbrt::Material>& namedMaterials,
-            const std::vector<pbrt::Material>& materials );
+class CPUAggregate : public WavefrontAggregate {
+  public:
+    CPUAggregate(BasicScene &scene, NamedTextures &textures,
+                 const std::map<int, pstd::vector<Light> *> &shapeIndexToAreaLights,
+                 const std::map<std::string, Medium> &media,
+                 const std::map<std::string, pbrt::Material> &namedMaterials,
+                 const std::vector<pbrt::Material> &materials);
 
-        Bounds3f Bounds( ) const { return aggregate ? aggregate.Bounds( ) : Bounds3f( ); }
+    Bounds3f Bounds() const { return aggregate ? aggregate.Bounds() : Bounds3f(); }
 
-        void IntersectClosest( int maxRays, const RayQueue* rayQueue,
-            EscapedRayQueue* escapedRayQueue,
-            HitAreaLightQueue* hitAreaLightQueue,
-            MaterialEvalQueue* basicEvalMaterialQueue,
-            MaterialEvalQueue* universalEvalMaterialQueue,
-            MediumSampleQueue* mediumSampleQueue,
-            RayQueue* nextRayQueue ) const;
+    void IntersectClosest(int maxRays, const RayQueue *rayQueue,
+                          EscapedRayQueue *escapedRayQueue,
+                          HitAreaLightQueue *hitAreaLightQueue,
+                          MaterialEvalQueue *basicEvalMaterialQueue,
+                          MaterialEvalQueue *universalEvalMaterialQueue,
+                          MediumSampleQueue *mediumSampleQueue,
+                          RayQueue *nextRayQueue) const;
 
-        void IntersectShadow( int maxRays, ShadowRayQueue* shadowRayQueue,
-            SOA<PixelSampleState>* pixelSampleState ) const;
+    void IntersectShadow(int maxRays, ShadowRayQueue *shadowRayQueue,
+                         SOA<PixelSampleState> *pixelSampleState) const;
 
-        void IntersectShadowTr( int maxRays, ShadowRayQueue* shadowRayQueue,
-            SOA<PixelSampleState>* pixelSampleState ) const;
+    void IntersectShadowTr(int maxRays, ShadowRayQueue *shadowRayQueue,
+                           SOA<PixelSampleState> *pixelSampleState) const;
 
-        void IntersectOneRandom( int maxRays,
-            SubsurfaceScatterQueue* subsurfaceScatterQueue ) const;
+    void IntersectOneRandom(int maxRays,
+                            SubsurfaceScatterQueue *subsurfaceScatterQueue) const;
 
-    private:
-        Primitive aggregate;
-    };
+  private:
+    Primitive aggregate;
+};
 
 }  // namespace pbrt
 

@@ -236,7 +236,7 @@ namespace pbrto
 #else
                 Float tEnd = !result.hit
                     ? tMax
-                    : ( Distance( ray.o, Point3f( result.pHit ) ) / Length( ray.d ) );
+                    : ( ScalarDistance( ray.o, Point3f( result.pHit ) ) / ScalarLength( ray.d ) );
 #endif
                 SampledSpectrum T_maj = SampleT_maj(
                     ray, tEnd, rng.Uniform<Float>( ), rng, lambda,

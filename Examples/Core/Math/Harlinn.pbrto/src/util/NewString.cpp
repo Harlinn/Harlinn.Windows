@@ -45,7 +45,8 @@
 namespace pbrto
 {
 
-    PBRTO_EXPORT bool Atoi( std::string_view str, int* ptr )
+    PBRTO_EXPORT
+        bool Atoi( std::string_view str, int* ptr )
     {
         try
         {
@@ -58,7 +59,8 @@ namespace pbrto
         return true;
     }
 
-    PBRTO_EXPORT bool Atoi( std::string_view str, int64_t* ptr )
+    PBRTO_EXPORT
+        bool Atoi( std::string_view str, int64_t* ptr )
     {
         try
         {
@@ -71,7 +73,8 @@ namespace pbrto
         return true;
     }
 
-    PBRTO_EXPORT bool Atof( std::string_view str, float* ptr )
+    PBRTO_EXPORT
+        bool Atof( std::string_view str, float* ptr )
     {
         try
         {
@@ -84,7 +87,8 @@ namespace pbrto
         return true;
     }
 
-    PBRTO_EXPORT bool Atof( std::string_view str, double* ptr )
+    PBRTO_EXPORT
+        bool Atof( std::string_view str, double* ptr )
     {
         try
         {
@@ -97,7 +101,8 @@ namespace pbrto
         return true;
     }
 
-    PBRTO_EXPORT std::vector<std::string> SplitStringsFromWhitespace( std::string_view str )
+    PBRTO_EXPORT
+        std::vector<std::string> SplitStringsFromWhitespace( std::string_view str )
     {
         std::vector<std::string> ret;
 
@@ -120,7 +125,8 @@ namespace pbrto
         return ret;
     }
 
-    PBRTO_EXPORT std::vector<std::string> SplitString( std::string_view str, char ch )
+    PBRTO_EXPORT
+        std::vector<std::string> SplitString( std::string_view str, char ch )
     {
         std::vector<std::string> strings;
 
@@ -145,7 +151,8 @@ namespace pbrto
         return strings;
     }
 
-    PBRTO_EXPORT std::vector<int> SplitStringToInts( std::string_view str, char ch )
+    PBRTO_EXPORT
+        std::vector<int> SplitStringToInts( std::string_view str, char ch )
     {
         std::vector<std::string> strs = SplitString( str, ch );
         std::vector<int> ints( strs.size( ) );
@@ -156,7 +163,8 @@ namespace pbrto
         return ints;
     }
 
-    PBRTO_EXPORT std::vector<int64_t> SplitStringToInt64s( std::string_view str, char ch )
+    PBRTO_EXPORT
+        std::vector<int64_t> SplitStringToInt64s( std::string_view str, char ch )
     {
         std::vector<std::string> strs = SplitString( str, ch );
         std::vector<int64_t> ints( strs.size( ) );
@@ -167,7 +175,8 @@ namespace pbrto
         return ints;
     }
 
-    PBRTO_EXPORT std::vector<Float> SplitStringToFloats( std::string_view str, char ch )
+    PBRTO_EXPORT
+        std::vector<Float> SplitStringToFloats( std::string_view str, char ch )
     {
         std::vector<std::string> strs = SplitString( str, ch );
         std::vector<Float> floats( strs.size( ) );
@@ -178,7 +187,8 @@ namespace pbrto
         return floats;
     }
 
-    PBRTO_EXPORT std::vector<double> SplitStringToDoubles( std::string_view str, char ch )
+    PBRTO_EXPORT
+        std::vector<double> SplitStringToDoubles( std::string_view str, char ch )
     {
         std::vector<std::string> strs = SplitString( str, ch );
         std::vector<double> doubles( strs.size( ) );
@@ -190,7 +200,8 @@ namespace pbrto
     }
 
 #ifdef PBRT_IS_WINDOWS
-    std::wstring WStringFromU16String( std::u16string str )
+    PBRTO_EXPORT
+        std::wstring WStringFromU16String( std::u16string str )
     {
         std::wstring ws;
         ws.reserve( str.size( ) );
@@ -199,12 +210,14 @@ namespace pbrto
         return ws;
     }
 
-    PBRTO_EXPORT std::wstring WStringFromUTF8( std::string str )
+    PBRTO_EXPORT
+        std::wstring WStringFromUTF8( std::string str )
     {
         return WStringFromU16String( UTF16FromUTF8( str ) );
     }
 
-    std::u16string U16StringFromWString( std::wstring str )
+    PBRTO_EXPORT
+        std::u16string U16StringFromWString( std::wstring str )
     {
         std::u16string su16;
         su16.reserve( str.size( ) );
@@ -213,7 +226,8 @@ namespace pbrto
         return su16;
     }
 
-    PBRTO_EXPORT std::string UTF8FromWString( std::wstring str )
+    PBRTO_EXPORT
+        std::string UTF8FromWString( std::wstring str )
     {
         return UTF8FromUTF16( U16StringFromWString( str ) );
     }
@@ -221,7 +235,8 @@ namespace pbrto
 #endif  // PBRT_IS_WINDOWS
 
     // https://stackoverflow.com/a/52703954
-    PBRTO_EXPORT std::string UTF8FromUTF16( std::u16string str )
+    PBRTO_EXPORT
+        std::string UTF8FromUTF16( std::u16string str )
     {
         std::wstring_convert<
             std::codecvt_utf8_utf16<char16_t, 0x10ffff, std::codecvt_mode::little_endian>,
@@ -232,7 +247,8 @@ namespace pbrto
         return utf8;
     }
 
-    PBRTO_EXPORT std::u16string UTF16FromUTF8( std::string str )
+    PBRTO_EXPORT
+        std::u16string UTF16FromUTF8( std::string str )
     {
         std::wstring_convert<
             std::codecvt_utf8_utf16<char16_t, 0x10ffff, std::codecvt_mode::little_endian>,
@@ -243,7 +259,8 @@ namespace pbrto
         return utf16;
     }
 
-    PBRTO_EXPORT std::string NormalizeUTF8( std::string str )
+    PBRTO_EXPORT
+        std::string NormalizeUTF8( std::string str )
     {
         utf8proc_option_t options = UTF8PROC_COMPOSE;
 

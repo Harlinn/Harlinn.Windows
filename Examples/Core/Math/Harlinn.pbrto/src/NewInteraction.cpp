@@ -41,25 +41,25 @@ namespace pbrto
 
     std::string Interaction::ToString( ) const
     {
-        return std::format(
-            "[ Interaction pi: {} n: {} uv: {} wo: {} time: {} "
-            "medium: {} mediumInterface: {} ]",
+        return StringPrintf(
+            "[ Interaction pi: %s n: %s uv: %s wo: %s time: %s "
+            "medium: %s mediumInterface: %s ]",
             pi, n, uv, wo, time, medium ? medium.ToString( ).c_str( ) : "(nullptr)",
             mediumInterface ? mediumInterface->ToString( ).c_str( ) : "(nullptr)" );
     }
 
     std::string MediumInteraction::ToString( ) const
     {
-        return std::format(
-            "[ MediumInteraction pi: {} n: {} uv: {} wo: {} time: {} "
-            "medium: {} mediumInterface: {} phase: {} ]",
+        return StringPrintf(
+            "[ MediumInteraction pi: %s n: %s uv: %s wo: %s time: %s "
+            "medium: %s mediumInterface: %s phase: %s ]",
             pi, n, uv, wo, time, medium ? medium.ToString( ).c_str( ) : "(nullptr)",
             mediumInterface ? mediumInterface->ToString( ).c_str( ) : "(nullptr)",
             phase ? phase.ToString( ).c_str( ) : "(nullptr)" );
     }
 
     // SurfaceInteraction Method Definitions
-    void SurfaceInteraction::ComputeDifferentials( const RayDifferential& ray, Camera camera,
+    PBRT_CPU_GPU void SurfaceInteraction::ComputeDifferentials( const RayDifferential& ray, Camera camera,
         int samplesPerPixel )
     {
         if ( GetOptions( ).disableTextureFiltering )
@@ -68,8 +68,8 @@ namespace pbrto
             dpdx = dpdy = Vector3f( 0, 0, 0 );
             return;
         }
-        if ( ray.hasDifferentials && Dot( n, ray.rxDirection ) != 0 &&
-            Dot( n, ray.ryDirection ) != 0 )
+        if ( ray.hasDifferentials && ScalarDot( n, ray.rxDirection ) != 0 &&
+            ScalarDot( n, ray.ryDirection ) != 0 )
         {
             // Estimate screen-space change in $\pt{}$ using ray differentials
             // Compute auxiliary intersection points with plane, _px_ and _py_
@@ -114,7 +114,7 @@ namespace pbrto
         dvdy = IsFinite( dvdy ) ? Clamp( dvdy, -1e8f, 1e8f ) : 0.f;
     }
 
-    void SurfaceInteraction::SkipIntersection( RayDifferential* ray, Float t ) const
+    PBRT_CPU_GPU void SurfaceInteraction::SkipIntersection( RayDifferential* ray, Float t ) const
     {
         *( ( Ray* )ray ) = SpawnRay( ray->d );
         if ( ray->hasDifferentials )
@@ -124,7 +124,7 @@ namespace pbrto
         }
     }
 
-    RayDifferential SurfaceInteraction::SpawnRay( const RayDifferential& rayi,
+    PBRT_CPU_GPU RayDifferential SurfaceInteraction::SpawnRay( const RayDifferential& rayi,
         const BSDF& bsdf, Vector3f wi, int flags,
         Float eta ) const
     {
@@ -149,9 +149,9 @@ namespace pbrto
                 Float dwoDotn_dx = ScalarDot( dwodx, n ) + ScalarDot( wo, dndx );
                 Float dwoDotn_dy = ScalarDot( dwody, n ) + ScalarDot( wo, dndy );
                 rd.rxDirection =
-                    wi - dwodx + 2 * Vector3f( Dot( wo, n ) * dndx + dwoDotn_dx * n );
+                    wi - dwodx + 2 * Vector3f( ScalarDot( wo, n ) * dndx + dwoDotn_dx * n );
                 rd.ryDirection =
-                    wi - dwody + 2 * Vector3f( Dot( wo, n ) * dndy + dwoDotn_dy * n );
+                    wi - dwody + 2 * Vector3f( ScalarDot( wo, n ) * dndy + dwoDotn_dy * n );
 
             }
             else if ( flags == BxDFFlags::SpecularTransmission )
@@ -258,13 +258,13 @@ namespace pbrto
 
     std::string SurfaceInteraction::ToString( ) const
     {
-        return std::format(
-            "[ SurfaceInteraction pi: {} n: {} uv: {} wo: {} time: {} "
-            "medium: {} mediumInterface: {} dpdu: {} dpdv: {} dndu: {} dndv: {} "
-            "shading.n: {} shading.dpdu: {} shading.dpdv: {} "
-            "shading.dndu: {} shading.dndv: {} material: {} "
-            "areaLight: {} dpdx: {} dpdy: {} dudx: {} dvdx: {} "
-            "dudy: {} dvdy: {} faceIndex: {} ]",
+        return StringPrintf(
+            "[ SurfaceInteraction pi: %s n: %s uv: %s wo: %s time: %s "
+            "medium: %s mediumInterface: %s dpdu: %s dpdv: %s dndu: %s dndv: %s "
+            "shading.n: %s shading.dpdu: %s shading.dpdv: %s "
+            "shading.dndu: %s shading.dndv: %s material: %s "
+            "areaLight: %s dpdx: %s dpdy: %s dudx: %f dvdx: %f "
+            "dudy: %f dvdy: %f faceIndex: %d ]",
             pi, n, uv, wo, time, medium ? medium.ToString( ).c_str( ) : "(nullptr)",
             mediumInterface ? mediumInterface->ToString( ).c_str( ) : "(nullptr)", dpdu, dpdv,
             dndu, dndv, shading.n, shading.dpdu, shading.dpdv, shading.dndu, shading.dndv,

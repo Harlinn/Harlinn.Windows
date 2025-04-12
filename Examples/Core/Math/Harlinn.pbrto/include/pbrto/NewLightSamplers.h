@@ -130,21 +130,12 @@ namespace pbrto
     // CompactLightBounds Definition
     class CompactLightBounds
     {
-        // CompactLightBounds Private Members
-        OctahedralVector w;
-        Float phi = 0;
-        struct
-        {
-            unsigned int qCosTheta_o : 15;
-            unsigned int qCosTheta_e : 15;
-            unsigned int twoSided : 1;
-        };
-        uint16_t qb[ 2 ][ 3 ];
     public:
         // CompactLightBounds Public Methods
         CompactLightBounds( ) = default;
 
-        CompactLightBounds( const LightBounds& lb, const Bounds3f& allb )
+        PBRT_CPU_GPU
+            CompactLightBounds( const LightBounds& lb, const Bounds3f& allb )
             : w( Normalize( lb.w ) ),
             phi( lb.phi ),
             qCosTheta_o( QuantizeCos( lb.cosTheta_o ) ),
@@ -164,45 +155,26 @@ namespace pbrto
         std::string ToString( ) const;
         std::string ToString( const Bounds3f& allBounds ) const;
 
-        bool TwoSided( ) const 
-        { 
-            return twoSided; 
-        }
-        Float CosTheta_o( ) const 
-        { 
-            return 2 * ( qCosTheta_o / 32767.f ) - 1; 
-        }
-        Float CosTheta_e( ) const 
-        { 
-            return 2 * ( qCosTheta_e / 32767.f ) - 1; 
-        }
+        PBRT_CPU_GPU
+            bool TwoSided( ) const { return twoSided; }
+        PBRT_CPU_GPU
+            Float CosTheta_o( ) const { return 2 * ( qCosTheta_o / 32767.f ) - 1; }
+        PBRT_CPU_GPU
+            Float CosTheta_e( ) const { return 2 * ( qCosTheta_e / 32767.f ) - 1; }
 
-        Bounds3f Bounds( const Bounds3f& allb ) const
+        PBRT_CPU_GPU
+            Bounds3f Bounds( const Bounds3f& allb ) const
         {
-            return
-            { 
-                Point3f(
-                    Math::Lerp( ( Point3f::Simd( qb[ 0 ][0], qb[ 0 ][ 1 ], qb[ 0 ][ 1 ] ) / 65535.f ), allb.pMin, allb.pMax ) ),
-                Point3f(
-                    Math::Lerp( ( Point3f::Simd( qb[ 1 ][ 0 ], qb[ 1 ][ 1 ], qb[ 1 ][ 1 ] ) / 65535.f ), allb.pMin, allb.pMax ) )
-            };
-
-            /*
-            return 
-            { Point3f( 
-                Lerp( qb[ 0 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
-                Lerp( qb[ 0 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
-                Lerp( qb[ 0 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ),
-            Point3f( 
-                Lerp( qb[ 1 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
-                Lerp( qb[ 1 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
-                Lerp( qb[ 1 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ) 
-                
-            };
-            */
+            return { Point3f( Lerp( qb[ 0 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
+                            Lerp( qb[ 0 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
+                            Lerp( qb[ 0 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ),
+                    Point3f( Lerp( qb[ 1 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
+                            Lerp( qb[ 1 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
+                            Lerp( qb[ 1 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ) };
         }
 
-        Float Importance( Point3f p, Normal3f n, const Bounds3f& allb ) const
+        PBRT_CPU_GPU
+            Float Importance( Point3f p, Normal3f n, const Bounds3f& allb ) const
         {
             Bounds3f bounds = Bounds( allb );
             Float cosTheta_o = CosTheta_o( ), cosTheta_e = CosTheta_e( );
@@ -210,27 +182,26 @@ namespace pbrto
             // Compute clamped squared distance to reference point
             Point3f pc = ( bounds.pMin + bounds.pMax ) / 2;
             Float d2 = ScalarDistanceSquared( p, pc );
-
             d2 = std::max( d2, ScalarLength( bounds.Diagonal( ) ) / 2 );
 
             // Define cosine and sine clamped subtraction lambdas
-            auto cosSubClamped = []( Float sinTheta_a, Float cosTheta_a, Float sinTheta_b, Float cosTheta_b ) -> Float 
-                {
+            auto cosSubClamped = []( Float sinTheta_a, Float cosTheta_a, Float sinTheta_b,
+                Float cosTheta_b ) -> Float {
                     if ( cosTheta_a > cosTheta_b )
-                        return 1.f;
+                        return 1;
                     return cosTheta_a * cosTheta_b + sinTheta_a * sinTheta_b;
                 };
 
-            auto sinSubClamped = []( Float sinTheta_a, Float cosTheta_a, Float sinTheta_b, Float cosTheta_b ) -> Float 
-                {
+            auto sinSubClamped = []( Float sinTheta_a, Float cosTheta_a, Float sinTheta_b,
+                Float cosTheta_b ) -> Float {
                     if ( cosTheta_a > cosTheta_b )
-                        return 0.f;
+                        return 0;
                     return sinTheta_a * cosTheta_b - cosTheta_a * sinTheta_b;
                 };
 
             // Compute sine and cosine of angle to vector _w_, $\theta_\roman{w}$
             Vector3f wi = Normalize( p - pc );
-            Float cosTheta_w = Dot( Vector3f( w ), wi );
+            Float cosTheta_w = ScalarDot( Vector3f( w ), wi );
             if ( twoSided )
                 cosTheta_w = std::abs( cosTheta_w );
             Float sinTheta_w = SafeSqrt( 1 - Sqr( cosTheta_w ) );
@@ -282,19 +253,21 @@ namespace pbrto
             return 65535.f * Clamp( ( c - min ) / ( max - min ), 0, 1 );
         }
 
-        
+        // CompactLightBounds Private Members
+        OctahedralVector w;
+        Float phi = 0;
+        struct
+        {
+            unsigned int qCosTheta_o : 15;
+            unsigned int qCosTheta_e : 15;
+            unsigned int twoSided : 1;
+        };
+        uint16_t qb[ 2 ][ 3 ];
     };
 
     // LightBVHNode Definition
     struct alignas( 32 ) LightBVHNode
     {
-        // LightBVHNode Public Members
-        CompactLightBounds lightBounds;
-        struct
-        {
-            unsigned int childOrLightIndex : 31;
-            unsigned int isLeaf : 1;
-        };
         // LightBVHNode Public Methods
         LightBVHNode( ) = default;
 
@@ -302,8 +275,6 @@ namespace pbrto
             : lightBounds( cb ), childOrLightIndex( index ), isLeaf( isLightIndex ? 1 : 0 )
         {
         }
-
-
 
         PBRT_CPU_GPU
             static LightBVHNode MakeLeaf( unsigned int lightIndex, const CompactLightBounds& cb )
@@ -315,7 +286,7 @@ namespace pbrto
             static LightBVHNode MakeInterior( unsigned int child1Index,
                 const CompactLightBounds& cb )
         {
-            return LightBVHNode{ cb, child1Index, false };
+            return LightBVHNode( cb, child1Index, false );
         }
 
         PBRT_CPU_GPU
@@ -323,6 +294,13 @@ namespace pbrto
 
         std::string ToString( ) const;
 
+        // LightBVHNode Public Members
+        CompactLightBounds lightBounds;
+        struct
+        {
+            unsigned int childOrLightIndex : 31;
+            unsigned int isLeaf : 1;
+        };
     };
 
     // BVHLightSampler Definition
@@ -466,25 +444,14 @@ namespace pbrto
         Float EvaluateCost( const LightBounds& b, const Bounds3f& bounds, int dim ) const
         {
             // Evaluate direction bounds measure for _LightBounds_
-#ifdef PBRT_USES_HCCMATH
-            Float theta_o = Math::ACos( b.cosTheta_o );
-            Float theta_e = Math::ACos( b.cosTheta_e );
-#else
             Float theta_o = std::acos( b.cosTheta_o ), theta_e = std::acos( b.cosTheta_e );
-#endif
             Float theta_w = std::min( theta_o + theta_e, Pi );
             Float sinTheta_o = SafeSqrt( 1 - Sqr( b.cosTheta_o ) );
-#ifdef PBRT_USES_HCCMATH
-            Float M_omega = 2 * Pi * ( 1 - b.cosTheta_o ) +
-                Pi / 2 *
-                ( 2 * theta_w * sinTheta_o - Math::Cos( theta_o - 2 * theta_w ) -
-                    2 * theta_o * sinTheta_o + b.cosTheta_o );
-#else
             Float M_omega = 2 * Pi * ( 1 - b.cosTheta_o ) +
                 Pi / 2 *
                 ( 2 * theta_w * sinTheta_o - std::cos( theta_o - 2 * theta_w ) -
                     2 * theta_o * sinTheta_o + b.cosTheta_o );
-#endif
+
             // Return complete cost estimate for _LightBounds_
             Float Kr = MaxComponentValue( bounds.Diagonal( ) ) / bounds.Diagonal( )[ dim ];
             return b.phi * M_omega * Kr * b.bounds.SurfaceArea( );

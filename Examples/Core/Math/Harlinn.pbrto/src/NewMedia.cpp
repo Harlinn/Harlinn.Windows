@@ -48,7 +48,7 @@ namespace pbrto
 
     std::string MediumInterface::ToString( ) const
     {
-        return std::format( "[ MediumInterface inside: {} outside: {} ]",
+        return StringPrintf( "[ MediumInterface inside: %s outside: %s ]",
             inside ? inside.ToString( ).c_str( ) : "(nullptr)",
             outside ? outside.ToString( ).c_str( ) : "(nullptr)" );
     }
@@ -64,7 +64,7 @@ namespace pbrto
 
     std::string RayMajorantSegment::ToString( ) const
     {
-        return std::format( "[ RayMajorantSegment tMin: {} tMax: {} sigma_maj: {} ]", tMin,
+        return StringPrintf( "[ RayMajorantSegment tMin: %f tMax: %f sigma_maj: %s ]", tMin,
             tMax, sigma_maj );
     }
 
@@ -76,26 +76,26 @@ namespace pbrto
 
     std::string HomogeneousMajorantIterator::ToString( ) const
     {
-        return std::format( "[ HomogeneousMajorantIterator seg: {} called: {} ]", seg,
+        return StringPrintf( "[ HomogeneousMajorantIterator seg: %s called: %s ]", seg,
             called );
     }
 
     std::string DDAMajorantIterator::ToString( ) const
     {
-        return std::format( "[ DDAMajorantIterator tMin: {} tMax: {} sigma_t: {} "
-            "nextCrossingT: [ {} {} {} ] deltaT: [ {} {} {} ] "
-            "step: [ {} {} {} ] voxelLimit: [ {} {} {} ] voxel: [ {} {} {} ] "
-            "grid: {} ]",
+        return StringPrintf( "[ DDAMajorantIterator tMin: %f tMax: %f sigma_t: %s "
+            "nextCrossingT: [ %f %f %f ] deltaT: [ %f %f %f ] "
+            "step: [ %d %d %d ] voxelLimit: [ %d %d %d ] voxel: [ %d %d %d ] "
+            "grid: %p ]",
             tMin, tMax, sigma_t, nextCrossingT[ 0 ], nextCrossingT[ 1 ],
             nextCrossingT[ 2 ], deltaT[ 0 ], deltaT[ 1 ], deltaT[ 2 ], step[ 0 ],
             step[ 1 ], step[ 2 ], voxelLimit[ 0 ], voxelLimit[ 1 ], voxelLimit[ 2 ],
-            voxel[ 0 ], voxel[ 1 ], voxel[ 2 ], static_cast<const void*>(grid) );
+            voxel[ 0 ], voxel[ 1 ], voxel[ 2 ], grid );
     }
 
     // HenyeyGreenstein Method Definitions
     std::string HGPhaseFunction::ToString( ) const
     {
-        return std::format( "[ HGPhaseFunction g: {} ]", g );
+        return StringPrintf( "[ HGPhaseFunction g: %f ]", g );
     }
 
     struct MeasuredSS
@@ -205,7 +205,7 @@ namespace pbrto
         if ( !preset.empty( ) )
         {
             if ( !GetMediumScatteringProperties( preset, &sig_a, &sig_s, alloc ) )
-                Warning( loc, "Material preset \"{}\" not found.", preset );
+                Warning( loc, "Material preset \"%s\" not found.", preset );
         }
         if ( !sig_a )
         {
@@ -239,8 +239,8 @@ namespace pbrto
 
     std::string HomogeneousMedium::ToString( ) const
     {
-        return std::format(
-            "[ Homogeneous medium sigma_a_spec: {} sigma_s_spec: {} Le_spec: {} phase: {} ]",
+        return StringPrintf(
+            "[ Homogeneous medium sigma_a_spec: %s sigma_s_spec: %s Le_spec: %s phase: %s ]",
             sigma_a_spec, sigma_s_spec, Le_spec, phase );
     }
 
@@ -301,7 +301,7 @@ namespace pbrto
         if ( !temperature.empty( ) )
             if ( nDensity != temperature.size( ) )
                 ErrorExit( loc,
-                    "Different number of samples ({} vs {}) provided for "
+                    "Different number of samples (%d vs %d) provided for "
                     "\"density\" and \"temperature\".",
                     nDensity, temperature.size( ) );
 
@@ -309,7 +309,7 @@ namespace pbrto
         int ny = parameters.GetOneInt( "ny", 1 );
         int nz = parameters.GetOneInt( "nz", 1 );
         if ( nDensity != nx * ny * nz )
-            ErrorExit( loc, "Grid medium has {} density values; expected nx*ny*nz = {}",
+            ErrorExit( loc, "Grid medium has %d density values; expected nx*ny*nz = %d",
                 nDensity, nx * ny * nz );
 
         // Create Density Grid
@@ -339,8 +339,8 @@ namespace pbrto
         else
         {
             if ( LeScale.size( ) != nx * ny * nz )
-                ErrorExit( "Expected {} x {} {} = {} values for \"Lescale\" but were "
-                    "given {}.",
+                ErrorExit( "Expected %d x %d %d = %d values for \"Lescale\" but were "
+                    "given %d.",
                     nx, ny, nz, nx * ny * nz, LeScale.size( ) );
             for ( int i = 0; i < nx * ny * nz; ++i )
                 LeScale[ i ] *= LeNorm;
@@ -373,9 +373,9 @@ namespace pbrto
 
     std::string GridMedium::ToString( ) const
     {
-        return std::format( "[ GridMedium bounds: {} renderFromMedium: {} phase: {} "
-            "LeScale: {} (grids elided) ]",
-            bounds, renderFromMedium.ToString(), phase.ToString( ), LeScale.ToString( ) );
+        return StringPrintf( "[ GridMedium bounds: %s renderFromMedium: %s phase: %s "
+            "LeScale: %f (grids elided) ]",
+            bounds, renderFromMedium, phase, LeScale );
     }
 
     // RGBGridMedium Method Definitions
@@ -441,7 +441,7 @@ namespace pbrto
             nDensity = sigma_a.size( );
             if ( !sigma_s.empty( ) && nDensity != sigma_s.size( ) )
                 ErrorExit( loc,
-                    "Different number of samples ({} vs {}) provided for \"sigma_a\" "
+                    "Different number of samples (%d vs %d) provided for \"sigma_a\" "
                     "and \"sigma_s\".",
                     nDensity, sigma_s.size( ) );
         }
@@ -452,14 +452,14 @@ namespace pbrto
             ErrorExit( loc, "RGB grid requires \"sigma_a\" if \"Le\" value provided." );
 
         if ( !Le.empty( ) && nDensity != Le.size( ) )
-            ErrorExit( "Expected {} values for \"Le\" parameter but were given {}.", nDensity,
+            ErrorExit( "Expected %d values for \"Le\" parameter but were given %d.", nDensity,
                 Le.size( ) );
 
         int nx = parameters.GetOneInt( "nx", 1 );
         int ny = parameters.GetOneInt( "ny", 1 );
         int nz = parameters.GetOneInt( "nz", 1 );
         if ( nDensity != nx * ny * nz )
-            ErrorExit( loc, "RGB grid medium has {} density values; expected nx*ny*nz = {}",
+            ErrorExit( loc, "RGB grid medium has %d density values; expected nx*ny*nz = %d",
                 nDensity, nx * ny * nz );
 
         pstdo::optional<SampledGrid<RGBUnboundedSpectrum>> sigma_aGrid, sigma_sGrid;
@@ -506,8 +506,8 @@ namespace pbrto
 
     std::string RGBGridMedium::ToString( ) const
     {
-        return std::format( "[ RGBGridMedium bounds: {} renderFromMedium: {} phase: {} "
-            "sigmaScale: {} LeScale: {} (grids elided) ]",
+        return StringPrintf( "[ RGBGridMedium bounds: %s renderFromMedium: %s phase: %s "
+            "sigmaScale: %f LeScale: %f (grids elided) ]",
             bounds, renderFromMedium, phase, sigmaScale, LeScale );
     }
 
@@ -552,15 +552,15 @@ namespace pbrto
         }
         catch ( const std::exception& e )
         {
-            ErrorExit( "nanovdb: {}: {}", filename, e.what( ) );
+            ErrorExit( "nanovdb: %s: %s", filename, e.what( ) );
         }
 
         if ( grid )
         {
             if ( !grid.gridMetaData( )->isFogVolume( ) && !grid.gridMetaData( )->isUnknown( ) )
-                ErrorExit( loc, "{}: \"{}\" isn't a FogVolume grid?", filename, gridName );
+                ErrorExit( loc, "%s: \"%s\" isn't a FogVolume grid?", filename, gridName );
 
-            NLOG_VERBOSE( "{}: found {} \"{}\" voxels", filename,
+            NLOG_VERBOSE( "%s: found %d \"%s\" voxels", filename,
                 grid.gridMetaData( )->activeVoxelCount( ), gridName );
         }
 
@@ -598,7 +598,7 @@ namespace pbrto
             temperatureFloatGrid = temperatureGrid.grid<float>( );
             float minTemperature, maxTemperature;
             temperatureFloatGrid->tree( ).extrema( minTemperature, maxTemperature );
-            NLOG_VERBOSE( "Max temperature: {}", maxTemperature );
+            NLOG_VERBOSE( "Max temperature: %f", maxTemperature );
 
             nanovdb::BBox<nanovdb::Vec3R> bbox = temperatureFloatGrid->worldBBox( );
             bounds =
@@ -635,13 +635,10 @@ namespace pbrto
                     Float( z + 1 ) / majorantGrid.res.z ) ) );
 
             // Compute corresponding NanoVDB index-space bounds in floating-point.
-            Point3f pMin( wb.pMin );
-            Point3f pMax( wb.pMax );
-
             nanovdb::Vec3R i0 = densityFloatGrid->worldToIndexF(
-                nanovdb::Vec3R( pMin.x, pMin.y, pMin.z ) );
+                nanovdb::Vec3R( wb.pMin.x, wb.pMin.y, wb.pMin.z ) );
             nanovdb::Vec3R i1 = densityFloatGrid->worldToIndexF(
-                nanovdb::Vec3R( pMax.x, pMax.y, pMax.z ) );
+                nanovdb::Vec3R( wb.pMax.x, wb.pMax.y, wb.pMax.z ) );
 
             // Now find integer index-space bounds, accounting for both
             // filtering and the overall index bounding box.
@@ -685,8 +682,8 @@ namespace pbrto
 
     std::string NanoVDBMedium::ToString( ) const
     {
-        return std::format( "[ NanoVDBMedium bounds: {} LeScale: {} "
-            "temperatureOffset: {} temperatureScale: {} (grids elided) ]",
+        return StringPrintf( "[ NanoVDBMedium bounds: %s LeScale: %f "
+            "temperatureOffset: %f temperatureScale: %f (grids elided) ]",
             bounds, LeScale, temperatureOffset, temperatureScale );
     }
 
@@ -702,7 +699,7 @@ namespace pbrto
         std::string gridname = parameters.GetOneString( "gridname", "density" );
         densityGrid = readGrid<NanoVDBBuffer>( filename, gridname, loc, alloc );
         if ( !densityGrid )
-            ErrorExit( loc, "{}: didn't find \"density\" grid.", filename );
+            ErrorExit( loc, "%s: didn't find \"density\" grid.", filename );
 
         nanovdb::GridHandle<NanoVDBBuffer> temperatureGrid;
         std::string temperaturename =
@@ -754,10 +751,10 @@ namespace pbrto
             m = NanoVDBMedium::Create( parameters, renderFromMedium, loc, alloc );
         }
         else
-            ErrorExit( loc, "{}: medium unknown.", name );
+            ErrorExit( loc, "%s: medium unknown.", name );
 
         if ( !m )
-            ErrorExit( loc, "{}: unable to create medium.", name );
+            ErrorExit( loc, "%s: unable to create medium.", name );
 
         parameters.ReportUnused( );
         return m;

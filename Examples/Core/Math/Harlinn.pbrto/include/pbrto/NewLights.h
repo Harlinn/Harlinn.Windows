@@ -49,30 +49,8 @@
 
 namespace pbrto
 {
+
     std::string ToString( LightType type );
-}
-
-namespace std
-{
-    template<typename CharT>
-    struct formatter<pbrto::LightType, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( pbrto::LightType value, FormatContext& ctx ) const
-        {
-            return std::format_to( ctx.out( ), "{}", pbrto::ToString( value ) );
-        }
-    };
-}
-
-namespace pbrto
-{
-
 
     // Light Inline Functions
     PBRT_CPU_GPU inline bool IsDeltaLight( LightType type )
@@ -83,52 +61,49 @@ namespace pbrto
     // LightLiSample Definition
     struct LightLiSample
     {
-        SampledSpectrum L;
-        Vector3f wi;
-        Float pdf;
-        Interaction pLight;
-
         // LightLiSample Public Methods
         LightLiSample( ) = default;
-
         PBRT_CPU_GPU
-            LightLiSample( const SampledSpectrum& L, Vector3f wi, Float pdf, const Interaction& pLight )
+            LightLiSample( const SampledSpectrum& L, Vector3f wi, Float pdf,
+                const Interaction& pLight )
             : L( L ), wi( wi ), pdf( pdf ), pLight( pLight )
         {
         }
         std::string ToString( ) const;
 
-
+        SampledSpectrum L;
+        Vector3f wi;
+        Float pdf;
+        Interaction pLight;
     };
 
     // LightLeSample Definition
     struct LightLeSample
     {
-        // LightLeSample Public Members
-        SampledSpectrum L;
-        Ray ray;
-        pstdo::optional<Interaction> intr;
-        Float pdfPos = 0;
-        Float pdfDir = 0;
-
         // LightLeSample Public Methods
         LightLeSample( ) = default;
-
-        LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
+        PBRT_CPU_GPU
+            LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
             : L( L ), ray( ray ), pdfPos( pdfPos ), pdfDir( pdfDir )
         {
         }
-
-        LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr, Float pdfPos, Float pdfDir )
+        PBRT_CPU_GPU
+            LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr,
+                Float pdfPos, Float pdfDir )
             : L( L ), ray( ray ), intr( intr ), pdfPos( pdfPos ), pdfDir( pdfDir )
         {
             NCHECK( this->intr->n != Normal3f( 0, 0, 0 ) );
         }
         std::string ToString( ) const;
 
-        Float AbsCosTheta( Vector3f w ) const { return intr ? ScalarAbsDot( w, intr->n ) : 1.f; }
+        PBRT_CPU_GPU
+            Float AbsCosTheta( Vector3f w ) const { return intr ? ScalarAbsDot( w, intr->n ) : 1.f; }
 
-
+        // LightLeSample Public Members
+        SampledSpectrum L;
+        Ray ray;
+        pstdo::optional<Interaction> intr;
+        Float pdfPos = 0, pdfDir = 0;
     };
 
     // LightSampleContext Definition
@@ -291,7 +266,6 @@ namespace pbrto
             Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
             Vector3f wi = Normalize( p - ctx.p( ) );
             SampledSpectrum Li = scale * I->Sample( lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
-
             return LightLiSample( Li, wi, 1, Interaction( p, &mediumInterface ) );
         }
 
@@ -881,9 +855,7 @@ namespace pbrto
             Vector3f wi = Normalize( p - ctx.p( ) );
             // Compute incident radiance _Li_ for _SpotLight_
             Vector3f wLight = Normalize( renderFromLight.ApplyInverse( Vector3f( -wi ) ) );
-
             SampledSpectrum Li = I( wLight, lambda ) / ScalarDistanceSquared( p, ctx.p( ) );
-
 
             if ( !Li )
                 return {};
@@ -934,7 +906,7 @@ namespace pbrto
         return Dispatch( t );
     }
 
-}  // namespace pbrt
+}
 
 namespace std
 {
@@ -942,7 +914,8 @@ namespace std
     template <>
     struct hash<pbrto::Light>
     {
-        size_t operator()( pbrto::Light light ) const noexcept
+        PBRT_CPU_GPU
+            size_t operator()( pbrto::Light light ) const noexcept
         {
             return pbrto::Hash( light.ptr( ) );
         }

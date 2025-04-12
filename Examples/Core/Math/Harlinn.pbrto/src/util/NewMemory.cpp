@@ -56,7 +56,8 @@ namespace pbrto
      * Returns the current resident set size (physical memory use) measured
      * in bytes, or zero if the value cannot be determined on this OS.
      */
-    PBRTO_EXPORT size_t GetCurrentRSS( )
+    PBRTO_EXPORT
+        size_t GetCurrentRSS( )
     {
 #ifdef PBRT_IS_WINDOWS
         PROCESS_MEMORY_COUNTERS info;
@@ -74,14 +75,14 @@ namespace pbrto
         FILE* fp;
         if ( ( fp = fopen( "/proc/self/statm", "r" ) ) == nullptr )
         {
-            LOG_ERROR( "Unable to open /proc/self/statm" );
+            NLOG_ERROR( "Unable to open /proc/self/statm" );
             return 0;
         }
 
         long rss = 0L;
         if ( fscanf( fp, "%*s%ld", &rss ) != 1 )
         {
-            LOG_ERROR( "Unable to read /proc/self/statm" );
+            NLOG_ERROR( "Unable to read /proc/self/statm" );
             fclose( fp );
             return 0;
         }
@@ -91,7 +92,7 @@ namespace pbrto
 #error "TODO: implement GetCurrentRSS() for this target"
         return 0;
         /*    struct rusage rusage;
-        NCHECK(getrusage(RUSAGE_SELF, &rusage) == 0);
+        CHECK(getrusage(RUSAGE_SELF, &rusage) == 0);
         return rusage.ru_idrss;
         */
 #endif

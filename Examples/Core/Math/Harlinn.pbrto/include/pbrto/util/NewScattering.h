@@ -36,7 +36,7 @@ namespace pbrto
     // Scattering Inline Functions
     PBRT_CPU_GPU inline Vector3f Reflect( Vector3f wo, Vector3f n )
     {
-        return -wo + 2 * Dot( wo, n ) * n;
+        return -wo + 2 * ScalarDot( wo, n ) * n;
     }
 
     PBRT_CPU_GPU inline bool Refract( Vector3f wi, Normal3f n, Float eta, Float* etap,
@@ -57,13 +57,10 @@ namespace pbrto
         // Handle total internal reflection case
         if ( sin2Theta_t >= 1 )
             return false;
-#ifdef PBRT_USES_HCCMATH_SQRT
-        Float cosTheta_t = std::sqrt( 1 - sin2Theta_t );
-#else
-        Float cosTheta_t = std::sqrt( 1 - sin2Theta_t );
-#endif
 
-        * wt = -wi / eta + ( cosTheta_i / eta - cosTheta_t ) * Vector3f( n );
+        Float cosTheta_t = std::sqrt( 1 - sin2Theta_t );
+
+        *wt = -wi / eta + ( cosTheta_i / eta - cosTheta_t ) * Vector3f( n );
         // Provide relative IOR along ray to caller
         if ( etap )
             *etap = eta;
@@ -106,27 +103,26 @@ namespace pbrto
         return ( Sqr( r_parl ) + Sqr( r_perp ) ) / 2;
     }
 
-    PBRT_CPU_GPU inline Float FrComplex( Float cosTheta_i, const std::complex<Float>& eta )
+    PBRT_CPU_GPU inline Float FrComplex( Float cosTheta_i, pstdo::complex<Float> eta )
     {
-        using Complex = std::complex<Float>;
+        using Complex = pstdo::complex<Float>;
         cosTheta_i = Clamp( cosTheta_i, 0, 1 );
         // Compute complex $\cos\,\theta_\roman{t}$ for Fresnel equations using Snell's law
         Float sin2Theta_i = 1 - Sqr( cosTheta_i );
         Complex sin2Theta_t = sin2Theta_i / Sqr( eta );
-        Complex cosTheta_t = std::sqrt( 1.f - sin2Theta_t );
+        Complex cosTheta_t = pstdo::sqrt( 1 - sin2Theta_t );
 
         Complex r_parl = ( eta * cosTheta_i - cosTheta_t ) / ( eta * cosTheta_i + cosTheta_t );
         Complex r_perp = ( cosTheta_i - eta * cosTheta_t ) / ( cosTheta_i + eta * cosTheta_t );
-        return ( std::norm( r_parl ) + std::norm( r_perp ) ) / 2;
+        return ( pstdo::norm( r_parl ) + pstdo::norm( r_perp ) ) / 2;
     }
 
-    PBRT_CPU_GPU inline SampledSpectrum FrComplex( Float cosTheta_i, SampledSpectrum eta, SampledSpectrum k )
+    PBRT_CPU_GPU inline SampledSpectrum FrComplex( Float cosTheta_i, SampledSpectrum eta,
+        SampledSpectrum k )
     {
         SampledSpectrum result;
         for ( int i = 0; i < NSpectrumSamples; ++i )
-        {
-            result[ i ] = FrComplex( cosTheta_i, std::complex<Float>( eta[ i ], k[ i ] ) );
-        }
+            result[ i ] = FrComplex( cosTheta_i, pstdo::complex<Float>( eta[ i ], k[ i ] ) );
         return result;
     }
 
@@ -181,7 +177,7 @@ namespace pbrto
             if ( IsInf( tan2Theta ) )
                 return 0;
             Float alpha2 = Sqr( CosPhi( w ) * alpha_x ) + Sqr( SinPhi( w ) * alpha_y );
-            return ( Math::Sqrt( 1 + alpha2 * tan2Theta ) - 1 ) / 2;
+            return ( std::sqrt( 1 + alpha2 * tan2Theta ) - 1 ) / 2;
         }
 
         PBRT_CPU_GPU
@@ -190,7 +186,7 @@ namespace pbrto
         PBRT_CPU_GPU
             Float D( Vector3f w, Vector3f wm ) const
         {
-            return G1( w ) / AbsCosTheta( w ) * D( wm ) * AbsDot( w, wm );
+            return G1( w ) / AbsCosTheta( w ) * D( wm ) * ScalarAbsDot( w, wm );
         }
 
         PBRT_CPU_GPU
@@ -207,19 +203,17 @@ namespace pbrto
             // Find orthonormal basis for visible normal sampling
             Vector3f T1 = ( wh.z < 0.99999f ) ? Vector3f( Normalize( Cross( Vector3f( 0, 0, 1 ), wh ) ) )
                 : Vector3f( 1, 0, 0 );
-
             Vector3f T2 = Cross( wh, T1 );
 
             // Generate uniformly distributed points on the unit disk
             Point2f p = SampleUniformDiskPolar( u );
 
             // Warp hemispherical projection for visible normal sampling
-            Float h = Math::Sqrt( 1 - Sqr( p.x ) );
+            Float h = std::sqrt( 1 - Sqr( p.x ) );
             p.y = Lerp( ( 1 + wh.z ) / 2, h, p.y );
 
             // Reproject to hemisphere and transform normal to ellipsoid configuration
-            Float pz = Math::Sqrt( std::max<Float>( 0, 1 - LengthSquared( Vector2f( p ) ) ) );
-
+            Float pz = std::sqrt( std::max<Float>( 0, 1 - ScalarLengthSquared( Vector2f( p ) ) ) );
             Vector3f nh = p.x * T1 + p.y * T2 + pz * wh;
             NCHECK_RARE( 1e-5f, nh.z == 0 );
             return Normalize(
@@ -228,11 +222,13 @@ namespace pbrto
 
         std::string ToString( ) const;
 
+        // Note that this should probably instead be "return Sqr(roughness)" to
+        // be more perceptually uniform, though this wasn't noticed until some
+        // time after pbrt-v4 shipped: https://github.com/mmp/pbrt-v4/issues/479.
+        // therefore, we will leave it as is so that the rendered results with
+        // existing pbrt-v4 scenes doesn't change unexpectedly.
         PBRT_CPU_GPU
-            static Float RoughnessToAlpha( Float roughness )
-        {
-            return Math::Sqrt( roughness );
-        }
+            static Float RoughnessToAlpha( Float roughness ) { return std::sqrt( roughness ); }
 
         PBRT_CPU_GPU
             void Regularize( )

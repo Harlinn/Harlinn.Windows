@@ -42,11 +42,146 @@
 
 namespace pstdo
 {
-    using std::swap;
-    using std::bit_cast;
 
-    template <typename T, size_t N>
-    using array = std::array<T, N>;
+    template <typename T>
+    PBRT_CPU_GPU inline void swap( T& a, T& b )
+    {
+        T tmp = std::move( a );
+        a = std::move( b );
+        b = std::move( tmp );
+    }
+
+    template <class To, class From>
+    PBRT_CPU_GPU typename std::enable_if_t<sizeof( To ) == sizeof( From ) &&
+        std::is_trivially_copyable_v<From>&&
+        std::is_trivially_copyable_v<To>,
+        To>
+        bit_cast( const From& src ) noexcept
+    {
+        static_assert( std::is_trivially_constructible_v<To>,
+            "This implementation requires the destination type to be trivially "
+            "constructible" );
+        To dst;
+        std::memcpy( &dst, &src, sizeof( To ) );
+        return dst;
+    }
+
+    template <typename T, int N>
+    class array;
+
+    // Specialization for zero element arrays (to make MSVC happy)
+    template <typename T>
+    class array<T, 0> {
+    public:
+        using value_type = T;
+        using iterator = value_type*;
+        using const_iterator = const value_type*;
+        using size_t = std::size_t;
+
+        array( ) = default;
+
+        PBRT_CPU_GPU
+            void fill( const T& v ) { assert( !"should never be called" ); }
+
+        PBRT_CPU_GPU
+            bool operator==( const array<T, 0>& a ) const { return true; }
+        PBRT_CPU_GPU
+            bool operator!=( const array<T, 0>& a ) const { return false; }
+
+        PBRT_CPU_GPU
+            iterator begin( ) { return nullptr; }
+        PBRT_CPU_GPU
+            iterator end( ) { return nullptr; }
+        PBRT_CPU_GPU
+            const_iterator begin( ) const { return nullptr; }
+        PBRT_CPU_GPU
+            const_iterator end( ) const { return nullptr; }
+
+        PBRT_CPU_GPU
+            size_t size( ) const { return 0; }
+
+        PBRT_CPU_GPU
+            T& operator[]( size_t i )
+        {
+            assert( !"should never be called" );
+            static T t;
+            return t;
+        }
+        PBRT_CPU_GPU
+            const T& operator[]( size_t i ) const
+        {
+            assert( !"should never be called" );
+            static T t;
+            return t;
+        }
+
+        PBRT_CPU_GPU
+            T* data( ) { return nullptr; }
+        PBRT_CPU_GPU
+            const T* data( ) const { return nullptr; }
+    };
+
+    template <typename T, int N>
+    class array
+    {
+    public:
+        using value_type = T;
+        using iterator = value_type*;
+        using const_iterator = const value_type*;
+        using size_t = std::size_t;
+
+        array( ) = default;
+        PBRT_CPU_GPU
+            array( std::initializer_list<T> v )
+        {
+            size_t i = 0;
+            for ( const T& val : v )
+                values[ i++ ] = val;
+        }
+
+        PBRT_CPU_GPU
+            void fill( const T& v )
+        {
+            for ( int i = 0; i < N; ++i )
+                values[ i ] = v;
+        }
+
+        PBRT_CPU_GPU
+            bool operator==( const array<T, N>& a ) const
+        {
+            for ( int i = 0; i < N; ++i )
+                if ( values[ i ] != a.values[ i ] )
+                    return false;
+            return true;
+        }
+        PBRT_CPU_GPU
+            bool operator!=( const array<T, N>& a ) const { return !( *this == a ); }
+
+        PBRT_CPU_GPU
+            iterator begin( ) { return values; }
+        PBRT_CPU_GPU
+            iterator end( ) { return values + N; }
+        PBRT_CPU_GPU
+            const_iterator begin( ) const { return values; }
+        PBRT_CPU_GPU
+            const_iterator end( ) const { return values + N; }
+
+        PBRT_CPU_GPU
+            size_t size( ) const { return N; }
+
+        PBRT_CPU_GPU
+            T& operator[]( size_t i ) { return values[ i ]; }
+        PBRT_CPU_GPU
+            const T& operator[]( size_t i ) const { return values[ i ]; }
+
+        PBRT_CPU_GPU
+            T* data( ) { return values; }
+        PBRT_CPU_GPU
+            const T* data( ) const { return values; }
+
+    private:
+        T values[ N ] = {};
+    };
 
     template <typename T>
     class optional
@@ -55,14 +190,18 @@ namespace pstdo
         using value_type = T;
 
         optional( ) = default;
-        optional( const T& v ) : set( true ) { new ( ptr( ) ) T( v ); }
-        optional( T&& v ) : set( true ) { new ( ptr( ) ) T( std::move( v ) ); }
-        optional( const optional& v ) : set( v.has_value( ) )
+        PBRT_CPU_GPU
+            optional( const T& v ) : set( true ) { new ( ptr( ) ) T( v ); }
+        PBRT_CPU_GPU
+            optional( T&& v ) : set( true ) { new ( ptr( ) ) T( std::move( v ) ); }
+        PBRT_CPU_GPU
+            optional( const optional& v ) : set( v.has_value( ) )
         {
             if ( v.has_value( ) )
                 new ( ptr( ) ) T( v.value( ) );
         }
-        optional( optional&& v ) : set( v.has_value( ) )
+        PBRT_CPU_GPU
+            optional( optional&& v ) : set( v.has_value( ) )
         {
             if ( v.has_value( ) )
             {
@@ -71,21 +210,24 @@ namespace pstdo
             }
         }
 
-        optional& operator=( const T& v )
+        PBRT_CPU_GPU
+            optional& operator=( const T& v )
         {
             reset( );
             new ( ptr( ) ) T( v );
             set = true;
             return *this;
         }
-        optional& operator=( T&& v )
+        PBRT_CPU_GPU
+            optional& operator=( T&& v )
         {
             reset( );
             new ( ptr( ) ) T( std::move( v ) );
             set = true;
             return *this;
         }
-        optional& operator=( const optional& v )
+        PBRT_CPU_GPU
+            optional& operator=( const optional& v )
         {
             reset( );
             if ( v.has_value( ) )
@@ -95,7 +237,8 @@ namespace pstdo
             }
             return *this;
         }
-        optional& operator=( optional&& v )
+        PBRT_CPU_GPU
+            optional& operator=( optional&& v )
         {
             reset( );
             if ( v.has_value( ) )
@@ -107,28 +250,38 @@ namespace pstdo
             return *this;
         }
 
-        ~optional( ) { reset( ); }
+        PBRT_CPU_GPU
+            ~optional( ) { reset( ); }
 
-        explicit operator bool( ) const { return set; }
+        PBRT_CPU_GPU
+            explicit operator bool( ) const { return set; }
 
-        T value_or( const T& alt ) const { return set ? value( ) : alt; }
+        PBRT_CPU_GPU
+            T value_or( const T& alt ) const { return set ? value( ) : alt; }
 
-        T* operator->( ) { return &value( ); }
-        const T* operator->( ) const { return &value( ); }
-        T& operator*( ) { return value( ); }
-        const T& operator*( ) const { return value( ); }
-        T& value( )
+        PBRT_CPU_GPU
+            T* operator->( ) { return &value( ); }
+        PBRT_CPU_GPU
+            const T* operator->( ) const { return &value( ); }
+        PBRT_CPU_GPU
+            T& operator*( ) { return value( ); }
+        PBRT_CPU_GPU
+            const T& operator*( ) const { return value( ); }
+        PBRT_CPU_GPU
+            T& value( )
         {
             NCHECK( set );
             return *ptr( );
         }
-        const T& value( ) const
+        PBRT_CPU_GPU
+            const T& value( ) const
         {
             NCHECK( set );
             return *ptr( );
         }
 
-        void reset( )
+        PBRT_CPU_GPU
+            void reset( )
         {
             if ( set )
             {
@@ -137,7 +290,8 @@ namespace pstdo
             }
         }
 
-        bool has_value( ) const { return set; }
+        PBRT_CPU_GPU
+            bool has_value( ) const { return set; }
 
     private:
 #ifdef __NVCC__
@@ -147,8 +301,10 @@ namespace pstdo
         PBRT_CPU_GPU
             const T* ptr( ) const { return reinterpret_cast< const T* >( &optionalValue ); }
 #else
-        T* ptr( ) { return std::launder( reinterpret_cast< T* >( &optionalValue ) ); }
-        const T* ptr( ) const
+        PBRT_CPU_GPU
+            T* ptr( ) { return std::launder( reinterpret_cast< T* >( &optionalValue ) ); }
+        PBRT_CPU_GPU
+            const T* ptr( ) const
         {
             return std::launder( reinterpret_cast< const T* >( &optionalValue ) );
         }
@@ -169,21 +325,19 @@ namespace pstdo
             << "> set: false value: n/a ]";
     }
 
-
-
     namespace span_internal
     {
 
         // Wrappers for access to container data pointers.
         template <typename C>
-        inline constexpr auto GetDataImpl( C& c, char ) noexcept
+        PBRT_CPU_GPU inline constexpr auto GetDataImpl( C& c, char ) noexcept
             -> decltype( c.data( ) )
         {
             return c.data( );
         }
 
         template <typename C>
-        inline constexpr auto GetData( C& c ) noexcept -> decltype( GetDataImpl( c, 0 ) )
+        PBRT_CPU_GPU inline constexpr auto GetData( C& c ) noexcept -> decltype( GetDataImpl( c, 0 ) )
         {
             return GetDataImpl( c, 0 );
         }
@@ -205,7 +359,6 @@ namespace pstdo
             T* const*>;
 
     }  // namespace span_internal
-
 
     inline constexpr std::size_t dynamic_extent = -1;
 
@@ -238,7 +391,7 @@ namespace pstdo
         PBRT_CPU_GPU
             span( T* ptr, size_t n ) : ptr( ptr ), n( n ) {}
         template <size_t N>
-        span( T( &a )[ N ] ) : span( a, N ) {}
+        PBRT_CPU_GPU span( T( &a )[ N ] ) : span( a, N ) {}
         PBRT_CPU_GPU
             span( std::initializer_list<value_type> v ) : span( v.begin( ), v.size( ) ) {}
 
@@ -246,7 +399,7 @@ namespace pstdo
         // replaced with MakeSpan() to infer the type parameter.
         template <typename V, typename X = EnableIfConvertibleFrom<V>,
             typename Y = EnableIfMutableView<V>>
-            explicit span( V& v ) noexcept : span( v.data( ), v.size( ) ) {}
+            PBRT_CPU_GPU explicit span( V& v ) noexcept : span( v.data( ), v.size( ) ) {}
 
         // Hack: explicit constructors for std::vector to work around warnings
         // about calling a host function (e.g. vector::size()) form a
@@ -259,7 +412,7 @@ namespace pstdo
         // Implicit reference constructor for a read-only `span<const T>` type
         template <typename V, typename X = EnableIfConvertibleFrom<V>,
             typename Y = EnableIfConstView<V>>
-            constexpr span( const V& v ) noexcept : span( v.data( ), v.size( ) ) {}
+            PBRT_CPU_GPU constexpr span( const V& v ) noexcept : span( v.data( ), v.size( ) ) {}
 
         PBRT_CPU_GPU
             iterator begin( ) { return ptr; }
@@ -323,15 +476,14 @@ namespace pstdo
         size_t n;
     };
 
-
     template <int &...ExplicitArgumentBarrier, typename T>
-    inline constexpr span<T> MakeSpan( T* ptr, size_t size ) noexcept
+    PBRT_CPU_GPU inline constexpr span<T> MakeSpan( T* ptr, size_t size ) noexcept
     {
         return span<T>( ptr, size );
     }
 
     template <int &...ExplicitArgumentBarrier, typename T>
-    inline span<T> MakeSpan( T* begin, T* end ) noexcept
+    PBRT_CPU_GPU inline span<T> MakeSpan( T* begin, T* end ) noexcept
     {
         return span<T>( begin, end - begin );
     }
@@ -343,26 +495,26 @@ namespace pstdo
     }
 
     template <int &...ExplicitArgumentBarrier, typename C>
-    inline constexpr auto MakeSpan( C& c ) noexcept
+    PBRT_CPU_GPU inline constexpr auto MakeSpan( C& c ) noexcept
         -> decltype( MakeSpan( span_internal::GetData( c ), c.size( ) ) )
     {
         return MakeSpan( span_internal::GetData( c ), c.size( ) );
     }
 
     template <int &...ExplicitArgumentBarrier, typename T, size_t N>
-    inline constexpr span<T> MakeSpan( T( &array )[ N ] ) noexcept
+    PBRT_CPU_GPU inline constexpr span<T> MakeSpan( T( &array )[ N ] ) noexcept
     {
         return span<T>( array, N );
     }
 
     template <int &...ExplicitArgumentBarrier, typename T>
-    inline constexpr span<const T> MakeConstSpan( T* ptr, size_t size ) noexcept
+    PBRT_CPU_GPU inline constexpr span<const T> MakeConstSpan( T* ptr, size_t size ) noexcept
     {
         return span<const T>( ptr, size );
     }
 
     template <int &...ExplicitArgumentBarrier, typename T>
-    inline span<const T> MakeConstSpan( T* begin, T* end ) noexcept
+    PBRT_CPU_GPU inline span<const T> MakeConstSpan( T* begin, T* end ) noexcept
     {
         return span<const T>( begin, end - begin );
     }
@@ -374,14 +526,14 @@ namespace pstdo
     }
 
     template <int &...ExplicitArgumentBarrier, typename C>
-    inline constexpr auto MakeConstSpan( const C& c ) noexcept
+    PBRT_CPU_GPU inline constexpr auto MakeConstSpan( const C& c ) noexcept
         -> decltype( MakeSpan( c ) )
     {
         return MakeSpan( c );
     }
 
     template <int &...ExplicitArgumentBarrier, typename T, size_t N>
-    inline constexpr span<const T> MakeConstSpan( const T( &array )[ N ] ) noexcept
+    PBRT_CPU_GPU inline constexpr span<const T> MakeConstSpan( const T( &array )[ N ] ) noexcept
     {
         return span<const T>( array, N );
     }
@@ -396,7 +548,8 @@ namespace pstdo
             static constexpr size_t max_align = alignof( std::max_align_t );
 
         public:
-            PBRTO_EXPORT virtual ~memory_resource( );
+            PBRTO_EXPORT
+                virtual ~memory_resource( );
             void* allocate( size_t bytes, size_t alignment = max_align )
             {
                 if ( bytes == 0 )
@@ -440,10 +593,13 @@ namespace pstdo
         class unsynchronized_pool_resource;
 
         // global memory resources
-        memory_resource* new_delete_resource( ) noexcept;
+        PBRTO_EXPORT
+            memory_resource* new_delete_resource( ) noexcept;
         // TODO: memory_resource* null_memory_resource() noexcept;
-        memory_resource* set_default_resource( memory_resource* r ) noexcept;
-        memory_resource* get_default_resource( ) noexcept;
+        PBRTO_EXPORT
+            memory_resource* set_default_resource( memory_resource* r ) noexcept;
+        PBRTO_EXPORT
+            memory_resource* get_default_resource( ) noexcept;
 
         class alignas( 64 ) monotonic_buffer_resource : public memory_resource
         {
@@ -500,7 +656,8 @@ namespace pstdo
             memory_resource* upstream_resource( ) const { return upstream; }
 
         protected:
-            PBRTO_EXPORT void* do_allocate( size_t bytes, size_t align ) override;
+            PBRTO_EXPORT
+                void* do_allocate( size_t bytes, size_t align ) override;
 
             void do_deallocate( void* p, size_t bytes, size_t alignment ) override
             {
@@ -1027,7 +1184,7 @@ namespace pstdo
     tuple( Ts &&... ) -> tuple<std::decay_t<Ts>...>;
 
     template <size_t I, typename T, typename... Ts>
-    auto& get( tuple<T, Ts...>& t )
+    PBRT_CPU_GPU auto& get( tuple<T, Ts...>& t )
     {
         if constexpr ( I == 0 )
             return t.value;
@@ -1036,7 +1193,7 @@ namespace pstdo
     }
 
     template <size_t I, typename T, typename... Ts>
-    const auto& get( const tuple<T, Ts...>& t )
+    PBRT_CPU_GPU const auto& get( const tuple<T, Ts...>& t )
     {
         if constexpr ( I == 0 )
             return t.value;
@@ -1045,7 +1202,7 @@ namespace pstdo
     }
 
     template <typename Req, typename T, typename... Ts>
-    auto& get( tuple<T, Ts...>& t )
+    PBRT_CPU_GPU auto& get( tuple<T, Ts...>& t )
     {
         if constexpr ( std::is_same_v<Req, T> )
             return t.value;
@@ -1054,7 +1211,7 @@ namespace pstdo
     }
 
     template <typename Req, typename T, typename... Ts>
-    const auto& get( const tuple<T, Ts...>& t )
+    PBRT_CPU_GPU const auto& get( const tuple<T, Ts...>& t )
     {
         if constexpr ( std::is_same_v<Req, T> )
             return t.value;
@@ -1065,42 +1222,42 @@ namespace pstdo
     template <typename T>
     struct complex
     {
-        complex( T re ) : re( re ), im( 0 ) {}
-        complex( T re, T im ) : re( re ), im( im ) {}
+        PBRT_CPU_GPU complex( T re ) : re( re ), im( 0 ) {}
+        PBRT_CPU_GPU complex( T re, T im ) : re( re ), im( im ) {}
 
-        complex operator-( ) const { return { -re, -im }; }
+        PBRT_CPU_GPU complex operator-( ) const { return { -re, -im }; }
 
-        complex operator+( complex z ) const { return { re + z.re, im + z.im }; }
+        PBRT_CPU_GPU complex operator+( complex z ) const { return { re + z.re, im + z.im }; }
 
-        complex operator-( complex z ) const { return { re - z.re, im - z.im }; }
+        PBRT_CPU_GPU complex operator-( complex z ) const { return { re - z.re, im - z.im }; }
 
-        complex operator*( complex z ) const
+        PBRT_CPU_GPU complex operator*( complex z ) const
         {
             return { re * z.re - im * z.im, re * z.im + im * z.re };
         }
 
-        complex operator/( complex z ) const
+        PBRT_CPU_GPU complex operator/( complex z ) const
         {
             T scale = 1 / ( z.re * z.re + z.im * z.im );
             return { scale * ( re * z.re + im * z.im ), scale * ( im * z.re - re * z.im ) };
         }
 
-        friend complex operator+( T value, complex z )
+        friend PBRT_CPU_GPU complex operator+( T value, complex z )
         {
             return complex( value ) + z;
         }
 
-        friend complex operator-( T value, complex z )
+        friend PBRT_CPU_GPU complex operator-( T value, complex z )
         {
             return complex( value ) - z;
         }
 
-        friend complex operator*( T value, complex z )
+        friend PBRT_CPU_GPU complex operator*( T value, complex z )
         {
             return complex( value ) * z;
         }
 
-        friend complex operator/( T value, complex z )
+        friend PBRT_CPU_GPU complex operator/( T value, complex z )
         {
             return complex( value ) / z;
         }
@@ -1108,32 +1265,24 @@ namespace pstdo
         T re, im;
     };
 
-    inline float sqrt( float f )
+    PBRT_CPU_GPU inline float sqrt( float f )
     {
-#ifdef PBRT_USES_HCCMATH_SQRT
-        return Math::Sqrt( f );
-#else
         return ::sqrtf( f );
-#endif
     }
-    inline double sqrt( double f )
+    PBRT_CPU_GPU inline double sqrt( double f )
     {
-#ifdef PBRT_USES_HCCMATH_SQRT
-        return Math::Sqrt( f );
-#else
         return ::sqrt( f );
-#endif
     }
-    inline float abs( float f )
+    PBRT_CPU_GPU inline float abs( float f )
     {
         return ::fabsf( f );
     }
-    inline double abs( double f )
+    PBRT_CPU_GPU inline double abs( double f )
     {
         return ::fabs( f );
     }
 
-    inline float copysign( float mag, float sign )
+    PBRT_CPU_GPU inline float copysign( float mag, float sign )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::copysignf( mag, sign );
@@ -1142,7 +1291,7 @@ namespace pstdo
 #endif
     }
 
-    inline double copysign( double mag, double sign )
+    PBRT_CPU_GPU inline double copysign( double mag, double sign )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::copysign( mag, sign );
@@ -1151,7 +1300,7 @@ namespace pstdo
 #endif
     }
 
-    inline float floor( float arg )
+    PBRT_CPU_GPU inline float floor( float arg )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::floorf( arg );
@@ -1160,7 +1309,7 @@ namespace pstdo
 #endif
     }
 
-    inline double floor( double arg )
+    PBRT_CPU_GPU inline double floor( double arg )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::floor( arg );
@@ -1169,7 +1318,7 @@ namespace pstdo
 #endif
     }
 
-    inline float ceil( float arg )
+    PBRT_CPU_GPU inline float ceil( float arg )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::ceilf( arg );
@@ -1178,7 +1327,7 @@ namespace pstdo
 #endif
     }
 
-    inline double ceil( double arg )
+    PBRT_CPU_GPU inline double ceil( double arg )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::ceil( arg );
@@ -1187,7 +1336,7 @@ namespace pstdo
 #endif
     }
 
-    inline float round( float arg )
+    PBRT_CPU_GPU inline float round( float arg )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::roundf( arg );
@@ -1196,7 +1345,7 @@ namespace pstdo
 #endif
     }
 
-    inline double round( double arg )
+    PBRT_CPU_GPU inline double round( double arg )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::round( arg );
@@ -1205,58 +1354,50 @@ namespace pstdo
 #endif
     }
 
-    inline float fmod( float x, float y )
+    PBRT_CPU_GPU inline float fmod( float x, float y )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::fmodf( x, y );
 #else
-#ifdef PBRT_USES_HCCMATH_FMOD
-        return Math::FMod( x, y );
-#else
         return std::fmod( x, y );
-#endif
 #endif
     }
 
-    inline double fmod( double x, double y )
+    PBRT_CPU_GPU inline double fmod( double x, double y )
     {
 #ifdef PBRT_IS_GPU_CODE
         return ::fmod( x, y );
 #else
-#ifdef PBRT_USES_HCCMATH_FMOD
-        return Math::FMod( x, y );
-#else
         return std::fmod( x, y );
-#endif
 #endif
     }
 
     template <typename T>
-    T real( const complex<T>& z )
+    PBRT_CPU_GPU T real( const complex<T>& z )
     {
         return z.re;
     }
 
     template <typename T>
-    T imag( const complex<T>& z )
+    PBRT_CPU_GPU T imag( const complex<T>& z )
     {
         return z.im;
     }
 
     template <typename T>
-    T norm( const complex<T>& z )
+    PBRT_CPU_GPU T norm( const complex<T>& z )
     {
         return z.re * z.re + z.im * z.im;
     }
 
     template <typename T>
-    T abs( const complex<T>& z )
+    PBRT_CPU_GPU T abs( const complex<T>& z )
     {
         return pstdo::sqrt( pstdo::norm( z ) );
     }
 
     template <typename T>
-    complex<T> sqrt( const complex<T>& z )
+    PBRT_CPU_GPU complex<T> sqrt( const complex<T>& z )
     {
         T n = pstdo::abs( z ), t1 = pstdo::sqrt( T( .5 ) * ( n + pstdo::abs( z.re ) ) ),
             t2 = T( .5 ) * z.im / t1;
@@ -1269,178 +1410,6 @@ namespace pstdo
         else
             return { pstdo::abs( t2 ), pstdo::copysign( t1, z.im ) };
     }
-
-}  // namespace pstd
-
-namespace std
-{
-    template<typename T, typename CharT>
-        requires requires( const T& t )
-    {
-        { t.ToString( ) }->same_as<basic_string<CharT>>;
-    }
-    struct formatter<T, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( const T& value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                return std::format_to( ctx.out( ), L"{}", value.ToString( ) );
-            }
-            else
-            {
-                return std::format_to( ctx.out( ), "{}", value.ToString( ) );
-            }
-        }
-    };
-
-    template<typename T, typename CharT>
-        requires requires( const T& t )
-    {
-        { t.ToString( ) }->same_as<basic_string<CharT>>;
-    }
-    struct formatter<const T*, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( const T* value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                return std::format_to( ctx.out( ), L"{}", value ? value->ToString( ).c_str() : L"<nullptr>" );
-            }
-            else
-            {
-                return std::format_to( ctx.out( ), "{}", value? value->ToString( ).c_str( ) : "<nullptr>" );
-            }
-        }
-    };
-
-
-    template<typename T, typename CharT>
-        requires requires( const T& t )
-    {
-        { pbrto::ToString( t ) }->same_as<basic_string<CharT>>;
-    }
-    struct formatter<T, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( const T& value, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                return std::format_to( ctx.out( ), L"{}", pbrto::ToString( value ) );
-            }
-            else
-            {
-                return std::format_to( ctx.out( ), "{}", pbrto::ToString( value ) );
-            }
-        }
-    };
-
-
-
-    template<typename CharT, formattable<CharT> T >
-    struct formatter<pstdo::optional<T>, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( const pstdo::optional<T>& opt, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                if ( opt.has_value( ) )
-                {
-                    return std::format_to( ctx.out( ), L"{}", opt.value( ) );
-                }
-                else
-                {
-                    return std::format_to( ctx.out( ), L"<empty>" );
-                }
-            }
-            else
-            {
-                if ( opt.has_value( ) )
-                {
-                    return std::format_to( ctx.out( ), "{}", opt.value( ) );
-                }
-                else
-                {
-                    return std::format_to( ctx.out( ), "<empty>" );
-                }
-            }
-        }
-    };
-
-    template<typename CharT, formattable<CharT> T >
-    struct formatter<pstdo::optional<const T*>, CharT>
-    {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
-        {
-            return ctx.begin( );
-        }
-
-        template <typename FormatContext>
-        auto format( const pstdo::optional<const T*>& opt, FormatContext& ctx ) const
-        {
-            if constexpr ( is_same_v<CharT, wchar_t> )
-            {
-                if ( opt.has_value( ) )
-                {
-                    if ( opt.value( ) )
-                    {
-                        return std::format_to( ctx.out( ), L"{}", *opt.value( ) );
-                    }
-                    else
-                    {
-                        return std::format_to( ctx.out( ), L"<nullptr>" );
-                    }
-                }
-                else
-                {
-                    return std::format_to( ctx.out( ), L"<empty>" );
-                }
-            }
-            else
-            {
-                if ( opt.has_value( ) )
-                {
-                    if ( opt.value( ) )
-                    {
-                        return std::format_to( ctx.out( ), "{}", *opt.value( ) );
-                    }
-                    else
-                    {
-                        return std::format_to( ctx.out( ), "<nullptr>" );
-                    }
-                }
-                else
-                {
-                    return std::format_to( ctx.out( ), "<empty>" );
-                }
-            }
-        }
-    };
-
 
 }
 

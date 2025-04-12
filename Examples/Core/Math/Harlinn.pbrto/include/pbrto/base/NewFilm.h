@@ -27,6 +27,7 @@
 
 #include <pbrto/base/NewFilter.h>
 #include <pbrto/util/NewPStd.h>
+#include <pbrto/util/NewTaggedPtr.h>
 
 #include <string>
 
@@ -43,14 +44,13 @@ namespace pbrto
     class Film : public TaggedPointer<RGBFilm, GBufferFilm, SpectralFilm>
     {
     public:
-        using TaggedPointer::TaggedPointer;
-
         // Film Interface
-        PBRT_CPU_GPU
-            inline void AddSample( Point2i pFilm, SampledSpectrum L, const SampledWavelengths& lambda, const VisibleSurface* visibleSurface, Float weight );
+        PBRT_CPU_GPU inline void AddSample( Point2i pFilm, SampledSpectrum L,
+            const SampledWavelengths& lambda,
+            const VisibleSurface* visibleSurface,
+            Float weight );
 
-        PBRT_CPU_GPU
-            inline Bounds2f SampleBounds( ) const;
+        PBRT_CPU_GPU inline Bounds2f SampleBounds( ) const;
 
         PBRT_CPU_GPU
             bool UsesVisibleSurface( ) const;
@@ -58,42 +58,35 @@ namespace pbrto
         PBRT_CPU_GPU
             void AddSplat( Point2f p, SampledSpectrum v, const SampledWavelengths& lambda );
 
-        PBRT_CPU_GPU
-            inline SampledWavelengths SampleWavelengths( Float u ) const;
+        PBRT_CPU_GPU inline SampledWavelengths SampleWavelengths( Float u ) const;
 
-        PBRT_CPU_GPU
-            inline Point2i FullResolution( ) const;
-
-        PBRT_CPU_GPU
-            inline Bounds2i PixelBounds( ) const;
-
-        PBRT_CPU_GPU
-            inline Float Diagonal( ) const;
+        PBRT_CPU_GPU inline Point2i FullResolution( ) const;
+        PBRT_CPU_GPU inline Bounds2i PixelBounds( ) const;
+        PBRT_CPU_GPU inline Float Diagonal( ) const;
 
         void WriteImage( ImageMetadata metadata, Float splatScale = 1 );
 
-        PBRT_CPU_GPU
-            inline RGB ToOutputRGB( SampledSpectrum L, const SampledWavelengths& lambda ) const;
+        PBRT_CPU_GPU inline RGB ToOutputRGB( SampledSpectrum L,
+            const SampledWavelengths& lambda ) const;
 
         Image GetImage( ImageMetadata* metadata, Float splatScale = 1 );
 
         PBRT_CPU_GPU
             RGB GetPixelRGB( Point2i p, Float splatScale = 1 ) const;
 
-        PBRT_CPU_GPU
-            inline Filter GetFilter( ) const;
-
-        PBRT_CPU_GPU
-            inline const PixelSensor* GetPixelSensor( ) const;
-
+        PBRT_CPU_GPU inline Filter GetFilter( ) const;
+        PBRT_CPU_GPU inline const PixelSensor* GetPixelSensor( ) const;
         std::string GetFilename( ) const;
 
-        static Film Create( const std::string& name, const ParameterDictionary& parameters, Float exposureTime, const CameraTransform& cameraTransform, Filter filter, const FileLoc* loc, Allocator alloc );
+        using TaggedPointer::TaggedPointer;
+
+        static Film Create( const std::string& name, const ParameterDictionary& parameters,
+            Float exposureTime, const CameraTransform& cameraTransform,
+            Filter filter, const FileLoc* loc, Allocator alloc );
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            inline void ResetPixel( Point2i p );
+        PBRT_CPU_GPU inline void ResetPixel( Point2i p );
     };
 
 }

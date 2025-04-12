@@ -83,19 +83,10 @@ namespace pbrto
 
     std::string HaltonSampler::ToString( ) const
     {
-        std::string digitPermutationsStr;
-        if ( digitPermutations )
-        {
-            digitPermutationsStr = std::format( "{}", *digitPermutations );
-        }
-        else
-        {
-            digitPermutationsStr = "<nullptr>";
-        }
-        return std::format( "[ HaltonSampler randomize: {} digitPermutations: {} "
-            "haltonIndex: {} dimension: {} samplesPerPixel: {} "
-            "baseScales: {} baseExponents: {} multInverse: [ {} {} ] ]",
-            randomize, digitPermutationsStr, haltonIndex, dimension,
+        return StringPrintf( "[ HaltonSampler randomize: %s digitPermutations: %p "
+            "haltonIndex: %d dimension: %d samplesPerPixel: %d "
+            "baseScales: %s baseExponents: %s multInverse: [ %d %d ] ]",
+            randomize, digitPermutations, haltonIndex, dimension,
             samplesPerPixel, baseScales, baseExponents, multInverse[ 0 ],
             multInverse[ 1 ] );
     }
@@ -122,7 +113,7 @@ namespace pbrto
         else if ( s == "owen" )
             randomizer = RandomizeStrategy::Owen;
         else
-            ErrorExit( loc, "{}: unknown randomization strategy given to HaltonSampler", s );
+            ErrorExit( loc, "%s: unknown randomization strategy given to HaltonSampler", s );
 
         return alloc.new_object<HaltonSampler>( nsamp, fullResolution, randomizer, seed,
             alloc );
@@ -135,8 +126,8 @@ namespace pbrto
 
     std::string PaddedSobolSampler::ToString( ) const
     {
-        return std::format( "[ PaddedSobolSampler pixel: {} sampleIndex: {} dimension: {} "
-            "samplesPerPixel: {} seed: {} randomize: {} ]",
+        return StringPrintf( "[ PaddedSobolSampler pixel: %s sampleIndex: %d dimension: %d "
+            "samplesPerPixel: %d seed: %d randomize: %s ]",
             pixel, sampleIndex, dimension, samplesPerPixel, seed, randomize );
     }
 
@@ -166,7 +157,7 @@ namespace pbrto
         else if ( s == "owen" )
             randomizer = RandomizeStrategy::Owen;
         else
-            ErrorExit( loc, "{}: unknown randomization strategy given to PaddedSobolSampler",
+            ErrorExit( loc, "%s: unknown randomization strategy given to PaddedSobolSampler",
                 s );
 
         return alloc.new_object<PaddedSobolSampler>( nsamp, randomizer, seed );
@@ -180,8 +171,8 @@ namespace pbrto
 
     std::string ZSobolSampler::ToString( ) const
     {
-        return std::format( "[ ZSobolSampler randomize: {} log2SamplesPerPixel: {} "
-            " seed: {} nBase4Digits: {} mortonIndex: {} dimension: {} ]",
+        return StringPrintf( "[ ZSobolSampler randomize: %s log2SamplesPerPixel: %d "
+            " seed: %d nBase4Digits: %d mortonIndex: %d dimension: %d ]",
             randomize, log2SamplesPerPixel, seed, nBase4Digits, mortonIndex,
             dimension );
     }
@@ -208,7 +199,7 @@ namespace pbrto
         else if ( s == "owen" )
             randomizer = RandomizeStrategy::Owen;
         else
-            ErrorExit( loc, "{}: unknown randomization strategy given to ZSobolSampler", s );
+            ErrorExit( loc, "%s: unknown randomization strategy given to ZSobolSampler", s );
 
         return alloc.new_object<ZSobolSampler>( nsamp, fullResolution, randomizer, seed );
     }
@@ -222,7 +213,7 @@ namespace pbrto
                 "pixel (1, 4, 16, 64, ...)" );
         // Get sorted pmj02bn samples for pixel samples
         if ( samplesPerPixel > nPMJ02bnSamples )
-            Error( "PMJ02BNSampler only supports up to {} samples per pixel", nPMJ02bnSamples );
+            Error( "PMJ02BNSampler only supports up to %d samples per pixel", nPMJ02bnSamples );
         // Compute _pixelTileSize_ for pmj02bn pixel samples and allocate _pixelSamples_
         pixelTileSize =
             1 << ( Log4Int( nPMJ02bnSamples ) - Log4Int( RoundUpPow4( samplesPerPixel ) ) );
@@ -272,24 +263,15 @@ namespace pbrto
 
     std::string PMJ02BNSampler::ToString( ) const
     {
-        std::string pixelSamplesStr;
-        if ( pixelSamples )
-        {
-            pixelSamplesStr = std::format( "{}", *pixelSamples );
-        }
-        else
-        {
-            pixelSamplesStr = "<nullptr>";
-        }
-        return std::format( "[ PMJ02BNSampler pixel: {} sampleIndex: {} dimension: {} "
-            "samplesPerPixel: {} pixelTileSize: {} pixelSamples: {} ]",
+        return StringPrintf( "[ PMJ02BNSampler pixel: %s sampleIndex: %d dimension: %d "
+            "samplesPerPixel: %d pixelTileSize: %d pixelSamples: %p ]",
             pixel, sampleIndex, dimension, samplesPerPixel, pixelTileSize,
-            pixelSamplesStr );
+            pixelSamples );
     }
 
     std::string IndependentSampler::ToString( ) const
     {
-        return std::format( "[ IndependentSampler samplesPerPixel: {} seed: {} rng: {} ]",
+        return StringPrintf( "[ IndependentSampler samplesPerPixel: %d seed: %d rng: %s ]",
             samplesPerPixel, seed, rng );
     }
 
@@ -311,9 +293,9 @@ namespace pbrto
     // SobolSampler Method Definitions
     std::string SobolSampler::ToString( ) const
     {
-        return std::format( "[ SobolSampler pixel: {} dimension: {} "
-            "samplesPerPixel: {} scale: {} sobolIndex: {} "
-            "seed: {} randomize: {} ]",
+        return StringPrintf( "[ SobolSampler pixel: %s dimension: %d "
+            "samplesPerPixel: %d scale: %d sobolIndex: %d "
+            "seed: %d randomize: %s ]",
             pixel, dimension, samplesPerPixel, scale, sobolIndex, seed,
             randomize );
     }
@@ -339,7 +321,7 @@ namespace pbrto
         else if ( s == "owen" )
             randomizer = RandomizeStrategy::Owen;
         else
-            ErrorExit( loc, "{}: unknown randomization strategy given to SobolSampler", s );
+            ErrorExit( loc, "%s: unknown randomization strategy given to SobolSampler", s );
 
         int seed = parameters.GetOneInt( "seed", Options->seed );
 
@@ -349,9 +331,9 @@ namespace pbrto
     // StratifiedSampler Method Definitions
     std::string StratifiedSampler::ToString( ) const
     {
-        return std::format(
-            "[ StratifiedSampler pixel: {} sampleIndex: {} dimension: {} "
-            "xPixelSamples: {} yPixelSamples: {} jitter: {} seed: {} rng: {} ]",
+        return StringPrintf(
+            "[ StratifiedSampler pixel: %s sampleIndex: %d dimension: %d "
+            "xPixelSamples: %d yPixelSamples: %d jitter: %s seed: %d rng: %s ]",
             pixel, sampleIndex, dimension, xPixelSamples, yPixelSamples, jitter, seed, rng );
     }
 
@@ -369,7 +351,7 @@ namespace pbrto
         if ( Options->pixelSamples )
         {
             int nSamples = *Options->pixelSamples;
-            int div = Math::Sqrt( static_cast< Float >( nSamples ) );
+            int div = std::sqrt( nSamples );
             while ( nSamples % div )
             {
                 NCHECK_GT( div, 0 );
@@ -378,7 +360,7 @@ namespace pbrto
             xSamples = nSamples / div;
             ySamples = nSamples / xSamples;
             NCHECK_EQ( nSamples, xSamples * ySamples );
-            NLOG_VERBOSE( "xSamples {} ySamples {}", xSamples, ySamples );
+            NLOG_VERBOSE( "xSamples %d ySamples %d", xSamples, ySamples );
         }
         if ( Options->quickRender )
             xSamples = ySamples = 1;
@@ -448,7 +430,7 @@ namespace pbrto
         {
             int64_t nSmall = currentIteration - X_i.lastModificationIteration;
             // Apply _nSmall_ small step mutations to $\VEC{X}_i$
-            Float effSigma = sigma * Math::Sqrt( ( Float )nSmall );
+            Float effSigma = sigma * std::sqrt( ( Float )nSmall );
             Float delta = SampleNormal( rng.Uniform<Float>( ), 0, effSigma );
             X_i.value += delta;
             X_i.value -= pstdo::floor( X_i.value );
@@ -477,7 +459,7 @@ namespace pbrto
     {
         std::string state;
         for ( const PrimarySample& Xi : X )
-            state += std::format( "{},", Xi.value );
+            state += StringPrintf( "%f,", Xi.value );
         state += "0";
         return state;
     }
@@ -490,7 +472,7 @@ namespace pbrto
         for ( size_t i = 0; i < state.size( ); ++i )
         {
             if ( !Atof( state[ i ], &ds.u[ i ] ) )
-                ErrorExit( "Invalid value in --debugstate: {}", state[ i ] );
+                ErrorExit( "Invalid value in --debugstate: %s", state[ i ] );
         }
         return ds;
     }
@@ -516,9 +498,9 @@ namespace pbrto
         else if ( name == "stratified" )
             sampler = StratifiedSampler::Create( parameters, loc, alloc );
         else
-            ErrorExit( loc, "{}: sampler type unknown.", name );
+            ErrorExit( loc, "%s: sampler type unknown.", name );
         if ( !sampler )
-            ErrorExit( loc, "{}: unable to create sampler.", name );
+            ErrorExit( loc, "%s: unable to create sampler.", name );
         parameters.ReportUnused( );
 
         return sampler;

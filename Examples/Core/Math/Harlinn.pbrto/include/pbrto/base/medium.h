@@ -15,117 +15,107 @@
 #include <string>
 #include <vector>
 
-namespace pbrt
-{
+namespace pbrt {
 
-    // PhaseFunctionSample Definition
-    struct PhaseFunctionSample
-    {
-        Float p;
-        Vector3f wi;
-        Float pdf;
-    };
+// PhaseFunctionSample Definition
+struct PhaseFunctionSample {
+    Float p;
+    Vector3f wi;
+    Float pdf;
+};
 
-    // PhaseFunction Definition
-    class HGPhaseFunction;
+// PhaseFunction Definition
+class HGPhaseFunction;
 
-    class PhaseFunction : public TaggedPointer<HGPhaseFunction>
-    {
-    public:
-        // PhaseFunction Interface
-        using TaggedPointer::TaggedPointer;
+class PhaseFunction : public TaggedPointer<HGPhaseFunction> {
+  public:
+    // PhaseFunction Interface
+    using TaggedPointer::TaggedPointer;
 
-        std::string ToString( ) const;
+    std::string ToString() const;
 
-        PBRT_CPU_GPU 
-        inline Float p( Vector3f wo, Vector3f wi ) const;
+    PBRT_CPU_GPU inline Float p(Vector3f wo, Vector3f wi) const;
 
-        PBRT_CPU_GPU 
-        inline pstd::optional<PhaseFunctionSample> Sample_p( Vector3f wo, Point2f u ) const;
+    PBRT_CPU_GPU inline pstd::optional<PhaseFunctionSample> Sample_p(Vector3f wo,
+                                                                     Point2f u) const;
 
-        PBRT_CPU_GPU 
-        inline Float PDF( Vector3f wo, Vector3f wi ) const;
-    };
+    PBRT_CPU_GPU inline Float PDF(Vector3f wo, Vector3f wi) const;
+};
 
-    class HomogeneousMedium;
-    class GridMedium;
-    class RGBGridMedium;
-    class CloudMedium;
-    class NanoVDBMedium;
+class HomogeneousMedium;
+class GridMedium;
+class RGBGridMedium;
+class CloudMedium;
+class NanoVDBMedium;
 
-    struct MediumProperties;
+struct MediumProperties;
 
-    // RayMajorantSegment Definition
-    struct RayMajorantSegment
-    {
-        Float tMin, tMax;
-        SampledSpectrum sigma_maj;
-        std::string ToString( ) const;
-    };
+// RayMajorantSegment Definition
+struct RayMajorantSegment {
+    Float tMin, tMax;
+    SampledSpectrum sigma_maj;
+    std::string ToString() const;
+};
 
-    // RayMajorantIterator Definition
-    class HomogeneousMajorantIterator;
-    class DDAMajorantIterator;
+// RayMajorantIterator Definition
+class HomogeneousMajorantIterator;
+class DDAMajorantIterator;
 
-    class RayMajorantIterator : public TaggedPointer<HomogeneousMajorantIterator, DDAMajorantIterator>
-    {
-    public:
-        using TaggedPointer::TaggedPointer;
+class RayMajorantIterator
+    : public TaggedPointer<HomogeneousMajorantIterator, DDAMajorantIterator> {
+  public:
+    using TaggedPointer::TaggedPointer;
 
-        PBRT_CPU_GPU
-        pstd::optional<RayMajorantSegment> Next( );
+    PBRT_CPU_GPU
+    pstd::optional<RayMajorantSegment> Next();
 
-        std::string ToString( ) const;
-    };
+    std::string ToString() const;
+};
 
-    // Medium Definition
-    class Medium : public TaggedPointer< HomogeneousMedium, GridMedium, RGBGridMedium, CloudMedium, NanoVDBMedium >
-    {
-    public:
-        // Medium Interface
-        using TaggedPointer::TaggedPointer;
+// Medium Definition
+class Medium
+    : public TaggedPointer<  // Medium Types
+          HomogeneousMedium, GridMedium, RGBGridMedium, CloudMedium, NanoVDBMedium
 
-        static Medium Create( const std::string& name, const ParameterDictionary& parameters, const Transform& renderFromMedium, const FileLoc* loc, Allocator alloc );
+          > {
+  public:
+    // Medium Interface
+    using TaggedPointer::TaggedPointer;
 
-        std::string ToString( ) const;
+    static Medium Create(const std::string &name, const ParameterDictionary &parameters,
+                         const Transform &renderFromMedium, const FileLoc *loc,
+                         Allocator alloc);
 
-        PBRT_CPU_GPU
-        bool IsEmissive( ) const;
+    std::string ToString() const;
 
-        PBRT_CPU_GPU
-        MediumProperties SamplePoint( Point3f p, const SampledWavelengths& lambda ) const;
+    PBRT_CPU_GPU
+    bool IsEmissive() const;
 
-        // Medium Public Methods
-        RayMajorantIterator SampleRay( Ray ray, Float tMax, const SampledWavelengths& lambda, ScratchBuffer& buf ) const;
-    };
+    PBRT_CPU_GPU
+    MediumProperties SamplePoint(Point3f p, const SampledWavelengths &lambda) const;
 
-    // MediumInterface Definition
-    struct MediumInterface
-    {
-        // MediumInterface Public Members
-        Medium inside; 
-        Medium outside;
+    // Medium Public Methods
+    RayMajorantIterator SampleRay(Ray ray, Float tMax, const SampledWavelengths &lambda,
+                                  ScratchBuffer &buf) const;
+};
 
-        // MediumInterface Public Methods
-        std::string ToString( ) const;
+// MediumInterface Definition
+struct MediumInterface {
+    // MediumInterface Public Methods
+    std::string ToString() const;
 
-        MediumInterface( ) = default;
-        PBRT_CPU_GPU
-        MediumInterface( Medium medium ) 
-            : inside( medium ), outside( medium ) 
-        { }
+    MediumInterface() = default;
+    PBRT_CPU_GPU
+    MediumInterface(Medium medium) : inside(medium), outside(medium) {}
+    PBRT_CPU_GPU
+    MediumInterface(Medium inside, Medium outside) : inside(inside), outside(outside) {}
 
-        PBRT_CPU_GPU
-        MediumInterface( Medium inside, Medium outside ) 
-            : inside( inside ), outside( outside ) 
-        { }
+    PBRT_CPU_GPU
+    bool IsMediumTransition() const { return inside != outside; }
 
-        PBRT_CPU_GPU
-        bool IsMediumTransition( ) const 
-        { 
-            return inside != outside; 
-        }
-    };
+    // MediumInterface Public Members
+    Medium inside, outside;
+};
 
 }  // namespace pbrt
 

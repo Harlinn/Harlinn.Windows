@@ -50,7 +50,8 @@ namespace pbrto
         virtual void Shape( const std::string& name, ParsedParameterVector params,
             FileLoc loc ) = 0;
 
-        PBRTO_EXPORT virtual ~ParserTarget( );
+        PBRTO_EXPORT
+            virtual ~ParserTarget( );
 
         virtual void Option( const std::string& name, const std::string& value,
             FileLoc loc ) = 0;
@@ -82,8 +83,10 @@ namespace pbrto
             FileLoc loc ) = 0;
         virtual void MakeNamedMedium( const std::string& name, ParsedParameterVector params,
             FileLoc loc ) = 0;
-        virtual void MediumInterface( const std::string& insideName, const std::string& outsideName, FileLoc loc ) = 0;
-        virtual void Sampler( const std::string& name, ParsedParameterVector params, FileLoc loc ) = 0;
+        virtual void MediumInterface( const std::string& insideName,
+            const std::string& outsideName, FileLoc loc ) = 0;
+        virtual void Sampler( const std::string& name, ParsedParameterVector params,
+            FileLoc loc ) = 0;
 
         virtual void WorldBegin( FileLoc loc ) = 0;
         virtual void AttributeBegin( FileLoc loc ) = 0;
@@ -112,26 +115,26 @@ namespace pbrto
     protected:
         // ParserTarget Protected Methods
         template <typename... Args>
-        void ErrorExitDeferred( const std::format_string<Args...> fmt, Args&&... args ) const
+        void ErrorExitDeferred( const char* fmt, Args &&...args ) const
         {
             errorExit = true;
-            auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-            Error( nullptr, s.c_str() );
+            Error( fmt, std::forward<Args>( args )... );
         }
         template <typename... Args>
-        void ErrorExitDeferred( const FileLoc* loc, const std::format_string<Args...> fmt, Args&&... args ) const
+        void ErrorExitDeferred( const FileLoc* loc, const char* fmt, Args &&...args ) const
         {
             errorExit = true;
-            auto s = FormatV( fmt.get( ), std::make_format_args( args... ) );
-            Error( loc, s.c_str( ) );
+            Error( loc, fmt, std::forward<Args>( args )... );
         }
 
         mutable bool errorExit = false;
     };
 
     // Scene Parsing Declarations
-    PBRTO_EXPORT void ParseFiles( ParserTarget* target, pstdo::span<const std::string> filenames );
-    PBRTO_EXPORT void ParseString( ParserTarget* target, std::string str );
+    PBRTO_EXPORT
+        void ParseFiles( ParserTarget* target, pstdo::span<const std::string> filenames );
+    PBRTO_EXPORT
+        void ParseString( ParserTarget* target, std::string str );
 
     // Token Definition
     struct Token
@@ -148,22 +151,22 @@ namespace pbrto
     {
     public:
         // Tokenizer Public Methods
-        PBRTO_EXPORT Tokenizer( std::string str, std::string filename,
+        Tokenizer( std::string str, std::string filename,
             std::function<void( const char*, const FileLoc* )> errorCallback );
 #if defined(PBRT_HAVE_MMAP) || defined(PBRT_IS_WINDOWS)
-        PBRTO_EXPORT Tokenizer( void* ptr, size_t len, std::string filename,
+        Tokenizer( void* ptr, size_t len, std::string filename,
             std::function<void( const char*, const FileLoc* )> errorCallback );
 #endif
-        PBRTO_EXPORT ~Tokenizer( );
+        ~Tokenizer( );
 
-        PBRTO_EXPORT static std::unique_ptr<Tokenizer> CreateFromFile(
+        static std::unique_ptr<Tokenizer> CreateFromFile(
             const std::string& filename,
             std::function<void( const char*, const FileLoc* )> errorCallback );
-        PBRTO_EXPORT static std::unique_ptr<Tokenizer> CreateFromString(
+        static std::unique_ptr<Tokenizer> CreateFromString(
             std::string str,
             std::function<void( const char*, const FileLoc* )> errorCallback );
 
-        PBRTO_EXPORT pstdo::optional<Token> Next( );
+        pstdo::optional<Token> Next( );
 
         // Just for parse().
         // TODO? Have a method to set this?
@@ -231,56 +234,98 @@ namespace pbrto
     {
     public:
         FormattingParserTarget( bool toPly, bool upgrade ) : toPly( toPly ), upgrade( upgrade ) {}
-        PBRTO_EXPORT ~FormattingParserTarget( );
+        PBRTO_EXPORT
+            ~FormattingParserTarget( );
 
-        PBRTO_EXPORT void Option( const std::string& name, const std::string& value, FileLoc loc );
-        PBRTO_EXPORT void Identity( FileLoc loc );
-        PBRTO_EXPORT void Translate( Float dx, Float dy, Float dz, FileLoc loc );
-        PBRTO_EXPORT void Rotate( Float angle, Float ax, Float ay, Float az, FileLoc loc );
-        PBRTO_EXPORT void Scale( Float sx, Float sy, Float sz, FileLoc loc );
-        PBRTO_EXPORT void LookAt( Float ex, Float ey, Float ez, Float lx, Float ly, Float lz, Float ux,
-            Float uy, Float uz, FileLoc loc );
-        PBRTO_EXPORT void ConcatTransform( Float transform[ 16 ], FileLoc loc );
-        PBRTO_EXPORT void Transform( Float transform[ 16 ], FileLoc loc );
-        PBRTO_EXPORT void CoordinateSystem( const std::string&, FileLoc loc );
-        PBRTO_EXPORT void CoordSysTransform( const std::string&, FileLoc loc );
-        PBRTO_EXPORT void ActiveTransformAll( FileLoc loc );
-        PBRTO_EXPORT void ActiveTransformEndTime( FileLoc loc );
-        PBRTO_EXPORT void ActiveTransformStartTime( FileLoc loc );
-        PBRTO_EXPORT void TransformTimes( Float start, Float end, FileLoc loc );
-        PBRTO_EXPORT void TransformBegin( FileLoc loc );
-        PBRTO_EXPORT void TransformEnd( FileLoc loc );
-        PBRTO_EXPORT void ColorSpace( const std::string& n, FileLoc loc );
-        PBRTO_EXPORT void PixelFilter( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Film( const std::string& type, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Sampler( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Accelerator( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Integrator( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Camera( const std::string&, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void MakeNamedMedium( const std::string& name, ParsedParameterVector params,
-            FileLoc loc );
-        PBRTO_EXPORT void MediumInterface( const std::string& insideName, const std::string& outsideName,
-            FileLoc loc );
-        PBRTO_EXPORT void WorldBegin( FileLoc loc );
-        PBRTO_EXPORT void AttributeBegin( FileLoc loc );
-        PBRTO_EXPORT void AttributeEnd( FileLoc loc );
-        PBRTO_EXPORT void Attribute( const std::string& target, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Texture( const std::string& name, const std::string& type,
-            const std::string& texname, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void Material( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void MakeNamedMaterial( const std::string& name, ParsedParameterVector params,
-            FileLoc loc );
-        PBRTO_EXPORT void NamedMaterial( const std::string& name, FileLoc loc );
-        PBRTO_EXPORT void LightSource( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void AreaLightSource( const std::string& name, ParsedParameterVector params,
-            FileLoc loc );
-        PBRTO_EXPORT void Shape( const std::string& name, ParsedParameterVector params, FileLoc loc );
-        PBRTO_EXPORT void ReverseOrientation( FileLoc loc );
-        PBRTO_EXPORT void ObjectBegin( const std::string& name, FileLoc loc );
-        PBRTO_EXPORT void ObjectEnd( FileLoc loc );
-        PBRTO_EXPORT void ObjectInstance( const std::string& name, FileLoc loc );
+        PBRTO_EXPORT
+            void Option( const std::string& name, const std::string& value, FileLoc loc );
+        PBRTO_EXPORT
+            void Identity( FileLoc loc );
+        PBRTO_EXPORT
+            void Translate( Float dx, Float dy, Float dz, FileLoc loc );
+        PBRTO_EXPORT
+            void Rotate( Float angle, Float ax, Float ay, Float az, FileLoc loc );
+        PBRTO_EXPORT
+            void Scale( Float sx, Float sy, Float sz, FileLoc loc );
+        PBRTO_EXPORT
+            void LookAt( Float ex, Float ey, Float ez, Float lx, Float ly, Float lz, Float ux,
+                Float uy, Float uz, FileLoc loc );
+        PBRTO_EXPORT
+            void ConcatTransform( Float transform[ 16 ], FileLoc loc );
+        PBRTO_EXPORT
+            void Transform( Float transform[ 16 ], FileLoc loc );
+        PBRTO_EXPORT
+            void CoordinateSystem( const std::string&, FileLoc loc );
+        PBRTO_EXPORT
+            void CoordSysTransform( const std::string&, FileLoc loc );
+        PBRTO_EXPORT
+            void ActiveTransformAll( FileLoc loc );
+        PBRTO_EXPORT
+            void ActiveTransformEndTime( FileLoc loc );
+        PBRTO_EXPORT
+            void ActiveTransformStartTime( FileLoc loc );
+        PBRTO_EXPORT
+            void TransformTimes( Float start, Float end, FileLoc loc );
+        PBRTO_EXPORT
+            void TransformBegin( FileLoc loc );
+        PBRTO_EXPORT
+            void TransformEnd( FileLoc loc );
+        PBRTO_EXPORT
+            void ColorSpace( const std::string& n, FileLoc loc );
+        PBRTO_EXPORT
+            void PixelFilter( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Film( const std::string& type, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Sampler( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Accelerator( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Integrator( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Camera( const std::string&, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void MakeNamedMedium( const std::string& name, ParsedParameterVector params,
+                FileLoc loc );
+        PBRTO_EXPORT
+            void MediumInterface( const std::string& insideName, const std::string& outsideName,
+                FileLoc loc );
+        PBRTO_EXPORT
+            void WorldBegin( FileLoc loc );
+        PBRTO_EXPORT
+            void AttributeBegin( FileLoc loc );
+        PBRTO_EXPORT
+            void AttributeEnd( FileLoc loc );
+        PBRTO_EXPORT
+            void Attribute( const std::string& target, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Texture( const std::string& name, const std::string& type,
+                const std::string& texname, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void Material( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void MakeNamedMaterial( const std::string& name, ParsedParameterVector params,
+                FileLoc loc );
+        PBRTO_EXPORT
+            void NamedMaterial( const std::string& name, FileLoc loc );
+        PBRTO_EXPORT
+            void LightSource( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void AreaLightSource( const std::string& name, ParsedParameterVector params,
+                FileLoc loc );
+        PBRTO_EXPORT
+            void Shape( const std::string& name, ParsedParameterVector params, FileLoc loc );
+        PBRTO_EXPORT
+            void ReverseOrientation( FileLoc loc );
+        PBRTO_EXPORT
+            void ObjectBegin( const std::string& name, FileLoc loc );
+        PBRTO_EXPORT
+            void ObjectEnd( FileLoc loc );
+        PBRTO_EXPORT
+            void ObjectInstance( const std::string& name, FileLoc loc );
 
-        PBRTO_EXPORT void EndOfFiles( );
+        PBRTO_EXPORT
+            void EndOfFiles( );
 
         std::string indent( int extra = 0 ) const
         {
@@ -288,8 +333,12 @@ namespace pbrto
         }
 
     private:
-        std::string upgradeMaterialIndex( const std::string& name, ParameterDictionary* dict, FileLoc loc ) const;
-        std::string upgradeMaterial( std::string* name, ParameterDictionary* dict, FileLoc loc ) const;
+        PBRTO_EXPORT
+            std::string upgradeMaterialIndex( const std::string& name, ParameterDictionary* dict,
+                FileLoc loc ) const;
+        PBRTO_EXPORT
+            std::string upgradeMaterial( std::string* name, ParameterDictionary* dict,
+                FileLoc loc ) const;
 
         int catIndentCount = 0;
         bool toPly, upgrade;

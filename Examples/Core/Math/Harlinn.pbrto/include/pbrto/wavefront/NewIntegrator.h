@@ -41,7 +41,7 @@
 #include <pbrto/wavefront/NewWorkitems.h>
 #include <pbrto/wavefront/NewWorkqueue.h>
 
-namespace pbrt
+namespace pbrto
 {
 
     class BasicScene;
@@ -116,10 +116,10 @@ namespace pbrt
 #ifdef PBRT_BUILD_GPU_RENDERER
                 GPUParallelFor( description, nItems, func );
 #else
-                LOG_FATAL( "Options->useGPU was set without PBRT_BUILD_GPU_RENDERER enabled" );
+                NLOG_FATAL( "Options->useGPU was set without PBRT_BUILD_GPU_RENDERER enabled" );
 #endif
             else
-                pbrt::ParallelFor( 0, nItems, func );
+                pbrto::ParallelFor( 0, nItems, func );
         }
 
         template <typename F>
@@ -129,7 +129,7 @@ namespace pbrt
 #ifdef PBRT_BUILD_GPU_RENDERER
                 GPUParallelFor( description, 1, [ = ] PBRT_GPU( int ) mutable { func( ); } );
 #else
-                LOG_FATAL( "Options->useGPU was set without PBRT_BUILD_GPU_RENDERER enabled" );
+                NLOG_FATAL( "Options->useGPU was set without PBRT_BUILD_GPU_RENDERER enabled" );
 #endif
             else
                 func( );
