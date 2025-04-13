@@ -239,6 +239,7 @@ namespace pbrto
         return t * s;
     }
 
+
     template <template <class> class C, typename T>
     inline C<T> Abs( const Tuple2<C, T>& t )
     {
@@ -1517,7 +1518,9 @@ namespace pbrto
 
     using Normal3f = Normal3<Float>;
 
+    using Quaternion = Math::Quaternion<Float>;
 
+    /*
     class Quaternion : public Math::Quaternion<Float>
     {
     public:
@@ -1552,7 +1555,7 @@ namespace pbrto
             return *this;
         }
     };
-
+    */
 
     // Vector2 Inline Functions
     template <typename T>
@@ -1562,7 +1565,7 @@ namespace pbrto
     {
     }
 
-
+    /*
     template <typename T>
     inline auto Dot( const Vector2<T>& v1, const Vector2<T>& v2 ) ->
         typename TupleLength<T>::type
@@ -1570,7 +1573,7 @@ namespace pbrto
         NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
         return SumOfProducts( v1.x, v2.x, v1.y, v2.y );
     }
-
+    
     template <typename T>
     inline auto AbsDot( const Vector2<T>& v1, const Vector2<T>& v2 ) ->
         typename TupleLength<T>::type
@@ -1578,7 +1581,7 @@ namespace pbrto
         NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
         return std::abs( Dot( v1, v2 ) );
     }
-
+    
     template <typename T>
     inline auto LengthSquared( const Vector2<T>& v ) -> typename TupleLength<T>::type
     {
@@ -1604,20 +1607,19 @@ namespace pbrto
     {
         return v / Length( v );
     }
-
+    
     template <typename T>
-    inline auto ScalarDistance( const Point2<T>& p1, const Point2<T>& p2 ) ->
-        typename TupleLength<T>::type
+    inline auto ScalarDistance( const Point2<T>& p1, const Point2<T>& p2 ) -> typename TupleLength<T>::type
     {
         return ScalarLength( p1 - p2 );
     }
 
     template <typename T>
-    inline auto DistanceSquared( const Point2<T>& p1, const Point2<T>& p2 ) ->
-        typename TupleLength<T>::type
+    inline auto DistanceSquared( const Point2<T>& p1, const Point2<T>& p2 ) -> typename TupleLength<T>::type
     {
         return LengthSquared( p1 - p2 );
     }
+    */
 
     // Vector3 Inline Functions
     template <typename T>
@@ -1628,7 +1630,9 @@ namespace pbrto
     }
 
 
+    
     template <typename T>
+        requires ( std::is_same_v<T, float> == false )
     inline Vector3<T> Cross( const Vector3<T>& v1, const Normal3<T>& v2 )
     {
         NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
@@ -1638,6 +1642,7 @@ namespace pbrto
     }
 
     template <typename T>
+        requires ( std::is_same_v<T, float> == false )
     inline Vector3<T> Cross( const Normal3<T>& v1, const Vector3<T>& v2 )
     {
         NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
@@ -1646,14 +1651,18 @@ namespace pbrto
                 DifferenceOfProducts( v1.x, v2.y, v1.y, v2.x ) };
     }
 
+    
+
     template <typename T>
-    inline T LengthSquared( const Vector3<T>& v )
+        requires ( std::is_same_v<T, float> == false )
+    inline T ScalarLengthSquared( const Vector3<T>& v )
     {
         return Sqr( v.x ) + Sqr( v.y ) + Sqr( v.z );
     }
 
     template <typename T>
-    inline auto Length( const Vector3<T>& v ) -> typename TupleLength<T>::type
+        requires ( std::is_same_v<T, float> == false )
+    inline auto ScalarLength( const Vector3<T>& v ) -> typename TupleLength<T>::type
     {
         if constexpr ( std::is_floating_point_v<T> )
         {
@@ -1662,38 +1671,42 @@ namespace pbrto
         else
         {
             using std::sqrt;
-            return sqrt( LengthSquared( v ) );
+            return sqrt( ScalarLengthSquared( v ) );
         }
     }
 
     template <typename T>
+        requires ( std::is_same_v<T, float> == false )
     inline auto Normalize( const Vector3<T>& v )
     {
         return v / Length( v );
     }
 
     template <typename T>
-    inline T Dot( const Vector3<T>& v, const Vector3<T>& w )
+        requires ( std::is_same_v<T, float> == false )
+    inline T ScalarDot( const Vector3<T>& v, const Vector3<T>& w )
     {
         NDCHECK( !v.HasNaN( ) && !w.HasNaN( ) );
         return v.x * w.x + v.y * w.y + v.z * w.z;
     }
+    
 
+    /*
     // Equivalent to std::acos(Dot(a, b)), but more numerically stable.
     // via http://www.plunk.org/~hatch/rightway.html
     template <typename T>
     inline Float AngleBetween( const Vector3<T>& v1, const Vector3<T>& v2 )
     {
-        if ( Dot( v1, v2 ) < 0 )
-            return Pi - 2 * SafeASin( Length( v1 + v2 ) / 2 );
+        if ( ScalarDot( v1, v2 ) < 0 )
+            return Pi - 2 * SafeASin( ScalarLength( v1 + v2 ) / 2 );
         else
-            return 2 * SafeASin( Length( v2 - v1 ) / 2 );
+            return 2 * SafeASin( ScalarLength( v2 - v1 ) / 2 );
     }
 
     template <>
     inline Float AngleBetween<Float>( const Vector3<Float>& v1, const Vector3<Float>& v2 )
     {
-        if ( Dot( v1, v2 ) < 0 )
+        if ( ScalarDot( v1, v2 ) < 0 )
             return Pi - 2 * SafeASin( ScalarLength( v1 + v2 ) / 2 );
         else
             return 2 * SafeASin( ScalarLength( v2 - v1 ) / 2 );
@@ -1718,6 +1731,7 @@ namespace pbrto
             return 2 * SafeASin( ScalarLength( b - a ) / 2 );
         }
     }
+    */
 
     template <typename T>
     inline Vector3<T> GramSchmidt( const Vector3<T>& v, const Vector3<T>& w )
@@ -1725,7 +1739,9 @@ namespace pbrto
         return v - Dot( v, w ) * w;
     }
 
+    
     template <typename T>
+        requires (std::is_same_v<T,float> == false)
     inline Vector3<T> Cross( const Vector3<T>& v, const Vector3<T>& w )
     {
         NDCHECK( !v.HasNaN( ) && !w.HasNaN( ) );
@@ -1733,11 +1749,12 @@ namespace pbrto
                 DifferenceOfProducts( v.z, w.x, v.x, w.z ),
                 DifferenceOfProducts( v.x, w.y, v.y, w.x ) };
     }
+    
 
     template <typename T>
     inline void CoordinateSystem( const Vector3<T>& v1, Vector3<T>* v2, Vector3<T>* v3 )
     {
-        Float sign = pstdo::copysign( Float( 1 ), v1.z );
+        Float sign = Math::CopySign( Float( 1 ), v1.z );
         Float a = -1 / ( sign + v1.z );
         Float b = v1.x * v1.y * a;
         *v2 = Vector3<T>( 1 + sign * Sqr( v1.x ) * a, sign * b, -sign * v1.x );
@@ -1747,7 +1764,7 @@ namespace pbrto
     template <>
     inline void CoordinateSystem<Float>( const Vector3<Float>& v1, Vector3<Float>* v2, Vector3<Float>* v3 )
     {
-        Float sign = pstdo::copysign( Float( 1 ), v1.z );
+        Float sign = Math::CopySign( Float( 1 ), v1.z );
         Float a = -1 / ( sign + v1.z );
         Float b = v1.x * v1.y * a;
         *v2 = Vector3<Float>( 1 + sign * Sqr( v1.x ) * a, sign * b, -sign * v1.x );
@@ -1757,7 +1774,7 @@ namespace pbrto
     template <typename T>
     inline void CoordinateSystem( const Normal3<T>& v1, Vector3<T>* v2, Vector3<T>* v3 )
     {
-        Float sign = pstdo::copysign( Float( 1 ), v1.z );
+        Float sign = Math::CopySign( Float( 1 ), v1.z );
         Float a = -1 / ( sign + v1.z );
         Float b = v1.x * v1.y * a;
         *v2 = Vector3<T>( 1 + sign * Sqr( v1.x ) * a, sign * b, -sign * v1.x );
@@ -1767,7 +1784,7 @@ namespace pbrto
     template<>
     inline void CoordinateSystem<Float>( const Normal3<Float>& v1, Vector3<Float>* v2, Vector3<Float>* v3 )
     {
-        Float sign = pstdo::copysign( Float( 1 ), v1.z );
+        Float sign = Math::CopySign( Float( 1 ), v1.z );
         Float a = -1.f / ( sign + v1.z );
         Float b = v1.x * v1.y * a;
         *v2 = Vector3<Float>( 1 + sign * Sqr( v1.x ) * a, sign * b, -sign * v1.x );
@@ -1959,13 +1976,13 @@ namespace pbrto
 
     inline Float AngleBetween( const Quaternion& q1, const Quaternion& q2 )
     {
-        if ( ScalarDot( q1, q2 ) < 0 )
+        if ( ScalarDot( q1, q2 ) < 0.f )
             return Pi - 2 * SafeASin( ScalarLength( q1 + q2 ) / 2 );
         else
             return 2 * SafeASin( ScalarLength( q2 - q1 ) / 2 );
     }
     
-
+    /*
     // http://www.plunk.org/~hatch/rightway.html
     inline Quaternion Slerp( Float t, const Quaternion& q1, const Quaternion& q2 )
     {
@@ -1974,6 +1991,11 @@ namespace pbrto
         return q1 * ( 1 - t ) * SinXOverX( ( 1 - t ) * theta ) / sinThetaOverTheta +
             q2 * t * SinXOverX( t * theta ) / sinThetaOverTheta;
     }
+    */
+    inline Quaternion Slerp( Float t, const Quaternion& q1, const Quaternion& q2 )
+    {
+        return Math::Slerp( q1, q2, t );
+    }
     
     // Bounds2 Definition
     template <typename T>
@@ -1981,18 +2003,20 @@ namespace pbrto
     {
     public:
         // Bounds2 Public Methods
-        PBRT_CPU_GPU
-            Bounds2( )
+        Bounds2( )
         {
             T minNum = std::numeric_limits<T>::lowest( );
             T maxNum = std::numeric_limits<T>::max( );
             pMin = Point2<T>( maxNum, maxNum );
             pMax = Point2<T>( minNum, minNum );
         }
-        PBRT_CPU_GPU
-            explicit Bounds2( Point2<T> p ) : pMin( p ), pMax( p ) {}
-        PBRT_CPU_GPU
-            Bounds2( Point2<T> p1, Point2<T> p2 ) : pMin( Min( p1, p2 ) ), pMax( Max( p1, p2 ) ) {}
+        explicit Bounds2( Point2<T> p ) 
+            : pMin( p ), pMax( p ) 
+        { }
+
+        Bounds2( Point2<T> p1, Point2<T> p2 ) 
+            : pMin( Min( p1, p2 ) ), pMax( Max( p1, p2 ) ) 
+        { }
         template <typename U>
         PBRT_CPU_GPU explicit Bounds2( const Bounds2<U>& b )
         {
@@ -2007,24 +2031,28 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU
-            Vector2<T> Diagonal( ) const { return pMax - pMin; }
+        Vector2<T> Diagonal( ) const 
+        { 
+            return pMax - pMin; 
+        }
 
-        PBRT_CPU_GPU
-            T Area( ) const
+        T Area( ) const
         {
             Vector2<T> d = pMax - pMin;
             return d.x * d.y;
         }
 
-        PBRT_CPU_GPU
-            bool IsEmpty( ) const { return pMin.x >= pMax.x || pMin.y >= pMax.y; }
+        bool IsEmpty( ) const 
+        { 
+            return pMin.x >= pMax.x || pMin.y >= pMax.y; 
+        }
 
-        PBRT_CPU_GPU
-            bool IsDegenerate( ) const { return pMin.x > pMax.x || pMin.y > pMax.y; }
+        bool IsDegenerate( ) const 
+        { 
+            return pMin.x > pMax.x || pMin.y > pMax.y; 
+        }
 
-        PBRT_CPU_GPU
-            int MaxDimension( ) const
+        int MaxDimension( ) const
         {
             Vector2<T> diag = Diagonal( );
             if ( diag.x > diag.y )
@@ -2032,25 +2060,21 @@ namespace pbrto
             else
                 return 1;
         }
-        PBRT_CPU_GPU
-            Point2<T> operator[]( int i ) const
+        Point2<T> operator[]( int i ) const
         {
             NDCHECK( i == 0 || i == 1 );
             return ( i == 0 ) ? pMin : pMax;
         }
-        PBRT_CPU_GPU
-            Point2<T>& operator[]( int i )
+        Point2<T>& operator[]( int i )
         {
             NDCHECK( i == 0 || i == 1 );
             return ( i == 0 ) ? pMin : pMax;
         }
-        PBRT_CPU_GPU
-            bool operator==( const Bounds2<T>& b ) const
+        bool operator==( const Bounds2<T>& b ) const
         {
             return b.pMin == pMin && b.pMax == pMax;
         }
-        PBRT_CPU_GPU
-            bool operator!=( const Bounds2<T>& b ) const
+        bool operator!=( const Bounds2<T>& b ) const
         {
             return b.pMin != pMin || b.pMax != pMax;
         }
@@ -2131,14 +2155,34 @@ namespace pbrto
                 ( *this )[ ( corner & 4 ) ? 1 : 0 ].z );
         }
 
-        PBRT_CPU_GPU
-            Vector3<T> Diagonal( ) const { return pMax - pMin; }
+        Vector3<T> Diagonal( ) const 
+        { 
+            return pMax - pMin; 
+        }
 
-        PBRT_CPU_GPU
-            T SurfaceArea( ) const
+        T SurfaceArea( ) const
         {
-            Vector3<T> d = Diagonal( );
-            return 2 * ( d.x * d.y + d.x * d.z + d.y * d.z );
+            if constexpr ( std::is_same_v<Float, T> )
+            {
+                auto d = pMax - pMin;
+
+                /*
+                d.x * d.y + 
+                d.x * d.z + 
+                d.y * d.z
+                */
+                using Traits = SIMD::Traits<Float, 3>;
+                auto result = 2.f * Traits::First( Traits::HSum( Traits::Mul( Traits::Swizzle<3, 1, 0, 0>( d.simd ),
+                    Traits::Swizzle<3, 2, 2, 1>( d.simd ) ) ) );
+                return result;
+
+                //return 2 * ( d.x * d.y + d.x * d.z + d.y * d.z );
+            }
+            else
+            {
+                Vector3<T> d = Diagonal( );
+                return 2 * ( d.x * d.y + d.x * d.z + d.y * d.z );
+            }
         }
 
         PBRT_CPU_GPU
@@ -2163,7 +2207,9 @@ namespace pbrto
         PBRT_CPU_GPU
             Point3f Lerp( Point3f t ) const
         {
-            return Point3f( pbrto::Lerp( t.x, pMin.x, pMax.x ), pbrto::Lerp( t.y, pMin.y, pMax.y ),
+            return Point3f( 
+                pbrto::Lerp( t.x, pMin.x, pMax.x ), 
+                pbrto::Lerp( t.y, pMin.y, pMax.y ),
                 pbrto::Lerp( t.z, pMin.z, pMax.z ) );
         }
 
@@ -2410,7 +2456,7 @@ namespace pbrto
     {
         auto dist2 = DistanceSquared( p, b );
         using TDist = typename TupleLength<decltype( dist2 )>::type;
-        return std::sqrt( TDist( dist2 ) );
+        return Math::Sqrt( TDist( dist2 ) );
     }
 
     template <typename T, typename U>
@@ -2523,7 +2569,7 @@ namespace pbrto
     inline Float SphericalTriangleArea( const Vector3f& a, const Vector3f& b, const Vector3f& c )
     {
         return std::abs(
-            2 * std::atan2( Dot( a, Cross( b, c ) ), 1 + Dot( a, b ) + Dot( a, c ) + Dot( b, c ) ) );
+            2.f * Math::ATan2( ScalarDot( a, Cross( b, c ) ), 1.f + ScalarDot( a, b ) + ScalarDot( a, c ) + ScalarDot( b, c ) ) );
     }
 
     inline Float SphericalQuadArea( const Vector3f& a, const Vector3f& b, const Vector3f& c, const Vector3f& d )
@@ -2557,8 +2603,14 @@ namespace pbrto
     {
         NDCHECK( sinTheta >= -1.0001 && sinTheta <= 1.0001 );
         NDCHECK( cosTheta >= -1.0001 && cosTheta <= 1.0001 );
-        return Vector3f( Math::Clamp( sinTheta, -1.0f, 1.0f ) * Math::Cos( phi ),
-            Math::Clamp( sinTheta, -1.0f, 1.0f ) * Math::Sin( phi ), Math::Clamp( cosTheta, -1.0f, 1.0f ) );
+
+        Float sinPhi;
+        Float cosPhi;
+        SinCos( phi, &sinPhi, &cosPhi );
+
+        return Vector3f( Math::Clamp( sinTheta, -1.0f, 1.0f ) * cosPhi,
+            Math::Clamp( sinTheta, -1.0f, 1.0f ) * sinPhi, 
+            Math::Clamp( cosTheta, -1.0f, 1.0f ) );
     }
 
     inline Float SphericalTheta( const Vector3f& v )
@@ -2569,7 +2621,7 @@ namespace pbrto
     inline Float SphericalPhi( const Vector3f& v )
     {
         Float p = Math::ATan2( v.y, v.x );
-        return ( p < 0 ) ? ( p + 2 * Pi ) : p;
+        return ( p < 0 ) ? ( p + 2.f * Pi ) : p;
     }
 
     inline Float CosTheta( const Vector3f& w )
@@ -2587,7 +2639,7 @@ namespace pbrto
 
     inline Float Sin2Theta( const Vector3f& w )
     {
-        return std::max<Float>( 0, 1 - Cos2Theta( w ) );
+        return std::max<Float>( 0.f, 1.f - Cos2Theta( w ) );
     }
     inline Float SinTheta( const Vector3f& w )
     {
@@ -2616,9 +2668,10 @@ namespace pbrto
 
     inline Float CosDPhi( const Vector3f& wa, const Vector3f& wb )
     {
-        Float waxy = Sqr( wa.x ) + Sqr( wa.y ), wbxy = Sqr( wb.x ) + Sqr( wb.y );
-        if ( waxy == 0 || wbxy == 0 )
-            return 1;
+        Float waxy = Sqr( wa.x ) + Sqr( wa.y ); 
+        Float wbxy = Sqr( wb.x ) + Sqr( wb.y );
+        if ( waxy == 0.f || wbxy == 0.f )
+            return 1.f;
         return Math::Clamp( ( wa.x * wb.x + wa.y * wb.y ) / Math::Sqrt( waxy * wbxy ), -1.f, 1.f );
     }
 
@@ -2757,7 +2810,7 @@ namespace pbrto
         NDCHECK( !IsEmpty( ) );
         Vector3f wp = Normalize( wpv );
         // Return provided vector if it is inside the cone
-        if ( Dot( wp, w ) > cosTheta )
+        if ( ScalarDot( wp, w ) > cosTheta )
             return wp;
 
         // Find closest vector by rotating _wp_ until it touches the cone
@@ -2765,7 +2818,8 @@ namespace pbrto
         Vector3f a = Cross( wp, w );
         return cosTheta * w +
             ( sinTheta / Length( a ) ) *
-            Vector3f( w.x * ( wp.y * w.y + wp.z * w.z ) - wp.x * ( Sqr( w.y ) + Sqr( w.z ) ),
+            Vector3f( 
+                w.x * ( wp.y * w.y + wp.z * w.z ) - wp.x * ( Sqr( w.y ) + Sqr( w.z ) ),
                 w.y * ( wp.x * w.x + wp.z * w.z ) - wp.y * ( Sqr( w.x ) + Sqr( w.z ) ),
                 w.z * ( wp.x * w.x + wp.y * w.y ) - wp.z * ( Sqr( w.x ) + Sqr( w.y ) ) );
     }

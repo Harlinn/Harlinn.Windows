@@ -260,7 +260,7 @@ namespace pbrto
         {
             // Compute image resampling weights for _i_th pixel
             Float center = ( i + .5f ) * oldRes / newRes;
-            wt[ i ].firstPixel = pstdo::floor( ( center - filterRadius ) + 0.5f );
+            wt[ i ].firstPixel = Math::Floor( ( center - filterRadius ) + 0.5f );
             for ( int j = 0; j < 4; ++j )
             {
                 Float pos = wt[ i ].firstPixel + j + .5f;

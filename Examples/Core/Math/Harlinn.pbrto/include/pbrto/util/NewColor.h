@@ -415,7 +415,7 @@ namespace pbrto
         {
             if ( IsInf( x ) )
                 return x > 0 ? 1 : 0;
-            return .5f + x / ( 2 * std::sqrt( 1 + Sqr( x ) ) );
+            return .5f + x / ( 2 * Math::Sqrt( 1 + Sqr( x ) ) );
         };
 
         // RGBSigmoidPolynomial Private Members
@@ -586,7 +586,7 @@ namespace pbrto
             return 0;
         if ( value >= 1 )
             return 255;
-        return Clamp( pstdo::round( 255.f * LinearToSRGB( value ) + dither ), 0, 255 );
+        return Clamp( Math::Round( 255.f * LinearToSRGB( value ) + dither ), 0, 255 );
     }
 
     PBRT_CPU_GPU

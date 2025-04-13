@@ -197,8 +197,8 @@ namespace pbrto
     {
         Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
         Float phi = 4 * Pi * scale * I->MaxValue( );
-        return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, std::cos( Pi ),
-            std::cos( Pi / 2 ), false );
+        return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, Math::Cos( Pi ),
+            Math::Cos( Pi / 2 ), false );
     }
 
     PBRT_CPU_GPU pstdo::optional<LightLeSample> PointLight::SampleLe( Point2f u1, Point2f u2,
@@ -338,7 +338,7 @@ namespace pbrto
         lightFromScreen = Inverse( screenFromLight );
 
         // Compute projection image area _A_
-        Float opposite = std::tan( Radians( fov ) / 2 );
+        Float opposite = Math::Tan( Radians( fov ) / 2 );
         A = 4 * Sqr( opposite ) * ( aspect > 1 ? aspect : ( 1 / aspect ) );
 
         // Compute sampling distribution for _ProjectionLight_
@@ -442,7 +442,7 @@ namespace pbrto
 
         Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
         Vector3f w = Normalize( renderFromLight( Vector3f( 0, 0, 1 ) ) );
-        return LightBounds( Bounds3f( p, p ), w, phi, std::cos( 0.f ), cosTotalWidth, false );
+        return LightBounds( Bounds3f( p, p ), w, phi, Math::Cos( 0.f ), cosTotalWidth, false );
     }
 
     PBRT_CPU_GPU pstdo::optional<LightLeSample> ProjectionLight::SampleLe( Point2f u1, Point2f u2,
@@ -544,7 +544,7 @@ namespace pbrto
             lightFromScreen = Inverse( screenFromLight );
 
             // Compute projection image area _A_
-            Float opposite = std::tan( Radians( fov ) / 2 );
+            Float opposite = Math::Tan( Radians( fov ) / 2 );
             A = 4 * Sqr( opposite ) * ( aspect > 1 ? aspect : ( 1 / aspect ) );
 
             Float sum = 0;
@@ -629,8 +629,8 @@ namespace pbrto
 
         Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
         // Bound it as an isotropic point light.
-        return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, std::cos( Pi ),
-            std::cos( Pi / 2 ), false );
+        return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, Math::Cos( Pi ),
+            Math::Cos( Pi / 2 ), false );
     }
 
     PBRT_CPU_GPU pstdo::optional<LightLeSample> GoniometricLight::SampleLe( Point2f u1, Point2f u2,
@@ -882,7 +882,7 @@ namespace pbrto
         phi *= scale * area * Pi;
 
         DirectionCone nb = shape.NormalBounds( );
-        return LightBounds( shape.Bounds( ), nb.w, phi, nb.cosTheta, std::cos( Pi / 2 ),
+        return LightBounds( shape.Bounds( ), nb.w, phi, nb.cosTheta, Math::Cos( Pi / 2 ),
             twoSided );
     }
 
@@ -1474,8 +1474,8 @@ namespace pbrto
         : LightBase( LightType::DeltaPosition, renderFromLight, mediumInterface ),
         Iemit( LookupSpectrum( Iemit ) ),
         scale( scale ),
-        cosFalloffEnd( std::cos( Radians( totalWidth ) ) ),
-        cosFalloffStart( std::cos( Radians( falloffStart ) ) )
+        cosFalloffEnd( Math::Cos( Radians( totalWidth ) ) ),
+        cosFalloffStart( Math::Cos( Radians( falloffStart ) ) )
     {
         NCHECK_LE( falloffStart, totalWidth );
     }
@@ -1502,7 +1502,7 @@ namespace pbrto
         Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
         Vector3f w = Normalize( renderFromLight( Vector3f( 0, 0, 1 ) ) );
         Float phi = scale * Iemit->MaxValue( ) * 4 * Pi;
-        Float cosTheta_e = std::cos( std::acos( cosFalloffEnd ) - std::acos( cosFalloffStart ) );
+        Float cosTheta_e = Math::Cos( Math::ACos( cosFalloffEnd ) - Math::ACos( cosFalloffStart ) );
         // Allow a little slop here to deal with fp round-off error in the computation of
         // cosTheta_p in the importance function.
         if ( cosTheta_e == 1 && cosFalloffEnd != cosFalloffStart )
@@ -1591,8 +1591,8 @@ namespace pbrto
         Float phi_v = parameters.GetOneFloat( "power", -1 );
         if ( phi_v > 0 )
         {
-            Float cosFalloffEnd = std::cos( Radians( coneangle ) );
-            Float cosFalloffStart = std::cos( Radians( coneangle - conedelta ) );
+            Float cosFalloffEnd = Math::Cos( Radians( coneangle ) );
+            Float cosFalloffStart = Math::Cos( Radians( coneangle - conedelta ) );
             Float k_e =
                 2 * Pi * ( ( 1 - cosFalloffStart ) + ( cosFalloffStart - cosFalloffEnd ) / 2 );
             sc *= phi_v / k_e;

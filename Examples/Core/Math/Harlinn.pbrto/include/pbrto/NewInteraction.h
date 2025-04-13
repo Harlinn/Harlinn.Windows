@@ -126,11 +126,15 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            Point3f OffsetRayOrigin( Vector3f w ) const { return pbrto::OffsetRayOrigin( pi, n, w ); }
+        Point3f OffsetRayOrigin( Vector3f w ) const 
+        { 
+            return pbrto::OffsetRayOrigin( pi, n, w ); 
+        }
 
-        PBRT_CPU_GPU
-            Point3f OffsetRayOrigin( Point3f pt ) const { return OffsetRayOrigin( ToVector3f( pt - p( ) ) ); }
+        Point3f OffsetRayOrigin( Point3f pt ) const 
+        { 
+            return OffsetRayOrigin( ToVector3f( pt - p( ) ) ); 
+        }
 
         PBRT_CPU_GPU
             RayDifferential SpawnRay( Vector3f d ) const

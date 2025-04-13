@@ -112,30 +112,50 @@ namespace pbrto
     // SampledSpectrum Definition
     class SampledSpectrum
     {
+    private:
+        friend struct SOA<SampledSpectrum>;
+        std::array<Float, NSpectrumSamples> values;
     public:
         // SampledSpectrum Public Methods
-        PBRT_CPU_GPU
-            SampledSpectrum operator+( const SampledSpectrum& s ) const
+        SampledSpectrum( ) = default;
+        explicit SampledSpectrum( Float c ) 
+        { 
+            values.fill( c ); 
+        }
+
+        SampledSpectrum( const std::array<Float, NSpectrumSamples>& v )
+            : values( v )
+        { }
+        SampledSpectrum( const float (&v)[ NSpectrumSamples ] )
+            : values{ v[ 0 ],v[ 1 ],v[ 2 ],v[ 3 ] }
+        { }
+
+        SampledSpectrum& operator+=( const SampledSpectrum& s )
+        {
+            for ( int i = 0; i < NSpectrumSamples; ++i )
+                values[ i ] += s.values[ i ];
+            return *this;
+        }
+
+        SampledSpectrum operator+( const SampledSpectrum& s ) const
         {
             SampledSpectrum ret = *this;
             return ret += s;
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum& operator-=( const SampledSpectrum& s )
+        SampledSpectrum& operator-=( const SampledSpectrum& s )
         {
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 values[ i ] -= s.values[ i ];
             return *this;
         }
-        PBRT_CPU_GPU
-            SampledSpectrum operator-( const SampledSpectrum& s ) const
+        SampledSpectrum operator-( const SampledSpectrum& s ) const
         {
             SampledSpectrum ret = *this;
             return ret -= s;
         }
-        PBRT_CPU_GPU
-            friend SampledSpectrum operator-( Float a, const SampledSpectrum& s )
+
+        friend SampledSpectrum operator-( Float a, const SampledSpectrum& s )
         {
             NDCHECK( !IsNaN( a ) );
             SampledSpectrum ret;
@@ -144,21 +164,18 @@ namespace pbrto
             return ret;
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum& operator*=( const SampledSpectrum& s )
+        SampledSpectrum& operator*=( const SampledSpectrum& s )
         {
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 values[ i ] *= s.values[ i ];
             return *this;
         }
-        PBRT_CPU_GPU
-            SampledSpectrum operator*( const SampledSpectrum& s ) const
+        SampledSpectrum operator*( const SampledSpectrum& s ) const
         {
             SampledSpectrum ret = *this;
             return ret *= s;
         }
-        PBRT_CPU_GPU
-            SampledSpectrum operator*( Float a ) const
+        SampledSpectrum operator*( Float a ) const
         {
             NDCHECK( !IsNaN( a ) );
             SampledSpectrum ret = *this;
@@ -166,19 +183,19 @@ namespace pbrto
                 ret.values[ i ] *= a;
             return ret;
         }
-        PBRT_CPU_GPU
-            SampledSpectrum& operator*=( Float a )
+        SampledSpectrum& operator*=( Float a )
         {
             NDCHECK( !IsNaN( a ) );
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 values[ i ] *= a;
             return *this;
         }
-        PBRT_CPU_GPU
-            friend SampledSpectrum operator*( Float a, const SampledSpectrum& s ) { return s * a; }
+        friend SampledSpectrum operator*( Float a, const SampledSpectrum& s ) 
+        { 
+            return s * a; 
+        }
 
-        PBRT_CPU_GPU
-            SampledSpectrum& operator/=( const SampledSpectrum& s )
+        SampledSpectrum& operator/=( const SampledSpectrum& s )
         {
             for ( int i = 0; i < NSpectrumSamples; ++i )
             {
@@ -187,14 +204,12 @@ namespace pbrto
             }
             return *this;
         }
-        PBRT_CPU_GPU
-            SampledSpectrum operator/( const SampledSpectrum& s ) const
+        SampledSpectrum operator/( const SampledSpectrum& s ) const
         {
             SampledSpectrum ret = *this;
             return ret /= s;
         }
-        PBRT_CPU_GPU
-            SampledSpectrum& operator/=( Float a )
+        SampledSpectrum& operator/=( Float a )
         {
             NDCHECK_NE( a, 0 );
             NDCHECK( !IsNaN( a ) );
@@ -202,25 +217,27 @@ namespace pbrto
                 values[ i ] /= a;
             return *this;
         }
-        PBRT_CPU_GPU
-            SampledSpectrum operator/( Float a ) const
+        SampledSpectrum operator/( Float a ) const
         {
             SampledSpectrum ret = *this;
             return ret /= a;
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum operator-( ) const
+        SampledSpectrum operator-( ) const
         {
             SampledSpectrum ret;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 ret.values[ i ] = -values[ i ];
             return ret;
         }
-        PBRT_CPU_GPU
-            bool operator==( const SampledSpectrum& s ) const { return values == s.values; }
-        PBRT_CPU_GPU
-            bool operator!=( const SampledSpectrum& s ) const { return values != s.values; }
+        bool operator==( const SampledSpectrum& s ) const 
+        { 
+            return values == s.values; 
+        }
+        bool operator!=( const SampledSpectrum& s ) const 
+        { 
+            return values != s.values; 
+        }
 
         std::string ToString( ) const;
 
@@ -240,16 +257,7 @@ namespace pbrto
         PBRT_CPU_GPU
             Float y( const SampledWavelengths& lambda ) const;
 
-        SampledSpectrum( ) = default;
-        PBRT_CPU_GPU
-            explicit SampledSpectrum( Float c ) { values.fill( c ); }
-        PBRT_CPU_GPU
-            SampledSpectrum( pstdo::span<const Float> v )
-        {
-            NDCHECK_EQ( NSpectrumSamples, v.size( ) );
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                values[ i ] = v[ i ];
-        }
+        
 
         PBRT_CPU_GPU
             Float operator[]( int i ) const
@@ -273,13 +281,7 @@ namespace pbrto
             return false;
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum& operator+=( const SampledSpectrum& s )
-        {
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                values[ i ] += s.values[ i ];
-            return *this;
-        }
+        
 
         PBRT_CPU_GPU
             Float MinComponentValue( ) const
@@ -306,9 +308,7 @@ namespace pbrto
             return sum / NSpectrumSamples;
         }
 
-    private:
-        friend struct SOA<SampledSpectrum>;
-        pstdo::array<Float, NSpectrumSamples> values;
+    
     };
 
     inline SampledSpectrum Sqr( const SampledSpectrum& v )
@@ -405,7 +405,7 @@ namespace pbrto
     private:
         // SampledWavelengths Private Members
         friend struct SOA<SampledWavelengths>;
-        pstdo::array<Float, NSpectrumSamples> lambda, pdf;
+        std::array<Float, NSpectrumSamples> lambda, pdf;
     };
 
     // Spectrum Definitions
@@ -751,7 +751,7 @@ namespace pbrto
     {
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = std::sqrt( s[ i ] );
+            ret[ i ] = Math::Sqrt( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
     }
@@ -771,7 +771,7 @@ namespace pbrto
     {
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = std::pow( s[ i ], e );
+            ret[ i ] = Math::Pow( s[ i ], e );
         return ret;
     }
 
@@ -780,7 +780,7 @@ namespace pbrto
     {
         SampledSpectrum ret;
         for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = std::exp( s[ i ] );
+            ret[ i ] = Math::Exp( s[ i ] );
         NDCHECK( !ret.HasNaNs( ) );
         return ret;
     }

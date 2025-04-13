@@ -58,7 +58,7 @@ namespace pbrto
         if ( sin2Theta_t >= 1 )
             return false;
 
-        Float cosTheta_t = std::sqrt( 1 - sin2Theta_t );
+        Float cosTheta_t = Math::Sqrt( 1 - sin2Theta_t );
 
         *wt = -wi / eta + ( cosTheta_i / eta - cosTheta_t ) * Vector3f( n );
         // Provide relative IOR along ray to caller
@@ -177,7 +177,7 @@ namespace pbrto
             if ( IsInf( tan2Theta ) )
                 return 0;
             Float alpha2 = Sqr( CosPhi( w ) * alpha_x ) + Sqr( SinPhi( w ) * alpha_y );
-            return ( std::sqrt( 1 + alpha2 * tan2Theta ) - 1 ) / 2;
+            return ( Math::Sqrt( 1 + alpha2 * tan2Theta ) - 1 ) / 2;
         }
 
         PBRT_CPU_GPU
@@ -209,11 +209,11 @@ namespace pbrto
             Point2f p = SampleUniformDiskPolar( u );
 
             // Warp hemispherical projection for visible normal sampling
-            Float h = std::sqrt( 1 - Sqr( p.x ) );
+            Float h = Math::Sqrt( 1 - Sqr( p.x ) );
             p.y = Lerp( ( 1 + wh.z ) / 2, h, p.y );
 
             // Reproject to hemisphere and transform normal to ellipsoid configuration
-            Float pz = std::sqrt( std::max<Float>( 0, 1 - ScalarLengthSquared( Vector2f( p ) ) ) );
+            Float pz = Math::Sqrt( std::max<Float>( 0, 1 - ScalarLengthSquared( Vector2f( p ) ) ) );
             Vector3f nh = p.x * T1 + p.y * T2 + pz * wh;
             NCHECK_RARE( 1e-5f, nh.z == 0 );
             return Normalize(
@@ -228,7 +228,7 @@ namespace pbrto
         // therefore, we will leave it as is so that the rendered results with
         // existing pbrt-v4 scenes doesn't change unexpectedly.
         PBRT_CPU_GPU
-            static Float RoughnessToAlpha( Float roughness ) { return std::sqrt( roughness ); }
+            static Float RoughnessToAlpha( Float roughness ) { return Math::Sqrt( roughness ); }
 
         PBRT_CPU_GPU
             void Regularize( )

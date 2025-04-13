@@ -335,7 +335,7 @@ namespace pbrto
         {
             // Compute discrete pixel coordinates and offsets for _p_
             Float x = p[ 0 ] * resolution.x - 0.5f, y = p[ 1 ] * resolution.y - 0.5f;
-            int xi = pstdo::floor( x ), yi = pstdo::floor( y );
+            int xi = Math::Floor( x ), yi = Math::Floor( y );
             Float dx = x - xi, dy = y - yi;
 
             // Load pixel channel values and return bilinearly interpolated value

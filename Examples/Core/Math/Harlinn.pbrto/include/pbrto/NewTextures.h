@@ -155,7 +155,7 @@ namespace pbrto
             // Compute $\partial\,s/\partial\,\pt{}$ and $\partial\,t/\partial\,\pt{}$ for
             // spherical mapping
             Float x2y2 = Sqr( pt.x ) + Sqr( pt.y );
-            Float sqrtx2y2 = std::sqrt( x2y2 );
+            Float sqrtx2y2 = Math::Sqrt( x2y2 );
             Vector3f dsdp = Vector3f( -pt.y, pt.x, 0 ) / ( 2 * Pi * x2y2 );
             Vector3f dtdp =
                 1 / ( Pi * ( x2y2 + Sqr( pt.z ) ) ) *
@@ -201,7 +201,7 @@ namespace pbrto
             Float dsdx = ScalarDot( dsdp, dpdx ), dsdy = ScalarDot( dsdp, dpdy );
             Float dtdx = ScalarDot( dtdp, dpdx ), dtdy = ScalarDot( dtdp, dpdy );
 
-            Point2f st( ( Pi + std::atan2( pt.y, pt.x ) ) * Inv2Pi, pt.z );
+            Point2f st( ( Pi + Math::ATan2( pt.y, pt.x ) ) * Inv2Pi, pt.z );
             return TexCoord2D{ st, dsdx, dsdy, dtdx, dtdy };
         }
 

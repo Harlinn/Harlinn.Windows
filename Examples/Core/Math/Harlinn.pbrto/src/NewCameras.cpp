@@ -707,8 +707,12 @@ namespace pbrto
         if ( mapping == EquiRectangular )
         {
             // Compute ray direction using equirectangular mapping
-            Float theta = Pi * uv[ 1 ], phi = 2 * Pi * uv[ 0 ];
-            dir = SphericalDirection( std::sin( theta ), std::cos( theta ), phi );
+            Float phi = 2 * Pi * uv.x;
+            Float theta = Pi * uv.y;
+            Float sinTheta;
+            Float cosTheta;
+            SinCos( theta, &sinTheta, &cosTheta );
+            dir = SphericalDirection( sinTheta, cosTheta, phi );
 
         }
         else
@@ -810,7 +814,7 @@ namespace pbrto
         // Compute film's physical extent
         Float aspect = ( Float )film.FullResolution( ).y / ( Float )film.FullResolution( ).x;
         Float diagonal = film.Diagonal( );
-        Float x = std::sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
+        Float x = Math::Sqrt( Sqr( diagonal ) / ( 1 + Sqr( aspect ) ) );
         Float y = aspect * x;
         physicalExtent = Bounds2f( Point2f( -x / 2, -y / 2 ), Point2f( x / 2, y / 2 ) );
 
@@ -974,7 +978,7 @@ namespace pbrto
             ErrorExit( "Coefficient must be positive. It looks focusDistance %f "
                 " is too short for a given lenses configuration",
                 focusDistance );
-        Float delta = ( pz[ 1 ] - z + pz[ 0 ] - std::sqrt( c ) ) / 2;
+        Float delta = ( pz[ 1 ] - z + pz[ 0 ] - Math::Sqrt( c ) ) / 2;
 
         return elementInterfaces.back( ).thickness + delta;
     }
@@ -1013,7 +1017,7 @@ namespace pbrto
 
         // Expand bounds to account for sample spacing
         pupilBounds =
-            Expand( pupilBounds, 2 * ScalarLength( projRearBounds.Diagonal( ) ) / std::sqrt( nSamples ) );
+            Expand( pupilBounds, 2 * ScalarLength( projRearBounds.Diagonal( ) ) / Math::Sqrt( static_cast<float>(nSamples) ) );
 
         return pupilBounds;
     }
@@ -1022,7 +1026,7 @@ namespace pbrto
         Point2f uLens ) const
     {
         // Find exit pupil bound for sample distance from film center
-        Float rFilm = std::sqrt( Sqr( pFilm.x ) + Sqr( pFilm.y ) );
+        Float rFilm = Math::Sqrt( Sqr( pFilm.x ) + Sqr( pFilm.y ) );
         int rIndex = rFilm / ( film.Diagonal( ) / 2 ) * exitPupilBounds.size( );
         rIndex = std::min<int>( exitPupilBounds.size( ) - 1, rIndex );
         Bounds2f pupilBounds = exitPupilBounds[ rIndex ];
@@ -1184,12 +1188,12 @@ namespace pbrto
                     if ( r > 0 )
                     {
                         zp0 = z + element.curvatureRadius -
-                            element.apertureRadius / std::tan( theta );
+                            element.apertureRadius / Math::Tan( theta );
                     }
                     else
                     {
                         zp0 = z + element.curvatureRadius +
-                            element.apertureRadius / std::tan( theta );
+                            element.apertureRadius / Math::Tan( theta );
                     }
 
                     Float nextCurvatureRadius = elementInterfaces[ i + 1 ].curvatureRadius;
@@ -1198,12 +1202,12 @@ namespace pbrto
                     if ( nextCurvatureRadius > 0 )
                     {
                         zp1 = z + element.thickness + nextCurvatureRadius -
-                            nextApertureRadius / std::tan( nextTheta );
+                            nextApertureRadius / Math::Tan( nextTheta );
                     }
                     else
                     {
                         zp1 = z + element.thickness + nextCurvatureRadius +
-                            nextApertureRadius / std::tan( nextTheta );
+                            nextApertureRadius / Math::Tan( nextTheta );
                     }
 
                     // Connect tops
@@ -1416,7 +1420,7 @@ namespace pbrto
 
         Float r = pFilm.x / ( filmDiagonal / 2 );
         int pupilIndex = std::min<int>( exitPupilBounds.size( ) - 1,
-            pstdo::floor( r * ( exitPupilBounds.size( ) - 1 ) ) );
+            Math::Floor( r * ( exitPupilBounds.size( ) - 1 ) ) );
         Bounds2f pupilBounds = exitPupilBounds[ pupilIndex ];
         if ( pupilIndex + 1 < ( int )exitPupilBounds.size( ) )
             pupilBounds = Union( pupilBounds, exitPupilBounds[ pupilIndex + 1 ] );
@@ -1543,7 +1547,7 @@ namespace pbrto
                         Float r2 = Sqr( uv.x ) + Sqr( uv.y );
                         Float sigma2 = 1;
                         Float v = std::max<Float>(
-                            0, std::exp( -r2 / sigma2 ) - std::exp( -1 / sigma2 ) );
+                            0, Math::Exp( -r2 / sigma2 ) - Math::Exp( -1 / sigma2 ) );
                         apertureImage.SetChannel( { x, y }, 0, v );
                     }
             }
@@ -1558,10 +1562,10 @@ namespace pbrto
             else if ( apertureName == "pentagon" )
             {
                 // https://mathworld.wolfram.com/RegularPentagon.html
-                Float c1 = ( std::sqrt( 5.f ) - 1 ) / 4;
-                Float c2 = ( std::sqrt( 5.f ) + 1 ) / 4;
-                Float s1 = std::sqrt( 10.f + 2.f * std::sqrt( 5.f ) ) / 4;
-                Float s2 = std::sqrt( 10.f - 2.f * std::sqrt( 5.f ) ) / 4;
+                constexpr Float c1 = ( Math::Sqrt( 5.f ) - 1 ) / 4;
+                constexpr Float c2 = ( Math::Sqrt( 5.f ) + 1 ) / 4;
+                constexpr Float s1 = Math::Sqrt( 10.f + 2.f * Math::Sqrt( 5.f ) ) / 4;
+                constexpr Float s2 = Math::Sqrt( 10.f - 2.f * Math::Sqrt( 5.f ) ) / 4;
                 // Vertices in CW order.
                 Point2f vert[ 5 ] = { Point2f( 0, 1 ), {s1, c1}, {s2, -c2}, {-s2, -c2}, {-s1, c1} };
                 // Scale down slightly
@@ -1576,9 +1580,13 @@ namespace pbrto
                 for ( int i = 0; i < 10; ++i )
                 {
                     // inner radius: https://math.stackexchange.com/a/2136996
-                    Float r =
-                        ( i & 1 ) ? 1.f : ( std::cos( Radians( 72.f ) ) / std::cos( Radians( 36.f ) ) );
-                    vert[ i ] = Point2f( r * std::cos( Pi * i / 5.f ), r * std::sin( Pi * i / 5.f ) );
+                    constexpr Float r2 = ( Math::Cos( Deg2Rad( 72.f ) ) / Math::Cos( Deg2Rad( 36.f ) ) );
+                    Float r = ( i & 1 ) ? 1.f : r2;
+                    Float sinV;
+                    Float cosV;
+                    SinCos( Pi * i / 5.f, &sinV, &cosV );
+
+                    vert[ i ] = Point2f( r * cosV, r * sinV );
                 }
                 std::reverse( vert.begin( ), vert.end( ) );
                 apertureImage = rasterize( vert );
@@ -1595,14 +1603,15 @@ namespace pbrto
                             "aperture image.",
                             apertureName );
 
-                    Image mono( PixelFormat::Float, apertureImage.Resolution( ), { "Y" }, nullptr,
-                        alloc );
+                    Image mono( PixelFormat::Float, apertureImage.Resolution( ), { "Y" }, nullptr, alloc );
                     for ( int y = 0; y < mono.Resolution( ).y; ++y )
+                    {
                         for ( int x = 0; x < mono.Resolution( ).x; ++x )
                         {
                             Float avg = apertureImage.GetChannels( { x, y }, rgbDesc ).Average( );
                             mono.SetChannel( { x, y }, 0, avg );
                         }
+                    }
 
                     apertureImage = std::move( mono );
                 }

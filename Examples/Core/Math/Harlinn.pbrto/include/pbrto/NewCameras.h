@@ -212,7 +212,7 @@ namespace pbrto
             Float sppScale =
                 GetOptions( ).disablePixelJitter
                 ? 1
-                : std::max<Float>( .125, 1 / std::sqrt( ( Float )samplesPerPixel ) );
+                : std::max<Float>( .125, 1 / Math::Sqrt( ( Float )samplesPerPixel ) );
             *dpdx =
                 sppScale * RenderFromCamera( Vector3f(DownZFromCamera.ApplyInverse( Vector3f( px - pDownZ ) )), time );
             *dpdy =
@@ -409,7 +409,7 @@ namespace pbrto
             Point3f pCorner( -radius.x, -radius.y, 0.f );
             Vector3f wCornerCamera = Normalize( Vector3f( cameraFromRaster( pCorner ) ) );
             cosTotalWidth = wCornerCamera.z;
-            NDCHECK_LT( .9999 * cosTotalWidth, std::cos( Radians( fov / 2 ) ) );
+            NDCHECK_LT( .9999 * cosTotalWidth, Math::Cos( Radians( fov / 2 ) ) );
 
             // Compute image plane area at $z=1$ for _PerspectiveCamera_
             Point2i res = film.FullResolution( );

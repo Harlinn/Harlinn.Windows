@@ -1321,7 +1321,7 @@ namespace pbrto
                 {
                     dict.RemoveFloat( "alpha" );
                     extra += StringPrintf( "%s\"float sigma\" [ %f ]\n", indent( 1 ),
-                        1 / std::sqrt( 2 * alpha[ 0 ] ) );
+                        1 / Math::Sqrt( 2 * alpha[ 0 ] ) );
                 }
             }
         }

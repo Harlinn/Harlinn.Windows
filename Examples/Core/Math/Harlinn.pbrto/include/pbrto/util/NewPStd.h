@@ -24,6 +24,9 @@
 
 #include <pbrto/util/NewCheck.h>
 
+#include <HCCMath.h>
+using namespace Harlinn::Common::Core;
+using namespace Harlinn::Common::Core::Math;
 
 #include <float.h>
 #include <limits.h>
@@ -1267,11 +1270,11 @@ namespace pstdo
 
     PBRT_CPU_GPU inline float sqrt( float f )
     {
-        return ::sqrtf( f );
+        return Math::Sqrt( f );
     }
     PBRT_CPU_GPU inline double sqrt( double f )
     {
-        return ::sqrt( f );
+        return Math::Sqrt( f );
     }
     PBRT_CPU_GPU inline float abs( float f )
     {
@@ -1305,7 +1308,7 @@ namespace pstdo
 #ifdef PBRT_IS_GPU_CODE
         return ::floorf( arg );
 #else
-        return std::floor( arg );
+        return Math::Floor( arg );
 #endif
     }
 
@@ -1314,7 +1317,7 @@ namespace pstdo
 #ifdef PBRT_IS_GPU_CODE
         return ::floor( arg );
 #else
-        return std::floor( arg );
+        return Math::Floor( arg );
 #endif
     }
 
@@ -1323,7 +1326,7 @@ namespace pstdo
 #ifdef PBRT_IS_GPU_CODE
         return ::ceilf( arg );
 #else
-        return std::ceil( arg );
+        return Math::Ceil( arg );
 #endif
     }
 
@@ -1332,7 +1335,7 @@ namespace pstdo
 #ifdef PBRT_IS_GPU_CODE
         return ::ceil( arg );
 #else
-        return std::ceil( arg );
+        return Math::Ceil( arg );
 #endif
     }
 
@@ -1341,7 +1344,7 @@ namespace pstdo
 #ifdef PBRT_IS_GPU_CODE
         return ::roundf( arg );
 #else
-        return std::round( arg );
+        return Math::Round( arg );
 #endif
     }
 
@@ -1350,7 +1353,7 @@ namespace pstdo
 #ifdef PBRT_IS_GPU_CODE
         return ::round( arg );
 #else
-        return std::round( arg );
+        return Math::Round( arg );
 #endif
     }
 
@@ -1393,13 +1396,13 @@ namespace pstdo
     template <typename T>
     PBRT_CPU_GPU T abs( const complex<T>& z )
     {
-        return pstdo::sqrt( pstdo::norm( z ) );
+        return Math::Sqrt( pstdo::norm( z ) );
     }
 
     template <typename T>
     PBRT_CPU_GPU complex<T> sqrt( const complex<T>& z )
     {
-        T n = pstdo::abs( z ), t1 = pstdo::sqrt( T( .5 ) * ( n + pstdo::abs( z.re ) ) ),
+        T n = pstdo::abs( z ), t1 = Math::Sqrt( T( .5 ) * ( n + pstdo::abs( z.re ) ) ),
             t2 = T( .5 ) * z.im / t1;
 
         if ( n == 0 )

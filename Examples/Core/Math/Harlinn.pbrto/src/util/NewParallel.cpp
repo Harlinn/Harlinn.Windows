@@ -375,8 +375,8 @@ namespace pbrto
         // Want at least 8 tiles per thread, subject to not too big and not too
         // small.
         // TODO: should we do non-square?
-        int tileSize = Clamp( int( std::sqrt( extent.Diagonal( ).x * extent.Diagonal( ).y /
-            ( 8 * RunningThreads( ) ) ) ),
+        int tileSize = Clamp( int( Math::Sqrt( static_cast< float >( extent.Diagonal( ).x * extent.Diagonal( ).y /
+            ( 8 * RunningThreads( ) ) ) ) ),
             1, 32 );
 
         ParallelForLoop2D loop( extent, tileSize, std::move( func ) );

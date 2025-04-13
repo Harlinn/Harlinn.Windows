@@ -168,10 +168,10 @@ namespace pbrto
             }
 
             // Compute film image bounds
-            pixelBounds = Bounds2i( Point2i( pstdo::ceil( fullResolution.x * crop.pMin.x ),
-                pstdo::ceil( fullResolution.y * crop.pMin.y ) ),
-                Point2i( pstdo::ceil( fullResolution.x * crop.pMax.x ),
-                    pstdo::ceil( fullResolution.y * crop.pMax.y ) ) );
+            pixelBounds = Bounds2i( Point2i( Math::Ceil( fullResolution.x * crop.pMin.x ),
+                Math::Ceil( fullResolution.y * crop.pMin.y ) ),
+                Point2i( Math::Ceil( fullResolution.x * crop.pMax.x ),
+                    Math::Ceil( fullResolution.y * crop.pMax.y ) ) );
 
             if ( !cr.empty( ) )
                 Warning( loc, "Crop window supplied on command line will override "
@@ -199,10 +199,10 @@ namespace pbrto
                 crop.pMax.y = Clamp( std::max( cr[ 2 ], cr[ 3 ] ), 0.f, 1.f );
 
                 // Compute film image bounds
-                pixelBounds = Bounds2i( Point2i( pstdo::ceil( fullResolution.x * crop.pMin.x ),
-                    pstdo::ceil( fullResolution.y * crop.pMin.y ) ),
-                    Point2i( pstdo::ceil( fullResolution.x * crop.pMax.x ),
-                        pstdo::ceil( fullResolution.y * crop.pMax.y ) ) );
+                pixelBounds = Bounds2i( Point2i( Math::Ceil( fullResolution.x * crop.pMin.x ),
+                    Math::Ceil( fullResolution.y * crop.pMin.y ) ),
+                    Point2i( Math::Ceil( fullResolution.x * crop.pMax.x ),
+                        Math::Ceil( fullResolution.y * crop.pMax.y ) ) );
             }
             else
                 Error( loc, "%d values supplied for \"cropwindow\". Expected 4.",

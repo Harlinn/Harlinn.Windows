@@ -6007,7 +6007,18 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_dp_ps( a, b, 0xff );
+                if constexpr ( Size == 2 )
+                {
+                    return _mm_dp_ps( a, b, 0b00110011 );
+                }
+                else if constexpr ( Size == 3 )
+                {
+                    return _mm_dp_ps( a, b, 0b01110111 );
+                }
+                else
+                {
+                    return _mm_dp_ps( a, b, 0xff );
+                }
             }
             else
             {

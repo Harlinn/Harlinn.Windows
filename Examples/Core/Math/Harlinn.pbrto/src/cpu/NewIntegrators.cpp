@@ -125,14 +125,15 @@ namespace pbrto
 
         Bounds2i pixelBounds = camera.GetFilm( ).PixelBounds( );
         int spp = samplerPrototype.SamplesPerPixel( );
-        ProgressReporter progress( int64_t( spp ) * pixelBounds.Area( ), "Rendering",
-            Options->quiet );
+        ProgressReporter progress( int64_t( spp ) * pixelBounds.Area( ), "Rendering", Options->quiet );
 
         int waveStart = 0, waveEnd = 1, nextWaveSize = 1;
 
         if ( Options->recordPixelStatistics )
-            StatsEnablePixelStats( pixelBounds,
-                RemoveExtension( camera.GetFilm( ).GetFilename( ) ) );
+        {
+            StatsEnablePixelStats( pixelBounds, RemoveExtension( camera.GetFilm( ).GetFilename( ) ) );
+        }
+
         // Handle MSE reference image, if provided
         pstdo::optional<Image> referenceImage;
         FILE* mseOutFile = nullptr;
@@ -188,31 +189,30 @@ namespace pbrto
         while ( waveStart < spp )
         {
             // Render current wave's image tiles in parallel
-            ParallelFor2D( pixelBounds, [ & ]( Bounds2i tileBounds ) {
-                // Render image tile given by _tileBounds_
-                ScratchBuffer& scratchBuffer = scratchBuffers.Get( );
-                Sampler& sampler = samplers.Get( );
-                PBRT_DBG( "Starting image tile (%d,%d)-(%d,%d) waveStart %d, waveEnd %d\n",
-                    tileBounds.pMin.x, tileBounds.pMin.y, tileBounds.pMax.x,
-                    tileBounds.pMax.y, waveStart, waveEnd );
-                for ( Point2i pPixel : tileBounds )
+            ParallelFor2D( pixelBounds, [ & ]( Bounds2i tileBounds ) 
                 {
-                    StatsReportPixelStart( pPixel );
-                    threadPixel = pPixel;
-                    // Render samples in pixel _pPixel_
-                    for ( int sampleIndex = waveStart; sampleIndex < waveEnd; ++sampleIndex )
-                    {
-                        threadSampleIndex = sampleIndex;
-                        sampler.StartPixelSample( pPixel, sampleIndex );
-                        EvaluatePixelSample( pPixel, sampleIndex, sampler, scratchBuffer );
-                        scratchBuffer.Reset( );
-                    }
+                    // Render image tile given by _tileBounds_
+                    ScratchBuffer& scratchBuffer = scratchBuffers.Get( );
+                    Sampler& sampler = samplers.Get( );
+                    PBRT_DBG( "Starting image tile (%d,%d)-(%d,%d) waveStart %d, waveEnd %d\n", tileBounds.pMin.x, tileBounds.pMin.y, tileBounds.pMax.x, tileBounds.pMax.y, waveStart, waveEnd );
 
-                    StatsReportPixelEnd( pPixel );
-                }
-                PBRT_DBG( "Finished image tile (%d,%d)-(%d,%d)\n", tileBounds.pMin.x,
-                    tileBounds.pMin.y, tileBounds.pMax.x, tileBounds.pMax.y );
-                progress.Update( ( waveEnd - waveStart ) * tileBounds.Area( ) );
+                    for ( Point2i pPixel : tileBounds )
+                    {
+                        StatsReportPixelStart( pPixel );
+                        threadPixel = pPixel;
+                        // Render samples in pixel _pPixel_
+                        for ( int sampleIndex = waveStart; sampleIndex < waveEnd; ++sampleIndex )
+                        {
+                            threadSampleIndex = sampleIndex;
+                            sampler.StartPixelSample( pPixel, sampleIndex );
+                            EvaluatePixelSample( pPixel, sampleIndex, sampler, scratchBuffer );
+                            scratchBuffer.Reset( );
+                        }
+
+                        StatsReportPixelEnd( pPixel );
+                    }
+                    PBRT_DBG( "Finished image tile (%d,%d)-(%d,%d)\n", tileBounds.pMin.x, tileBounds.pMin.y, tileBounds.pMax.x, tileBounds.pMax.y );
+                    progress.Update( ( waveEnd - waveStart ) * tileBounds.Area( ) );
                 } );
 
             // Update start and end wave
@@ -233,10 +233,8 @@ namespace pbrto
                 if ( referenceImage )
                 {
                     ImageMetadata filmMetadata;
-                    Image filmImage =
-                        camera.GetFilm( ).GetImage( &filmMetadata, 1.f / waveStart );
-                    ImageChannelValues mse =
-                        filmImage.MSE( filmImage.AllChannelsDesc( ), *referenceImage );
+                    Image filmImage = camera.GetFilm( ).GetImage( &filmMetadata, 1.f / waveStart );
+                    ImageChannelValues mse = filmImage.MSE( filmImage.AllChannelsDesc( ), *referenceImage );
                     fprintf( mseOutFile, "%d, %.9g\n", waveStart, mse.Average( ) );
                     metadata.MSE = mse.Average( );
                     fflush( mseOutFile );
@@ -256,8 +254,7 @@ namespace pbrto
     }
 
     // RayIntegrator Method Definitions
-    void RayIntegrator::EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler,
-        ScratchBuffer& scratchBuffer )
+    void RayIntegrator::EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler, ScratchBuffer& scratchBuffer )
     {
         // Sample wavelengths for the ray
         Float lu = sampler.Get1D( );
@@ -270,8 +267,7 @@ namespace pbrto
         CameraSample cameraSample = GetCameraSample( sampler, pPixel, filter );
 
         // Generate camera ray for current sample
-        pstdo::optional<CameraRayDifferential> cameraRay =
-            camera.GenerateRayDifferential( cameraSample, lambda );
+        pstdo::optional<CameraRayDifferential> cameraRay = camera.GenerateRayDifferential( cameraSample, lambda );
 
         // Trace _cameraRay_ if valid
         SampledSpectrum L( 0. );
@@ -282,8 +278,7 @@ namespace pbrto
             NDCHECK_GT( ScalarLength( cameraRay->ray.d ), .999f );
             NDCHECK_LT( ScalarLength( cameraRay->ray.d ), 1.001f );
             // Scale camera ray differentials based on image sampling rate
-            Float rayDiffScale =
-                std::max<Float>( .125f, 1 / std::sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
+            Float rayDiffScale = std::max<Float>( .125f, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
             if ( !Options->disablePixelJitter )
                 cameraRay->ray.ScaleDifferentials( rayDiffScale );
 
@@ -332,8 +327,7 @@ namespace pbrto
     NSTAT_COUNTER( "Intersections/Shadow ray intersection tests", nShadowTests );
 
     // Integrator Method Definitions
-    pstdo::optional<ShapeIntersection> Integrator::Intersect( const Ray& ray,
-        Float tMax ) const
+    pstdo::optional<ShapeIntersection> Integrator::Intersect( const Ray& ray, Float tMax ) const
     {
         ++nIntersectionTests;
         NDCHECK_NE( ray.d, Vector3f( 0, 0, 0 ) );
@@ -353,8 +347,7 @@ namespace pbrto
             return false;
     }
 
-    SampledSpectrum Integrator::Tr( const Interaction& p0, const Interaction& p1,
-        const SampledWavelengths& lambda ) const
+    SampledSpectrum Integrator::Tr( const Interaction& p0, const Interaction& p1, const SampledWavelengths& lambda ) const
     {
         RNG rng( Hash( p0.p( ) ), Hash( p1.p( ) ) );
 
@@ -597,8 +590,7 @@ namespace pbrto
         // Add contribution of directly visible light source
         if ( les->intr )
         {
-            pstdo::optional<CameraWiSample> cs =
-                camera.SampleWi( *les->intr, sampler.Get2D( ), lambda );
+            pstdo::optional<CameraWiSample> cs = camera.SampleWi( *les->intr, sampler.Get2D( ), lambda );
             if ( cs && cs->pdf != 0 )
             {
                 if ( Float pdf = light.PDF_Li( cs->pLens, -cs->wi ); pdf > 0 )
@@ -1940,7 +1932,7 @@ namespace pbrto
                 return 0;
             Float invDist2 = 1 / ScalarLengthSquared( w );
             if ( next.IsOnSurface( ) )
-                pdf *= ScalarAbsDot( next.ng( ), w * std::sqrt( invDist2 ) );
+                pdf *= ScalarAbsDot( next.ng( ), w * Math::Sqrt( invDist2 ) );
             return pdf * invDist2;
         }
 
@@ -1984,7 +1976,7 @@ namespace pbrto
         {
             Vector3f w = v.p( ) - p( );
             Float invDist2 = 1 / ScalarLengthSquared( w );
-            w *= std::sqrt( invDist2 );
+            w *= Math::Sqrt( invDist2 );
             // Compute sampling density _pdf_ for light type
             Float pdf;
             if ( IsInfiniteLight( ) )
@@ -2361,7 +2353,7 @@ namespace pbrto
     {
         Vector3f d = v0.p( ) - v1.p( );
         Float g = 1 / ScalarLengthSquared( d );
-        d *= std::sqrt( g );
+        d *= Math::Sqrt( g );
         if ( v0.IsOnSurface( ) )
             g *= ScalarAbsDot( v0.ns( ), d );
         if ( v1.IsOnSurface( ) )
@@ -2799,7 +2791,7 @@ namespace pbrto
         if ( !crd || !crd->weight )
             return SampledSpectrum( 0.f );
         Float rayDiffScale =
-            std::max<Float>( .125, 1 / std::sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
+            std::max<Float>( .125, 1 / Math::Sqrt( ( Float )sampler.SamplesPerPixel( ) ) );
         crd->ray.ScaleDifferentials( rayDiffScale );
 
         if ( GenerateCameraSubpath( *this, crd->ray, *lambda, &sampler, scratchBuffer, t,
@@ -3119,7 +3111,7 @@ namespace pbrto
         // Define variables for commonly used values in SPPM rendering
         int nIterations = samplerPrototype.SamplesPerPixel( );
         ProgressReporter progress( 2 * nIterations, "Rendering", Options->quiet );
-        const Float invSqrtSPP = 1.f / std::sqrt( nIterations );
+        const Float invSqrtSPP = 1.f / Math::Sqrt( static_cast<Float>( nIterations ) );
         Film film = camera.GetFilm( );
         Bounds2i pixelBounds = film.PixelBounds( );
         int nPixels = pixelBounds.Area( );
@@ -3525,7 +3517,7 @@ namespace pbrto
                     // Compute new photon count and search radius given photons
                     Float gamma = ( Float )2 / ( Float )3;
                     Float nNew = p.n + gamma * m;
-                    Float rNew = p.radius * std::sqrt( nNew / ( p.n + m ) );
+                    Float rNew = p.radius * Math::Sqrt( nNew / ( p.n + m ) );
 
                     // Update $\tau$ for pixel
                     RGB Phi_i( p.Phi_i[ 0 ], p.Phi_i[ 1 ], p.Phi_i[ 2 ] );
@@ -3713,9 +3705,10 @@ namespace pbrto
         }
         static double rotatedCheckerboard( Point2f p )
         {
-            double angle = Radians( 45.f );
-            double nrm = 1.00006866455078125;
-            static double sa = std::sin( angle ), ca = std::cos( angle );
+            constexpr double angle = Deg2Rad( 45.f );
+            constexpr double nrm = 1.00006866455078125;
+            constexpr double sa = Math::Sin( angle );
+            constexpr double ca = Math::Cos( angle );
             return ( double )checkerboard(
                 { Float( 10 + p.x * ca - p.y * sa ), Float( 10 + p.x * sa + p.y * ca ) } ) /
                 nrm;
@@ -3723,8 +3716,8 @@ namespace pbrto
         static double gaussian( Point2f p )
         {
             auto Gaussian = []( double x, double mu = 0, double sigma = 1 ) {
-                return 1 / std::sqrt( 2 * Pi * sigma * sigma ) *
-                    std::exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
+                return 1 / Math::Sqrt( 2 * Pi * sigma * sigma ) *
+                    Math::Exp( -Sqr( x - mu ) / ( 2 * sigma * sigma ) );
                 };
             auto GaussianIntegral = []( double x0, double x1, double mu = 0, double sigma = 1 ) {
                 double sigmaRoot2 = sigma * double( 1.414213562373095 );
@@ -3839,7 +3832,7 @@ namespace pbrto
             if ( skipBad )
             {
                 int nSamples = sampleIndex + 1;
-                if ( isStratified && Sqr( int( std::sqrt( nSamples ) ) ) != nSamples )
+                if ( isStratified && Sqr( int( Math::Sqrt( static_cast<Float>( nSamples ) ) ) ) != nSamples )
                 {
                     prog.Update( );
                     continue;
@@ -3874,7 +3867,7 @@ namespace pbrto
             if ( isStratified )
             {
                 int spp = sampleIndex + 1;
-                int factor = int( std::sqrt( spp ) );
+                int factor = int( Math::Sqrt( static_cast<float>( spp ) ) );
 
                 while ( ( spp % factor ) != 0 )
                     --factor;

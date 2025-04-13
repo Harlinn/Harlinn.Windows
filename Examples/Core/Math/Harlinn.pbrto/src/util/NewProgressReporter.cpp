@@ -158,7 +158,7 @@ namespace pbrto
 #endif
 
             Float percentDone = Float( workDone ) / Float( totalWork );
-            int plussesNeeded = std::round( totalPlusses * percentDone );
+            int plussesNeeded = Math::Round( totalPlusses * percentDone );
             while ( plussesPrinted < plussesNeeded )
             {
                 *curSpace++ = '+';

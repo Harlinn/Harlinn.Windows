@@ -4023,6 +4023,49 @@ namespace Harlinn::Common::Core::Math
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
+    inline void SinCos( const Interval<FloatT>& i, Interval<FloatT>* sine, Interval<FloatT>* cosine )
+    {
+        FloatT sinLow;
+        FloatT cosLow;
+        Math::SinCos( std::max<FloatT>( static_cast< FloatT >( 0 ), i.LowerBound( ) ), &sinLow, &cosLow );
+
+        FloatT sinHigh;
+        FloatT cosHigh;
+        Math::SinCos( i.UpperBound( ), &sinHigh, &cosHigh );
+
+        if ( sinLow > sinHigh )
+        {
+            std::swap( sinLow, sinHigh );
+        }
+        if ( cosLow > cosHigh )
+        {
+            std::swap( cosLow, cosHigh );
+        }
+        sinLow = std::max<FloatT>( static_cast< FloatT >( -1 ), NextDown( sinLow ) );
+        sinHigh = std::min<FloatT>( static_cast< FloatT >( 1 ), NextUp( sinHigh ) );
+        cosLow = std::max<FloatT>( static_cast< FloatT >( -1 ), NextDown( cosLow ) );
+        cosHigh = std::min<FloatT>( static_cast< FloatT >( 1 ), NextUp( cosHigh ) );
+
+        if ( InRange( Constants<FloatT>::PiOver2, i ) )
+        {
+            sinHigh = static_cast< FloatT >( 1 );
+        }
+        if ( InRange( ( static_cast< FloatT >( 3. ) / static_cast< FloatT >( 2. ) ) * Constants<FloatT>::Pi, i ) )
+        {
+            sinLow = static_cast< FloatT >( -1 );
+        }
+        if ( InRange( Constants<FloatT>::Pi, i ) )
+        {
+            cosLow = static_cast< FloatT >( -1 );
+        }
+        *sine = Interval( sinLow, sinHigh );
+        *cosine = Interval( cosLow, cosHigh );
+    }
+
+
+
+    template<typename FloatT>
+        requires IsFloatingPoint<FloatT>
     inline bool Quadratic( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, Interval<FloatT>* t0, Interval<FloatT>* t1 )
     {
         // Find quadratic discriminant

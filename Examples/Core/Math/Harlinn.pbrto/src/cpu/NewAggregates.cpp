@@ -929,7 +929,7 @@ namespace pbrto
         // Build kd-tree aggregate
         nextFreeNode = nAllocedNodes = 0;
         if ( maxDepth <= 0 )
-            maxDepth = std::round( 8 + 1.3f * Log2Int( int64_t( primitives.size( ) ) ) );
+            maxDepth = Math::Round( 8 + 1.3f * Log2Int( int64_t( primitives.size( ) ) ) );
         // Compute bounds for kd-tree construction
         std::vector<Bounds3f> primBounds;
         primBounds.reserve( primitives.size( ) );

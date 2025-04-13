@@ -155,8 +155,8 @@ namespace pbrto
             radius( radius ),
             zMin( Clamp( std::min( zMin, zMax ), -radius, radius ) ),
             zMax( Clamp( std::max( zMin, zMax ), -radius, radius ) ),
-            thetaZMin( std::acos( Clamp( std::min( zMin, zMax ) / radius, -1, 1 ) ) ),
-            thetaZMax( std::acos( Clamp( std::max( zMin, zMax ) / radius, -1, 1 ) ) ),
+            thetaZMin( Math::ACos( Clamp( std::min( zMin, zMax ) / radius, -1, 1 ) ) ),
+            thetaZMax( Math::ACos( Clamp( std::max( zMin, zMax ) / radius, -1, 1 ) ) ),
             phiMax( Radians( Clamp( phiMax, 0, 360 ) ) )
         {
         }
@@ -196,7 +196,7 @@ namespace pbrto
 
             // Compute sphere quadratic discriminant _discrim_
             Vector3fi v( oi - b / ( 2.f * a ) * di );
-            Interval length = Length( v );
+            Interval length = ScalarLength( v );
             Interval discrim =
                 4.f * a * ( Interval( radius ) + length ) * ( Interval( radius ) - length );
             if ( discrim.LowerBound( ) < 0 )
@@ -233,7 +233,7 @@ namespace pbrto
 
             if ( pHit.x == 0 && pHit.y == 0 )
                 pHit.x = 1e-5f * radius;
-            phi = std::atan2( pHit.y, pHit.x );
+            phi = Math::ATan2( pHit.y, pHit.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
 
@@ -253,7 +253,7 @@ namespace pbrto
 
                 if ( pHit.x == 0 && pHit.y == 0 )
                     pHit.x = 1e-5f * radius;
-                phi = std::atan2( pHit.y, pHit.x );
+                phi = Math::ATan2( pHit.y, pHit.x );
                 if ( phi < 0 )
                     phi += 2 * Pi;
 
@@ -284,7 +284,7 @@ namespace pbrto
             Float theta = SafeACos( cosTheta );
             Float v = ( theta - thetaZMin ) / ( thetaZMax - thetaZMin );
             // Compute sphere $\dpdu$ and $\dpdv$
-            Float zRadius = std::sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+            Float zRadius = Math::Sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
             Float cosPhi = pHit.x / zRadius, sinPhi = pHit.y / zRadius;
             Vector3f dpdu( -phiMax * pHit.y, phiMax * pHit.x, 0 );
             Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
@@ -368,7 +368,7 @@ namespace pbrto
             {
                 // Compute cone sample via Taylor series expansion for small angles
                 sin2Theta = sin2ThetaMax * u[ 0 ];
-                cosTheta = std::sqrt( 1 - sin2Theta );
+                cosTheta = Math::Sqrt( 1 - sin2Theta );
                 oneMinusCosThetaMax = sin2ThetaMax / 2;
             }
 
@@ -393,7 +393,7 @@ namespace pbrto
             // Compute $(u,v)$ coordinates for sampled point on sphere
             Point3f pObj = ( *objectFromRender )( p );
             Float theta = SafeACos( pObj.z / radius );
-            Float spherePhi = std::atan2( pObj.y, pObj.x );
+            Float spherePhi = Math::ATan2( pObj.y, pObj.x );
             if ( spherePhi < 0 )
                 spherePhi += 2 * Pi;
             Point2f uv( spherePhi / phiMax, ( theta - thetaZMin ) / ( thetaZMax - thetaZMin ) );
@@ -513,7 +513,7 @@ namespace pbrto
             if ( dist2 > Sqr( radius ) || dist2 < Sqr( innerRadius ) )
                 return {};
             // Test disk $\phi$ value against $\phimax$
-            Float phi = std::atan2( pHit.y, pHit.x );
+            Float phi = Math::ATan2( pHit.y, pHit.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
             if ( phi > phiMax )
@@ -531,7 +531,7 @@ namespace pbrto
             Float phi = isect.phi;
             // Find parametric representation of disk hit
             Float u = phi / phiMax;
-            Float rHit = std::sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+            Float rHit = Math::Sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
             Float v = ( radius - rHit ) / ( radius - innerRadius );
             Vector3f dpdu( -phiMax * pHit.y, phiMax * pHit.x, 0 );
             Vector3f dpdv = Vector3f( pHit.x, pHit.y, 0 ) * ( innerRadius - radius ) / rHit;
@@ -568,10 +568,10 @@ namespace pbrto
             if ( reverseOrientation )
                 n *= -1;
             // Compute $(u,v)$ for sampled point on disk
-            Float phi = std::atan2( pd.y, pd.x );
+            Float phi = Math::ATan2( pd.y, pd.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
-            Float radiusSample = std::sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
+            Float radiusSample = Math::Sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
             Point2f uv( phi / phiMax, ( radius - radiusSample ) / ( radius - innerRadius ) );
 
             return ShapeSample{ Interaction( pi, n, uv ), 1 / Area( ) };
@@ -712,11 +712,11 @@ namespace pbrto
             // Compute cylinder hit point and $\phi$
             pHit = Point3f( oi ) + ( Float )tShapeHit * Vector3f( di );
             // Refine cylinder intersection point
-            Float hitRad = std::sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+            Float hitRad = Math::Sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
             pHit.x *= radius / hitRad;
             pHit.y *= radius / hitRad;
 
-            phi = std::atan2( pHit.y, pHit.x );
+            phi = Math::ATan2( pHit.y, pHit.x );
             if ( phi < 0 )
                 phi += 2 * Pi;
 
@@ -731,11 +731,11 @@ namespace pbrto
                 // Compute cylinder hit point and $\phi$
                 pHit = Point3f( oi ) + ( Float )tShapeHit * Vector3f( di );
                 // Refine cylinder intersection point
-                Float hitRad = std::sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
+                Float hitRad = Math::Sqrt( Sqr( pHit.x ) + Sqr( pHit.y ) );
                 pHit.x *= radius / hitRad;
                 pHit.y *= radius / hitRad;
 
-                phi = std::atan2( pHit.y, pHit.x );
+                phi = Math::ATan2( pHit.y, pHit.x );
                 if ( phi < 0 )
                     phi += 2 * Pi;
 
@@ -799,9 +799,12 @@ namespace pbrto
             Float z = Lerp( u[ 0 ], zMin, zMax );
             Float phi = u[ 1 ] * phiMax;
             // Compute cylinder sample position _pi_ and normal _n_ from $z$ and $\phi$
-            Point3f pObj = Point3f( radius * std::cos( phi ), radius * std::sin( phi ), z );
+            Float sinPhi;
+            Float cosPhi;
+            SinCos( phi, &sinPhi, &cosPhi );
+            Point3f pObj = Point3f( radius * cosPhi, radius * sinPhi, z );
             // Reproject _pObj_ to cylinder surface and compute _pObjError_
-            Float hitRad = std::sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
+            Float hitRad = Math::Sqrt( Sqr( pObj.x ) + Sqr( pObj.y ) );
             pObj.x *= radius / hitRad;
             pObj.y *= radius / hitRad;
             Vector3f pObjError = gamma( 3 ) * Abs( Vector3f( pObj.x, pObj.y, 0 ) );

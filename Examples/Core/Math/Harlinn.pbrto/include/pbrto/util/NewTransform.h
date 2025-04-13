@@ -710,29 +710,18 @@ namespace pbrto
     // Transform Definition
     class Transform
     {
+        // Transform Private Members
+        SquareMatrix<4> m_, mInv_;
     public:
         // Transform Public Methods
-        PBRT_CPU_GPU
-            inline Ray ApplyInverse( const Ray& r, Float* tMax = nullptr ) const;
-        PBRT_CPU_GPU
-            inline RayDifferential ApplyInverse( const RayDifferential& r,
-                Float* tMax = nullptr ) const;
-        template <typename T>
-        PBRT_CPU_GPU inline Vector3<T> ApplyInverse( Vector3<T> v ) const;
-        template <typename T>
-        PBRT_CPU_GPU inline Normal3<T> ApplyInverse( Normal3<T> ) const;
-
-        PBRTO_EXPORT
-            std::string ToString( ) const;
-
         Transform( ) = default;
 
-        PBRT_CPU_GPU
-            Transform( const SquareMatrix<4>& m ) : m( m )
+        Transform( const SquareMatrix<4>& m ) 
+            : m_( m )
         {
-            pstdo::optional<SquareMatrix<4>> inv = SquareMatrix<4>(Inverse( m ));
+            pstdo::optional<SquareMatrix<4>> inv = SquareMatrix<4>( Inverse( m ) );
             if ( inv )
-                mInv = *inv;
+                mInv_ = *inv;
             else
             {
                 // Initialize _mInv_ with not-a-number values
@@ -741,137 +730,149 @@ namespace pbrto
                     : std::numeric_limits<Float>::quiet_NaN( );
                 for ( int i = 0; i < 4; ++i )
                     for ( int j = 0; j < 4; ++j )
-                        mInv[ i ][ j ] = NaN;
+                        mInv_[ i ][ j ] = NaN;
             }
         }
 
-        PBRT_CPU_GPU
-            Transform( const Float (&mat)[ 4 ][ 4 ] )
-            : Transform( SquareMatrix<4>( mat ) ) 
-        { }
+        Transform( const Float( &mat )[ 4 ][ 4 ] )
+            : Transform( SquareMatrix<4>( mat ) )
+        {
+        }
 
-        PBRT_CPU_GPU
-            Transform( const SquareMatrix<4>& m, const SquareMatrix<4>& mInv ) : m( m ), mInv( mInv ) {}
+        Transform( const SquareMatrix<4>& m, const SquareMatrix<4>& mInv )
+            : m_( m ), mInv_( mInv )
+        {
+        }
 
-        PBRT_CPU_GPU
-            const SquareMatrix<4>& GetMatrix( ) const { return m; }
-        PBRT_CPU_GPU
-            const SquareMatrix<4>& GetInverseMatrix( ) const { return mInv; }
 
-        PBRT_CPU_GPU
-            bool operator==( const Transform& t ) const { return t.m == m; }
-        PBRT_CPU_GPU
-            bool operator!=( const Transform& t ) const { return t.m != m; }
-        PBRT_CPU_GPU
-            bool IsIdentity( ) const { return m.IsIdentity( ); }
+        inline Ray ApplyInverse( const Ray& r, Float* tMax = nullptr ) const;
+        inline RayDifferential ApplyInverse( const RayDifferential& r, Float* tMax = nullptr ) const;
 
-        PBRT_CPU_GPU
-            bool HasScale( Float tolerance = 1e-3f ) const
+        template <typename T>
+        inline Vector3<T> ApplyInverse( Vector3<T> v ) const;
+
+        template <typename T>
+        inline Normal3<T> ApplyInverse( Normal3<T> ) const;
+
+        PBRTO_EXPORT
+        std::string ToString( ) const;
+
+        
+
+        const SquareMatrix<4>& GetMatrix( ) const 
+        { 
+            return m_; 
+        }
+        const SquareMatrix<4>& GetInverseMatrix( ) const 
+        { 
+            return mInv_; 
+        }
+
+        bool operator==( const Transform& t ) const 
+        { 
+            return t.m_ == m_; 
+        }
+        bool operator!=( const Transform& t ) const 
+        { 
+            return t.m_ != m_; 
+        }
+        bool IsIdentity( ) const 
+        { 
+            return m_.IsIdentity( ); 
+        }
+
+        bool HasScale( Float tolerance = 1e-3f ) const
         {
             Float la2 = ScalarLengthSquared( ( *this )( Vector3f( 1, 0, 0 ) ) );
             Float lb2 = ScalarLengthSquared( ( *this )( Vector3f( 0, 1, 0 ) ) );
             Float lc2 = ScalarLengthSquared( ( *this )( Vector3f( 0, 0, 1 ) ) );
-            return ( std::abs( la2 - 1 ) > tolerance || std::abs( lb2 - 1 ) > tolerance ||
-                std::abs( lc2 - 1 ) > tolerance );
+            return ( std::abs( la2 - 1 ) > tolerance || std::abs( lb2 - 1 ) > tolerance || std::abs( lc2 - 1 ) > tolerance );
         }
 
         template <typename T>
-        PBRT_CPU_GPU Point3<T> operator()( Point3<T> p ) const;
+        Point3<T> operator()( Point3<T> p ) const;
 
         template <typename T>
-        PBRT_CPU_GPU inline Point3<T> ApplyInverse( Point3<T> p ) const;
+        inline Point3<T> ApplyInverse( Point3<T> p ) const;
 
         template <typename T>
-        PBRT_CPU_GPU Vector3<T> operator()( Vector3<T> v ) const;
+        Vector3<T> operator()( Vector3<T> v ) const;
 
         template <typename T>
-        PBRT_CPU_GPU Normal3<T> operator()( Normal3<T> ) const;
+        Normal3<T> operator()( Normal3<T> ) const;
 
-        PBRT_CPU_GPU
-            Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
-        PBRT_CPU_GPU
-            RayDifferential operator()( const RayDifferential& r, Float* tMax = nullptr ) const;
-
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Bounds3f operator()( const Bounds3f& b ) const;
-
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Transform operator*( const Transform& t2 ) const;
-
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            bool SwapsHandedness( ) const;
-
-        PBRT_CPU_GPU
-            explicit Transform( const Frame& frame );
-
-        PBRT_CPU_GPU
-            explicit Transform( Quaternion q );
-
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            explicit operator Quaternion( ) const;
+        Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
+        RayDifferential operator()( const RayDifferential& r, Float* tMax = nullptr ) const;
 
         PBRTO_EXPORT
-            void Decompose( Vector3f* T, SquareMatrix<4>* R, SquareMatrix<4>* S ) const;
+        Bounds3f operator()( const Bounds3f& b ) const;
 
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Interaction operator()( const Interaction& in ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Interaction ApplyInverse( const Interaction& in ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            SurfaceInteraction operator()( const SurfaceInteraction& si ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            SurfaceInteraction ApplyInverse( const SurfaceInteraction& in ) const;
+        PBRTO_EXPORT
+        Transform operator*( const Transform& t2 ) const;
 
-        PBRT_CPU_GPU
-            Point3fi operator()( const Point3fi& p ) const
+        PBRTO_EXPORT
+        bool SwapsHandedness( ) const;
+
+        explicit Transform( const Frame& frame );
+
+        explicit Transform( Quaternion q );
+
+        PBRTO_EXPORT
+        explicit operator Quaternion( ) const;
+
+        void Decompose( Vector3f* T, SquareMatrix<4>* R, SquareMatrix<4>* S ) const;
+
+        PBRTO_EXPORT
+        Interaction operator()( const Interaction& in ) const;
+        PBRTO_EXPORT
+        Interaction ApplyInverse( const Interaction& in ) const;
+        PBRTO_EXPORT
+        SurfaceInteraction operator()( const SurfaceInteraction& si ) const;
+
+        PBRTO_EXPORT
+        SurfaceInteraction ApplyInverse( const SurfaceInteraction& in ) const;
+
+        Point3fi operator()( const Point3fi& p ) const
         {
             Float x = Float( p.x ), y = Float( p.y ), z = Float( p.z );
             // Compute transformed coordinates from point _(x, y, z)_
-            Float xp = ( m[ 0 ][ 0 ] * x + m[ 0 ][ 1 ] * y ) + ( m[ 0 ][ 2 ] * z + m[ 0 ][ 3 ] );
-            Float yp = ( m[ 1 ][ 0 ] * x + m[ 1 ][ 1 ] * y ) + ( m[ 1 ][ 2 ] * z + m[ 1 ][ 3 ] );
-            Float zp = ( m[ 2 ][ 0 ] * x + m[ 2 ][ 1 ] * y ) + ( m[ 2 ][ 2 ] * z + m[ 2 ][ 3 ] );
-            Float wp = ( m[ 3 ][ 0 ] * x + m[ 3 ][ 1 ] * y ) + ( m[ 3 ][ 2 ] * z + m[ 3 ][ 3 ] );
+            Float xp = ( m_[ 0 ][ 0 ] * x + m_[ 0 ][ 1 ] * y ) + ( m_[ 0 ][ 2 ] * z + m_[ 0 ][ 3 ] );
+            Float yp = ( m_[ 1 ][ 0 ] * x + m_[ 1 ][ 1 ] * y ) + ( m_[ 1 ][ 2 ] * z + m_[ 1 ][ 3 ] );
+            Float zp = ( m_[ 2 ][ 0 ] * x + m_[ 2 ][ 1 ] * y ) + ( m_[ 2 ][ 2 ] * z + m_[ 2 ][ 3 ] );
+            Float wp = ( m_[ 3 ][ 0 ] * x + m_[ 3 ][ 1 ] * y ) + ( m_[ 3 ][ 2 ] * z + m_[ 3 ][ 3 ] );
 
             // Compute absolute error for transformed point, _pError_
             Vector3f pError;
             if ( p.IsExact( ) )
             {
                 // Compute error for transformed exact _p_
-                pError.x = gamma( 3 ) * ( std::abs( m[ 0 ][ 0 ] * x ) + std::abs( m[ 0 ][ 1 ] * y ) +
-                    std::abs( m[ 0 ][ 2 ] * z ) + std::abs( m[ 0 ][ 3 ] ) );
-                pError.y = gamma( 3 ) * ( std::abs( m[ 1 ][ 0 ] * x ) + std::abs( m[ 1 ][ 1 ] * y ) +
-                    std::abs( m[ 1 ][ 2 ] * z ) + std::abs( m[ 1 ][ 3 ] ) );
-                pError.z = gamma( 3 ) * ( std::abs( m[ 2 ][ 0 ] * x ) + std::abs( m[ 2 ][ 1 ] * y ) +
-                    std::abs( m[ 2 ][ 2 ] * z ) + std::abs( m[ 2 ][ 3 ] ) );
+                pError.x = gamma( 3 ) * ( std::abs( m_[ 0 ][ 0 ] * x ) + std::abs( m_[ 0 ][ 1 ] * y ) +
+                    std::abs( m_[ 0 ][ 2 ] * z ) + std::abs( m_[ 0 ][ 3 ] ) );
+                pError.y = gamma( 3 ) * ( std::abs( m_[ 1 ][ 0 ] * x ) + std::abs( m_[ 1 ][ 1 ] * y ) +
+                    std::abs( m_[ 1 ][ 2 ] * z ) + std::abs( m_[ 1 ][ 3 ] ) );
+                pError.z = gamma( 3 ) * ( std::abs( m_[ 2 ][ 0 ] * x ) + std::abs( m_[ 2 ][ 1 ] * y ) +
+                    std::abs( m_[ 2 ][ 2 ] * z ) + std::abs( m_[ 2 ][ 3 ] ) );
 
             }
             else
             {
                 // Compute error for transformed approximate _p_
                 Vector3f pInError = p.Error( );
-                pError.x = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 0 ][ 0 ] ) * pInError.x +
-                    std::abs( m[ 0 ][ 1 ] ) * pInError.y +
-                    std::abs( m[ 0 ][ 2 ] ) * pInError.z ) +
-                    gamma( 3 ) * ( std::abs( m[ 0 ][ 0 ] * x ) + std::abs( m[ 0 ][ 1 ] * y ) +
-                        std::abs( m[ 0 ][ 2 ] * z ) + std::abs( m[ 0 ][ 3 ] ) );
-                pError.y = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 1 ][ 0 ] ) * pInError.x +
-                    std::abs( m[ 1 ][ 1 ] ) * pInError.y +
-                    std::abs( m[ 1 ][ 2 ] ) * pInError.z ) +
-                    gamma( 3 ) * ( std::abs( m[ 1 ][ 0 ] * x ) + std::abs( m[ 1 ][ 1 ] * y ) +
-                        std::abs( m[ 1 ][ 2 ] * z ) + std::abs( m[ 1 ][ 3 ] ) );
-                pError.z = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 2 ][ 0 ] ) * pInError.x +
-                    std::abs( m[ 2 ][ 1 ] ) * pInError.y +
-                    std::abs( m[ 2 ][ 2 ] ) * pInError.z ) +
-                    gamma( 3 ) * ( std::abs( m[ 2 ][ 0 ] * x ) + std::abs( m[ 2 ][ 1 ] * y ) +
-                        std::abs( m[ 2 ][ 2 ] * z ) + std::abs( m[ 2 ][ 3 ] ) );
+                pError.x = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 0 ][ 0 ] ) * pInError.x +
+                    std::abs( m_[ 0 ][ 1 ] ) * pInError.y +
+                    std::abs( m_[ 0 ][ 2 ] ) * pInError.z ) +
+                    gamma( 3 ) * ( std::abs( m_[ 0 ][ 0 ] * x ) + std::abs( m_[ 0 ][ 1 ] * y ) +
+                        std::abs( m_[ 0 ][ 2 ] * z ) + std::abs( m_[ 0 ][ 3 ] ) );
+                pError.y = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 1 ][ 0 ] ) * pInError.x +
+                    std::abs( m_[ 1 ][ 1 ] ) * pInError.y +
+                    std::abs( m_[ 1 ][ 2 ] ) * pInError.z ) +
+                    gamma( 3 ) * ( std::abs( m_[ 1 ][ 0 ] * x ) + std::abs( m_[ 1 ][ 1 ] * y ) +
+                        std::abs( m_[ 1 ][ 2 ] * z ) + std::abs( m_[ 1 ][ 3 ] ) );
+                pError.z = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 2 ][ 0 ] ) * pInError.x +
+                    std::abs( m_[ 2 ][ 1 ] ) * pInError.y +
+                    std::abs( m_[ 2 ][ 2 ] ) * pInError.z ) +
+                    gamma( 3 ) * ( std::abs( m_[ 2 ][ 0 ] * x ) + std::abs( m_[ 2 ][ 1 ] * y ) +
+                        std::abs( m_[ 2 ][ 2 ] * z ) + std::abs( m_[ 2 ][ 3 ] ) );
             }
 
             if ( wp == 1 )
@@ -880,61 +881,49 @@ namespace pbrto
                 return Point3fi( Point3f( xp, yp, zp ), pError ) / wp;
         }
 
-        PBRT_CPU_GPU
-            Vector3fi operator()( const Vector3fi& v ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Point3fi ApplyInverse( const Point3fi& p ) const;
+        Vector3fi operator()( const Vector3fi& v ) const;
+        PBRTO_EXPORT
+        Point3fi ApplyInverse( const Point3fi& p ) const;
 
     private:
-        // Transform Private Members
-        SquareMatrix<4> m, mInv;
+        
     };
 
     // Transform Function Declarations
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform Translate( Vector3f delta );
+    PBRTO_EXPORT
+    Transform Translate( Vector3f delta );
 
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform Scale( Float x, Float y, Float z );
+    PBRTO_EXPORT
+    Transform Scale( Float x, Float y, Float z );
 
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform RotateX( Float theta );
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform RotateY( Float theta );
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform RotateZ( Float theta );
+    PBRTO_EXPORT
+    Transform RotateX( Float theta );
+    PBRTO_EXPORT
+    Transform RotateY( Float theta );
+    PBRTO_EXPORT
+    Transform RotateZ( Float theta );
 
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform LookAt( Point3f pos, Point3f look, Vector3f up );
+    PBRTO_EXPORT
+    Transform LookAt( Point3f pos, Point3f look, Vector3f up );
 
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform Orthographic( Float znear, Float zfar );
+    PBRTO_EXPORT
+    Transform Orthographic( Float znear, Float zfar );
 
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform Perspective( Float fov, Float znear, Float zfar );
+    PBRTO_EXPORT
+    Transform Perspective( Float fov, Float znear, Float zfar );
 
     // Transform Inline Functions
-    PBRT_CPU_GPU
-        inline Transform Inverse( const Transform& t )
+    inline Transform Inverse( const Transform& t )
     {
         return Transform( t.GetInverseMatrix( ), t.GetMatrix( ) );
     }
 
-    PBRT_CPU_GPU inline Transform Transpose( const Transform& t )
+    inline Transform Transpose( const Transform& t )
     {
         return Transform( Transpose( t.GetMatrix( ) ), Transpose( t.GetInverseMatrix( ) ) );
     }
 
-    PBRT_CPU_GPU inline Transform Rotate( Float sinTheta, Float cosTheta, Vector3f axis )
+    inline Transform Rotate( Float sinTheta, Float cosTheta, Vector3f axis )
     {
         Vector3f a = Normalize( axis );
         SquareMatrix<4> m;
@@ -958,14 +947,19 @@ namespace pbrto
         return Transform( m, Transpose( m ) );
     }
 
-    PBRT_CPU_GPU inline Transform Rotate( Float theta, Vector3f axis )
+    inline Transform Rotate( Float theta, Vector3f axis )
     {
+        auto rTheta = Math::Deg2Rad( theta );
+        SquareMatrix<4> m = Math::RotationAxis( axis, rTheta );
+        return Transform( Math::Transpose( m ), m );
+        /*
         Float sinTheta = std::sin( Radians( theta ) );
         Float cosTheta = std::cos( Radians( theta ) );
         return Rotate( sinTheta, cosTheta, axis );
+        */
     }
 
-    PBRT_CPU_GPU inline Transform RotateFromTo( Vector3f from, Vector3f to )
+    inline Transform RotateFromTo( Vector3f from, Vector3f to )
     {
         // Compute intermediate vector for vector reflection
         Vector3f refl;
@@ -989,54 +983,54 @@ namespace pbrto
         return Transform( r, Transpose( r ) );
     }
 
-    PBRT_CPU_GPU inline Vector3fi Transform::operator()( const Vector3fi& v ) const
+    inline Vector3fi Transform::operator()( const Vector3fi& v ) const
     {
         Float x = Float( v.x ), y = Float( v.y ), z = Float( v.z );
         Vector3f vOutError;
         if ( v.IsExact( ) )
         {
-            vOutError.x = gamma( 3 ) * ( std::abs( m[ 0 ][ 0 ] * x ) + std::abs( m[ 0 ][ 1 ] * y ) +
-                std::abs( m[ 0 ][ 2 ] * z ) );
-            vOutError.y = gamma( 3 ) * ( std::abs( m[ 1 ][ 0 ] * x ) + std::abs( m[ 1 ][ 1 ] * y ) +
-                std::abs( m[ 1 ][ 2 ] * z ) );
-            vOutError.z = gamma( 3 ) * ( std::abs( m[ 2 ][ 0 ] * x ) + std::abs( m[ 2 ][ 1 ] * y ) +
-                std::abs( m[ 2 ][ 2 ] * z ) );
+            vOutError.x = gamma( 3 ) * ( std::abs( m_[ 0 ][ 0 ] * x ) + std::abs( m_[ 0 ][ 1 ] * y ) +
+                std::abs( m_[ 0 ][ 2 ] * z ) );
+            vOutError.y = gamma( 3 ) * ( std::abs( m_[ 1 ][ 0 ] * x ) + std::abs( m_[ 1 ][ 1 ] * y ) +
+                std::abs( m_[ 1 ][ 2 ] * z ) );
+            vOutError.z = gamma( 3 ) * ( std::abs( m_[ 2 ][ 0 ] * x ) + std::abs( m_[ 2 ][ 1 ] * y ) +
+                std::abs( m_[ 2 ][ 2 ] * z ) );
         }
         else
         {
             Vector3f vInError = v.Error( );
-            vOutError.x = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 0 ][ 0 ] ) * vInError.x +
-                std::abs( m[ 0 ][ 1 ] ) * vInError.y +
-                std::abs( m[ 0 ][ 2 ] ) * vInError.z ) +
-                gamma( 3 ) * ( std::abs( m[ 0 ][ 0 ] * x ) + std::abs( m[ 0 ][ 1 ] * y ) +
-                    std::abs( m[ 0 ][ 2 ] * z ) );
-            vOutError.y = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 1 ][ 0 ] ) * vInError.x +
-                std::abs( m[ 1 ][ 1 ] ) * vInError.y +
-                std::abs( m[ 1 ][ 2 ] ) * vInError.z ) +
-                gamma( 3 ) * ( std::abs( m[ 1 ][ 0 ] * x ) + std::abs( m[ 1 ][ 1 ] * y ) +
-                    std::abs( m[ 1 ][ 2 ] * z ) );
-            vOutError.z = ( gamma( 3 ) + 1 ) * ( std::abs( m[ 2 ][ 0 ] ) * vInError.x +
-                std::abs( m[ 2 ][ 1 ] ) * vInError.y +
-                std::abs( m[ 2 ][ 2 ] ) * vInError.z ) +
-                gamma( 3 ) * ( std::abs( m[ 2 ][ 0 ] * x ) + std::abs( m[ 2 ][ 1 ] * y ) +
-                    std::abs( m[ 2 ][ 2 ] * z ) );
+            vOutError.x = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 0 ][ 0 ] ) * vInError.x +
+                std::abs( m_[ 0 ][ 1 ] ) * vInError.y +
+                std::abs( m_[ 0 ][ 2 ] ) * vInError.z ) +
+                gamma( 3 ) * ( std::abs( m_[ 0 ][ 0 ] * x ) + std::abs( m_[ 0 ][ 1 ] * y ) +
+                    std::abs( m_[ 0 ][ 2 ] * z ) );
+            vOutError.y = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 1 ][ 0 ] ) * vInError.x +
+                std::abs( m_[ 1 ][ 1 ] ) * vInError.y +
+                std::abs( m_[ 1 ][ 2 ] ) * vInError.z ) +
+                gamma( 3 ) * ( std::abs( m_[ 1 ][ 0 ] * x ) + std::abs( m_[ 1 ][ 1 ] * y ) +
+                    std::abs( m_[ 1 ][ 2 ] * z ) );
+            vOutError.z = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 2 ][ 0 ] ) * vInError.x +
+                std::abs( m_[ 2 ][ 1 ] ) * vInError.y +
+                std::abs( m_[ 2 ][ 2 ] ) * vInError.z ) +
+                gamma( 3 ) * ( std::abs( m_[ 2 ][ 0 ] * x ) + std::abs( m_[ 2 ][ 1 ] * y ) +
+                    std::abs( m_[ 2 ][ 2 ] * z ) );
         }
 
-        Float xp = m[ 0 ][ 0 ] * x + m[ 0 ][ 1 ] * y + m[ 0 ][ 2 ] * z;
-        Float yp = m[ 1 ][ 0 ] * x + m[ 1 ][ 1 ] * y + m[ 1 ][ 2 ] * z;
-        Float zp = m[ 2 ][ 0 ] * x + m[ 2 ][ 1 ] * y + m[ 2 ][ 2 ] * z;
+        Float xp = m_[ 0 ][ 0 ] * x + m_[ 0 ][ 1 ] * y + m_[ 0 ][ 2 ] * z;
+        Float yp = m_[ 1 ][ 0 ] * x + m_[ 1 ][ 1 ] * y + m_[ 1 ][ 2 ] * z;
+        Float zp = m_[ 2 ][ 0 ] * x + m_[ 2 ][ 1 ] * y + m_[ 2 ][ 2 ] * z;
 
         return Vector3fi( Vector3f( xp, yp, zp ), vOutError );
     }
 
     // Transform Inline Methods
     template <typename T>
-    PBRT_CPU_GPU inline Point3<T> Transform::operator()( Point3<T> p ) const
+    inline Point3<T> Transform::operator()( Point3<T> p ) const
     {
-        T xp = m[ 0 ][ 0 ] * p.x + m[ 0 ][ 1 ] * p.y + m[ 0 ][ 2 ] * p.z + m[ 0 ][ 3 ];
-        T yp = m[ 1 ][ 0 ] * p.x + m[ 1 ][ 1 ] * p.y + m[ 1 ][ 2 ] * p.z + m[ 1 ][ 3 ];
-        T zp = m[ 2 ][ 0 ] * p.x + m[ 2 ][ 1 ] * p.y + m[ 2 ][ 2 ] * p.z + m[ 2 ][ 3 ];
-        T wp = m[ 3 ][ 0 ] * p.x + m[ 3 ][ 1 ] * p.y + m[ 3 ][ 2 ] * p.z + m[ 3 ][ 3 ];
+        T xp = m_[ 0 ][ 0 ] * p.x + m_[ 0 ][ 1 ] * p.y + m_[ 0 ][ 2 ] * p.z + m_[ 0 ][ 3 ];
+        T yp = m_[ 1 ][ 0 ] * p.x + m_[ 1 ][ 1 ] * p.y + m_[ 1 ][ 2 ] * p.z + m_[ 1 ][ 3 ];
+        T zp = m_[ 2 ][ 0 ] * p.x + m_[ 2 ][ 1 ] * p.y + m_[ 2 ][ 2 ] * p.z + m_[ 2 ][ 3 ];
+        T wp = m_[ 3 ][ 0 ] * p.x + m_[ 3 ][ 1 ] * p.y + m_[ 3 ][ 2 ] * p.z + m_[ 3 ][ 3 ];
         if ( wp == 1 )
             return Point3<T>( xp, yp, zp );
         else
@@ -1044,23 +1038,24 @@ namespace pbrto
     }
 
     template <typename T>
-    PBRT_CPU_GPU inline Vector3<T> Transform::operator()( Vector3<T> v ) const
+    inline Vector3<T> Transform::operator()( Vector3<T> v ) const
     {
-        return Vector3<T>( m[ 0 ][ 0 ] * v.x + m[ 0 ][ 1 ] * v.y + m[ 0 ][ 2 ] * v.z,
-            m[ 1 ][ 0 ] * v.x + m[ 1 ][ 1 ] * v.y + m[ 1 ][ 2 ] * v.z,
-            m[ 2 ][ 0 ] * v.x + m[ 2 ][ 1 ] * v.y + m[ 2 ][ 2 ] * v.z );
+        return Vector3<T>( m_[ 0 ][ 0 ] * v.x + m_[ 0 ][ 1 ] * v.y + m_[ 0 ][ 2 ] * v.z,
+            m_[ 1 ][ 0 ] * v.x + m_[ 1 ][ 1 ] * v.y + m_[ 1 ][ 2 ] * v.z,
+            m_[ 2 ][ 0 ] * v.x + m_[ 2 ][ 1 ] * v.y + m_[ 2 ][ 2 ] * v.z );
     }
 
     template <typename T>
     PBRT_CPU_GPU inline Normal3<T> Transform::operator()( Normal3<T> n ) const
     {
         T x = n.x, y = n.y, z = n.z;
-        return Normal3<T>( mInv[ 0 ][ 0 ] * x + mInv[ 1 ][ 0 ] * y + mInv[ 2 ][ 0 ] * z,
-            mInv[ 0 ][ 1 ] * x + mInv[ 1 ][ 1 ] * y + mInv[ 2 ][ 1 ] * z,
-            mInv[ 0 ][ 2 ] * x + mInv[ 1 ][ 2 ] * y + mInv[ 2 ][ 2 ] * z );
+        return Normal3<T>( 
+            mInv_[ 0 ][ 0 ] * x + mInv_[ 1 ][ 0 ] * y + mInv_[ 2 ][ 0 ] * z,
+            mInv_[ 0 ][ 1 ] * x + mInv_[ 1 ][ 1 ] * y + mInv_[ 2 ][ 1 ] * z,
+            mInv_[ 0 ][ 2 ] * x + mInv_[ 1 ][ 2 ] * y + mInv_[ 2 ][ 2 ] * z );
     }
 
-    PBRT_CPU_GPU inline Ray Transform::operator()( const Ray& r, Float* tMax ) const
+    inline Ray Transform::operator()( const Ray& r, Float* tMax ) const
     {
         Point3fi o = ( *this )( Point3fi( r.o ) );
         Vector3f d = ( *this )( r.d );
@@ -1070,14 +1065,15 @@ namespace pbrto
             Float dt = ScalarDot( Abs( d ), o.Error( ) ) / lengthSquared;
             o += d * dt;
             if ( tMax )
+            {
                 *tMax -= dt;
+            }
         }
 
         return Ray( Point3f( o ), d, r.time, r.medium );
     }
 
-    PBRT_CPU_GPU inline RayDifferential Transform::operator()( const RayDifferential& r,
-        Float* tMax ) const
+    inline RayDifferential Transform::operator()( const RayDifferential& r, Float* tMax ) const
     {
         Ray tr = ( *this )( Ray( r ), tMax );
         RayDifferential ret( tr.o, tr.d, tr.time, tr.medium );
@@ -1089,10 +1085,12 @@ namespace pbrto
         return ret;
     }
 
-    PBRT_CPU_GPU inline Transform::Transform( const Frame& frame )
-        : Transform( SquareMatrix<4>( frame.x.x, frame.x.y, frame.x.z, 0, frame.y.x, frame.y.y,
-            frame.y.z, 0, frame.z.x, frame.z.y, frame.z.z, 0, 0, 0, 0,
-            1 ) )
+    inline Transform::Transform( const Frame& frame )
+        : Transform( SquareMatrix<4>( 
+            frame.x.x, frame.x.y, frame.x.z, 0, 
+            frame.y.x, frame.y.y, frame.y.z, 0, 
+            frame.z.x, frame.z.y, frame.z.z, 0, 
+            0, 0, 0, 1 ) )
     {
     }
 
@@ -1102,28 +1100,28 @@ namespace pbrto
         Float xy = q.v.x * q.v.y, xz = q.v.x * q.v.z, yz = q.v.y * q.v.z;
         Float wx = q.v.x * q.w, wy = q.v.y * q.w, wz = q.v.z * q.w;
 
-        mInv[ 0 ][ 0 ] = 1 - 2 * ( yy + zz );
-        mInv[ 0 ][ 1 ] = 2 * ( xy + wz );
-        mInv[ 0 ][ 2 ] = 2 * ( xz - wy );
-        mInv[ 1 ][ 0 ] = 2 * ( xy - wz );
-        mInv[ 1 ][ 1 ] = 1 - 2 * ( xx + zz );
-        mInv[ 1 ][ 2 ] = 2 * ( yz + wx );
-        mInv[ 2 ][ 0 ] = 2 * ( xz + wy );
-        mInv[ 2 ][ 1 ] = 2 * ( yz - wx );
-        mInv[ 2 ][ 2 ] = 1 - 2 * ( xx + yy );
+        mInv_[ 0 ][ 0 ] = 1 - 2 * ( yy + zz );
+        mInv_[ 0 ][ 1 ] = 2 * ( xy + wz );
+        mInv_[ 0 ][ 2 ] = 2 * ( xz - wy );
+        mInv_[ 1 ][ 0 ] = 2 * ( xy - wz );
+        mInv_[ 1 ][ 1 ] = 1 - 2 * ( xx + zz );
+        mInv_[ 1 ][ 2 ] = 2 * ( yz + wx );
+        mInv_[ 2 ][ 0 ] = 2 * ( xz + wy );
+        mInv_[ 2 ][ 1 ] = 2 * ( yz - wx );
+        mInv_[ 2 ][ 2 ] = 1 - 2 * ( xx + yy );
 
         // Transpose since we are left-handed.  Ugh.
-        m = Transpose( mInv );
+        m_ = Transpose( mInv_ );
     }
 
     template <typename T>
     PBRT_CPU_GPU inline Point3<T> Transform::ApplyInverse( Point3<T> p ) const
     {
         T x = p.x, y = p.y, z = p.z;
-        T xp = ( mInv[ 0 ][ 0 ] * x + mInv[ 0 ][ 1 ] * y ) + ( mInv[ 0 ][ 2 ] * z + mInv[ 0 ][ 3 ] );
-        T yp = ( mInv[ 1 ][ 0 ] * x + mInv[ 1 ][ 1 ] * y ) + ( mInv[ 1 ][ 2 ] * z + mInv[ 1 ][ 3 ] );
-        T zp = ( mInv[ 2 ][ 0 ] * x + mInv[ 2 ][ 1 ] * y ) + ( mInv[ 2 ][ 2 ] * z + mInv[ 2 ][ 3 ] );
-        T wp = ( mInv[ 3 ][ 0 ] * x + mInv[ 3 ][ 1 ] * y ) + ( mInv[ 3 ][ 2 ] * z + mInv[ 3 ][ 3 ] );
+        T xp = ( mInv_[ 0 ][ 0 ] * x + mInv_[ 0 ][ 1 ] * y ) + ( mInv_[ 0 ][ 2 ] * z + mInv_[ 0 ][ 3 ] );
+        T yp = ( mInv_[ 1 ][ 0 ] * x + mInv_[ 1 ][ 1 ] * y ) + ( mInv_[ 1 ][ 2 ] * z + mInv_[ 1 ][ 3 ] );
+        T zp = ( mInv_[ 2 ][ 0 ] * x + mInv_[ 2 ][ 1 ] * y ) + ( mInv_[ 2 ][ 2 ] * z + mInv_[ 2 ][ 3 ] );
+        T wp = ( mInv_[ 3 ][ 0 ] * x + mInv_[ 3 ][ 1 ] * y ) + ( mInv_[ 3 ][ 2 ] * z + mInv_[ 3 ][ 3 ] );
         NCHECK_NE( wp, 0 );
         if ( wp == 1 )
             return Point3<T>( xp, yp, zp );
@@ -1135,21 +1133,23 @@ namespace pbrto
     PBRT_CPU_GPU inline Vector3<T> Transform::ApplyInverse( Vector3<T> v ) const
     {
         T x = v.x, y = v.y, z = v.z;
-        return Vector3<T>( mInv[ 0 ][ 0 ] * x + mInv[ 0 ][ 1 ] * y + mInv[ 0 ][ 2 ] * z,
-            mInv[ 1 ][ 0 ] * x + mInv[ 1 ][ 1 ] * y + mInv[ 1 ][ 2 ] * z,
-            mInv[ 2 ][ 0 ] * x + mInv[ 2 ][ 1 ] * y + mInv[ 2 ][ 2 ] * z );
+        return Vector3<T>( 
+            mInv_[ 0 ][ 0 ] * x + mInv_[ 0 ][ 1 ] * y + mInv_[ 0 ][ 2 ] * z,
+            mInv_[ 1 ][ 0 ] * x + mInv_[ 1 ][ 1 ] * y + mInv_[ 1 ][ 2 ] * z,
+            mInv_[ 2 ][ 0 ] * x + mInv_[ 2 ][ 1 ] * y + mInv_[ 2 ][ 2 ] * z );
     }
 
     template <typename T>
     PBRT_CPU_GPU inline Normal3<T> Transform::ApplyInverse( Normal3<T> n ) const
     {
         T x = n.x, y = n.y, z = n.z;
-        return Normal3<T>( m[ 0 ][ 0 ] * x + m[ 1 ][ 0 ] * y + m[ 2 ][ 0 ] * z,
-            m[ 0 ][ 1 ] * x + m[ 1 ][ 1 ] * y + m[ 2 ][ 1 ] * z,
-            m[ 0 ][ 2 ] * x + m[ 1 ][ 2 ] * y + m[ 2 ][ 2 ] * z );
+        return Normal3<T>( 
+            m_[ 0 ][ 0 ] * x + m_[ 1 ][ 0 ] * y + m_[ 2 ][ 0 ] * z,
+            m_[ 0 ][ 1 ] * x + m_[ 1 ][ 1 ] * y + m_[ 2 ][ 1 ] * z,
+            m_[ 0 ][ 2 ] * x + m_[ 1 ][ 2 ] * y + m_[ 2 ][ 2 ] * z );
     }
 
-    PBRT_CPU_GPU inline Ray Transform::ApplyInverse( const Ray& r, Float* tMax ) const
+    inline Ray Transform::ApplyInverse( const Ray& r, Float* tMax ) const
     {
         Point3fi o = ApplyInverse( Point3fi( r.o ) );
         Vector3f d = ApplyInverse( r.d );
@@ -1166,8 +1166,7 @@ namespace pbrto
         return Ray( Point3f( o ), d, r.time, r.medium );
     }
 
-    PBRT_CPU_GPU inline RayDifferential Transform::ApplyInverse( const RayDifferential& r,
-        Float* tMax ) const
+    inline RayDifferential Transform::ApplyInverse( const RayDifferential& r, Float* tMax ) const
     {
         Ray tr = ApplyInverse( Ray( r ), tMax );
         RayDifferential ret( tr.o, tr.d, tr.time, tr.medium );
@@ -1185,84 +1184,75 @@ namespace pbrto
     public:
         // AnimatedTransform Public Methods
         AnimatedTransform( ) = default;
-        explicit AnimatedTransform( const Transform& t ) : AnimatedTransform( t, 0, t, 1 ) {}
+        explicit AnimatedTransform( const Transform& t ) 
+            : AnimatedTransform( t, 0, t, 1 ) 
+        { }
+
         PBRTO_EXPORT
-            AnimatedTransform( const Transform& startTransform, Float startTime,
-                const Transform& endTransform, Float endTime );
+        AnimatedTransform( const Transform& startTransform, Float startTime, const Transform& endTransform, Float endTime );
 
-        PBRT_CPU_GPU
-            bool IsAnimated( ) const { return actuallyAnimated; }
+        bool IsAnimated( ) const 
+        { 
+            return actuallyAnimated; 
+        }
 
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Ray ApplyInverse( const Ray& r, Float* tMax = nullptr ) const;
+        PBRTO_EXPORT
+        Ray ApplyInverse( const Ray& r, Float* tMax = nullptr ) const;
 
-        PBRT_CPU_GPU
-            Point3f ApplyInverse( Point3f p, Float time ) const
+        Point3f ApplyInverse( Point3f p, Float time ) const
         {
             if ( !actuallyAnimated )
                 return startTransform.ApplyInverse( p );
             return Interpolate( time ).ApplyInverse( p );
         }
-        PBRT_CPU_GPU
-            Vector3f ApplyInverse( Vector3f v, Float time ) const
+        Vector3f ApplyInverse( Vector3f v, Float time ) const
         {
             if ( !actuallyAnimated )
                 return startTransform.ApplyInverse( v );
             return Interpolate( time ).ApplyInverse( v );
         }
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Normal3f operator()( Normal3f n, Float time ) const;
-        PBRT_CPU_GPU
-            Normal3f ApplyInverse( Normal3f n, Float time ) const
+        PBRTO_EXPORT
+        Normal3f operator()( Normal3f n, Float time ) const;
+        Normal3f ApplyInverse( Normal3f n, Float time ) const
         {
             if ( !actuallyAnimated )
                 return startTransform.ApplyInverse( n );
             return Interpolate( time ).ApplyInverse( n );
         }
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Interaction operator()( const Interaction& it ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Interaction ApplyInverse( const Interaction& it ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            SurfaceInteraction operator()( const SurfaceInteraction& it ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            SurfaceInteraction ApplyInverse( const SurfaceInteraction& it ) const;
-        PBRT_CPU_GPU
-            bool HasScale( ) const { return startTransform.HasScale( ) || endTransform.HasScale( ); }
+        PBRTO_EXPORT
+        Interaction operator()( const Interaction& it ) const;
+        PBRTO_EXPORT
+        Interaction ApplyInverse( const Interaction& it ) const;
+        PBRTO_EXPORT
+        SurfaceInteraction operator()( const SurfaceInteraction& it ) const;
+        PBRTO_EXPORT
+        SurfaceInteraction ApplyInverse( const SurfaceInteraction& it ) const;
+
+        bool HasScale( ) const 
+        { 
+            return startTransform.HasScale( ) || endTransform.HasScale( ); 
+        }
+
+        std::string ToString( ) const;
 
         PBRTO_EXPORT
-            std::string ToString( ) const;
+        Transform Interpolate( Float time ) const;
 
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Transform Interpolate( Float time ) const;
+        PBRTO_EXPORT
+        Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
+        PBRTO_EXPORT
+        RayDifferential operator()( const RayDifferential& r, Float* tMax = nullptr ) const;
 
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            RayDifferential operator()( const RayDifferential& r, Float* tMax = nullptr ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Point3f operator()( Point3f p, Float time ) const;
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Vector3f operator()( Vector3f v, Float time ) const;
+        PBRTO_EXPORT
+        Point3f operator()( Point3f p, Float time ) const;
+        PBRTO_EXPORT
+        Vector3f operator()( Vector3f v, Float time ) const;
 
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Bounds3f MotionBounds( const Bounds3f& b ) const;
+        PBRTO_EXPORT
+        Bounds3f MotionBounds( const Bounds3f& b ) const;
 
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            Bounds3f BoundPointMotion( Point3f p ) const;
+        PBRTO_EXPORT
+        Bounds3f BoundPointMotion( Point3f p ) const;
 
         // AnimatedTransform Public Members
         Transform startTransform, endTransform;
@@ -1270,9 +1260,8 @@ namespace pbrto
 
     private:
         // AnimatedTransform Private Methods
-        PBRT_CPU_GPU
-            PBRTO_EXPORT
-            static void FindZeros( Float c1, Float c2, Float c3, Float c4, Float c5, Float theta,
+        PBRTO_EXPORT
+        static void FindZeros( Float c1, Float c2, Float c3, Float c4, Float c5, Float theta,
                 Interval tInterval, pstdo::span<Float> zeros, int* nZeros,
                 int depth = 8 );
 
@@ -1284,13 +1273,10 @@ namespace pbrto
         bool hasRotation;
         struct DerivativeTerm
         {
-            PBRT_CPU_GPU
-                DerivativeTerm( ) {}
-            PBRT_CPU_GPU
-                DerivativeTerm( Float c, Float x, Float y, Float z ) : kc( c ), kx( x ), ky( y ), kz( z ) {}
+            DerivativeTerm( ) {}
+            DerivativeTerm( Float c, Float x, Float y, Float z ) : kc( c ), kx( x ), ky( y ), kz( z ) {}
             Float kc, kx, ky, kz;
-            PBRT_CPU_GPU
-                Float Eval( Point3f p ) const { return kc + kx * p.x + ky * p.y + kz * p.z; }
+            Float Eval( Point3f p ) const { return kc + kx * p.x + ky * p.y + kz * p.z; }
         };
         DerivativeTerm c1[ 3 ], c2[ 3 ], c3[ 3 ], c4[ 3 ], c5[ 3 ];
     };
@@ -1303,8 +1289,7 @@ namespace std
     template <>
     struct hash<pbrto::Transform>
     {
-        PBRT_CPU_GPU
-            size_t operator()( const pbrto::Transform& t ) const
+        size_t operator()( const pbrto::Transform& t ) const
         {
             pbrto::SquareMatrix<4> m = t.GetMatrix( );
             return pbrto::Hash( m );

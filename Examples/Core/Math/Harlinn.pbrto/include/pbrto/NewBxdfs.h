@@ -1079,7 +1079,7 @@ namespace pbrto
         {
             Float a = cosTheta_i * cosTheta_o / v, b = sinTheta_i * sinTheta_o / v;
             Float mp = ( v <= .1 )
-                ? ( FastExp( LogI0( a ) - b - 1 / v + 0.6931f + std::log( 1 / ( 2 * v ) ) ) )
+                ? ( FastExp( LogI0( a ) - b - 1 / v + 0.6931f + Math::Log( 1 / ( 2 * v ) ) ) )
                 : ( FastExp( -b ) * I0( a ) ) / ( std::sinh( 1 / v ) * 2 * v );
             NDCHECK( !IsInf( mp ) && !IsNaN( mp ) );
             return mp;
@@ -1180,7 +1180,7 @@ namespace pbrto
     private:
         // MeasuredBxDF Private Methods
         PBRT_CPU_GPU
-            static Float theta2u( Float theta ) { return std::sqrt( theta * ( 2 / Pi ) ); }
+            static Float theta2u( Float theta ) { return Math::Sqrt( theta * ( 2 / Pi ) ); }
         PBRT_CPU_GPU
             static Float phi2u( Float phi ) { return phi * ( 1 / ( 2 * Pi ) ) + .5f; }
 

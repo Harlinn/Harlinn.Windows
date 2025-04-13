@@ -78,10 +78,10 @@ namespace pbrto
         // Compute noise cell coordinates and offsets
         // Avoid overflow when computing deltas if the coordinates are too large to store in
         // int32s.
-        x = pstdo::fmod( x, Float( 1 << 30 ) );
-        y = pstdo::fmod( y, Float( 1 << 30 ) );
-        z = pstdo::fmod( z, Float( 1 << 30 ) );
-        int ix = pstdo::floor( x ), iy = pstdo::floor( y ), iz = pstdo::floor( z );
+        x = Math::FMod( x, Float( 1 << 30 ) );
+        y = Math::FMod( y, Float( 1 << 30 ) );
+        z = Math::FMod( z, Float( 1 << 30 ) );
+        int ix = Math::Floor( x ), iy = Math::Floor( y ), iz = Math::Floor( z );
         Float dx = x - ix, dy = y - iy, dz = z - iz;
 
         // Compute gradient weights
@@ -141,7 +141,7 @@ namespace pbrto
         // Compute number of octaves for antialiased FBm
         Float len2 = std::max( ScalarLengthSquared( dpdx ), ScalarLengthSquared( dpdy ) );
         Float n = Clamp( -1 - Log2( len2 ) / 2, 0, maxOctaves );
-        int nInt = pstdo::floor( n );
+        int nInt = Math::Floor( n );
 
         // Compute sum of octaves of noise for FBm
         Float sum = 0, lambda = 1, o = 1;
@@ -162,7 +162,7 @@ namespace pbrto
         // Compute number of octaves for antialiased FBm
         Float len2 = std::max( ScalarLengthSquared( dpdx ), ScalarLengthSquared( dpdy ) );
         Float n = Clamp( -1 - Log2( len2 ) / 2, 0, maxOctaves );
-        int nInt = pstdo::floor( n );
+        int nInt = Math::Floor( n );
 
         // Compute sum of octaves of noise for turbulence
         Float sum = 0, lambda = 1, o = 1;

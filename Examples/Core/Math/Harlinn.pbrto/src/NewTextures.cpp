@@ -224,13 +224,13 @@ namespace pbrto
     {
         // Define 1D checkerboard filtered integral functions
         auto d = []( Float x ) {
-            Float y = x / 2 - pstdo::floor( x / 2 ) - 0.5f;
+            Float y = x / 2 - Math::Floor( x / 2 ) - 0.5f;
             return x / 2 + y * ( 1 - 2 * std::abs( y ) );
             };
 
         auto bf = [ & ]( Float x, Float r ) -> Float {
-            if ( pstdo::floor( x - r ) == pstdo::floor( x + r ) )
-                return 1 - 2 * ( int( pstdo::floor( x ) ) & 1 );
+            if ( Math::Floor( x - r ) == Math::Floor( x + r ) )
+                return 1 - 2 * ( int( Math::Floor( x ) ) & 1 );
             return ( d( x + r ) - 2 * d( x ) + d( x - r ) ) / Sqr( r );
             };
 
@@ -343,7 +343,7 @@ namespace pbrto
     bool InsidePolkaDot( Point2f st )
     {
         // Compute cell indices (_sCell_,_tCell_ for dots
-        int sCell = pstdo::floor( st[ 0 ] + .5f ), tCell = pstdo::floor( st[ 1 ] + .5f );
+        int sCell = Math::Floor( st[ 0 ] + .5f ), tCell = Math::Floor( st[ 1 ] + .5f );
 
         if ( Noise( sCell + .5f, tCell + .5f ) > 0 )
         {
@@ -552,9 +552,8 @@ namespace pbrto
     {
         TexCoord3D c = mapping.Map( ctx );
         c.p *= scale;
-        Float marble =
-            c.p.y + variation * FBm( c.p, scale * c.dpdx, scale * c.dpdy, omega, octaves );
-        Float t = .5f + .5f * std::sin( marble );
+        Float marble = c.p.y + variation * FBm( c.p, scale * c.dpdx, scale * c.dpdy, omega, octaves );
+        Float t = .5f + .5f * Math::Sin( marble );
         // Evaluate marble spline at $t$ to compute color _rgb_
         const RGB colors[ ] = {
             {.58f, .58f, .6f}, {.58f, .58f, .6f}, {.58f, .58f, .6f},
@@ -562,7 +561,7 @@ namespace pbrto
             {.58f, .58f, .6f}, {.2f, .2f, .33f},  {.58f, .58f, .6f},
         };
         int nSeg = sizeof( colors ) / sizeof( colors[ 0 ] ) - 3;
-        int first = std::min<int>( pstdo::floor( t * nSeg ), nSeg - 1 );
+        int first = std::min<int>( Math::Floor( t * nSeg ), nSeg - 1 );
         t = t * nSeg - first;
         RGB rgb = 1.5f * EvaluateCubicBezier( pstdo::span( colors + first, 4 ), t );
 

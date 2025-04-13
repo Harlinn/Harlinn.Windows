@@ -135,10 +135,45 @@ namespace pbrto
 
     PBRTO_EXPORT Transform LookAt( const Point3f& pos, const Point3f& look, const Vector3f& up )
     {
+        /*
         auto m = Math::LookAt( pos, look, up );
         m = Math::Transpose( m );
         auto mInv = Math::Inverse( m );
         return Transform( m, mInv );
+        */
+
+        SquareMatrix<4> worldFromCamera;
+        // Initialize fourth column of viewing matrix
+        worldFromCamera[ 0 ][ 3 ] = pos.x;
+        worldFromCamera[ 1 ][ 3 ] = pos.y;
+        worldFromCamera[ 2 ][ 3 ] = pos.z;
+        worldFromCamera[ 3 ][ 3 ] = 1;
+
+        // Initialize first three columns of viewing matrix
+        Vector3f dir = Normalize( look - pos );
+        if ( ScalarLength( Cross( Normalize( up ), dir ) ) == 0 )
+            NLOG_FATAL( "LookAt: \"up\" vector (%f, %f, %f) and viewing direction "
+                "(%f, %f, %f) "
+                "passed to LookAt are pointing in the same direction.",
+                up.x, up.y, up.z, dir.x, dir.y, dir.z );
+        Vector3f right = Normalize( Cross( Normalize( up ), dir ) );
+        Vector3f newUp = Cross( dir, right );
+        worldFromCamera[ 0 ][ 0 ] = right.x;
+        worldFromCamera[ 1 ][ 0 ] = right.y;
+        worldFromCamera[ 2 ][ 0 ] = right.z;
+        worldFromCamera[ 3 ][ 0 ] = 0.;
+        worldFromCamera[ 0 ][ 1 ] = newUp.x;
+        worldFromCamera[ 1 ][ 1 ] = newUp.y;
+        worldFromCamera[ 2 ][ 1 ] = newUp.z;
+        worldFromCamera[ 3 ][ 1 ] = 0.;
+        worldFromCamera[ 0 ][ 2 ] = dir.x;
+        worldFromCamera[ 1 ][ 2 ] = dir.y;
+        worldFromCamera[ 2 ][ 2 ] = dir.z;
+        worldFromCamera[ 3 ][ 2 ] = 0.;
+
+        SquareMatrix<4> cameraFromWorld = Inverse( worldFromCamera );
+        return Transform( cameraFromWorld, worldFromCamera );
+
     }
 
     PBRT_CPU_GPU Transform Orthographic( Float zNear, Float zFar )
@@ -1236,12 +1271,13 @@ namespace pbrto
     // clang-format on
 
     // clang-format off
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform RotateX( Float theta )
+    PBRTO_EXPORT
+    Transform RotateX( Float theta )
     {
-        Float sinTheta = std::sin( Radians( theta ) );
-        Float cosTheta = std::cos( Radians( theta ) );
+        Float sinTheta;
+        Float cosTheta;
+        SinCos( Deg2Rad( theta ), &sinTheta, &cosTheta );
+
         SquareMatrix<4> m( 1, 0, 0, 0,
             0, cosTheta, -sinTheta, 0,
             0, sinTheta, cosTheta, 0,
@@ -1251,24 +1287,26 @@ namespace pbrto
     // clang-format on
 
     // clang-format off
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform RotateY( Float theta )
+    PBRTO_EXPORT
+    Transform RotateY( Float theta )
     {
-        Float sinTheta = std::sin( Radians( theta ) );
-        Float cosTheta = std::cos( Radians( theta ) );
+        Float sinTheta;
+        Float cosTheta;
+        SinCos( Deg2Rad( theta ), &sinTheta, &cosTheta );
+
         SquareMatrix<4> m( cosTheta, 0, sinTheta, 0,
             0, 1, 0, 0,
             -sinTheta, 0, cosTheta, 0,
             0, 0, 0, 1 );
         return Transform( m, Transpose( m ) );
     }
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform RotateZ( Float theta )
+    PBRTO_EXPORT
+    Transform RotateZ( Float theta )
     {
-        Float sinTheta = std::sin( Radians( theta ) );
-        Float cosTheta = std::cos( Radians( theta ) );
+        Float sinTheta;
+        Float cosTheta;
+        SinCos( Deg2Rad( theta ), &sinTheta, &cosTheta );
+
         SquareMatrix<4> m( cosTheta, -sinTheta, 0, 0,
             sinTheta, cosTheta, 0, 0,
             0, 0, 1, 0,
@@ -1277,9 +1315,8 @@ namespace pbrto
     }
     // clang-format on
 
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform LookAt( Point3f pos, Point3f look, Vector3f up )
+    PBRTO_EXPORT
+    Transform LookAt( Point3f pos, Point3f look, Vector3f up )
     {
         SquareMatrix<4> worldFromCamera;
         // Initialize fourth column of viewing matrix
@@ -1314,16 +1351,14 @@ namespace pbrto
         return Transform( cameraFromWorld, worldFromCamera );
     }
 
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform Orthographic( Float zNear, Float zFar )
+    PBRTO_EXPORT
+    Transform Orthographic( Float zNear, Float zFar )
     {
         return Scale( 1, 1, 1 / ( zFar - zNear ) ) * Translate( Vector3f( 0, 0, -zNear ) );
     }
 
-    PBRT_CPU_GPU
-        PBRTO_EXPORT
-        Transform Perspective( Float fov, Float n, Float f )
+    PBRTO_EXPORT
+    Transform Perspective( Float fov, Float n, Float f )
     {
         // Perform projective divide for perspective projection
         // clang-format off
@@ -1334,7 +1369,7 @@ namespace pbrto
         // clang-format on
 
         // Scale canonical perspective view to specified field of view
-        Float invTanAng = 1 / std::tan( Radians( fov ) / 2 );
+        Float invTanAng = 1 / Math::Tan( Radians( fov ) / 2 );
         return Scale( invTanAng, invTanAng, 1 ) * Transform( persp );
     }
 
@@ -1349,33 +1384,34 @@ namespace pbrto
 
     PBRT_CPU_GPU Transform Transform::operator*( const Transform& t2 ) const
     {
-        return Transform( m * t2.m, t2.mInv * mInv );
+        return Transform( m_ * t2.m_, t2.mInv_ * mInv_ );
     }
 
     PBRT_CPU_GPU bool Transform::SwapsHandedness( ) const
     {
         // clang-format off
-        SquareMatrix<3> s( m[ 0 ][ 0 ], m[ 0 ][ 1 ], m[ 0 ][ 2 ],
-            m[ 1 ][ 0 ], m[ 1 ][ 1 ], m[ 1 ][ 2 ],
-            m[ 2 ][ 0 ], m[ 2 ][ 1 ], m[ 2 ][ 2 ] );
+        SquareMatrix<3> s( 
+            m_[ 0 ][ 0 ], m_[ 0 ][ 1 ], m_[ 0 ][ 2 ],
+            m_[ 1 ][ 0 ], m_[ 1 ][ 1 ], m_[ 1 ][ 2 ],
+            m_[ 2 ][ 0 ], m_[ 2 ][ 1 ], m_[ 2 ][ 2 ] );
         // clang-format on
         return ScalarDeterminant( s ) < 0;
     }
 
     PBRT_CPU_GPU Transform::operator Quaternion( ) const
     {
-        Float trace = m[ 0 ][ 0 ] + m[ 1 ][ 1 ] + m[ 2 ][ 2 ];
+        Float trace = m_[ 0 ][ 0 ] + m_[ 1 ][ 1 ] + m_[ 2 ][ 2 ];
         Quaternion quat;
         if ( trace > 0.f )
         {
             // Compute w from matrix trace, then xyz
-            // 4w^2 = m[0][0] + m[1][1] + m[2][2] + m[3][3] (but m[3][3] == 1)
-            Float s = std::sqrt( trace + 1.0f );
+            // 4w^2 = m_[0][0] + m_[1][1] + m_[2][2] + m_[3][3] (but m_[3][3] == 1)
+            Float s = Math::Sqrt( trace + 1.0f );
             quat.w = s / 2.0f;
             s = 0.5f / s;
-            quat.v.x = ( m[ 2 ][ 1 ] - m[ 1 ][ 2 ] ) * s;
-            quat.v.y = ( m[ 0 ][ 2 ] - m[ 2 ][ 0 ] ) * s;
-            quat.v.z = ( m[ 1 ][ 0 ] - m[ 0 ][ 1 ] ) * s;
+            quat.v.x = ( m_[ 2 ][ 1 ] - m_[ 1 ][ 2 ] ) * s;
+            quat.v.y = ( m_[ 0 ][ 2 ] - m_[ 2 ][ 0 ] ) * s;
+            quat.v.z = ( m_[ 1 ][ 0 ] - m_[ 0 ][ 1 ] ) * s;
         }
         else
         {
@@ -1383,19 +1419,19 @@ namespace pbrto
             const int nxt[ 3 ] = { 1, 2, 0 };
             Float q[ 3 ];
             int i = 0;
-            if ( m[ 1 ][ 1 ] > m[ 0 ][ 0 ] )
+            if ( m_[ 1 ][ 1 ] > m_[ 0 ][ 0 ] )
                 i = 1;
-            if ( m[ 2 ][ 2 ] > m[ i ][ i ] )
+            if ( m_[ 2 ][ 2 ] > m_[ i ][ i ] )
                 i = 2;
             int j = nxt[ i ];
             int k = nxt[ j ];
-            Float s = SafeSqrt( ( m[ i ][ i ] - ( m[ j ][ j ] + m[ k ][ k ] ) ) + 1.0f );
+            Float s = SafeSqrt( ( m_[ i ][ i ] - ( m_[ j ][ j ] + m_[ k ][ k ] ) ) + 1.0f );
             q[ i ] = s * 0.5f;
             if ( s != 0.f )
                 s = 0.5f / s;
-            quat.w = ( m[ k ][ j ] - m[ j ][ k ] ) * s;
-            q[ j ] = ( m[ j ][ i ] + m[ i ][ j ] ) * s;
-            q[ k ] = ( m[ k ][ i ] + m[ i ][ k ] ) * s;
+            quat.w = ( m_[ k ][ j ] - m_[ j ][ k ] ) * s;
+            q[ j ] = ( m_[ j ][ i ] + m_[ i ][ j ] ) * s;
+            q[ k ] = ( m_[ k ][ i ] + m_[ i ][ k ] ) * s;
             quat.v.x = q[ 0 ];
             quat.v.y = q[ 1 ];
             quat.v.z = q[ 2 ];
@@ -1406,12 +1442,12 @@ namespace pbrto
     void Transform::Decompose( Vector3f* T, SquareMatrix<4>* R, SquareMatrix<4>* S ) const
     {
         // Extract translation _T_ from transformation matrix
-        T->x = m[ 0 ][ 3 ];
-        T->y = m[ 1 ][ 3 ];
-        T->z = m[ 2 ][ 3 ];
+        T->x = m_[ 0 ][ 3 ];
+        T->y = m_[ 1 ][ 3 ];
+        T->z = m_[ 2 ][ 3 ];
 
         // Compute new transformation matrix _M_ without translation
-        SquareMatrix<4> M = m;
+        SquareMatrix<4> M = m_;
         for ( int i = 0; i < 3; ++i )
             M[ i ][ 3 ] = M[ 3 ][ i ] = 0.f;
         M[ 3 ][ 3 ] = 1.f;
@@ -1483,40 +1519,40 @@ namespace pbrto
     {
         Float x = Float( p.x ), y = Float( p.y ), z = Float( p.z );
         // Compute transformed coordinates from point _pt_
-        Float xp = ( mInv[ 0 ][ 0 ] * x + mInv[ 0 ][ 1 ] * y ) + ( mInv[ 0 ][ 2 ] * z + mInv[ 0 ][ 3 ] );
-        Float yp = ( mInv[ 1 ][ 0 ] * x + mInv[ 1 ][ 1 ] * y ) + ( mInv[ 1 ][ 2 ] * z + mInv[ 1 ][ 3 ] );
-        Float zp = ( mInv[ 2 ][ 0 ] * x + mInv[ 2 ][ 1 ] * y ) + ( mInv[ 2 ][ 2 ] * z + mInv[ 2 ][ 3 ] );
-        Float wp = ( mInv[ 3 ][ 0 ] * x + mInv[ 3 ][ 1 ] * y ) + ( mInv[ 3 ][ 2 ] * z + mInv[ 3 ][ 3 ] );
+        Float xp = ( mInv_[ 0 ][ 0 ] * x + mInv_[ 0 ][ 1 ] * y ) + ( mInv_[ 0 ][ 2 ] * z + mInv_[ 0 ][ 3 ] );
+        Float yp = ( mInv_[ 1 ][ 0 ] * x + mInv_[ 1 ][ 1 ] * y ) + ( mInv_[ 1 ][ 2 ] * z + mInv_[ 1 ][ 3 ] );
+        Float zp = ( mInv_[ 2 ][ 0 ] * x + mInv_[ 2 ][ 1 ] * y ) + ( mInv_[ 2 ][ 2 ] * z + mInv_[ 2 ][ 3 ] );
+        Float wp = ( mInv_[ 3 ][ 0 ] * x + mInv_[ 3 ][ 1 ] * y ) + ( mInv_[ 3 ][ 2 ] * z + mInv_[ 3 ][ 3 ] );
 
         // Compute absolute error for transformed point
         Vector3f pOutError;
         if ( p.IsExact( ) )
         {
-            pOutError.x = gamma( 3 ) * ( std::abs( mInv[ 0 ][ 0 ] * x ) + std::abs( mInv[ 0 ][ 1 ] * y ) +
-                std::abs( mInv[ 0 ][ 2 ] * z ) );
-            pOutError.y = gamma( 3 ) * ( std::abs( mInv[ 1 ][ 0 ] * x ) + std::abs( mInv[ 1 ][ 1 ] * y ) +
-                std::abs( mInv[ 1 ][ 2 ] * z ) );
-            pOutError.z = gamma( 3 ) * ( std::abs( mInv[ 2 ][ 0 ] * x ) + std::abs( mInv[ 2 ][ 1 ] * y ) +
-                std::abs( mInv[ 2 ][ 2 ] * z ) );
+            pOutError.x = gamma( 3 ) * ( std::abs( mInv_[ 0 ][ 0 ] * x ) + std::abs( mInv_[ 0 ][ 1 ] * y ) +
+                std::abs( mInv_[ 0 ][ 2 ] * z ) );
+            pOutError.y = gamma( 3 ) * ( std::abs( mInv_[ 1 ][ 0 ] * x ) + std::abs( mInv_[ 1 ][ 1 ] * y ) +
+                std::abs( mInv_[ 1 ][ 2 ] * z ) );
+            pOutError.z = gamma( 3 ) * ( std::abs( mInv_[ 2 ][ 0 ] * x ) + std::abs( mInv_[ 2 ][ 1 ] * y ) +
+                std::abs( mInv_[ 2 ][ 2 ] * z ) );
         }
         else
         {
             Vector3f pInError = p.Error( );
-            pOutError.x = ( gamma( 3 ) + 1 ) * ( std::abs( mInv[ 0 ][ 0 ] ) * pInError.x +
-                std::abs( mInv[ 0 ][ 1 ] ) * pInError.y +
-                std::abs( mInv[ 0 ][ 2 ] ) * pInError.z ) +
-                gamma( 3 ) * ( std::abs( mInv[ 0 ][ 0 ] * x ) + std::abs( mInv[ 0 ][ 1 ] * y ) +
-                    std::abs( mInv[ 0 ][ 2 ] * z ) + std::abs( mInv[ 0 ][ 3 ] ) );
-            pOutError.y = ( gamma( 3 ) + 1 ) * ( std::abs( mInv[ 1 ][ 0 ] ) * pInError.x +
-                std::abs( mInv[ 1 ][ 1 ] ) * pInError.y +
-                std::abs( mInv[ 1 ][ 2 ] ) * pInError.z ) +
-                gamma( 3 ) * ( std::abs( mInv[ 1 ][ 0 ] * x ) + std::abs( mInv[ 1 ][ 1 ] * y ) +
-                    std::abs( mInv[ 1 ][ 2 ] * z ) + std::abs( mInv[ 1 ][ 3 ] ) );
-            pOutError.z = ( gamma( 3 ) + 1 ) * ( std::abs( mInv[ 2 ][ 0 ] ) * pInError.x +
-                std::abs( mInv[ 2 ][ 1 ] ) * pInError.y +
-                std::abs( mInv[ 2 ][ 2 ] ) * pInError.z ) +
-                gamma( 3 ) * ( std::abs( mInv[ 2 ][ 0 ] * x ) + std::abs( mInv[ 2 ][ 1 ] * y ) +
-                    std::abs( mInv[ 2 ][ 2 ] * z ) + std::abs( mInv[ 2 ][ 3 ] ) );
+            pOutError.x = ( gamma( 3 ) + 1 ) * ( std::abs( mInv_[ 0 ][ 0 ] ) * pInError.x +
+                std::abs( mInv_[ 0 ][ 1 ] ) * pInError.y +
+                std::abs( mInv_[ 0 ][ 2 ] ) * pInError.z ) +
+                gamma( 3 ) * ( std::abs( mInv_[ 0 ][ 0 ] * x ) + std::abs( mInv_[ 0 ][ 1 ] * y ) +
+                    std::abs( mInv_[ 0 ][ 2 ] * z ) + std::abs( mInv_[ 0 ][ 3 ] ) );
+            pOutError.y = ( gamma( 3 ) + 1 ) * ( std::abs( mInv_[ 1 ][ 0 ] ) * pInError.x +
+                std::abs( mInv_[ 1 ][ 1 ] ) * pInError.y +
+                std::abs( mInv_[ 1 ][ 2 ] ) * pInError.z ) +
+                gamma( 3 ) * ( std::abs( mInv_[ 1 ][ 0 ] * x ) + std::abs( mInv_[ 1 ][ 1 ] * y ) +
+                    std::abs( mInv_[ 1 ][ 2 ] * z ) + std::abs( mInv_[ 1 ][ 3 ] ) );
+            pOutError.z = ( gamma( 3 ) + 1 ) * ( std::abs( mInv_[ 2 ][ 0 ] ) * pInError.x +
+                std::abs( mInv_[ 2 ][ 1 ] ) * pInError.y +
+                std::abs( mInv_[ 2 ][ 2 ] ) * pInError.z ) +
+                gamma( 3 ) * ( std::abs( mInv_[ 2 ][ 0 ] * x ) + std::abs( mInv_[ 2 ][ 1 ] * y ) +
+                    std::abs( mInv_[ 2 ][ 2 ] * z ) + std::abs( mInv_[ 2 ][ 3 ] ) );
         }
 
         if ( wp == 1 )
@@ -1595,7 +1631,7 @@ namespace pbrto
 
     std::string Transform::ToString( ) const
     {
-        return StringPrintf( "[ m: %s mInv: %s ]", m, mInv );
+        return StringPrintf( "[ m: %s mInv: %s ]", m_, mInv_ );
     }
 
     // AnimatedTransform Method Definitions
@@ -2369,11 +2405,15 @@ namespace pbrto
         Float theta, Interval tInterval,
         pstdo::span<Float> zeros, int* nZeros, int depth )
     {
+        Interval sinV;
+        Interval cosV;
+        SinCos( Interval( 2 * theta ) * tInterval, &sinV, &cosV );
+
         // Evaluate motion derivative in interval form, return if no zeros
         Interval dadt =
             Interval( c1 ) +
-            ( Interval( c2 ) + Interval( c3 ) * tInterval ) * Cos( Interval( 2 * theta ) * tInterval ) +
-            ( Interval( c4 ) + Interval( c5 ) * tInterval ) * Sin( Interval( 2 * theta ) * tInterval );
+            ( Interval( c2 ) + Interval( c3 ) * tInterval ) * cosV +
+            ( Interval( c4 ) + Interval( c5 ) * tInterval ) * sinV;
         if ( dadt.LowerBound( ) > 0 || dadt.UpperBound( ) < 0 ||
             dadt.LowerBound( ) == dadt.UpperBound( ) )
             return;
@@ -2396,11 +2436,15 @@ namespace pbrto
             for ( int i = 0; i < 4; ++i )
             {
                 // Evaluate motion function derivative and its derivative at _tNewton_
-                Float fNewton = c1 + ( c2 + c3 * tNewton ) * std::cos( 2 * theta * tNewton ) +
-                    ( c4 + c5 * tNewton ) * std::sin( 2 * theta * tNewton );
+                Float sinV;
+                Float cosV;
+                SinCos( 2 * theta * tNewton, &sinV, &cosV );
+
+                Float fNewton = c1 + ( c2 + c3 * tNewton ) * cosV +
+                    ( c4 + c5 * tNewton ) * sinV;
                 Float fPrimeNewton =
-                    ( c3 + 2 * ( c4 + c5 * tNewton ) * theta ) * std::cos( 2 * tNewton * theta ) +
-                    ( c5 - 2 * ( c2 + c3 * tNewton ) * theta ) * std::sin( 2 * tNewton * theta );
+                    ( c3 + 2 * ( c4 + c5 * tNewton ) * theta ) * cosV +
+                    ( c5 - 2 * ( c2 + c3 * tNewton ) * theta ) * sinV;
 
                 if ( fNewton == 0 || fPrimeNewton == 0 )
                     break;
