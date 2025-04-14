@@ -790,16 +790,16 @@ namespace pbrto
         }
 
         template <typename T>
-        Point3<T> operator()( Point3<T> p ) const;
+        Point3<T> operator()( const Point3<T>& p ) const;
 
         template <typename T>
-        inline Point3<T> ApplyInverse( Point3<T> p ) const;
+        inline Point3<T> ApplyInverse( const Point3<T>& p ) const;
 
         template <typename T>
-        Vector3<T> operator()( Vector3<T> v ) const;
+        Vector3<T> operator()( const Vector3<T>& v ) const;
 
         template <typename T>
-        Normal3<T> operator()( Normal3<T> ) const;
+        Normal3<T> operator()( const Normal3<T>& ) const;
 
         Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
         RayDifferential operator()( const RayDifferential& r, Float* tMax = nullptr ) const;
@@ -807,15 +807,17 @@ namespace pbrto
         PBRTO_EXPORT
         Bounds3f operator()( const Bounds3f& b ) const;
 
-        PBRTO_EXPORT
-        Transform operator*( const Transform& t2 ) const;
+        Transform operator*( const Transform& t2 ) const
+        {
+            return Transform( m_ * t2.m_, t2.mInv_ * mInv_ );
+        }
 
         PBRTO_EXPORT
         bool SwapsHandedness( ) const;
 
         explicit Transform( const Frame& frame );
 
-        explicit Transform( Quaternion q );
+        explicit Transform( const Quaternion& q );
 
         PBRTO_EXPORT
         explicit operator Quaternion( ) const;
@@ -832,54 +834,7 @@ namespace pbrto
         PBRTO_EXPORT
         SurfaceInteraction ApplyInverse( const SurfaceInteraction& in ) const;
 
-        Point3fi operator()( const Point3fi& p ) const
-        {
-            Float x = Float( p.x ), y = Float( p.y ), z = Float( p.z );
-            // Compute transformed coordinates from point _(x, y, z)_
-            Float xp = ( m_[ 0 ][ 0 ] * x + m_[ 0 ][ 1 ] * y ) + ( m_[ 0 ][ 2 ] * z + m_[ 0 ][ 3 ] );
-            Float yp = ( m_[ 1 ][ 0 ] * x + m_[ 1 ][ 1 ] * y ) + ( m_[ 1 ][ 2 ] * z + m_[ 1 ][ 3 ] );
-            Float zp = ( m_[ 2 ][ 0 ] * x + m_[ 2 ][ 1 ] * y ) + ( m_[ 2 ][ 2 ] * z + m_[ 2 ][ 3 ] );
-            Float wp = ( m_[ 3 ][ 0 ] * x + m_[ 3 ][ 1 ] * y ) + ( m_[ 3 ][ 2 ] * z + m_[ 3 ][ 3 ] );
-
-            // Compute absolute error for transformed point, _pError_
-            Vector3f pError;
-            if ( p.IsExact( ) )
-            {
-                // Compute error for transformed exact _p_
-                pError.x = gamma( 3 ) * ( std::abs( m_[ 0 ][ 0 ] * x ) + std::abs( m_[ 0 ][ 1 ] * y ) +
-                    std::abs( m_[ 0 ][ 2 ] * z ) + std::abs( m_[ 0 ][ 3 ] ) );
-                pError.y = gamma( 3 ) * ( std::abs( m_[ 1 ][ 0 ] * x ) + std::abs( m_[ 1 ][ 1 ] * y ) +
-                    std::abs( m_[ 1 ][ 2 ] * z ) + std::abs( m_[ 1 ][ 3 ] ) );
-                pError.z = gamma( 3 ) * ( std::abs( m_[ 2 ][ 0 ] * x ) + std::abs( m_[ 2 ][ 1 ] * y ) +
-                    std::abs( m_[ 2 ][ 2 ] * z ) + std::abs( m_[ 2 ][ 3 ] ) );
-
-            }
-            else
-            {
-                // Compute error for transformed approximate _p_
-                Vector3f pInError = p.Error( );
-                pError.x = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 0 ][ 0 ] ) * pInError.x +
-                    std::abs( m_[ 0 ][ 1 ] ) * pInError.y +
-                    std::abs( m_[ 0 ][ 2 ] ) * pInError.z ) +
-                    gamma( 3 ) * ( std::abs( m_[ 0 ][ 0 ] * x ) + std::abs( m_[ 0 ][ 1 ] * y ) +
-                        std::abs( m_[ 0 ][ 2 ] * z ) + std::abs( m_[ 0 ][ 3 ] ) );
-                pError.y = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 1 ][ 0 ] ) * pInError.x +
-                    std::abs( m_[ 1 ][ 1 ] ) * pInError.y +
-                    std::abs( m_[ 1 ][ 2 ] ) * pInError.z ) +
-                    gamma( 3 ) * ( std::abs( m_[ 1 ][ 0 ] * x ) + std::abs( m_[ 1 ][ 1 ] * y ) +
-                        std::abs( m_[ 1 ][ 2 ] * z ) + std::abs( m_[ 1 ][ 3 ] ) );
-                pError.z = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 2 ][ 0 ] ) * pInError.x +
-                    std::abs( m_[ 2 ][ 1 ] ) * pInError.y +
-                    std::abs( m_[ 2 ][ 2 ] ) * pInError.z ) +
-                    gamma( 3 ) * ( std::abs( m_[ 2 ][ 0 ] * x ) + std::abs( m_[ 2 ][ 1 ] * y ) +
-                        std::abs( m_[ 2 ][ 2 ] * z ) + std::abs( m_[ 2 ][ 3 ] ) );
-            }
-
-            if ( wp == 1 )
-                return Point3fi( Point3f( xp, yp, zp ), pError );
-            else
-                return Point3fi( Point3f( xp, yp, zp ), pError ) / wp;
-        }
+        Point3fi operator()( const Point3fi& p ) const;
 
         Vector3fi operator()( const Vector3fi& v ) const;
         PBRTO_EXPORT
@@ -983,20 +938,54 @@ namespace pbrto
             refl = Vector3f( 0, 0, 1 );
 
         // Initialize matrix _r_ for rotation
-        Vector3f u = refl - from, v = refl - to;
+        Vector3f u = refl - from; 
+        Vector3f v = refl - to;
+        auto uDotU = ScalarDot( u, u );
+        auto vDotV = ScalarDot( v, v );
+        auto uDotV = ScalarDot( u, v );
+
         SquareMatrix<4> r;
         for ( int i = 0; i < 3; ++i )
+        {
             for ( int j = 0; j < 3; ++j )
+            {
                 // Initialize matrix element _r[i][j]_
-                r[ i ][ j ] = ( ( i == j ) ? 1 : 0 ) - 2 / ScalarDot( u, u ) * u[ i ] * u[ j ] -
-                2 / ScalarDot( v, v ) * v[ i ] * v[ j ] +
-                4 * ScalarDot( u, v ) / ( ScalarDot( u, u ) * ScalarDot( v, v ) ) * v[ i ] * u[ j ];
-
+                r[ i ][ j ] = ( ( i == j ) ? 1 : 0 ) - 2 / uDotU * u[ i ] * u[ j ] -
+                    2 / vDotV * v[ i ] * v[ j ] +
+                    4 * uDotV / ( uDotU * vDotV ) * v[ i ] * u[ j ];
+            }
+        }
         return Transform( r, Transpose( r ) );
     }
 
     inline Vector3fi Transform::operator()( const Vector3fi& v ) const
     {
+        using Traits = Vector3<float>::Traits;
+        using Vector3Simd = Vector3<float>::Simd;
+        constexpr Float gammaValue = gamma( 3 );
+        constexpr Traits::SIMDType gammaVector = { gammaValue, gammaValue, gammaValue,0.f };
+        constexpr Traits::SIMDType gammaVectorPlussOne = { gammaValue + 1.f, gammaValue + 1.f, gammaValue + 1.f,0.f };
+
+        Float x = Float( v.x ), y = Float( v.y ), z = Float( v.z );
+        Traits::SIMDType vec = { x, y, z, 0.f };
+
+        auto matrix = Transpose( m_ );
+
+        Vector3Simd result = Traits::TransformNormal( vec, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] );
+
+        Vector3Simd vOutError;
+        if ( v.IsExact( ) )
+        {
+            vOutError.simd = Traits::Mul( gammaVector, Traits::Abs( result.simd ) );
+        }
+        else
+        {
+            Traits::SIMDType vInError = Traits::Load( v.Error( ).values );
+            vOutError.simd = Traits::Add( Traits::Mul( gammaVectorPlussOne, Traits::Abs( Traits::TransformNormal( vInError, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] ) ) ),
+                Traits::Mul( gammaVector, Traits::Abs( result.simd ) ) );
+        }
+        return Vector3fi( Vector3f( result ), Vector3f( vOutError ) );
+        /*
         Float x = Float( v.x ), y = Float( v.y ), z = Float( v.z );
         Vector3f vOutError;
         if ( v.IsExact( ) )
@@ -1033,12 +1022,101 @@ namespace pbrto
         Float zp = m_[ 2 ][ 0 ] * x + m_[ 2 ][ 1 ] * y + m_[ 2 ][ 2 ] * z;
 
         return Vector3fi( Vector3f( xp, yp, zp ), vOutError );
+        */
+    }
+
+    inline Point3fi Transform::operator()( const Point3fi& p ) const
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        using Point3Simd = Point3<float>::Simd;
+        using Point3Traits = Point3<float>::Traits;
+
+        constexpr Float gammaValue = gamma( 3 );
+        constexpr Float gammaPlusOneValue = gammaValue + 1.f;
+
+        Traits::SIMDType gammaVector = Point3Traits::Set( gammaValue, gammaValue, gammaValue );
+        Traits::SIMDType gammaVectorPlussOne = Point3Traits::Set( gammaPlusOneValue, gammaPlusOneValue, gammaPlusOneValue );
+
+        Point3Simd point( static_cast< Point3<float> >( p ) );
+
+        auto matrix = Transpose( m_ );
+
+        Point3Simd result = Traits::TransformPoint( point.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] );
+
+        Point3Simd vOutError;
+        if ( p.IsExact( ) )
+        {
+            vOutError.simd = Traits::Mul( gammaVector, Traits::Abs( result.simd ) );
+        }
+        else
+        {
+            Traits::SIMDType vInError = Point3Traits::Load( p.Error( ).values );
+            vOutError.simd = Traits::Add( Traits::Mul( gammaVectorPlussOne, Traits::Abs( Traits::TransformPoint( vInError, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) ) ), Traits::Mul( gammaVector, Traits::Abs( result.simd ) ) );
+        }
+        return Point3fi( Point3f( result ), Point3f( vOutError ) );
+
+        /*
+        Float x = Float( p.x ), y = Float( p.y ), z = Float( p.z );
+        // Compute transformed coordinates from point _(x, y, z)_
+        Float xp = ( m_[ 0 ][ 0 ] * x + m_[ 0 ][ 1 ] * y ) + ( m_[ 0 ][ 2 ] * z + m_[ 0 ][ 3 ] );
+        Float yp = ( m_[ 1 ][ 0 ] * x + m_[ 1 ][ 1 ] * y ) + ( m_[ 1 ][ 2 ] * z + m_[ 1 ][ 3 ] );
+        Float zp = ( m_[ 2 ][ 0 ] * x + m_[ 2 ][ 1 ] * y ) + ( m_[ 2 ][ 2 ] * z + m_[ 2 ][ 3 ] );
+        Float wp = ( m_[ 3 ][ 0 ] * x + m_[ 3 ][ 1 ] * y ) + ( m_[ 3 ][ 2 ] * z + m_[ 3 ][ 3 ] );
+
+        // Compute absolute error for transformed point, _pError_
+        Vector3f pError;
+        if ( p.IsExact( ) )
+        {
+            // Compute error for transformed exact _p_
+            pError.x = gamma( 3 ) * ( std::abs( m_[ 0 ][ 0 ] * x ) + std::abs( m_[ 0 ][ 1 ] * y ) +
+                std::abs( m_[ 0 ][ 2 ] * z ) + std::abs( m_[ 0 ][ 3 ] ) );
+            pError.y = gamma( 3 ) * ( std::abs( m_[ 1 ][ 0 ] * x ) + std::abs( m_[ 1 ][ 1 ] * y ) +
+                std::abs( m_[ 1 ][ 2 ] * z ) + std::abs( m_[ 1 ][ 3 ] ) );
+            pError.z = gamma( 3 ) * ( std::abs( m_[ 2 ][ 0 ] * x ) + std::abs( m_[ 2 ][ 1 ] * y ) +
+                std::abs( m_[ 2 ][ 2 ] * z ) + std::abs( m_[ 2 ][ 3 ] ) );
+
+        }
+        else
+        {
+            // Compute error for transformed approximate _p_
+            Vector3f pInError = p.Error( );
+            pError.x = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 0 ][ 0 ] ) * pInError.x +
+                std::abs( m_[ 0 ][ 1 ] ) * pInError.y +
+                std::abs( m_[ 0 ][ 2 ] ) * pInError.z ) +
+                gamma( 3 ) * ( std::abs( m_[ 0 ][ 0 ] * x ) + std::abs( m_[ 0 ][ 1 ] * y ) +
+                    std::abs( m_[ 0 ][ 2 ] * z ) + std::abs( m_[ 0 ][ 3 ] ) );
+            pError.y = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 1 ][ 0 ] ) * pInError.x +
+                std::abs( m_[ 1 ][ 1 ] ) * pInError.y +
+                std::abs( m_[ 1 ][ 2 ] ) * pInError.z ) +
+                gamma( 3 ) * ( std::abs( m_[ 1 ][ 0 ] * x ) + std::abs( m_[ 1 ][ 1 ] * y ) +
+                    std::abs( m_[ 1 ][ 2 ] * z ) + std::abs( m_[ 1 ][ 3 ] ) );
+            pError.z = ( gamma( 3 ) + 1 ) * ( std::abs( m_[ 2 ][ 0 ] ) * pInError.x +
+                std::abs( m_[ 2 ][ 1 ] ) * pInError.y +
+                std::abs( m_[ 2 ][ 2 ] ) * pInError.z ) +
+                gamma( 3 ) * ( std::abs( m_[ 2 ][ 0 ] * x ) + std::abs( m_[ 2 ][ 1 ] * y ) +
+                    std::abs( m_[ 2 ][ 2 ] * z ) + std::abs( m_[ 2 ][ 3 ] ) );
+        }
+
+        if ( wp == 1 )
+            return Point3fi( Point3f( xp, yp, zp ), pError );
+        else
+            return Point3fi( Point3f( xp, yp, zp ), pError ) / wp;
+        */
     }
 
     // Transform Inline Methods
     template <typename T>
-    inline Point3<T> Transform::operator()( Point3<T> p ) const
+    inline Point3<T> Transform::operator()( const Point3<T>& p ) const
     {
+        using Traits = SquareMatrix<4>::Traits;
+        using Point3Simd = Point3<float>::Simd;
+
+        auto matrix = Transpose( m_ );
+
+        Point3Simd result = Traits::TransformPoint( Point3<float>::Traits::Load( p.data( ) ), matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] );
+        return result;
+
+        /*
         T xp = m_[ 0 ][ 0 ] * p.x + m_[ 0 ][ 1 ] * p.y + m_[ 0 ][ 2 ] * p.z + m_[ 0 ][ 3 ];
         T yp = m_[ 1 ][ 0 ] * p.x + m_[ 1 ][ 1 ] * p.y + m_[ 1 ][ 2 ] * p.z + m_[ 1 ][ 3 ];
         T zp = m_[ 2 ][ 0 ] * p.x + m_[ 2 ][ 1 ] * p.y + m_[ 2 ][ 2 ] * p.z + m_[ 2 ][ 3 ];
@@ -1047,24 +1125,45 @@ namespace pbrto
             return Point3<T>( xp, yp, zp );
         else
             return Point3<T>( xp, yp, zp ) / wp;
+        */
     }
 
     template <typename T>
-    inline Vector3<T> Transform::operator()( Vector3<T> v ) const
+    inline Vector3<T> Transform::operator()( const Vector3<T>& v ) const
     {
+        using Traits = Vector3<float>::Traits;
+        using Vector3Simd = Vector3<float>::Simd;
+
+        auto matrix = Transpose( m_ );
+
+        Vector3Simd result = Vector3<float>::Traits::TransformNormal( Vector3<float>::Traits::Load( v.data( ) ), matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] );
+        return result;
+
+        /*
         return Vector3<T>( m_[ 0 ][ 0 ] * v.x + m_[ 0 ][ 1 ] * v.y + m_[ 0 ][ 2 ] * v.z,
             m_[ 1 ][ 0 ] * v.x + m_[ 1 ][ 1 ] * v.y + m_[ 1 ][ 2 ] * v.z,
             m_[ 2 ][ 0 ] * v.x + m_[ 2 ][ 1 ] * v.y + m_[ 2 ][ 2 ] * v.z );
+        */
     }
 
     template <typename T>
-    PBRT_CPU_GPU inline Normal3<T> Transform::operator()( Normal3<T> n ) const
+    PBRT_CPU_GPU inline Normal3<T> Transform::operator()( const Normal3<T>& n ) const
     {
+        using Traits = Vector3<float>::Traits;
+        auto nSimd = Traits::Load( n.values );
+        auto matrix = Transpose( mInv_ );
+
+        auto result = Traits::Dot<0b01110001>( matrix.simd[ 0 ], nSimd );
+        result = Traits::Add( Traits::Dot<0b01110010>( matrix.simd[ 1 ], nSimd ), result );
+        result = Traits::Add( Traits::Dot<0b01110100>( matrix.simd[ 2 ], nSimd ), result );
+        return Normal3<float>::Simd( result );
+        /*
         T x = n.x, y = n.y, z = n.z;
         return Normal3<T>( 
             mInv_[ 0 ][ 0 ] * x + mInv_[ 1 ][ 0 ] * y + mInv_[ 2 ][ 0 ] * z,
             mInv_[ 0 ][ 1 ] * x + mInv_[ 1 ][ 1 ] * y + mInv_[ 2 ][ 1 ] * z,
             mInv_[ 0 ][ 2 ] * x + mInv_[ 1 ][ 2 ] * y + mInv_[ 2 ][ 2 ] * z );
+        */
     }
 
     inline Ray Transform::operator()( const Ray& r, Float* tMax ) const
@@ -1106,7 +1205,16 @@ namespace pbrto
     {
     }
 
-    PBRT_CPU_GPU inline Transform::Transform( Quaternion q )
+    /*
+    inline Transform::Transform( const Quaternion& q )
+        : mInv_( Math::Rotation( q ) )
+    {
+        m_ = Math::Transpose( mInv_ );
+    }
+    */
+
+    
+    inline Transform::Transform( const Quaternion& q )
     {
         Float xx = q.v.x * q.v.x, yy = q.v.y * q.v.y, zz = q.v.z * q.v.z;
         Float xy = q.v.x * q.v.y, xz = q.v.x * q.v.z, yz = q.v.y * q.v.z;
@@ -1125,10 +1233,19 @@ namespace pbrto
         // Transpose since we are left-handed.  Ugh.
         m_ = Transpose( mInv_ );
     }
+    
 
     template <typename T>
-    PBRT_CPU_GPU inline Point3<T> Transform::ApplyInverse( Point3<T> p ) const
+    PBRT_CPU_GPU inline Point3<T> Transform::ApplyInverse( const Point3<T>& p ) const
     {
+        using Traits = SquareMatrix<4>::Traits;
+        using Point3Simd = Point3<float>::Simd;
+
+        auto matrix = Transpose( mInv_ );
+
+        Point3Simd result = Traits::TransformPoint( Point3<float>::Traits::Load( p.data( ) ), matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] );
+        return result;
+        /*
         T x = p.x, y = p.y, z = p.z;
         T xp = ( mInv_[ 0 ][ 0 ] * x + mInv_[ 0 ][ 1 ] * y ) + ( mInv_[ 0 ][ 2 ] * z + mInv_[ 0 ][ 3 ] );
         T yp = ( mInv_[ 1 ][ 0 ] * x + mInv_[ 1 ][ 1 ] * y ) + ( mInv_[ 1 ][ 2 ] * z + mInv_[ 1 ][ 3 ] );
@@ -1139,6 +1256,7 @@ namespace pbrto
             return Point3<T>( xp, yp, zp );
         else
             return Point3<T>( xp, yp, zp ) / wp;
+        */
     }
 
     template <typename T>

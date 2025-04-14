@@ -1382,10 +1382,12 @@ namespace pbrto
         return bt;
     }
 
+    /*
     PBRT_CPU_GPU Transform Transform::operator*( const Transform& t2 ) const
     {
         return Transform( m_ * t2.m_, t2.mInv_ * mInv_ );
     }
+    */
 
     PBRT_CPU_GPU bool Transform::SwapsHandedness( ) const
     {
@@ -1400,6 +1402,9 @@ namespace pbrto
 
     PBRT_CPU_GPU Transform::operator Quaternion( ) const
     {
+        //Quaternion quat = Quaternion::FromMatrix( Transpose( m_ ) );
+        //return quat;
+        
         Float trace = m_[ 0 ][ 0 ] + m_[ 1 ][ 1 ] + m_[ 2 ][ 2 ];
         Quaternion quat;
         if ( trace > 0.f )
@@ -1437,6 +1442,7 @@ namespace pbrto
             quat.v.z = q[ 2 ];
         }
         return quat;
+        
     }
 
     void Transform::Decompose( Vector3f* T, SquareMatrix<4>* R, SquareMatrix<4>* S ) const
@@ -1517,6 +1523,37 @@ namespace pbrto
 
     PBRT_CPU_GPU Point3fi Transform::ApplyInverse( const Point3fi& p ) const
     {
+        using Traits = SquareMatrix<4>::Traits;
+        using Point3Simd = Point3<float>::Simd;
+        using Point3Traits = Point3<float>::Traits;
+
+        constexpr Float gammaValue = gamma( 3 );
+        constexpr Float gammaPlusOneValue = gammaValue + 1.f;
+
+        Traits::SIMDType gammaVector = Point3Traits::Set( gammaValue, gammaValue, gammaValue );
+        Traits::SIMDType gammaVectorPlussOne = Point3Traits::Set( gammaPlusOneValue, gammaPlusOneValue, gammaPlusOneValue );
+
+        Point3Simd point( static_cast< Point3<float> >( p ) );
+
+        auto matrix = Transpose( mInv_ );
+
+        Point3Simd result = Traits::TransformPoint( point.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] );
+
+        Point3Simd vOutError;
+        if ( p.IsExact( ) )
+        {
+            vOutError.simd = Traits::Mul( gammaVector, Traits::Abs( result.simd ) );
+        }
+        else
+        {
+            Traits::SIMDType vInError = Point3Traits::Load( p.Error( ).values );
+            vOutError.simd = Traits::Add( Traits::Mul( gammaVectorPlussOne, Traits::Abs( Traits::TransformPoint( vInError, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] ) ) ),
+                Traits::Mul( gammaVector, Traits::Abs( result.simd ) ) );
+        }
+
+        return Point3fi( Point3f( result ), Point3f( vOutError ) );
+
+        /*
         Float x = Float( p.x ), y = Float( p.y ), z = Float( p.z );
         // Compute transformed coordinates from point _pt_
         Float xp = ( mInv_[ 0 ][ 0 ] * x + mInv_[ 0 ][ 1 ] * y ) + ( mInv_[ 0 ][ 2 ] * z + mInv_[ 0 ][ 3 ] );
@@ -1559,6 +1596,7 @@ namespace pbrto
             return Point3fi( Point3f( xp, yp, zp ), pOutError );
         else
             return Point3fi( Point3f( xp, yp, zp ), pOutError ) / wp;
+        */
     }
 
     PBRT_CPU_GPU Interaction Transform::operator()( const Interaction& in ) const
