@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include <HCCProcess.h>
 
 using namespace pbrto;
 
@@ -104,6 +105,11 @@ NSpectrumSamples );
 // main program
 int NewMain( int argc, char* argv[ ] )
 {
+    using namespace Harlinn::Common::Core;
+
+    CurrentProcess::SetPriorityClass( ProcessPriorityClass::AboveNormal );
+
+
     bool useNew = false;
     // Convert command-line arguments to vector of strings
     std::vector<std::string> args = GetCommandLineArguments( argv );

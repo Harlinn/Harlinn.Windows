@@ -54,64 +54,65 @@ namespace pbrto
     // ShapeSampleContext Definition
     struct ShapeSampleContext
     {
-        // ShapeSampleContext Public Methods
-        ShapeSampleContext( ) = default;
-        PBRT_CPU_GPU
-            ShapeSampleContext( Point3fi pi, Normal3f n, Normal3f ns, Float time )
-            : pi( pi ), n( n ), ns( ns ), time( time )
-        {
-        }
-        PBRT_CPU_GPU
-            ShapeSampleContext( const SurfaceInteraction& si )
-            : pi( si.pi ), n( si.n ), ns( si.shading.n ), time( si.time )
-        {
-        }
-        PBRT_CPU_GPU
-            ShapeSampleContext( const MediumInteraction& mi ) : pi( mi.pi ), time( mi.time ) {}
-
-        PBRT_CPU_GPU
-            Point3f p( ) const { return Point3f( pi ); }
-
-        PBRT_CPU_GPU
-            Point3f OffsetRayOrigin( Vector3f w ) const;
-        PBRT_CPU_GPU
-            Point3f OffsetRayOrigin( Point3f pt ) const;
-        PBRT_CPU_GPU
-            Ray SpawnRay( Vector3f w ) const;
-
         Point3fi pi;
         Normal3f n, ns;
         Float time;
+
+        // ShapeSampleContext Public Methods
+        ShapeSampleContext( ) = default;
+        ShapeSampleContext( Point3fi pi, Normal3f n, Normal3f ns, Float time )
+            : pi( pi ), n( n ), ns( ns ), time( time )
+        { }
+        ShapeSampleContext( const SurfaceInteraction& si )
+            : pi( si.pi ), n( si.n ), ns( si.shading.n ), time( si.time )
+        { }
+        ShapeSampleContext( const MediumInteraction& mi ) 
+            : pi( mi.pi ), time( mi.time ) 
+        { }
+
+        Point3f p( ) const 
+        { 
+            return Point3f( pi ); 
+        }
+
+        Point3f OffsetRayOrigin( const Vector3f& w ) const;
+        Point3f OffsetRayOrigin( const Point3f& pt ) const;
+        Ray SpawnRay( const Vector3f& w ) const;
+
+        
     };
 
     // ShapeSampleContext Inline Methods
-    PBRT_CPU_GPU inline Point3f ShapeSampleContext::OffsetRayOrigin( Vector3f w ) const
+    inline Point3f ShapeSampleContext::OffsetRayOrigin( const Vector3f& w ) const
     {
         // Find vector _offset_ to corner of error bounds and compute initial _po_
-        Float d = ScalarDot( Abs( n ), pi.Error( ) );
+        auto d = Dot( Abs( n ), pi.Error( ) );
         Vector3f offset = d * Vector3f( n );
+
         if ( ScalarDot( w, n ) < 0 )
+        {
             offset = -offset;
+        }
         Point3f po = Point3f( pi ) + offset;
 
         // Round offset point _po_ away from _p_
         for ( int i = 0; i < 3; ++i )
         {
             if ( offset[ i ] > 0 )
-                po[ i ] = NextFloatUp( po[ i ] );
+                po[ i ] = NextUp( po[ i ] );
             else if ( offset[ i ] < 0 )
-                po[ i ] = NextFloatDown( po[ i ] );
+                po[ i ] = NextDown( po[ i ] );
         }
 
         return po;
     }
 
-    PBRT_CPU_GPU inline Point3f ShapeSampleContext::OffsetRayOrigin( Point3f pt ) const
+    inline Point3f ShapeSampleContext::OffsetRayOrigin( const Point3f& pt ) const
     {
         return OffsetRayOrigin( ToVector3f( pt - p( ) ) );
     }
 
-    PBRT_CPU_GPU inline Ray ShapeSampleContext::SpawnRay( Vector3f w ) const
+    inline Ray ShapeSampleContext::SpawnRay( const Vector3f& w ) const
     {
         // Note: doesn't set medium, but that's fine, since this is only
         // used by shapes to see if ray would have intersected them
@@ -1417,11 +1418,15 @@ namespace pbrto
             Float p2 = ScalarLengthSquared( perp );
 
             // Compute matrix determinants for $v$ and $t$ numerators
-            Float v1 =
-                ScalarDeterminant( SquareMatrix<3>( deltao.x, ray.d.x, perp.x, deltao.y, ray.d.y,
-                    perp.y, deltao.z, ray.d.z, perp.z ) );
-            Float t1 = ScalarDeterminant( SquareMatrix<3>( deltao.x, ud.x, perp.x, deltao.y, ud.y,
-                perp.y, deltao.z, ud.z, perp.z ) );
+            Float v1 = ScalarDeterminant( SquareMatrix<3>( 
+                    deltao.x, ray.d.x, perp.x, 
+                    deltao.y, ray.d.y, perp.y, 
+                    deltao.z, ray.d.z, perp.z ) );
+
+            Float t1 = ScalarDeterminant( SquareMatrix<3>( 
+                    deltao.x, ud.x, perp.x, 
+                    deltao.y, ud.y, perp.y, 
+                    deltao.z, ud.z, perp.z ) );
 
             // Set _u_, _v_, and _t_ if intersection is valid
             if ( t1 > p2 * eps && 0 <= v1 && v1 <= p2 )

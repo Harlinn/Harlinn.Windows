@@ -2002,6 +2002,19 @@ namespace pbrto
     class Bounds2
     {
     public:
+        // Bounds2 Public Members
+        //Point2<T> pMin, pMax;
+        
+        union
+        {
+            struct
+            {
+                Point2<T> pMin, pMax;
+            };
+            std::array<Point2<T>, 2> boundaries_;
+        };
+        
+
         // Bounds2 Public Methods
         Bounds2( )
         {
@@ -2010,15 +2023,21 @@ namespace pbrto
             pMin = Point2<T>( maxNum, maxNum );
             pMax = Point2<T>( minNum, minNum );
         }
-        explicit Bounds2( Point2<T> p ) 
+        explicit Bounds2( const Point2<T>& p ) 
             : pMin( p ), pMax( p ) 
         { }
 
-        Bounds2( Point2<T> p1, Point2<T> p2 ) 
+        Bounds2( const Point2<T>& p1, const Point2<T>& p2 )
             : pMin( Min( p1, p2 ) ), pMax( Max( p1, p2 ) ) 
         { }
+
+        Bounds2( const Bounds2& other )
+            : pMin( other.pMin ), pMax( other.pMax )
+        { }
+
         template <typename U>
-        PBRT_CPU_GPU explicit Bounds2( const Bounds2<U>& b )
+            requires ( std::is_same_v<T,U> == false )
+        explicit Bounds2( const Bounds2<U>& b )
         {
             if ( b.IsEmpty( ) )
                 // Be careful about overflowing float->int conversions and the
@@ -2029,6 +2048,13 @@ namespace pbrto
                 pMin = Point2<T>( b.pMin );
                 pMax = Point2<T>( b.pMax );
             }
+        }
+
+        Bounds2& operator = ( const Bounds2& other )
+        {
+            pMin = other.pMin; 
+            pMax = other.pMax;
+            return *this;
         }
 
         Vector2<T> Diagonal( ) const 
@@ -2060,15 +2086,17 @@ namespace pbrto
             else
                 return 1;
         }
-        Point2<T> operator[]( int i ) const
+        const Point2<T>& operator[]( int i ) const
         {
             NDCHECK( i == 0 || i == 1 );
-            return ( i == 0 ) ? pMin : pMax;
+            return boundaries_[ i ];
+            //return ( i == 0 ) ? pMin : pMax;
         }
         Point2<T>& operator[]( int i )
         {
             NDCHECK( i == 0 || i == 1 );
-            return ( i == 0 ) ? pMin : pMax;
+            return boundaries_[ i ];
+            //return ( i == 0 ) ? pMin : pMax;
         }
         bool operator==( const Bounds2<T>& b ) const
         {
@@ -2084,11 +2112,12 @@ namespace pbrto
             NDCHECK( corner >= 0 && corner < 4 );
             return Point2<T>( ( *this )[ ( corner & 1 ) ].x, ( *this )[ ( corner & 2 ) ? 1 : 0 ].y );
         }
-        PBRT_CPU_GPU
-            Point2<T> Lerp( Point2f t ) const
+
+        Point2<T> Lerp( Point2f t ) const
         {
-            return Point2<T>( pbrto::Lerp( t.x, pMin.x, pMax.x ),
-                pbrto::Lerp( t.y, pMin.y, pMax.y ) );
+            return Point2<T>(
+                    pbrto::Lerp( t.x, pMin.x, pMax.x ),
+                    pbrto::Lerp( t.y, pMin.y, pMax.y ) );
         }
         PBRT_CPU_GPU
             Vector2<T> Offset( Point2<T> p ) const
@@ -2109,8 +2138,7 @@ namespace pbrto
 
         std::string ToString( ) const { return StringPrintf( "[ %s - %s ]", pMin, pMax ); }
 
-        // Bounds2 Public Members
-        Point2<T> pMin, pMax;
+        
     };
 
     // Bounds3 Definition
@@ -2118,9 +2146,21 @@ namespace pbrto
     class Bounds3
     {
     public:
+        // Bounds3 Public Members
+        //Point3<T> pMin, pMax;
+        
+        union
+        { 
+            struct
+            { 
+                Point3<T> pMin, pMax;
+            };
+            std::array<Point3<T>, 2> boundaries_;
+        };
+        
+
         // Bounds3 Public Methods
-        PBRT_CPU_GPU
-            Bounds3( )
+        Bounds3( )
         {
             T minNum = std::numeric_limits<T>::lowest( );
             T maxNum = std::numeric_limits<T>::max( );
@@ -2128,27 +2168,54 @@ namespace pbrto
             pMax = Point3<T>( minNum, minNum, minNum );
         }
 
-        PBRT_CPU_GPU
-            explicit Bounds3( Point3<T> p ) : pMin( p ), pMax( p ) {}
+        explicit Bounds3( const Point3<T>& p ) 
+            : pMin( p ), pMax( p ) 
+        { }
 
-        PBRT_CPU_GPU
-            Bounds3( Point3<T> p1, Point3<T> p2 ) : pMin( Min( p1, p2 ) ), pMax( Max( p1, p2 ) ) {}
+        Bounds3( const Point3<T>& p1, const Point3<T>& p2 )
+            : pMin( Min( p1, p2 ) ), pMax( Max( p1, p2 ) ) 
+        { }
 
-        PBRT_CPU_GPU
-            Point3<T> operator[]( int i ) const
+        Bounds3( const Bounds3& bounds )
+            : pMin( bounds.pMin ), pMax( bounds.pMax )
+        { }
+
+        template <typename U>
+            requires ( std::is_same_v<T, U> == false )
+        explicit Bounds3( const Bounds3<U>& b )
+        {
+            if ( b.IsEmpty( ) )
+                // Be careful about overflowing float->int conversions and the
+                // like.
+                *this = Bounds3<T>( );
+            else
+            {
+                pMin = Point3<T>( b.pMin );
+                pMax = Point3<T>( b.pMax );
+            }
+        }
+
+        Bounds3& operator = ( const Bounds3& other )
+        {
+            pMin = other.pMin;
+            pMax = other.pMax;
+            return *this;
+        }
+
+        const Point3<T>& operator[]( int i ) const
         {
             NDCHECK( i == 0 || i == 1 );
-            return ( i == 0 ) ? pMin : pMax;
+            return boundaries_[ i ];
+            //return ( i == 0 ) ? pMin : pMax;
         }
-        PBRT_CPU_GPU
-            Point3<T>& operator[]( int i )
+        Point3<T>& operator[]( int i )
         {
             NDCHECK( i == 0 || i == 1 );
-            return ( i == 0 ) ? pMin : pMax;
+            return boundaries_[ i ];
+            //return ( i == 0 ) ? pMin : pMax;
         }
 
-        PBRT_CPU_GPU
-            Point3<T> Corner( int corner ) const
+        Point3<T> Corner( int corner ) const
         {
             NDCHECK( corner >= 0 && corner < 8 );
             return Point3<T>( ( *this )[ ( corner & 1 ) ].x, ( *this )[ ( corner & 2 ) ? 1 : 0 ].y,
@@ -2204,13 +2271,15 @@ namespace pbrto
                 return 2;
         }
 
-        PBRT_CPU_GPU
-            Point3f Lerp( Point3f t ) const
+        Point3f Lerp( Point3f t ) const
         {
+            return Point3f( Math::Lerp( t, pMin, pMax  ) );
+            /*
             return Point3f( 
                 pbrto::Lerp( t.x, pMin.x, pMax.x ), 
                 pbrto::Lerp( t.y, pMin.y, pMax.y ),
                 pbrto::Lerp( t.z, pMin.z, pMax.z ) );
+             */
         }
 
         PBRT_CPU_GPU
@@ -2227,16 +2296,18 @@ namespace pbrto
         }
 
         PBRT_CPU_GPU
-            void BoundingSphere( Point3<T>* center, Float* radius ) const
+        void BoundingSphere( Point3<T>* center, Float* radius ) const
         {
             *center = ( pMin + pMax ) / 2;
             *radius = Inside( *center, *this ) ? ScalarDistance( *center, pMax ) : 0;
         }
 
         PBRT_CPU_GPU
-            bool IsEmpty( ) const
+        bool IsEmpty( ) const
         {
-            return pMin.x >= pMax.x || pMin.y >= pMax.y || pMin.z >= pMax.z;
+            return pMin.x >= pMax.x || 
+                   pMin.y >= pMax.y || 
+                   pMin.z >= pMax.z;
         }
         PBRT_CPU_GPU
             bool IsDegenerate( ) const
@@ -2244,40 +2315,25 @@ namespace pbrto
             return pMin.x > pMax.x || pMin.y > pMax.y || pMin.z > pMax.z;
         }
 
-        template <typename U>
-        PBRT_CPU_GPU explicit Bounds3( const Bounds3<U>& b )
-        {
-            if ( b.IsEmpty( ) )
-                // Be careful about overflowing float->int conversions and the
-                // like.
-                *this = Bounds3<T>( );
-            else
-            {
-                pMin = Point3<T>( b.pMin );
-                pMax = Point3<T>( b.pMax );
-            }
-        }
+        
         PBRT_CPU_GPU
-            bool operator==( const Bounds3<T>& b ) const
+        bool operator==( const Bounds3<T>& b ) const
         {
             return b.pMin == pMin && b.pMax == pMax;
         }
         PBRT_CPU_GPU
-            bool operator!=( const Bounds3<T>& b ) const
+        bool operator!=( const Bounds3<T>& b ) const
         {
             return b.pMin != pMin || b.pMax != pMax;
         }
         PBRT_CPU_GPU
-            bool IntersectP( Point3f o, Vector3f d, Float tMax = Infinity, Float* hitt0 = nullptr,
-                Float* hitt1 = nullptr ) const;
+        bool IntersectP( Point3f o, Vector3f d, Float tMax = Infinity, Float* hitt0 = nullptr, Float* hitt1 = nullptr ) const;
         PBRT_CPU_GPU
-            bool IntersectP( Point3f o, Vector3f d, Float tMax, Vector3f invDir,
-                const int dirIsNeg[ 3 ] ) const;
+        bool IntersectP( Point3f o, Vector3f d, Float tMax, Vector3f invDir, const int dirIsNeg[ 3 ] ) const;
 
         std::string ToString( ) const { return StringPrintf( "[ %s - %s ]", pMin, pMax ); }
 
-        // Bounds3 Public Members
-        Point3<T> pMin, pMax;
+        
     };
 
     // Bounds[23][fi] Definitions
@@ -2357,8 +2413,12 @@ namespace pbrto
     template <typename T>
     PBRT_CPU_GPU inline bool Overlaps( const Bounds2<T>& ba, const Bounds2<T>& bb )
     {
-        bool x = ( ba.pMax.x >= bb.pMin.x ) && ( ba.pMin.x <= bb.pMax.x );
-        bool y = ( ba.pMax.y >= bb.pMin.y ) && ( ba.pMin.y <= bb.pMax.y );
+        bool x = 
+            ( ba.pMax.x >= bb.pMin.x ) && 
+            ( ba.pMin.x <= bb.pMax.x );
+        bool y = 
+            ( ba.pMax.y >= bb.pMin.y ) && 
+            ( ba.pMin.y <= bb.pMax.y );
         return ( x && y );
     }
 

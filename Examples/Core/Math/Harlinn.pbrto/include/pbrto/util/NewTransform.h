@@ -959,6 +959,18 @@ namespace pbrto
         */
     }
 
+    inline Transform RotateRadians( Float theta, Vector3f axis )
+    {
+        SquareMatrix<4> m = Math::RotationAxis( axis, theta );
+        return Transform( Math::Transpose( m ), m );
+        /*
+        Float sinTheta = std::sin( Radians( theta ) );
+        Float cosTheta = std::cos( Radians( theta ) );
+        return Rotate( sinTheta, cosTheta, axis );
+        */
+    }
+
+
     inline Transform RotateFromTo( Vector3f from, Vector3f to )
     {
         // Compute intermediate vector for vector reflection

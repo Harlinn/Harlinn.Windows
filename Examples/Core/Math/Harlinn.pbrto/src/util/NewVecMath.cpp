@@ -37,7 +37,7 @@ namespace pbrto
 
         // Handle the cases where one cone is inside the other
         Float theta_a = Math::SafeACos( a.cosTheta ); 
-        Float theta_b = SafeACos( b.cosTheta );
+        Float theta_b = Math::SafeACos( b.cosTheta );
 
         Float theta_d = Math::ScalarAngleBetween( a.w, b.w );
         if ( std::min( theta_d + theta_b, Pi ) <= theta_a )
@@ -48,14 +48,18 @@ namespace pbrto
         // Compute the spread angle of the merged cone, $\theta_o$
         Float theta_o = ( theta_a + theta_d + theta_b ) / 2;
         if ( theta_o >= Pi )
+        {
             return DirectionCone::EntireSphere( );
+        }
 
         // Find the merged cone's axis and return cone union
         Float theta_r = theta_o - theta_a;
         Vector3f wr = Cross( a.w, b.w );
         if ( ScalarLengthSquared( wr ) == 0 )
+        {
             return DirectionCone::EntireSphere( );
-        Vector3f w = Rotate( Degrees( theta_r ), wr )( a.w );
+        }
+        Vector3f w = RotateRadians( theta_r, wr )( a.w );
         return DirectionCone( w, Math::Cos( theta_o ) );
     }
 

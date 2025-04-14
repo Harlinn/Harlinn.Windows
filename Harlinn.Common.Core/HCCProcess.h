@@ -435,6 +435,16 @@ namespace Harlinn::Common::Core
             return static_cast<ProcessPriorityClass>( rc );
         }
 
+        inline void SetPriorityClass( ProcessPriorityClass processPriorityClass )
+        {
+            auto rc = ::SetPriorityClass( Handle( ), static_cast<DWORD>( processPriorityClass ) );
+            if ( !rc )
+            {
+                ThrowLastOSError( );
+            }
+        }
+
+
         inline WideString ExecutableFilename( )
         {
             wchar_t buffer[4096];
