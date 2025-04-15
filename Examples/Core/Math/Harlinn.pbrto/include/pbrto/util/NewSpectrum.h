@@ -33,7 +33,7 @@
 #include <pbrto/util/NewColor.h>
 #include <pbrto/util/NewFloat.h>
 #include <pbrto/util/NewHash.h>
-#include <pbrto/util/NewMath.h>
+#include <pbrto/util/NewVecMath.h>
 #include <pbrto/util/NewPStd.h>
 #include <pbrto/util/NewSampling.h>
 #include <pbrto/util/NewTaggedPtr.h>
@@ -75,18 +75,15 @@ namespace pbrto
         using TaggedPointer::TaggedPointer;
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            Float operator()( Float lambda ) const;
+        Float operator()( Float lambda ) const;
 
-        PBRT_CPU_GPU
-            Float MaxValue( ) const;
+        Float MaxValue( ) const;
 
-        PBRT_CPU_GPU
-            SampledSpectrum Sample( const SampledWavelengths& lambda ) const;
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const;
     };
 
     // Spectrum Function Declarations
-    PBRT_CPU_GPU inline Float Blackbody( Float lambda, Float T )
+    inline Float Blackbody( Float lambda, Float T )
     {
         if ( T <= 0 )
             return 0;
@@ -112,123 +109,152 @@ namespace pbrto
     // SampledSpectrum Definition
     class SampledSpectrum
     {
+    public:
+        using VectorType = Math::Vector<Float, NSpectrumSamples>;
     private:
         friend struct SOA<SampledSpectrum>;
-        std::array<Float, NSpectrumSamples> values;
+        //std::array<Float, NSpectrumSamples> values;
+        VectorType values;
     public:
         // SampledSpectrum Public Methods
         SampledSpectrum( ) = default;
         explicit SampledSpectrum( Float c ) 
+            : values( c )
         { 
-            values.fill( c ); 
+            //values.fill( c ); 
         }
+
+        explicit SampledSpectrum( const VectorType& v )
+            : values( v )
+        { }
 
         SampledSpectrum( const std::array<Float, NSpectrumSamples>& v )
             : values( v )
         { }
+
         SampledSpectrum( const float (&v)[ NSpectrumSamples ] )
             : values{ v[ 0 ],v[ 1 ],v[ 2 ],v[ 3 ] }
         { }
 
         SampledSpectrum& operator+=( const SampledSpectrum& s )
         {
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                values[ i ] += s.values[ i ];
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //    values[ i ] += s.values[ i ];
+            values += s.values;
             return *this;
         }
 
         SampledSpectrum operator+( const SampledSpectrum& s ) const
         {
-            SampledSpectrum ret = *this;
-            return ret += s;
+            //SampledSpectrum ret = *this;
+            //return ret += s;
+
+            return SampledSpectrum( values + s.values );
         }
 
         SampledSpectrum& operator-=( const SampledSpectrum& s )
         {
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                values[ i ] -= s.values[ i ];
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //    values[ i ] -= s.values[ i ];
+            values -= s.values;
+
             return *this;
         }
         SampledSpectrum operator-( const SampledSpectrum& s ) const
         {
-            SampledSpectrum ret = *this;
-            return ret -= s;
+            //SampledSpectrum ret = *this;
+            //return ret -= s;
+            return SampledSpectrum( values - s.values );
         }
 
         friend SampledSpectrum operator-( Float a, const SampledSpectrum& s )
         {
             NDCHECK( !IsNaN( a ) );
-            SampledSpectrum ret;
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                ret.values[ i ] = a - s.values[ i ];
-            return ret;
+            //SampledSpectrum ret;
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //    ret.values[ i ] = a - s.values[ i ];
+            //return ret;
+
+            return SampledSpectrum( VectorType( a ) - s.values );
         }
 
         SampledSpectrum& operator*=( const SampledSpectrum& s )
         {
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                values[ i ] *= s.values[ i ];
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //   values[ i ] *= s.values[ i ];
+            values *= s.values;
             return *this;
         }
         SampledSpectrum operator*( const SampledSpectrum& s ) const
         {
-            SampledSpectrum ret = *this;
-            return ret *= s;
+            //SampledSpectrum ret = *this;
+            //return ret *= s;
+
+            return SampledSpectrum( values * s.values );
         }
         SampledSpectrum operator*( Float a ) const
         {
             NDCHECK( !IsNaN( a ) );
-            SampledSpectrum ret = *this;
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                ret.values[ i ] *= a;
-            return ret;
+            //SampledSpectrum ret = *this;
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //    ret.values[ i ] *= a;
+            //return ret;
+            return SampledSpectrum( values * a );
         }
         SampledSpectrum& operator*=( Float a )
         {
             NDCHECK( !IsNaN( a ) );
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                values[ i ] *= a;
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //    values[ i ] *= a;
+            values *= a;
             return *this;
         }
         friend SampledSpectrum operator*( Float a, const SampledSpectrum& s ) 
         { 
-            return s * a; 
+            //return s * a; 
+            return SampledSpectrum( VectorType( a ) * s.values );
         }
 
         SampledSpectrum& operator/=( const SampledSpectrum& s )
         {
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-            {
-                NDCHECK_NE( 0, s.values[ i ] );
-                values[ i ] /= s.values[ i ];
-            }
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //{
+            //    NDCHECK_NE( 0, s.values[ i ] );
+            //    values[ i ] /= s.values[ i ];
+            //}
+            values /= s.values;
             return *this;
+
         }
         SampledSpectrum operator/( const SampledSpectrum& s ) const
         {
-            SampledSpectrum ret = *this;
-            return ret /= s;
+            //SampledSpectrum ret = *this;
+            //return ret /= s;
+            return SampledSpectrum( values / s.values );
         }
         SampledSpectrum& operator/=( Float a )
         {
             NDCHECK_NE( a, 0 );
             NDCHECK( !IsNaN( a ) );
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                values[ i ] /= a;
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //    values[ i ] /= a;
+            values /= a;
             return *this;
         }
         SampledSpectrum operator/( Float a ) const
         {
-            SampledSpectrum ret = *this;
-            return ret /= a;
+            //SampledSpectrum ret = *this;
+            //return ret /= a;
+            return SampledSpectrum( values / a );
         }
 
         SampledSpectrum operator-( ) const
         {
-            SampledSpectrum ret;
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                ret.values[ i ] = -values[ i ];
-            return ret;
+            //SampledSpectrum ret;
+            //for ( int i = 0; i < NSpectrumSamples; ++i )
+            //    ret.values[ i ] = -values[ i ];
+            //return ret;
+            return SampledSpectrum( -values );
         }
         bool operator==( const SampledSpectrum& s ) const 
         { 
@@ -320,23 +346,25 @@ namespace pbrto
     class SampledWavelengths
     {
     public:
+        using VectorType = Math::Vector<Float, NSpectrumSamples>;
+    private:
+        // SampledWavelengths Private Members
+        friend struct SOA<SampledWavelengths>;
+        std::array<Float, NSpectrumSamples> lambda, pdf;
+    public:
         // SampledWavelengths Public Methods
-        PBRT_CPU_GPU
-            bool operator==( const SampledWavelengths& swl ) const
+        bool operator==( const SampledWavelengths& swl ) const
         {
             return lambda == swl.lambda && pdf == swl.pdf;
         }
-        PBRT_CPU_GPU
-            bool operator!=( const SampledWavelengths& swl ) const
+        bool operator!=( const SampledWavelengths& swl ) const
         {
             return lambda != swl.lambda || pdf != swl.pdf;
         }
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            static SampledWavelengths SampleUniform( Float u, Float lambda_min = Lambda_min,
-                Float lambda_max = Lambda_max )
+        static SampledWavelengths SampleUniform( Float u, Float lambda_min = Lambda_min, Float lambda_max = Lambda_max )
         {
             SampledWavelengths swl;
             // Sample first wavelength using _u_
@@ -358,15 +386,11 @@ namespace pbrto
             return swl;
         }
 
-        PBRT_CPU_GPU
-            Float operator[]( int i ) const { return lambda[ i ]; }
-        PBRT_CPU_GPU
-            Float& operator[]( int i ) { return lambda[ i ]; }
-        PBRT_CPU_GPU
-            SampledSpectrum PDF( ) const { return SampledSpectrum( pdf ); }
+        Float operator[]( int i ) const { return lambda[ i ]; }
+        Float& operator[]( int i ) { return lambda[ i ]; }
+        SampledSpectrum PDF( ) const { return SampledSpectrum( pdf ); }
 
-        PBRT_CPU_GPU
-            void TerminateSecondary( )
+        void TerminateSecondary( )
         {
             if ( SecondaryTerminated( ) )
                 return;
@@ -376,8 +400,7 @@ namespace pbrto
             pdf[ 0 ] /= NSpectrumSamples;
         }
 
-        PBRT_CPU_GPU
-            bool SecondaryTerminated( ) const
+        bool SecondaryTerminated( ) const
         {
             for ( int i = 1; i < NSpectrumSamples; ++i )
                 if ( pdf[ i ] != 0 )
@@ -385,8 +408,7 @@ namespace pbrto
             return true;
         }
 
-        PBRT_CPU_GPU
-            static SampledWavelengths SampleVisible( Float u )
+        static SampledWavelengths SampleVisible( Float u )
         {
             SampledWavelengths swl;
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -403,9 +425,7 @@ namespace pbrto
         }
 
     private:
-        // SampledWavelengths Private Members
-        friend struct SOA<SampledWavelengths>;
-        std::array<Float, NSpectrumSamples> lambda, pdf;
+        
     };
 
     // Spectrum Definitions

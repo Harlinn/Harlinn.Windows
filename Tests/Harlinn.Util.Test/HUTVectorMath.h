@@ -23,6 +23,27 @@
 
 namespace Harlinn::Util::Test
 {
+    inline Common::Core::Math::SquareMatrix<float, 4> ConvertMatrix( const pbrt::SquareMatrix<4>& m )
+    {
+        Common::Core::Math::SquareMatrix<float, 4> result(
+            m[ 0 ][ 0 ], m[ 0 ][ 1 ], m[ 0 ][ 2 ], m[ 0 ][ 3 ],
+            m[ 1 ][ 0 ], m[ 1 ][ 1 ], m[ 1 ][ 2 ], m[ 1 ][ 3 ],
+            m[ 2 ][ 0 ], m[ 2 ][ 1 ], m[ 2 ][ 2 ], m[ 2 ][ 3 ],
+            m[ 3 ][ 0 ], m[ 3 ][ 1 ], m[ 3 ][ 2 ], m[ 3 ][ 3 ] );
+        return result;
+    }
+
+    inline pbrt::SquareMatrix<4> ConvertMatrix( const Common::Core::Math::SquareMatrix<float, 4>& m )
+    {
+        pbrt::SquareMatrix<4> result(
+            m[ 0 ][ 0 ], m[ 0 ][ 1 ], m[ 0 ][ 2 ], m[ 0 ][ 3 ],
+            m[ 1 ][ 0 ], m[ 1 ][ 1 ], m[ 1 ][ 2 ], m[ 1 ][ 3 ],
+            m[ 2 ][ 0 ], m[ 2 ][ 1 ], m[ 2 ][ 2 ], m[ 2 ][ 3 ],
+            m[ 3 ][ 0 ], m[ 3 ][ 1 ], m[ 3 ][ 2 ], m[ 3 ][ 3 ] );
+        return result;
+    }
+
+
     inline bool Equal( const Common::Core::Math::SquareMatrix<float, 4>& m1, const Common::Core::Math::SquareMatrix<float, 4>& m2, float epsilon = 0.0001f )
     {
         for ( size_t i = 0; i < 4; i++ )
@@ -602,6 +623,104 @@ namespace Harlinn::Util::Test
         }
         return true;
     }
+
+
+    inline bool Equal( const pbrt::Interval& v1, const pbrt::Interval& v2, float epsilon = 0.0001f )
+    {
+        auto value1 = v1.LowerBound( );
+        auto value2 = v2.LowerBound( );
+        auto delta = value1 - value2;
+        if ( std::abs( delta ) > epsilon )
+        {
+                return false;
+        }
+        value1 = v1.UpperBound( );
+        value2 = v2.UpperBound( );
+        delta = value1 - value2;
+        if ( std::abs( delta ) > epsilon )
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
+    inline bool Equal( const pbrt::Point3fi& v1, const pbrt::Point3fi& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = v1[ i ];
+            auto value2 = v2[ i ];
+            if ( !Equal( value1, value2, epsilon ) )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    inline bool Equal( const pbrt::Vector3fi& v1, const pbrt::Vector3fi& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = v1[ i ];
+            auto value2 = v2[ i ];
+            if ( !Equal( value1, value2, epsilon ) )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool Equal( const pbrto::Interval& v1, const pbrto::Interval& v2, float epsilon = 0.0001f )
+    {
+        auto value1 = v1.LowerBound( );
+        auto value2 = v2.LowerBound( );
+        auto delta = value1 - value2;
+        if ( std::abs( delta ) > epsilon )
+        {
+            return false;
+        }
+        value1 = v1.UpperBound( );
+        value2 = v2.UpperBound( );
+        delta = value1 - value2;
+        if ( std::abs( delta ) > epsilon )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    inline bool Equal( const pbrto::Point3fi& v1, const pbrto::Point3fi& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = v1[ i ];
+            auto value2 = v2[ i ];
+            if ( !Equal( value1, value2, epsilon ) )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    inline bool Equal( const pbrto::Vector3fi& v1, const pbrto::Vector3fi& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            auto value1 = v1[ i ];
+            auto value2 = v2[ i ];
+            if ( !Equal( value1, value2, epsilon ) )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
 
 
 }

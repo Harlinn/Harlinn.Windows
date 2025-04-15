@@ -57,8 +57,9 @@ namespace pbrto
         }
         else
         {
-            return os << v.ToString( );
+            os << v.ToString( );
         }
+        return os;
     }
     template <typename T>
     static auto operator<<( std::ostream& os, const T& v ) -> decltype( ToString( v ), os )

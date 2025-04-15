@@ -29,6 +29,7 @@
 
 #include <HUTFixture.h>
 #include <HUTVectorMath.h>
+#include <HUTTransformations.h>
 
 template<typename ValueT, size_t N >
 using RandomGenerator = Harlinn::Common::Core::Test::Generators::RandomGenerator<ValueT, N>;
