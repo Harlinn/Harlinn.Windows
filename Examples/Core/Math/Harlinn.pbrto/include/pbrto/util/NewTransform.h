@@ -171,6 +171,8 @@ namespace pbrto
 
         template <typename T>
         Vector3<T> operator()( const Vector3<T> v ) const;
+        
+        Vector3f::Simd Apply( const VectorSimdType& v ) const;
 
         template <typename T>
         inline Vector3<T> ApplyInverse( const Vector3<T> v ) const;
@@ -387,6 +389,18 @@ namespace pbrto
         Vector3Simd result = Vector3<float>::Traits::TransformNormal( Vector3<float>::Traits::Load( v.data( ) ), matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] );
         return result;
     }
+
+    inline Vector3f::Simd Transform::Apply( const VectorSimdType& v ) const
+    {
+        using Traits = Vector3<float>::Traits;
+        using Vector3Simd = Vector3<float>::Simd;
+
+        const auto& matrix = m_;
+
+        Vector3Simd result = Vector3<float>::Traits::TransformNormal( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] );
+        return result;
+    }
+
 
     template <typename T>
     inline Normal3<T> Transform::operator()( const Normal3<T> n ) const

@@ -194,9 +194,7 @@ namespace pbrto
     NSTAT_MEMORY_COUNTER( "Memory/Triangles", triangleBytes );
 
     // Triangle Functions
-    PBRT_CPU_GPU pstdo::optional<TriangleIntersection> IntersectTriangle( const Ray& ray, Float tMax,
-        Point3f p0, Point3f p1,
-        Point3f p2 )
+    PBRT_CPU_GPU pstdo::optional<TriangleIntersection> IntersectTriangle( const Ray& ray, Float tMax, Point3f p0, Point3f p1, Point3f p2 )
     {
         // Return no intersection if triangle is degenerate
         if ( ScalarLengthSquared( Cross( p2 - p0, p1 - p0 ) ) == 0 )
@@ -204,9 +202,10 @@ namespace pbrto
 
         // Transform triangle vertices to ray coordinate space
         // Translate vertices based on ray origin
-        Point3f p0t = p0 - Vector3f( ray.o );
-        Point3f p1t = p1 - Vector3f( ray.o );
-        Point3f p2t = p2 - Vector3f( ray.o );
+        Vector3f::Simd rayO( ray.o );
+        Point3f p0t = p0 - rayO;
+        Point3f p1t = p1 - rayO;
+        Point3f p2t = p2 - rayO;
 
         // Permute components of triangle vertices and ray direction
         int kz = MaxComponentIndex( Abs( ray.d ) );
@@ -238,17 +237,20 @@ namespace pbrto
         Float e2 = DifferenceOfProducts( p0t.x, p1t.y, p0t.y, p1t.x );
 
         // Fall back to double-precision test at triangle edges
-        if ( sizeof( Float ) == sizeof( float ) && ( e0 == 0.0f || e1 == 0.0f || e2 == 0.0f ) )
+        if constexpr ( std::is_same_v<Float, float> )
         {
-            double p2txp1ty = ( double )p2t.x * ( double )p1t.y;
-            double p2typ1tx = ( double )p2t.y * ( double )p1t.x;
-            e0 = ( float )( p2typ1tx - p2txp1ty );
-            double p0txp2ty = ( double )p0t.x * ( double )p2t.y;
-            double p0typ2tx = ( double )p0t.y * ( double )p2t.x;
-            e1 = ( float )( p0typ2tx - p0txp2ty );
-            double p1txp0ty = ( double )p1t.x * ( double )p0t.y;
-            double p1typ0tx = ( double )p1t.y * ( double )p0t.x;
-            e2 = ( float )( p1typ0tx - p1txp0ty );
+            if ( e0 == 0.0f || e1 == 0.0f || e2 == 0.0f ) 
+            {
+                double p2txp1ty = ( double )p2t.x * ( double )p1t.y;
+                double p2typ1tx = ( double )p2t.y * ( double )p1t.x;
+                e0 = ( float )( p2typ1tx - p2txp1ty );
+                double p0txp2ty = ( double )p0t.x * ( double )p2t.y;
+                double p0typ2tx = ( double )p0t.y * ( double )p2t.x;
+                e1 = ( float )( p0typ2tx - p0txp2ty );
+                double p1txp0ty = ( double )p1t.x * ( double )p0t.y;
+                double p1typ0tx = ( double )p1t.y * ( double )p0t.x;
+                e2 = ( float )( p1typ0tx - p1txp0ty );
+            }
         }
 
         // Perform triangle edge and determinant tests
@@ -335,7 +337,7 @@ namespace pbrto
         // Get triangle vertices in _p0_, _p1_, and _p2_
         const TriangleMesh* mesh = GetMesh( );
         const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-        Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+        Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
         Normal3f n = Normalize( Normal3f( Cross( p1 - p0, p2 - p0 ) ) );
         // Ensure correct orientation of geometric normal for normal bounds
@@ -1164,8 +1166,8 @@ namespace pbrto
         // Store area of bilinear patch in _area_
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         if ( IsRectangle( mesh ) )
             area = ScalarDistance( p00, p01 ) * ScalarDistance( p00, p10 );
@@ -1175,7 +1177,7 @@ namespace pbrto
             // FIXME: it would be good to skip this for flat patches, or to
             // be adaptive based on curvature in some manner
             constexpr int na = 3;
-            Point3f p[ na + 1 ][ na + 1 ];
+            Point3f::Simd p[ na + 1 ][ na + 1 ];
             for ( int i = 0; i <= na; ++i )
             {
                 Float u = Float( i ) / Float( na );
@@ -1209,14 +1211,14 @@ namespace pbrto
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         // If patch is a triangle, return bounds for single surface normal
         if ( p00 == p10 || p10 == p11 || p11 == p01 || p01 == p00 )
         {
-            Vector3f dpdu = Lerp( 0.5f, p10, p11 ) - Lerp( 0.5f, p00, p01 );
-            Vector3f dpdv = Lerp( 0.5f, p01, p11 ) - Lerp( 0.5f, p00, p10 );
+            Vector3f::Simd dpdu = Lerp( 0.5f, p10, p11 ) - Lerp( 0.5f, p00, p01 );
+            Vector3f::Simd dpdv = Lerp( 0.5f, p01, p11 ) - Lerp( 0.5f, p00, p10 );
             Vector3f n = Normalize( Cross( dpdu, dpdv ) );
             if ( mesh->n )
             {
@@ -1230,7 +1232,7 @@ namespace pbrto
         }
 
         // Compute bilinear patch normal _n00_ at $(0,0)$
-        Vector3f n00 = Normalize( Cross( p10 - p00, p01 - p00 ) );
+        Vector3f::Simd n00 = Normalize( Cross( p10 - p00, p01 - p00 ) );
         if ( mesh->n )
             n00 = FaceForward( n00, mesh->n[ v[ 0 ] ] );
         else if ( mesh->reverseOrientation ^ mesh->transformSwapsHandedness )
@@ -1293,8 +1295,8 @@ namespace pbrto
         const BilinearPatchMesh* mesh = GetMesh( );
         // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
         const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-        Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-        Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+        Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+        Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
         // Sample bilinear patch parametric $(u,v)$ coordinates
         Float pdf = 1;
@@ -1320,10 +1322,10 @@ namespace pbrto
 
         // Compute bilinear patch geometric quantities at sampled $(u,v)$
         // Compute $\pt{}$, $\dpdu$, and $\dpdv$ for sampled $(u,v)$
-        Point3f pu0 = Lerp( uv[ 1 ], p00, p01 ), pu1 = Lerp( uv[ 1 ], p10, p11 );
+        Point3f::Simd pu0 = Lerp( uv[ 1 ], p00, p01 ), pu1 = Lerp( uv[ 1 ], p10, p11 );
         Point3f p = Lerp( uv[ 0 ], pu0, pu1 );
-        Vector3f dpdu = pu1 - pu0;
-        Vector3f dpdv = Lerp( uv[ 0 ], p01, p11 ) - Lerp( uv[ 0 ], p00, p10 );
+        Vector3f::Simd dpdu = pu1 - pu0;
+        Vector3f::Simd dpdv = Lerp( uv[ 0 ], p01, p11 ) - Lerp( uv[ 0 ], p00, p10 );
         if ( ScalarLengthSquared( dpdu ) == 0 || ScalarLengthSquared( dpdv ) == 0 )
             return {};
 
@@ -1340,8 +1342,8 @@ namespace pbrto
         // Flip normal at sampled $(u,v)$ if necessary
         if ( mesh->n )
         {
-            Normal3f n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
-            Normal3f n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
+            Normal3f::Simd n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
+            Normal3f::Simd n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
             Normal3f ns = Lerp( uv[ 0 ], Lerp( uv[ 1 ], n00, n01 ), Lerp( uv[ 1 ], n10, n11 ) );
             n = FaceForward( n, ns );
         }

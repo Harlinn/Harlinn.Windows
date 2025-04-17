@@ -1739,6 +1739,11 @@ namespace pbrto
         return v - Dot( v, w ) * w;
     }
 
+    inline Vector3f::Simd GramSchmidt( const Vector3f::Simd& v, const Vector3f::Simd& w )
+    {
+        return v - Dot( v, w ) * w;
+    }
+
     
     template <typename T>
         requires (std::is_same_v<T,float> == false)

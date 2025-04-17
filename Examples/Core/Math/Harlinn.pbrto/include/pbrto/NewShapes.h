@@ -897,9 +897,7 @@ namespace pbrto
 
     // Triangle Function Declarations
     PBRT_CPU_GPU
-        pstdo::optional<TriangleIntersection> IntersectTriangle( const Ray& ray, Float tMax,
-            Point3f p0, Point3f p1,
-            Point3f p2 );
+        pstdo::optional<TriangleIntersection> IntersectTriangle( const Ray& ray, Float tMax, Point3f p0, Point3f p1, Point3f p2 );
 
     // Triangle Definition
     class Triangle
@@ -943,16 +941,14 @@ namespace pbrto
             const ParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc );
 
-        PBRT_CPU_GPU
-            Float SolidAngle( Point3f p ) const
+        Float SolidAngle( Point3f p ) const
         {
             // Get triangle vertices in _p0_, _p1_, and _p2_
             const TriangleMesh* mesh = GetMesh( );
             const int* v = &mesh->vertexIndices[ 3 * triIndex ];
             Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
-            return SphericalTriangleArea( Normalize( p0 - p ), Normalize( p1 - p ),
-                Normalize( p2 - p ) );
+            return SphericalTriangleArea( Normalize( p0 - p ), Normalize( p1 - p ), Normalize( p2 - p ) );
         }
 
         PBRT_CPU_GPU
@@ -962,7 +958,9 @@ namespace pbrto
                 Float time, Vector3f wo )
         {
             const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-            Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+            Point3f::Simd p0 = mesh->p[ v[ 0 ] ], 
+                p1 = mesh->p[ v[ 1 ] ], 
+                p2 = mesh->p[ v[ 2 ] ];
             // Compute triangle partial derivatives
             // Compute deltas and matrix determinant for triangle partial derivatives
             // Get triangle texture coordinates in _uv_ array
@@ -972,8 +970,10 @@ namespace pbrto
                     { mesh->uv[ v[ 0 ] ], mesh->uv[ v[ 1 ] ], mesh->uv[ v[ 2 ] ] } )
                 : pstdo::array<Point2f, 3>( { Point2f( 0, 0 ), Point2f( 1, 0 ), Point2f( 1, 1 ) } );
 
-            Vector2f duv02 = uv[ 0 ] - uv[ 2 ], duv12 = uv[ 1 ] - uv[ 2 ];
-            Vector3f dp02 = p0 - p2, dp12 = p1 - p2;
+            Vector2f duv02 = uv[ 0 ] - uv[ 2 ]; 
+            Vector2f duv12 = uv[ 1 ] - uv[ 2 ];
+            Vector3f::Simd dp02 = p0 - p2; 
+            Vector3f::Simd dp12 = p1 - p2;
             Float determinant = DifferenceOfProducts( duv02[ 0 ], duv12[ 1 ], duv02[ 1 ], duv12[ 0 ] );
 
             Vector3f dpdu, dpdv;
@@ -988,12 +988,12 @@ namespace pbrto
             // Handle degenerate triangle $(u,v)$ parameterization or partial derivatives
             if ( degenerateUV || ScalarLengthSquared( Cross( dpdu, dpdv ) ) == 0 )
             {
-                Vector3f ng = Cross( p2 - p0, p1 - p0 );
+                Vector3f::Simd ng = Cross( p2 - p0, p1 - p0 );
                 if ( ScalarLengthSquared( ng ) == 0 )
                 {
-                    Vector3<double> p0d( p0.x, p0.y, p0.z );
-                    Vector3<double> p1d( p1.x, p1.y, p1.z );
-                    Vector3<double> p2d( p2.x, p2.y, p2.z );
+                    Vector3<double> p0d( p0.x( ), p0.y( ), p0.z( ) );
+                    Vector3<double> p1d( p1.x( ), p1.y( ), p1.z( ) );
+                    Vector3<double> p2d( p2.x( ), p2.y( ), p2.z( ) );
 
                     ng = Vector3f( Cross( p2d - p0d, p1d - p0d ) );
                     NCHECK_NE( ScalarLengthSquared( ng ), 0 );
@@ -1109,11 +1109,11 @@ namespace pbrto
             // Get triangle vertices in _p0_, _p1_, and _p2_
             const TriangleMesh* mesh = GetMesh( );
             const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-            Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+            Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
             // Sample point on triangle uniformly by area
             pstdo::array<Float, 3> b = SampleUniformTriangle( u );
-            Point3f p = b[ 0 ] * p0 + b[ 1 ] * p1 + b[ 2 ] * p2;
+            Point3f::Simd p = b[ 0 ] * p0 + b[ 1 ] * p1 + b[ 2 ] * p2;
 
             // Compute surface normal for sampled point on triangle
             Normal3f n = Normalize( Normal3f( Cross( p1 - p0, p2 - p0 ) ) );
@@ -1134,7 +1134,10 @@ namespace pbrto
                     { mesh->uv[ v[ 0 ] ], mesh->uv[ v[ 1 ] ], mesh->uv[ v[ 2 ] ] } )
                 : pstdo::array<Point2f, 3>( { Point2f( 0, 0 ), Point2f( 1, 0 ), Point2f( 1, 1 ) } );
 
-            Point2f uvSample = b[ 0 ] * uv[ 0 ] + b[ 1 ] * uv[ 1 ] + b[ 2 ] * uv[ 2 ];
+            Point2f uvSample = 
+                b[ 0 ] * uv[ 0 ] + 
+                b[ 1 ] * uv[ 1 ] + 
+                b[ 2 ] * uv[ 2 ];
 
             // Compute error bounds _pError_ for sampled point on triangle
             Point3f pAbsSum = Abs( b[ 0 ] * p0 ) + Abs( b[ 1 ] * p1 ) + Abs( ( 1 - b[ 0 ] - b[ 1 ] ) * p2 );
@@ -1152,7 +1155,7 @@ namespace pbrto
             // Get triangle vertices in _p0_, _p1_, and _p2_
             const TriangleMesh* mesh = GetMesh( );
             const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-            Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+            Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
             // Use uniform area sampling for numerically unstable cases
             Float solidAngle = SolidAngle( ctx.p( ) );
@@ -1181,10 +1184,11 @@ namespace pbrto
             if ( ctx.ns != Normal3f( 0, 0, 0 ) )
             {
                 // Compute $\cos\theta$-based weights _w_ at sample domain corners
-                Point3f rp = ctx.p( );
-                Vector3f wi[ 3 ] = { Normalize( p0 - rp ), Normalize( p1 - rp ), Normalize( p2 - rp ) };
+                Point3f::Simd rp = ctx.p( );
+                Vector3f::Simd wi[ 3 ] = { Normalize( p0 - rp ), Normalize( p1 - rp ), Normalize( p2 - rp ) };
                 pstdo::array<Float, 4> w =
-                    pstdo::array<Float, 4>{std::max<Float>( 0.01f, ScalarAbsDot( ctx.ns, wi[ 1 ] ) ),
+                    pstdo::array<Float, 4>{
+                    std::max<Float>( 0.01f, ScalarAbsDot( ctx.ns, wi[ 1 ] ) ),
                     std::max<Float>( 0.01f, ScalarAbsDot( ctx.ns, wi[ 1 ] ) ),
                     std::max<Float>( 0.01f, ScalarAbsDot( ctx.ns, wi[ 0 ] ) ),
                     std::max<Float>( 0.01f, ScalarAbsDot( ctx.ns, wi[ 2 ] ) )};
@@ -1206,7 +1210,11 @@ namespace pbrto
             Vector3f pError = Vector3f( gamma( 6 ) * pAbsSum );
 
             // Return _ShapeSample_ for solid angle sampled point on triangle
-            Point3f p = b[ 0 ] * p0 + b[ 1 ] * p1 + b[ 2 ] * p2;
+            Point3f p = 
+                b[ 0 ] * p0 + 
+                b[ 1 ] * p1 + 
+                b[ 2 ] * p2;
+
             // Compute surface normal for sampled point on triangle
             Normal3f n = Normalize( Normal3f( Cross( p1 - p0, p2 - p0 ) ) );
             if ( mesh->n )
@@ -1260,12 +1268,12 @@ namespace pbrto
                 // Get triangle vertices in _p0_, _p1_, and _p2_
                 const TriangleMesh* mesh = GetMesh( );
                 const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-                Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+                Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
                 Point2f u = InvertSphericalTriangleSample( { p0, p1, p2 }, ctx.p( ), wi );
                 // Compute $\cos\theta$-based weights _w_ at sample domain corners
-                Point3f rp = ctx.p( );
-                Vector3f wi[ 3 ] = { Normalize( p0 - rp ), Normalize( p1 - rp ), Normalize( p2 - rp ) };
+                Point3f::Simd rp = ctx.p( );
+                Vector3f::Simd wi[ 3 ] = { Normalize( p0 - rp ), Normalize( p1 - rp ), Normalize( p2 - rp ) };
                 pstdo::array<Float, 4> w =
                     pstdo::array<Float, 4>{std::max<Float>( 0.01f, ScalarAbsDot( ctx.ns, wi[ 1 ] ) ),
                     std::max<Float>( 0.01f, ScalarAbsDot( ctx.ns, wi[ 1 ] ) ),
@@ -1325,6 +1333,9 @@ namespace pbrto
     // Curve Definition
     class Curve
     {
+        // Curve Private Members
+        const CurveCommon* common;
+        Float uMin, uMax;
     public:
         // Curve Public Methods
         static pstdo::vector<Shape> Create( const Transform* renderFromObject,
@@ -1333,22 +1344,16 @@ namespace pbrto
             const ParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc );
 
-        PBRT_CPU_GPU
-            Bounds3f Bounds( ) const;
+        Bounds3f Bounds( ) const;
         pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax ) const;
         bool IntersectP( const Ray& ray, Float tMax ) const;
-        PBRT_CPU_GPU
-            Float Area( ) const;
+        Float Area( ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeSample> Sample( Point2f u ) const;
-        PBRT_CPU_GPU
-            Float PDF( const Interaction& ) const;
+        pstdo::optional<ShapeSample> Sample( Point2f u ) const;
+        Float PDF( const Interaction& ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const;
-        PBRT_CPU_GPU
-            Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const;
+        pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const;
+        Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const;
 
         std::string ToString( ) const;
 
@@ -1357,8 +1362,7 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            DirectionCone NormalBounds( ) const { return DirectionCone::EntireSphere( ); }
+        DirectionCone NormalBounds( ) const { return DirectionCone::EntireSphere( ); }
 
     private:
         // Curve Private Methods
@@ -1368,9 +1372,7 @@ namespace pbrto
             const Transform& ObjectFromRay, Float u0, Float u1, int depth,
             pstdo::optional<ShapeIntersection>* si ) const;
 
-        // Curve Private Members
-        const CurveCommon* common;
-        Float uMin, uMax;
+        
     };
 
     // BilinearPatch Declarations
@@ -1387,7 +1389,7 @@ namespace pbrto
     };
 
     // Bilinear Patch Inline Functions
-    PBRT_CPU_GPU inline pstdo::optional<BilinearIntersection> IntersectBilinearPatch(
+    inline pstdo::optional<BilinearIntersection> IntersectBilinearPatch(
         const Ray& ray, Float tMax, Point3f p00, Point3f p10, Point3f p01, Point3f p11 )
     {
         // Find quadratic coefficients for distance from ray to $u$ iso-lines
@@ -1411,7 +1413,7 @@ namespace pbrto
         if ( 0 <= u1 && u1 <= 1 )
         {
             // Precompute common terms for $v$ and $t$ computation
-            Point3f uo = Lerp( u1, p00, p10 );
+            Point3f::Simd uo = Lerp( u1, p00, p10 );
             Vector3f ud = Lerp( u1, p01, p11 ) - uo;
             Vector3f deltao = uo - ray.o;
             Vector3f perp = Cross( ray.d, ud );
@@ -1440,7 +1442,7 @@ namespace pbrto
         // Compute $v$ and $t$ for the second $u$ intersection
         if ( 0 <= u2 && u2 <= 1 && u2 != u1 )
         {
-            Point3f uo = Lerp( u2, p00, p10 );
+            Point3f::Simd uo = Lerp( u2, p00, p10 );
             Vector3f ud = Lerp( u2, p01, p11 ) - uo;
             Vector3f deltao = uo - ray.o;
             Vector3f perp = Cross( ray.d, ud );
@@ -1483,50 +1485,39 @@ namespace pbrto
         static pstdo::vector<Shape> CreatePatches( const BilinearPatchMesh* mesh,
             Allocator alloc );
 
-        PBRT_CPU_GPU
-            Bounds3f Bounds( ) const;
+        Bounds3f Bounds( ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeIntersection> Intersect( const Ray& ray,
-                Float tMax = Infinity ) const;
+        pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax = Infinity ) const;
 
-        PBRT_CPU_GPU
-            bool IntersectP( const Ray& ray, Float tMax = Infinity ) const;
+        bool IntersectP( const Ray& ray, Float tMax = Infinity ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const;
+        pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const;
 
-        PBRT_CPU_GPU
-            Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const;
+        Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeSample> Sample( Point2f u ) const;
+        pstdo::optional<ShapeSample> Sample( Point2f u ) const;
 
-        PBRT_CPU_GPU
-            Float PDF( const Interaction& ) const;
+        Float PDF( const Interaction& ) const;
 
-        PBRT_CPU_GPU
-            DirectionCone NormalBounds( ) const;
+        DirectionCone NormalBounds( ) const;
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            Float Area( ) const { return area; }
+        Float Area( ) const { return area; }
 
-        PBRT_CPU_GPU
-            static SurfaceInteraction InteractionFromIntersection( const BilinearPatchMesh* mesh,
-                int blpIndex, Point2f uv,
-                Float time, Vector3f wo )
+        static SurfaceInteraction InteractionFromIntersection( const BilinearPatchMesh* mesh, int blpIndex, Point2f uv, Float time, Vector3f wo )
         {
             // Compute bilinear patch point $\pt{}$, $\dpdu$, and $\dpdv$ for $(u,v)$
             // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
             const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-            Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-            Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+            Point3f::Simd p00 = mesh->p[ v[ 0 ] ];
+            Point3f::Simd p10 = mesh->p[ v[ 1 ] ];
+            Point3f::Simd p01 = mesh->p[ v[ 2 ] ];
+            Point3f::Simd p11 = mesh->p[ v[ 3 ] ];
 
             Point3f p = Lerp( uv[ 0 ], Lerp( uv[ 1 ], p00, p01 ), Lerp( uv[ 1 ], p10, p11 ) );
-            Vector3f dpdu = Lerp( uv[ 1 ], p10, p11 ) - Lerp( uv[ 1 ], p00, p01 );
-            Vector3f dpdv = Lerp( uv[ 0 ], p01, p11 ) - Lerp( uv[ 0 ], p00, p10 );
+            Vector3f::Simd dpdu = Lerp( uv[ 1 ], p10, p11 ) - Lerp( uv[ 1 ], p00, p01 );
+            Vector3f::Simd dpdv = Lerp( uv[ 0 ], p01, p11 ) - Lerp( uv[ 0 ], p00, p10 );
 
             // Compute $(s,t)$ texture coordinates at bilinear patch $(u,v)$
             Point2f st = uv;
@@ -1564,20 +1555,21 @@ namespace pbrto
             }
 
             // Find partial derivatives $\dndu$ and $\dndv$ for bilinear patch
-            Vector3f d2Pduu( 0, 0, 0 ), d2Pdvv( 0, 0, 0 );
-            Vector3f d2Pduv = ( p00 - p01 ) + ( p11 - p10 );
+            Vector3f::Simd d2Pduu( 0, 0, 0 ); 
+            Vector3f::Simd d2Pdvv( 0, 0, 0 );
+            Vector3f::Simd d2Pduv = ( p00 - p01 ) + ( p11 - p10 );
             // Compute coefficients for fundamental forms
             Float E = ScalarDot( dpdu, dpdu ), F = ScalarDot( dpdu, dpdv ), G = ScalarDot( dpdv, dpdv );
-            Vector3f n = Normalize( Cross( dpdu, dpdv ) );
+            Vector3f::Simd n = Normalize( Cross( dpdu, dpdv ) );
             Float e = ScalarDot( n, d2Pduu ), f = ScalarDot( n, d2Pduv ), g = ScalarDot( n, d2Pdvv );
 
             // Compute $\dndu$ and $\dndv$ from fundamental form coefficients
             Float EGF2 = DifferenceOfProducts( E, G, F, F );
             Float invEGF2 = ( EGF2 == 0 ) ? Float( 0 ) : 1 / EGF2;
-            Normal3f dndu =
-                Normal3f( ( f * F - e * G ) * invEGF2 * dpdu + ( e * F - f * E ) * invEGF2 * dpdv );
-            Normal3f dndv =
-                Normal3f( ( g * F - f * G ) * invEGF2 * dpdu + ( f * F - g * E ) * invEGF2 * dpdv );
+            Normal3f::Simd dndu =
+                Normal3f::Simd( ( f * F - e * G ) * invEGF2 * dpdu + ( e * F - f * E ) * invEGF2 * dpdv );
+            Normal3f::Simd dndv =
+                Normal3f::Simd( ( g * F - f * G ) * invEGF2 * dpdu + ( f * F - g * E ) * invEGF2 * dpdv );
 
             // Update $\dndu$ and $\dndv$ to account for $(s,t)$ parameterization
             Normal3f dnds = dndu * duds + dndv * dvds;
@@ -1599,8 +1591,8 @@ namespace pbrto
             if ( mesh->n )
             {
                 // Compute shading normals for bilinear patch intersection point
-                Normal3f n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
-                Normal3f n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
+                Normal3f::Simd n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
+                Normal3f::Simd n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
                 Normal3f ns = Lerp( uv[ 0 ], Lerp( uv[ 1 ], n00, n01 ), Lerp( uv[ 1 ], n10, n11 ) );
                 if ( ScalarLengthSquared( ns ) > 0 )
                 {
@@ -1615,7 +1607,7 @@ namespace pbrto
                     dndv = dndt;
 
                     Transform r = RotateFromTo( Vector3f( Normalize( isect.n ) ), Vector3f( ns ) );
-                    isect.SetShadingGeometry( ns, r( dpdu ), r( dpdv ), dndu, dndv, true );
+                    isect.SetShadingGeometry( ns, Vector3f( r.Apply( dpdu )), Vector3f( r.Apply( dpdv ) ) , dndu, dndv, true );
                 }
             }
 
@@ -1639,18 +1631,18 @@ namespace pbrto
         {
             // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
             const int* v = &mesh->vertexIndices[ 4 * blpIndex ];
-            Point3f p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
-            Point3f p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
+            Point3f::Simd p00 = mesh->p[ v[ 0 ] ], p10 = mesh->p[ v[ 1 ] ];
+            Point3f::Simd p01 = mesh->p[ v[ 2 ] ], p11 = mesh->p[ v[ 3 ] ];
 
             if ( p00 == p01 || p01 == p11 || p11 == p10 || p10 == p00 )
                 return false;
             // Check if bilinear patch vertices are coplanar
-            Normal3f n( Normalize( Cross( p10 - p00, p01 - p00 ) ) );
+            Normal3f::Simd n( Normalize( Cross( p10 - p00, p01 - p00 ) ) );
             if ( ScalarAbsDot( Normalize( p11 - p00 ), n ) > 1e-5f )
                 return false;
 
             // Check if planar vertices form a rectangle
-            Point3f pCenter = ( p00 + p01 + p10 + p11 ) / 4;
+            Point3f::Simd pCenter = ( p00 + p01 + p10 + p11 ) / 4;
             Float d2[ 4 ] = { ScalarDistanceSquared( p00, pCenter ), ScalarDistanceSquared( p01, pCenter ),
                            ScalarDistanceSquared( p10, pCenter ), ScalarDistanceSquared( p11, pCenter ) };
             for ( int i = 1; i < 4; ++i )
