@@ -46,10 +46,10 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( ix < 0x3f000000 )
 		{		/* x < 0.5 */
 			t = x + x;
-			t = ( float )0.5 * log1pf( t + t * x / ( one - x ) );
+			t = ( float )0.5 * Log1P( t + t * x / ( one - x ) );
 		}
 		else
-			t = ( float )0.5 * log1pf( ( x + x ) / ( one - x ) );
+			t = ( float )0.5 * Log1P( ( x + x ) / ( one - x ) );
 		if ( hx >= 0 ) return t; else return -t;
 	}
 }

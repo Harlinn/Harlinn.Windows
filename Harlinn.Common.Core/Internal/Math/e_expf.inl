@@ -106,8 +106,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		else
 			SET_FLOAT_WORD( twopk, 0x3f800000 + ( ( k + 100 ) << 23 ) );
 		c = x - t * ( P1 + t * P2 );
-		if ( k == 0 ) 	return one - ( ( x * c ) / ( c - ( float )2.0 ) - x );
-		else 		y = one - ( ( lo - ( x * c ) / ( ( float )2.0 - c ) ) - hi );
+		if ( k == 0 ) 	return one - ( ( x * c ) / ( c - static_cast< float >( 2.0 ) ) - x );
+		else 		y = one - ( ( lo - ( x * c ) / ( static_cast< float >( 2.0 ) - c ) ) - hi );
 		if ( k >= -125 )
 		{
 			if ( k == 128 ) return y * 2.0F * 0x1p127F;

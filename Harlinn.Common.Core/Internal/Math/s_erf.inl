@@ -221,7 +221,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		if ( ix < 0x3ff40000 )
 		{		/* 0.84375 <= |x| < 1.25 */
-			s = fabs( x ) - one;
+			s = Abs( x ) - one;
 			P = pa0 + s * ( pa1 + s * ( pa2 + s * ( pa3 + s * ( pa4 + s * ( pa5 + s * pa6 ) ) ) ) );
 			Q = one + s * ( qa1 + s * ( qa2 + s * ( qa3 + s * ( qa4 + s * ( qa5 + s * qa6 ) ) ) ) );
 			if ( hx >= 0 ) return erx + P / Q; else return -erx - P / Q;
@@ -230,7 +230,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		{		/* inf>|x|>=6 */
 			if ( hx >= 0 ) return one - tiny; else return tiny - one;
 		}
-		x = fabs( x );
+		x = Abs( x );
 		s = one / ( x * x );
 		if ( ix < 0x4006DB6E )
 		{	/* |x| < 1/0.35 */
@@ -248,7 +248,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		z = x;
 		SET_LOW_WORD( z, 0 );
-		r = __ieee754_exp( -z * z - 0.5625 ) * __ieee754_exp( ( z - x ) * ( z + x ) + R / S );
+		r = Exp( -z * z - 0.5625 ) * Exp( ( z - x ) * ( z + x ) + R / S );
 		if ( hx >= 0 ) return one - r / x; else return  r / x - one;
 	}
 
@@ -287,7 +287,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		if ( ix < 0x3ff40000 )
 		{		/* 0.84375 <= |x| < 1.25 */
-			s = fabs( x ) - one;
+			s = Abs( x ) - one;
 			P = pa0 + s * ( pa1 + s * ( pa2 + s * ( pa3 + s * ( pa4 + s * ( pa5 + s * pa6 ) ) ) ) );
 			Q = one + s * ( qa1 + s * ( qa2 + s * ( qa3 + s * ( qa4 + s * ( qa5 + s * qa6 ) ) ) ) );
 			if ( hx >= 0 )
@@ -301,7 +301,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		if ( ix < 0x403c0000 )
 		{		/* |x|<28 */
-			x = fabs( x );
+			x = Abs( x );
 			s = one / ( x * x );
 			if ( ix < 0x4006DB6D )
 			{	/* |x| < 1/.35 ~ 2.857143*/
@@ -320,8 +320,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			}
 			z = x;
 			SET_LOW_WORD( z, 0 );
-			r = __ieee754_exp( -z * z - 0.5625 ) *
-				__ieee754_exp( ( z - x ) * ( z + x ) + R / S );
+			r = Exp( -z * z - 0.5625 ) *
+				Exp( ( z - x ) * ( z + x ) + R / S );
 			if ( hx > 0 ) return r / x; else return two - r / x;
 		}
 		else

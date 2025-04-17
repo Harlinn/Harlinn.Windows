@@ -328,8 +328,7 @@ namespace pbrto
     }
 
     // OrthographicCamera Method Definitions
-    PBRT_CPU_GPU pstdo::optional<CameraRay> OrthographicCamera::GenerateRay(
-        CameraSample sample, SampledWavelengths& lambda ) const
+    pstdo::optional<CameraRay> OrthographicCamera::GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const
     {
         // Compute raster and camera sample positions
         Point3f pFilm = Point3f( sample.pFilm.x, sample.pFilm.y, 0 );

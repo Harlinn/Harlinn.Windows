@@ -542,6 +542,38 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Cbrt( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::cbrtf( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::cbrt( x );
+            }
+        }
+        else
+        {
+
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_cbrt_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_cbrt_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+    static_assert( Cbrt( 2.0 ) > 0.0 );
 
     namespace Internal
     {
@@ -1097,6 +1129,22 @@ namespace Harlinn::Common::Core::Math
         }
     }
     static_assert( Abs( -1.0 ) == 1.0 );
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> FastAbs( T val ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return std::bit_cast< float >( std::bit_cast< UInt32 >( val ) & 0x7FFFFFFFUL );
+        }
+        else
+        {
+            return std::bit_cast< double >( std::bit_cast< UInt64 >( val ) & 0x7FFFFFFFFFFFFFFFULL );
+        }
+    }
+
 
     /// <summary>
     /// Determines if the given signed integer value is negative.
@@ -2265,6 +2313,38 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ExpM1( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::expm1f( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::expm1( x );
+            }
+        }
+        else
+        {
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_expm1_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_expm1_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+
     /// <summary>
     /// <para>
     /// Computes the square root of the sum of the squares of x and y, 
@@ -2355,6 +2435,21 @@ namespace Harlinn::Common::Core::Math
         else
         {
             return Internal::OpenLibM::log( x );
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Log1P( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Internal::OpenLibM::log1pf( x );
+        }
+        else
+        {
+            return Internal::OpenLibM::log1p( x );
         }
     }
 
@@ -2754,6 +2849,297 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> SinH( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::sinhf( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::sinh( x );
+            }
+        }
+        else
+        {
+
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_sinh_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_sinh_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ASinH( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::asinhf( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::asinh( x );
+            }
+        }
+        else
+        {
+
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_asinh_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_asinh_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> CosH( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::coshf( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::cosh( x );
+            }
+        }
+        else
+        {
+
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_cosh_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_cosh_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ACosH( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::acoshf( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::acosh( x );
+            }
+        }
+        else
+        {
+
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_acosh_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_acosh_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> TanH( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::tanhf( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::tanh( x );
+            }
+        }
+        else
+        {
+
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_tanh_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_tanh_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ATanH( T x ) noexcept
+    {
+        using FloatType = std::remove_cvref_t<T>;
+        if ( std::is_constant_evaluated( ) )
+        {
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                return Math::Internal::OpenLibM::atanhf( x );
+            }
+            else
+            {
+                return Math::Internal::OpenLibM::atanh( x );
+            }
+        }
+        else
+        {
+
+            FloatType result;
+            if constexpr ( std::is_same_v<FloatType, float> )
+            {
+                _mm_store_ss( &result, _mm_atanh_ps( _mm_set_ss( x ) ) );
+            }
+            else
+            {
+                _mm_store_sd( &result, _mm_atanh_pd( _mm_set_sd( x ) ) );
+            }
+            return result;
+        }
+    }
+
+
+
+
+
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> J0( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::j0f( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::j0( x );
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> J1( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::j1f( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::j1( x );
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> JN(int n, T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::jnf( n, x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::jn( n, x );
+        }
+    }
+
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Y0( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::y0f( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::y0( x );
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Y1( T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::y1f( x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::y1( x );
+        }
+    }
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> YN( int n, T x ) noexcept
+    {
+        using FloatT = std::remove_cvref_t<T>;
+        if constexpr ( std::is_same_v<FloatT, float> )
+        {
+            return Math::Internal::OpenLibM::ynf( n, x );
+        }
+        else
+        {
+            return Math::Internal::OpenLibM::yn( n, x );
+        }
+    }
+
+
+
 
     template<typename T>
         requires IsInteger<T>
@@ -2789,6 +3175,7 @@ namespace Harlinn::Common::Core::Math
         return Math::Sin( x ) / x;
     }
 
+    /*
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>
     constexpr FloatT ExpM1( FloatT x )
@@ -2812,6 +3199,7 @@ namespace Harlinn::Common::Core::Math
             return Traits::First( Traits::ExpM1( Traits::Load( &x ) ) );
         }
     }
+    */
 
     template<typename FloatT>
         requires IsFloatingPoint<FloatT>

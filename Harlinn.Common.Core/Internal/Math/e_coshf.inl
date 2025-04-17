@@ -42,7 +42,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* |x| in [0,0.5*ln2], return 1+expm1(|x|)^2/(2*exp(|x|)) */
 		if ( ix < 0x3eb17218 )
 		{
-			t = expm1f( fabsf( x ) );
+			t = ExpM1( FastAbs( x ) );
 			w = one + t;
 			if ( ix < 0x39800000 ) return one;	/* cosh(tiny) = 1 */
 			return one + ( t * t ) / ( w + w );
@@ -51,16 +51,16 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* |x| in [0.5*ln2,9], return (exp(|x|)+1/exp(|x|))/2; */
 		if ( ix < 0x41100000 )
 		{
-			t = __ieee754_expf( fabsf( x ) );
+			t = Exp( FastAbs( x ) );
 			return half * t + half / t;
 		}
 
 		/* |x| in [9, log(maxfloat)] return half*exp(|x|) */
-		if ( ix < 0x42b17217 )  return half * __ieee754_expf( fabsf( x ) );
+		if ( ix < 0x42b17217 )  return half * Exp( FastAbs( x ) );
 
 		/* |x| in [log(maxfloat), overflowthresold] */
 		if ( ix <= 0x42b2d4fc )
-			return __ldexp_expf( fabsf( x ), -1 );
+			return __ldexp_expf( FastAbs( x ), -1 );
 
 		/* |x| > overflowthresold, cosh(x) overflow */
 #pragma warning( push )

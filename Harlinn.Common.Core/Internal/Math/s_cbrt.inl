@@ -44,11 +44,12 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
     {
         using namespace cbrt_internal;
         int32_t	hx;
-        union
+        /*union
         {
             double value;
             uint64_t bits;
         } u;
+        */
         double r, s, t = 0.0, w;
         uint32_t sign;
         uint32_t high, low;
@@ -108,9 +109,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
          * 0.667; the error in the rounded t can be up to about 3 23-bit ulps
          * before the final error is larger than 0.667 ulps.
          */
-        u.value = t;
-        u.bits = ( u.bits + 0x80000000 ) & 0xffffffffc0000000ULL;
-        t = u.value;
+        auto bits = std::bit_cast<UInt64>( t );
+        bits = ( bits + 0x80000000 ) & 0xffffffffc0000000ULL;
+        t = std::bit_cast< double >( bits );
 
         /* one step Newton iteration to 53 bits with error < 0.667 ulps */
         s = t * t;				/* t*t is exact */

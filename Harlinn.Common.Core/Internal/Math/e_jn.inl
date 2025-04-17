@@ -79,7 +79,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		if ( n == 0 ) return( __ieee754_j0( x ) );
 		if ( n == 1 ) return( __ieee754_j1( x ) );
 		sgn = ( n & 1 ) & ( hx >> 31 );	/* even n -- 0, odd n -- sign(x) */
-		x = fabs( x );
+		x = Abs( x );
 		if ( ( ix | lx ) == 0 || ix >= 0x7ff00000 ) 	/* if x is 0 or inf */
 			b = zero;
 		else if ( ( double )n <= x )
@@ -100,19 +100,22 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
  *		   2	-s+c		-c-s
  *		   3	 s+c		 c-s
  */
+				double s = 0.0;
+				double c = 0.0;
+				SinCos( x, &s, &c );
 				switch ( n & 3 )
 				{
-					case 0: temp = cos( x ) + sin( x ); break;
-					case 1: temp = -cos( x ) + sin( x ); break;
-					case 2: temp = -cos( x ) - sin( x ); break;
-					case 3: temp = cos( x ) - sin( x ); break;
+					case 0: temp = c + s; break;
+					case 1: temp = -c + s; break;
+					case 2: temp = -c - s; break;
+					case 3: temp = c - s; break;
 				}
-				b = invsqrtpi * temp / sqrt( x );
+				b = invsqrtpi * temp / Sqrt( x );
 			}
 			else
 			{
-				a = __ieee754_j0( x );
-				b = __ieee754_j1( x );
+				a = J0( x );
+				b = J1( x );
 				for ( i = 1; i < n; i++ )
 				{
 					temp = b;
@@ -197,7 +200,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				 */
 				tmp = n;
 				v = two / x;
-				tmp = tmp * __ieee754_log( fabs( v * tmp ) );
+				tmp = tmp * Log( Abs( v * tmp ) );
 				if ( tmp < 7.09782712893383973096e+02 )
 				{
 					for ( i = n - 1, di = ( double )( i + i ); i > 0; i-- )
@@ -227,9 +230,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 						}
 					}
 				}
-				z = __ieee754_j0( x );
-				w = __ieee754_j1( x );
-				if ( fabs( z ) >= fabs( w ) )
+				z = J0( x );
+				w = J1( x );
+				if ( Abs( z ) >= Abs( w ) )
 					b = ( t * z / b );
 				else
 					b = ( t * w / a );
@@ -266,8 +269,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			n = -n;
 			sign = 1 - ( ( n & 1 ) << 1 );
 		}
-		if ( n == 0 ) return( __ieee754_y0( x ) );
-		if ( n == 1 ) return( sign * __ieee754_y1( x ) );
+		if ( n == 0 ) return( Y0( x ) );
+		if ( n == 1 ) return( sign * Y1( x ) );
 		if ( ix == 0x7ff00000 ) return zero;
 		if ( ix >= 0x52D00000 )
 		{ /* x > 2**302 */
@@ -284,20 +287,25 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
  *		   2	-s+c		-c-s
  *		   3	 s+c		 c-s
  */
+
+			double s = 0.0;
+			double c = 0.0;
+			SinCos( x, &s, &c );
+
 			switch ( n & 3 )
 			{
-				case 0: temp = sin( x ) - cos( x ); break;
-				case 1: temp = -sin( x ) - cos( x ); break;
-				case 2: temp = -sin( x ) + cos( x ); break;
-				case 3: temp = sin( x ) + cos( x ); break;
+				case 0: temp = s - c; break;
+				case 1: temp = -s - c; break;
+				case 2: temp = -s + c; break;
+				case 3: temp = s + c; break;
 			}
-			b = invsqrtpi * temp / sqrt( x );
+			b = invsqrtpi * temp / Sqrt( x );
 		}
 		else
 		{
 			uint32_t high;
-			a = __ieee754_y0( x );
-			b = __ieee754_y1( x );
+			a = Y0( x );
+			b = Y1( x );
 			/* quit if b is -inf */
 			GET_HIGH_WORD( high, b );
 			for ( i = 1; i < n && high != 0xfff00000; i++ )

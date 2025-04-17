@@ -39,7 +39,7 @@ namespace pbrto
     // Transform Function Definitions
     // clang-format off
     PBRTO_EXPORT
-    Transform Translate( const Vector3f& delta )
+    Transform Translate( const Vector3f delta )
     {
         SquareMatrix<4> m( 1, 0, 0, delta.x,
             0, 1, 0, delta.y,
@@ -173,7 +173,7 @@ namespace pbrto
     }
 
     // Transform Method Definitions
-    PBRT_CPU_GPU Bounds3f Transform::operator()( const Bounds3f& b ) const
+    Bounds3f Transform::operator()( const Bounds3f& b ) const
     {
         Bounds3f bt;
         for ( int i = 0; i < 8; ++i )
@@ -181,14 +181,14 @@ namespace pbrto
         return bt;
     }
 
-    PBRT_CPU_GPU bool Transform::SwapsHandedness( ) const
+    bool Transform::SwapsHandedness( ) const
     {
         SquareMatrix<3>::Simd s( m_.simd );
         s = Transpose( s );
         return ScalarDeterminant( s ) < 0;
     }
 
-    PBRT_CPU_GPU Transform::operator Quaternion( ) const
+    Transform::operator Quaternion( ) const
     {
         Quaternion quat = Quaternion::FromMatrix( m_ );
         return quat;
@@ -237,7 +237,7 @@ namespace pbrto
         *S = Inverse( *R ) * M;
     }
 
-    PBRT_CPU_GPU SurfaceInteraction Transform::operator()( const SurfaceInteraction& si ) const
+    SurfaceInteraction Transform::operator()( const SurfaceInteraction& si ) const
     {
         SurfaceInteraction ret;
         const Transform& t = *this;
@@ -272,7 +272,7 @@ namespace pbrto
         return ret;
     }
 
-    PBRT_CPU_GPU Point3fi Transform::ApplyInverse( const Point3fi& p ) const
+    Point3fi Transform::ApplyInverse( const Point3fi& p ) const
     {
         using Traits = SquareMatrix<4>::Traits;
         using Point3Simd = Point3<float>::Simd;
@@ -306,7 +306,7 @@ namespace pbrto
 
     }
 
-    PBRT_CPU_GPU Interaction Transform::operator()( const Interaction& in ) const
+    Interaction Transform::operator()( const Interaction& in ) const
     {
         Interaction ret;
         ret.pi = ( *this )( in.pi );
@@ -322,7 +322,7 @@ namespace pbrto
         return ret;
     }
 
-    PBRT_CPU_GPU Interaction Transform::ApplyInverse( const Interaction& in ) const
+    Interaction Transform::ApplyInverse( const Interaction& in ) const
     {
         Interaction ret;
         Transform t = Inverse( *this );
@@ -339,7 +339,7 @@ namespace pbrto
         return ret;
     }
 
-    PBRT_CPU_GPU SurfaceInteraction Transform::ApplyInverse( const SurfaceInteraction& si ) const
+    SurfaceInteraction Transform::ApplyInverse( const SurfaceInteraction& si ) const
     {
         SurfaceInteraction ret;
         ret.pi = ( *this )( si.pi );

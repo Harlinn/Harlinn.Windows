@@ -54,16 +54,17 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		GET_FLOAT_WORD( hx, x );
 		ix = hx & 0x7fffffff;
 		if ( ix >= 0x7f800000 ) return one / ( x * x );
-		x = fabsf( x );
+		x = Abs( x );
 		if ( ix >= 0x40000000 )
 		{	/* |x| >= 2.0 */
-			s = sinf( x );
-			c = cosf( x );
+			SinCos( x, &s, &c );
+			//s = sinf( x );
+			//c = cosf( x );
 			ss = s - c;
 			cc = s + c;
 			if ( ix < 0x7f000000 )
 			{  /* make sure x+x not overflow */
-				z = -cosf( x + x );
+				z = -Cos( x + x );
 				if ( ( s * c ) < zero ) cc = z / ss;
 				else 	    ss = z / cc;
 			}
@@ -71,11 +72,11 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			 * j0(x) = 1/sqrt(pi) * (P(0,x)*cc - Q(0,x)*ss) / sqrt(x)
 			 * y0(x) = 1/sqrt(pi) * (P(0,x)*ss + Q(0,x)*cc) / sqrt(x)
 			 */
-			if ( ix > 0x58000000 ) z = ( invsqrtpi * cc ) / sqrtf( x ); /* |x|>2**49 */
+			if ( ix > 0x58000000 ) z = ( invsqrtpi * cc ) / Sqrt( x ); /* |x|>2**49 */
 			else
 			{
 				u = pzerof( x ); v = qzerof( x );
-				z = invsqrtpi * ( u * cc - v * ss ) / sqrtf( x );
+				z = invsqrtpi * ( u * cc - v * ss ) / Sqrt( x );
 			}
 			return z;
 		}
@@ -152,7 +153,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
  *              sin(x) +- cos(x) = -cos(2x)/(sin(x) -+ cos(x))
  * to compute the worse one.
  */
-			sincosf( x, &s, &c );
+			SinCos( x, &s, &c );
 			//s = sinf( x );
 			//c = cosf( x );
 			ss = s - c;
@@ -163,26 +164,26 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			 */
 			if ( ix < 0x7f000000 )
 			{  /* make sure x+x not overflow */
-				z = -cosf( x + x );
+				z = -Cos( x + x );
 				if ( ( s * c ) < zero ) cc = z / ss;
 				else            ss = z / cc;
 			}
-			if ( ix > 0x58000000 ) z = ( invsqrtpi * ss ) / sqrtf( x ); /* |x|>2**49 */
+			if ( ix > 0x58000000 ) z = ( invsqrtpi * ss ) / Sqrt( x ); /* |x|>2**49 */
 			else
 			{
 				u = pzerof( x ); v = qzerof( x );
-				z = invsqrtpi * ( u * ss + v * cc ) / sqrtf( x );
+				z = invsqrtpi * ( u * ss + v * cc ) / Sqrt( x );
 			}
 			return z;
 		}
 		if ( ix <= 0x39000000 )
 		{	/* x < 2**-13 */
-			return( u00 + tpi * __ieee754_logf( x ) );
+			return( u00 + tpi * Log( x ) );
 		}
 		z = x * x;
 		u = u00 + z * ( u01 + z * ( u02 + z * ( u03 + z * ( u04 + z * ( u05 + z * u06 ) ) ) ) );
 		v = one + z * ( v01 + z * ( v02 + z * ( v03 + z * v04 ) ) );
-		return( u / v + tpi * ( __ieee754_j0f( x ) * __ieee754_logf( x ) ) );
+		return( u / v + tpi * ( J0( x ) * Log( x ) ) );
 	}
 
 	namespace j0f_internal

@@ -65,17 +65,17 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		{		/* |x|<22 */
 			if ( ix < 0x3e300000 ) 		/* |x|<2**-28 */
 				if ( shuge + x > one ) return x;/* sinh(tiny) = tiny with inexact */
-			t = expm1( fabs( x ) );
+			t = ExpM1( Abs( x ) );
 			if ( ix < 0x3ff00000 ) return h * ( 2.0 * t - t * t / ( t + one ) );
 			return h * ( t + t / ( t + one ) );
 		}
 
 		/* |x| in [22, log(maxdouble)] return 0.5*exp(|x|) */
-		if ( ix < 0x40862E42 )  return h * __ieee754_exp( fabs( x ) );
+		if ( ix < 0x40862E42 )  return h * Exp( Abs( x ) );
 
 		/* |x| in [log(maxdouble), overflowthresold] */
 		if ( ix <= 0x408633CE )
-			return h * 2.0 * __ldexp_exp( fabs( x ), -1 );
+			return h * 2.0 * __ldexp_exp( Abs( x ), -1 );
 
 		/* |x| > overflowthresold, sinh(x) overflow */
 		return x * shuge;

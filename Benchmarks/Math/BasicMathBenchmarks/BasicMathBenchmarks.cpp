@@ -2677,6 +2677,15 @@ static void BenchmarkFloatStdATan2( benchmark::State& state )
 }
 BENCHMARK( BenchmarkFloatStdATan2 );
 
+
+
+
+
+
+
+
+
+
 static void BenchmarkFloatFMA( benchmark::State& state )
 {
 
@@ -3805,12 +3814,425 @@ BENCHMARK( BenchmarkPbrtFloatIntervalSin );
 
 
 
+static void BenchmarkDoubleOpenLibMSinH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::sinh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleOpenLibMSinH );
+
+static void BenchmarkDoubleMathSinH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::SinH( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleMathSinH );
+
+
+static void BenchmarkDoubleStdSinH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::sinh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleStdSinH );
 
 
 
+static void BenchmarkFloatOpenLibMSinH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::sinhf( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatOpenLibMSinH );
+
+static void BenchmarkFloatMathSinH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::SinH( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatMathSinH );
+
+
+static void BenchmarkFloatStdSinH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::sinh( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatStdSinH );
+
+
+static void BenchmarkDoubleOpenLibMASinH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::asinh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleOpenLibMASinH );
+
+static void BenchmarkDoubleMathASinH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::ASinH( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleMathASinH );
+
+
+static void BenchmarkDoubleStdASinH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::asinh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleStdASinH );
+
+static void BenchmarkFloatOpenLibMASinH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::asinhf( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatOpenLibMASinH );
+
+static void BenchmarkFloatMathASinH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::ASinH( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatMathASinH );
+
+
+static void BenchmarkFloatStdASinH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::asinh( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatStdASinH );
+
+//
+static void BenchmarkDoubleOpenLibMCosH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::cosh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleOpenLibMCosH );
+
+static void BenchmarkDoubleMathCosH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::CosH( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleMathCosH );
+
+
+static void BenchmarkDoubleStdCosH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::cosh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleStdCosH );
 
 
 
+static void BenchmarkFloatOpenLibMCosH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::coshf( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatOpenLibMCosH );
+
+static void BenchmarkFloatMathCosH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::CosH( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatMathCosH );
+
+
+static void BenchmarkFloatStdCosH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::cosh( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatStdCosH );
+
+
+static void BenchmarkDoubleOpenLibMACosH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::acosh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleOpenLibMACosH );
+
+static void BenchmarkDoubleMathACosH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::ACosH( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleMathACosH );
+
+
+static void BenchmarkDoubleStdACosH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::acosh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleStdACosH );
+
+static void BenchmarkFloatOpenLibMACosH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::acoshf( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatOpenLibMACosH );
+
+static void BenchmarkFloatMathACosH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::ACosH( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatMathACosH );
+
+
+static void BenchmarkFloatStdACosH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::acosh( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatStdACosH );
+
+///
+
+static void BenchmarkDoubleOpenLibMTanH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::tanh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleOpenLibMTanH );
+
+static void BenchmarkDoubleMathTanH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::TanH( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleMathTanH );
+
+
+static void BenchmarkDoubleStdTanH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::tanh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleStdTanH );
+
+
+
+static void BenchmarkFloatOpenLibMTanH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::tanhf( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatOpenLibMTanH );
+
+static void BenchmarkFloatMathTanH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::TanH( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatMathTanH );
+
+
+static void BenchmarkFloatStdTanH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::tanh( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatStdTanH );
+
+
+static void BenchmarkDoubleOpenLibMATanH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::atanh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleOpenLibMATanH );
+
+static void BenchmarkDoubleMathATanH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::ATanH( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleMathATanH );
+
+
+static void BenchmarkDoubleStdATanH( benchmark::State& state )
+{
+
+    DoubleMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::atanh( DoubleMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkDoubleStdATanH );
+
+static void BenchmarkFloatOpenLibMATanH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( OpenLibM::atanhf( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatOpenLibMATanH );
+
+static void BenchmarkFloatMathATanH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( Math::ATanH( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatMathATanH );
+
+
+static void BenchmarkFloatStdATanH( benchmark::State& state )
+{
+
+    FloatMinusOneToOneGenerator.Reset( );
+    for ( auto _ : state )
+    {
+        benchmark::DoNotOptimize( std::atanh( FloatMinusOneToOneGenerator( ) ) );
+    }
+}
+BENCHMARK( BenchmarkFloatStdATanH );
 
 
 BENCHMARK_MAIN( );

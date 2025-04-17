@@ -53,8 +53,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			x = -x;
 			hx ^= 0x80000000;
 		}
-		if ( n == 0 ) return( __ieee754_j0f( x ) );
-		if ( n == 1 ) return( __ieee754_j1f( x ) );
+		if ( n == 0 ) return( J0( x ) );
+		if ( n == 1 ) return( J1( x ) );
 		sgn = ( n & 1 ) & ( hx >> 31 );	/* even n -- 0, odd n -- sign(x) */
 		x = fabsf( x );
 		if ( ix == 0 || ix >= 0x7f800000 ) 	/* if x is 0 or inf */
@@ -62,8 +62,8 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		else if ( ( float )n <= x )
 		{
 			/* Safe to use J(n+1,x)=2n/x *J(n,x)-J(n-1,x) */
-			a = __ieee754_j0f( x );
-			b = __ieee754_j1f( x );
+			a = J0( x );
+			b = J1( x );
 			for ( i = 1; i < n; i++ )
 			{
 				temp = b;
@@ -147,7 +147,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				 */
 				tmp = static_cast<float>( n );
 				v = two / x;
-				tmp = tmp * __ieee754_logf( fabsf( v * tmp ) );
+				tmp = tmp * Log( Abs( v * tmp ) );
 				if ( tmp < ( float )8.8721679688e+01 )
 				{
 					for ( i = n - 1, di = ( float )( i + i ); i > 0; i-- )
@@ -177,9 +177,9 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 						}
 					}
 				}
-				z = __ieee754_j0f( x );
-				w = __ieee754_j1f( x );
-				if ( fabsf( z ) >= fabsf( w ) )
+				z = J0( x );
+				w = J1( x );
+				if ( Abs( z ) >= Abs( w ) )
 					b = ( t * z / b );
 				else
 					b = ( t * w / a );
@@ -216,12 +216,12 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			n = -n;
 			sign = 1 - ( ( n & 1 ) << 1 );
 		}
-		if ( n == 0 ) return( __ieee754_y0f( x ) );
-		if ( n == 1 ) return( sign * __ieee754_y1f( x ) );
+		if ( n == 0 ) return( Y0( x ) );
+		if ( n == 1 ) return( sign * Y1( x ) );
 		if ( ix == 0x7f800000 ) return zero;
 
-		a = __ieee754_y0f( x );
-		b = __ieee754_y1f( x );
+		a = Y0( x );
+		b = Y1( x );
 		/* quit if b is -inf */
 		GET_FLOAT_WORD( ib, b );
 		for ( i = 1; i < n && ib != 0xff800000; i++ )

@@ -64,7 +64,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* |x| in [0,0.5*ln2], return 1+expm1(|x|)^2/(2*exp(|x|)) */
 		if ( ix < 0x3fd62e43 )
 		{
-			t = expm1( fabs( x ) );
+			t = ExpM1( Abs( x ) );
 			w = one + t;
 			if ( ix < 0x3c800000 ) return w;	/* cosh(tiny) = 1 */
 			return one + ( t * t ) / ( w + w );
@@ -73,16 +73,16 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		/* |x| in [0.5*ln2,22], return (exp(|x|)+1/exp(|x|)/2; */
 		if ( ix < 0x40360000 )
 		{
-			t = __ieee754_exp( fabs( x ) );
+			t = Exp( Abs( x ) );
 			return half * t + half / t;
 		}
 
 		/* |x| in [22, log(maxdouble)] return half*exp(|x|) */
-		if ( ix < 0x40862E42 )  return half * __ieee754_exp( fabs( x ) );
+		if ( ix < 0x40862E42 )  return half * Exp( Abs( x ) );
 
 		/* |x| in [log(maxdouble), overflowthresold] */
 		if ( ix <= 0x408633CE )
-			return __ldexp_exp( fabs( x ), -1 );
+			return __ldexp_exp( Abs( x ), -1 );
 
 		/* |x| > overflowthresold, cosh(x) overflow */
 		return huge * huge;

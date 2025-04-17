@@ -2227,7 +2227,7 @@ namespace Harlinn::Common::Core::Math
     inline T operator * ( const U& lhs, const T& rhs ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Mul( Traits::Load( lhs.values.data( ) ), lhs.simd );
+        return Traits::Mul( Traits::Load( lhs.values ), rhs.simd );
     }
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
@@ -2370,6 +2370,16 @@ namespace Harlinn::Common::Core::Math
     {
         using Traits = typename T::Traits;
         return Traits::HSum( t.simd );
+    }
+
+    /// <summary>
+    /// Calculates the horizontal sum of the elements in the vector.
+    /// </summary>
+    template<Internal::SimdType T, typename ResultT = typename T::value_type>
+    inline ResultT ScalarHSum( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::First( Traits::HSum( t.simd ) );
     }
 
     /// <summary>

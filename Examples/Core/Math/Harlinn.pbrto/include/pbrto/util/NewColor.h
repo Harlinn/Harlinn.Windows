@@ -46,43 +46,36 @@ namespace pbrto
     public:
         // RGB Public Methods
         RGB( ) = default;
-        PBRT_CPU_GPU
-            RGB( Float r, Float g, Float b ) : r( r ), g( g ), b( b ) {}
+        RGB( Float r, Float g, Float b ) : r( r ), g( g ), b( b ) {}
 
-        PBRT_CPU_GPU
-            RGB& operator+=( RGB s )
+        RGB& operator+=( RGB s )
         {
             r += s.r;
             g += s.g;
             b += s.b;
             return *this;
         }
-        PBRT_CPU_GPU
-            RGB operator+( RGB s ) const
+        RGB operator+( RGB s ) const
         {
             RGB ret = *this;
             return ret += s;
         }
 
-        PBRT_CPU_GPU
-            RGB& operator-=( RGB s )
+        RGB& operator-=( RGB s )
         {
             r -= s.r;
             g -= s.g;
             b -= s.b;
             return *this;
         }
-        PBRT_CPU_GPU
-            RGB operator-( RGB s ) const
+        RGB operator-( RGB s ) const
         {
             RGB ret = *this;
             return ret -= s;
         }
-        PBRT_CPU_GPU
-            friend RGB operator-( Float a, RGB s ) { return { a - s.r, a - s.g, a - s.b }; }
+        friend RGB operator-( Float a, RGB s ) { return { a - s.r, a - s.g, a - s.b }; }
 
-        PBRT_CPU_GPU
-            RGB& operator*=( RGB s )
+        RGB& operator*=( RGB s )
         {
             r *= s.r;
             g *= s.g;

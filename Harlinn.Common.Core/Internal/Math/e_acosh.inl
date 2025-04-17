@@ -62,7 +62,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 				return x + x;
 			}
 			else
-				return __ieee754_log( x ) + ln2;	/* acosh(huge)=log(2x) */
+				return Log( x ) + ln2;	/* acosh(huge)=log(2x) */
 		}
 		else if ( ( ( hx - 0x3ff00000 ) | lx ) == 0 )
 		{
@@ -71,12 +71,12 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		else if ( hx > 0x40000000 )
 		{	/* 2**28 > x > 2 */
 			t = x * x;
-			return __ieee754_log( 2.0 * x - one / ( x + sqrt( t - one ) ) );
+			return Log( 2.0 * x - one / ( x + Sqrt( t - one ) ) );
 		}
 		else
 		{			/* 1<x<2 */
 			t = x - one;
-			return log1p( t + sqrt( 2.0 * t + t * t ) );
+			return Log1P( t + Sqrt( 2.0 * t + t * t ) );
 		}
 	}
 

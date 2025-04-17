@@ -208,7 +208,9 @@ namespace pbrto
         {
             result[ i ] = 0;
             for ( int j = 0; j < N; ++j )
+            {
                 result[ i ] += m[ i ][ j ] * v[ j ];
+            }
         }
         return result;
     }

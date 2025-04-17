@@ -53,6 +53,104 @@ namespace Harlinn::Common::Core::Math
 
     template<typename T>
         requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ExpM1( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Hypot( T x, T y ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Hypot( T x, T y, T z ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Log( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Log1P( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Log2( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Log10( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Pow( T x, T y ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Sin( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ASin( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Cos( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ACos( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Tan( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ATan( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ATan( T y, T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> ATan2( T y, T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    inline constexpr void SinCos( T x, T& sinResult, T& cosResult ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    inline constexpr void SinCos( T x, T* sinResult, T* cosResult ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> J0( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> J1( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> JN( int n, T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Y0( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Y1( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> YN( int n, T x ) noexcept;
+
+
+
+    template<typename T>
+        requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> CopySign( T magnitude, T signValue ) noexcept;
 
 
@@ -79,6 +177,10 @@ namespace Harlinn::Common::Core::Math
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Abs( T val ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> FastAbs( T val ) noexcept;
 
     template<typename T>
         requires IsSignedInteger<T>
@@ -195,6 +297,10 @@ namespace Harlinn::Common::Core::Math
     template<typename T>
         requires IsFloatingPoint<T>
     constexpr inline std::remove_cvref_t<T> Sqrt( T x ) noexcept;
+
+    template<typename T>
+        requires IsFloatingPoint<T>
+    constexpr inline std::remove_cvref_t<T> Cbrt( T x ) noexcept;
 
 
 

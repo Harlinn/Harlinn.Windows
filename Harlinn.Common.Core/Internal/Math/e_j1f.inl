@@ -54,16 +54,17 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		GET_FLOAT_WORD( hx, x );
 		ix = hx & 0x7fffffff;
 		if ( ix >= 0x7f800000 ) return one / x;
-		y = fabsf( x );
+		y = Abs( x );
 		if ( ix >= 0x40000000 )
 		{	/* |x| >= 2.0 */
-			s = sinf( y );
-			c = cosf( y );
+			SinCos( y, &s, &c );
+			//s = sinf( y );
+			//c = cosf( y );
 			ss = -s - c;
 			cc = s - c;
 			if ( ix < 0x7f000000 )
 			{  /* make sure y+y not overflow */
-				z = cosf( y + y );
+				z = Cos( y + y );
 				if ( ( s * c ) > zero ) cc = z / ss;
 				else 	    ss = z / cc;
 			}
@@ -71,11 +72,11 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			 * j1(x) = 1/sqrt(pi) * (P(1,x)*cc - Q(1,x)*ss) / sqrt(x)
 			 * y1(x) = 1/sqrt(pi) * (P(1,x)*ss + Q(1,x)*cc) / sqrt(x)
 			 */
-			if ( ix > 0x58000000 ) z = ( invsqrtpi * cc ) / sqrtf( y ); /* |x|>2**49 */
+			if ( ix > 0x58000000 ) z = ( invsqrtpi * cc ) / Sqrt( y ); /* |x|>2**49 */
 			else
 			{
 				u = ponef( y ); v = qonef( y );
-				z = invsqrtpi * ( u * cc - v * ss ) / sqrtf( y );
+				z = invsqrtpi * ( u * cc - v * ss ) / Sqrt( y );
 			}
 			if ( hx < 0 ) return -z;
 			else  	 return  z;
@@ -132,13 +133,14 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		if ( ix >= 0x40000000 )
 		{  /* |x| >= 2.0 */
-			s = sinf( x );
-			c = cosf( x );
+			SinCos( x, &s, &c );
+			//s = sinf( x );
+			//c = cosf( x );
 			ss = -s - c;
 			cc = s - c;
 			if ( ix < 0x7f000000 )
 			{  /* make sure x+x not overflow */
-				z = cosf( x + x );
+				z = Cos( x + x );
 				if ( ( s * c ) > zero ) cc = z / ss;
 				else            ss = z / cc;
 			}
@@ -153,11 +155,11 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			 *              sin(x) +- cos(x) = -cos(2x)/(sin(x) -+ cos(x))
 			 * to compute the worse one.
 			 */
-			if ( ix > 0x58000000 ) z = ( invsqrtpi * ss ) / sqrtf( x ); /* |x|>2**49 */
+			if ( ix > 0x58000000 ) z = ( invsqrtpi * ss ) / Sqrt( x ); /* |x|>2**49 */
 			else
 			{
 				u = ponef( x ); v = qonef( x );
-				z = invsqrtpi * ( u * ss + v * cc ) / sqrtf( x );
+				z = invsqrtpi * ( u * ss + v * cc ) / Sqrt( x );
 			}
 			return z;
 		}

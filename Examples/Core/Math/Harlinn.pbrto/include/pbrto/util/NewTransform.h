@@ -115,14 +115,8 @@ namespace pbrto
             mInv_ = Math::Transpose( m_ );
         }
 
-        inline Ray ApplyInverse( const Ray& r, Float* tMax = nullptr ) const;
-        inline RayDifferential ApplyInverse( const RayDifferential& r, Float* tMax = nullptr ) const;
-
-        template <typename T>
-        inline Vector3<T> ApplyInverse( const Vector3<T>& v ) const;
-
-        template <typename T>
-        inline Normal3<T> ApplyInverse( const Normal3<T>& n ) const;
+        
+        
 
         PBRTO_EXPORT
         std::string ToString( ) const;
@@ -170,19 +164,30 @@ namespace pbrto
         }
 
         template <typename T>
-        Point3<T> operator()( const Point3<T>& p ) const;
+        Point3<T> operator()( const Point3<T> p ) const;
 
         template <typename T>
-        inline Point3<T> ApplyInverse( const Point3<T>& p ) const;
+        inline Point3<T> ApplyInverse( const Point3<T> p ) const;
 
         template <typename T>
-        Vector3<T> operator()( const Vector3<T>& v ) const;
+        Vector3<T> operator()( const Vector3<T> v ) const;
 
         template <typename T>
-        Normal3<T> operator()( const Normal3<T>& ) const;
+        inline Vector3<T> ApplyInverse( const Vector3<T> v ) const;
+
+        template <typename T>
+        Normal3<T> operator()( const Normal3<T> ) const;
+
+        template <typename T>
+        inline Normal3<T> ApplyInverse( const Normal3<T> n ) const;
 
         Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
+
+        inline Ray ApplyInverse( const Ray& r, Float* tMax = nullptr ) const;
+
         RayDifferential operator()( const RayDifferential& r, Float* tMax = nullptr ) const;
+
+        inline RayDifferential ApplyInverse( const RayDifferential& r, Float* tMax = nullptr ) const;
 
         PBRTO_EXPORT
         Bounds3f operator()( const Bounds3f& b ) const;
@@ -220,7 +225,7 @@ namespace pbrto
 
     // Transform Function Declarations
     PBRTO_EXPORT
-    Transform Translate( const Vector3f& delta );
+    Transform Translate( const Vector3f delta );
 
     PBRTO_EXPORT
     Transform Scale( Float x, Float y, Float z );
@@ -360,7 +365,7 @@ namespace pbrto
 
     // Transform Inline Methods
     template <typename T>
-    inline Point3<T> Transform::operator()( const Point3<T>& p ) const
+    inline Point3<T> Transform::operator()( const Point3<T> p ) const
     {
         using Traits = SquareMatrix<4>::Traits;
         using Point3Simd = Point3<float>::Simd;
@@ -372,7 +377,7 @@ namespace pbrto
     }
 
     template <typename T>
-    inline Vector3<T> Transform::operator()( const Vector3<T>& v ) const
+    inline Vector3<T> Transform::operator()( const Vector3<T> v ) const
     {
         using Traits = Vector3<float>::Traits;
         using Vector3Simd = Vector3<float>::Simd;
@@ -384,7 +389,7 @@ namespace pbrto
     }
 
     template <typename T>
-    PBRT_CPU_GPU inline Normal3<T> Transform::operator()( const Normal3<T>& n ) const
+    inline Normal3<T> Transform::operator()( const Normal3<T> n ) const
     {
         using Traits = Vector3<float>::Traits;
         auto nSimd = Traits::Load( n.values );
@@ -428,7 +433,7 @@ namespace pbrto
 
 
     template <typename T>
-    PBRT_CPU_GPU inline Point3<T> Transform::ApplyInverse( const Point3<T>& p ) const
+    inline Point3<T> Transform::ApplyInverse( const Point3<T> p ) const
     {
         using Traits = SquareMatrix<4>::Traits;
         using Point3Simd = Point3<float>::Simd;
@@ -440,7 +445,7 @@ namespace pbrto
     }
 
     template <typename T>
-    inline Vector3<T> Transform::ApplyInverse( const Vector3<T>& v ) const
+    inline Vector3<T> Transform::ApplyInverse( const Vector3<T> v ) const
     {
         using Traits = Vector3<float>::Traits;
         using Vector3Simd = Vector3<float>::Simd;
@@ -452,7 +457,7 @@ namespace pbrto
     }
 
     template <typename T>
-    PBRT_CPU_GPU inline Normal3<T> Transform::ApplyInverse( const Normal3<T>& n ) const
+    PBRT_CPU_GPU inline Normal3<T> Transform::ApplyInverse( const Normal3<T> n ) const
     {
         using Traits = Vector3<float>::Traits;
         auto nSimd = Traits::Load( n.values );

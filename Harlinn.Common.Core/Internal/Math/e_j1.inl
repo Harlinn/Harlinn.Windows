@@ -101,16 +101,17 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		GET_HIGH_WORD( hx, x );
 		ix = hx & 0x7fffffff;
 		if ( ix >= 0x7ff00000 ) return one / x;
-		y = fabs( x );
+		y = Abs( x );
 		if ( ix >= 0x40000000 )
 		{	/* |x| >= 2.0 */
-			s = sin( y );
-			c = cos( y );
+			SinCos( y, &s, &c );
+			//s = sin( y );
+			//c = cos( y );
 			ss = -s - c;
 			cc = s - c;
 			if ( ix < 0x7fe00000 )
 			{  /* make sure y+y not overflow */
-				z = cos( y + y );
+				z = Cos( y + y );
 				if ( ( s * c ) > zero ) cc = z / ss;
 				else 	    ss = z / cc;
 			}
@@ -118,11 +119,11 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			 * j1(x) = 1/sqrt(pi) * (P(1,x)*cc - Q(1,x)*ss) / sqrt(x)
 			 * y1(x) = 1/sqrt(pi) * (P(1,x)*ss + Q(1,x)*cc) / sqrt(x)
 			 */
-			if ( ix > 0x48000000 ) z = ( invsqrtpi * cc ) / sqrt( y );
+			if ( ix > 0x48000000 ) z = ( invsqrtpi * cc ) / Sqrt( y );
 			else
 			{
 				u = pone( y ); v = qone( y );
-				z = invsqrtpi * ( u * cc - v * ss ) / sqrt( y );
+				z = invsqrtpi * ( u * cc - v * ss ) / Sqrt( y );
 			}
 			if ( hx < 0 ) return -z;
 			else  	 return  z;
@@ -180,13 +181,14 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		}
 		if ( ix >= 0x40000000 )
 		{  /* |x| >= 2.0 */
-			s = sin( x );
-			c = cos( x );
+			SinCos( x, &s, &c );
+			//s = sin( x );
+			//c = cos( x );
 			ss = -s - c;
 			cc = s - c;
 			if ( ix < 0x7fe00000 )
 			{  /* make sure x+x not overflow */
-				z = cos( x + x );
+				z = Cos( x + x );
 				if ( ( s * c ) > zero ) cc = z / ss;
 				else            ss = z / cc;
 			}
@@ -201,11 +203,11 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 			 *              sin(x) +- cos(x) = -cos(2x)/(sin(x) -+ cos(x))
 			 * to compute the worse one.
 			 */
-			if ( ix > 0x48000000 ) z = ( invsqrtpi * ss ) / sqrt( x );
+			if ( ix > 0x48000000 ) z = ( invsqrtpi * ss ) / Sqrt( x );
 			else
 			{
 				u = pone( x ); v = qone( x );
-				z = invsqrtpi * ( u * ss + v * cc ) / sqrt( x );
+				z = invsqrtpi * ( u * ss + v * cc ) / Sqrt( x );
 			}
 			return z;
 		}
@@ -216,7 +218,7 @@ namespace Harlinn::Common::Core::Math::Internal::OpenLibM
 		z = x * x;
 		u = U0[ 0 ] + z * ( U0[ 1 ] + z * ( U0[ 2 ] + z * ( U0[ 3 ] + z * U0[ 4 ] ) ) );
 		v = one + z * ( V0[ 0 ] + z * ( V0[ 1 ] + z * ( V0[ 2 ] + z * ( V0[ 3 ] + z * V0[ 4 ] ) ) ) );
-		return( x * ( u / v ) + tpi * ( __ieee754_j1( x ) * __ieee754_log( x ) - one / x ) );
+		return( x * ( u / v ) + tpi * ( J1( x ) * Log( x ) - one / x ) );
 	}
 
 	namespace j1_internal
