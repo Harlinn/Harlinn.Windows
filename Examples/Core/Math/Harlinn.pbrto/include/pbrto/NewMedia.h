@@ -176,8 +176,8 @@ namespace pbrto
         {
             // Set up 3D DDA for ray through the majorant grid
             Vector3f diag = grid->bounds.Diagonal( );
-            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ),
-                Vector3f( ray.d.x / diag.x, ray.d.y / diag.y, ray.d.z / diag.z ) );
+            //Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ), Vector3f( ray.d.x / diag.x, ray.d.y / diag.y, ray.d.z / diag.z ) );
+            Ray rayGrid( Point3f( grid->bounds.Offset( ray.o ) ), Vector3f( ray.d / diag ) );
             Point3f gridIntersect = rayGrid( tMin );
             for ( int axis = 0; axis < 3; ++axis )
             {
@@ -187,7 +187,21 @@ namespace pbrto
                     Clamp( gridIntersect[ axis ] * grid->res[ axis ], 0, grid->res[ axis ] - 1 );
                 deltaT[ axis ] = 1 / ( std::abs( rayGrid.d[ axis ] ) * grid->res[ axis ] );
                 if ( rayGrid.d[ axis ] == -0.f )
-                    rayGrid.d[ axis ] = 0.f;
+                {
+                    //rayGrid.d[ axis ] = 0.f;
+                    switch ( axis )
+                    {
+                        case 0:
+                            rayGrid.d.SetX( 0.f );
+                            break;
+                        case 1:
+                            rayGrid.d.SetY( 0.f );
+                            break;
+                        case 2:
+                            rayGrid.d.SetZ( 0.f );
+                            break;
+                    }
+                }
 
                 if ( rayGrid.d[ axis ] >= 0 )
                 {
@@ -827,7 +841,7 @@ namespace pbrto
         typename ConcreteMedium::MajorantIterator iter = medium->SampleRay( ray, tMax, lambda );
 
         // Generate ray majorant samples until termination
-        SampledSpectrum T_maj( 1.f );
+        SampledSpectrum::Simd T_maj( SampledSpectrum( 1.f ) );
         bool done = false;
         while ( !done )
         {
@@ -843,7 +857,7 @@ namespace pbrto
                 if ( IsInf( dt ) )
                     dt = std::numeric_limits<Float>::max( );
 
-                T_maj *= FastExp( -dt * seg->sigma_maj );
+                T_maj *= Exp( -dt * seg->sigma_maj );
                 continue;
             }
 
@@ -860,7 +874,7 @@ namespace pbrto
                 {
                     // Call callback function for sample within segment
                     PBRT_DBG( "t < seg->tMax\n" );
-                    T_maj *= FastExp( -( t - tMin ) * seg->sigma_maj );
+                    T_maj *= Exp( -( t - tMin ) * seg->sigma_maj );
                     MediumProperties mp = medium->SamplePoint( ray( t ), lambda );
                     if ( !callback( ray( t ), mp, seg->sigma_maj, T_maj ) )
                     {
@@ -881,7 +895,7 @@ namespace pbrto
                     if ( IsInf( dt ) )
                         dt = std::numeric_limits<Float>::max( );
 
-                    T_maj *= FastExp( -dt * seg->sigma_maj );
+                    T_maj *= Exp( -dt * seg->sigma_maj );
                     PBRT_DBG( "Past end, added dt %f * maj[0] %f\n", dt, seg->sigma_maj[ 0 ] );
                     break;
                 }

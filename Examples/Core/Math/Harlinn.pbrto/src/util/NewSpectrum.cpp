@@ -258,7 +258,7 @@ namespace pbrto
             CIE_Y_integral;
     }
 
-    PBRT_CPU_GPU Float SampledSpectrum::y( const SampledWavelengths& lambda ) const
+    PBRT_CPU_GPU Float SampledSpectrum::Y( const SampledWavelengths& lambda ) const
     {
         SampledSpectrum Ys = Spectra::Y( ).Sample( lambda );
         SampledSpectrum pdf = lambda.PDF( );

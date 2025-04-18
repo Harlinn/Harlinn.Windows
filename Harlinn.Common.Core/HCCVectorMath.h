@@ -730,7 +730,7 @@ namespace Harlinn::Common::Core::Math
 
 
     template<typename TraitsT, typename TupleT>
-    class TupleSimd : public Internal::TupleSimdBase
+    class alignas( TraitsT::AlignAs ) TupleSimd : public Internal::TupleSimdBase
     {
     public:
         using Traits = TraitsT;
@@ -2174,6 +2174,39 @@ namespace Harlinn::Common::Core::Math
         return Traits::Add( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
     }
 
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline T operator + ( const T& lhs, const U rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Add( lhs.simd, Traits::Fill( static_cast< typename T::value_type >( rhs ) ) );
+    }
+
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline typename T::Simd operator + ( const T& lhs, const U rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Add( Traits::Load( lhs.values ), Traits::Fill( static_cast< typename T::value_type >( rhs ) ) );
+    }
+
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline U operator + ( const T lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename U::Traits;
+        return Traits::Add( Traits::Fill( static_cast< typename U::value_type >( lhs ) ), rhs.simd );
+    }
+
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline typename U::Simd operator + ( const T lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Add( Traits::Fill( static_cast< typename T::value_type >( lhs ) ), Traits::Load( rhs.values ) );
+    }
+
+
     // Subtraction
     template<Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<T, U>
@@ -2188,8 +2221,9 @@ namespace Harlinn::Common::Core::Math
     inline T operator - ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sub( lhs.simd, Traits::Load( rhs.values.data( ) ) );
+        return Traits::Sub( lhs.simd, Traits::Load( rhs.values ) );
     }
+
     template<Internal::TupleType U, Internal::SimdType T>
         requires Internal::IsCompatible<T, U>
     inline T operator - ( const U& lhs, const T& rhs ) noexcept
@@ -2197,13 +2231,48 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Sub( Traits::Load( lhs.values ), rhs.simd );
     }
+
     template<Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires Internal::IsCompatible<T, U>
     inline ResultT operator - ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Sub( Traits::Load( lhs.values.data( ) ), Traits::Load( rhs.values.data( ) ) );
+        return Traits::Sub( Traits::Load( lhs.values ), Traits::Load( rhs.values ) );
     }
+
+
+    template<Internal::SimdType T, typename U>
+        requires IsArithmetic<U>
+    inline T operator - ( const T& lhs, const U rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sub( lhs.simd, Traits::Fill( static_cast< typename T::value_type >( rhs ) ) );
+    }
+
+    template<Internal::TupleType T, typename U>
+        requires IsArithmetic<U>
+    inline typename T::Simd operator - ( const T& lhs, const U rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sub( Traits::Load( lhs.values ), Traits::Fill( static_cast< typename T::value_type >( rhs ) ) );
+    }
+
+    template< typename T, Internal::SimdType U>
+        requires IsArithmetic<T>
+    inline U operator - ( const T lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename U::Traits;
+        return Traits::Sub( Traits::Fill( static_cast< typename U::value_type >( lhs ) ), rhs.simd );
+    }
+
+    template< typename T, Internal::TupleType U>
+        requires IsArithmetic<T>
+    inline typename U::Simd operator - ( const T lhs, const U& rhs ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sub( Traits::Fill( static_cast< typename T::value_type >( lhs ) ), Traits::Load( rhs.values ) );
+    }
+
 
     // Multiplication
 
@@ -2238,7 +2307,7 @@ namespace Harlinn::Common::Core::Math
     }
 
     template<Internal::SimdType T, typename U>
-        requires std::is_arithmetic_v<U>
+        requires IsArithmetic<U>
     inline T operator * ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
@@ -2246,7 +2315,7 @@ namespace Harlinn::Common::Core::Math
         return Traits::Mul( lhs.simd, Traits::Fill( static_cast< Type >( rhs ) ) );
     }
     template<typename U, Internal::SimdType T>
-        requires std::is_arithmetic_v<U>
+        requires IsArithmetic<U>
     inline T operator * ( const U lhs, const T& rhs ) noexcept
     {
         using Traits = typename T::Traits;
@@ -2255,7 +2324,7 @@ namespace Harlinn::Common::Core::Math
     }
 
     template<Internal::TupleType T, typename U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<U>
+        requires IsArithmetic<U>
     inline ResultT operator * ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
@@ -2263,7 +2332,7 @@ namespace Harlinn::Common::Core::Math
         return Traits::Mul( Traits::Load( lhs.values.data( ) ), Traits::Fill( static_cast< Type >( rhs ) ) );
     }
     template<typename U, Internal::TupleType T, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<U>
+        requires IsArithmetic<U>
     inline ResultT operator * ( const U lhs, const T& rhs ) noexcept
     {
         using Traits = typename T::Traits;
@@ -2305,7 +2374,7 @@ namespace Harlinn::Common::Core::Math
     }
 
     template<Internal::SimdType T, typename U>
-        requires std::is_arithmetic_v<U>
+        requires IsArithmetic<U>
     inline T operator / ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
@@ -2313,7 +2382,7 @@ namespace Harlinn::Common::Core::Math
         return Traits::Div( lhs.simd, Traits::Fill( static_cast< Type >( rhs ) ) );
     }
     template<typename U, Internal::SimdType T>
-        requires std::is_arithmetic_v<U>
+        requires IsArithmetic<U>
     inline T operator / ( const U lhs, const T& rhs ) noexcept
     {
         using Traits = typename T::Traits;
@@ -2322,7 +2391,7 @@ namespace Harlinn::Common::Core::Math
     }
 
     template<Internal::TupleType T, typename U, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<U>
+        requires IsArithmetic<U>
     inline ResultT operator / ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
@@ -2330,7 +2399,7 @@ namespace Harlinn::Common::Core::Math
         return Traits::Div( Traits::Load( lhs.values.data( ) ), Traits::Fill( static_cast< Type >( rhs ) ) );
     }
     template<typename U, Internal::TupleType T, typename ResultT = typename T::Simd>
-        requires std::is_arithmetic_v<U>
+        requires IsArithmetic<U>
     inline ResultT operator / ( const U lhs, const T& rhs ) noexcept
     {
         using Traits = typename T::Traits;
@@ -2410,6 +2479,51 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Fill( ScalarHSum( t ) );
     }
+
+    // Avg
+
+    /// <summary>
+    /// Calculates the average value of the elements in the argument.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T Avg( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Div( Traits::HSum( t.simd ), Traits::Fill( static_cast<typename Traits::Type>( Traits::Size ) ));
+    }
+
+    /// <summary>
+    /// Calculates the average value of the elements in the argument.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline typename T::Simd Avg( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Div( Traits::HSum( Traits::Load( t.values ) ), Traits::Fill( static_cast< typename Traits::Type >( Traits::Size ) ) );
+    }
+
+    /// <summary>
+    /// Calculates the average value of the elements in the argument.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline typename T::value_type ScalarAvg( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return ScalarHSum( t ) / static_cast< typename Traits::Type >( Traits::Size );
+    }
+
+    /// <summary>
+    /// Calculates the average value of the elements in the argument.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline typename T::value_type ScalarAvg( const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return ScalarHSum( t ) / static_cast< typename Traits::Type >( Traits::Size );
+    }
+
+
+
 
     /// <summary>
     /// Calculates the horizontal product of the elements in the vector.
@@ -3197,6 +3311,50 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Clamp( Traits::Fill( v ), Traits::Load( lowerBounds.values.data( ) ), Traits::Load( upperBounds.values.data( ) ) );
     }
+
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified by lowerBound
+    /// and upperBound, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
+    template<Internal::SimdType S, typename T, typename U>
+        requires IsArithmetic<T> && IsArithmetic<U>
+    inline S Clamp( const S& v, const T& lowerBound, const U& upperBound ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Clamp( v.simd, Traits::Fill( static_cast<typename S::value_type>( lowerBound ) ), Traits::Fill( static_cast< typename S::value_type >( upperBound ) ) );
+    }
+
+    /// <summary>
+    /// Returns the elements of v, if the elements are between their
+    /// respective boundaries specified by lowerBound
+    /// and upperBound, otherwise the value of nearest
+    /// boundary is returned.
+    /// </summary>
+    template<Internal::TupleType S, typename T, typename U>
+        requires IsArithmetic<T>&& IsArithmetic<U>
+    inline typename S::Simd Clamp( const S& v, const T& lowerBound, const U& upperBound ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Clamp( Traits::Load( v.values ), Traits::Fill( static_cast< typename S::value_type >( lowerBound ) ), Traits::Fill( static_cast< typename S::value_type >( upperBound ) ) );
+    }
+
+
+    template<Internal::SimdType S>
+    inline S ClampZero( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Max( Traits::Zero(), v.simd );
+    }
+
+    template<Internal::TupleType S>
+    inline typename S::Simd ClampZero( const S& v ) noexcept
+    {
+        using Traits = typename S::Traits;
+        return Traits::Max( Traits::Zero( ), Traits::Load( v.values ) );
+    }
+
 
     /// <summary>
     /// Detects if the elements of a vector are within bounds.
@@ -4115,6 +4273,33 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename T::Traits;
         return Traits::Sqrt( Traits::Load( v.values ) );
     }
+
+    // SafeSqrt
+
+    /// <summary>
+    /// Calculates the square root of each element greater or 
+    /// equal to 0.f in the argument. For elements less than 
+    /// 0.f, the result is 0.f.
+    /// </summary>
+    template<Internal::SimdType T>
+    inline T SafeSqrt( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( Traits::Max( Traits::Zero(), v.simd ) );
+    }
+
+    /// <summary>
+    /// Calculates the square root of each element greater or 
+    /// equal to 0.f in the argument. For elements less than 
+    /// 0.f, the result is 0.f.
+    /// </summary>
+    template<Internal::TupleType T>
+    inline typename T::Simd SafeSqrt( const T& v ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Sqrt( Traits::Max( Traits::Zero( ), Traits::Load( v.values ) ) );
+    }
+
 
     // ReciprocalSqrt
 

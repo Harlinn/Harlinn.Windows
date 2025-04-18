@@ -267,7 +267,7 @@ namespace pbrto
         CameraSample cameraSample = GetCameraSample( sampler, pPixel, filter );
 
         // Generate camera ray for current sample
-        pstdo::optional<CameraRayDifferential> cameraRay = camera.GenerateRayDifferential( cameraSample, lambda );
+        std::optional<CameraRayDifferential> cameraRay = camera.GenerateRayDifferential( cameraSample, lambda );
 
         // Trace _cameraRay_ if valid
         SampledSpectrum L( 0. );
@@ -296,7 +296,7 @@ namespace pbrto
                     pPixel.x, pPixel.y, sampleIndex );
                 L = SampledSpectrum( 0.f );
             }
-            else if ( IsInf( L.y( lambda ) ) )
+            else if ( IsInf( L.Y( lambda ) ) )
             {
                 NLOG_ERROR( "Infinite radiance value returned for pixel (%d, %d), "
                     "sample %d. Setting to black.",
@@ -528,7 +528,7 @@ namespace pbrto
                 ray = isect.SpawnRay( wi );
             }
 
-            NCHECK_GE( beta.y( lambda ), 0.f );
+            NCHECK_GE( beta.Y( lambda ), 0.f );
             NDCHECK( !IsInf( beta.y( lambda ) ) );
         }
         return L;
@@ -1206,7 +1206,7 @@ namespace pbrto
                             Float p_l = lightSampler.PMF( prevIntrContext, light ) *
                                 light.PDF_Li( prevIntrContext, ray.d, true );
                             r_l *= p_l;
-                            L += beta * Le / ( r_u + r_l ).Average( );
+                            L += beta * Le / ScalarAvg( r_u + r_l );
                         }
                     }
                 }
@@ -1226,7 +1226,7 @@ namespace pbrto
                     Float p_l = lightSampler.PMF( prevIntrContext, areaLight ) *
                         areaLight.PDF_Li( prevIntrContext, ray.d, true );
                     r_l *= p_l;
-                    L += beta * Le / ( r_u + r_l ).Average( );
+                    L += beta * Le / ScalarAvg( r_u + r_l );
                 }
             }
 
@@ -1490,7 +1490,7 @@ namespace pbrto
 
                                 // Possibly terminate transmittance computation using
                                 // Russian roulette
-                                SampledSpectrum Tr = T_ray / ( r_l + r_u ).Average( );
+                                SampledSpectrum Tr = T_ray / ScalarAvg( r_l + r_u );
                                 if ( Tr.MaxComponentValue( ) < 0.05f )
                                 {
                                     Float q = 0.75f;
@@ -1523,7 +1523,7 @@ namespace pbrto
         if ( IsDeltaLight( light.Type( ) ) )
             return beta * f_hat * T_ray * ls->L / r_l.Average( );
         else
-            return beta * f_hat * T_ray * ls->L / ( r_l + r_u ).Average( );
+            return beta * f_hat * T_ray * ls->L / ScalarAvg( r_l + r_u );
     }
 
     std::string VolPathIntegrator::ToString( ) const
@@ -1872,7 +1872,7 @@ namespace pbrto
                 // Return emitted radiance for infinite light sources
                 SampledSpectrum Le( 0.f );
                 for ( const auto& light : infiniteLights )
-                    Le += light.Le( Ray( p( ), -w ), lambda );
+                    Le += light.Le( Ray( Point3f::Simd( p( ) ), -w ), lambda );
                 return Le;
 
             }
@@ -2786,8 +2786,7 @@ namespace pbrto
         cameraSample.pLens = sampler.Get2D( );
 
         // Generate camera ray for MLT camera path
-        pstdo::optional<CameraRayDifferential> crd =
-            camera.GenerateRayDifferential( cameraSample, *lambda );
+        std::optional<CameraRayDifferential> crd = camera.GenerateRayDifferential( cameraSample, *lambda );
         if ( !crd || !crd->weight )
             return SampledSpectrum( 0.f );
         Float rayDiffScale =
@@ -3167,7 +3166,8 @@ namespace pbrto
 
             Float timeSample = RadicalInverse( 2, iter );
 
-            ParallelFor2D( pixelBounds, [ & ]( Bounds2i tileBounds ) {
+            ParallelFor2D( pixelBounds, [ & ]( Bounds2i tileBounds ) 
+                {
                 // Follow camera paths for _tileBounds_ in image for SPPM
                 ScratchBuffer& scratchBuffer = threadScratchBuffers.Get( );
                 Sampler sampler = threadSamplers.Get( );
@@ -3178,14 +3178,15 @@ namespace pbrto
                     SampledWavelengths lambda = passLambda;
                     CameraSample cs = GetCameraSample( sampler, pPixel, film.GetFilter( ) );
                     cs.time = timeSample;
-                    pstdo::optional<CameraRayDifferential> crd =
-                        camera.GenerateRayDifferential( cs, lambda );
+                    std::optional<CameraRayDifferential> crd = camera.GenerateRayDifferential( cs, lambda );
                     if ( !crd || !crd->weight )
                         continue;
                     SampledSpectrum beta = crd->weight;
                     RayDifferential& ray = crd->ray;
                     if ( !Options->disablePixelJitter )
+                    {
                         ray.ScaleDifferentials( invSqrtSPP );
+                    }
 
                     // Follow camera ray path until a visible point is created
                     SPPMPixel& pixel = pixels[ pPixel ];

@@ -1688,13 +1688,58 @@ namespace Harlinn::Common::Core::SIMD
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_load_si128( reinterpret_cast<const __m128i*>( src ) );
+                if constexpr ( N == 1 )
+                {
+                    return _mm_castps_si128( _mm_load_ss( reinterpret_cast< const float* >( src ) ) );
+                }
+                else if constexpr ( N == 2 )
+                {
+                    return _mm_castpd_si128( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
+                }
+                else if constexpr ( N == 3 )
+                {
+                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src ) ) );
+                    __m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 2 ) );
+                    return _mm_castps_si128( _mm_movelh_ps( low, high ) );
+                }
+                else
+                {
+                    return _mm_loadu_si128( reinterpret_cast< const __m128i* >( src ) );
+                }
             }
             else
             {
-                return _mm256_load_si256( reinterpret_cast<const __m256i*>( src ) );
+                if constexpr ( N == 5 )
+                {
+                    return _mm256_castps_si256( _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_load_ps( src ) ), _mm_load_ss( src + 4 ), 1 ) );
+                }
+                else if constexpr ( N == 6 )
+                {
+                    return _mm256_castps_si256( _mm256_insertf128_ps( _mm256_castps128_ps256( _mm_load_ps( src ) ), _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src + 4 ) ) ), 1 ) );
+                }
+                else if constexpr ( N == 7 )
+                {
+                    auto rmm1 = _mm_load_ps( src );
+                    __m128 low = _mm_castpd_ps( _mm_load_sd( reinterpret_cast< const double* >( src + 4 ) ) );
+                    __m128 high = _mm_load_ss( reinterpret_cast< const float* >( src + 6 ) );
+                    auto rmm2 = _mm_insert_ps( low, high, 0x20 );
+                    return _mm256_castps_si256( _mm256_insertf128_ps( _mm256_castps128_ps256( rmm1 ), rmm2, 1 ) );
+                }
+                else
+                {
+                    return _mm256_loadu_si256( reinterpret_cast< const __m256i* >( src ) );
+                }
             }
         }
+
+        template<size_t NA>
+            requires ( NA >= N )
+        static SIMDType Load( const std::array<Type, NA>& src ) noexcept
+        {
+            return Load( src.data( ) );
+        }
+
+
 
         static SIMDType UnalignedLoad( const Type* src ) noexcept
         {
@@ -3424,6 +3469,12 @@ namespace Harlinn::Common::Core::SIMD
                 __m128 r2 = _mm_add_ps( r1, _mm_movehl_ps( r1, r1 ) );
                 return _mm256_broadcastss_ps( _mm_add_ss( r2, _mm_movehdup_ps( r2 ) ));
             }
+        }
+
+
+        Type Avg( SIMDType v ) noexcept
+        {
+            return First( HSum( v ) ) / static_cast< Type >( N );
         }
 
 

@@ -1024,6 +1024,16 @@ namespace pbrto
         return t( p );
     }
 
+    Point3f::Simd AnimatedTransform::operator()( const Point3f::Simd& p, Float time ) const
+    {
+        if ( !actuallyAnimated || time <= startTime )
+            return startTransform( p );
+        else if ( time >= endTime )
+            return endTransform( p );
+        Transform t = Interpolate( time );
+        return t( p );
+    }
+
     PBRT_CPU_GPU Vector3f AnimatedTransform::operator()( Vector3f v, Float time ) const
     {
         if ( !actuallyAnimated || time <= startTime )
@@ -1034,7 +1044,26 @@ namespace pbrto
         return t( v );
     }
 
-    PBRT_CPU_GPU Normal3f AnimatedTransform::operator()( Normal3f n, Float time ) const
+    Vector3f::Simd AnimatedTransform::operator()( const Vector3f::Simd& v, Float time ) const
+    {
+        if ( !actuallyAnimated || time <= startTime )
+            return startTransform( v );
+        else if ( time >= endTime )
+            return endTransform( v );
+        Transform t = Interpolate( time );
+        return t( v );
+    }
+
+    Normal3f AnimatedTransform::operator()( Normal3f n, Float time ) const
+    {
+        if ( !actuallyAnimated || time <= startTime )
+            return startTransform( n );
+        else if ( time >= endTime )
+            return endTransform( n );
+        Transform t = Interpolate( time );
+        return t( n );
+    }
+    Normal3f::Simd AnimatedTransform::operator()( const Normal3f::Simd& n, Float time ) const
     {
         if ( !actuallyAnimated || time <= startTime )
             return startTransform( n );

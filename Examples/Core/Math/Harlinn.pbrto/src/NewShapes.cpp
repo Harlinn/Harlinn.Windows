@@ -633,9 +633,9 @@ namespace pbrto
         if ( ScalarLengthSquared( dx ) == 0 )
         {
             Vector3f dy;
-            CoordinateSystem( ray.d, &dx, &dy );
+            CoordinateSystem( Vector3f( ray.d ), &dx, &dy );
         }
-        Transform rayFromObject = LookAt( ray.o, Point3f( ray.o + ray.d ), dx );
+        Transform rayFromObject = LookAt( Point3f( ray.o ), Point3f( ray.o + ray.d ), dx );
         pstdo::array<Point3f, 4> cp = { rayFromObject( cpObj[ 0 ] ), rayFromObject( cpObj[ 1 ] ),
                                       rayFromObject( cpObj[ 2 ] ), rayFromObject( cpObj[ 3 ] ) };
 

@@ -57,13 +57,26 @@ namespace pbrto
         {
             return renderFromCamera( p, time );
         }
+        Point3f::Simd RenderFromCamera( const Point3f::Simd& p, Float time ) const
+        {
+            return renderFromCamera( p, time );
+        }
         Point3f CameraFromRender( Point3f p, Float time ) const
         {
             return renderFromCamera.ApplyInverse( p, time );
         }
+        Point3f::Simd CameraFromRender( const Point3f::Simd& p, Float time ) const
+        {
+            return renderFromCamera.ApplyInverse( p, time );
+        }
+
         Point3f RenderFromWorld( Point3f p ) const 
         { 
             return worldFromRender.ApplyInverse( p ); 
+        }
+        Point3f::Simd RenderFromWorld( const Point3f::Simd& p ) const
+        {
+            return worldFromRender.ApplyInverse( p );
         }
 
         Transform RenderFromWorld( ) const 
@@ -88,8 +101,16 @@ namespace pbrto
         {
             return renderFromCamera( v, time );
         }
+        Vector3f::Simd RenderFromCamera( const Vector3f::Simd& v, Float time ) const
+        {
+            return renderFromCamera( v, time );
+        }
 
         Normal3f RenderFromCamera( Normal3f n, Float time ) const
+        {
+            return renderFromCamera( n, time );
+        }
+        Normal3f::Simd RenderFromCamera( const Normal3f::Simd& n, Float time ) const
         {
             return renderFromCamera( n, time );
         }
@@ -108,8 +129,17 @@ namespace pbrto
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
+        Vector3f::Simd CameraFromRender( const Vector3f::Simd& v, Float time ) const
+        {
+            return renderFromCamera.ApplyInverse( v, time );
+        }
 
         Normal3f CameraFromRender( Normal3f v, Float time ) const
+        {
+            return renderFromCamera.ApplyInverse( v, time );
+        }
+
+        Normal3f::Simd CameraFromRender( const Normal3f::Simd& v, Float time ) const
         {
             return renderFromCamera.ApplyInverse( v, time );
         }
@@ -148,14 +178,14 @@ namespace pbrto
     };
 
     // CameraRay Definition
-    struct CameraRay
+    struct alignas( Point3f::Simd::Traits::AlignAs ) CameraRay
     {
         Ray ray;
         SampledSpectrum weight = SampledSpectrum( 1.f );
     };
 
     // CameraRayDifferential Definition
-    struct CameraRayDifferential
+    struct alignas(Point3f::Simd::Traits::AlignAs) CameraRayDifferential
     {
         RayDifferential ray;
         SampledSpectrum weight = SampledSpectrum( 1.f );
@@ -238,7 +268,7 @@ namespace pbrto
         CameraBase( ) = default;
         CameraBase( CameraBaseParameters p );
 
-        static pstdo::optional<CameraRayDifferential> GenerateRayDifferential(Camera camera, CameraSample sample, SampledWavelengths& lambda );
+        static std::optional<CameraRayDifferential> GenerateRayDifferential(Camera camera, CameraSample sample, SampledWavelengths& lambda );
 
         Ray RenderFromCamera( const Ray& r ) const
         {
@@ -255,7 +285,18 @@ namespace pbrto
             return cameraTransform.RenderFromCamera( v, time );
         }
 
+        Vector3f::Simd RenderFromCamera( const Vector3f::Simd& v, Float time ) const
+        {
+            return cameraTransform.RenderFromCamera( v, time );
+        }
+
+
         Normal3f RenderFromCamera( Normal3f v, Float time ) const
+        {
+            return cameraTransform.RenderFromCamera( v, time );
+        }
+
+        Normal3f::Simd RenderFromCamera( const Normal3f::Simd& v, Float time ) const
         {
             return cameraTransform.RenderFromCamera( v, time );
         }
@@ -265,7 +306,17 @@ namespace pbrto
             return cameraTransform.RenderFromCamera( p, time );
         }
 
+        Point3f::Simd RenderFromCamera( const Point3f::Simd& p, Float time ) const
+        {
+            return cameraTransform.RenderFromCamera( p, time );
+        }
+
         Vector3f CameraFromRender( Vector3f v, Float time ) const
+        {
+            return cameraTransform.CameraFromRender( v, time );
+        }
+
+        Vector3f::Simd CameraFromRender( const Vector3f::Simd& v, Float time ) const
         {
             return cameraTransform.CameraFromRender( v, time );
         }
@@ -275,10 +326,21 @@ namespace pbrto
             return cameraTransform.CameraFromRender( v, time );
         }
 
+        Normal3f::Simd CameraFromRender( const Normal3f::Simd& v, Float time ) const
+        {
+            return cameraTransform.CameraFromRender( v, time );
+        }
+
         Point3f CameraFromRender( Point3f p, Float time ) const
         {
             return cameraTransform.CameraFromRender( p, time );
         }
+
+        Point3f::Simd CameraFromRender( const Point3f::Simd& p, Float time ) const
+        {
+            return cameraTransform.CameraFromRender( p, time );
+        }
+
 
         void FindMinimumDifferentials( Camera camera );
     };
@@ -345,7 +407,7 @@ namespace pbrto
 
         pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
 
-        pstdo::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
+        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
 
         static OrthographicCamera* Create( const ParameterDictionary& parameters, const CameraTransform& cameraTransform, Film film, Medium medium, const FileLoc* loc, Allocator alloc = {} );
 
@@ -411,7 +473,7 @@ namespace pbrto
 
         pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
 
-        pstdo::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
+        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const;
 
         SampledSpectrum We( const Ray& ray, SampledWavelengths& lambda, Point2f* pRaster2 = nullptr ) const;
         void PDF_We( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
@@ -448,7 +510,7 @@ namespace pbrto
 
         pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
 
-        pstdo::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const
+        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const
         {
             return CameraBase::GenerateRayDifferential( this, sample, lambda );
         }
@@ -514,7 +576,7 @@ namespace pbrto
 
         pstdo::optional<CameraRay> GenerateRay( CameraSample sample, SampledWavelengths& lambda ) const;
 
-        pstdo::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const
+        std::optional<CameraRayDifferential> GenerateRayDifferential( CameraSample sample, SampledWavelengths& lambda ) const
         {
             return CameraBase::GenerateRayDifferential( this, sample, lambda );
         }
@@ -595,7 +657,7 @@ namespace pbrto
                 return false;
 
             // Select intersection $t$ based on ray direction and element curvature
-            bool useCloserT = ( ray.d.z > 0 ) ^ ( radius < 0 );
+            bool useCloserT = ( ray.d.z( ) > 0 ) ^ ( radius < 0 );
             *t = useCloserT ? std::min( t0, t1 ) : std::max( t0, t1 );
             if ( *t < 0 )
                 return false;

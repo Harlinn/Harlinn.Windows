@@ -1272,6 +1272,11 @@ namespace pbrto
         {
         }
 
+        Point3fi( const Point3f::Simd& p )
+            : Point3fi( Point3f(p) )
+        { }
+
+
         Point3fi( const Point3<Interval>& p )
             : Point3<Interval>( p )
         {
@@ -2349,39 +2354,39 @@ namespace pbrto
 
     class Bounds2iIterator : public std::forward_iterator_tag
     {
+        Point2i p;
+        const Bounds2i* bounds;
     public:
-        PBRT_CPU_GPU
-            Bounds2iIterator( const Bounds2i& b, const Point2i& pt ) : p( pt ), bounds( &b ) {}
-        PBRT_CPU_GPU
-            Bounds2iIterator operator++( )
+        Bounds2iIterator( const Bounds2i& b, const Point2i& pt ) 
+            : p( pt ), bounds( &b ) 
+        { }
+        Bounds2iIterator operator++( )
         {
             advance( );
             return *this;
         }
-        PBRT_CPU_GPU
-            Bounds2iIterator operator++( int )
+        Bounds2iIterator operator++( int )
         {
             Bounds2iIterator old = *this;
             advance( );
             return old;
         }
-        PBRT_CPU_GPU
-            bool operator==( const Bounds2iIterator& bi ) const
+        bool operator==( const Bounds2iIterator& bi ) const
         {
             return p == bi.p && bounds == bi.bounds;
         }
-        PBRT_CPU_GPU
-            bool operator!=( const Bounds2iIterator& bi ) const
+        bool operator!=( const Bounds2iIterator& bi ) const
         {
             return p != bi.p || bounds != bi.bounds;
         }
 
-        PBRT_CPU_GPU
-            Point2i operator*( ) const { return p; }
+        Point2i operator*( ) const 
+        { 
+            return p; 
+        }
 
     private:
-        PBRT_CPU_GPU
-            void advance( )
+        void advance( )
         {
             ++p.x;
             if ( p.x == bounds->pMax.x )
@@ -2390,8 +2395,7 @@ namespace pbrto
                 ++p.y;
             }
         }
-        Point2i p;
-        const Bounds2i* bounds;
+        
     };
 
     // Bounds2 Inline Functions
@@ -2563,9 +2567,7 @@ namespace pbrto
     }
 
     template <typename T>
-    PBRT_CPU_GPU inline bool Bounds3<T>::IntersectP( Point3f o, Vector3f d, Float raytMax,
-        Vector3f invDir,
-        const int dirIsNeg[ 3 ] ) const
+    inline bool Bounds3<T>::IntersectP( Point3f o, Vector3f d, Float raytMax, Vector3f invDir, const int dirIsNeg[ 3 ] ) const
     {
         const Bounds3f& bounds = *this;
         // Check for ray intersection against $x$ and $y$ slabs

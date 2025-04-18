@@ -107,233 +107,81 @@ namespace pbrto
     XYZ SpectrumToXYZ( Spectrum s );
 
     // SampledSpectrum Definition
-    class SampledSpectrum
+    class SampledSpectrum : public Math::Tuple4<SampledSpectrum, Float>
     {
     public:
-        using VectorType = Math::Vector<Float, NSpectrumSamples>;
+        using Base = Math::Tuple4<SampledSpectrum, Float>;
     private:
         friend struct SOA<SampledSpectrum>;
-        //std::array<Float, NSpectrumSamples> values;
-        VectorType values;
     public:
         // SampledSpectrum Public Methods
-        SampledSpectrum( ) = default;
-        explicit SampledSpectrum( Float c ) 
-            : values( c )
-        { 
-            //values.fill( c ); 
-        }
 
-        explicit SampledSpectrum( const VectorType v )
-            : values( v )
+        using Traits = Base::Traits;
+        using value_type = Base::value_type;
+
+        SampledSpectrum( ) noexcept = default;
+        explicit SampledSpectrum( float v ) noexcept
+            : Base( v, v, v, v )
+        {
+        }
+        SampledSpectrum( float v1, float v2, float v3, float v4 ) noexcept
+            : Base( v1, v2, v3, v4 )
         { }
 
-        SampledSpectrum( const std::array<Float, NSpectrumSamples> v )
-            : values( v )
+        SampledSpectrum( const ArrayType& values ) noexcept
+            : Base( values )
         { }
 
-        SampledSpectrum( const float (&v)[ NSpectrumSamples ] )
-            : values{ v[ 0 ],v[ 1 ],v[ 2 ],v[ 3 ] }
+        SampledSpectrum( const float( &v )[ NSpectrumSamples ] )
+            : Base( v[ 0 ],v[ 1 ],v[ 2 ],v[ 3 ] )
         { }
 
-        SampledSpectrum& operator+=( const SampledSpectrum s )
-        {
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //    values[ i ] += s.values[ i ];
-            values += s.values;
-            return *this;
-        }
+        template<Math::Internal::TupleType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        SampledSpectrum( const T& other ) noexcept
+            : Base( other.x, other.y, other.z, other.w )
+        { }
 
-        SampledSpectrum operator+( const SampledSpectrum s ) const
-        {
-            //SampledSpectrum ret = *this;
-            //return ret += s;
+        template<Math::Internal::SimdType T>
+            requires std::is_same_v<typename T::SIMDType, typename Traits::SIMDType >
+        SampledSpectrum( const T& other ) noexcept
+            : SampledSpectrum( Traits::ToArray( other.simd ) )
+        { }
 
-            return SampledSpectrum( values + s.values );
-        }
-
-        SampledSpectrum& operator-=( const SampledSpectrum s )
-        {
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //    values[ i ] -= s.values[ i ];
-            values -= s.values;
-
-            return *this;
-        }
-        SampledSpectrum operator-( const SampledSpectrum s ) const
-        {
-            //SampledSpectrum ret = *this;
-            //return ret -= s;
-            return SampledSpectrum( values - s.values );
-        }
-
-        friend SampledSpectrum operator-( Float a, const SampledSpectrum s )
-        {
-            NDCHECK( !IsNaN( a ) );
-            //SampledSpectrum ret;
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //    ret.values[ i ] = a - s.values[ i ];
-            //return ret;
-
-            return SampledSpectrum( VectorType( a ) - s.values );
-        }
-
-        SampledSpectrum& operator*=( const SampledSpectrum s )
-        {
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //   values[ i ] *= s.values[ i ];
-            values *= s.values;
-            return *this;
-        }
-        SampledSpectrum operator*( const SampledSpectrum s ) const
-        {
-            //SampledSpectrum ret = *this;
-            //return ret *= s;
-
-            return SampledSpectrum( values * s.values );
-        }
-        SampledSpectrum operator*( Float a ) const
-        {
-            NDCHECK( !IsNaN( a ) );
-            //SampledSpectrum ret = *this;
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //    ret.values[ i ] *= a;
-            //return ret;
-            return SampledSpectrum( values * a );
-        }
-        SampledSpectrum& operator*=( Float a )
-        {
-            NDCHECK( !IsNaN( a ) );
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //    values[ i ] *= a;
-            values *= a;
-            return *this;
-        }
-        friend SampledSpectrum operator*( Float a, const SampledSpectrum s ) 
-        { 
-            //return s * a; 
-            return SampledSpectrum( VectorType( a ) * s.values );
-        }
-
-        SampledSpectrum& operator/=( const SampledSpectrum s )
-        {
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //{
-            //    NDCHECK_NE( 0, s.values[ i ] );
-            //    values[ i ] /= s.values[ i ];
-            //}
-            values /= s.values;
-            return *this;
-
-        }
-        SampledSpectrum operator/( const SampledSpectrum s ) const
-        {
-            //SampledSpectrum ret = *this;
-            //return ret /= s;
-            return SampledSpectrum( values / s.values );
-        }
-        SampledSpectrum& operator/=( Float a )
-        {
-            NDCHECK_NE( a, 0 );
-            NDCHECK( !IsNaN( a ) );
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //    values[ i ] /= a;
-            values /= a;
-            return *this;
-        }
-        SampledSpectrum operator/( Float a ) const
-        {
-            //SampledSpectrum ret = *this;
-            //return ret /= a;
-            return SampledSpectrum( values / a );
-        }
-
-        SampledSpectrum operator-( ) const
-        {
-            //SampledSpectrum ret;
-            //for ( int i = 0; i < NSpectrumSamples; ++i )
-            //    ret.values[ i ] = -values[ i ];
-            //return ret;
-            return SampledSpectrum( -values );
-        }
-        bool operator==( const SampledSpectrum s ) const 
-        { 
-            return values == s.values; 
-        }
-        bool operator!=( const SampledSpectrum s ) const 
-        { 
-            return values != s.values; 
-        }
 
         std::string ToString( ) const;
 
         bool HasNaNs( ) const
         {
-            return values.HasNaN( );
+            return Base::HasNaN( );
         }
 
         XYZ ToXYZ( const SampledWavelengths& lambda ) const;
         RGB ToRGB( const SampledWavelengths& lambda, const RGBColorSpace& cs ) const;
-        Float y( const SampledWavelengths& lambda ) const;
-
-        
-
-        Float operator[]( int i ) const
-        {
-            NDCHECK( i >= 0 && i < NSpectrumSamples );
-            return values[ i ];
-        }
-        Float& operator[]( int i )
-        {
-            NDCHECK( i >= 0 && i < NSpectrumSamples );
-            return values[ i ];
-        }
-
-
-        VectorType Values( ) const
-        {
-            return values;
-        }
+        Float Y( const SampledWavelengths& lambda ) const;
 
         explicit operator bool( ) const
         {
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-                if ( values[ i ] != 0 )
-                    return true;
-            return false;
+            return Base::x != 0.f || Base::y != 0.f || Base::z != 0.f || Base::w != 0.f;
         }
 
         
 
         Float MinComponentValue( ) const
         {
-            Float m = values[ 0 ];
-            for ( int i = 1; i < NSpectrumSamples; ++i )
-                m = std::min( m, values[ i ] );
-            return m;
+            return Math::MinComponentValue( *this );
         }
         Float MaxComponentValue( ) const
         {
-            Float m = values[ 0 ];
-            for ( int i = 1; i < NSpectrumSamples; ++i )
-                m = std::max( m, values[ i ] );
-            return m;
+            return Math::MaxComponentValue( *this );
         }
         Float Average( ) const
         {
-            Float sum = values[ 0 ];
-            for ( int i = 1; i < NSpectrumSamples; ++i )
-                sum += values[ i ];
-            return sum / NSpectrumSamples;
+            return ScalarAvg( *this );
         }
 
     
     };
-
-    inline SampledSpectrum Sqr( const SampledSpectrum v )
-    {
-        return v * v;
-    }
 
     // SampledWavelengths Definitions
     class SampledWavelengths
@@ -380,12 +228,6 @@ namespace pbrto
             // Compute PDF for sampled wavelengths
             swl.pdf = VectorType( 1.f / ( lambda_max - lambda_min ) );
 
-            /*
-            for ( int i = 0; i < NSpectrumSamples; ++i )
-            {
-                swl.pdf[ i ] = 1 / ( lambda_max - lambda_min );
-            }
-            */
             return swl;
         }
 
@@ -413,31 +255,11 @@ namespace pbrto
             pdf.y = 0.f;
             pdf.z = 0.f;
             pdf.w = 0.f;
-
-
-            /*
-            for ( int i = 1; i < NSpectrumSamples; ++i )
-            {
-                pdf[ i ] = 0;
-            }
-            pdf[ 0 ] /= NSpectrumSamples;
-            */
         }
 
         bool SecondaryTerminated( ) const
         {
             return pdf.y != 0 || pdf.z != 0 || pdf.w != 0;
-
-            /*
-            for ( int i = 1; i < NSpectrumSamples; ++i )
-            {
-                if ( pdf[ i ] != 0 )
-                {
-                    return false;
-                }
-            }
-            return true;
-            */
         }
 
         static SampledWavelengths SampleVisible( Float u )
@@ -460,22 +282,25 @@ namespace pbrto
     // Spectrum Definitions
     class ConstantSpectrum
     {
+        Float c;
     public:
-        PBRT_CPU_GPU
-            ConstantSpectrum( Float c ) : c( c ) {}
-        PBRT_CPU_GPU
-            Float operator()( Float lambda ) const { return c; }
-        // ConstantSpectrum Public Methods
-        PBRT_CPU_GPU
-            SampledSpectrum Sample( const SampledWavelengths& ) const;
+        ConstantSpectrum( Float c ) 
+            : c( c ) 
+        { }
 
-        PBRT_CPU_GPU
-            Float MaxValue( ) const { return c; }
+        Float operator()( Float lambda ) const 
+        { 
+            return c; 
+        }
+        // ConstantSpectrum Public Methods
+        SampledSpectrum Sample( const SampledWavelengths& ) const;
+
+        Float MaxValue( ) const 
+        { 
+            return c; 
+        }
 
         std::string ToString( ) const;
-
-    private:
-        Float c;
     };
 
     class DenselySampledSpectrum
@@ -519,8 +344,7 @@ namespace pbrto
             return s;
         }
 
-        PBRT_CPU_GPU
-            void Scale( Float s )
+        void Scale( Float s )
         {
             for ( Float& v : values )
                 v *= s;
@@ -536,8 +360,8 @@ namespace pbrto
         DenselySampledSpectrum( Spectrum spec, int lambda_min = Lambda_min,
             int lambda_max = Lambda_max, Allocator alloc = {} )
             : lambda_min( lambda_min ),
-            lambda_max( lambda_max ),
-            values( lambda_max - lambda_min + 1, alloc )
+              lambda_max( lambda_max ),
+              values( lambda_max - lambda_min + 1, alloc )
         {
             NCHECK_GE( lambda_max, lambda_min );
             if ( spec )
@@ -556,8 +380,7 @@ namespace pbrto
             return s;
         }
 
-        PBRT_CPU_GPU
-            Float operator()( Float lambda ) const
+        Float operator()( Float lambda ) const
         {
             NDCHECK_GT( lambda, 0 );
             int offset = std::lround( lambda ) - lambda_min;
@@ -566,8 +389,7 @@ namespace pbrto
             return values[ offset ];
         }
 
-        PBRT_CPU_GPU
-            bool operator==( const DenselySampledSpectrum& d ) const
+        bool operator==( const DenselySampledSpectrum& d ) const
         {
             if ( lambda_min != d.lambda_min || lambda_max != d.lambda_max ||
                 values.size( ) != d.values.size( ) )
@@ -587,26 +409,22 @@ namespace pbrto
         // PiecewiseLinearSpectrum Public Methods
         PiecewiseLinearSpectrum( ) = default;
 
-        PBRT_CPU_GPU
-            void Scale( Float s )
+        void Scale( Float s )
         {
             for ( Float& v : values )
                 v *= s;
         }
 
-        PBRT_CPU_GPU
-            Float MaxValue( ) const;
+        Float MaxValue( ) const;
 
-        PBRT_CPU_GPU
-            SampledSpectrum Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
                 s[ i ] = ( *this )( lambda[ i ] );
             return s;
         }
-        PBRT_CPU_GPU
-            Float operator()( Float lambda ) const;
+        Float operator()( Float lambda ) const;
 
         std::string ToString( ) const;
 
@@ -627,22 +445,19 @@ namespace pbrto
     {
     public:
         // BlackbodySpectrum Public Methods
-        PBRT_CPU_GPU
-            BlackbodySpectrum( Float T ) : T( T )
+        BlackbodySpectrum( Float T ) : T( T )
         {
             // Compute blackbody normalization constant for given temperature
             Float lambdaMax = 2.8977721e-3f / T;
             normalizationFactor = 1 / Blackbody( lambdaMax * 1e9f, T );
         }
 
-        PBRT_CPU_GPU
-            Float operator()( Float lambda ) const
+        Float operator()( Float lambda ) const
         {
             return Blackbody( lambda, T ) * normalizationFactor;
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum Sample( const SampledWavelengths& lambda ) const
+        SampledSpectrum Sample( const SampledWavelengths& lambda ) const
         {
             SampledSpectrum s;
             for ( int i = 0; i < NSpectrumSamples; ++i )
@@ -650,8 +465,10 @@ namespace pbrto
             return s;
         }
 
-        PBRT_CPU_GPU
-            Float MaxValue( ) const { return 1.f; }
+        Float MaxValue( ) const 
+        { 
+            return 1.f; 
+        }
 
         std::string ToString( ) const;
 
@@ -771,119 +588,22 @@ namespace pbrto
     // SampledSpectrum Inline Functions
     inline SampledSpectrum SafeDiv( SampledSpectrum a, SampledSpectrum b )
     {
-        /*
-        SampledSpectrum r;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            r[ i ] = ( b[ i ] != 0 ) ? a[ i ] / b[ i ] : 0.;
-        return r;
-        */
-        using Traits = SampledSpectrum::VectorType::Traits;
-        auto result = a.Values( ) / b.Values( );
+        using Traits = SampledSpectrum::Traits;
+        auto result = a / b;
         auto nans = Traits::IsNaN( result.simd );
         auto zeros = Traits::Zero( );
         result.simd = Traits::Select( result.simd, zeros, nans );
         return SampledSpectrum( result );
     }
 
-    template <typename U, typename V>
-    inline SampledSpectrum Clamp( const SampledSpectrum s, U low, V high )
-    {
-        /*
-        SampledSpectrum ret;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = pbrto::Clamp( s[ i ], low, high );
-        NDCHECK( !ret.HasNaNs( ) );
-        return ret;
-        */
-        return SampledSpectrum( Math::Clamp( s.Values( ), SampledSpectrum::VectorType( low ), SampledSpectrum::VectorType( high ) ) );
-    }
 
-    inline SampledSpectrum ClampZero( const SampledSpectrum s )
-    {
-        /*
-        SampledSpectrum ret;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = std::max<Float>( 0, s[ i ] );
-        NDCHECK( !ret.HasNaNs( ) );
-        return ret;
-        */
-        return SampledSpectrum( Math::Max( SampledSpectrum::VectorType( 0.f ),s.Values( ) ) );
-    }
-
-    inline SampledSpectrum Sqrt( const SampledSpectrum s )
-    {
-        /*
-        SampledSpectrum ret;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = Math::Sqrt( s[ i ] );
-        NDCHECK( !ret.HasNaNs( ) );
-        return ret;
-        */
-        return SampledSpectrum( Math::Sqrt( s.Values( ) ) );
-    }
-
-    inline SampledSpectrum SafeSqrt( const SampledSpectrum s )
-    {
-        /*
-        SampledSpectrum ret;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = SafeSqrt( s[ i ] );
-        NDCHECK( !ret.HasNaNs( ) );
-        return ret;
-        */
-        return SampledSpectrum( Math::Sqrt( Math::Max( SampledSpectrum::VectorType( 0.f ), s.Values( ) ) ) );
-    }
-
-    inline SampledSpectrum Pow( const SampledSpectrum s, Float e )
-    {
-        /*
-        SampledSpectrum ret;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = Math::Pow( s[ i ], e );
-        return ret;
-        */
-        return SampledSpectrum( Math::Pow( s.Values( ), SampledSpectrum::VectorType( e ) ) );
-    }
-
-    inline SampledSpectrum Exp( const SampledSpectrum s )
-    {
-        /*
-        SampledSpectrum ret;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = Math::Exp( s[ i ] );
-        NDCHECK( !ret.HasNaNs( ) );
-        return ret;
-        */
-        return SampledSpectrum( Math::Exp( s.Values( ) ) );
-    }
-
-    inline SampledSpectrum FastExp( const SampledSpectrum s )
-    {
-        /*
-        SampledSpectrum ret;
-        for ( int i = 0; i < NSpectrumSamples; ++i )
-            ret[ i ] = FastExp( s[ i ] );
-        NDCHECK( !ret.HasNaNs( ) );
-        return ret;
-        */
-        return SampledSpectrum( Math::Exp( s.Values( ) ) );
-    }
-
-    PBRT_CPU_GPU
-        inline SampledSpectrum Bilerp( pstdo::array<Float, 2> p,
-            pstdo::span<const SampledSpectrum> v )
+    inline SampledSpectrum Bilerp( pstdo::array<Float, 2> p, pstdo::span<const SampledSpectrum> v )
     {
         return ( 
             ( 1 - p[ 0 ] ) * 
             ( 1 - p[ 1 ] ) * v[ 0 ] + p[ 0 ] * 
             ( 1 - p[ 1 ] ) * v[ 1 ] +
             ( 1 - p[ 0 ] ) * p[ 1 ] * v[ 2 ] + p[ 0 ] * p[ 1 ] * v[ 3 ] );
-    }
-
-    inline SampledSpectrum Lerp( Float t, const SampledSpectrum s1, const SampledSpectrum s2 )
-    {
-        return SampledSpectrum( Math::Lerp(t, s1.Values(), s2.Values() ) );
-        //return ( 1 - t ) * s1 + t * s2;
     }
 
     // Spectral Data Declarations

@@ -53,6 +53,12 @@ namespace pbrto
         using VectorType = Vector3f;
         using VectorSimdType = VectorType::Simd;
 
+        using PointType = Point3f;
+        using PointSimdType = PointType::Simd;
+
+        using NormalType = Normal3f;
+        using NormalSimdType = NormalType::Simd;
+
     private:
         // Transform Private Members
         MatrixSimdType m_; 
@@ -166,22 +172,32 @@ namespace pbrto
         template <typename T>
         Point3<T> operator()( const Point3<T> p ) const;
 
+        PointSimdType operator()( const PointSimdType& v ) const;
+
         template <typename T>
         inline Point3<T> ApplyInverse( const Point3<T> p ) const;
+
+        inline PointSimdType ApplyInverse( const PointSimdType& p ) const;
 
         template <typename T>
         Vector3<T> operator()( const Vector3<T> v ) const;
         
-        Vector3f::Simd Apply( const VectorSimdType& v ) const;
+        VectorSimdType operator()( const VectorSimdType& v ) const;
 
         template <typename T>
         inline Vector3<T> ApplyInverse( const Vector3<T> v ) const;
 
+        VectorSimdType ApplyInverse( const VectorSimdType& v ) const;
+
         template <typename T>
         Normal3<T> operator()( const Normal3<T> ) const;
 
+        NormalSimdType operator()( const NormalSimdType& n ) const;
+
         template <typename T>
         inline Normal3<T> ApplyInverse( const Normal3<T> n ) const;
+
+        NormalSimdType ApplyInverse( const NormalSimdType& n ) const;
 
         Ray operator()( const Ray& r, Float* tMax = nullptr ) const;
 
@@ -378,6 +394,18 @@ namespace pbrto
         return result;
     }
 
+    inline Transform::PointSimdType Transform::operator()( const Transform::PointSimdType& p ) const
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        using Point3Simd = Point3<float>::Simd;
+
+        const auto& matrix = m_;
+
+        Point3Simd result = Traits::TransformPoint( p.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] );
+        return result;
+    }
+
+
     template <typename T>
     inline Vector3<T> Transform::operator()( const Vector3<T> v ) const
     {
@@ -390,14 +418,14 @@ namespace pbrto
         return result;
     }
 
-    inline Vector3f::Simd Transform::Apply( const VectorSimdType& v ) const
+    inline Transform::VectorSimdType Transform::operator()( const VectorSimdType& v ) const
     {
         using Traits = Vector3<float>::Traits;
         using Vector3Simd = Vector3<float>::Simd;
 
         const auto& matrix = m_;
 
-        Vector3Simd result = Vector3<float>::Traits::TransformNormal( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] );
+        VectorSimdType result = Vector3<float>::Traits::TransformNormal( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] );
         return result;
     }
 
@@ -415,10 +443,23 @@ namespace pbrto
         return Normal3<float>::Simd( result );
     }
 
+    inline Transform::NormalSimdType Transform::operator()( const NormalSimdType& n ) const
+    {
+        using Traits = Vector3<float>::Traits;
+        
+        const auto& matrix = mInv_;
+
+        auto result = Traits::Dot<0b01110001>( matrix.simd[ 0 ], n.simd );
+        result = Traits::Add( Traits::Dot<0b01110010>( matrix.simd[ 1 ], n.simd ), result );
+        result = Traits::Add( Traits::Dot<0b01110100>( matrix.simd[ 2 ], n.simd ), result );
+        return NormalSimdType( result );
+    }
+
+
     inline Ray Transform::operator()( const Ray& r, Float* tMax ) const
     {
         Point3fi o = ( *this )( Point3fi( r.o ) );
-        Vector3f d = ( *this )( r.d );
+        auto d = ( *this )( r.d );
         // Offset ray origin to edge of error bounds and compute _tMax_
         if ( Float lengthSquared = ScalarLengthSquared( d ); lengthSquared > 0 )
         {
@@ -430,7 +471,7 @@ namespace pbrto
             }
         }
 
-        return Ray( Point3f( o ), d, r.time, r.medium );
+        return Ray( Point3f::Simd( Point3f( o ) ), d, r.time, r.medium );
     }
 
     inline RayDifferential Transform::operator()( const RayDifferential& r, Float* tMax ) const
@@ -458,6 +499,18 @@ namespace pbrto
         return result;
     }
 
+    inline Transform::PointSimdType Transform::ApplyInverse( const PointSimdType& p ) const
+    {
+        using Traits = SquareMatrix<4>::Traits;
+        using Point3Simd = Point3<float>::Simd;
+
+        const auto& matrix = mInv_;
+
+        Point3Simd result = Traits::TransformPoint( p.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ], matrix.simd[ 3 ] );
+        return result;
+    }
+
+
     template <typename T>
     inline Vector3<T> Transform::ApplyInverse( const Vector3<T> v ) const
     {
@@ -470,8 +523,20 @@ namespace pbrto
         return result;
     }
 
+
+    inline Transform::VectorSimdType Transform::ApplyInverse( const VectorSimdType& v ) const
+    {
+        using Traits = Vector3<float>::Traits;
+        using Vector3Simd = Vector3<float>::Simd;
+
+        const auto& matrix = mInv_;
+
+        Vector3Simd result = Vector3<float>::Traits::TransformNormal( v.simd, matrix.simd[ 0 ], matrix.simd[ 1 ], matrix.simd[ 2 ] );
+        return result;
+    }
+
     template <typename T>
-    PBRT_CPU_GPU inline Normal3<T> Transform::ApplyInverse( const Normal3<T> n ) const
+    inline Normal3<T> Transform::ApplyInverse( const Normal3<T> n ) const
     {
         using Traits = Vector3<float>::Traits;
         auto nSimd = Traits::Load( n.values );
@@ -483,10 +548,22 @@ namespace pbrto
         return Normal3<float>::Simd( result );
     }
 
+    inline Transform::NormalSimdType Transform::ApplyInverse( const NormalSimdType& n ) const
+    {
+        using Traits = Vector3<float>::Traits;
+        const auto& matrix = m_;
+
+        auto result = Traits::Dot<0b01110001>( matrix.simd[ 0 ], n.simd );
+        result = Traits::Add( Traits::Dot<0b01110010>( matrix.simd[ 1 ], n.simd ), result );
+        result = Traits::Add( Traits::Dot<0b01110100>( matrix.simd[ 2 ], n.simd ), result );
+        return Normal3<float>::Simd( result );
+    }
+
+
     inline Ray Transform::ApplyInverse( const Ray& r, Float* tMax ) const
     {
         Point3fi o = ApplyInverse( Point3fi( r.o ) );
-        Vector3f d = ApplyInverse( r.d );
+        auto d = ApplyInverse( r.d );
         // Offset ray origin to edge of error bounds and compute _tMax_
         Float lengthSquared = ScalarLengthSquared( d );
         if ( lengthSquared > 0 )
@@ -497,7 +574,7 @@ namespace pbrto
             if ( tMax )
                 *tMax -= dt;
         }
-        return Ray( Point3f( o ), d, r.time, r.medium );
+        return Ray( Point3f::Simd( Point3f( o ) ), d, r.time, r.medium );
     }
 
     inline RayDifferential Transform::ApplyInverse( const RayDifferential& r, Float* tMax ) const
@@ -539,15 +616,37 @@ namespace pbrto
                 return startTransform.ApplyInverse( p );
             return Interpolate( time ).ApplyInverse( p );
         }
+        Point3f::Simd ApplyInverse( const Point3f::Simd& p, Float time ) const
+        {
+            if ( !actuallyAnimated )
+                return startTransform.ApplyInverse( p );
+            return Interpolate( time ).ApplyInverse( p );
+        }
+
         Vector3f ApplyInverse( Vector3f v, Float time ) const
         {
             if ( !actuallyAnimated )
                 return startTransform.ApplyInverse( v );
             return Interpolate( time ).ApplyInverse( v );
         }
+        Vector3f::Simd ApplyInverse( const Vector3f::Simd& v, Float time ) const
+        {
+            if ( !actuallyAnimated )
+                return startTransform.ApplyInverse( v );
+            return Interpolate( time ).ApplyInverse( v );
+        }
+
         PBRTO_EXPORT
         Normal3f operator()( Normal3f n, Float time ) const;
+        Normal3f::Simd operator()( const Normal3f::Simd& n, Float time ) const;
+        
         Normal3f ApplyInverse( Normal3f n, Float time ) const
+        {
+            if ( !actuallyAnimated )
+                return startTransform.ApplyInverse( n );
+            return Interpolate( time ).ApplyInverse( n );
+        }
+        Normal3f::Simd ApplyInverse( const Normal3f::Simd& n, Float time ) const
         {
             if ( !actuallyAnimated )
                 return startTransform.ApplyInverse( n );
@@ -580,7 +679,11 @@ namespace pbrto
         PBRTO_EXPORT
         Point3f operator()( Point3f p, Float time ) const;
         PBRTO_EXPORT
+        Point3f::Simd operator()( const Point3f::Simd& p, Float time ) const;
+        PBRTO_EXPORT
         Vector3f operator()( Vector3f v, Float time ) const;
+        PBRTO_EXPORT
+        Vector3f::Simd operator()( const Vector3f::Simd& v, Float time ) const;
 
         PBRTO_EXPORT
         Bounds3f MotionBounds( const Bounds3f& b ) const;

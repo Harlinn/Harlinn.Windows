@@ -43,7 +43,8 @@ namespace pbrto
     // BSSRDFSample Definition
     struct BSSRDFSample
     {
-        SampledSpectrum Sp, pdf;
+        SampledSpectrum Sp; 
+        SampledSpectrum pdf;
         BSDF Sw;
         Vector3f wo;
     };

@@ -469,7 +469,7 @@ namespace pbrto
         SampledSpectrum L =
             scale * RGBIlluminantSpectrum( *imageColorSpace, rgb ).Sample( lambda );
         Ray ray = renderFromLight(
-            Ray( Point3f( 0, 0, 0 ), Normalize( w ), time, mediumInterface.outside ) );
+            Ray( Point3f::Simd( 0, 0, 0 ), Normalize( w ), time, mediumInterface.outside ) );
         return LightLeSample( L, ray, 1, pdfDir );
     }
 

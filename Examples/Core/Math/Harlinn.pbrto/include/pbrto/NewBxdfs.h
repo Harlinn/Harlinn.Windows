@@ -1104,8 +1104,8 @@ namespace pbrto
                 ap[ p ] = ap[ p - 1 ] * T * f;
 
             // Compute attenuation term accounting for remaining orders of scattering
-            if ( 1 - T * f )
-                ap[ pMax ] = ap[ pMax - 1 ] * f * T / ( 1 - T * f );
+            if ( SampledSpectrum( 1.f - T * f ) )
+                ap[ pMax ] = ap[ pMax - 1 ] * f * T / ( 1.f - T * f );
 
             return ap;
         }
