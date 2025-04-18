@@ -37,12 +37,14 @@ namespace pbrto
     // BSDF Definition
     class BSDF
     {
+        // BSDF Private Members
+        BxDF bxdf;
+        Frame shadingFrame;
     public:
         // BSDF Public Methods
         BSDF( ) = default;
-        PBRT_CPU_GPU
-            BSDF( Normal3f ns, Vector3f dpdus, BxDF bxdf )
-            : bxdf( bxdf ), shadingFrame( Frame::FromXZ( Normalize( dpdus ), Vector3f( ns ) ) )
+        BSDF( Normal3f ns, Vector3f dpdus, BxDF bxdf )
+            : bxdf( bxdf ), shadingFrame( Frame::FromXZ( Normalize( dpdus ), Vector3f::Simd( ns ) ) )
         {
         }
 
@@ -90,7 +92,7 @@ namespace pbrto
             pstdo::optional<BSDFSample> bs = bxdf.Sample_f( wo, u, u2, mode, sampleFlags );
             if ( bs )
                 NDCHECK_GE( bs->pdf, 0 );
-            if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z == 0 )
+            if ( !bs || bs->f == 0.f || bs->pdf == 0 || bs->wi.z() == 0 )
                 return {};
             PBRT_DBG( "For wo = (%f, %f, %f), ns %f %f %f sampled f = %f %f %f %f, pdf = %f, "
                 "ratio[0] = %f wi = (%f, %f, %f)\n",
@@ -176,9 +178,7 @@ namespace pbrto
             void Regularize( ) { bxdf.Regularize( ); }
 
     private:
-        // BSDF Private Members
-        BxDF bxdf;
-        Frame shadingFrame;
+        
     };
 
 }

@@ -190,9 +190,7 @@ namespace pbrto
         return rd;
     }
 
-    BSDF SurfaceInteraction::GetBSDF( const RayDifferential& ray, SampledWavelengths& lambda,
-        Camera camera, ScratchBuffer& scratchBuffer,
-        Sampler sampler )
+    BSDF SurfaceInteraction::GetBSDF( const RayDifferential& ray, SampledWavelengths& lambda, Camera camera, ScratchBuffer& scratchBuffer, Sampler sampler )
     {
         // Estimate $(u,v)$ and position differentials at intersection point
         ComputeDifferentials( ray, camera, sampler.SamplesPerPixel( ) );

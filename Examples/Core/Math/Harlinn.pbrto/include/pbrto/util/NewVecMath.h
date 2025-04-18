@@ -1781,6 +1781,8 @@ namespace pbrto
         *v3 = Vector3<Float>( b, sign + Sqr( v1.y ) * a, -v1.y );
     }
 
+    
+
     template <typename T>
     inline void CoordinateSystem( const Normal3<T>& v1, Vector3<T>* v2, Vector3<T>* v3 )
     {
@@ -1805,101 +1807,9 @@ namespace pbrto
     template <typename U>
     Vector3<T>::Vector3( const Normal3<U>& n )
         : Tuple3<pbrto::Vector3, T>( T( n.x ), T( n.y ), T( n.z ) )
-    {
-    }
+    { }
 
-    // Point3 Inline Functions
-    /*
-    template <typename T>
-    inline auto Distance( const Point3<T>& p1, const Point3<T>& p2 )
-    {
-        return Length( p1 - p2 );
-    }
-
-    template <typename T>
-    inline auto DistanceSquared( const Point3<T>& p1, const Point3<T>& p2 )
-    {
-        return LengthSquared( p1 - p2 );
-    }
-    */
-    // Normal3 Inline Functions
-    /*
-    template <typename T>
-    inline auto LengthSquared( const Normal3<T>& n ) -> typename TupleLength<T>::type
-    {
-        return Sqr( n.x ) + Sqr( n.y ) + Sqr( n.z );
-    }
-
-    template <typename T>
-    inline auto Length( const Normal3<T>& n ) -> typename TupleLength<T>::type
-    {
-        if constexpr ( std::is_floating_point_v<T> )
-        {
-            return Math::Sqrt( LengthSquared( n ) );
-        }
-        else
-        {
-            using std::sqrt;
-            return sqrt( LengthSquared( n ) );
-        }
-    }
-
-    template <typename T>
-    inline auto Normalize( const Normal3<T>& n )
-    {
-        return n / Length( n );
-    }
     
-    template <typename T>
-    inline auto Dot( const Normal3<T>& n, const Vector3<T>& v ) ->
-        typename TupleLength<T>::type
-    {
-        NDCHECK( !n.HasNaN( ) && !v.HasNaN( ) );
-        return Math::FMA( n.x, v.x, SumOfProducts( n.y, v.y, n.z, v.z ) );
-    }
-
-    template <typename T>
-    inline auto Dot( const Vector3<T>& v, const Normal3<T>& n ) ->
-        typename TupleLength<T>::type
-    {
-        NDCHECK( !v.HasNaN( ) && !n.HasNaN( ) );
-        return Math::FMA( n.x, v.x, SumOfProducts( n.y, v.y, n.z, v.z ) );
-    }
-
-    template <typename T>
-    inline auto Dot( const Normal3<T>& n1, const Normal3<T>& n2 ) ->
-        typename TupleLength<T>::type
-    {
-        NDCHECK( !n1.HasNaN( ) && !n2.HasNaN( ) );
-        return Math::FMA( n1.x, n2.x, SumOfProducts( n1.y, n2.y, n1.z, n2.z ) );
-    }
-
-    template <typename T>
-    inline auto AbsDot( const Normal3<T>& n, const Vector3<T>& v ) ->
-        typename TupleLength<T>::type
-    {
-        NDCHECK( !n.HasNaN( ) && !v.HasNaN( ) );
-        return std::abs( ScalarDot( n, v ) );
-    }
-
-    template <typename T>
-    inline auto AbsDot( const Vector3<T>& v, const Normal3<T>& n ) ->
-        typename TupleLength<T>::type
-    {
-        using std::abs;
-        NDCHECK( !v.HasNaN( ) && !n.HasNaN( ) );
-        return abs( ScalarDot( v, n ) );
-    }
-
-    template <typename T>
-    inline auto AbsDot( const Normal3<T>& n1, const Normal3<T>& n2 ) ->
-        typename TupleLength<T>::type
-    {
-        using std::abs;
-        NDCHECK( !n1.HasNaN( ) && !n2.HasNaN( ) );
-        return abs( ScalarDot( n1, n2 ) );
-    }
-    */
 
     template <typename T>
     inline Normal3<T> FaceForward( const Normal3<T>& n, const Vector3<T>& v )
@@ -1910,6 +1820,10 @@ namespace pbrto
     inline Normal3<Float> FaceForward<Float>( const Normal3<Float>& n, const Vector3<Float>& v )
     {
         return ( ScalarDot( n, v ) < 0.f ) ? Normal3<Float>( -n ) : n;
+    }
+    inline Normal3f::Simd FaceForward( const Normal3f::Simd& n, const Vector3f::Simd& v )
+    {
+        return ( ScalarDot( n, v ) < 0.f ) ? -n : n;
     }
     
 
@@ -1926,6 +1840,12 @@ namespace pbrto
         return ( ScalarDot( n, n2 ) < 0.f ) ? Normal3<Float>( -n ) : n;
     }
 
+    inline Normal3f::Simd FaceForward( const Normal3f::Simd& n, const Normal3f::Simd& n2 )
+    {
+        return ( ScalarDot( n, n2 ) < 0.f ) ? -n : n;
+    }
+
+
 
     template <typename T>
     inline Vector3<T> FaceForward( const Vector3<T>& v, const Vector3<T>& v2 )
@@ -1939,6 +1859,12 @@ namespace pbrto
         return ( ScalarDot( v, v2 ) < 0.f ) ? Vector3<Float>( -v ) : v;
     }
 
+    inline Vector3f::Simd FaceForward( const Vector3f::Simd& v, const Vector3f::Simd& v2 )
+    {
+        return ( ScalarDot( v, v2 ) < 0.f ) ? -v : v;
+    }
+
+
     template <typename T>
     inline Vector3<T> FaceForward( const Vector3<T>& v, const Normal3<T>& n2 )
     {
@@ -1951,38 +1877,11 @@ namespace pbrto
         return ( ScalarDot( v, n2 ) < 0.f ) ? Vector3<Float>( -v ) : v;
     }
 
-    inline Vector3<Float>::Simd FaceForward( const Vector3<Float>::Simd& v, const Normal3<Float>& n2 )
+    inline Vector3f::Simd FaceForward( const Vector3f::Simd& v, const Normal3f::Simd& n2 )
     {
-        return ( ScalarDot( v, n2 ) < 0.f ) ? -v : Vector3<Float>::Simd( v );
+        return ( ScalarDot( v, n2 ) < 0.f ) ? -v : v;
     }
 
-    
-
-    // Quaternion Inline Functions
-    /*
-    inline Quaternion operator*( Float f, const Quaternion& q )
-    {
-        return q * f;
-    }
-
-    inline Float Dot( const Quaternion& q1, const Quaternion& q2 )
-    {
-        using VectorT = Math::Vector<Float, 4>;
-        static_assert( sizeof( Quaternion ) == sizeof( VectorT ) );
-        return ScalarDot( reinterpret_cast< const VectorT& >( q1 ), reinterpret_cast< const VectorT& >( q2 ) );
-    }
-
-    inline Float Length( const Quaternion& q )
-    {
-        return Math::Sqrt( Dot( q, q ) );
-    }
-
-    inline Quaternion Normalize( const Quaternion& q )
-    {
-        NDCHECK_GT( Length( q ), 0 );
-        return q / ScalarLength( q );
-    }
-    */
 
     inline Float AngleBetween( const Quaternion& q1, const Quaternion& q2 )
     {
@@ -1992,16 +1891,6 @@ namespace pbrto
             return 2 * SafeASin( ScalarLength( q2 - q1 ) / 2 );
     }
     
-    /*
-    // http://www.plunk.org/~hatch/rightway.html
-    inline Quaternion Slerp( Float t, const Quaternion& q1, const Quaternion& q2 )
-    {
-        Float theta = AngleBetween( q1, q2 );
-        Float sinThetaOverTheta = SinXOverX( theta );
-        return q1 * ( 1 - t ) * SinXOverX( ( 1 - t ) * theta ) / sinThetaOverTheta +
-            q2 * t * SinXOverX( t * theta ) / sinThetaOverTheta;
-    }
-    */
     inline Quaternion Slerp( Float t, const Quaternion& q1, const Quaternion& q2 )
     {
         return Math::Slerp( q1, q2, t );
@@ -2680,60 +2569,111 @@ namespace pbrto
             Math::Clamp( cosTheta, -1.0f, 1.0f ) );
     }
 
-    inline Float SphericalTheta( const Vector3f& v )
+    inline Float SphericalTheta( const Vector3f v )
     {
         return SafeACos( v.z );
     }
+    inline Float SphericalTheta( const Vector3f::Simd& v )
+    {
+        return SafeACos( v.z( ) );
+    }
 
-    inline Float SphericalPhi( const Vector3f& v )
+    inline Float SphericalPhi( const Vector3f v )
     {
         Float p = Math::ATan2( v.y, v.x );
         return ( p < 0 ) ? ( p + 2.f * Pi ) : p;
     }
+    inline Float SphericalPhi( const Vector3f::Simd& v )
+    {
+        Float p = Math::ATan2( v.y(), v.x( ) );
+        return ( p < 0 ) ? ( p + 2.f * Pi ) : p;
+    }
 
-    inline Float CosTheta( const Vector3f& w )
+    inline Float CosTheta( const Vector3f w )
     {
         return w.z;
     }
-    inline Float Cos2Theta( const Vector3f& w )
+    inline Float CosTheta( const Vector3f::Simd& w )
+    {
+        return w.z( );
+    }
+
+    inline Float Cos2Theta( const Vector3f w )
     {
         return Sqr( w.z );
     }
-    inline Float AbsCosTheta( const Vector3f& w )
+    inline Float Cos2Theta( const Vector3f::Simd& w )
+    {
+        return Sqr( w.z( ) );
+    }
+
+    inline Float AbsCosTheta( const Vector3f w )
     {
         return std::abs( w.z );
     }
+    inline Float AbsCosTheta( const Vector3f::Simd& w )
+    {
+        return std::abs( w.z( ) );
+    }
 
-    inline Float Sin2Theta( const Vector3f& w )
+    inline Float Sin2Theta( const Vector3f w )
     {
         return std::max<Float>( 0.f, 1.f - Cos2Theta( w ) );
     }
-    inline Float SinTheta( const Vector3f& w )
+    inline Float Sin2Theta( const Vector3f::Simd& w )
+    {
+        return std::max<Float>( 0.f, 1.f - Cos2Theta( w ) );
+    }
+    inline Float SinTheta( const Vector3f w )
+    {
+        return Math::Sqrt( Sin2Theta( w ) );
+    }
+    inline Float SinTheta( const Vector3f::Simd& w )
     {
         return Math::Sqrt( Sin2Theta( w ) );
     }
 
-    inline Float TanTheta( const Vector3f& w )
+    inline Float TanTheta( const Vector3f w )
     {
         return SinTheta( w ) / CosTheta( w );
     }
-    inline Float Tan2Theta( const Vector3f& w )
+    inline Float TanTheta( const Vector3f::Simd& w )
+    {
+        return SinTheta( w ) / CosTheta( w );
+    }
+    inline Float Tan2Theta( const Vector3f w )
+    {
+        return Sin2Theta( w ) / Cos2Theta( w );
+    }
+    inline Float Tan2Theta( const Vector3f::Simd& w )
     {
         return Sin2Theta( w ) / Cos2Theta( w );
     }
 
-    inline Float CosPhi( const Vector3f& w )
+    inline Float CosPhi( const Vector3f w )
     {
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 1 : Math::Clamp( w.x / sinTheta, -1.f, 1.f );
     }
-    inline Float SinPhi( const Vector3f& w )
+    inline Float CosPhi( const Vector3f::Simd& w )
+    {
+        Float sinTheta = SinTheta( w );
+        return ( sinTheta == 0 ) ? 1 : Math::Clamp( w.x( ) / sinTheta, -1.f, 1.f );
+    }
+
+    inline Float SinPhi( const Vector3f w )
     {
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 0 : Math::Clamp( w.y / sinTheta, -1.f, 1.f );
     }
+    inline Float SinPhi( const Vector3f::Simd& w )
+    {
+        Float sinTheta = SinTheta( w );
+        return ( sinTheta == 0 ) ? 0 : Math::Clamp( w.y() / sinTheta, -1.f, 1.f );
+    }
 
-    inline Float CosDPhi( const Vector3f& wa, const Vector3f& wb )
+
+    inline Float CosDPhi( const Vector3f wa, const Vector3f wb )
     {
         Float waxy = Sqr( wa.x ) + Sqr( wa.y ); 
         Float wbxy = Sqr( wb.x ) + Sqr( wb.y );
@@ -2741,15 +2681,37 @@ namespace pbrto
             return 1.f;
         return Math::Clamp( ( wa.x * wb.x + wa.y * wb.y ) / Math::Sqrt( waxy * wbxy ), -1.f, 1.f );
     }
+    inline Float CosDPhi( const Vector3f::Simd& wa, const Vector3f::Simd& wb )
+    {
+        Float wax = wa.x( );
+        Float way = wa.y( );
+        Float wbx = wb.x( );
+        Float wby = wb.y( );
 
-    inline bool SameHemisphere( const Vector3f& w, const Vector3f& wp )
+        Float waxy = Sqr( wax ) + Sqr( way );
+        Float wbxy = Sqr( wbx ) + Sqr( wby );
+        if ( waxy == 0.f || wbxy == 0.f )
+            return 1.f;
+        return Math::Clamp( ( wax * wbx + way * wby ) / Math::Sqrt( waxy * wbxy ), -1.f, 1.f );
+    }
+
+    inline bool SameHemisphere( const Vector3f w, const Vector3f wp )
     {
         return w.z * wp.z > 0;
     }
+    inline bool SameHemisphere( const Vector3f::Simd& w, const Vector3f::Simd& wp )
+    {
+        return w.z() * wp.z() > 0;
+    }
 
-    inline bool SameHemisphere( const Vector3f& w, const Normal3f& wp )
+
+    inline bool SameHemisphere( const Vector3f w, const Normal3f wp )
     {
         return w.z * wp.z > 0;
+    }
+    inline bool SameHemisphere( const Vector3f::Simd& w, const Normal3f::Simd& wp )
+    {
+        return w.z( ) * wp.z( ) > 0;
     }
 
     // OctahedralVector Definition
@@ -2895,25 +2857,48 @@ namespace pbrto
     DirectionCone Union( const DirectionCone& a, const DirectionCone& b );
 
     // Frame Definition
-    class Frame
+    class alignas( Vector3f::Traits::AlignAs ) Frame
     {
     public:
         // Frame Public Members
-        Vector3f x, y, z;
+        Vector3f::Simd x, y, z;
 
         // Frame Public Methods
-        Frame( ) : x( 1, 0, 0 ), y( 0, 1, 0 ), z( 0, 0, 1 )
+        Frame( ) 
+            : x( 1, 0, 0 ), y( 0, 1, 0 ), z( 0, 0, 1 )
+        { }
+
+        Frame( const Vector3f& x, const Vector3f& y, const Vector3f& z )
+            : x( x ), y( y ), z( z )
         {
+            NDCHECK_LT( std::abs( ScalarLengthSquared( x ) - 1 ), 1e-4 );
+            NDCHECK_LT( std::abs( ScalarLengthSquared( y ) - 1 ), 1e-4 );
+            NDCHECK_LT( std::abs( ScalarLengthSquared( z ) - 1 ), 1e-4 );
+            NDCHECK_LT( std::abs( ScalarDot( x, y ) ), 1e-4 );
+            NDCHECK_LT( std::abs( ScalarDot( y, z ) ), 1e-4 );
+            NDCHECK_LT( std::abs( ScalarDot( z, x ) ), 1e-4 );
         }
 
-        Frame( const Vector3f& x, const Vector3f& y, const Vector3f& z );
+        Frame( const Vector3f::Simd& x, const Vector3f::Simd& y, const Vector3f::Simd& z )
+            : x( x ), y( y ), z( z )
+        {
+
+        }
 
         static Frame FromXZ( const Vector3f& x, const Vector3f& z )
+        {
+            return Frame( Vector3f::Simd(x), Cross( z, x ), Vector3f::Simd(z) );
+        }
+        static Frame FromXZ( const Vector3f::Simd& x, const Vector3f::Simd& z )
         {
             return Frame( x, Cross( z, x ), z );
         }
 
         static Frame FromXY( const Vector3f& x, const Vector3f& y )
+        {
+            return Frame( Vector3f::Simd(x), Vector3f::Simd(y), Cross( x, y ) );
+        }
+        static Frame FromXY( const Vector3f::Simd& x, const Vector3f::Simd& y )
         {
             return Frame( x, y, Cross( x, y ) );
         }
@@ -2975,25 +2960,27 @@ namespace pbrto
         {
             return Vector3f( ScalarDot( v, x ), ScalarDot( v, y ), ScalarDot( v, z ) );
         }
+        Vector3f::Simd ToLocal( const Vector3f::Simd& v ) const
+        {
+            return Vector3f::Simd( ScalarDot( v, x ), ScalarDot( v, y ), ScalarDot( v, z ) );
+        }
 
         Normal3f ToLocal( const Normal3f& n ) const
         {
             return Normal3f( ScalarDot( n, x ), ScalarDot( n, y ), ScalarDot( n, z ) );
         }
-
-        Vector3f ToLocal( const Vector3f::Simd& z ) const
+        Normal3f::Simd ToLocal( const Normal3f::Simd& n ) const
         {
-            return ToLocal( Vector3f( z ) );
+            return Normal3f::Simd( ScalarDot( n, x ), ScalarDot( n, y ), ScalarDot( n, z ) );
         }
-        Normal3f ToLocal( const Normal3f::Simd& z ) const
-        {
-            return ToLocal( Normal3f( z ) );
-        }
-
 
         Vector3f FromLocal( const Vector3f& v ) const
         {
             return v.x * x + v.y * y + v.z * z;
+        }
+        Vector3f::Simd FromLocal( const Vector3f::Simd& v ) const
+        {
+            return v.X() * x + v.Y() * y + v.Z() * z;
         }
 
         Normal3f FromLocal( const Normal3f& n ) const
@@ -3001,33 +2988,21 @@ namespace pbrto
             return Normal3f( n.x * x + n.y * y + n.z * z );
         }
 
-        Vector3f FromLocal( const Vector3f::Simd& z ) const
+        Normal3f::Simd FromLocal( const Normal3f::Simd& n ) const
         {
-            return FromLocal( Vector3f( z ) );
-        }
-        Normal3f FromLocal( const Normal3f::Simd& z ) const
-        {
-            return FromLocal( Normal3f( z ) );
+            return n.X() * x + n.Y() * y + n.Z() * z;
         }
 
         std::string ToString( ) const
         {
-            return std::format( "[ Frame x: {} y: {} z: {} ]", x, y, z );
+            Vector3f X(x), Y(y), Z(z);
+            return std::format( "[ Frame x: {} y: {} z: {} ]", X, Y, Z );
         }
         
     };
 
-    // Frame Inline Functions
-    PBRT_CPU_GPU inline Frame::Frame( const Vector3f& x, const Vector3f& y, const Vector3f& z )
-        : x( x ), y( y ), z( z )
-    {
-        NDCHECK_LT( std::abs( ScalarLengthSquared( x ) - 1 ), 1e-4 );
-        NDCHECK_LT( std::abs( ScalarLengthSquared( y ) - 1 ), 1e-4 );
-        NDCHECK_LT( std::abs( ScalarLengthSquared( z ) - 1 ), 1e-4 );
-        NDCHECK_LT( std::abs( ScalarDot( x, y ) ), 1e-4 );
-        NDCHECK_LT( std::abs( ScalarDot( y, z ) ), 1e-4 );
-        NDCHECK_LT( std::abs( ScalarDot( z, x ) ), 1e-4 );
-    }
+    
+    
 
 }
 

@@ -49,24 +49,23 @@ namespace pbrto
     // DiffuseBxDF Definition
     class DiffuseBxDF
     {
+    private:
+        SampledSpectrum::Simd R;
     public:
         // DiffuseBxDF Public Methods
         DiffuseBxDF( ) = default;
-        PBRT_CPU_GPU
-            DiffuseBxDF( SampledSpectrum R ) : R( R ) {}
+        DiffuseBxDF( SampledSpectrum R ) 
+            : R( R ) 
+        { }
 
-        PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
         {
             if ( !SameHemisphere( wo, wi ) )
                 return SampledSpectrum( 0.f );
             return R * InvPi;
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<BSDFSample> Sample_f(
-                Vector3f wo, Float uc, Point2f u, TransportMode mode,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 return {};
@@ -79,31 +78,25 @@ namespace pbrto
             return BSDFSample( R * InvPi, wi, pdf, BxDFFlags::DiffuseReflection );
         }
 
-        PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) || !SameHemisphere( wo, wi ) )
                 return 0;
             return CosineHemispherePDF( AbsCosTheta( wi ) );
         }
 
-        PBRT_CPU_GPU
-            static constexpr const char* Name( ) { return "DiffuseBxDF"; }
+        static constexpr const char* Name( ) { return "DiffuseBxDF"; }
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            void Regularize( ) {}
+        void Regularize( ) {}
 
-        PBRT_CPU_GPU
-            BxDFFlags Flags( ) const
+        BxDFFlags Flags( ) const
         {
             return R ? BxDFFlags::DiffuseReflection : BxDFFlags::Unset;
         }
 
-    private:
-        SampledSpectrum R;
+    
     };
 
     // DiffuseTransmissionBxDF Definition
@@ -590,14 +583,14 @@ namespace pbrto
                 Float uc = r( );
                 pstdo::optional<BSDFSample> wos = enterInterface.Sample_f(
                     wo, uc, Point2f( r( ), r( ) ), mode, BxDFReflTransFlags::Transmission );
-                if ( !wos || !wos->f || wos->pdf == 0 || wos->wi.z == 0 )
+                if ( !wos || !wos->f.AnyNotEqual( 0.f ) || wos->pdf == 0 || wos->wi.z() == 0 )
                     continue;
 
                 // Sample BSDF for virtual light from _wi_
                 uc = r( );
                 pstdo::optional<BSDFSample> wis = exitInterface.Sample_f(
                     wi, uc, Point2f( r( ), r( ) ), !mode, BxDFReflTransFlags::Transmission );
-                if ( !wis || !wis->f || wis->pdf == 0 || wis->wi.z == 0 )
+                if ( !wis || !wis->f.AnyNotEqual( 0.f ) || wis->pdf == 0 || wis->wi.z() == 0 )
                     continue;
 
                 // Declare state for random walk through BSDF layers
@@ -686,7 +679,7 @@ namespace pbrto
                         Float uc = r( );
                         pstdo::optional<BSDFSample> bs = exitInterface.Sample_f(
                             -w, uc, Point2f( r( ), r( ) ), mode, BxDFReflTransFlags::Reflection );
-                        if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z == 0 )
+                        if ( !bs || !bs->f.AnyNotEqual( 0.f ) || bs->pdf == 0 || bs->wi.z( ) == 0 )
                             break;
                         beta *= bs->f * AbsCosTheta( bs->wi ) / bs->pdf;
                         w = bs->wi;
@@ -711,7 +704,7 @@ namespace pbrto
                         Point2f u( r( ), r( ) );
                         pstdo::optional<BSDFSample> bs = nonExitInterface.Sample_f(
                             -w, uc, u, mode, BxDFReflTransFlags::Reflection );
-                        if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z == 0 )
+                        if ( !bs || !bs->f.AnyNotEqual( 0.f ) || bs->pdf == 0 || bs->wi.z() == 0 )
                             break;
                         beta *= bs->f * AbsCosTheta( bs->wi ) / bs->pdf;
                         w = bs->wi;
@@ -757,7 +750,7 @@ namespace pbrto
             bool enteredTop = twoSided || wo.z > 0;
             pstdo::optional<BSDFSample> bs =
                 enteredTop ? top.Sample_f( wo, uc, u, mode ) : bottom.Sample_f( wo, uc, u, mode );
-            if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z == 0 )
+            if ( !bs || !bs->f.AnyNotEqual(0.f) || bs->pdf == 0 || bs->wi.z() == 0 )
                 return {};
             if ( bs->IsReflection( ) )
             {
@@ -847,7 +840,7 @@ namespace pbrto
                 Float uc = r( );
                 Point2f u( r( ), r( ) );
                 pstdo::optional<BSDFSample> bs = interface.Sample_f( -w, uc, u, mode );
-                if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z == 0 )
+                if ( !bs || !bs->f.AnyNotEqual( 0.f ) || bs->pdf == 0 || bs->wi.z() == 0 )
                     return {};
                 f *= bs->f;
                 pdf *= bs->pdf;
@@ -923,7 +916,7 @@ namespace pbrto
                     wis = tInterface.Sample_f( wi, r( ), { r( ), r( ) }, !mode, trans );
 
                     // Update _pdfSum_ accounting for TRT scattering events
-                    if ( wos && wos->f && wos->pdf > 0 && wis && wis->f && wis->pdf > 0 )
+                    if ( wos && wos->f.AnyNotEqual(0.f) && wos->pdf > 0 && wis && wis->f.AnyNotEqual(0.f) && wis->pdf > 0 )
                     {
                         if ( !IsNonSpecular( tInterface.Flags( ) ) )
                             pdfSum += rInterface.PDF( -wos->wi, -wis->wi, mode );
@@ -932,7 +925,7 @@ namespace pbrto
                             // Use multiple importance sampling to estimate PDF product
                             pstdo::optional<BSDFSample> rs =
                                 rInterface.Sample_f( -wos->wi, r( ), { r( ), r( ) }, mode );
-                            if ( rs && rs->f && rs->pdf > 0 )
+                            if ( rs && rs->f.AnyNotEqual(0.f) && rs->pdf > 0 )
                             {
                                 if ( !IsNonSpecular( rInterface.Flags( ) ) )
                                     pdfSum += tInterface.PDF( -rs->wi, wi, mode );
@@ -971,14 +964,14 @@ namespace pbrto
                     Float uc = r( );
                     Point2f u( r( ), r( ) );
                     pstdo::optional<BSDFSample> wos = toInterface.Sample_f( wo, uc, u, mode );
-                    if ( !wos || !wos->f || wos->pdf == 0 || wos->wi.z == 0 ||
+                    if ( !wos || !wos->f.AnyNotEqual( 0.f ) || wos->pdf == 0 || wos->wi.z() == 0 ||
                         wos->IsReflection( ) )
                         continue;
 
                     uc = r( );
                     u = Point2f( r( ), r( ) );
                     pstdo::optional<BSDFSample> wis = tiInterface.Sample_f( wi, uc, u, !mode );
-                    if ( !wis || !wis->f || wis->pdf == 0 || wis->wi.z == 0 ||
+                    if ( !wis || !wis->f.AnyNotEqual(0.f) || wis->pdf == 0 || wis->wi.z( ) == 0 ||
                         wis->IsReflection( ) )
                         continue;
 

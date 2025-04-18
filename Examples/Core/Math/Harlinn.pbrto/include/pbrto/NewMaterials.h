@@ -110,24 +110,24 @@ namespace pbrto
     };
 
     // Normal Mapping Function Definitions
-    inline PBRT_CPU_GPU void NormalMap( const Image& normalMap,
-        const NormalBumpEvalContext& ctx, Vector3f* dpdu,
-        Vector3f* dpdv )
+    inline void NormalMap( const Image& normalMap, const NormalBumpEvalContext& ctx, Vector3f* dpdu, Vector3f* dpdv )
     {
         // Get normalized normal vector from normal map
         WrapMode2D wrap( WrapMode::Repeat );
         Point2f uv( ctx.uv[ 0 ], 1 - ctx.uv[ 1 ] );
-        Vector3f ns( 2 * normalMap.BilerpChannel( uv, 0, wrap ) - 1,
+        Vector3f::Simd ns( 2 * normalMap.BilerpChannel( uv, 0, wrap ) - 1,
             2 * normalMap.BilerpChannel( uv, 1, wrap ) - 1,
             2 * normalMap.BilerpChannel( uv, 2, wrap ) - 1 );
         ns = Normalize( ns );
 
         // Transform tangent-space normal to rendering space
-        Frame frame = Frame::FromXZ( Normalize( ctx.shading.dpdu ), Vector3f( ctx.shading.n ) );
+        Frame frame = Frame::FromXZ( Normalize( ctx.shading.dpdu ), Vector3f::Simd( ctx.shading.n ) );
         ns = frame.FromLocal( ns );
 
         // Find $\dpdu$ and $\dpdv$ that give shading normal
-        Float ulen = ScalarLength( ctx.shading.dpdu ), vlen = ScalarLength( ctx.shading.dpdv );
+        Float ulen = ScalarLength( ctx.shading.dpdu );
+        Float vlen = ScalarLength( ctx.shading.dpdv );
+
         *dpdu = Normalize( GramSchmidt( ctx.shading.dpdu, ns ) ) * ulen;
         *dpdv = Normalize( Cross( ns, *dpdu ) ) * vlen;
     }

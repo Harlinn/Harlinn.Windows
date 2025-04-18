@@ -43,7 +43,7 @@ namespace pbrto
 {
 
     // Transform Definition
-    class Transform
+    class alignas( SquareMatrix<4>::Traits::AlignAs ) Transform
     {
     public:
         using MatrixType = SquareMatrix<4>;
@@ -107,11 +107,18 @@ namespace pbrto
         { }
 
         inline Transform( const Frame& frame )
+            /*
             : Transform( SquareMatrix<4>(
                 frame.x.x, frame.x.y, frame.x.z, 0,
                 frame.y.x, frame.y.y, frame.y.z, 0,
                 frame.z.x, frame.z.y, frame.z.z, 0,
                 0, 0, 0, 1 ) )
+            */
+            : Transform( SquareMatrix<4>::Simd(
+                frame.x.simd,
+                frame.y.simd,
+                frame.z.simd,
+                { 0, 0, 0, 1 } ) )
         { }
 
 

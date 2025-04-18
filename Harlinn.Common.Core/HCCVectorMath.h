@@ -845,6 +845,17 @@ namespace Harlinn::Common::Core::Math
             return Traits::AllEqual( simd, Traits::Fill( value ) ) == false;
         }
 
+        bool AnyEqual( const value_type& value ) const noexcept
+        {
+            return Traits::AnyEqual( simd, Traits::Fill( value ) ) == false;
+        }
+        bool AnyNotEqual( const value_type& value ) const noexcept
+        {
+            return Traits::AnyNotEqual( simd, Traits::Fill( value ) ) == false;
+        }
+
+
+
 
         template<Internal::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
@@ -11912,7 +11923,7 @@ namespace Harlinn::Common::Core::Math
 
     
     template<typename QuaternionT>
-    class QuaternionSimd : public Internal::QuaternionSimdBase
+    class alignas( QuaternionT::Traits::AlignAs ) QuaternionSimd : public Internal::QuaternionSimdBase
     {
     public:
         using QuaternionType = QuaternionT;
