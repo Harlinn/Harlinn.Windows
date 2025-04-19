@@ -872,7 +872,7 @@ namespace pbrto
             elementZ -= element.thickness;
             // Compute intersection of ray with lens element
             Float t;
-            Normal3f n;
+            Normal3f::Simd n;
             bool isStop = ( element.curvatureRadius == 0 );
             if ( isStop )
             {
@@ -1098,7 +1098,7 @@ namespace pbrto
             const LensElementInterface& element = elementInterfaces[ i ];
             // Compute intersection of ray with lens element
             Float t;
-            Normal3f n;
+            Normal3f::Simd n;
             bool isStop = ( element.curvatureRadius == 0 );
             if ( isStop )
             {
@@ -1258,7 +1258,7 @@ namespace pbrto
             bool isStop = ( element.curvatureRadius == 0 );
             // Compute intersection of ray with lens element
             Float t;
-            Normal3f n;
+            Normal3f::Simd n;
             if ( isStop )
                 t = -( ray.o.z( ) - elementZ ) / ray.d.z( );
             else
@@ -1328,7 +1328,7 @@ namespace pbrto
             bool isStop = ( element.curvatureRadius == 0 );
             // Compute intersection of ray with lens element
             Float t;
-            Normal3f n;
+            Normal3f::Simd n;
             if ( isStop )
                 t = -( ray.o.z( ) - elementZ ) / ray.d.z( );
             else

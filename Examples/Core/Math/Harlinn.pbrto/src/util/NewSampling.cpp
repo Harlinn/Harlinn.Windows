@@ -259,9 +259,7 @@ namespace pbrto
         return pRef + R.FromLocal( Vector3f( xu, yv, z0 ) );
     }
 
-    PBRT_CPU_GPU Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f s, Vector3f ex,
-        Vector3f ey,
-        Point3f pRect )
+    Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey, Point3f pRect )
     {
         // TODO: Delete anything unused in the below...
 
@@ -271,7 +269,7 @@ namespace pbrto
         Frame R = Frame::FromXY( ex / exl, ey / eyl );
 
         // compute rectangle coords in local reference system
-        Vector3f d = s - pRef;
+        Vector3f::Simd d = s - pRef;
         Vector3f dLocal = R.ToLocal( d );
         Float z0 = dLocal.z;
 
@@ -286,7 +284,8 @@ namespace pbrto
         Float y0 = dLocal.y;
         Float x1 = x0 + exl;
         Float y1 = y0 + eyl;
-        Float y0sq = Sqr( y0 ), y1sq = Sqr( y1 );
+        Float y0sq = Sqr( y0 ); 
+        Float y1sq = Sqr( y1 );
 
         // create vectors to four vertices
         Vector3f::Simd v00( x0, y0, z0 ), v01( x0, y1, z0 );
@@ -313,7 +312,7 @@ namespace pbrto
         // TODO: this (rarely) goes differently than sample. figure out why...
         if ( solidAngle < 1e-3 )
         {
-            Vector3f pq = pRect - s;
+            Vector3f::Simd pq = pRect - s;
             return Point2f( ScalarDot( pq, ex ) / ScalarLengthSquared( ex ), ScalarDot( pq, ey ) / ScalarLengthSquared( ey ) );
         }
 
@@ -352,8 +351,8 @@ namespace pbrto
 
         Float sqrt = SafeSqrt( DifferenceOfProducts( b0, b0, b1, b1 ) + fusq );
         // No benefit to difference of products here...
-        Float au = Math::ATan2( -( b1 * fu ) - pstdo::copysign( b0 * sqrt, fu * b0 ),
-            b0 * b1 - sqrt * std::abs( fu ) );
+        Float au = Math::ATan2( -( b1 * fu ) - Math::CopySign( b0 * sqrt, fu * b0 ),
+                            b0 * b1 - sqrt * std::abs( fu ) );
         if ( au > 0 )
             au -= 2 * Pi;
 
@@ -403,8 +402,7 @@ namespace pbrto
         if ( std::abs( g ) < 1e-3f )
             cosTheta = 1 - 2 * u[ 0 ];
         else
-            cosTheta =
-            -1 / ( 2 * g ) * ( 1 + Sqr( g ) - Sqr( ( 1 - Sqr( g ) ) / ( 1 + g - 2 * g * u[ 0 ] ) ) );
+            cosTheta = -1 / ( 2 * g ) * ( 1 + Sqr( g ) - Sqr( ( 1 - Sqr( g ) ) / ( 1 + g - 2 * g * u[ 0 ] ) ) );
 
         // Compute direction _wi_ for Henyey--Greenstein sample
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );

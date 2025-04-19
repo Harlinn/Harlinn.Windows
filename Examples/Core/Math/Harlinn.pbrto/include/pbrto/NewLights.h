@@ -61,6 +61,11 @@ namespace pbrto
     // LightLiSample Definition
     struct LightLiSample
     {
+        Vector3f::Simd wi;
+        SampledSpectrum L;
+        Float pdf;
+        Interaction pLight;
+
         // LightLiSample Public Methods
         LightLiSample( ) = default;
         PBRT_CPU_GPU
@@ -71,24 +76,25 @@ namespace pbrto
         }
         std::string ToString( ) const;
 
-        SampledSpectrum L;
-        Vector3f wi;
-        Float pdf;
-        Interaction pLight;
+        
     };
 
     // LightLeSample Definition
     struct LightLeSample
     {
+        // LightLeSample Public Members
+        Ray ray;
+        SampledSpectrum L;
+        pstdo::optional<Interaction> intr;
+        Float pdfPos = 0, pdfDir = 0;
+
         // LightLeSample Public Methods
         LightLeSample( ) = default;
-        PBRT_CPU_GPU
-            LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
+        LightLeSample( const SampledSpectrum& L, const Ray& ray, Float pdfPos, Float pdfDir )
             : L( L ), ray( ray ), pdfPos( pdfPos ), pdfDir( pdfDir )
         {
         }
-        PBRT_CPU_GPU
-            LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr,
+        LightLeSample( const SampledSpectrum& L, const Ray& ray, const Interaction& intr,
                 Float pdfPos, Float pdfDir )
             : L( L ), ray( ray ), intr( intr ), pdfPos( pdfPos ), pdfDir( pdfDir )
         {
@@ -96,74 +102,73 @@ namespace pbrto
         }
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            Float AbsCosTheta( Vector3f w ) const { return intr ? ScalarAbsDot( w, intr->n ) : 1.f; }
+        Float AbsCosTheta( Vector3f w ) const 
+        { 
+            return intr ? ScalarAbsDot( w, intr->n ) : 1.f; 
+        }
 
-        // LightLeSample Public Members
-        SampledSpectrum L;
-        Ray ray;
-        pstdo::optional<Interaction> intr;
-        Float pdfPos = 0, pdfDir = 0;
+        
     };
 
     // LightSampleContext Definition
     class LightSampleContext
     {
     public:
-        // LightSampleContext Public Methods
-        LightSampleContext( ) = default;
-        PBRT_CPU_GPU
-            LightSampleContext( const SurfaceInteraction& si )
-            : pi( si.pi ), n( si.n ), ns( si.shading.n )
-        {
-        }
-        PBRT_CPU_GPU
-            LightSampleContext( const Interaction& intr ) : pi( intr.pi ) {}
-        PBRT_CPU_GPU
-            LightSampleContext( Point3fi pi, Normal3f n, Normal3f ns ) : pi( pi ), n( n ), ns( ns ) {}
-
-        PBRT_CPU_GPU
-            Point3f p( ) const { return Point3f( pi ); }
-
         // LightSampleContext Public Members
         Point3fi pi;
         Normal3f n, ns;
+
+        // LightSampleContext Public Methods
+        LightSampleContext( ) = default;
+        LightSampleContext( const SurfaceInteraction& si )
+            : pi( si.pi ), n( si.n ), ns( si.shading.n )
+        {
+        }
+        LightSampleContext( const Interaction& intr ) : pi( intr.pi ) {}
+        LightSampleContext( Point3fi pi, Normal3f n, Normal3f ns ) : pi( pi ), n( n ), ns( ns ) {}
+
+        Point3f p( ) const { return Point3f( pi ); }
+
+        
     };
 
     // LightBounds Definition
     class LightBounds
     {
     public:
-        // LightBounds Public Methods
-        LightBounds( ) = default;
-        LightBounds( const Bounds3f& b, Vector3f w, Float phi, Float cosTheta_o,
-            Float cosTheta_e, bool twoSided );
-
-        PBRT_CPU_GPU
-            Point3f Centroid( ) const { return ( bounds.pMin + bounds.pMax ) / 2; }
-
-        PBRT_CPU_GPU
-            Float Importance( Point3f p, Normal3f n ) const;
-
-        std::string ToString( ) const;
-
         // LightBounds Public Members
         Bounds3f bounds;
         Float phi = 0;
         Vector3f w;
         Float cosTheta_o, cosTheta_e;
         bool twoSided;
+
+        // LightBounds Public Methods
+        LightBounds( ) = default;
+        LightBounds( const Bounds3f& b, Vector3f w, Float phi, Float cosTheta_o,
+            Float cosTheta_e, bool twoSided );
+
+        Point3f Centroid( ) const 
+        { 
+            return ( bounds.pMin + bounds.pMax ) / 2.f; 
+        }
+
+        Float Importance( Point3f p, Normal3f n ) const;
+
+        std::string ToString( ) const;
+
+        
     };
 
     // LightBounds Inline Methods
     inline LightBounds::LightBounds( const Bounds3f& b, Vector3f w, Float phi,
         Float cosTheta_o, Float cosTheta_e, bool twoSided )
         : bounds( b ),
-        w( Normalize( w ) ),
-        phi( phi ),
-        cosTheta_o( cosTheta_o ),
-        cosTheta_e( cosTheta_e ),
-        twoSided( twoSided )
+          w( Normalize( w ) ),
+          phi( phi ),
+          cosTheta_o( cosTheta_o ),
+          cosTheta_e( cosTheta_e ),
+          twoSided( twoSided )
     {
     }
 
@@ -176,14 +181,12 @@ namespace pbrto
             return a;
 
         // Find average direction and updated angles for _LightBounds_
-        DirectionCone cone =
-            Union( DirectionCone( a.w, a.cosTheta_o ), DirectionCone( b.w, b.cosTheta_o ) );
+        DirectionCone cone = Union( DirectionCone( a.w, a.cosTheta_o ), DirectionCone( b.w, b.cosTheta_o ) );
         Float cosTheta_o = cone.cosTheta;
         Float cosTheta_e = std::min( a.cosTheta_e, b.cosTheta_e );
 
         // Return final _LightBounds_ union
-        return LightBounds( Union( a.bounds, b.bounds ), cone.w, a.phi + b.phi, cosTheta_o,
-            cosTheta_e, a.twoSided | b.twoSided );
+        return LightBounds( Union( a.bounds, b.bounds ), cone.w, a.phi + b.phi, cosTheta_o, cosTheta_e, a.twoSided | b.twoSided );
     }
 
     // LightBase Definition

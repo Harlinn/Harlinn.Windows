@@ -63,22 +63,25 @@ namespace pbrto
     public:
         // HGPhaseFunction Public Methods
         HGPhaseFunction( ) = default;
-        PBRT_CPU_GPU
-            HGPhaseFunction( Float g ) : g( g ) {}
+        HGPhaseFunction( Float g ) : g( g ) 
+        {}
 
-        PBRT_CPU_GPU
-            Float p( Vector3f wo, Vector3f wi ) const { return HenyeyGreenstein( ScalarDot( wo, wi ), g ); }
+        Float p( Vector3f wo, Vector3f wi ) const 
+        { 
+            return HenyeyGreenstein( ScalarDot( wo, wi ), g ); 
+        }
 
-        PBRT_CPU_GPU
-            pstdo::optional<PhaseFunctionSample> Sample_p( Vector3f wo, Point2f u ) const
+        pstdo::optional<PhaseFunctionSample> Sample_p( Vector3f wo, Point2f u ) const
         {
             Float pdf;
             Vector3f wi = SampleHenyeyGreenstein( wo, g, u, &pdf );
             return PhaseFunctionSample{ pdf, wi, pdf };
         }
 
-        PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi ) const { return p( wo, wi ); }
+        Float PDF( Vector3f wo, Vector3f wi ) const 
+        { 
+            return p( wo, wi ); 
+        }
 
         static const char* Name( ) { return "Henyey-Greenstein"; }
 

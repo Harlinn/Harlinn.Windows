@@ -38,8 +38,9 @@ namespace pbrto
     class BSDF
     {
         // BSDF Private Members
-        BxDF bxdf;
         Frame shadingFrame;
+        BxDF bxdf;
+        
     public:
         // BSDF Public Methods
         BSDF( ) = default;

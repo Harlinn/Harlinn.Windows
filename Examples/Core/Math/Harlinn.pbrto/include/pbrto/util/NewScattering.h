@@ -34,13 +34,12 @@ namespace pbrto
 {
 
     // Scattering Inline Functions
-    PBRT_CPU_GPU inline Vector3f Reflect( Vector3f wo, Vector3f n )
+    inline Vector3f Reflect( Vector3f wo, Vector3f n )
     {
         return -wo + 2 * ScalarDot( wo, n ) * n;
     }
 
-    PBRT_CPU_GPU inline bool Refract( Vector3f wi, Normal3f n, Float eta, Float* etap,
-        Vector3f* wt )
+    inline bool Refract( Vector3f wi, Normal3f n, Float eta, Float* etap, Vector3f* wt )
     {
         Float cosTheta_i = ScalarDot( n, wi );
         // Potentially flip interface orientation for Snell's law
@@ -68,7 +67,38 @@ namespace pbrto
         return true;
     }
 
-    PBRT_CPU_GPU inline Float HenyeyGreenstein( Float cosTheta, Float g )
+    inline bool Refract( const Vector3f::Simd& wi, Normal3f::Simd n, Float eta, Float* etap, Vector3f* wt )
+    {
+        Float cosTheta_i = ScalarDot( n, wi );
+        // Potentially flip interface orientation for Snell's law
+        if ( cosTheta_i < 0 )
+        {
+            eta = 1 / eta;
+            cosTheta_i = -cosTheta_i;
+            n = -n;
+        }
+
+        // Compute $\cos\,\theta_\roman{t}$ using Snell's law
+        Float sin2Theta_i = std::max<Float>( 0, 1 - Sqr( cosTheta_i ) );
+        Float sin2Theta_t = sin2Theta_i / Sqr( eta );
+        // Handle total internal reflection case
+        if ( sin2Theta_t >= 1 )
+        {
+            return false;
+        }
+        Float cosTheta_t = Math::Sqrt( 1 - sin2Theta_t );
+
+        *wt = -wi / eta + ( cosTheta_i / eta - cosTheta_t ) * n;
+        // Provide relative IOR along ray to caller
+        if ( etap )
+        {
+            *etap = eta;
+        }
+
+        return true;
+    }
+
+    inline Float HenyeyGreenstein( Float cosTheta, Float g )
     {
         // The Henyey-Greenstein phase function isn't suitable for |g| \approx
         // 1 so we clamp it before it becomes numerically instable. (It's an
@@ -81,7 +111,7 @@ namespace pbrto
     }
 
     // Fresnel Inline Functions
-    PBRT_CPU_GPU inline Float FrDielectric( Float cosTheta_i, Float eta )
+    inline Float FrDielectric( Float cosTheta_i, Float eta )
     {
         cosTheta_i = Clamp( cosTheta_i, -1, 1 );
         // Potentially flip interface orientation for Fresnel equations
@@ -103,7 +133,7 @@ namespace pbrto
         return ( Sqr( r_parl ) + Sqr( r_perp ) ) / 2;
     }
 
-    PBRT_CPU_GPU inline Float FrComplex( Float cosTheta_i, pstdo::complex<Float> eta )
+    inline Float FrComplex( Float cosTheta_i, pstdo::complex<Float> eta )
     {
         using Complex = pstdo::complex<Float>;
         cosTheta_i = Clamp( cosTheta_i, 0, 1 );
@@ -117,29 +147,30 @@ namespace pbrto
         return ( pstdo::norm( r_parl ) + pstdo::norm( r_perp ) ) / 2;
     }
 
-    PBRT_CPU_GPU inline SampledSpectrum FrComplex( Float cosTheta_i, SampledSpectrum eta,
-        SampledSpectrum k )
+    inline SampledSpectrum FrComplex( Float cosTheta_i, SampledSpectrum eta, SampledSpectrum k )
     {
         SampledSpectrum result;
         for ( int i = 0; i < NSpectrumSamples; ++i )
+        {
             result[ i ] = FrComplex( cosTheta_i, pstdo::complex<Float>( eta[ i ], k[ i ] ) );
+        }
         return result;
     }
 
     // BSSRDF Utility Declarations
-    PBRT_CPU_GPU
-        Float FresnelMoment1( Float invEta );
-    PBRT_CPU_GPU
-        Float FresnelMoment2( Float invEta );
+    Float FresnelMoment1( Float invEta );
+    Float FresnelMoment2( Float invEta );
 
     // TrowbridgeReitzDistribution Definition
     class TrowbridgeReitzDistribution
     {
+        // TrowbridgeReitzDistribution Private Members
+        Float alpha_x; 
+        Float alpha_y;
     public:
         // TrowbridgeReitzDistribution Public Methods
         TrowbridgeReitzDistribution( ) = default;
-        PBRT_CPU_GPU
-            TrowbridgeReitzDistribution( Float ax, Float ay )
+        TrowbridgeReitzDistribution( Float ax, Float ay )
             : alpha_x( ax ), alpha_y( ay )
         {
             if ( !EffectivelySmooth( ) )
@@ -152,7 +183,7 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU inline Float D( Vector3f wm ) const
+        inline Float D( Vector3f wm ) const
         {
             Float tan2Theta = Tan2Theta( wm );
             if ( IsInf( tan2Theta ) )
@@ -164,60 +195,67 @@ namespace pbrto
             return 1 / ( Pi * alpha_x * alpha_y * cos4Theta * Sqr( 1 + e ) );
         }
 
-        PBRT_CPU_GPU
-            bool EffectivelySmooth( ) const { return std::max( alpha_x, alpha_y ) < 1e-3f; }
+        bool EffectivelySmooth( ) const 
+        { 
+            return std::max( alpha_x, alpha_y ) < 1e-3f; 
+        }
 
-        PBRT_CPU_GPU
-            Float G1( Vector3f w ) const { return 1 / ( 1 + Lambda( w ) ); }
+        Float G1( Vector3f w ) const 
+        { 
+            return 1 / ( 1 + Lambda( w ) ); 
+        }
 
-        PBRT_CPU_GPU
-            Float Lambda( Vector3f w ) const
+        Float Lambda( Vector3f w ) const
         {
             Float tan2Theta = Tan2Theta( w );
             if ( IsInf( tan2Theta ) )
+            {
                 return 0;
+            }
             Float alpha2 = Sqr( CosPhi( w ) * alpha_x ) + Sqr( SinPhi( w ) * alpha_y );
             return ( Math::Sqrt( 1 + alpha2 * tan2Theta ) - 1 ) / 2;
         }
 
-        PBRT_CPU_GPU
-            Float G( Vector3f wo, Vector3f wi ) const { return 1 / ( 1 + Lambda( wo ) + Lambda( wi ) ); }
+        Float G( Vector3f wo, Vector3f wi ) const 
+        { 
+            return 1 / ( 1 + Lambda( wo ) + Lambda( wi ) ); 
+        }
 
-        PBRT_CPU_GPU
-            Float D( Vector3f w, Vector3f wm ) const
+        Float D( Vector3f w, Vector3f wm ) const
         {
             return G1( w ) / AbsCosTheta( w ) * D( wm ) * ScalarAbsDot( w, wm );
         }
 
-        PBRT_CPU_GPU
-            Float PDF( Vector3f w, Vector3f wm ) const { return D( w, wm ); }
+        Float PDF( Vector3f w, Vector3f wm ) const 
+        { 
+            return D( w, wm ); 
+        }
 
-        PBRT_CPU_GPU
-            Vector3f Sample_wm( Vector3f w, Point2f u ) const
+        Vector3f Sample_wm( Vector3f w, Point2f u ) const
         {
             // Transform _w_ to hemispherical configuration
-            Vector3f wh = Normalize( Vector3f( alpha_x * w.x, alpha_y * w.y, w.z ) );
-            if ( wh.z < 0 )
+            Vector3f::Simd wh = Normalize( Vector3f::Simd( alpha_x * w.x, alpha_y * w.y, w.z ) );
+            auto whz = wh.z( );
+            if ( whz < 0 )
+            {
                 wh = -wh;
-
+            }
             // Find orthonormal basis for visible normal sampling
-            Vector3f T1 = ( wh.z < 0.99999f ) ? Vector3f( Normalize( Cross( Vector3f( 0, 0, 1 ), wh ) ) )
-                : Vector3f( 1, 0, 0 );
-            Vector3f T2 = Cross( wh, T1 );
+            Vector3f::Simd T1 = ( whz < 0.99999f ) ? Normalize( Cross( Vector3f::Simd( 0, 0, 1 ), wh ) ) : Vector3f::Simd( 1, 0, 0 );
+            Vector3f::Simd T2 = Cross( wh, T1 );
 
             // Generate uniformly distributed points on the unit disk
             Point2f p = SampleUniformDiskPolar( u );
 
             // Warp hemispherical projection for visible normal sampling
             Float h = Math::Sqrt( 1 - Sqr( p.x ) );
-            p.y = Lerp( ( 1 + wh.z ) / 2, h, p.y );
+            p.y = Lerp( ( 1 + whz ) / 2, h, p.y );
 
             // Reproject to hemisphere and transform normal to ellipsoid configuration
             Float pz = Math::Sqrt( std::max<Float>( 0, 1 - ScalarLengthSquared( Vector2f( p ) ) ) );
             Vector3f nh = p.x * T1 + p.y * T2 + pz * wh;
             NCHECK_RARE( 1e-5f, nh.z == 0 );
-            return Normalize(
-                Vector3f( alpha_x * nh.x, alpha_y * nh.y, std::max<Float>( 1e-6f, nh.z ) ) );
+            return Normalize( Vector3f( alpha_x * nh.x, alpha_y * nh.y, std::max<Float>( 1e-6f, nh.z ) ) );
         }
 
         std::string ToString( ) const;
@@ -227,21 +265,22 @@ namespace pbrto
         // time after pbrt-v4 shipped: https://github.com/mmp/pbrt-v4/issues/479.
         // therefore, we will leave it as is so that the rendered results with
         // existing pbrt-v4 scenes doesn't change unexpectedly.
-        PBRT_CPU_GPU
-            static Float RoughnessToAlpha( Float roughness ) { return Math::Sqrt( roughness ); }
-
-        PBRT_CPU_GPU
-            void Regularize( )
-        {
-            if ( alpha_x < 0.3f )
-                alpha_x = Clamp( 2 * alpha_x, 0.1f, 0.3f );
-            if ( alpha_y < 0.3f )
-                alpha_y = Clamp( 2 * alpha_y, 0.1f, 0.3f );
+        static Float RoughnessToAlpha( Float roughness ) 
+        { 
+            return Math::Sqrt( roughness ); 
         }
 
-    private:
-        // TrowbridgeReitzDistribution Private Members
-        Float alpha_x, alpha_y;
+        void Regularize( )
+        {
+            if ( alpha_x < 0.3f )
+            {
+                alpha_x = Clamp( 2 * alpha_x, 0.1f, 0.3f );
+            }
+            if ( alpha_y < 0.3f )
+            {
+                alpha_y = Clamp( 2 * alpha_y, 0.1f, 0.3f );
+            }
+        }
     };
 
 }

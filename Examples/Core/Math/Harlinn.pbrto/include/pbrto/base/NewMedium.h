@@ -41,7 +41,7 @@ namespace pbrto
     struct PhaseFunctionSample
     {
         Float p;
-        Vector3f wi;
+        Vector3f::Simd wi;
         Float pdf;
     };
 
@@ -56,12 +56,11 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU inline Float p( Vector3f wo, Vector3f wi ) const;
+        inline Float p( Vector3f wo, Vector3f wi ) const;
 
-        PBRT_CPU_GPU inline pstdo::optional<PhaseFunctionSample> Sample_p( Vector3f wo,
-            Point2f u ) const;
+        inline pstdo::optional<PhaseFunctionSample> Sample_p( Vector3f wo, Point2f u ) const;
 
-        PBRT_CPU_GPU inline Float PDF( Vector3f wo, Vector3f wi ) const;
+        inline Float PDF( Vector3f wo, Vector3f wi ) const;
     };
 
     class HomogeneousMedium;

@@ -1341,15 +1341,14 @@ namespace pbrto
 
                 // Convert probe intersection to _BSSRDFSample_
                 SubsurfaceInteraction ssi = interactionSampler.GetSample( );
-                BSSRDFSample bssrdfSample =
-                    bssrdf.ProbeIntersectionToSample( ssi, scratchBuffer );
-                if ( !bssrdfSample.Sp || !bssrdfSample.pdf )
+                BSSRDFSample bssrdfSample = bssrdf.ProbeIntersectionToSample( ssi, scratchBuffer );
+                if ( !bssrdfSample.Sp.AnyNotEqual(0.f) || !bssrdfSample.pdf.AnyNotEqual( 0.f ) )
                     break;
-
+                auto pdf0 = bssrdfSample.pdf[ 0 ];
                 // Update path state for subsurface scattering
-                Float pdf = interactionSampler.SampleProbability( ) * bssrdfSample.pdf[ 0 ];
+                Float pdf = interactionSampler.SampleProbability( ) * pdf0;
                 beta *= bssrdfSample.Sp / pdf;
-                r_u *= bssrdfSample.pdf / bssrdfSample.pdf[ 0 ];
+                r_u *= bssrdfSample.pdf / pdf0;
                 SurfaceInteraction pi = ssi;
                 pi.wo = bssrdfSample.wo;
                 prevIntrContext = LightSampleContext( pi );

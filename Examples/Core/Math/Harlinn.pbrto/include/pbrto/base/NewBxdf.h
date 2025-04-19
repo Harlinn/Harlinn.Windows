@@ -157,16 +157,23 @@ namespace pbrto
 
         // BSDFSample Public Methods
         BSDFSample( ) = default;
-        BSDFSample( SampledSpectrum f, Vector3f wi, Float pdf, BxDFFlags flags, Float eta = 1,
-                bool pdfIsProportional = false )
+        BSDFSample( SampledSpectrum f, Vector3f wi, Float pdf, BxDFFlags flags, Float eta = 1, bool pdfIsProportional = false )
             : f( f ),
               wi( wi ),
               pdf( pdf ),
               flags( flags ),
               eta( eta ),
               pdfIsProportional( pdfIsProportional )
-        {
-        }
+        { }
+
+        BSDFSample( const SampledSpectrum::Simd& f, const Vector3f::Simd& wi, Float pdf, BxDFFlags flags, Float eta = 1, bool pdfIsProportional = false )
+            : f( f ),
+              wi( wi ),
+              pdf( pdf ),
+              flags( flags ),
+              eta( eta ),
+              pdfIsProportional( pdfIsProportional )
+        { }
 
         bool IsReflection( ) const { return pbrto::IsReflective( flags ); }
         bool IsTransmission( ) const { return pbrto::IsTransmissive( flags ); }
