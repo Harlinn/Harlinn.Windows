@@ -94,7 +94,7 @@ namespace pbrto
         PBRT_CPU_GPU
             FilterSample Sample( Point2f u ) const
         {
-            Point2f p( Lerp( u[ 0 ], -radius.x, radius.x ), Lerp( u[ 1 ], -radius.y, radius.y ) );
+            Point2f p( Lerp2( u[ 0 ], -radius.x, radius.x ), Lerp2( u[ 1 ], -radius.y, radius.y ) );
             return { p, Float( 1 ) };
         }
 

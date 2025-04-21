@@ -2597,6 +2597,10 @@ namespace Harlinn::Common::Core::SIMD
             static constexpr SIMDType QNaN = { { Base::QNaNValue, Base::QNaNValue, Base::QNaNValue, Base::QNaNValue } };
             static constexpr SIMDType QNaNTest = { { Base::QNaNTestValue, Base::QNaNTestValue, Base::QNaNTestValue, Base::QNaNTestValue } };
             static constexpr SIMDType AbsMask = { { Base::AbsMaskValue, Base::AbsMaskValue, Base::AbsMaskValue, Base::AbsMaskValue } };
+            static constexpr SIMDType AbsXMask = { { Base::AbsMaskValue, Base::BitsSet, Base::BitsSet, Base::BitsSet } };
+            static constexpr SIMDType AbsYMask = { { Base::BitsSet, Base::AbsMaskValue, Base::BitsSet, Base::BitsSet } };
+            static constexpr SIMDType AbsZMask = { { Base::BitsSet, Base::BitsSet, Base::AbsMaskValue, Base::BitsSet } };
+            static constexpr SIMDType AbsWMask = { { Base::BitsSet, Base::BitsSet, Base::BitsSet, Base::AbsMaskValue } };
             static constexpr SIMDType FltMin = { { Base::FltMinValue, Base::FltMinValue, Base::FltMinValue, Base::FltMinValue } };
             static constexpr SIMDType FltMax = { { Base::FltMaxValue, Base::FltMaxValue, Base::FltMaxValue, Base::FltMaxValue } };
             static constexpr SIMDType NegOneMask = { { Base::NegOneMaskValue, Base::NegOneMaskValue, Base::NegOneMaskValue, Base::NegOneMaskValue } };
@@ -2740,6 +2744,50 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_broadcast_ss( &value );
             }
         }
+        template<size_t Num>
+        static SIMDType Fill( Type value ) noexcept requires ( Num > 0 && Num <= Size)
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                if constexpr ( Num == 1 )
+                {
+                    return Set( value );
+                }
+                else if constexpr ( Num == 2 )
+                {
+                    return Set( value, value );
+                }
+                else if constexpr ( Num == 3 )
+                {
+                    return Set( value, value, value );
+                }
+                else
+                {
+                    return _mm_broadcast_ss( &value );
+                }
+            }
+            else
+            {
+                if constexpr ( Num == 5 )
+                {
+                    return Set( value, value, value, value, value );
+                }
+                else if constexpr ( Num == 6 )
+                {
+                    return Set( value, value, value, value, value, value );
+                }
+                else if constexpr ( Num == 7 )
+                {
+                    return Set( value, value, value, value, value, value, value );
+                }
+                else
+                {
+                    return _mm256_broadcast_ss( &value );
+                }
+            }
+        }
+
+
 
         
 
@@ -4292,6 +4340,28 @@ namespace Harlinn::Common::Core::SIMD
             return Max( Sub( Zero( ), v ), v );
         }
 
+        static SIMDType AbsX( SIMDType v ) noexcept
+        {
+            return Select( Abs( v ), v, Constants::Select1222 );
+        }
+        static SIMDType AbsY( SIMDType v ) noexcept
+        {
+            return Select( Abs( v ), v, Constants::Select2122 );
+        }
+        static SIMDType AbsZ( SIMDType v ) noexcept
+        {
+            return Select( Abs( v ), v, Constants::Select2212 );
+        }
+        static SIMDType AbsW( SIMDType v ) noexcept
+        {
+            return Select( Abs( v ), v, Constants::Select2221 );
+        }
+
+        static SIMDType AbsXY( SIMDType v ) noexcept
+        {
+            return Select( Abs( v ), v, Constants::Select1122 );
+        }
+
 
 
         static SIMDType Min( SIMDType lhs, SIMDType rhs ) noexcept
@@ -4504,27 +4574,59 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-        static SIMDType Lerp( Type t, SIMDType v1, SIMDType v2 ) noexcept
+        static SIMDType Lerp( SIMDType v1, SIMDType v2, Type t ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( _mm_set_ps1( 1.f ), v2 ), _mm_set_ps1( t ) ) );
+                //return _mm_fmadd_ps( Fill<Size>( t ), v2, _mm_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
+
+                return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
             else
             {   
-                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( _mm256_set1_ps( 1.f ), v2 ), _mm256_set1_ps( t ) ) );
+                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
             }
         }
 
-        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType v3 ) noexcept
+        static SIMDType Lerp( SIMDType v1, SIMDType v2, SIMDType t ) noexcept
         {
             if constexpr ( UseShortSIMDType )
             {
-                return _mm_fmadd_ps( v3, v2, _mm_mul_ps( _mm_sub_ps( _mm_set_ps1( 1.f ), v3 ), v1));
+                //return _mm_fmadd_ps( t, v2, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
+
+                return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), t ));
             }
             else
             {
-                return _mm256_fmadd_ps( v3, v2, _mm256_mul_ps( _mm256_sub_ps( _mm256_set1_ps( 1.f ), v3 ), v1 ) );
+                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
+            }
+        }
+
+        static SIMDType Lerp2( SIMDType v1, SIMDType v2, Type t ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_fmadd_ps( Fill<Size>( t ), v2, _mm_mul_ps( Fill<Size>( 1.f - t ), v1 ) );
+
+                //return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
+            }
+            else
+            {
+                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), Fill<Size>( t ) ) );
+            }
+        }
+
+        static SIMDType Lerp2( SIMDType v1, SIMDType v2, SIMDType t ) noexcept
+        {
+            if constexpr ( UseShortSIMDType )
+            {
+                return _mm_fmadd_ps( t, v2, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), t ), v1 ) );
+
+                //return _mm_fmadd_ps( v2, v1, _mm_mul_ps( _mm_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
+            }
+            else
+            {
+                return _mm256_fmadd_ps( v2, v1, _mm256_mul_ps( _mm256_sub_ps( Fill<Size>( 1.f ), v2 ), t ) );
             }
         }
 
@@ -4552,6 +4654,29 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm256_sub_ps( _mm256_setzero_ps( ), v );
             }
         }
+
+        static SIMDType NegateX( SIMDType v ) noexcept
+        {
+            return Select( Negate( v ), v, Constants::Select1222 );
+        }
+        static SIMDType NegateY( SIMDType v ) noexcept
+        {
+            return Select( Negate( v ), v, Constants::Select2122 );
+        }
+        static SIMDType NegateZ( SIMDType v ) noexcept
+        {
+            return Select( Negate( v ), v, Constants::Select2212 );
+        }
+        static SIMDType NegateW( SIMDType v ) noexcept
+        {
+            return Select( Negate( v ), v, Constants::Select2221 );
+        }
+
+        static SIMDType NegateXY( SIMDType v ) noexcept
+        {
+            return Select( Negate( v ), v, Constants::Select1122 );
+        }
+
 
         static SIMDType ModAngles( SIMDType v ) noexcept
         {

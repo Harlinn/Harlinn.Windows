@@ -102,7 +102,7 @@ namespace pbrto
             {
                 Point2f u( ( x + rng.Uniform<Float>( ) ) / sqrtSamples,
                     ( y + rng.Uniform<Float>( ) ) / sqrtSamples );
-                Point2f p( Lerp( u.x, -radius.x, radius.x ), Lerp( u.y, -radius.y, radius.y ) );
+                Point2f p( Lerp2( u.x, -radius.x, radius.x ), Lerp2( u.y, -radius.y, radius.y ) );
                 sum += Evaluate( p );
             }
         }
@@ -174,7 +174,7 @@ namespace pbrto
             for ( int x = 0; x < f.XSize( ); ++x )
             {
                 Point2f p =
-                    domain.Lerp( Point2f( ( x + 0.5f ) / f.XSize( ), ( y + 0.5f ) / f.YSize( ) ) );
+                    domain.Lerp2( Point2f( ( x + 0.5f ) / f.XSize( ), ( y + 0.5f ) / f.YSize( ) ) );
                 f( x, y ) = filter.Evaluate( p );
             }
 

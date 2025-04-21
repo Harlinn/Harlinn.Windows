@@ -131,7 +131,7 @@ namespace pbrto
         {
             return 0;
         }
-        return 2 * Lerp( x, a, b ) / ( a + b );
+        return 2 * Lerp2( x, a, b ) / ( a + b );
     }
 
     inline Float SampleLinear( Float u, Float a, Float b )
@@ -139,7 +139,7 @@ namespace pbrto
         NDCHECK( a >= 0 && b >= 0 );
         if ( u == 0 && a == 0 )
             return 0;
-        Float x = u * ( a + b ) / ( a + Math::Sqrt( Lerp( u, Sqr( a ), Sqr( b ) ) ) );
+        Float x = u * ( a + b ) / ( a + Math::Sqrt( Lerp2( u, Sqr( a ), Sqr( b ) ) ) );
         return std::min( x, OneMinusEpsilon );
     }
 
@@ -169,14 +169,14 @@ namespace pbrto
         p.y = SampleLinear( u[ 1 ], w[ 0 ] + w[ 1 ], w[ 2 ] + w[ 3 ] );
 
         // Sample $x$ for bilinear conditional distribution
-        p.x = SampleLinear( u[ 0 ], Lerp( p.y, w[ 0 ], w[ 2 ] ), Lerp( p.y, w[ 1 ], w[ 3 ] ) );
+        p.x = SampleLinear( u[ 0 ], Lerp2( p.y, w[ 0 ], w[ 2 ] ), Lerp2( p.y, w[ 1 ], w[ 3 ] ) );
 
         return p;
     }
 
     inline Point2f InvertBilinearSample( Point2f p, pstdo::span<const Float> w )
     {
-        return { InvertLinearSample( p.x, Lerp( p.y, w[ 0 ], w[ 2 ] ), Lerp( p.y, w[ 1 ], w[ 3 ] ) ),
+        return { InvertLinearSample( p.x, Lerp2( p.y, w[ 0 ], w[ 2 ] ), Lerp2( p.y, w[ 1 ], w[ 3 ] ) ),
                 InvertLinearSample( p.y, w[ 0 ] + w[ 1 ], w[ 2 ] + w[ 3 ] ) };
     }
 
@@ -317,7 +317,7 @@ namespace pbrto
     {
         NDCHECK_LT( a, b );
         auto P = [ & ]( Float x ) { return InvertLogisticSample( x, s ); };
-        u = Lerp( u, P( a ), P( b ) );
+        u = Lerp2( u, P( a ), P( b ) );
         Float x = SampleLogistic( u, s );
         NDCHECK( !IsNaN( x ) );
         return Clamp( x, a, b );
@@ -446,7 +446,7 @@ namespace pbrto
         return { ( uo.x + 1 ) / 2, ( uo.y + 1 ) / 2 };
     }
 
-    inline Vector3f SampleUniformHemisphere( Point2f u )
+    inline Vector3f::Simd SampleUniformHemisphere( Point2f u )
     {
         Float z = u[ 0 ];
         Float r = SafeSqrt( 1 - Sqr( z ) );
@@ -456,7 +456,7 @@ namespace pbrto
         Float cosPhi;
         SinCos( phi, &sinPhi, &cosPhi );
 
-        return { r * cosPhi, r * sinPhi, z };
+        return Vector3f::Simd( r * cosPhi, r * sinPhi, z );
     }
 
     inline Float UniformHemispherePDF( )
@@ -474,7 +474,7 @@ namespace pbrto
         return Point2f( w.z, phi / ( 2.f * Pi ) );
     }
 
-    PBRT_CPU_GPU inline Vector3f SampleUniformSphere( Point2f u )
+    inline Vector3f::Simd SampleUniformSphere( Point2f u )
     {
         Float z = 1 - 2 * u.x;
         Float r = SafeSqrt( 1 - Sqr( z ) );
@@ -502,11 +502,11 @@ namespace pbrto
         return Point2f( ( 1 - w.z ) / 2, phi / ( 2 * Pi ) );
     }
 
-    inline Vector3f SampleCosineHemisphere( Point2f u )
+    inline Vector3f::Simd SampleCosineHemisphere( Point2f u )
     {
         Point2f d = SampleUniformDiskConcentric( u );
         Float z = SafeSqrt( 1 - Sqr( d.x ) - Sqr( d.y ) );
-        return Vector3f( d.x, d.y, z );
+        return Vector3f::Simd( d.x, d.y, z );
     }
 
     inline Float CosineHemispherePDF( Float cosTheta )
@@ -835,7 +835,7 @@ namespace pbrto
             }
 
             // Return $x$ corresponding to sample
-            return Lerp( ( o + du ) / size( ), min, max );
+            return Lerp2( ( o + du ) / size( ), min, max );
         }
 
         pstdo::optional<Float> Invert( Float x ) const
@@ -851,7 +851,7 @@ namespace pbrto
 
             // Linearly interpolate between adjacent CDF values to find sample value
             Float delta = c - offset;
-            return Lerp( delta, cdf[ offset ], cdf[ offset + 1 ] );
+            return Lerp2( delta, cdf[ offset ], cdf[ offset + 1 ] );
         }
 
         // PiecewiseConstant1D Public Members
@@ -1151,7 +1151,7 @@ namespace pbrto
 
             // Find sample by interpolating between _min_ and _max_
             Float t = ( u - P( min ) ) / ( P( max ) - P( min ) );
-            return Clamp( Lerp( t, min, max ), min, max );
+            return Clamp( Lerp2( t, min, max ), min, max );
         }
 
         Float Eval( Point2f p ) const
@@ -1449,7 +1449,7 @@ namespace pbrto
         {
             for ( int x = 0; x < im.Resolution( ).x; ++x )
             {
-                Point2f target = warp.Domain( ).Lerp( { ( x + .5f ) / im.Resolution( ).x,
+                Point2f target = warp.Domain( ).Lerp2( { ( x + .5f ) / im.Resolution( ).x,
                                                      ( y + .5f ) / im.Resolution( ).y } );
                 if ( warp.PDF( target ) == 0 ) continue;
 

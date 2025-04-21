@@ -210,14 +210,16 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        inline SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const;
+        inline SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const;
 
-        inline pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode = TransportMode::Radiance, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
+        inline pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode = TransportMode::Radiance, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
 
-        inline Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
+        inline Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
 
-        SampledSpectrum rho( Vector3f wo, pstdo::span<const Float> uc, pstdo::span<const Point2f> u2 ) const;
-        SampledSpectrum rho( pstdo::span<const Point2f> u1, pstdo::span<const Float> uc2, pstdo::span<const Point2f> u2 ) const;
+        template<size_t N>
+        SampledSpectrum::Simd rho( Vector3f::Simd wo, const std::array<Float,N>& uc, const std::array<Point2f, N>& u2 ) const;
+        template<size_t N>
+        SampledSpectrum::Simd rho( const std::array<Point2f, N>& u1, const std::array<Float, N>& uc2, const std::array<Point2f, N>& u2 ) const;
 
         PBRT_CPU_GPU inline void Regularize( );
     };

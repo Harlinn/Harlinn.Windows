@@ -228,7 +228,10 @@ namespace pbrto
         if ( bsdf && GetOptions( ).forceDiffuse )
         {
             // Override _bsdf_ with diffuse equivalent
-            SampledSpectrum r = bsdf.rho( wo, { sampler.Get1D( ) }, { sampler.Get2D( ) } );
+            std::array<Float, 1> ucRho = { sampler.Get1D( ) };
+            std::array<Point2f, 1> uRho = { sampler.Get2D( ) };
+
+            SampledSpectrum r = bsdf.rho( wo, ucRho, uRho );
             bsdf = BSDF( shading.n, shading.dpdu, scratchBuffer.Alloc<DiffuseBxDF>( r ) );
         }
         return bsdf;

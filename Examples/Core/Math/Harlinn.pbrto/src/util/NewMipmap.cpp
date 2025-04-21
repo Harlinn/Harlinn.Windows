@@ -291,7 +291,7 @@ namespace pbrto
                 else
                 {
                     NDCHECK_LE( level - iLevel, 1 );
-                    return Lerp( level - iLevel, Bilerp<T>( iLevel, st ),
+                    return Lerp2( level - iLevel, Bilerp<T>( iLevel, st ),
                         Bilerp<T>( iLevel + 1, st ) );
                 }
             }
@@ -315,7 +315,7 @@ namespace pbrto
         // Choose level of detail for EWA lookup and perform EWA filtering
         Float lod = std::max<Float>( 0, Levels( ) - 1 + Log2( shorterVecLength ) );
         int ilod = Math::Floor( lod );
-        return Lerp( lod - ilod, EWA<T>( ilod, st, dst0, dst1 ),
+        return Lerp2( lod - ilod, EWA<T>( ilod, st, dst0, dst1 ),
             EWA<T>( ilod + 1, st, dst0, dst1 ) );
     }
 

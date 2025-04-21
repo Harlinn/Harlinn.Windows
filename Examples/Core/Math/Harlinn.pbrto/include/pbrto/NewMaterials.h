@@ -433,20 +433,19 @@ namespace pbrto
         }
 
         template <typename TextureEvaluator>
-        PBRT_CPU_GPU HairBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx,
-            SampledWavelengths& lambda ) const
+        PBRT_CPU_GPU HairBxDF GetBxDF( TextureEvaluator texEval, MaterialEvalContext ctx, SampledWavelengths& lambda ) const
         {
             Float bm = std::max<Float>( 1e-2, std::min<Float>( 1.0, texEval( beta_m, ctx ) ) );
             Float bn = std::max<Float>( 1e-2, std::min<Float>( 1.0, texEval( beta_n, ctx ) ) );
             Float a = texEval( alpha, ctx );
             Float e = texEval( eta, ctx );
 
-            SampledSpectrum sig_a;
+            SampledSpectrum::Simd sig_a;
             if ( sigma_a )
                 sig_a = ClampZero( texEval( sigma_a, ctx, lambda ) );
             else if ( color )
             {
-                SampledSpectrum c = Clamp( texEval( color, ctx, lambda ), 0, 1 );
+                SampledSpectrum::Simd c = Clamp( texEval( color, ctx, lambda ), 0, 1 );
                 sig_a = HairBxDF::SigmaAFromReflectance( c, bn, lambda );
             }
             else

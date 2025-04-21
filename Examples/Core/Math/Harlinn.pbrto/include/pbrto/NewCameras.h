@@ -219,7 +219,7 @@ namespace pbrto
 
         Float SampleTime( Float u ) const 
         { 
-            return Lerp( u, shutterOpen, shutterClose ); 
+            return Lerp2( u, shutterOpen, shutterClose ); 
         }
 
         void InitMetadata( ImageMetadata* metadata ) const;

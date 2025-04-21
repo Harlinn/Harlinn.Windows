@@ -27,7 +27,7 @@ namespace pbrto
 {
 
     // DirectionCone Function Definitions
-    PBRT_CPU_GPU DirectionCone Union( const DirectionCone& a, const DirectionCone& b )
+    PBRTO_EXPORT DirectionCone Union( const DirectionCone& a, const DirectionCone& b )
     {
         // Handle the cases where one or both cones are empty
         if ( a.IsEmpty( ) )

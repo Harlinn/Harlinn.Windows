@@ -627,10 +627,10 @@ namespace pbrto
             NCHECK_EQ( index, x + majorantGrid.res.x * ( y + majorantGrid.res.y * z ) );
 
             // World (aka medium) space bounds of this max grid cell
-            Bounds3f wb( bounds.Lerp( Point3f( Float( x ) / majorantGrid.res.x,
+            Bounds3f wb( bounds.Lerp2( Point3f( Float( x ) / majorantGrid.res.x,
                 Float( y ) / majorantGrid.res.y,
                 Float( z ) / majorantGrid.res.z ) ),
-                bounds.Lerp( Point3f( Float( x + 1 ) / majorantGrid.res.x,
+                bounds.Lerp2( Point3f( Float( x + 1 ) / majorantGrid.res.x,
                     Float( y + 1 ) / majorantGrid.res.y,
                     Float( z + 1 ) / majorantGrid.res.z ) ) );
 

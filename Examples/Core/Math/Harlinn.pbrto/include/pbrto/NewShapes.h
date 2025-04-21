@@ -797,7 +797,7 @@ namespace pbrto
         PBRT_CPU_GPU
             pstdo::optional<ShapeSample> Sample( Point2f u ) const
         {
-            Float z = Lerp( u[ 0 ], zMin, zMax );
+            Float z = Lerp2( u[ 0 ], zMin, zMax );
             Float phi = u[ 1 ] * phiMax;
             // Compute cylinder sample position _pi_ and normal _n_ from $z$ and $\phi$
             Float sinPhi;
@@ -896,8 +896,7 @@ namespace pbrto
     };
 
     // Triangle Function Declarations
-    PBRT_CPU_GPU
-        pstdo::optional<TriangleIntersection> IntersectTriangle( const Ray& ray, Float tMax, Point3f p0, Point3f p1, Point3f p2 );
+    PBRTO_EXPORT pstdo::optional<TriangleIntersection> IntersectTriangle( const Ray& ray, Float tMax, Point3f p0, Point3f p1, Point3f p2 );
 
     // Triangle Definition
     class Triangle
@@ -1414,8 +1413,8 @@ namespace pbrto
         if ( 0 <= u1 && u1 <= 1 )
         {
             // Precompute common terms for $v$ and $t$ computation
-            Point3f::Simd uo = Lerp( u1, p00, p10 );
-            Vector3f ud = Lerp( u1, p01, p11 ) - uo;
+            Point3f::Simd uo = Lerp2( u1, p00, p10 );
+            Vector3f ud = Lerp2( u1, p01, p11 ) - uo;
             Vector3f deltao = uo - ray.o;
             Vector3f perp = Cross( ray.d, ud );
             Float p2 = ScalarLengthSquared( perp );
@@ -1444,8 +1443,8 @@ namespace pbrto
         // Compute $v$ and $t$ for the second $u$ intersection
         if ( 0 <= u2 && u2 <= 1 && u2 != u1 )
         {
-            Point3f::Simd uo = Lerp( u2, p00, p10 );
-            Vector3f ud = Lerp( u2, p01, p11 ) - uo;
+            Point3f::Simd uo = Lerp2( u2, p00, p10 );
+            Vector3f ud = Lerp2( u2, p01, p11 ) - uo;
             Vector3f deltao = uo - ray.o;
             Vector3f perp = Cross( ray.d, ud );
             Float p2 = ScalarLengthSquared( perp );
@@ -1517,9 +1516,9 @@ namespace pbrto
             Point3f::Simd p01 = mesh->p[ v[ 2 ] ];
             Point3f::Simd p11 = mesh->p[ v[ 3 ] ];
 
-            Point3f p = Lerp( uv[ 0 ], Lerp( uv[ 1 ], p00, p01 ), Lerp( uv[ 1 ], p10, p11 ) );
-            Vector3f::Simd dpdu = Lerp( uv[ 1 ], p10, p11 ) - Lerp( uv[ 1 ], p00, p01 );
-            Vector3f::Simd dpdv = Lerp( uv[ 0 ], p01, p11 ) - Lerp( uv[ 0 ], p00, p10 );
+            Point3f p = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], p00, p01 ), Lerp2( uv[ 1 ], p10, p11 ) );
+            Vector3f::Simd dpdu = Lerp2( uv[ 1 ], p10, p11 ) - Lerp2( uv[ 1 ], p00, p01 );
+            Vector3f::Simd dpdv = Lerp2( uv[ 0 ], p01, p11 ) - Lerp2( uv[ 0 ], p00, p10 );
 
             // Compute $(s,t)$ texture coordinates at bilinear patch $(u,v)$
             Point2f st = uv;
@@ -1529,12 +1528,12 @@ namespace pbrto
                 // Compute texture coordinates for bilinear patch intersection point
                 Point2f uv00 = mesh->uv[ v[ 0 ] ], uv10 = mesh->uv[ v[ 1 ] ];
                 Point2f uv01 = mesh->uv[ v[ 2 ] ], uv11 = mesh->uv[ v[ 3 ] ];
-                st = Lerp( uv[ 0 ], Lerp( uv[ 1 ], uv00, uv01 ), Lerp( uv[ 1 ], uv10, uv11 ) );
+                st = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], uv00, uv01 ), Lerp2( uv[ 1 ], uv10, uv11 ) );
 
                 // Update bilinear patch $\dpdu$ and $\dpdv$ accounting for $(s,t)$
                 // Compute partial derivatives of $(u,v)$ with respect to $(s,t)$
-                Vector2f dstdu = Lerp( uv[ 1 ], uv10, uv11 ) - Lerp( uv[ 1 ], uv00, uv01 );
-                Vector2f dstdv = Lerp( uv[ 0 ], uv01, uv11 ) - Lerp( uv[ 0 ], uv00, uv10 );
+                Vector2f dstdu = Lerp2( uv[ 1 ], uv10, uv11 ) - Lerp2( uv[ 1 ], uv00, uv01 );
+                Vector2f dstdv = Lerp2( uv[ 0 ], uv01, uv11 ) - Lerp2( uv[ 0 ], uv00, uv10 );
                 duds = std::abs( dstdu[ 0 ] ) < 1e-8f ? 0 : 1 / dstdu[ 0 ];
                 dvds = std::abs( dstdv[ 0 ] ) < 1e-8f ? 0 : 1 / dstdv[ 0 ];
                 dudt = std::abs( dstdu[ 1 ] ) < 1e-8f ? 0 : 1 / dstdu[ 1 ];
@@ -1595,13 +1594,13 @@ namespace pbrto
                 // Compute shading normals for bilinear patch intersection point
                 Normal3f::Simd n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
                 Normal3f::Simd n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
-                Normal3f ns = Lerp( uv[ 0 ], Lerp( uv[ 1 ], n00, n01 ), Lerp( uv[ 1 ], n10, n11 ) );
+                Normal3f ns = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], n00, n01 ), Lerp2( uv[ 1 ], n10, n11 ) );
                 if ( ScalarLengthSquared( ns ) > 0 )
                 {
                     ns = Normalize( ns );
                     // Set shading geometry for bilinear patch intersection
-                    Normal3f dndu = Lerp( uv[ 1 ], n10, n11 ) - Lerp( uv[ 1 ], n00, n01 );
-                    Normal3f dndv = Lerp( uv[ 0 ], n01, n11 ) - Lerp( uv[ 0 ], n00, n10 );
+                    Normal3f dndu = Lerp2( uv[ 1 ], n10, n11 ) - Lerp2( uv[ 1 ], n00, n01 );
+                    Normal3f dndv = Lerp2( uv[ 0 ], n01, n11 ) - Lerp2( uv[ 0 ], n00, n10 );
                     // Update $\dndu$ and $\dndv$ to account for $(s,t)$ parameterization
                     Normal3f dnds = dndu * duds + dndv * dvds;
                     Normal3f dndt = dndu * dudt + dndv * dvdt;

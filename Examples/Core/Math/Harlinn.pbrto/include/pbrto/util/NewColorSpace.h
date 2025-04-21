@@ -52,7 +52,7 @@ namespace pbrto
         Point2f r, g, b, w;
         DenselySampledSpectrum illuminant;
         SquareMatrix<3> XYZFromRGB, RGBFromXYZ;
-        static const RGBColorSpace* sRGB, * DCI_P3, * Rec2020, * ACES2065_1;
+        PBRTO_EXPORT static const RGBColorSpace* sRGB, * DCI_P3, * Rec2020, * ACES2065_1;
 
         PBRT_CPU_GPU
             bool operator==( const RGBColorSpace& cs ) const

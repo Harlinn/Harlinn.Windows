@@ -182,7 +182,7 @@ namespace pbrto
 
 
     // Math Inline Functions
-    inline Float Lerp( Float x, Float a, Float b )
+    inline Float Lerp2( Float x, Float a, Float b )
     {
         return ( 1 - x ) * a + x * b;
     }
@@ -415,25 +415,15 @@ namespace pbrto
 
 
 
-    PBRT_CPU_GPU
-        Vector3f EqualAreaSquareToSphere( Point2f p );
-    PBRT_CPU_GPU
-        Point2f EqualAreaSphereToSquare( Vector3f v );
-    PBRT_CPU_GPU
-        Point2f WrapEqualAreaSquare( Point2f p );
+    PBRTO_EXPORT Vector3f EqualAreaSquareToSphere( Point2f p );
+    PBRTO_EXPORT Point2f EqualAreaSphereToSquare( Vector3f v );
+    PBRTO_EXPORT Point2f WrapEqualAreaSquare( Point2f p );
 
     // Spline Interpolation Declarations
-    PBRT_CPU_GPU
-        Float CatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> values, Float x );
-    PBRT_CPU_GPU
-        bool CatmullRomWeights( pstdo::span<const Float> nodes, Float x, int* offset,
-            pstdo::span<Float> weights );
-    PBRT_CPU_GPU
-        Float IntegrateCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> values,
-            pstdo::span<Float> cdf );
-    PBRT_CPU_GPU
-        Float InvertCatmullRom( pstdo::span<const Float> x, pstdo::span<const Float> values,
-            Float u );
+    PBRTO_EXPORT Float CatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> values, Float x );
+    PBRTO_EXPORT bool CatmullRomWeights( pstdo::span<const Float> nodes, Float x, int* offset, pstdo::span<Float> weights );
+    PBRTO_EXPORT Float IntegrateCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> values, pstdo::span<Float> cdf );
+    PBRTO_EXPORT Float InvertCatmullRom( pstdo::span<const Float> x, pstdo::span<const Float> values, Float u );
 
 
 

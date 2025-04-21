@@ -3542,6 +3542,25 @@ BOOST_AUTO_TEST_CASE( NextDownTest2 )
     BOOST_CHECK( equal );
 }
 
+// --run_test=SIMDFloatTests/AnyNotEqualTest1
+BOOST_AUTO_TEST_CASE( AnyNotEqualTest1 )
+{
+    using Traits = SIMD::Traits<float, 4>;
+    using Constants = typename Traits::Constants;
+    using Type = typename Traits::Type;
+
+    auto arg1 = Traits::Set(
+        0.f,
+        0.f,
+        0.f,
+        1.f);
+
+    auto expected = true;
+
+    auto anyNotEqual = Traits::AnyNotEqual( arg1, Traits::Fill(0.f) );
+
+    BOOST_CHECK( anyNotEqual );
+}
 
 
 

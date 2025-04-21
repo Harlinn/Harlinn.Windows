@@ -49,29 +49,43 @@ namespace pbrto
         {
         }
 
-        PBRT_CPU_GPU
-            operator bool( ) const { return ( bool )bxdf; }
-        PBRT_CPU_GPU
-            BxDFFlags Flags( ) const { return bxdf.Flags( ); }
+        operator bool( ) const 
+        { 
+            return ( bool )bxdf; 
+        }
+        BxDFFlags Flags( ) const 
+        { 
+            return bxdf.Flags( ); 
+        }
 
-        PBRT_CPU_GPU
-            Vector3f RenderToLocal( Vector3f v ) const { return shadingFrame.ToLocal( v ); }
-        PBRT_CPU_GPU
-            Vector3f LocalToRender( Vector3f v ) const { return shadingFrame.FromLocal( v ); }
-
-        PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f woRender, Vector3f wiRender,
-                TransportMode mode = TransportMode::Radiance ) const
+        Vector3f RenderToLocal( Vector3f v ) const 
+        { 
+            return shadingFrame.ToLocal( v ); 
+        }
+        Vector3f::Simd RenderToLocal( const Vector3f::Simd& v ) const
+        { 
+            return shadingFrame.ToLocal( v ); 
+        }
+        Vector3f LocalToRender( Vector3f v ) const 
+        { 
+            return shadingFrame.FromLocal( v ); 
+        }
+        Vector3f::Simd LocalToRender( const Vector3f::Simd& v ) const
         {
-            Vector3f wi = RenderToLocal( wiRender ), wo = RenderToLocal( woRender );
+            return shadingFrame.FromLocal( v );
+        }
+
+        SampledSpectrum f( Vector3f woRender, Vector3f wiRender, TransportMode mode = TransportMode::Radiance ) const
+        {
+            Vector3f wi = RenderToLocal( wiRender );
+            Vector3f wo = RenderToLocal( woRender );
             if ( wo.z == 0 )
                 return {};
             return bxdf.f( wo, wi, mode );
         }
 
         template <typename BxDF>
-        PBRT_CPU_GPU SampledSpectrum f( Vector3f woRender, Vector3f wiRender,
-            TransportMode mode = TransportMode::Radiance ) const
+        SampledSpectrum f( Vector3f woRender, Vector3f wiRender, TransportMode mode = TransportMode::Radiance ) const
         {
             Vector3f wi = RenderToLocal( wiRender ), wo = RenderToLocal( woRender );
             if ( wo.z == 0 )
@@ -147,10 +161,7 @@ namespace pbrto
         }
 
         template <typename BxDF>
-        PBRT_CPU_GPU Float
-            PDF( Vector3f woRender, Vector3f wiRender,
-                TransportMode mode = TransportMode::Radiance,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        Float PDF( Vector3f woRender, Vector3f wiRender, TransportMode mode = TransportMode::Radiance, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             Vector3f wo = RenderToLocal( woRender ), wi = RenderToLocal( wiRender );
             if ( wo.z == 0 )
@@ -161,25 +172,25 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            SampledSpectrum rho( pstdo::span<const Point2f> u1, pstdo::span<const Float> uc,
-                pstdo::span<const Point2f> u2 ) const
+        template<size_t N>
+        SampledSpectrum::Simd rho( const Vector3f::Simd& woRender, const std::array<Float, N>& uc, const std::array<Point2f, N>& u2 ) const
+        {
+            Vector3f::Simd wo = RenderToLocal( woRender );
+            return bxdf.rho( wo, uc, u2 );
+        }
+
+
+        template<size_t N>
+        SampledSpectrum::Simd rho( const std::array<Point2f, N>& u1, const std::array<Float, N>& uc, const std::array<Point2f, N>& u2 ) const
         {
             return bxdf.rho( u1, uc, u2 );
         }
-        PBRT_CPU_GPU
-            SampledSpectrum rho( Vector3f woRender, pstdo::span<const Float> uc,
-                pstdo::span<const Point2f> u ) const
-        {
-            Vector3f wo = RenderToLocal( woRender );
-            return bxdf.rho( wo, uc, u );
-        }
-
-        PBRT_CPU_GPU
-            void Regularize( ) { bxdf.Regularize( ); }
-
-    private:
         
+
+        void Regularize( ) 
+        { 
+            bxdf.Regularize( ); 
+        }
     };
 
 }

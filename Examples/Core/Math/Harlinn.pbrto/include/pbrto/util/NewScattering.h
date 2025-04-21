@@ -249,7 +249,7 @@ namespace pbrto
 
             // Warp hemispherical projection for visible normal sampling
             Float h = Math::Sqrt( 1 - Sqr( p.x ) );
-            p.y = Lerp( ( 1 + whz ) / 2, h, p.y );
+            p.y = Lerp2( ( 1 + whz ) / 2, h, p.y );
 
             // Reproject to hemisphere and transform normal to ellipsoid configuration
             Float pz = Math::Sqrt( std::max<Float>( 0, 1 - ScalarLengthSquared( Vector2f( p ) ) ) );

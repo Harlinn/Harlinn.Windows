@@ -263,7 +263,7 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
-    inline auto Lerp( Float t, const Tuple2<C, T>& t0, const Tuple2<C, T>& t1 )
+    inline auto Lerp2( Float t, const Tuple2<C, T>& t0, const Tuple2<C, T>& t1 )
     {
         return ( 1 - t ) * t0 + t * t1;
     }
@@ -320,11 +320,13 @@ namespace pbrto
         return ( t.x > t.y ) ? 0 : 1;
     }
 
+    /*
     template <template <class> class C, typename T>
     inline C<T> Permute( const Tuple2<C, T>& t, const pstdo::array<int, 2>& p )
     {
         return { t[ p[ 0 ] ], t[ p[ 1 ] ] };
     }
+    */
 
     template <template <class> class C, typename T>
     inline T HProd( const Tuple2<C, T>& t )
@@ -515,7 +517,7 @@ namespace pbrto
     }
 
     template <template <class> class C, typename T>
-    inline auto Lerp( Float t, const Tuple3<C, T>& t0, const Tuple3<C, T>& t1 )
+    inline auto Lerp2( Float t, const Tuple3<C, T>& t0, const Tuple3<C, T>& t1 )
     {
         return ( 1 - t ) * t0 + t * t1;
     }
@@ -571,12 +573,13 @@ namespace pbrto
     {
         return ( t.x > t.y ) ? ( ( t.x > t.z ) ? 0 : 2 ) : ( ( t.y > t.z ) ? 1 : 2 );
     }
-
+    /*
     template <template <class> class C, typename T>
     inline C<T> Permute( const Tuple3<C, T>& t, const pstdo::array<int, 3>& p )
     {
         return { t[ p[ 0 ] ], t[ p[ 1 ] ], t[ p[ 2 ] ] };
     }
+    */
 
 
     template <template <class> class C, typename T>
@@ -704,6 +707,11 @@ namespace pbrto
 
     };
 
+
+    inline Vector2<float> Permute( const Vector2<float>& t, const std::array<int, 2>& p )
+    {
+        return { t[ p[ 0 ] ], t[ p[ 1 ] ] };
+    }
 
     inline Vector3<float> Permute( const Vector3<float>& t, const std::array<int, 3>& p )
     {
@@ -1669,22 +1677,15 @@ namespace pbrto
         requires ( std::is_same_v<T, float> == false )
     inline auto ScalarLength( const Vector3<T>& v ) -> typename TupleLength<T>::type
     {
-        if constexpr ( std::is_floating_point_v<T> )
-        {
-            return Math::Sqrt( LengthSquared( v ) );
-        }
-        else
-        {
-            using std::sqrt;
-            return sqrt( ScalarLengthSquared( v ) );
-        }
+        using std::sqrt;
+        return sqrt( ScalarLengthSquared( v ) );
     }
 
     template <typename T>
         requires ( std::is_same_v<T, float> == false )
     inline auto Normalize( const Vector3<T>& v )
     {
-        return v / Length( v );
+        return v / ScalarLength( v );
     }
 
     template <typename T>
@@ -2012,11 +2013,11 @@ namespace pbrto
             return Point2<T>( ( *this )[ ( corner & 1 ) ].x, ( *this )[ ( corner & 2 ) ? 1 : 0 ].y );
         }
 
-        Point2<T> Lerp( Point2f t ) const
+        Point2<T> Lerp2( Point2f t ) const
         {
             return Point2<T>(
-                    pbrto::Lerp( t.x, pMin.x, pMax.x ),
-                    pbrto::Lerp( t.y, pMin.y, pMax.y ) );
+                    pbrto::Lerp2( t.x, pMin.x, pMax.x ),
+                    pbrto::Lerp2( t.y, pMin.y, pMax.y ) );
         }
         PBRT_CPU_GPU
             Vector2<T> Offset( Point2<T> p ) const
@@ -2170,14 +2171,14 @@ namespace pbrto
                 return 2;
         }
 
-        Point3f Lerp( Point3f t ) const
+        Point3f Lerp2( Point3f t ) const
         {
-            return Point3f( Math::Lerp( t, pMin, pMax  ) );
+            return Point3f( Math::Lerp2( t, pMin, pMax  ) );
             /*
             return Point3f( 
-                pbrto::Lerp( t.x, pMin.x, pMax.x ), 
-                pbrto::Lerp( t.y, pMin.y, pMax.y ),
-                pbrto::Lerp( t.z, pMin.z, pMax.z ) );
+                pbrto::Lerp2( t.x, pMin.x, pMax.x ), 
+                pbrto::Lerp2( t.y, pMin.y, pMax.y ),
+                pbrto::Lerp2( t.z, pMin.z, pMax.z ) );
              */
         }
 
@@ -2522,13 +2523,12 @@ namespace pbrto
     }
 
     // Spherical Geometry Inline Functions
-    inline Float SphericalTriangleArea( const Vector3f& a, const Vector3f& b, const Vector3f& c )
+    inline Float SphericalTriangleArea( Vector3f::Simd a, Vector3f::Simd b, Vector3f::Simd c )
     {
-        return std::abs(
-            2.f * Math::ATan2( ScalarDot( a, Cross( b, c ) ), 1.f + ScalarDot( a, b ) + ScalarDot( a, c ) + ScalarDot( b, c ) ) );
+        return std::abs( 2.f * Math::ATan2( ScalarDot( a, Cross( b, c ) ), 1.f + ScalarDot( a, b ) + ScalarDot( a, c ) + ScalarDot( b, c ) ) );
     }
 
-    inline Float SphericalQuadArea( const Vector3f& a, const Vector3f& b, const Vector3f& c, const Vector3f& d )
+    inline Float SphericalQuadArea( Vector3f::Simd a, Vector3f::Simd b, Vector3f::Simd c, Vector3f::Simd d )
     {
         using Traits = typename Vector3f::Traits;
         auto axb = Math::Cross( a, b );
@@ -2573,7 +2573,7 @@ namespace pbrto
     {
         return SafeACos( v.z );
     }
-    inline Float SphericalTheta( const Vector3f::Simd& v )
+    inline Float SphericalTheta( Vector3f::Simd v )
     {
         return SafeACos( v.z( ) );
     }
@@ -2583,7 +2583,7 @@ namespace pbrto
         Float p = Math::ATan2( v.y, v.x );
         return ( p < 0 ) ? ( p + 2.f * Pi ) : p;
     }
-    inline Float SphericalPhi( const Vector3f::Simd& v )
+    inline Float SphericalPhi( Vector3f::Simd v )
     {
         Float p = Math::ATan2( v.y(), v.x( ) );
         return ( p < 0 ) ? ( p + 2.f * Pi ) : p;
@@ -2593,7 +2593,7 @@ namespace pbrto
     {
         return w.z;
     }
-    inline Float CosTheta( const Vector3f::Simd& w )
+    inline Float CosTheta( Vector3f::Simd w )
     {
         return w.z( );
     }
@@ -2602,7 +2602,7 @@ namespace pbrto
     {
         return Sqr( w.z );
     }
-    inline Float Cos2Theta( const Vector3f::Simd& w )
+    inline Float Cos2Theta( Vector3f::Simd w )
     {
         return Sqr( w.z( ) );
     }
@@ -2611,7 +2611,7 @@ namespace pbrto
     {
         return std::abs( w.z );
     }
-    inline Float AbsCosTheta( const Vector3f::Simd& w )
+    inline Float AbsCosTheta( Vector3f::Simd w )
     {
         return std::abs( w.z( ) );
     }
@@ -2620,7 +2620,7 @@ namespace pbrto
     {
         return std::max<Float>( 0.f, 1.f - Cos2Theta( w ) );
     }
-    inline Float Sin2Theta( const Vector3f::Simd& w )
+    inline Float Sin2Theta( Vector3f::Simd w )
     {
         return std::max<Float>( 0.f, 1.f - Cos2Theta( w ) );
     }
@@ -2628,7 +2628,7 @@ namespace pbrto
     {
         return Math::Sqrt( Sin2Theta( w ) );
     }
-    inline Float SinTheta( const Vector3f::Simd& w )
+    inline Float SinTheta( Vector3f::Simd w )
     {
         return Math::Sqrt( Sin2Theta( w ) );
     }
@@ -2637,7 +2637,7 @@ namespace pbrto
     {
         return SinTheta( w ) / CosTheta( w );
     }
-    inline Float TanTheta( const Vector3f::Simd& w )
+    inline Float TanTheta( Vector3f::Simd w )
     {
         return SinTheta( w ) / CosTheta( w );
     }
@@ -2645,7 +2645,7 @@ namespace pbrto
     {
         return Sin2Theta( w ) / Cos2Theta( w );
     }
-    inline Float Tan2Theta( const Vector3f::Simd& w )
+    inline Float Tan2Theta( Vector3f::Simd w )
     {
         return Sin2Theta( w ) / Cos2Theta( w );
     }
@@ -2655,7 +2655,7 @@ namespace pbrto
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 1 : Math::Clamp( w.x / sinTheta, -1.f, 1.f );
     }
-    inline Float CosPhi( const Vector3f::Simd& w )
+    inline Float CosPhi( Vector3f::Simd w )
     {
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 1 : Math::Clamp( w.x( ) / sinTheta, -1.f, 1.f );
@@ -2666,7 +2666,7 @@ namespace pbrto
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 0 : Math::Clamp( w.y / sinTheta, -1.f, 1.f );
     }
-    inline Float SinPhi( const Vector3f::Simd& w )
+    inline Float SinPhi( Vector3f::Simd w )
     {
         Float sinTheta = SinTheta( w );
         return ( sinTheta == 0 ) ? 0 : Math::Clamp( w.y() / sinTheta, -1.f, 1.f );
@@ -2681,7 +2681,7 @@ namespace pbrto
             return 1.f;
         return Math::Clamp( ( wa.x * wb.x + wa.y * wb.y ) / Math::Sqrt( waxy * wbxy ), -1.f, 1.f );
     }
-    inline Float CosDPhi( const Vector3f::Simd& wa, const Vector3f::Simd& wb )
+    inline Float CosDPhi( Vector3f::Simd wa, Vector3f::Simd wb )
     {
         Float wax = wa.x( );
         Float way = wa.y( );
@@ -2699,7 +2699,7 @@ namespace pbrto
     {
         return w.z * wp.z > 0;
     }
-    inline bool SameHemisphere( const Vector3f::Simd& w, const Vector3f::Simd& wp )
+    inline bool SameHemisphere( Vector3f::Simd w, Vector3f::Simd wp )
     {
         return w.z() * wp.z() > 0;
     }
@@ -2709,7 +2709,7 @@ namespace pbrto
     {
         return w.z * wp.z > 0;
     }
-    inline bool SameHemisphere( const Vector3f::Simd& w, const Normal3f::Simd& wp )
+    inline bool SameHemisphere( Vector3f::Simd w, Normal3f::Simd wp )
     {
         return w.z( ) * wp.z( ) > 0;
     }
@@ -2854,7 +2854,7 @@ namespace pbrto
     }
 
     // DirectionCone Function Declarations
-    DirectionCone Union( const DirectionCone& a, const DirectionCone& b );
+    PBRTO_EXPORT DirectionCone Union( const DirectionCone& a, const DirectionCone& b );
 
     // Frame Definition
     class alignas( Vector3f::Traits::AlignAs ) Frame

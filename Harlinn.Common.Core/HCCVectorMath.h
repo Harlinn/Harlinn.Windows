@@ -847,14 +847,17 @@ namespace Harlinn::Common::Core::Math
 
         bool AnyEqual( const value_type& value ) const noexcept
         {
-            return Traits::AnyEqual( simd, Traits::Fill( value ) ) == false;
+            return Traits::AnyEqual( simd, Traits::Fill( value ) );
         }
         bool AnyNotEqual( const value_type& value ) const noexcept
         {
-            return Traits::AnyNotEqual( simd, Traits::Fill( value ) ) == false;
+            return Traits::AnyNotEqual( simd, Traits::Fill( value ) );
         }
 
-
+        explicit operator bool( ) const noexcept
+        {
+            return Traits::AnyNotEqual( simd, Traits::Zero( ) );
+        }
 
 
         template<Internal::TupleType T>
@@ -956,6 +959,24 @@ namespace Harlinn::Common::Core::Math
         {
             SetX( src.simd );
         }
+        void AbsX( )
+        {
+            simd = Traits::AbsX( simd );
+        }
+        TupleSimd WithAbsX( ) const
+        {
+            return Traits::AbsX( simd );
+        }
+        void NegateX( )
+        {
+            simd = Traits::NegateX( simd );
+        }
+        TupleSimd WithNegatedX( ) const
+        {
+            return Traits::NegateX( simd );
+        }
+
+
         TupleSimd Y( ) const
         {
             return Traits::At<1>( simd );
@@ -972,6 +993,41 @@ namespace Harlinn::Common::Core::Math
         {
             SetY( src.simd );
         }
+
+        void AbsY( )
+        {
+            simd = Traits::AbsY( simd );
+        }
+        TupleSimd WithAbsY( ) const noexcept
+        {
+            return Traits::AbsY( simd );
+        }
+        void NegateY( )
+        {
+            simd = Traits::NegateY( simd );
+        }
+        TupleSimd WithNegatedY( ) const
+        {
+            return Traits::NegateY( simd );
+        }
+
+        void AbsXY( )
+        {
+            simd = Traits::AbsXY( simd );
+        }
+        TupleSimd WithAbsXY( ) const noexcept
+        {
+            return Traits::AbsXY( simd );
+        }
+        void NegateXY( )
+        {
+            simd = Traits::NegateXY( simd );
+        }
+        TupleSimd WithNegatedXY( ) const
+        {
+            return Traits::NegateXY( simd );
+        }
+
         TupleSimd Z( ) const requires (Size > 2)
         {
             return Traits::At<2>( simd );
@@ -988,6 +1044,24 @@ namespace Harlinn::Common::Core::Math
         {
             SetZ( src.simd );
         }
+
+        void AbsZ( ) requires ( Size > 2 )
+        {
+            simd = Traits::AbsZ( simd );
+        }
+        TupleSimd WithAbsZ( ) const noexcept requires ( Size > 2 )
+        {
+            return Traits::AbsZ( simd );
+        }
+        void NegateZ( ) requires ( Size > 2 )
+        {
+            simd = Traits::NegateZ( simd );
+        }
+        TupleSimd WithNegatedZ( ) const requires ( Size > 2 )
+        {
+            return Traits::NegateZ( simd );
+        }
+
         void SetXYZ( SIMDType src ) requires ( Size > 2 )
         {
             simd = Traits::Permute<0, 1, 2, 7>( src, simd );
@@ -1012,6 +1086,23 @@ namespace Harlinn::Common::Core::Math
         void SetW( const TupleSimd& src )
         {
             SetW( src.simd );
+        }
+
+        void AbsW( ) requires ( Size > 3 )
+        {
+            simd = Traits::AbsW( simd );
+        }
+        TupleSimd WithAbsW( ) const noexcept requires ( Size > 3 )
+        {
+            return Traits::AbsW( simd );
+        }
+        void NegateW( ) requires ( Size > 3 )
+        {
+            simd = Traits::NegateW( simd );
+        }
+        TupleSimd WithNegatedW( ) const requires ( Size > 3 )
+        {
+            return Traits::NegateW( simd );
         }
 
         value_type operator[]( size_t idx ) const
@@ -2939,61 +3030,61 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
-    template<typename NumberT, Internal::SimdType T, Internal::SimdType U>
+    template<Internal::SimdType T, Internal::SimdType U, typename NumberT>
         requires std::is_arithmetic_v<NumberT> && Internal::IsCompatible<T, U> 
-    inline T Lerp( NumberT a, const T& b, const U& c ) noexcept
+    inline T Lerp( const T& a, const U& b, NumberT t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( static_cast<Type>( a ), b.simd, c.simd );
+        return Traits::Lerp( a.simd, b.simd, static_cast< Type >( t ) );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
-    template<typename NumberT, Internal::SimdType T, Internal::TupleType U>
+    template<Internal::SimdType T, Internal::TupleType U, typename NumberT>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
-    inline T Lerp( NumberT a, const T& b, const U& c ) noexcept
+    inline T Lerp( const T& a, const U& b, NumberT t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( static_cast< Type >( a ), b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::Lerp( a.simd, Traits::Load( b.values ), static_cast< Type >( t ) );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
-    template<typename NumberT, Internal::TupleType T, Internal::SimdType U>
-        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
-    inline U Lerp( NumberT a, const T& b, const U& c ) noexcept
+    template<Internal::TupleType T, Internal::SimdType U, typename NumberT>
+        requires std::is_arithmetic_v<NumberT> && Internal::IsCompatible<T, U>
+    inline U Lerp( const T& a, const U& b, NumberT t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( static_cast< Type >( a ), Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::Lerp( Traits::Load( a.values ), b.simd, static_cast< Type >( t ) );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
-    inline ResultT Lerp( NumberT a, const T& b, const U& c ) noexcept
+    inline ResultT Lerp( const T& a, const U& b, NumberT t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
-        return Traits::Lerp( static_cast< Type >( a ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) );
     }
 
     
@@ -3001,57 +3092,57 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
-    inline T Lerp( const S& a, const T& b, const U& c ) noexcept
+    inline T Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( a.simd, b.simd, c.simd );
+        return Traits::Lerp( a.simd, b.simd, t.simd );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
-    inline T Lerp( const S& a, const T& b, const U& c ) noexcept
+    inline T Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( a.simd, b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::Lerp( a.simd, b.simd, Traits::Load( t.values ) );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
-    inline U Lerp( const S& a, const T& b, const U& c ) noexcept
+    inline U Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( a.simd, Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::Lerp( a.simd, Traits::Load( b.values ), t.simd );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
-    inline S Lerp( const S& a, const T& b, const U& c ) noexcept
+    inline S Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( a.simd, Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::Lerp( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) );
     }
 
     //
@@ -3059,123 +3150,294 @@ namespace Harlinn::Common::Core::Math
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
-    inline T Lerp( const S& a, const T& b, const U& c ) noexcept
+    inline T Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( Traits::Load( a.values.data( ) ), b.simd, c.simd );
+        return Traits::Lerp( Traits::Load( a.values ), b.simd, t.simd );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
-    inline T Lerp( const S& a, const T& b, const U& c ) noexcept
+    inline T Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( Traits::Load( a.values.data( ) ), b.simd, Traits::Load( c.values.data( ) ) );
+        return Traits::Lerp( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
-    inline U Lerp( const S& a, const T& b, const U& c ) noexcept
+    inline U Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), c.simd );
+        return Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), t.simd );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
     template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
         requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
-    inline ResultT Lerp( const S& a, const T& b, const U& c ) noexcept
+    inline ResultT Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), Traits::Load( c.values.data( ) ) );
+        return Traits::Lerp( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) );
+    }
+
+    
+    /// <summary>
+    /// Calculates the linear interpolation between a and b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<typename NumberT1, typename NumberT2, Internal::SimdType T>
+        requires std::is_arithmetic_v<NumberT1> && std::is_arithmetic_v<NumberT2>
+    inline T Lerp( NumberT1 a, NumberT2 b, const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between a and b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<typename NumberT1, typename NumberT2, Internal::TupleType T>
+        requires std::is_arithmetic_v<NumberT1>&& std::is_arithmetic_v<NumberT2>
+    inline typename T::Simd Lerp( NumberT1 a, NumberT2 b, const T& t ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) );
+    }
+    
+
+    // Lerp2
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::SimdType T, Internal::SimdType U, typename NumberT>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T Lerp2( NumberT t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp2( a.simd, b.simd, static_cast< Type >( t ) );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
-    template<Internal::SimdType S, Internal::SimdType T, typename U >
-        requires Internal::IsCompatible<S, T>&& std::is_arithmetic_v<U>
-    inline S Lerp( const S& a, const T& b, const U c ) noexcept
+    template<Internal::SimdType T, Internal::TupleType U, typename NumberT>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline T Lerp2( NumberT t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        auto v = static_cast< FloatT >( c );
-        return S(Traits::Lerp( a.simd, b.simd, Traits::Fill( v ) ));
+        using Type = Traits::Type;
+        return Traits::Lerp2( a.simd, Traits::Load( b.values ), static_cast< Type >( t ) );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
-    template<Internal::SimdType S, Internal::TupleType T, typename U >
-        requires Internal::IsCompatible<S, T>&& std::is_arithmetic_v<U>
-    inline S Lerp( const S& a, const T& b, const U c ) noexcept
+    template<Internal::TupleType T, Internal::SimdType U, typename NumberT>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline U Lerp2( NumberT t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        auto v = static_cast< FloatT >( c );
-        return S( Traits::Lerp( a.simd, b.ToSimd().simd, Traits::Fill( v ) ) );
+        using Type = Traits::Type;
+        return Traits::Lerp2( Traits::Load( a.values ), b.simd, static_cast< Type >( t ) );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
-    template<Internal::TupleType S, Internal::SimdType T, typename U >
-        requires Internal::IsCompatible<S, T>&& std::is_arithmetic_v<U>
-    inline typename S::Simd Lerp( const S& a, const T& b, const U c ) noexcept
+    template<typename NumberT, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd>
+        requires std::is_arithmetic_v<NumberT>&& Internal::IsCompatible<T, U>
+    inline ResultT Lerp2( NumberT t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        using Simd = typename S::Simd;
-        auto v = static_cast< FloatT >( c );
-        return Simd( Traits::Lerp( a.ToSimd( ).simd, b.simd, Traits::Fill( v ) ) );
+        using Type = Traits::Type;
+        return Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), static_cast< Type >( t ) );
+    }
+
+
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::SimdType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp2( a.simd, b.simd, t.simd );
     }
 
     /// <summary>
     /// Calculates the linear interpolation between the
     /// the elements of a and the elements of b, for elements of
-    /// c is inside [0,1), or the linear extrapolation for elements
-    /// in c outside [0,1).
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
     /// </summary>
-    template<Internal::TupleType S, Internal::TupleType T, typename U >
-        requires Internal::IsCompatible<S, T>&& std::is_arithmetic_v<U>
-    inline typename S::Simd Lerp( const S& a, const T& b, const U c ) noexcept
+    template<Internal::SimdType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        using FloatT = typename Traits::Type;
-        using Simd = typename S::Simd;
-        auto v = static_cast< FloatT >( c );
-        return Simd( Traits::Lerp( a.ToSimd( ).simd, b.ToSimd( ).simd, Traits::Fill( v ) ) );
+        return Traits::Lerp2( a.simd, b.simd, Traits::Load( t.values ) );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U Lerp2( const S& t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp2( a.simd, Traits::Load( b.values ), t.simd );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::SimdType S, Internal::TupleType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline S Lerp2( const S& t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp2( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) );
+    }
+
+    //
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp2( Traits::Load( a.values ), b.simd, t.simd );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::TupleType S, Internal::SimdType T, Internal::TupleType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp2( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::SimdType U>
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline U Lerp2( const S& t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp2( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), t.simd );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between the
+    /// the elements of a and the elements of b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::TupleType S, Internal::TupleType T, Internal::TupleType U, typename ResultT = typename T::Simd >
+        requires Internal::IsCompatible<S, T>&& Internal::IsCompatible<T, U>
+    inline ResultT Lerp2( const S& t, const T& a, const U& b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        return Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( t.values ) );
+    }
+
+
+    /// <summary>
+    /// Calculates the linear interpolation between a and b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::SimdType T, typename NumberT1, typename NumberT2>
+        requires std::is_arithmetic_v<NumberT1>&& std::is_arithmetic_v<NumberT2>
+    inline T Lerp2( const T& t, NumberT1 a, NumberT2 b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), t.simd );
+    }
+
+    /// <summary>
+    /// Calculates the linear interpolation between a and b, for elements of
+    /// t is inside [0,1), or the linear extrapolation for elements
+    /// in t outside [0,1).
+    /// </summary>
+    template<Internal::TupleType T, typename NumberT1, typename NumberT2>
+        requires std::is_arithmetic_v<NumberT1>&& std::is_arithmetic_v<NumberT2>
+    inline typename T::Simd Lerp2( const T& t, NumberT1 a, NumberT2 b ) noexcept
+    {
+        using Traits = typename T::Traits;
+        using Type = Traits::Type;
+        return Traits::Lerp2( Traits::Fill<T::Size>( static_cast< Type >( a ) ), Traits::Fill<T::Size>( static_cast< Type >( b ) ), Traits::Load( t.values ) );
     }
 
     
@@ -3796,9 +4058,9 @@ namespace Harlinn::Common::Core::Math
         using Traits = typename S::Traits;
         using Simd = S;
 
-        auto result = Traits::Dot( incident, normal );
+        auto result = Traits::Dot( incident.simd, normal.simd );
         result = Traits::Add( result, result );
-        return Simd( FNMSub( result, normal, incident ) );
+        return Simd( Traits::FNMSub( result, normal.simd, incident.simd ) );
     }
 
     /// <summary>

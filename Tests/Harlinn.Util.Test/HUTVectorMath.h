@@ -23,6 +23,13 @@
 
 namespace Harlinn::Util::Test
 {
+    inline bool Equal( float first, float second, float epsilon = 0.0001f )
+    {
+        auto delta = first - second;
+        return std::abs( delta ) <= epsilon;
+    }
+
+
     inline Common::Core::Math::SquareMatrix<float, 4> ConvertMatrix( const pbrt::SquareMatrix<4>& m )
     {
         Common::Core::Math::SquareMatrix<float, 4> result(
@@ -255,6 +262,73 @@ namespace Harlinn::Util::Test
     }
 
 #ifndef PBRT_USES_HCCMATH
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const pbrt::Vector2f& v1, const T& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 2; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const T& v1, const pbrt::Vector2f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 2; i++ )
+        {
+            auto value1 = v1[ i ];
+            float value2 = ( &v2.x )[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const pbrt::Point2f& v1, const T& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 2; i++ )
+        {
+            auto value1 = ( &v1.x )[ i ];
+            float value2 = v2[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<Common::Core::Math::Internal::TupleType T>
+    inline bool Equal( const T& v1, const pbrt::Point2f& v2, float epsilon = 0.0001f )
+    {
+        for ( size_t i = 0; i < 2; i++ )
+        {
+            auto value1 = v1[ i ];
+            float value2 = ( &v2.x )[ i ];
+            auto delta = value1 - value2;
+            if ( std::abs( delta ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+
     template<Common::Core::Math::Internal::TupleType T>
     inline bool Equal( const pbrt::Vector3f& v1, const T& v2, float epsilon = 0.0001f )
     {

@@ -50,42 +50,51 @@ namespace pbrto
     class DiffuseBxDF
     {
     private:
-        SampledSpectrum R;
+        SampledSpectrum::Simd R;
     public:
         // DiffuseBxDF Public Methods
         DiffuseBxDF( ) = default;
-        DiffuseBxDF( SampledSpectrum R ) 
-            : R( R ) 
+        DiffuseBxDF( SampledSpectrum r ) 
+            : R( r )
+        { }
+        DiffuseBxDF( SampledSpectrum::Simd r )
+            : R( r )
         { }
 
-        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
         {
             if ( !SameHemisphere( wo, wi ) )
-                return SampledSpectrum( 0.f );
+                return SampledSpectrum::Simd( 0.f );
             return R * InvPi;
         }
 
-        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 return {};
             // Sample cosine-weighted hemisphere to compute _wi_ and _pdf_
-            Vector3f wi = SampleCosineHemisphere( u );
-            if ( wo.z < 0 )
-                wi.z *= -1;
+            Vector3f::Simd wi = SampleCosineHemisphere( u );
+            auto woz = wo.z( );
+            if ( woz < 0 )
+            {
+                wi.SetZ( woz * -1.f );
+            }
             Float pdf = CosineHemispherePDF( AbsCosTheta( wi ) );
 
-            return BSDFSample( R * InvPi, Vector3f::Simd( wi ), pdf, BxDFFlags::DiffuseReflection );
+            return BSDFSample( R * InvPi, wi, pdf, BxDFFlags::DiffuseReflection );
         }
 
-        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) || !SameHemisphere( wo, wi ) )
                 return 0;
             return CosineHemispherePDF( AbsCosTheta( wi ) );
         }
 
-        static constexpr const char* Name( ) { return "DiffuseBxDF"; }
+        static constexpr const char* Name( ) 
+        { 
+            return "DiffuseBxDF"; 
+        }
 
         std::string ToString( ) const;
 
@@ -103,23 +112,29 @@ namespace pbrto
     class DiffuseTransmissionBxDF
     {
         // DiffuseTransmissionBxDF Private Members
-        SampledSpectrum R, T;
+        SampledSpectrum::Simd R_, T_;
+        Float pr_, pt_;
     public:
         // DiffuseTransmissionBxDF Public Methods
         DiffuseTransmissionBxDF( ) = default;
-        DiffuseTransmissionBxDF( SampledSpectrum R, SampledSpectrum T ) : R( R ), T( T ) {}
+        DiffuseTransmissionBxDF( SampledSpectrum R, SampledSpectrum T ) 
+            : R_( R ), T_( T ), pr_( R.MaxComponentValue( ) ), pt_( T.MaxComponentValue( ) )
+        { }
 
-        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        DiffuseTransmissionBxDF( SampledSpectrum::Simd R, SampledSpectrum::Simd T ) 
+            : R_( R ), T_( T ), pr_( MaxComponentValue( R ) ), pt_( MaxComponentValue( T ) )
+        { }
+
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
         {
-            return SameHemisphere( wo, wi ) ? ( R * InvPi ) : ( T * InvPi );
+            return SameHemisphere( wo, wi ) ? ( R_ * InvPi ) : ( T_ * InvPi );
         }
 
-        pstdo::optional<BSDFSample> Sample_f(
-                Vector3f wo, Float uc, Point2f u, TransportMode mode,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             // Compute reflection and transmission probabilities for diffuse BSDF
-            Float pr = R.MaxComponentValue( ), pt = T.MaxComponentValue( );
+            Float pr = pr_; 
+            Float pt = pt_;
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 pr = 0;
             if ( !( sampleFlags & BxDFReflTransFlags::Transmission ) )
@@ -127,13 +142,14 @@ namespace pbrto
             if ( pr == 0 && pt == 0 )
                 return {};
 
+            auto woz = wo.z( );
             // Randomly sample diffuse BSDF reflection or transmission
             if ( uc < pr / ( pr + pt ) )
             {
                 // Sample diffuse BSDF reflection
-                Vector3f wi = SampleCosineHemisphere( u );
-                if ( wo.z < 0 )
-                    wi.z *= -1;
+                Vector3f::Simd wi = SampleCosineHemisphere( u );
+                if ( woz < 0 )
+                    wi.NegateZ( );
                 Float pdf = CosineHemispherePDF( AbsCosTheta( wi ) ) * pr / ( pr + pt );
                 return BSDFSample( f( wo, wi, mode ), wi, pdf, BxDFFlags::DiffuseReflection );
 
@@ -141,19 +157,19 @@ namespace pbrto
             else
             {
                 // Sample diffuse BSDF transmission
-                Vector3f wi = SampleCosineHemisphere( u );
-                if ( wo.z > 0 )
-                    wi.z *= -1;
+                Vector3f::Simd wi = SampleCosineHemisphere( u );
+                if ( woz > 0 )
+                    wi.NegateZ( );
                 Float pdf = CosineHemispherePDF( AbsCosTheta( wi ) ) * pt / ( pr + pt );
                 return BSDFSample( f( wo, wi, mode ), wi, pdf, BxDFFlags::DiffuseTransmission );
             }
         }
 
-        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             // Compute reflection and transmission probabilities for diffuse BSDF
-            Float pr = R.MaxComponentValue( ), pt = T.MaxComponentValue( );
+            Float pr = pr_;
+            Float pt = pt_;
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 pr = 0;
             if ( !( sampleFlags & BxDFReflTransFlags::Transmission ) )
@@ -175,8 +191,8 @@ namespace pbrto
 
         BxDFFlags Flags( ) const
         {
-            return ( ( R ? BxDFFlags::DiffuseReflection : BxDFFlags::Unset ) |
-                ( T ? BxDFFlags::DiffuseTransmission : BxDFFlags::Unset ) );
+            return ( ( R_ ? BxDFFlags::DiffuseReflection : BxDFFlags::Unset ) |
+                ( T_ ? BxDFFlags::DiffuseTransmission : BxDFFlags::Unset ) );
         }
 
     private:
@@ -205,10 +221,10 @@ namespace pbrto
                 ( mfDistrib.EffectivelySmooth( ) ? BxDFFlags::Specular : BxDFFlags::Glossy );
         }
 
-        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
 
-        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const;
-        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const;
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const;
 
         static constexpr const char* Name( ) { return "DielectricBxDF"; }
 
@@ -227,12 +243,12 @@ namespace pbrto
         ThinDielectricBxDF( ) = default;
         ThinDielectricBxDF( Float eta ) : eta( eta ) {}
 
-        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
         {
-            return SampledSpectrum( 0 );
+            return SampledSpectrum::Simd( 0.f );
         }
 
-        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
         {
             Float R = FrDielectric( AbsCosTheta( wo ), eta ); 
             Float T = 1 - R;
@@ -256,21 +272,21 @@ namespace pbrto
             if ( uc < pr / ( pr + pt ) )
             {
                 // Sample perfect specular dielectric BRDF
-                Vector3f wi( -wo.x, -wo.y, wo.z );
-                SampledSpectrum fr( R / AbsCosTheta( wi ) );
+                Vector3f::Simd wi( wo.WithNegatedXY( ) );
+                SampledSpectrum::Simd fr( R / AbsCosTheta( wi ) );
                 return BSDFSample( fr, wi, pr / ( pr + pt ), BxDFFlags::SpecularReflection );
 
             }
             else
             {
                 // Sample perfect specular transmission at thin dielectric interface
-                Vector3f wi = -wo;
-                SampledSpectrum ft( T / AbsCosTheta( wi ) );
+                Vector3f::Simd wi = -wo;
+                SampledSpectrum::Simd ft( T / AbsCosTheta( wi ) );
                 return BSDFSample( ft, wi, pt / ( pr + pt ), BxDFFlags::SpecularTransmission );
             }
         }
 
-        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
         {
             return 0;
         }
@@ -294,8 +310,8 @@ namespace pbrto
     {
         // ConductorBxDF Private Members
         TrowbridgeReitzDistribution mfDistrib;
-        SampledSpectrum eta; 
-        SampledSpectrum k;
+        SampledSpectrum::Simd eta;
+        SampledSpectrum::Simd k;
     public:
         // ConductorBxDF Public Methods
         ConductorBxDF( ) = default;
@@ -310,7 +326,7 @@ namespace pbrto
                 : BxDFFlags::GlossyReflection;
         }
 
-        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
             {
@@ -319,18 +335,18 @@ namespace pbrto
             if ( mfDistrib.EffectivelySmooth( ) )
             {
                 // Sample perfect specular conductor BRDF
-                Vector3f wi( -wo.x, -wo.y, wo.z );
-                SampledSpectrum f = FrComplex( AbsCosTheta( wi ), eta, k ) / AbsCosTheta( wi );
+                Vector3f::Simd wi( wo.WithNegatedXY() );
+                SampledSpectrum::Simd f = FrComplex( AbsCosTheta( wi ), eta, k ) / AbsCosTheta( wi );
                 return BSDFSample( f, wi, 1, BxDFFlags::SpecularReflection );
             }
             // Sample rough conductor BRDF
             // Sample microfacet normal $\wm$ and reflected direction $\wi$
-            if ( wo.z == 0 )
+            if ( wo.z( ) == 0 )
             {
                 return {};
             }
-            Vector3f wm = mfDistrib.Sample_wm( wo, u );
-            Vector3f wi = Reflect( wo, wm );
+            Vector3f::Simd wm = mfDistrib.Sample_wm( wo, u );
+            Vector3f::Simd wi = Reflect( wo, wm );
             if ( !SameHemisphere( wo, wi ) )
                 return {};
 
@@ -343,12 +359,12 @@ namespace pbrto
             // Evaluate Fresnel factor _F_ for conductor BRDF
             SampledSpectrum F = FrComplex( ScalarAbsDot( wo, wm ), eta, k );
 
-            SampledSpectrum f =
+            SampledSpectrum::Simd f =
                 mfDistrib.D( wm ) * F * mfDistrib.G( wo, wi ) / ( 4 * cosTheta_i * cosTheta_o );
             return BSDFSample( f, wi, pdf, BxDFFlags::GlossyReflection );
         }
 
-        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
         {
             if ( !SameHemisphere( wo, wi ) )
                 return {};
@@ -370,7 +386,7 @@ namespace pbrto
             return mfDistrib.D( wm ) * F * mfDistrib.G( wo, wi ) / ( 4 * cosTheta_i * cosTheta_o );
         }
 
-        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 return 0;
@@ -379,11 +395,13 @@ namespace pbrto
             if ( mfDistrib.EffectivelySmooth( ) )
                 return 0;
             // Evaluate sampling PDF of rough conductor BRDF
-            Vector3f wm = wo + wi;
-            NCHECK_RARE( 1e-5f, ScalarLengthSquared( wm ) == 0 );
-            if ( ScalarLengthSquared( wm ) == 0 )
+            Vector3f::Simd wm = wo + wi;
+
+            auto wmLengthSquared = ScalarLengthSquared( wm );
+            NCHECK_RARE( 1e-5f, wmLengthSquared == 0 );
+            if ( wmLengthSquared == 0 )
                 return 0;
-            wm = FaceForward( ToVector3f( Normalize( wm ) ), Normal3f( 0, 0, 1 ) );
+            wm = FaceForward( Normalize( wm ), Normal3f::Simd( 0, 0, 1 ) );
             return mfDistrib.PDF( wo, wm ) / ( 4 * ScalarAbsDot( wo, wm ) );
         }
 
@@ -424,18 +442,18 @@ namespace pbrto
             return *this;
         }
 
-        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
         {
             return top ? top->f( wo, wi, mode ) : bottom->f( wo, wi, mode );
         }
 
-        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             return top ? top->Sample_f( wo, uc, u, mode, sampleFlags )
                 : bottom->Sample_f( wo, uc, u, mode, sampleFlags );
         }
 
-        Float PDF( Vector3f wo, Vector3f wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             return top ? top->PDF( wo, wi, mode, sampleFlags )
                 : bottom->PDF( wo, wi, mode, sampleFlags );
@@ -451,6 +469,12 @@ namespace pbrto
     template <typename TopBxDF, typename BottomBxDF, bool twoSided>
     class LayeredBxDF
     {
+        // LayeredBxDF Private Members
+        TopBxDF top;
+        BottomBxDF bottom;
+        Float thickness, g;
+        SampledSpectrum::Simd albedo;
+        int maxDepth, nSamples;
     public:
         // LayeredBxDF Public Methods
         LayeredBxDF( ) = default;
@@ -462,8 +486,7 @@ namespace pbrto
               albedo( albedo ),
               maxDepth( maxDepth ),
               nSamples( nSamples )
-        {
-        }
+        { }
 
         std::string ToString( ) const;
 
@@ -494,12 +517,12 @@ namespace pbrto
             return flags;
         }
 
-        SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
         {
-            SampledSpectrum f( 0. );
+            SampledSpectrum::Simd f( 0.f );
             // Estimate _LayeredBxDF_ value _f_ using random sampling
             // Set _wo_ and _wi_ for layered BSDF evaluation
-            if ( twoSided&& wo.z < 0 )
+            if ( twoSided && wo.z( ) < 0 )
             {
                 wo = -wo;
                 wi = -wi;
@@ -507,15 +530,20 @@ namespace pbrto
 
             // Determine entrance interface for layered BSDF
             TopOrBottomBxDF<TopBxDF, BottomBxDF> enterInterface;
-            bool enteredTop = twoSided || wo.z > 0;
+            bool enteredTop = twoSided || wo.z( ) > 0;
             if ( enteredTop )
+            {
                 enterInterface = &top;
+            }
             else
+            {
                 enterInterface = &bottom;
+            }
 
+            const auto sameHemisphere = SameHemisphere( wo, wi );
             // Determine exit interface and exit $z$ for layered BSDF
             TopOrBottomBxDF<TopBxDF, BottomBxDF> exitInterface, nonExitInterface;
-            if ( SameHemisphere( wo, wi ) ^ enteredTop )
+            if ( sameHemisphere ^ enteredTop )
             {
                 exitInterface = &bottom;
                 nonExitInterface = &top;
@@ -525,14 +553,16 @@ namespace pbrto
                 exitInterface = &top;
                 nonExitInterface = &bottom;
             }
-            Float exitZ = ( SameHemisphere( wo, wi ) ^ enteredTop ) ? 0 : thickness;
+            Float exitZ = ( sameHemisphere ^ enteredTop ) ? 0 : thickness;
 
             // Account for reflection at the entrance interface
-            if ( SameHemisphere( wo, wi ) )
+            if ( sameHemisphere )
+            {
                 f = nSamples * enterInterface.f( wo, wi, mode );
+            }
 
             // Declare _RNG_ for layered BSDF evaluation
-            RNG rng( Hash( GetOptions( ).seed, wo ), Hash( wi ) );
+            RNG rng( Hash( GetOptions( ).seed, Vector3f( wo ) ), Hash( Vector3f( wi ) ) );
             auto r = [ &rng ]( ) 
                 {
                     return std::min<Float>( rng.Uniform<Float>( ), OneMinusEpsilon );
@@ -544,20 +574,21 @@ namespace pbrto
                 // Sample transmission direction through entrance interface
                 Float uc = r( );
                 pstdo::optional<BSDFSample> wos = enterInterface.Sample_f( wo, uc, Point2f( r( ), r( ) ), mode, BxDFReflTransFlags::Transmission );
-                if ( !wos || !wos->f.AnyNotEqual( 0.f ) || wos->pdf == 0 || wos->wi.z( ) == 0 )
+                if ( !wos || !wos->f || wos->pdf == 0 || wos->wi.z( ) == 0 )
                 {
                     continue;
                 }
                 // Sample BSDF for virtual light from _wi_
                 uc = r( );
                 pstdo::optional<BSDFSample> wis = exitInterface.Sample_f( wi, uc, Point2f( r( ), r( ) ), !mode, BxDFReflTransFlags::Transmission );
-                if ( !wis || !wis->f.AnyNotEqual( 0.f ) || wis->pdf == 0 || wis->wi.z( ) == 0 )
+                if ( !wis || !wis->f || wis->pdf == 0 || wis->wi.z( ) == 0 )
                 {
                     continue;
                 }
 
                 // Declare state for random walk through BSDF layers
-                SampledSpectrum beta = wos->f * AbsCosTheta( wos->wi ) / wos->pdf;
+                SampledSpectrum::Simd beta = wos->f * AbsCosTheta( wos->wi ) / wos->pdf;
+                auto betaMaxComponentValue = MaxComponentValue( beta );
                 Float z = enteredTop ? thickness : 0;
                 Vector3f::Simd w = wos->wi;
                 auto wz = w.z( );
@@ -570,9 +601,9 @@ namespace pbrto
                         beta[ 1 ], beta[ 2 ], beta[ 3 ], w.x(), w.y( ), w.z( ), f[ 0 ], f[ 1 ], f[ 2 ],
                         f[ 3 ] );
                     // Possibly terminate layered BSDF random walk with Russian roulette
-                    if ( depth > 3 && beta.MaxComponentValue( ) < 0.25f )
+                    if ( depth > 3 && betaMaxComponentValue < 0.25f )
                     {
-                        Float q = std::max<Float>( 0, 1 - beta.MaxComponentValue( ) );
+                        Float q = std::max<Float>( 0, 1 - betaMaxComponentValue );
                         if ( r( ) < q )
                             break;
                         beta /= 1 - q;
@@ -596,7 +627,9 @@ namespace pbrto
                         Float zp = wz > 0 ? ( z + dz ) : ( z - dz );
                         NDCHECK_RARE( 1e-5, z == zp );
                         if ( z == zp )
+                        {
                             continue;
+                        }
                         if ( 0 < zp && zp < thickness )
                         {
                             // Handle scattering event in layered BSDF medium
@@ -646,7 +679,7 @@ namespace pbrto
                         Float uc = r( );
                         pstdo::optional<BSDFSample> bs = exitInterface.Sample_f(
                             -w, uc, Point2f( r( ), r( ) ), mode, BxDFReflTransFlags::Reflection );
-                        if ( !bs || !bs->f.AnyNotEqual( 0.f ) || bs->pdf == 0 || bs->wi.z( ) == 0 )
+                        if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z( ) == 0 )
                             break;
                         beta *= bs->f * AbsCosTheta( bs->wi ) / bs->pdf;
                         w = bs->wi;
@@ -660,18 +693,14 @@ namespace pbrto
                             // Add NEE contribution along presampled _wis_ direction
                             Float wt = 1;
                             if ( !IsSpecular( exitInterface.Flags( ) ) )
-                                wt = PowerHeuristic( 1, wis->pdf, 1,
-                                    nonExitInterface.PDF( -w, -wis->wi, mode ) );
-                            f += beta * nonExitInterface.f( -w, -wis->wi, mode ) *
-                                AbsCosTheta( wis->wi ) * wt * Tr( thickness, wis->wi ) * wis->f /
-                                wis->pdf;
+                                wt = PowerHeuristic( 1, wis->pdf, 1, nonExitInterface.PDF( -w, -wis->wi, mode ) );
+                            f += beta * nonExitInterface.f( -w, -wis->wi, mode ) * AbsCosTheta( wis->wi ) * wt * Tr( thickness, wis->wi ) * wis->f / wis->pdf;
                         }
                         // Sample new direction using BSDF at _nonExitInterface_
                         Float uc = r( );
                         Point2f u( r( ), r( ) );
-                        pstdo::optional<BSDFSample> bs = nonExitInterface.Sample_f(
-                            -w, uc, u, mode, BxDFReflTransFlags::Reflection );
-                        if ( !bs || !bs->f.AnyNotEqual( 0.f ) || bs->pdf == 0 || bs->wi.z() == 0 )
+                        pstdo::optional<BSDFSample> bs = nonExitInterface.Sample_f( -w, uc, u, mode, BxDFReflTransFlags::Reflection );
+                        if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z() == 0 )
                             break;
                         beta *= bs->f * AbsCosTheta( bs->wi ) / bs->pdf;
                         w = bs->wi;
@@ -679,14 +708,13 @@ namespace pbrto
                         if ( !IsSpecular( exitInterface.Flags( ) ) )
                         {
                             // Add NEE contribution along direction from BSDF sample
-                            SampledSpectrum fExit = exitInterface.f( -w, wi, mode );
+                            SampledSpectrum::Simd fExit = exitInterface.f( -w, wi, mode );
                             if ( fExit )
                             {
                                 Float wt = 1;
                                 if ( !IsSpecular( nonExitInterface.Flags( ) ) )
                                 {
-                                    Float exitPDF = exitInterface.PDF(
-                                        -w, wi, mode, BxDFReflTransFlags::Transmission );
+                                    Float exitPDF = exitInterface.PDF( -w, wi, mode, BxDFReflTransFlags::Transmission );
                                     wt = PowerHeuristic( 1, bs->pdf, 1, exitPDF );
                                 }
                                 f += beta * Tr( thickness, bs->wi ) * fExit * wt;
@@ -699,22 +727,21 @@ namespace pbrto
             return f / nSamples;
         }
 
-        pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             NCHECK( sampleFlags == BxDFReflTransFlags::All );  // for now
             // Set _wo_ for layered BSDF sampling
             bool flipWi = false;
-            if ( twoSided&& wo.z < 0 )
+            if ( twoSided&& wo.z( ) < 0 )
             {
                 wo = -wo;
                 flipWi = true;
             }
 
             // Sample BSDF at entrance interface to get initial direction _w_
-            bool enteredTop = twoSided || wo.z > 0;
-            pstdo::optional<BSDFSample> bs =
-                enteredTop ? top.Sample_f( wo, uc, u, mode ) : bottom.Sample_f( wo, uc, u, mode );
-            if ( !bs || !bs->f.AnyNotEqual(0.f) || bs->pdf == 0 || bs->wi.z() == 0 )
+            bool enteredTop = twoSided || wo.z( ) > 0;
+            pstdo::optional<BSDFSample> bs = enteredTop ? top.Sample_f( wo, uc, u, mode ) : bottom.Sample_f( wo, uc, u, mode );
+            if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z() == 0 )
                 return {};
             if ( bs->IsReflection( ) )
             {
@@ -728,7 +755,7 @@ namespace pbrto
             bool specularPath = bs->IsSpecular( );
 
             // Declare _RNG_ for layered BSDF sampling
-            RNG rng( Hash( GetOptions( ).seed, wo ), Hash( uc, u ) );
+            RNG rng( Hash( GetOptions( ).seed, Vector3f( wo ) ), Hash( uc, u ) );
             auto r = [ &rng ]( ) 
                 {
                     return std::min<Float>( rng.Uniform<Float>( ), OneMinusEpsilon );
@@ -806,10 +833,10 @@ namespace pbrto
                 Float uc = r( );
                 Point2f u( r( ), r( ) );
                 pstdo::optional<BSDFSample> bs = interface.Sample_f( -w, uc, u, mode );
+                if ( !bs || !bs->f || bs->pdf == 0 || bs->wi.z( ) == 0 )
+                    return {};
                 w = bs->wi;
                 wz = w.z( );
-                if ( !bs || !bs->f.AnyNotEqual( 0.f ) || bs->pdf == 0 || wz == 0 )
-                    return {};
                 f *= bs->f;
                 pdf *= bs->pdf;
                 specularPath &= bs->IsSpecular( );
@@ -818,8 +845,7 @@ namespace pbrto
                 // Return _BSDFSample_ if path has left the layers
                 if ( bs->IsTransmission( ) )
                 {
-                    BxDFFlags flags = SameHemisphere( Vector3f::Simd( wo ), w ) ? BxDFFlags::Reflection
-                        : BxDFFlags::Transmission;
+                    BxDFFlags flags = SameHemisphere( wo, w ) ? BxDFFlags::Reflection : BxDFFlags::Transmission;
                     flags |= specularPath ? BxDFFlags::Specular : BxDFFlags::Glossy;
                     if ( flipWi )
                         w = -w;
@@ -832,38 +858,37 @@ namespace pbrto
             return {};
         }
 
-        PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-                BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags = BxDFReflTransFlags::All ) const
         {
             NCHECK( sampleFlags == BxDFReflTransFlags::All );  // for now
             // Set _wo_ and _wi_ for layered BSDF evaluation
-            if ( twoSided&& wo.z < 0 )
+            if ( twoSided&& wo.z( ) < 0 )
             {
                 wo = -wo;
                 wi = -wi;
             }
 
             // Declare _RNG_ for layered PDF evaluation
-            RNG rng( Hash( GetOptions( ).seed, wi ), Hash( wo ) );
-            auto r = [ &rng ]( ) {
-                return std::min<Float>( rng.Uniform<Float>( ), OneMinusEpsilon );
+            RNG rng( Hash( GetOptions( ).seed, Vector3f( wi ) ), Hash( Vector3f( wo ) ) );
+            auto r = [ &rng ]( ) 
+                {
+                    return std::min<Float>( rng.Uniform<Float>( ), OneMinusEpsilon );
                 };
 
             // Update _pdfSum_ for reflection at the entrance layer
-            bool enteredTop = twoSided || wo.z > 0;
+            bool enteredTop = twoSided || wo.z() > 0;
             Float pdfSum = 0;
-            if ( SameHemisphere( wo, wi ) )
+            auto sameHemisphere = SameHemisphere( wo, wi );
+            if ( sameHemisphere )
             {
                 auto reflFlag = BxDFReflTransFlags::Reflection;
-                pdfSum += enteredTop ? nSamples * top.PDF( wo, wi, mode, reflFlag )
-                    : nSamples * bottom.PDF( wo, wi, mode, reflFlag );
+                pdfSum += enteredTop ? nSamples * top.PDF( wo, wi, mode, reflFlag ) : nSamples * bottom.PDF( wo, wi, mode, reflFlag );
             }
 
             for ( int s = 0; s < nSamples; ++s )
             {
                 // Evaluate layered BSDF PDF sample
-                if ( SameHemisphere( wo, wi ) )
+                if ( sameHemisphere )
                 {
                     // Evaluate TRT term for PDF estimate
                     TopOrBottomBxDF<TopBxDF, BottomBxDF> rInterface, tInterface;
@@ -884,16 +909,15 @@ namespace pbrto
                     wis = tInterface.Sample_f( wi, r( ), { r( ), r( ) }, !mode, trans );
 
                     // Update _pdfSum_ accounting for TRT scattering events
-                    if ( wos && wos->f.AnyNotEqual(0.f) && wos->pdf > 0 && wis && wis->f.AnyNotEqual(0.f) && wis->pdf > 0 )
+                    if ( wos && wos->f && wos->pdf > 0 && wis && wis->f && wis->pdf > 0 )
                     {
                         if ( !IsNonSpecular( tInterface.Flags( ) ) )
                             pdfSum += rInterface.PDF( -wos->wi, -wis->wi, mode );
                         else
                         {
                             // Use multiple importance sampling to estimate PDF product
-                            pstdo::optional<BSDFSample> rs =
-                                rInterface.Sample_f( -wos->wi, r( ), { r( ), r( ) }, mode );
-                            if ( rs && rs->f.AnyNotEqual(0.f) && rs->pdf > 0 )
+                            pstdo::optional<BSDFSample> rs = rInterface.Sample_f( -wos->wi, r( ), { r( ), r( ) }, mode );
+                            if ( rs && rs->f && rs->pdf > 0 )
                             {
                                 if ( !IsNonSpecular( rInterface.Flags( ) ) )
                                     pdfSum += tInterface.PDF( -rs->wi, wi, mode );
@@ -932,47 +956,39 @@ namespace pbrto
                     Float uc = r( );
                     Point2f u( r( ), r( ) );
                     pstdo::optional<BSDFSample> wos = toInterface.Sample_f( wo, uc, u, mode );
-                    if ( !wos || !wos->f.AnyNotEqual( 0.f ) || wos->pdf == 0 || wos->wi.z() == 0 ||
+                    if ( !wos || !wos->f || wos->pdf == 0 || wos->wi.z() == 0 ||
                         wos->IsReflection( ) )
                         continue;
 
                     uc = r( );
                     u = Point2f( r( ), r( ) );
                     pstdo::optional<BSDFSample> wis = tiInterface.Sample_f( wi, uc, u, !mode );
-                    if ( !wis || !wis->f.AnyNotEqual(0.f) || wis->pdf == 0 || wis->wi.z( ) == 0 ||
-                        wis->IsReflection( ) )
+                    if ( !wis || !wis->f || wis->pdf == 0 || wis->wi.z( ) == 0 || wis->IsReflection( ) )
+                    {
                         continue;
-
+                    }
                     if ( IsSpecular( toInterface.Flags( ) ) )
                         pdfSum += tiInterface.PDF( -wos->wi, wi, mode );
                     else if ( IsSpecular( tiInterface.Flags( ) ) )
                         pdfSum += toInterface.PDF( wo, -wis->wi, mode );
                     else
-                        pdfSum += ( toInterface.PDF( wo, -wis->wi, mode ) +
-                            tiInterface.PDF( -wos->wi, wi, mode ) ) /
-                        2;
+                        pdfSum += ( toInterface.PDF( wo, -wis->wi, mode ) + tiInterface.PDF( -wos->wi, wi, mode ) ) / 2.f;
                 }
             }
             // Return mixture of PDF estimate and constant PDF
-            return Lerp( 0.9f, 1 / ( 4 * Pi ), pdfSum / nSamples );
+            return Lerp2( 0.9f, 1 / ( 4 * Pi ), pdfSum / nSamples );
         }
 
     private:
         // LayeredBxDF Private Methods
-        PBRT_CPU_GPU
-            static Float Tr( Float dz, Vector3f w )
+        static Float Tr( Float dz, Vector3f::Simd w )
         {
             if ( std::abs( dz ) <= std::numeric_limits<Float>::min( ) )
                 return 1;
-            return FastExp( -std::abs( dz / w.z ) );
+            return Math::Exp( -std::abs( dz / w.z( ) ) );
         }
 
-        // LayeredBxDF Private Members
-        TopBxDF top;
-        BottomBxDF bottom;
-        Float thickness, g;
-        SampledSpectrum albedo;
-        int maxDepth, nSamples;
+        
     };
 
     // CoatedDiffuseBxDF Definition
@@ -981,8 +997,7 @@ namespace pbrto
     public:
         // CoatedDiffuseBxDF Public Methods
         using LayeredBxDF::LayeredBxDF;
-        PBRT_CPU_GPU
-            static constexpr const char* Name( ) { return "CoatedDiffuseBxDF"; }
+        static constexpr const char* Name( ) { return "CoatedDiffuseBxDF"; }
     };
 
     // CoatedConductorBxDF Definition
@@ -990,53 +1005,44 @@ namespace pbrto
     {
     public:
         // CoatedConductorBxDF Public Methods
-        PBRT_CPU_GPU
-            static constexpr const char* Name( ) { return "CoatedConductorBxDF"; }
+        static constexpr const char* Name( ) { return "CoatedConductorBxDF"; }
         using LayeredBxDF::LayeredBxDF;
     };
 
     // HairBxDF Definition
     class HairBxDF
-    {
-    public:
-        // HairBxDF Public Methods
-        HairBxDF( ) = default;
-        PBRT_CPU_GPU
-            HairBxDF( Float h, Float eta, const SampledSpectrum& sigma_a, Float beta_m,
-                Float beta_n, Float alpha );
-        PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const;
-        PBRT_CPU_GPU
-            pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u,
-                TransportMode mode,
-                BxDFReflTransFlags sampleFlags ) const;
-        PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-                BxDFReflTransFlags sampleFlags ) const;
-
-        PBRT_CPU_GPU
-            void Regularize( ) {}
-
-        PBRT_CPU_GPU
-            static constexpr const char* Name( ) { return "HairBxDF"; }
-        std::string ToString( ) const;
-
-        PBRT_CPU_GPU
-            BxDFFlags Flags( ) const { return BxDFFlags::GlossyReflection; }
-
-        PBRT_CPU_GPU
-            static RGBUnboundedSpectrum SigmaAFromConcentration( Float ce, Float cp );
-        PBRT_CPU_GPU
-            static SampledSpectrum SigmaAFromReflectance( const SampledSpectrum& c, Float beta_n,
-                const SampledWavelengths& lambda );
-
-    private:
+    {   
         // HairBxDF Constants
         static constexpr int pMax = 3;
 
+        // HairBxDF Private Members
+        Float h, eta;
+        SampledSpectrum::Simd sigma_a;
+        Float beta_m, beta_n;
+        Float v[ pMax + 1 ];
+        Float s;
+        Float sin2kAlpha[ pMax ], cos2kAlpha[ pMax ];
+    public:
+        // HairBxDF Public Methods
+        HairBxDF( ) = default;
+        HairBxDF( Float h, Float eta, const SampledSpectrum& sigma_a, Float beta_m, Float beta_n, Float alpha );
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const;
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const;
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const;
+
+        void Regularize( ) {}
+
+        static constexpr const char* Name( ) { return "HairBxDF"; }
+        std::string ToString( ) const;
+
+        BxDFFlags Flags( ) const { return BxDFFlags::GlossyReflection; }
+
+        static RGBUnboundedSpectrum SigmaAFromConcentration( Float ce, Float cp );
+        static SampledSpectrum::Simd SigmaAFromReflectance( SampledSpectrum::Simd c, Float beta_n, const SampledWavelengths& lambda );
+
+    private:
         // HairBxDF Private Methods
-        PBRT_CPU_GPU static Float Mp( Float cosTheta_i, Float cosTheta_o, Float sinTheta_i,
-            Float sinTheta_o, Float v )
+        static Float Mp( Float cosTheta_i, Float cosTheta_o, Float sinTheta_i, Float sinTheta_o, Float v )
         {
             Float a = cosTheta_i * cosTheta_o / v, b = sinTheta_i * sinTheta_o / v;
             Float mp = ( v <= .1 )
@@ -1046,16 +1052,14 @@ namespace pbrto
             return mp;
         }
 
-        PBRT_CPU_GPU static pstdo::array<SampledSpectrum, pMax + 1> Ap( Float cosTheta_o,
-            Float eta, Float h,
-            SampledSpectrum T )
+        static pstdo::array<SampledSpectrum::Simd, pMax + 1> Ap( Float cosTheta_o, Float eta, Float h, SampledSpectrum::Simd T )
         {
-            pstdo::array<SampledSpectrum, pMax + 1> ap;
+            pstdo::array<SampledSpectrum::Simd, pMax + 1> ap;
             // Compute $p=0$ attenuation at initial cylinder intersection
             Float cosGamma_o = SafeSqrt( 1 - Sqr( h ) );
             Float cosTheta = cosTheta_o * cosGamma_o;
             Float f = FrDielectric( cosTheta, eta );
-            ap[ 0 ] = SampledSpectrum( f );
+            ap[ 0 ] = SampledSpectrum::Simd( f );
 
             // Compute $p=1$ attenuation term
             ap[ 1 ] = Sqr( 1 - f ) * T;
@@ -1071,13 +1075,12 @@ namespace pbrto
             return ap;
         }
 
-        PBRT_CPU_GPU static inline Float Phi( int p, Float gamma_o, Float gamma_t )
+        static inline Float Phi( int p, Float gamma_o, Float gamma_t )
         {
             return 2 * p * gamma_t - 2 * gamma_o + p * Pi;
         }
 
-        PBRT_CPU_GPU static inline Float Np( Float phi, int p, Float s, Float gamma_o,
-            Float gamma_t )
+        static inline Float Np( Float phi, int p, Float s, Float gamma_o, Float gamma_t )
         {
             Float dphi = phi - Phi( p, gamma_o, gamma_t );
             // Remap _dphi_ to $[-\pi,\pi]$
@@ -1089,159 +1092,161 @@ namespace pbrto
             return TrimmedLogistic( dphi, s, -Pi, Pi );
         }
 
-        PBRT_CPU_GPU
-            pstdo::array<Float, pMax + 1> ApPDF( Float cosTheta_o ) const;
+        pstdo::array<Float, pMax + 1> ApPDF( Float cosTheta_o ) const;
 
-        // HairBxDF Private Members
-        Float h, eta;
-        SampledSpectrum sigma_a;
-        Float beta_m, beta_n;
-        Float v[ pMax + 1 ];
-        Float s;
-        Float sin2kAlpha[ pMax ], cos2kAlpha[ pMax ];
+        
     };
 
     // MeasuredBxDF Definition
     class MeasuredBxDF
     {
-    public:
-        // MeasuredBxDF Public Methods
-        MeasuredBxDF( ) = default;
-        PBRT_CPU_GPU
-            MeasuredBxDF( const MeasuredBxDFData* brdf, const SampledWavelengths& lambda )
-            : brdf( brdf ), lambda( lambda )
-        {
-        }
-
-        static MeasuredBxDFData* BRDFDataFromFile( const std::string& filename,
-            Allocator alloc );
-
-        PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const;
-
-        PBRT_CPU_GPU
-            pstdo::optional<BSDFSample> Sample_f( Vector3f wo, Float uc, Point2f u,
-                TransportMode mode,
-                BxDFReflTransFlags sampleFlags ) const;
-        PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-                BxDFReflTransFlags sampleFlags ) const;
-
-        PBRT_CPU_GPU
-            void Regularize( ) {}
-
-        PBRT_CPU_GPU
-            static constexpr const char* Name( ) { return "MeasuredBxDF"; }
-
-        std::string ToString( ) const;
-
-        PBRT_CPU_GPU
-            BxDFFlags Flags( ) const { return ( BxDFFlags::Reflection | BxDFFlags::Glossy ); }
-
-    private:
-        // MeasuredBxDF Private Methods
-        PBRT_CPU_GPU
-            static Float theta2u( Float theta ) { return Math::Sqrt( theta * ( 2 / Pi ) ); }
-        PBRT_CPU_GPU
-            static Float phi2u( Float phi ) { return phi * ( 1 / ( 2 * Pi ) ) + .5f; }
-
-        PBRT_CPU_GPU
-            static Float u2theta( Float u ) { return Sqr( u ) * ( Pi / 2.f ); }
-        PBRT_CPU_GPU
-            static Float u2phi( Float u ) { return ( 2.f * u - 1.f ) * Pi; }
-
         // MeasuredBxDF Private Members
         const MeasuredBxDFData* brdf;
         SampledWavelengths lambda;
+    public:
+        // MeasuredBxDF Public Methods
+        MeasuredBxDF( ) = default;
+        MeasuredBxDF( const MeasuredBxDFData* brdf, const SampledWavelengths& lambda )
+            : brdf( brdf ), lambda( lambda )
+        { }
+
+        static MeasuredBxDFData* BRDFDataFromFile( const std::string& filename, Allocator alloc );
+
+        SampledSpectrum::Simd f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const;
+
+        pstdo::optional<BSDFSample> Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const;
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const;
+
+        void Regularize( ) {}
+
+        static constexpr const char* Name( ) 
+        { 
+            return "MeasuredBxDF"; 
+        }
+
+        std::string ToString( ) const;
+
+        BxDFFlags Flags( ) const 
+        { 
+            return ( BxDFFlags::Reflection | BxDFFlags::Glossy ); 
+        }
+
+    private:
+        // MeasuredBxDF Private Methods
+        static Float theta2u( Float theta ) 
+        { 
+            return Math::Sqrt( theta * ( 2 / Pi ) ); 
+        }
+        static Float phi2u( Float phi ) 
+        { 
+            return phi * ( 1 / ( 2 * Pi ) ) + .5f; 
+        }
+
+        static Float u2theta( Float u ) 
+        { 
+            return Sqr( u ) * ( Pi / 2.f ); 
+        }
+        static Float u2phi( Float u ) 
+        { 
+            return ( 2.f * u - 1.f ) * Pi; 
+        }
+
+        
     };
 
     // NormalizedFresnelBxDF Definition
     class NormalizedFresnelBxDF
     {
+    private:
+        Float eta;
     public:
         // NormalizedFresnelBxDF Public Methods
         NormalizedFresnelBxDF( ) = default;
-        PBRT_CPU_GPU
-            NormalizedFresnelBxDF( Float eta ) : eta( eta ) {}
+        NormalizedFresnelBxDF( Float eta ) 
+            : eta( eta ) 
+        { }
 
-        PBRT_CPU_GPU
-            BSDFSample Sample_f( Vector3f wo, Float uc, Point2f u, TransportMode mode,
-                BxDFReflTransFlags sampleFlags ) const
+        BSDFSample Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 return {};
 
             // Cosine-sample the hemisphere, flipping the direction if necessary
-            Vector3f wi = SampleCosineHemisphere( u );
-            if ( wo.z < 0 )
-                wi.z *= -1;
-            return BSDFSample( f( wo, wi, mode ), wi, PDF( wo, wi, mode, sampleFlags ),
-                BxDFFlags::DiffuseReflection );
+            Vector3f::Simd wi = SampleCosineHemisphere( u );
+            if ( wo.z( ) < 0 )
+                wi.NegateZ( );
+                
+            return BSDFSample( f( wo, wi, mode ), wi, PDF( wo, wi, mode, sampleFlags ), BxDFFlags::DiffuseReflection );
         }
 
-        PBRT_CPU_GPU
-            Float PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-                BxDFReflTransFlags sampleFlags ) const
+        Float PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
         {
             if ( !( sampleFlags & BxDFReflTransFlags::Reflection ) )
                 return 0;
             return SameHemisphere( wo, wi ) ? AbsCosTheta( wi ) * InvPi : 0;
         }
 
-        PBRT_CPU_GPU
-            void Regularize( ) {}
+        void Regularize( ) 
+        { }
 
-        PBRT_CPU_GPU
-            static constexpr const char* Name( ) { return "NormalizedFresnelBxDF"; }
+        static constexpr const char* Name( ) 
+        { 
+            return "NormalizedFresnelBxDF"; 
+        }
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            BxDFFlags Flags( ) const
+        BxDFFlags Flags( ) const
         {
             return BxDFFlags( BxDFFlags::Reflection | BxDFFlags::Diffuse );
         }
 
-        PBRT_CPU_GPU
-            SampledSpectrum f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+        SampledSpectrum::Simd f( Vector3f wo, Vector3f wi, TransportMode mode ) const
         {
             if ( !SameHemisphere( wo, wi ) )
-                return SampledSpectrum( 0.f );
+            {
+                return SampledSpectrum::Simd( 0.f );
+            }
             // Compute $\Sw$ factor for BSSRDF value
             Float c = 1 - 2 * FresnelMoment1( 1 / eta );
-            SampledSpectrum f( ( 1 - FrDielectric( CosTheta( wi ), eta ) ) / ( c * Pi ) );
+            SampledSpectrum::Simd f( ( 1 - FrDielectric( CosTheta( wi ), eta ) ) / ( c * Pi ) );
 
             // Update BSSRDF transmission term to account for adjoint light transport
             if ( mode == TransportMode::Radiance )
+            {
                 f *= Sqr( eta );
+            }
 
             return f;
         }
 
-    private:
-        Float eta;
+    
     };
 
-    PBRT_CPU_GPU inline SampledSpectrum BxDF::f( Vector3f wo, Vector3f wi, TransportMode mode ) const
+    inline SampledSpectrum::Simd BxDF::f( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode ) const
     {
-        auto f = [ & ]( auto ptr ) -> SampledSpectrum { return ptr->f( wo, wi, mode ); };
+        auto f = [ & ]( auto ptr ) -> SampledSpectrum::Simd 
+            { 
+                return ptr->f( wo, wi, mode ); 
+            };
         return Dispatch( f );
     }
 
-    PBRT_CPU_GPU inline pstdo::optional<BSDFSample> BxDF::Sample_f( Vector3f wo, Float uc, Point2f u,
-        TransportMode mode,
-        BxDFReflTransFlags sampleFlags ) const
+    inline pstdo::optional<BSDFSample> BxDF::Sample_f( Vector3f::Simd wo, Float uc, Point2f u, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
     {
-        auto sample_f = [ & ]( auto ptr ) -> pstdo::optional<BSDFSample> {
-            return ptr->Sample_f( wo, uc, u, mode, sampleFlags );
+        auto sample_f = [ & ]( auto ptr ) -> pstdo::optional<BSDFSample> 
+            {
+                return ptr->Sample_f( wo, uc, u, mode, sampleFlags );
             };
         return Dispatch( sample_f );
     }
 
-    PBRT_CPU_GPU inline Float BxDF::PDF( Vector3f wo, Vector3f wi, TransportMode mode,
-        BxDFReflTransFlags sampleFlags ) const
+    PBRT_CPU_GPU inline Float BxDF::PDF( Vector3f::Simd wo, Vector3f::Simd wi, TransportMode mode, BxDFReflTransFlags sampleFlags ) const
     {
-        auto pdf = [ & ]( auto ptr ) { return ptr->PDF( wo, wi, mode, sampleFlags ); };
+        auto pdf = [ & ]( auto ptr ) 
+            { 
+                return ptr->PDF( wo, wi, mode, sampleFlags ); 
+            };
         return Dispatch( pdf );
     }
 
@@ -1253,9 +1258,56 @@ namespace pbrto
 
     PBRT_CPU_GPU inline void BxDF::Regularize( )
     {
-        auto regularize = [ & ]( auto ptr ) { ptr->Regularize( ); };
+        auto regularize = [ & ]( auto ptr ) 
+            { 
+                ptr->Regularize( ); 
+            };
         return Dispatch( regularize );
     }
+
+    template<size_t N>
+    inline SampledSpectrum::Simd BxDF::rho( Vector3f::Simd wo, const std::array<Float, N>& uc, const std::array<Point2f, N>& u2 ) const
+    {
+        if ( wo.z( ) == 0 )
+            return {};
+        SampledSpectrum::Simd r( 0.f );
+        //NDCHECK_EQ( uc.size( ), u2.size( ) );
+        for ( size_t i = 0; i < uc.size( ); ++i )
+        {
+            // Compute estimate of $\rho_\roman{hd}$
+            pstdo::optional<BSDFSample> bs = Sample_f( wo, uc[ i ], u2[ i ] );
+            if ( bs && bs->pdf > 0 )
+            {
+                r += bs->f * AbsCosTheta( bs->wi ) / bs->pdf;
+            }
+        }
+        return r / uc.size( );
+    }
+
+    template<size_t N>
+    SampledSpectrum::Simd BxDF::rho( const std::array<Point2f, N>& u1, const std::array<Float, N>& uc, const std::array<Point2f, N>& u2 ) const
+    {
+        //NDCHECK_EQ( uc.size( ), u1.size( ) );
+        //NDCHECK_EQ( u1.size( ), u2.size( ) );
+        SampledSpectrum::Simd r( 0.f );
+        for ( size_t i = 0; i < uc.size( ); ++i )
+        {
+            // Compute estimate of $\rho_\roman{hh}$
+            Vector3f::Simd wo = SampleUniformHemisphere( u1[ i ] );
+            if ( wo.z == 0 )
+            {
+                continue;
+            }
+            Float pdfo = UniformHemispherePDF( );
+            pstdo::optional<BSDFSample> bs = Sample_f( wo, uc[ i ], u2[ i ] );
+            if ( bs && bs->pdf > 0 )
+            {
+                r += bs->f * AbsCosTheta( bs->wi ) * AbsCosTheta( wo ) / ( pdfo * bs->pdf );
+            }
+        }
+        return r / ( Pi * uc.size( ) );
+    }
+
 
     extern template class LayeredBxDF<DielectricBxDF, DiffuseBxDF, true>;
     extern template class LayeredBxDF<DielectricBxDF, ConductorBxDF, true>;

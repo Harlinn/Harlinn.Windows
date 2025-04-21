@@ -1055,7 +1055,7 @@ namespace pbrto
             // The OpenEXR spectral layout takes the bucket center (and then
             // determines bucket widths based on the neighbor wavelengths).
             std::string lambda =
-                StringPrintf( "%.3fnm", Lerp( ( i + 0.5f ) / nBuckets, lambdaMin, lambdaMax ) );
+                StringPrintf( "%.3fnm", Lerp2( ( i + 0.5f ) / nBuckets, lambdaMin, lambdaMax ) );
             // Convert any '.' to ',' in the number since OpenEXR uses '.' for
             // separating layers.
             std::replace( lambda.begin( ), lambda.end( ), '.', ',' );

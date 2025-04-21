@@ -1171,7 +1171,7 @@ namespace pbrto
             // Expand bounding box for any motion derivative zeros found
             for ( int i = 0; i < nZeros; ++i )
             {
-                Point3f pz = ( *this )( p, Lerp( zeros[ i ], startTime, endTime ) );
+                Point3f pz = ( *this )( p, Lerp2( zeros[ i ], startTime, endTime ) );
                 bounds = Union( bounds, pz );
             }
         }

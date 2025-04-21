@@ -81,11 +81,11 @@ namespace pbrto
                 return ( *coeffs )[ maxc ][ zi + dz ][ yi + dy ][ xi + dx ][ i ];
                 };
 
-            c[ i ] = Lerp( dz,
-                Lerp( dy, Lerp( dx, co( 0, 0, 0 ), co( 1, 0, 0 ) ),
-                    Lerp( dx, co( 0, 1, 0 ), co( 1, 1, 0 ) ) ),
-                Lerp( dy, Lerp( dx, co( 0, 0, 1 ), co( 1, 0, 1 ) ),
-                    Lerp( dx, co( 0, 1, 1 ), co( 1, 1, 1 ) ) ) );
+            c[ i ] = Lerp2( dz,
+                Lerp2( dy, Lerp2( dx, co( 0, 0, 0 ), co( 1, 0, 0 ) ),
+                    Lerp2( dx, co( 0, 1, 0 ), co( 1, 1, 0 ) ) ),
+                Lerp2( dy, Lerp2( dx, co( 0, 0, 1 ), co( 1, 0, 1 ) ),
+                    Lerp2( dx, co( 0, 1, 1 ), co( 1, 1, 1 ) ) ) );
         }
 
         return RGBSigmoidPolynomial( c[ 0 ], c[ 1 ], c[ 2 ] );
@@ -95,25 +95,25 @@ namespace pbrto
     extern const float sRGBToSpectrumTable_Scale[ 64 ];
     extern const RGBToSpectrumTable::CoefficientArray sRGBToSpectrumTable_Data;
 
-    const RGBToSpectrumTable* RGBToSpectrumTable::sRGB;
+    PBRTO_EXPORT const RGBToSpectrumTable* RGBToSpectrumTable::sRGB;
 
     extern const int DCI_P3ToSpectrumTable_Res;
     extern const float DCI_P3ToSpectrumTable_Scale[ 64 ];
     extern const RGBToSpectrumTable::CoefficientArray DCI_P3ToSpectrumTable_Data;
 
-    const RGBToSpectrumTable* RGBToSpectrumTable::DCI_P3;
+    PBRTO_EXPORT const RGBToSpectrumTable* RGBToSpectrumTable::DCI_P3;
 
     extern const int REC2020ToSpectrumTable_Res;
     extern const float REC2020ToSpectrumTable_Scale[ 64 ];
     extern const RGBToSpectrumTable::CoefficientArray REC2020ToSpectrumTable_Data;
 
-    const RGBToSpectrumTable* RGBToSpectrumTable::Rec2020;
+    PBRTO_EXPORT const RGBToSpectrumTable* RGBToSpectrumTable::Rec2020;
 
     extern const int ACES2065_1ToSpectrumTable_Res;
     extern const float ACES2065_1ToSpectrumTable_Scale[ 64 ];
     extern const RGBToSpectrumTable::CoefficientArray ACES2065_1ToSpectrumTable_Data;
 
-    const RGBToSpectrumTable* RGBToSpectrumTable::ACES2065_1;
+    PBRTO_EXPORT const RGBToSpectrumTable* RGBToSpectrumTable::ACES2065_1;
 
     void RGBToSpectrumTable::Init( Allocator alloc )
     {
@@ -320,7 +320,7 @@ namespace pbrto
         return StringPrintf( "[ GammaColorEncoding gamma: %f ]", gamma );
     }
 
-    PBRT_CONST Float SRGBToLinearLUT[ 256 ] = {
+    PBRTO_EXPORT PBRT_CONST Float SRGBToLinearLUT[ 256 ] = {
         0.0000000000, 0.0003035270, 0.0006070540, 0.0009105810, 0.0012141080, 0.0015176350,
         0.0018211619, 0.0021246888, 0.0024282159, 0.0027317430, 0.0030352699, 0.0033465356,
         0.0036765069, 0.0040247170, 0.0043914421, 0.0047769533, 0.0051815170, 0.0056053917,

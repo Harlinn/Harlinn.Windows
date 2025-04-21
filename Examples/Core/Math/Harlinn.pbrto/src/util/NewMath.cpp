@@ -88,7 +88,7 @@ std::string Interval::ToString( ) const
 }
 
 // Spline Interpolation Function Definitions
-bool CatmullRomWeights( pstdo::span<const Float> nodes, Float x, int* offset, pstdo::span<Float> weights )
+PBRTO_EXPORT bool CatmullRomWeights( pstdo::span<const Float> nodes, Float x, int* offset, pstdo::span<Float> weights )
 {
     NCHECK_GE( weights.size( ), 4 );
     // Return _false_ if _x_ is out of bounds
@@ -140,7 +140,7 @@ bool CatmullRomWeights( pstdo::span<const Float> nodes, Float x, int* offset, ps
     return true;
 }
 
-Float CatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, Float x )
+PBRTO_EXPORT Float CatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, Float x )
 {
     NCHECK_EQ( nodes.size( ), f.size( ) );
     if ( !( x >= nodes.front( ) && x <= nodes.back( ) ) )
@@ -165,7 +165,7 @@ Float CatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, Fl
         ( t3 - t2 ) * d1;
 }
 
-Float InvertCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, Float u )
+PBRTO_EXPORT Float InvertCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, Float u )
 {
     // Stop when _u_ is out of bounds
     if ( !( u > f.front( ) ) )
@@ -205,7 +205,7 @@ Float InvertCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float>
     return x0 + t * width;
 }
 
-Float IntegrateCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, pstdo::span<Float> cdf )
+PBRTO_EXPORT Float IntegrateCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, pstdo::span<Float> cdf )
 {
     NCHECK_EQ( nodes.size( ), f.size( ) );
     Float sum = 0;
@@ -231,7 +231,7 @@ Float IntegrateCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Flo
 
 // Square--Sphere Mapping Function Definitions
 // Via source code from Clarberg: Fast Equal-Area Mapping of the (Hemi)Sphere using SIMD
-Vector3f EqualAreaSquareToSphere( Point2f p )
+PBRTO_EXPORT Vector3f EqualAreaSquareToSphere( Point2f p )
 {
     NCHECK( p.x >= 0 && p.x <= 1 && p.y >= 0 && p.y <= 1 );
     // Transform _p_ to $[-1,1]^2$ and compute absolute values
@@ -260,7 +260,7 @@ Vector3f EqualAreaSquareToSphere( Point2f p )
 }
 
 // Via source code from Clarberg: Fast Equal-Area Mapping of the (Hemi)Sphere using SIMD
-PBRT_CPU_GPU Point2f EqualAreaSphereToSquare( Vector3f d )
+PBRTO_EXPORT Point2f EqualAreaSphereToSquare( Vector3f d )
 {
     NDCHECK( LengthSquared( d ) > .999 && LengthSquared( d ) < 1.001 );
     Float x = std::abs( d.x ), y = std::abs( d.y ), z = std::abs( d.z );
@@ -308,7 +308,7 @@ PBRT_CPU_GPU Point2f EqualAreaSphereToSquare( Vector3f d )
     return Point2f( 0.5f * ( u + 1 ), 0.5f * ( v + 1 ) );
 }
 
-PBRT_CPU_GPU Point2f WrapEqualAreaSquare( Point2f uv )
+PBRTO_EXPORT Point2f WrapEqualAreaSquare( Point2f uv )
 {
     if ( uv[ 0 ] < 0 )
     {

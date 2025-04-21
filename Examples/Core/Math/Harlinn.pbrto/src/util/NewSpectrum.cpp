@@ -51,7 +51,7 @@ namespace pbrto
 {
 
     // Spectrum Function Definitions
-    Float SpectrumToPhotometric( Spectrum s )
+    PBRTO_EXPORT Float SpectrumToPhotometric( Spectrum s )
     {
         // We have to handle RGBIlluminantSpectrum separately here as it's composed of an
         // illuminant spectrum and an RGB multiplier. We only want to consider the
@@ -64,7 +64,7 @@ namespace pbrto
         return InnerProduct( &Spectra::Y( ), s );
     }
 
-    XYZ SpectrumToXYZ( Spectrum s )
+    PBRTO_EXPORT XYZ SpectrumToXYZ( Spectrum s )
     {
         return XYZ( InnerProduct( &Spectra::X( ), s ), InnerProduct( &Spectra::Y( ), s ),
             InnerProduct( &Spectra::Z( ), s ) ) /
@@ -91,7 +91,7 @@ namespace pbrto
         int o = FindInterval( lambdas.size( ), [ & ]( int i ) { return lambdas[ i ] <= lambda; } );
         NDCHECK( lambda >= lambdas[ o ] && lambda <= lambdas[ o + 1 ] );
         Float t = ( lambda - lambdas[ o ] ) / ( lambdas[ o + 1 ] - lambdas[ o ] );
-        return Lerp( t, values[ o ], values[ o + 1 ] );
+        return Lerp2( t, values[ o ], values[ o + 1 ] );
     }
 
     PBRT_CPU_GPU Float PiecewiseLinearSpectrum::MaxValue( ) const
@@ -2583,7 +2583,7 @@ namespace pbrto
     // Spectral Data Definitions
     namespace Spectra
     {
-        DenselySampledSpectrum D( Float temperature, Allocator alloc )
+        PBRTO_EXPORT DenselySampledSpectrum D( Float temperature, Allocator alloc )
         {
             // Convert temperature to CCT
             Float cct = temperature * 1.4388f / 1.4380f;
@@ -2627,7 +2627,7 @@ namespace pbrto
 #ifdef PBRT_BUILD_GPU_RENDERER
         PBRT_GPU DenselySampledSpectrum* xGPU, * yGPU, * zGPU;
 #endif
-        DenselySampledSpectrum* x, * y, * z;
+        PBRTO_EXPORT DenselySampledSpectrum* x, * y, * z;
 
         namespace
         {
@@ -2881,7 +2881,7 @@ namespace pbrto
 
     }  // namespace Spectra
 
-    Spectrum GetNamedSpectrum( std::string name )
+    PBRTO_EXPORT Spectrum GetNamedSpectrum( std::string name )
     {
         auto iter = Spectra::namedSpectra.find( name );
         if ( iter != Spectra::namedSpectra.end( ) )
@@ -2889,7 +2889,7 @@ namespace pbrto
         return nullptr;
     }
 
-    std::string FindMatchingNamedSpectrum( Spectrum s )
+    PBRTO_EXPORT std::string FindMatchingNamedSpectrum( Spectrum s )
     {
         auto sampledLambdasMatch = []( Spectrum a, Spectrum b ) {
             const Float wls[ ] = { 306, 360.932007, 380, 402, 455, 503, 579,

@@ -15,6 +15,8 @@
 */
 
 #include <HCCApplication.h>
+#include <pbrto/NewPbrt.h>
+#include <pbrto/NewOptions.h>
 
 #define BOOST_TEST_MODULE Harlinn.Common.Core.Tests
 #define BOOST_TEST_NO_MAIN
@@ -26,7 +28,13 @@ int main( int argc, char* argv[ ], char* envp[ ] )
 {
     auto application = std::make_shared<Harlinn::Common::Core::Application>( );
     application->Start( );
+
+    pbrto::PBRTOptions opt;
+    opt.quiet = true;
+    pbrto::InitPBRT( opt );
+
     auto result = boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
+    pbrto::CleanupPBRT( );
     application->Stop( );
     return result;
 }

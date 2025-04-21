@@ -99,13 +99,13 @@ namespace pbrto
 
         // Compute trilinear interpolation of weights
         Float wx = NoiseWeight( dx ), wy = NoiseWeight( dy ), wz = NoiseWeight( dz );
-        Float x00 = Lerp( wx, w000, w100 );
-        Float x10 = Lerp( wx, w010, w110 );
-        Float x01 = Lerp( wx, w001, w101 );
-        Float x11 = Lerp( wx, w011, w111 );
-        Float y0 = Lerp( wy, x00, x10 );
-        Float y1 = Lerp( wy, x01, x11 );
-        return Lerp( wz, y0, y1 );
+        Float x00 = Lerp2( wx, w000, w100 );
+        Float x10 = Lerp2( wx, w010, w110 );
+        Float x01 = Lerp2( wx, w001, w101 );
+        Float x11 = Lerp2( wx, w011, w111 );
+        Float y0 = Lerp2( wy, x00, x10 );
+        Float y1 = Lerp2( wy, x01, x11 );
+        return Lerp2( wz, y0, y1 );
     }
 
     Float Noise( Point3f p )
@@ -175,7 +175,7 @@ namespace pbrto
 
         // Account for contributions of clamped octaves in turbulence
         Float nPartial = n - nInt;
-        sum += o * Lerp( SmoothStep( nPartial, .3f, .7f ), 0.2, std::abs( Noise( lambda * p ) ) );
+        sum += o * Lerp2( SmoothStep( nPartial, .3f, .7f ), 0.2, std::abs( Noise( lambda * p ) ) );
         for ( int i = nInt; i < maxOctaves; ++i )
         {
             sum += o * 0.2f;

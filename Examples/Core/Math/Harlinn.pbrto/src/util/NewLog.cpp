@@ -464,7 +464,9 @@ namespace pbrto
         std::string shortfile( fileStart ? ( fileStart + 5 ) : file );
         fprintf( stderr, "[ " LOG_BASE_FMT " %s:%d ] %s %s\n", LOG_BASE_ARGS,
             shortfile.c_str( ), line, ToString( level ).c_str( ), s );
-
+//#ifdef _DEBUG
+        DebugBreak( );
+//#endif
         CheckCallbackScope::Fail( );
         abort( );
 #endif

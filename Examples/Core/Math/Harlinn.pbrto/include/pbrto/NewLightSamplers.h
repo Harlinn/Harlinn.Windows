@@ -165,12 +165,12 @@ namespace pbrto
         PBRT_CPU_GPU
             Bounds3f Bounds( const Bounds3f& allb ) const
         {
-            return { Point3f( Lerp( qb[ 0 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
-                            Lerp( qb[ 0 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
-                            Lerp( qb[ 0 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ),
-                    Point3f( Lerp( qb[ 1 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
-                            Lerp( qb[ 1 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
-                            Lerp( qb[ 1 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ) };
+            return { Point3f( Lerp2( qb[ 0 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
+                            Lerp2( qb[ 0 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
+                            Lerp2( qb[ 0 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ),
+                    Point3f( Lerp2( qb[ 1 ][ 0 ] / 65535.f, allb.pMin.x, allb.pMax.x ),
+                            Lerp2( qb[ 1 ][ 1 ] / 65535.f, allb.pMin.y, allb.pMax.y ),
+                            Lerp2( qb[ 1 ][ 2 ] / 65535.f, allb.pMin.z, allb.pMax.z ) ) };
         }
 
         PBRT_CPU_GPU

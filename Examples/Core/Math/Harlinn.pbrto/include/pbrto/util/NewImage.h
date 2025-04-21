@@ -528,7 +528,7 @@ namespace pbrto
 
                     // Assume Jacobian term is basically constant over the
                     // region.
-                    Point2f p = domain.Lerp(
+                    Point2f p = domain.Lerp2(
                         Point2f( ( x + .5f ) / resolution[ 0 ], ( y + .5f ) / resolution[ 1 ] ) );
                     dist( x, y ) = value * dxdA( p );
                 }

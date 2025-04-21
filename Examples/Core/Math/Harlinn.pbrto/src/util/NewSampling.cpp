@@ -73,7 +73,7 @@ namespace pbrto
 
         // Uniformly sample triangle area $A$ to compute $A'$
         Float A_pi = alpha + beta + gamma;
-        Float Ap_pi = Lerp( u[ 0 ], Pi, A_pi );
+        Float Ap_pi = Lerp2( u[ 0 ], Pi, A_pi );
         if ( pdf )
         {
             Float A = A_pi - Pi;
@@ -375,7 +375,7 @@ namespace pbrto
 
         // TODO: yuck is there a better way to figure out which is the right
         // solution?
-        Float hv[ 2 ] = { Lerp( u1[ 0 ], h0, h1 ), Lerp( u1[ 1 ], h0, h1 ) };
+        Float hv[ 2 ] = { Lerp2( u1[ 0 ], h0, h1 ), Lerp2( u1[ 1 ], h0, h1 ) };
         Float hvsq[ 2 ] = { Sqr( hv[ 0 ] ), Sqr( hv[ 1 ] ) };
         Float yz[ 2 ] = { ( hv[ 0 ] * dd ) / Math::Sqrt( 1 - hvsq[ 0 ] ),
                        ( hv[ 1 ] * dd ) / Math::Sqrt( 1 - hvsq[ 1 ] ) };
@@ -542,7 +542,7 @@ namespace pbrto
             for ( int j = 0; j < nSamples + 1; ++j )
             {
                 Float delta = Float( j ) / nSamples;
-                Float v = Lerp( ( i + delta ) / Float( nSteps ), min, max );
+                Float v = Lerp2( ( i + delta ) / Float( nSteps ), min, max );
                 Float fv = std::abs( f( v ) );
                 accum = std::max<double>( accum, fv );
             }
@@ -572,7 +572,7 @@ namespace pbrto
                 double accum = 0;
                 for ( size_t i = 0; i < samples.size( ); ++i )
                 {
-                    Point2f p = domain.Lerp(
+                    Point2f p = domain.Lerp2(
                         Point2f( ( u + samples[ i ][ 0 ] ) / nu, ( v + samples[ i ][ 1 ] ) / nv ) );
                     Float fuv = std::abs( f( p.x, p.y ) );
                     accum = std::max<double>( accum, fuv );

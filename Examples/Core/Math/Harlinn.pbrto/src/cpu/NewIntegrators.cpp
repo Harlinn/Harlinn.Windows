@@ -766,11 +766,11 @@ namespace pbrto
                 // Estimate BSDF's albedo
                 // Define sample arrays _ucRho_ and _uRho_ for reflectance estimate
                 constexpr int nRhoSamples = 16;
-                const Float ucRho[ nRhoSamples ] = {
+                const std::array<Float, nRhoSamples> ucRho = {
                     0.75741637, 0.37870818, 0.7083487, 0.18935409, 0.9149363, 0.35417435,
                     0.5990858,  0.09467703, 0.8578725, 0.45746812, 0.686759,  0.17708716,
                     0.9674518,  0.2995429,  0.5083201, 0.047338516 };
-                const Point2f uRho[ nRhoSamples ] = {
+                const std::array<Point2f, nRhoSamples> uRho = {
                     Point2f( 0.855985, 0.570367 ), Point2f( 0.381823, 0.851844 ),
                     Point2f( 0.285328, 0.764262 ), Point2f( 0.733380, 0.114073 ),
                     Point2f( 0.542663, 0.344465 ), Point2f( 0.127274, 0.414848 ),
@@ -1244,11 +1244,11 @@ namespace pbrto
                 // Estimate BSDF's albedo
                 // Define sample arrays _ucRho_ and _uRho_ for reflectance estimate
                 constexpr int nRhoSamples = 16;
-                const Float ucRho[ nRhoSamples ] = {
+                const std::array<Float, nRhoSamples> ucRho = {
                     0.75741637, 0.37870818, 0.7083487, 0.18935409, 0.9149363, 0.35417435,
                     0.5990858,  0.09467703, 0.8578725, 0.45746812, 0.686759,  0.17708716,
                     0.9674518,  0.2995429,  0.5083201, 0.047338516 };
-                const Point2f uRho[ nRhoSamples ] = {
+                const std::array<Point2f, nRhoSamples> uRho = {
                     Point2f( 0.855985, 0.570367 ), Point2f( 0.381823, 0.851844 ),
                     Point2f( 0.285328, 0.764262 ), Point2f( 0.733380, 0.114073 ),
                     Point2f( 0.542663, 0.344465 ), Point2f( 0.127274, 0.414848 ),
@@ -2778,7 +2778,7 @@ namespace pbrto
         Vertex* cameraVertices = scratchBuffer.Alloc<Vertex[ ]>( t );
         // Compute camera sample for MLT camera path
         Bounds2f sampleBounds = camera.GetFilm( ).SampleBounds( );
-        *pRaster = sampleBounds.Lerp( sampler.GetPixel2D( ) );
+        *pRaster = sampleBounds.Lerp2( sampler.GetPixel2D( ) );
         CameraSample cameraSample;
         cameraSample.pFilm = *pRaster;
         cameraSample.time = sampler.Get1D( );

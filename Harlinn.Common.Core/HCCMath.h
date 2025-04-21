@@ -2045,6 +2045,13 @@ namespace Harlinn::Common::Core::Math
         }
     }
 
+    template<typename T, typename U>
+        requires IsArithmetic<T>&& IsArithmetic<U>
+    constexpr inline MakeFloatingPoint<T, U> Lerp2( U t, T a, T b ) noexcept
+    {
+        return ( 1 - t ) * a + t * b;
+    }
+
     /// <summary>
     /// <para>
     /// Composes a floating point value with the magnitude 

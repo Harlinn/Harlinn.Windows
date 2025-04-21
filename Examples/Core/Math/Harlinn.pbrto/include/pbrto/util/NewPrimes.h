@@ -30,7 +30,7 @@ namespace pbrto
 
     // Prime Table Declarations
     static constexpr int PrimeTableSize = 1000;
-    extern PBRT_CONST int Primes[ PrimeTableSize ];
+    PBRTO_EXPORT extern PBRT_CONST int Primes[ PrimeTableSize ];
 
 }
 

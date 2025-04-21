@@ -195,7 +195,7 @@ namespace pbrto
 
     pstdo::optional<LightBounds> PointLight::Bounds( ) const
     {
-        Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
+        Point3f p = renderFromLight( Point3f::Simd( 0, 0, 0 ) );
         Float phi = 4 * Pi * scale * I->MaxValue( );
         return LightBounds( Bounds3f( p, p ), Vector3f( 0, 0, 1 ), phi, Math::Cos( Pi ),
             Math::Cos( Pi / 2 ), false );
@@ -205,7 +205,7 @@ namespace pbrto
         SampledWavelengths& lambda,
         Float time ) const
     {
-        Point3f p = renderFromLight( Point3f( 0, 0, 0 ) );
+        Point3f::Simd p = renderFromLight( Point3f::Simd( 0, 0, 0 ) );
         Ray ray( p, SampleUniformSphere( u1 ), time, mediumInterface.outside );
         return LightLeSample( scale * I->Sample( lambda ), ray, 1, UniformSpherePDF( ) );
     }
@@ -410,7 +410,7 @@ namespace pbrto
             for ( int x = 0; x < image.Resolution( ).x; ++x )
             {
                 // Compute change of variables factor _dwdA_ for projection light pixel
-                Point2f ps = screenBounds.Lerp( Point2f( ( x + 0.5f ) / image.Resolution( ).x,
+                Point2f ps = screenBounds.Lerp2( Point2f( ( x + 0.5f ) / image.Resolution( ).x,
                     ( y + 0.5f ) / image.Resolution( ).y ) );
                 Vector3f w = Vector3f( lightFromScreen( Point3f( ps.x, ps.y, 0 ) ) );
                 w = Normalize( w );
@@ -552,7 +552,7 @@ namespace pbrto
             for ( int y = 0; y < image.Resolution( ).y; ++y )
                 for ( int x = 0; x < image.Resolution( ).x; ++x )
                 {
-                    Point2f ps = screenBounds.Lerp(
+                    Point2f ps = screenBounds.Lerp2(
                         { ( x + .5f ) / image.Resolution( ).x, ( y + .5f ) / image.Resolution( ).y } );
                     Vector3f w = Vector3f( lightFromScreen( Point3f( ps.x, ps.y, 0 ) ) );
                     w = Normalize( w );

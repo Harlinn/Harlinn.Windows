@@ -927,14 +927,14 @@ namespace pbrto
 
             // Return trilinearly interpolated voxel values
             auto d00 =
-                Lerp( d.x, Lookup( pi, convert ), Lookup( pi + Vector3i( 1, 0, 0 ), convert ) );
-            auto d10 = Lerp( d.x, Lookup( pi + Vector3i( 0, 1, 0 ), convert ),
+                Lerp2( d.x, Lookup( pi, convert ), Lookup( pi + Vector3i( 1, 0, 0 ), convert ) );
+            auto d10 = Lerp2( d.x, Lookup( pi + Vector3i( 0, 1, 0 ), convert ),
                 Lookup( pi + Vector3i( 1, 1, 0 ), convert ) );
-            auto d01 = Lerp( d.x, Lookup( pi + Vector3i( 0, 0, 1 ), convert ),
+            auto d01 = Lerp2( d.x, Lookup( pi + Vector3i( 0, 0, 1 ), convert ),
                 Lookup( pi + Vector3i( 1, 0, 1 ), convert ) );
-            auto d11 = Lerp( d.x, Lookup( pi + Vector3i( 0, 1, 1 ), convert ),
+            auto d11 = Lerp2( d.x, Lookup( pi + Vector3i( 0, 1, 1 ), convert ),
                 Lookup( pi + Vector3i( 1, 1, 1 ), convert ) );
-            return Lerp( d.z, Lerp( d.y, d00, d10 ), Lerp( d.y, d01, d11 ) );
+            return Lerp2( d.z, Lerp2( d.y, d00, d10 ), Lerp2( d.y, d01, d11 ) );
         }
 
         PBRT_CPU_GPU
@@ -946,14 +946,14 @@ namespace pbrto
             Vector3f d = pSamples - ToPoint3f( pi );
 
             // Return trilinearly interpolated voxel values
-            auto d00 = Lerp( d.x, Lookup( pi ), Lookup( pi + Vector3i( 1, 0, 0 ) ) );
+            auto d00 = Lerp2( d.x, Lookup( pi ), Lookup( pi + Vector3i( 1, 0, 0 ) ) );
             auto d10 =
-                Lerp( d.x, Lookup( pi + Vector3i( 0, 1, 0 ) ), Lookup( pi + Vector3i( 1, 1, 0 ) ) );
+                Lerp2( d.x, Lookup( pi + Vector3i( 0, 1, 0 ) ), Lookup( pi + Vector3i( 1, 1, 0 ) ) );
             auto d01 =
-                Lerp( d.x, Lookup( pi + Vector3i( 0, 0, 1 ) ), Lookup( pi + Vector3i( 1, 0, 1 ) ) );
+                Lerp2( d.x, Lookup( pi + Vector3i( 0, 0, 1 ) ), Lookup( pi + Vector3i( 1, 0, 1 ) ) );
             auto d11 =
-                Lerp( d.x, Lookup( pi + Vector3i( 0, 1, 1 ) ), Lookup( pi + Vector3i( 1, 1, 1 ) ) );
-            return Lerp( d.z, Lerp( d.y, d00, d10 ), Lerp( d.y, d01, d11 ) );
+                Lerp2( d.x, Lookup( pi + Vector3i( 0, 1, 1 ) ), Lookup( pi + Vector3i( 1, 1, 1 ) ) );
+            return Lerp2( d.z, Lerp2( d.y, d00, d10 ), Lerp2( d.y, d01, d11 ) );
         }
 
         template <typename F>

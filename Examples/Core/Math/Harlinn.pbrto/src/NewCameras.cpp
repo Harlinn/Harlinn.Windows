@@ -995,10 +995,10 @@ namespace pbrto
         for ( int i = 0; i < nSamples; ++i )
         {
             // Find location of sample points on $x$ segment and rear lens element
-            Point3f pFilm( Lerp( ( i + 0.5f ) / nSamples, filmX0, filmX1 ), 0, 0 );
+            Point3f pFilm( Lerp2( ( i + 0.5f ) / nSamples, filmX0, filmX1 ), 0, 0 );
             Float u[ 2 ] = { RadicalInverse( 0, i ), RadicalInverse( 1, i ) };
-            Point3f pRear( Lerp( u[ 0 ], projRearBounds.pMin.x, projRearBounds.pMax.x ),
-                Lerp( u[ 1 ], projRearBounds.pMin.y, projRearBounds.pMax.y ),
+            Point3f pRear( Lerp2( u[ 0 ], projRearBounds.pMin.x, projRearBounds.pMax.x ),
+                Lerp2( u[ 1 ], projRearBounds.pMin.y, projRearBounds.pMax.y ),
                 LensRearZ( ) );
 
             // Expand pupil bounds if ray makes it through the lens system
@@ -1033,7 +1033,7 @@ namespace pbrto
             return {};
 
         // Generate sample point inside exit pupil bound
-        Point2f pLens = pupilBounds.Lerp( uLens );
+        Point2f pLens = pupilBounds.Lerp2( uLens );
         Float pdf = 1 / pupilBounds.Area( );
 
         // Return sample point rotated by angle of _pFilm_ with $+x$ axis
@@ -1051,7 +1051,7 @@ namespace pbrto
         Point2f s( 
             sample.pFilm.x / film.FullResolution( ).x,
             sample.pFilm.y / film.FullResolution( ).y );
-        Point2f pFilm2 = physicalExtent.Lerp( s );
+        Point2f pFilm2 = physicalExtent.Lerp2( s );
         Point3f pFilm( -pFilm2.x, pFilm2.y, 0 );
 
         // Trace ray from _pFilm_ through lens system
@@ -1389,11 +1389,11 @@ namespace pbrto
         for ( int y = 0; y < nSamples; ++y )
         {
             Float fy = ( Float )y / ( Float )( nSamples - 1 );
-            Float ly = Lerp( fy, -RearElementRadius( ), RearElementRadius( ) );
+            Float ly = Lerp2( fy, -RearElementRadius( ), RearElementRadius( ) );
             for ( int x = 0; x < nSamples; ++x )
             {
                 Float fx = ( Float )x / ( Float )( nSamples - 1 );
-                Float lx = Lerp( fx, -RearElementRadius( ), RearElementRadius( ) );
+                Float lx = Lerp2( fx, -RearElementRadius( ), RearElementRadius( ) );
 
                 Point3f pRear( lx, ly, LensRearZ( ) );
 

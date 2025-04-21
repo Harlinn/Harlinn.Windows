@@ -99,10 +99,10 @@ namespace pbrto
         return nullptr;
     }
 
-    const RGBColorSpace* RGBColorSpace::sRGB;
-    const RGBColorSpace* RGBColorSpace::DCI_P3;
-    const RGBColorSpace* RGBColorSpace::Rec2020;
-    const RGBColorSpace* RGBColorSpace::ACES2065_1;
+    PBRTO_EXPORT const RGBColorSpace* RGBColorSpace::sRGB;
+    PBRTO_EXPORT const RGBColorSpace* RGBColorSpace::DCI_P3;
+    PBRTO_EXPORT const RGBColorSpace* RGBColorSpace::Rec2020;
+    PBRTO_EXPORT const RGBColorSpace* RGBColorSpace::ACES2065_1;
 
     void RGBColorSpace::Init( Allocator alloc )
     {
