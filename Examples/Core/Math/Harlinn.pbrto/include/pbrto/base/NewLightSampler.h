@@ -53,18 +53,16 @@ namespace pbrto
         // LightSampler Interface
         using TaggedPointer::TaggedPointer;
 
-        static LightSampler Create( const std::string& name, pstdo::span<const Light> lights,
-            Allocator alloc );
+        static LightSampler Create( const std::string& name, pstdo::span<const Light> lights, Allocator alloc );
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU inline pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx,
-            Float u ) const;
+        inline pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const;
 
-        PBRT_CPU_GPU inline Float PMF( const LightSampleContext& ctx, Light light ) const;
+        inline Float PMF( const LightSampleContext& ctx, Light light ) const;
 
-        PBRT_CPU_GPU inline pstdo::optional<SampledLight> Sample( Float u ) const;
-        PBRT_CPU_GPU inline Float PMF( Light light ) const;
+        inline pstdo::optional<SampledLight> Sample( Float u ) const;
+        inline Float PMF( Light light ) const;
     };
 
 }

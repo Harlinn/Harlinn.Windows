@@ -1100,8 +1100,7 @@ namespace pbrto
         // We can't do using operator- above, since we don't want to pull in
         // the Point-Point -> Point one so that we can return a vector
         // instead...
-        PBRT_CPU_GPU
-            Point3<T> operator-( ) const
+        Point3<T> operator-( ) const
         {
             return { -x, -y, -z };
         }
@@ -1109,14 +1108,12 @@ namespace pbrto
         template <typename U>
         explicit Point3( const Point3<U>& p )
             : Tuple3<pbrto::Point3, T>( T( p.x ), T( p.y ), T( p.z ) )
-        {
-        }
+        { }
 
         template <typename U>
         explicit Point3( const Vector3<U>& v )
             : Tuple3<pbrto::Point3, T>( T( v.x ), T( v.y ), T( v.z ) )
-        {
-        }
+        { }
 
         template <typename U>
         auto operator+( const Vector3<U>& v ) const->Point3<decltype( T{} + U{} ) >
@@ -1242,6 +1239,9 @@ namespace pbrto
         }
 
     };
+
+
+
 
 
     // Point2* Definitions

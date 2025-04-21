@@ -306,12 +306,17 @@ namespace pbrto
     // BVHLightSampler Definition
     class BVHLightSampler
     {
+        // BVHLightSampler Private Members
+        pstdo::vector<Light> lights;
+        pstdo::vector<Light> infiniteLights;
+        Bounds3f allLightBounds;
+        pstdo::vector<LightBVHNode> nodes;
+        HashMap<Light, uint32_t> lightToBitTrail;
     public:
         // BVHLightSampler Public Methods
-        BVHLightSampler( pstdo::span<const Light> lights, Allocator alloc );
+        PBRTO_EXPORT BVHLightSampler( pstdo::span<const Light> lights, Allocator alloc );
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
+        pstdo::optional<SampledLight> Sample( const LightSampleContext& ctx, Float u ) const
         {
             // Compute infinite light sampling probability _pInfinite_
             Float pInfinite = Float( infiniteLights.size( ) ) /
@@ -375,8 +380,7 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU
-            Float PMF( const LightSampleContext& ctx, Light light ) const
+        Float PMF( const LightSampleContext& ctx, Light light ) const
         {
             // Handle infinite _light_ PMF computation
             if ( !lightToBitTrail.HasKey( light ) )
@@ -416,8 +420,7 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<SampledLight> Sample( Float u ) const
+        pstdo::optional<SampledLight> Sample( Float u ) const
         {
             if ( lights.empty( ) )
                 return {};
@@ -425,15 +428,14 @@ namespace pbrto
             return SampledLight{ lights[ lightIndex ], 1.f / lights.size( ) };
         }
 
-        PBRT_CPU_GPU
-            Float PMF( Light light ) const
+        Float PMF( Light light ) const
         {
             if ( lights.empty( ) )
                 return 0;
             return 1.f / lights.size( );
         }
 
-        std::string ToString( ) const;
+        PBRTO_EXPORT std::string ToString( ) const;
 
     private:
         // BVHLightSampler Private Methods
@@ -457,12 +459,7 @@ namespace pbrto
             return b.phi * M_omega * Kr * b.bounds.SurfaceArea( );
         }
 
-        // BVHLightSampler Private Members
-        pstdo::vector<Light> lights;
-        pstdo::vector<Light> infiniteLights;
-        Bounds3f allLightBounds;
-        pstdo::vector<LightBVHNode> nodes;
-        HashMap<Light, uint32_t> lightToBitTrail;
+        
     };
 
     // ExhaustiveLightSampler Definition

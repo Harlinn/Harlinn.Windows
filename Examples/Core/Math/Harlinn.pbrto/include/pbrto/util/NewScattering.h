@@ -39,6 +39,11 @@ namespace pbrto
         return -wo + 2 * ScalarDot( wo, n ) * n;
     }
 
+    inline Vector3f::Simd Reflect( Vector3f::Simd wo, Vector3f::Simd n )
+    {
+        return -wo + 2 * ScalarDot( wo, n ) * n;
+    }
+
     inline bool Refract( Vector3f wi, Normal3f n, Float eta, Float* etap, Vector3f* wt )
     {
         Float cosTheta_i = ScalarDot( n, wi );
