@@ -59,9 +59,7 @@ namespace pbrto
     class Light : public TaggedPointer<  // Light Source Types
         PointLight, DistantLight, ProjectionLight, GoniometricLight, SpotLight,
         DiffuseAreaLight, UniformInfiniteLight, ImageInfiniteLight,
-        PortalImageInfiniteLight
-
-    >
+        PortalImageInfiniteLight>
     {
     public:
         // Light Interface
@@ -70,21 +68,21 @@ namespace pbrto
         static Light Create( const std::string& name, const ParameterDictionary& parameters, const Transform& renderFromLight, const CameraTransform& cameraTransform, Medium outsideMedium, const FileLoc* loc, Allocator alloc );
         static Light CreateArea( const std::string& name, const ParameterDictionary& parameters, const Transform& renderFromLight, const MediumInterface& mediumInterface, const Shape shape, FloatTexture alpha, const FileLoc* loc, Allocator alloc );
 
-        SampledSpectrum Phi( SampledWavelengths lambda ) const;
+        SampledSpectrum::Simd Phi( SampledWavelengths lambda ) const;
 
         inline LightType Type( ) const;
 
         inline pstdo::optional<LightLiSample> SampleLi( LightSampleContext ctx, Point2f u, SampledWavelengths lambda, bool allowIncompletePDF = false ) const;
 
-        inline Float PDF_Li( LightSampleContext ctx, Vector3f wi, bool allowIncompletePDF = false ) const;
+        inline Float PDF_Li( LightSampleContext ctx, Vector3f::Simd wi, bool allowIncompletePDF = false ) const;
 
         std::string ToString( ) const;
 
         // AreaLights only
-        inline SampledSpectrum L( Point3f p, Normal3f n, Point2f uv, Vector3f w, const SampledWavelengths& lambda ) const;
+        inline SampledSpectrum::Simd L( Point3f::Simd p, Normal3f::Simd n, Point2f uv, Vector3f::Simd w, const SampledWavelengths& lambda ) const;
 
         // InfiniteLights only
-        inline SampledSpectrum Le( const Ray& ray, const SampledWavelengths& lambda ) const;
+        inline SampledSpectrum::Simd Le( const Ray& ray, const SampledWavelengths& lambda ) const;
 
         void Preprocess( const Bounds3f& sceneBounds );
 
@@ -95,7 +93,7 @@ namespace pbrto
         void PDF_Le( const Ray& ray, Float* pdfPos, Float* pdfDir ) const;
 
         // AreaLights only
-        void PDF_Le( const Interaction& intr, Vector3f w, Float* pdfPos, Float* pdfDir ) const;
+        void PDF_Le( const Interaction& intr, Vector3f::Simd w, Float* pdfPos, Float* pdfDir ) const;
     };
 
 }

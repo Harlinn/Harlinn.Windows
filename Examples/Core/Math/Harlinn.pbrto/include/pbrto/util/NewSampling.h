@@ -59,7 +59,7 @@ namespace pbrto
 
     Point2f InvertSphericalRectangleSample( Point3f pRef, Point3f v00, Vector3f eu, Vector3f ev, Point3f pRect );
 
-    Vector3f SampleHenyeyGreenstein( Vector3f wo, Float g, Point2f u, Float* pdf = nullptr );
+    Vector3f::Simd SampleHenyeyGreenstein( Vector3f::Simd wo, Float g, Point2f u, Float* pdf = nullptr );
 
     Float SampleCatmullRom( pstdo::span<const Float> nodes, pstdo::span<const Float> f, pstdo::span<const Float> cdf, Float sample, Float* fval = nullptr, Float* pdf = nullptr );
 

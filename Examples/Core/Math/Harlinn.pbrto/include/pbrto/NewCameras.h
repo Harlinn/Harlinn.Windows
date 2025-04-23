@@ -163,18 +163,23 @@ namespace pbrto
     // CameraWiSample Definition
     struct CameraWiSample
     {
+        SampledSpectrum::Simd Wi;
+        Vector3f::Simd wi;
+        Float pdf;
+        Point2f pRaster;
+        Interaction pRef;
+        Interaction pLens;
+
         // CameraWiSample Public Methods
         CameraWiSample( ) = default;
-        CameraWiSample( const SampledSpectrum& Wi, Vector3f wi, Float pdf, Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
+        CameraWiSample( SampledSpectrum Wi, Vector3f wi, Float pdf, Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
+            : Wi( Wi ), wi( wi ), pdf( pdf ), pRaster( pRaster ), pRef( pRef ), pLens( pLens )
+        { }
+        CameraWiSample( SampledSpectrum::Simd Wi, Vector3f::Simd wi, Float pdf, Point2f pRaster, const Interaction& pRef, const Interaction& pLens )
             : Wi( Wi ), wi( wi ), pdf( pdf ), pRaster( pRaster ), pRef( pRef ), pLens( pLens )
         { }
 
-        SampledSpectrum Wi;
-        Vector3f wi;
-        Float pdf;
-        Point2f pRaster;
-        Interaction pRef; 
-        Interaction pLens;
+        
     };
 
     // CameraRay Definition

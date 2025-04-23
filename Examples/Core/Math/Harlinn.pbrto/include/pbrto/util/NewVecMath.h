@@ -1032,8 +1032,92 @@ namespace pbrto
             : Base( other )
         {
         }
-
     };
+
+    inline Vector2<float>::Simd operator+( Point2<float> p, Vector2<float> v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Add( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector2<float>::Simd operator+( Point2<float>::Simd p, Vector2<float> v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Add( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector2<float>::Simd operator+( Point2<float> p, Vector2<float>::Simd v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Add( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector2<float>::Simd operator+( Point2<float>::Simd p, Vector2<float>::Simd v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Add( p.simd, v.simd );
+    }
+
+    inline Vector2<float>::Simd operator-( Point2<float> p, Vector2<float> v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector2<float>::Simd operator-( Point2<float>::Simd p, Vector2<float> v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Sub( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector2<float>::Simd operator-( Point2<float> p, Vector2<float>::Simd v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector2<float>::Simd operator-( Point2<float>::Simd p, Vector2<float>::Simd v )
+    {
+        using Traits = Point2<float>::Traits;
+        return Traits::Sub( p.simd, v.simd );
+    }
+
+    //
+    inline Vector2<Int32>::Simd operator+( Point2<Int32> p, Vector2<Int32> v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Add( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector2<Int32>::Simd operator+( Point2<Int32>::Simd p, Vector2<Int32> v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Add( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector2<Int32>::Simd operator+( Point2<Int32> p, Vector2<Int32>::Simd v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Add( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector2<Int32>::Simd operator+( Point2<Int32>::Simd p, Vector2<Int32>::Simd v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Add( p.simd, v.simd );
+    }
+
+    inline Vector2<Int32>::Simd operator-( Point2<Int32> p, Vector2<Int32> v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector2<Int32>::Simd operator-( Point2<Int32>::Simd p, Vector2<Int32> v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Sub( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector2<Int32>::Simd operator-( Point2<Int32> p, Vector2<Int32>::Simd v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector2<Int32>::Simd operator-( Point2<Int32>::Simd p, Vector2<Int32>::Simd v )
+    {
+        using Traits = Point2<Int32>::Traits;
+        return Traits::Sub( p.simd, v.simd );
+    }
 
 
 
@@ -1195,8 +1279,10 @@ namespace pbrto
         {
             return Vector3<double>( static_cast< double >( x ), static_cast< double >( y ), static_cast< double >( z ) );
         }
-
     };
+
+    
+
 
     template <>
     class Point3<Int32> : public Math::Point3i
@@ -1241,6 +1327,90 @@ namespace pbrto
     };
 
 
+    inline Vector3<float>::Simd operator+( Point3<float> p, Vector3<float> v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Add( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector3<float>::Simd operator+( Point3<float>::Simd p, Vector3<float> v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Add( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector3<float>::Simd operator+( Point3<float> p, Vector3<float>::Simd v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Add( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector3<float>::Simd operator+( Point3<float>::Simd p, Vector3<float>::Simd v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Add( p.simd, v.simd );
+    }
+
+    inline Vector3<float>::Simd operator-( Point3<float> p, Vector3<float> v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector3<float>::Simd operator-( Point3<float>::Simd p, Vector3<float> v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Sub( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector3<float>::Simd operator-( Point3<float> p, Vector3<float>::Simd v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector3<float>::Simd operator-( Point3<float>::Simd p, Vector3<float>::Simd v )
+    {
+        using Traits = Point3<float>::Traits;
+        return Traits::Sub( p.simd, v.simd );
+    }
+
+    //
+    inline Vector3<Int32>::Simd operator+( Point3<Int32> p, Vector3<Int32> v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Add( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector3<Int32>::Simd operator+( Point3<Int32>::Simd p, Vector3<Int32> v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Add( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector3<Int32>::Simd operator+( Point3<Int32> p, Vector3<Int32>::Simd v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Add( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector3<Int32>::Simd operator+( Point3<Int32>::Simd p, Vector3<Int32>::Simd v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Add( p.simd, v.simd );
+    }
+
+    inline Vector3<Int32>::Simd operator-( Point3<Int32> p, Vector3<Int32> v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), Traits::Load( v.values ) );
+    }
+    inline Vector3<Int32>::Simd operator-( Point3<Int32>::Simd p, Vector3<Int32> v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Sub( p.simd, Traits::Load( v.values ) );
+    }
+    inline Vector3<Int32>::Simd operator-( Point3<Int32> p, Vector3<Int32>::Simd v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Sub( Traits::Load( p.values ), v.simd );
+    }
+    inline Vector3<Int32>::Simd operator-( Point3<Int32>::Simd p, Vector3<Int32>::Simd v )
+    {
+        using Traits = Point3<Int32>::Traits;
+        return Traits::Sub( p.simd, v.simd );
+    }
 
 
 
@@ -1512,10 +1682,6 @@ namespace pbrto
         return Point3i( static_cast< int >( tmp.x ), static_cast< int >( tmp.y ), static_cast< int >( tmp.z ) );
     }
 
-    //inline Point3i ToPoint3i( const Vector3<float>& other )
-    //{
-    //    return Point3i( static_cast< int >( other.x ), static_cast< int >( other.y ), static_cast< int >( other.z ) );
-    //}
 
     inline Point3f ToPoint3f( const Vector3<float>::Simd& other )
     {
@@ -1533,42 +1699,6 @@ namespace pbrto
 
     using Quaternion = Math::Quaternion<Float>;
 
-    /*
-    class Quaternion : public Math::Quaternion<Float>
-    {
-    public:
-        using Base = Math::Quaternion<Float>;
-        Quaternion( ) noexcept
-        {
-        }
-
-        Quaternion( const Base& other ) noexcept
-            : Base( other )
-        {
-        }
-
-        Quaternion( const typename Base::Simd& other ) noexcept
-            : Base( other )
-        {
-        }
-
-        Quaternion( const Vector3f& vector3f, Float angle ) noexcept
-            : Base( vector3f, angle )
-        {
-        }
-
-        Quaternion& operator = ( const Base& other ) noexcept
-        {
-            Base::operator = ( other );
-            return *this;
-        }
-        Quaternion& operator = ( const typename Base::Simd& other ) noexcept
-        {
-            Base::operator = ( other );
-            return *this;
-        }
-    };
-    */
 
     // Vector2 Inline Functions
     template <typename T>
@@ -1578,61 +1708,6 @@ namespace pbrto
     {
     }
 
-    /*
-    template <typename T>
-    inline auto Dot( const Vector2<T>& v1, const Vector2<T>& v2 ) ->
-        typename TupleLength<T>::type
-    {
-        NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
-        return SumOfProducts( v1.x, v2.x, v1.y, v2.y );
-    }
-    
-    template <typename T>
-    inline auto AbsDot( const Vector2<T>& v1, const Vector2<T>& v2 ) ->
-        typename TupleLength<T>::type
-    {
-        NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
-        return std::abs( Dot( v1, v2 ) );
-    }
-    
-    template <typename T>
-    inline auto LengthSquared( const Vector2<T>& v ) -> typename TupleLength<T>::type
-    {
-        return Sqr( v.x ) + Sqr( v.y );
-    }
-
-    template <typename T>
-    inline auto Length( const Vector2<T>& v ) -> typename TupleLength<T>::type
-    {
-        if constexpr ( std::is_floating_point_v<T> )
-        {
-            return Math::Sqrt( LengthSquared( v ) );
-        }
-        else
-        {
-            using std::sqrt;
-            return sqrt( LengthSquared( v ) );
-        }
-    }
-
-    template <typename T>
-    inline auto Normalize( const Vector2<T>& v )
-    {
-        return v / Length( v );
-    }
-    
-    template <typename T>
-    inline auto ScalarDistance( const Point2<T>& p1, const Point2<T>& p2 ) -> typename TupleLength<T>::type
-    {
-        return ScalarLength( p1 - p2 );
-    }
-
-    template <typename T>
-    inline auto DistanceSquared( const Point2<T>& p1, const Point2<T>& p2 ) -> typename TupleLength<T>::type
-    {
-        return LengthSquared( p1 - p2 );
-    }
-    */
 
     // Vector3 Inline Functions
     template <typename T>
@@ -1645,7 +1720,8 @@ namespace pbrto
 
     
     template <typename T>
-        requires ( std::is_same_v<T, float> == false )
+        requires ( IsArithmetic<T> == false )
+        //requires ( std::is_same_v<T, float> == false )
     inline Vector3<T> Cross( const Vector3<T>& v1, const Normal3<T>& v2 )
     {
         NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
@@ -1655,7 +1731,34 @@ namespace pbrto
     }
 
     template <typename T>
-        requires ( std::is_same_v<T, float> == false )
+        requires IsArithmetic<T>
+    inline typename Vector3<T>::Simd Cross( const Vector3<T>& v1, const Normal3<T>& v2 )
+    {
+        return Math::Cross( v1, v2 );
+    }
+    template <typename T>
+        requires IsArithmetic<T>
+    inline typename Vector3<T>::Simd Cross( const typename Vector3<T>::Simd& v1, const Normal3<T>& v2 )
+    {
+        return Math::Cross( v1, v2 );
+    }
+    template <typename T>
+        requires IsArithmetic<T>
+    inline typename Vector3<T>::Simd Cross( const Vector3<T>& v1, const typename Normal3<T>::Simd& v2 )
+    {
+        return Math::Cross( v1, v2 );
+    }
+    template <typename T>
+        requires IsArithmetic<T>
+    inline typename Vector3<T>::Simd Cross( const typename Vector3<T>::Simd& v1, const typename Normal3<T>::Simd& v2 )
+    {
+        return Math::Cross( v1, v2 );
+    }
+
+
+    template <typename T>
+        requires ( IsArithmetic<T> == false )
+        //requires ( std::is_same_v<T, float> == false )
     inline Vector3<T> Cross( const Normal3<T>& v1, const Vector3<T>& v2 )
     {
         NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
@@ -1664,7 +1767,42 @@ namespace pbrto
                 DifferenceOfProducts( v1.x, v2.y, v1.y, v2.x ) };
     }
 
-    
+    template <typename T>
+        requires IsArithmetic<T>
+    inline typename Vector3<T>::Simd Cross( const Normal3<T>& v1, const Vector3<T>& v2 )
+    {
+        return Math::Cross( v1, v2 );
+    }
+    template <typename T>
+        requires IsArithmetic<T>
+    inline typename Vector3<T>::Simd Cross( const typename Normal3<T>::Simd& v1, const Vector3<T>& v2 )
+    {
+        return Math::Cross( v1, v2 );
+    }
+    template <typename T>
+        requires IsArithmetic<T>
+    inline typename Vector3<T>::Simd Cross( const Normal3<T>& v1, const typename Vector3<T>::Simd& v2 )
+    {
+        return Math::Cross( v1, v2 );
+    }
+    template <typename T>
+        requires IsArithmetic<T>
+    inline typename Vector3<T>::Simd Cross( const typename Normal3<T>::Simd& v1, const typename Vector3<T>::Simd& v2 )
+    {
+        return Math::Cross( v1, v2 );
+    }
+
+
+    template <typename T>
+        requires ( IsArithmetic<T> == false || std::is_same_v<T, double> )
+        //requires ( std::is_same_v<T, float> == false )
+    inline Vector3<T> Cross( const Vector3<T>& v, const Vector3<T>& w )
+    {
+        NDCHECK( !v.HasNaN( ) && !w.HasNaN( ) );
+        return { DifferenceOfProducts( v.y, w.z, v.z, w.y ),
+                DifferenceOfProducts( v.z, w.x, v.x, w.z ),
+                DifferenceOfProducts( v.x, w.y, v.y, w.x ) };
+    }
 
     template <typename T>
         requires ( std::is_same_v<T, float> == false )
@@ -1697,47 +1835,6 @@ namespace pbrto
     }
     
 
-    /*
-    // Equivalent to std::acos(Dot(a, b)), but more numerically stable.
-    // via http://www.plunk.org/~hatch/rightway.html
-    template <typename T>
-    inline Float AngleBetween( const Vector3<T>& v1, const Vector3<T>& v2 )
-    {
-        if ( ScalarDot( v1, v2 ) < 0 )
-            return Pi - 2 * SafeASin( ScalarLength( v1 + v2 ) / 2 );
-        else
-            return 2 * SafeASin( ScalarLength( v2 - v1 ) / 2 );
-    }
-
-    template <>
-    inline Float AngleBetween<Float>( const Vector3<Float>& v1, const Vector3<Float>& v2 )
-    {
-        if ( ScalarDot( v1, v2 ) < 0 )
-            return Pi - 2 * SafeASin( ScalarLength( v1 + v2 ) / 2 );
-        else
-            return 2 * SafeASin( ScalarLength( v2 - v1 ) / 2 );
-    }
-
-    template <typename T>
-    inline T AbsDot( const Vector3<T>& v1, const Vector3<T>& v2 )
-    {
-        NDCHECK( !v1.HasNaN( ) && !v2.HasNaN( ) );
-        return std::abs( Dot( v1, v2 ) );
-    }
-
-    template <typename T>
-    inline Float AngleBetween( const Normal3<T>& a, const Normal3<T>& b )
-    {
-        if ( ScalarDot( a, b ) < 0 )
-        {
-            return Pi - 2 * SafeASin( ScalarLength( a + b ) / 2.f );
-        }
-        else
-        {
-            return 2 * SafeASin( ScalarLength( b - a ) / 2 );
-        }
-    }
-    */
 
     template <typename T>
     inline Vector3<T> GramSchmidt( const Vector3<T>& v, const Vector3<T>& w )
@@ -1751,15 +1848,7 @@ namespace pbrto
     }
 
     
-    template <typename T>
-        requires (std::is_same_v<T,float> == false)
-    inline Vector3<T> Cross( const Vector3<T>& v, const Vector3<T>& w )
-    {
-        NDCHECK( !v.HasNaN( ) && !w.HasNaN( ) );
-        return { DifferenceOfProducts( v.y, w.z, v.z, w.y ),
-                DifferenceOfProducts( v.z, w.x, v.x, w.z ),
-                DifferenceOfProducts( v.x, w.y, v.y, w.x ) };
-    }
+    
     
 
     template <typename T>
@@ -2106,13 +2195,11 @@ namespace pbrto
         {
             NDCHECK( i == 0 || i == 1 );
             return boundaries_[ i ];
-            //return ( i == 0 ) ? pMin : pMax;
         }
         Point3<T>& operator[]( int i )
         {
             NDCHECK( i == 0 || i == 1 );
             return boundaries_[ i ];
-            //return ( i == 0 ) ? pMin : pMax;
         }
 
         Point3<T> Corner( int corner ) const
@@ -2139,8 +2226,7 @@ namespace pbrto
                 d.y * d.z
                 */
                 using Traits = SIMD::Traits<Float, 3>;
-                auto result = 2.f * Traits::First( Traits::HSum( Traits::Mul( Traits::Swizzle<3, 1, 0, 0>( d.simd ),
-                    Traits::Swizzle<3, 2, 2, 1>( d.simd ) ) ) );
+                auto result = 2.f * Traits::First( Traits::HSum( Traits::Mul( Traits::Swizzle<3, 1, 0, 0>( d.simd ), Traits::Swizzle<3, 2, 2, 1>( d.simd ) ) ) );
                 return result;
 
                 //return 2 * ( d.x * d.y + d.x * d.z + d.y * d.z );
@@ -2152,15 +2238,13 @@ namespace pbrto
             }
         }
 
-        PBRT_CPU_GPU
-            T Volume( ) const
+        T Volume( ) const
         {
             Vector3<T> d = Diagonal( );
             return d.x * d.y * d.z;
         }
 
-        PBRT_CPU_GPU
-            int MaxDimension( ) const
+        int MaxDimension( ) const
         {
             Vector3<T> d = Diagonal( );
             if ( d.x > d.y && d.x > d.z )
@@ -2171,9 +2255,9 @@ namespace pbrto
                 return 2;
         }
 
-        Point3f Lerp2( Point3f t ) const
+        Point3f::Simd Lerp2( Point3f::Simd t ) const
         {
-            return Point3f( Math::Lerp2( t, pMin, pMax  ) );
+            return Point3f::Simd( Math::Lerp2( t, pMin, pMax  ) );
             /*
             return Point3f( 
                 pbrto::Lerp2( t.x, pMin.x, pMax.x ), 
@@ -2182,9 +2266,19 @@ namespace pbrto
              */
         }
 
-        PBRT_CPU_GPU
-            Vector3f Offset( Point3f p ) const
+        Vector3f::Simd Offset( Point3f::Simd p ) const
         {
+            using Traits = Vector3f::Traits;
+            Point3f::Simd maxP( pMax );
+            Point3f::Simd minP( pMin );
+
+            Vector3f::Simd o = p - minP;
+            auto greater = Traits::Greater( maxP.simd, minP.simd );
+            auto oAdjusted = Traits::Div( o.simd, Traits::Sub( maxP.simd, minP.simd ) );
+            auto result = Traits::Select( o.simd, oAdjusted, greater );
+            return Vector3f::Simd( result );
+
+            /*
             Vector3f o = p - pMin;
             if ( pMax.x > pMin.x )
                 o.x /= pMax.x - pMin.x;
@@ -2193,26 +2287,32 @@ namespace pbrto
             if ( pMax.z > pMin.z )
                 o.z /= pMax.z - pMin.z;
             return o;
+            */
         }
 
-        PBRT_CPU_GPU
         void BoundingSphere( Point3<T>* center, Float* radius ) const
         {
             *center = ( pMin + pMax ) / 2;
             *radius = Inside( *center, *this ) ? ScalarDistance( *center, pMax ) : 0;
         }
+        void BoundingSphere( Point3f::Simd* center, Float* radius ) const
+        {
+            *center = ( pMin + pMax ) / 2;
+            *radius = Inside( Point3f(*center), *this ) ? ScalarDistance( *center, pMax ) : 0;
+        }
 
-        PBRT_CPU_GPU
         bool IsEmpty( ) const
         {
             return pMin.x >= pMax.x || 
                    pMin.y >= pMax.y || 
                    pMin.z >= pMax.z;
         }
-        PBRT_CPU_GPU
-            bool IsDegenerate( ) const
+        bool IsDegenerate( ) const
         {
-            return pMin.x > pMax.x || pMin.y > pMax.y || pMin.z > pMax.z;
+            return 
+                pMin.x > pMax.x || 
+                pMin.y > pMax.y || 
+                pMin.z > pMax.z;
         }
 
         
@@ -2555,7 +2655,7 @@ namespace pbrto
         return std::abs( alpha + beta + gamma + delta - 2 * Pi );
     }
 
-    inline Vector3f SphericalDirection( Float sinTheta, Float cosTheta, Float phi )
+    inline Vector3f::Simd SphericalDirection( Float sinTheta, Float cosTheta, Float phi )
     {
         NDCHECK( sinTheta >= -1.0001 && sinTheta <= 1.0001 );
         NDCHECK( cosTheta >= -1.0001 && cosTheta <= 1.0001 );
@@ -2564,7 +2664,7 @@ namespace pbrto
         Float cosPhi;
         SinCos( phi, &sinPhi, &cosPhi );
 
-        return Vector3f( Math::Clamp( sinTheta, -1.0f, 1.0f ) * cosPhi,
+        return Vector3f::Simd( Math::Clamp( sinTheta, -1.0f, 1.0f ) * cosPhi,
             Math::Clamp( sinTheta, -1.0f, 1.0f ) * sinPhi, 
             Math::Clamp( cosTheta, -1.0f, 1.0f ) );
     }

@@ -54,8 +54,9 @@ namespace pbrto
     // ShapeSampleContext Definition
     struct ShapeSampleContext
     {
+        Normal3f::Simd n; 
+        Normal3f::Simd ns;
         Point3fi pi;
-        Normal3f n, ns;
         Float time;
 
         // ShapeSampleContext Public Methods
@@ -75,15 +76,15 @@ namespace pbrto
             return Point3f( pi ); 
         }
 
-        Point3f OffsetRayOrigin( const Vector3f& w ) const;
-        Point3f OffsetRayOrigin( const Point3f& pt ) const;
-        Ray SpawnRay( const Vector3f& w ) const;
+        Point3f::Simd OffsetRayOrigin( Vector3f::Simd w ) const;
+        Point3f::Simd OffsetRayOrigin( Point3f::Simd pt ) const;
+        Ray SpawnRay( const Vector3f::Simd w ) const;
 
         
     };
 
     // ShapeSampleContext Inline Methods
-    inline Point3f ShapeSampleContext::OffsetRayOrigin( const Vector3f& w ) const
+    inline Point3f::Simd ShapeSampleContext::OffsetRayOrigin( Vector3f::Simd w ) const
     {
         // Find vector _offset_ to corner of error bounds and compute initial _po_
         auto d = Dot( Abs( n ), pi.Error( ) );
@@ -107,12 +108,12 @@ namespace pbrto
         return po;
     }
 
-    inline Point3f ShapeSampleContext::OffsetRayOrigin( const Point3f& pt ) const
+    inline Point3f::Simd ShapeSampleContext::OffsetRayOrigin( Point3f::Simd pt ) const
     {
-        return OffsetRayOrigin( ToVector3f( pt - p( ) ) );
+        return OffsetRayOrigin( Vector3f::Simd( pt - p( ) ) );
     }
 
-    inline Ray ShapeSampleContext::SpawnRay( const Vector3f& w ) const
+    inline Ray ShapeSampleContext::SpawnRay( Vector3f::Simd w ) const
     {
         // Note: doesn't set medium, but that's fine, since this is only
         // used by shapes to see if ray would have intersected them
@@ -130,8 +131,8 @@ namespace pbrto
     // QuadricIntersection Definition
     struct QuadricIntersection
     {
+        Point3f::Simd pObj;
         Float tHit;
-        Point3f pObj;
         Float phi;
     };
 
@@ -264,7 +265,7 @@ namespace pbrto
             }
 
             // Return _QuadricIntersection_ for sphere intersection
-            return QuadricIntersection{ Float( tShapeHit ), pHit, phi };
+            return QuadricIntersection{ pHit, Float( tShapeHit ), phi };
         }
 
         PBRT_CPU_GPU
@@ -521,7 +522,7 @@ namespace pbrto
                 return {};
 
             // Return _QuadricIntersection_ for disk intersection
-            return QuadricIntersection{ tShapeHit, pHit, phi };
+            return QuadricIntersection{ pHit, tShapeHit, phi };
         }
 
         PBRT_CPU_GPU
@@ -639,20 +640,15 @@ namespace pbrto
             const ParameterDictionary& parameters, const FileLoc* loc,
             Allocator alloc );
 
-        PBRT_CPU_GPU
-            Bounds3f Bounds( ) const;
+        Bounds3f Bounds( ) const;
 
         std::string ToString( ) const;
 
-        PBRT_CPU_GPU
-            Float Area( ) const { return ( zMax - zMin ) * radius * phiMax; }
+        Float Area( ) const { return ( zMax - zMin ) * radius * phiMax; }
 
-        PBRT_CPU_GPU
-            DirectionCone NormalBounds( ) const { return DirectionCone::EntireSphere( ); }
+        DirectionCone NormalBounds( ) const { return DirectionCone::EntireSphere( ); }
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeIntersection> Intersect( const Ray& ray,
-                Float tMax = Infinity ) const
+        pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax = Infinity ) const
         {
             pstdo::optional<QuadricIntersection> isect = BasicIntersect( ray, tMax );
             if ( !isect )
@@ -661,8 +657,7 @@ namespace pbrto
             return ShapeIntersection{ intr, isect->tHit };
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<QuadricIntersection> BasicIntersect( const Ray& r, Float tMax ) const
+        pstdo::optional<QuadricIntersection> BasicIntersect( const Ray& r, Float tMax ) const
         {
             Float phi;
             Point3f pHit;
@@ -745,18 +740,15 @@ namespace pbrto
             }
 
             // Return _QuadricIntersection_ for cylinder intersection
-            return QuadricIntersection{ Float( tShapeHit ), pHit, phi };
+            return QuadricIntersection{ pHit, Float( tShapeHit ), phi };
         }
 
-        PBRT_CPU_GPU
-            bool IntersectP( const Ray& r, Float tMax = Infinity ) const
+        bool IntersectP( const Ray& r, Float tMax = Infinity ) const
         {
             return BasicIntersect( r, tMax ).has_value( );
         }
 
-        PBRT_CPU_GPU
-            SurfaceInteraction InteractionFromIntersection( const QuadricIntersection& isect,
-                Vector3f wo, Float time ) const
+        SurfaceInteraction InteractionFromIntersection( const QuadricIntersection& isect, Vector3f wo, Float time ) const
         {
             Point3f pHit = isect.pObj;
             Float phi = isect.phi;
@@ -764,24 +756,27 @@ namespace pbrto
             Float u = phi / phiMax;
             Float v = ( pHit.z - zMin ) / ( zMax - zMin );
             // Compute cylinder $\dpdu$ and $\dpdv$
-            Vector3f dpdu( -phiMax * pHit.y, phiMax * pHit.x, 0 );
-            Vector3f dpdv( 0, 0, zMax - zMin );
+            Vector3f::Simd dpdu( -phiMax * pHit.y, phiMax * pHit.x, 0.f );
+            Vector3f::Simd dpdv( 0, 0, zMax - zMin );
 
             // Compute cylinder $\dndu$ and $\dndv$
-            Vector3f d2Pduu = -phiMax * phiMax * Vector3f( pHit.x, pHit.y, 0 );
-            Vector3f d2Pduv( 0, 0, 0 ), d2Pdvv( 0, 0, 0 );
+            Vector3f::Simd d2Pduu = -phiMax * phiMax * Vector3f::Simd( pHit.x, pHit.y, 0.f );
+            Vector3f::Simd d2Pduv( 0.f, 0.f, 0.f ); 
+            Vector3f::Simd d2Pdvv( 0.f, 0.f, 0.f );
             // Compute coefficients for fundamental forms
-            Float E = ScalarDot( dpdu, dpdu ), F = ScalarDot( dpdu, dpdv ), G = ScalarDot( dpdv, dpdv );
-            Vector3f n = Normalize( Cross( dpdu, dpdv ) );
-            Float e = ScalarDot( n, d2Pduu ), f = ScalarDot( n, d2Pduv ), g = ScalarDot( n, d2Pdvv );
+            Float E = ScalarDot( dpdu, dpdu );
+            Float F = ScalarDot( dpdu, dpdv ); 
+            Float G = ScalarDot( dpdv, dpdv );
+            Vector3f::Simd n = Normalize( Cross( dpdu, dpdv ) );
+            Float e = ScalarDot( n, d2Pduu ); 
+            Float f = ScalarDot( n, d2Pduv );
+            Float g = ScalarDot( n, d2Pdvv );
 
             // Compute $\dndu$ and $\dndv$ from fundamental form coefficients
             Float EGF2 = DifferenceOfProducts( E, G, F, F );
             Float invEGF2 = ( EGF2 == 0 ) ? Float( 0 ) : 1 / EGF2;
-            Normal3f dndu =
-                Normal3f( ( f * F - e * G ) * invEGF2 * dpdu + ( e * F - f * E ) * invEGF2 * dpdv );
-            Normal3f dndv =
-                Normal3f( ( g * F - f * G ) * invEGF2 * dpdu + ( f * F - g * E ) * invEGF2 * dpdv );
+            Normal3f dndu( ( f * F - e * G ) * invEGF2 * dpdu + ( e * F - f * E ) * invEGF2 * dpdv );
+            Normal3f dndv( ( g * F - f * G ) * invEGF2 * dpdu + ( f * F - g * E ) * invEGF2 * dpdv );
 
             // Compute error bounds for cylinder intersection
             Vector3f pError = gamma( 3 ) * Abs( Vector3f( pHit.x, pHit.y, 0 ) );
@@ -794,8 +789,7 @@ namespace pbrto
                 dndu, dndv, time, flipNormal ) );
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeSample> Sample( Point2f u ) const
+        pstdo::optional<ShapeSample> Sample( Point2f u ) const
         {
             Float z = Lerp2( u[ 0 ], zMin, zMax );
             Float phi = u[ 1 ] * phiMax;
@@ -819,31 +813,33 @@ namespace pbrto
             return ShapeSample{ Interaction( pi, n, uv ), 1 / Area( ) };
         }
 
-        PBRT_CPU_GPU
-            Float PDF( const Interaction& ) const { return 1 / Area( ); }
+        Float PDF( const Interaction& ) const 
+        { 
+            return 1 / Area( ); 
+        }
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const
+        pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const
         {
             // Sample shape by area and compute incident direction _wi_
             pstdo::optional<ShapeSample> ss = Sample( u );
             NDCHECK( ss.has_value( ) );
             ss->intr.time = ctx.time;
-            Vector3f wi = ss->intr.p( ) - ctx.p( );
+            auto ctxP = ctx.p( );
+            auto intrP = ss->intr.p( );
+            Vector3f::Simd wi = intrP - ctxP;
             if ( ScalarLengthSquared( wi ) == 0 )
                 return {};
             wi = Normalize( wi );
 
             // Convert area sampling PDF in _ss_ to solid angle measure
-            ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctx.p( ), ss->intr.p( ) );
+            ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctxP, intrP );
             if ( IsInf( ss->pdf ) )
                 return {};
 
             return ss;
         }
 
-        PBRT_CPU_GPU
-            Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const
+        Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const
         {
             // Intersect sample ray with shape geometry
             Ray ray = ctx.SpawnRay( wi );
@@ -901,60 +897,55 @@ namespace pbrto
     // Triangle Definition
     class Triangle
     {
+        // Triangle Private Members
+        int meshIndex = -1, triIndex = -1;
+        static pstdo::vector<const TriangleMesh*>* allMeshes;
+        static constexpr Float MinSphericalSampleArea = 3e-4;
+        static constexpr Float MaxSphericalSampleArea = 6.22;
     public:
         // Triangle Public Methods
-        static pstdo::vector<Shape> CreateTriangles( const TriangleMesh* mesh, Allocator alloc );
 
         Triangle( ) = default;
-        Triangle( int meshIndex, int triIndex ) : meshIndex( meshIndex ), triIndex( triIndex ) {}
+        Triangle( int meshIndex, int triIndex ) 
+            : meshIndex( meshIndex ), triIndex( triIndex ) 
+        { }
+
+        static pstdo::vector<Shape> CreateTriangles( const TriangleMesh* mesh, Allocator alloc );
 
         static void Init( Allocator alloc );
 
-        PBRT_CPU_GPU
-            Bounds3f Bounds( ) const;
+        Bounds3f Bounds( ) const;
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeIntersection> Intersect( const Ray& ray,
-                Float tMax = Infinity ) const;
-        PBRT_CPU_GPU
-            bool IntersectP( const Ray& ray, Float tMax = Infinity ) const;
+        pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax = Infinity ) const;
+        bool IntersectP( const Ray& ray, Float tMax = Infinity ) const;
 
-        PBRT_CPU_GPU
-            Float Area( ) const
+        Float Area( ) const
         {
             // Get triangle vertices in _p0_, _p1_, and _p2_
             const TriangleMesh* mesh = GetMesh( );
             const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-            Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+            Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
             return 0.5f * ScalarLength( Cross( p1 - p0, p2 - p0 ) );
         }
 
-        PBRT_CPU_GPU
-            DirectionCone NormalBounds( ) const;
+        DirectionCone NormalBounds( ) const;
 
         std::string ToString( ) const;
 
-        static TriangleMesh* CreateMesh( const Transform* renderFromObject,
-            bool reverseOrientation,
-            const ParameterDictionary& parameters,
-            const FileLoc* loc, Allocator alloc );
+        static TriangleMesh* CreateMesh( const Transform* renderFromObject, bool reverseOrientation, const ParameterDictionary& parameters, const FileLoc* loc, Allocator alloc );
 
         Float SolidAngle( Point3f p ) const
         {
             // Get triangle vertices in _p0_, _p1_, and _p2_
             const TriangleMesh* mesh = GetMesh( );
             const int* v = &mesh->vertexIndices[ 3 * triIndex ];
-            Point3f p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
+            Point3f::Simd p0 = mesh->p[ v[ 0 ] ], p1 = mesh->p[ v[ 1 ] ], p2 = mesh->p[ v[ 2 ] ];
 
             return SphericalTriangleArea( Normalize( p0 - p ), Normalize( p1 - p ), Normalize( p2 - p ) );
         }
 
-        PBRT_CPU_GPU
-            static SurfaceInteraction InteractionFromIntersection( const TriangleMesh* mesh,
-                int triIndex,
-                TriangleIntersection ti,
-                Float time, Vector3f wo )
+        static SurfaceInteraction InteractionFromIntersection( const TriangleMesh* mesh, int triIndex, TriangleIntersection ti, Float time, Vector3f wo )
         {
             const int* v = &mesh->vertexIndices[ 3 * triIndex ];
             Point3f::Simd p0 = mesh->p[ v[ 0 ] ], 
@@ -975,7 +966,7 @@ namespace pbrto
             Vector3f::Simd dp12 = p1 - p2;
             Float determinant = DifferenceOfProducts( duv02[ 0 ], duv12[ 1 ], duv02[ 1 ], duv12[ 0 ] );
 
-            Vector3f dpdu, dpdv;
+            Vector3f::Simd dpdu, dpdv;
             bool degenerateUV = std::abs( determinant ) < 1e-9f;
             if ( !degenerateUV )
             {
@@ -997,7 +988,10 @@ namespace pbrto
                     ng = Vector3f( Cross( p2d - p0d, p1d - p0d ) );
                     NCHECK_NE( ScalarLengthSquared( ng ), 0 );
                 }
-                CoordinateSystem( Vector3f( Normalize( ng ) ), &dpdu, &dpdv );
+                Vector3f tmpdpdu, tmpdpdv;
+                CoordinateSystem( Vector3f( Normalize( ng ) ), &tmpdpdu, &tmpdpdv );
+                dpdu = tmpdpdu; 
+                dpdv = tmpdpdv;
             }
 
             // Interpolate $(u,v)$ parametric coordinates and hit point
@@ -1023,24 +1017,26 @@ namespace pbrto
             {
                 // Initialize _Triangle_ shading geometry
                 // Compute shading normal _ns_ for triangle
-                Normal3f ns;
+                Normal3f::Simd ns;
                 if ( mesh->n )
                 {
-                    ns =
-                        ti.b0 * mesh->n[ v[ 0 ] ] + ti.b1 * mesh->n[ v[ 1 ] ] + ti.b2 * mesh->n[ v[ 2 ] ];
-                    ns = ScalarLengthSquared( ns ) > 0 ? Normal3f( Normalize( ns ) ) : isect.n;
+                    ns = ti.b0 * mesh->n[ v[ 0 ] ] + ti.b1 * mesh->n[ v[ 1 ] ] + ti.b2 * mesh->n[ v[ 2 ] ];
+                    ns = ScalarLengthSquared( ns ) > 0 ? Normalize( ns ) : isect.n;
                 }
                 else
+                {
                     ns = isect.n;
+                }
 
                 // Compute shading tangent _ss_ for triangle
-                Vector3f ss;
+                Vector3f::Simd ss;
                 if ( mesh->s )
                 {
-                    ss =
-                        ti.b0 * mesh->s[ v[ 0 ] ] + ti.b1 * mesh->s[ v[ 1 ] ] + ti.b2 * mesh->s[ v[ 2 ] ];
+                    ss = ti.b0 * mesh->s[ v[ 0 ] ] + ti.b1 * mesh->s[ v[ 1 ] ] + ti.b2 * mesh->s[ v[ 2 ] ];
                     if ( ScalarLengthSquared( ss ) == 0 )
+                    {
                         ss = isect.dpdu;
+                    }
                 }
                 else
                     ss = isect.dpdu;
@@ -1048,19 +1044,26 @@ namespace pbrto
                 // Compute shading bitangent _ts_ for triangle and adjust _ss_
                 Vector3f ts = Cross( ns, ss );
                 if ( ScalarLengthSquared( ts ) > 0 )
+                {
                     ss = Cross( ts, ns );
+                }
                 else
-                    CoordinateSystem( ns, &ss, &ts );
+                {
+                    Vector3f tmpss, tmpts;
+                    CoordinateSystem( Normal3f( ns ), &tmpss, &tmpts );
+                    ss = tmpss; 
+                    ts = tmpts;
+                }
 
                 // Compute $\dndu$ and $\dndv$ for triangle shading geometry
-                Normal3f dndu, dndv;
+                Normal3f::Simd dndu, dndv;
                 if ( mesh->n )
                 {
                     // Compute deltas for triangle partial derivatives of normal
                     Vector2f duv02 = uv[ 0 ] - uv[ 2 ];
                     Vector2f duv12 = uv[ 1 ] - uv[ 2 ];
-                    Normal3f dn1 = mesh->n[ v[ 0 ] ] - mesh->n[ v[ 2 ] ];
-                    Normal3f dn2 = mesh->n[ v[ 1 ] ] - mesh->n[ v[ 2 ] ];
+                    Normal3f::Simd dn1 = mesh->n[ v[ 0 ] ] - mesh->n[ v[ 2 ] ];
+                    Normal3f::Simd dn2 = mesh->n[ v[ 1 ] ] - mesh->n[ v[ 2 ] ];
 
                     Float determinant =
                         DifferenceOfProducts( duv02[ 0 ], duv12[ 1 ], duv02[ 1 ], duv12[ 0 ] );
@@ -1073,11 +1076,13 @@ namespace pbrto
                         // (rather than giving up) so that ray differentials for
                         // rays reflected from triangles with degenerate
                         // parameterizations are still reasonable.
-                        Vector3f dn = Cross( Vector3f( mesh->n[ v[ 2 ] ] - mesh->n[ v[ 0 ] ] ),
-                            Vector3f( mesh->n[ v[ 1 ] ] - mesh->n[ v[ 0 ] ] ) );
+                        Vector3f dn = Cross( Vector3f::Simd ( mesh->n[ v[ 2 ] ] - mesh->n[ v[ 0 ] ] ),
+                            Vector3f::Simd( mesh->n[ v[ 1 ] ] - mesh->n[ v[ 0 ] ] ) );
 
                         if ( ScalarLengthSquared( dn ) == 0 )
+                        {
                             dndu = dndv = Normal3f( 0, 0, 0 );
+                        }
                         else
                         {
                             Vector3f dnu, dnv;
@@ -1102,8 +1107,7 @@ namespace pbrto
             return isect;
         }
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeSample> Sample( Point2f u ) const
+        pstdo::optional<ShapeSample> Sample( Point2f u ) const
         {
             // Get triangle vertices in _p0_, _p1_, and _p2_
             const TriangleMesh* mesh = GetMesh( );
@@ -1115,15 +1119,17 @@ namespace pbrto
             Point3f::Simd p = b[ 0 ] * p0 + b[ 1 ] * p1 + b[ 2 ] * p2;
 
             // Compute surface normal for sampled point on triangle
-            Normal3f n = Normalize( Normal3f( Cross( p1 - p0, p2 - p0 ) ) );
+            Normal3f::Simd n = Normalize( Normal3f( Cross( p1 - p0, p2 - p0 ) ) );
             if ( mesh->n )
             {
-                Normal3f ns( b[ 0 ] * mesh->n[ v[ 0 ] ] + b[ 1 ] * mesh->n[ v[ 1 ] ] +
+                Normal3f::Simd ns( b[ 0 ] * mesh->n[ v[ 0 ] ] + b[ 1 ] * mesh->n[ v[ 1 ] ] +
                     ( 1 - b[ 0 ] - b[ 1 ] ) * mesh->n[ v[ 2 ] ] );
                 n = FaceForward( n, ns );
             }
             else if ( mesh->reverseOrientation ^ mesh->transformSwapsHandedness )
+            {
                 n *= -1;
+            }
 
             // Compute $(u,v)$ for sampled point on triangle
             // Get triangle texture coordinates in _uv_ array
@@ -1139,17 +1145,15 @@ namespace pbrto
                 b[ 2 ] * uv[ 2 ];
 
             // Compute error bounds _pError_ for sampled point on triangle
-            Point3f pAbsSum = Abs( b[ 0 ] * p0 ) + Abs( b[ 1 ] * p1 ) + Abs( ( 1 - b[ 0 ] - b[ 1 ] ) * p2 );
+            Point3f::Simd pAbsSum = Abs( b[ 0 ] * p0 ) + Abs( b[ 1 ] * p1 ) + Abs( ( 1 - b[ 0 ] - b[ 1 ] ) * p2 );
             Vector3f pError = Vector3f( gamma( 6 ) * pAbsSum );
 
             return ShapeSample{ Interaction( Point3fi( p, pError ), n, uvSample ), 1 / Area( ) };
         }
 
-        PBRT_CPU_GPU
-            Float PDF( const Interaction& ) const { return 1 / Area( ); }
+        Float PDF( const Interaction& ) const { return 1 / Area( ); }
 
-        PBRT_CPU_GPU
-            pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const
+        pstdo::optional<ShapeSample> Sample( const ShapeSampleContext& ctx, Point2f u ) const
         {
             // Get triangle vertices in _p0_, _p1_, and _p2_
             const TriangleMesh* mesh = GetMesh( );
@@ -1164,13 +1168,15 @@ namespace pbrto
                 pstdo::optional<ShapeSample> ss = Sample( u );
                 NDCHECK( ss.has_value( ) );
                 ss->intr.time = ctx.time;
-                Vector3f wi = ss->intr.p( ) - ctx.p( );
+                Point3f::Simd ctxP = ctx.p( );
+                Point3f::Simd intrP = ss->intr.p( );
+                Vector3f::Simd wi = intrP - ctx.p( );
                 if ( ScalarLengthSquared( wi ) == 0 )
                     return {};
                 wi = Normalize( wi );
 
                 // Convert area sampling PDF in _ss_ to solid angle measure
-                ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctx.p( ), ss->intr.p( ) );
+                ss->pdf /= ScalarAbsDot( ss->intr.n, -wi ) / ScalarDistanceSquared( ctxP, intrP );
                 if ( IsInf( ss->pdf ) )
                     return {};
 
@@ -1180,7 +1186,7 @@ namespace pbrto
             // Sample spherical triangle from reference point
             // Apply warp product sampling for cosine factor at reference point
             Float pdf = 1;
-            if ( ctx.ns != Normal3f( 0, 0, 0 ) )
+            if ( ctx.ns != Normal3f::Simd( 0.f, 0.f, 0.f ) )
             {
                 // Compute $\cos\theta$-based weights _w_ at sample domain corners
                 Point3f::Simd rp = ctx.p( );
@@ -1205,7 +1211,7 @@ namespace pbrto
             pdf *= triPDF;
 
             // Compute error bounds _pError_ for sampled point on triangle
-            Point3f pAbsSum = Abs( b[ 0 ] * p0 ) + Abs( b[ 1 ] * p1 ) + Abs( ( 1 - b[ 0 ] - b[ 1 ] ) * p2 );
+            Point3f::Simd pAbsSum = Abs( b[ 0 ] * p0 ) + Abs( b[ 1 ] * p1 ) + Abs( ( 1 - b[ 0 ] - b[ 1 ] ) * p2 );
             Vector3f pError = Vector3f( gamma( 6 ) * pAbsSum );
 
             // Return _ShapeSample_ for solid angle sampled point on triangle
@@ -1215,15 +1221,17 @@ namespace pbrto
                 b[ 2 ] * p2;
 
             // Compute surface normal for sampled point on triangle
-            Normal3f n = Normalize( Normal3f( Cross( p1 - p0, p2 - p0 ) ) );
+            Normal3f::Simd n = Normalize( Normal3f( Cross( p1 - p0, p2 - p0 ) ) );
             if ( mesh->n )
             {
-                Normal3f ns( b[ 0 ] * mesh->n[ v[ 0 ] ] + b[ 1 ] * mesh->n[ v[ 1 ] ] +
+                Normal3f::Simd ns( b[ 0 ] * mesh->n[ v[ 0 ] ] + b[ 1 ] * mesh->n[ v[ 1 ] ] +
                     ( 1 - b[ 0 ] - b[ 1 ] ) * mesh->n[ v[ 2 ] ] );
                 n = FaceForward( n, ns );
             }
             else if ( mesh->reverseOrientation ^ mesh->transformSwapsHandedness )
+            {
                 n *= -1;
+            }
 
             // Compute $(u,v)$ for sampled point on triangle
             // Get triangle texture coordinates in _uv_ array
@@ -1238,8 +1246,7 @@ namespace pbrto
             return ShapeSample{ Interaction( Point3fi( p, pError ), n, ctx.time, uvSample ), pdf };
         }
 
-        PBRT_CPU_GPU
-            Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const
+        Float PDF( const ShapeSampleContext& ctx, Vector3f wi ) const
         {
             Float solidAngle = SolidAngle( ctx.p( ) );
             // Return PDF based on uniform area sampling for challenging triangles
@@ -1262,7 +1269,7 @@ namespace pbrto
 
             Float pdf = 1 / solidAngle;
             // Adjust PDF for warp product sampling of triangle $\cos\theta$ factor
-            if ( ctx.ns != Normal3f( 0, 0, 0 ) )
+            if ( ctx.ns != Normal3f::Simd( 0.f, 0.f, 0.f ) )
             {
                 // Get triangle vertices in _p0_, _p1_, and _p2_
                 const TriangleMesh* mesh = GetMesh( );
@@ -1297,11 +1304,7 @@ namespace pbrto
 #endif
         }
 
-        // Triangle Private Members
-        int meshIndex = -1, triIndex = -1;
-        static pstdo::vector<const TriangleMesh*>* allMeshes;
-        static constexpr Float MinSphericalSampleArea = 3e-4;
-        static constexpr Float MaxSphericalSampleArea = 6.22;
+        
     };
 
     // CurveType Definition
@@ -1312,6 +1315,15 @@ namespace pbrto
     // CurveCommon Definition
     struct CurveCommon
     {
+        // CurveCommon Public Members
+        Point3f cpObj[ 4 ];
+        Normal3f n[ 2 ];
+        CurveType type;
+        Float width[ 2 ];
+        Float normalAngle, invSinNormalAngle;
+        const Transform* renderFromObject, * objectFromRender;
+        bool reverseOrientation, transformSwapsHandedness;
+
         // CurveCommon Public Methods
         CurveCommon( pstdo::span<const Point3f> c, Float w0, Float w1, CurveType type,
             pstdo::span<const Normal3f> norm, const Transform* renderFromObject,
@@ -1319,14 +1331,7 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        // CurveCommon Public Members
-        CurveType type;
-        Point3f cpObj[ 4 ];
-        Float width[ 2 ];
-        Normal3f n[ 2 ];
-        Float normalAngle, invSinNormalAngle;
-        const Transform* renderFromObject, * objectFromRender;
-        bool reverseOrientation, transformSwapsHandedness;
+        
     };
 
     // Curve Definition
@@ -1388,8 +1393,7 @@ namespace pbrto
     };
 
     // Bilinear Patch Inline Functions
-    inline pstdo::optional<BilinearIntersection> IntersectBilinearPatch(
-        const Ray& ray, Float tMax, Point3f p00, Point3f p10, Point3f p01, Point3f p11 )
+    inline pstdo::optional<BilinearIntersection> IntersectBilinearPatch( const Ray& ray, Float tMax, Point3f::Simd p00, Point3f::Simd p10, Point3f::Simd p01, Point3f::Simd p11 )
     {
         // Find quadratic coefficients for distance from ray to $u$ iso-lines
         Float a = ScalarDot( Cross( p10 - p00, p01 - p11 ), ray.d );
@@ -1540,24 +1544,25 @@ namespace pbrto
                 dvdt = std::abs( dstdv[ 1 ] ) < 1e-8f ? 0 : 1 / dstdv[ 1 ];
 
                 // Compute partial derivatives of $\pt{}$ with respect to $(s,t)$
-                Vector3f dpds = dpdu * duds + dpdv * dvds;
-                Vector3f dpdt = dpdu * dudt + dpdv * dvdt;
+                Vector3f::Simd dpds = dpdu * duds + dpdv * dvds;
+                Vector3f::Simd dpdt = dpdu * dudt + dpdv * dvdt;
 
                 // Set _dpdu_ and _dpdv_ to updated partial derivatives
-                if ( Cross( dpds, dpdt ) != Vector3f( 0, 0, 0 ) )
+                if ( Cross( dpds, dpdt ) != Vector3f::Simd( 0.f, 0.f, 0.f ) )
                 {
                     if ( ScalarDot( Cross( dpdu, dpdv ), Cross( dpds, dpdt ) ) < 0 )
+                    {
                         dpdt = -dpdt;
-                    NDCHECK_GE( ScalarDot( Normalize( Cross( dpdu, dpdv ) ), Normalize( Cross( dpds, dpdt ) ) ),
-                        -1e-3 );
+                    }
+                    NDCHECK_GE( ScalarDot( Normalize( Cross( dpdu, dpdv ) ), Normalize( Cross( dpds, dpdt ) ) ), -1e-3 );
                     dpdu = dpds;
                     dpdv = dpdt;
                 }
             }
 
             // Find partial derivatives $\dndu$ and $\dndv$ for bilinear patch
-            Vector3f::Simd d2Pduu( 0, 0, 0 ); 
-            Vector3f::Simd d2Pdvv( 0, 0, 0 );
+            Vector3f::Simd d2Pduu( 0.f, 0.f, 0.f );
+            Vector3f::Simd d2Pdvv( 0.f, 0.f, 0.f );
             Vector3f::Simd d2Pduv = ( p00 - p01 ) + ( p11 - p10 );
             // Compute coefficients for fundamental forms
             Float E = ScalarDot( dpdu, dpdu ), F = ScalarDot( dpdu, dpdv ), G = ScalarDot( dpdv, dpdv );
@@ -1573,20 +1578,19 @@ namespace pbrto
                 Normal3f::Simd( ( g * F - f * G ) * invEGF2 * dpdu + ( f * F - g * E ) * invEGF2 * dpdv );
 
             // Update $\dndu$ and $\dndv$ to account for $(s,t)$ parameterization
-            Normal3f dnds = dndu * duds + dndv * dvds;
-            Normal3f dndt = dndu * dudt + dndv * dvdt;
+            Normal3f::Simd dnds = dndu * duds + dndv * dvds;
+            Normal3f::Simd dndt = dndu * dudt + dndv * dvdt;
             dndu = dnds;
             dndv = dndt;
 
             // Initialize bilinear patch intersection point error _pError_
-            Point3f pAbsSum = Abs( p00 ) + Abs( p01 ) + Abs( p10 ) + Abs( p11 );
-            Vector3f pError = gamma( 6 ) * Vector3f( pAbsSum );
+            Point3f::Simd pAbsSum = Abs( p00 ) + Abs( p01 ) + Abs( p10 ) + Abs( p11 );
+            Vector3f pError = gamma( 6 ) * Vector3f::Simd( pAbsSum );
 
             // Initialize _SurfaceInteraction_ for bilinear patch intersection
             int faceIndex = mesh->faceIndices ? mesh->faceIndices[ blpIndex ] : 0;
             bool flipNormal = mesh->reverseOrientation ^ mesh->transformSwapsHandedness;
-            SurfaceInteraction isect( Point3fi( p, pError ), st, wo, dpdu, dpdv, dndu, dndv,
-                time, flipNormal, faceIndex );
+            SurfaceInteraction isect( Point3fi( p, pError ), st, wo, dpdu, dpdv, dndu, dndv, time, flipNormal, faceIndex );
 
             // Compute bilinear patch shading normal if necessary
             if ( mesh->n )
@@ -1594,7 +1598,7 @@ namespace pbrto
                 // Compute shading normals for bilinear patch intersection point
                 Normal3f::Simd n00 = mesh->n[ v[ 0 ] ], n10 = mesh->n[ v[ 1 ] ];
                 Normal3f::Simd n01 = mesh->n[ v[ 2 ] ], n11 = mesh->n[ v[ 3 ] ];
-                Normal3f ns = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], n00, n01 ), Lerp2( uv[ 1 ], n10, n11 ) );
+                Normal3f::Simd ns = Lerp2( uv[ 0 ], Lerp2( uv[ 1 ], n00, n01 ), Lerp2( uv[ 1 ], n10, n11 ) );
                 if ( ScalarLengthSquared( ns ) > 0 )
                 {
                     ns = Normalize( ns );
@@ -1617,8 +1621,7 @@ namespace pbrto
 
     private:
         // BilinearPatch Private Methods
-        PBRT_CPU_GPU
-            const BilinearPatchMesh* GetMesh( ) const
+        const BilinearPatchMesh* GetMesh( ) const
         {
 #ifdef PBRT_IS_GPU_CODE
             return ( *allBilinearMeshesGPU )[ meshIndex ];
@@ -1627,8 +1630,7 @@ namespace pbrto
 #endif
         }
 
-        PBRT_CPU_GPU
-            bool IsRectangle( const BilinearPatchMesh* mesh ) const
+        bool IsRectangle( const BilinearPatchMesh* mesh ) const
         {
             // Get bilinear patch vertices in _p00_, _p01_, _p10_, and _p11_
             const int* v = &mesh->vertexIndices[ 4 * blpIndex ];

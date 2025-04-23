@@ -64,8 +64,7 @@ namespace pbrto
 
         virtual void Render( ) = 0;
 
-        pstdo::optional<ShapeIntersection> Intersect( const Ray& ray,
-            Float tMax = Infinity ) const;
+        pstdo::optional<ShapeIntersection> Intersect( const Ray& ray, Float tMax = Infinity ) const;
         bool IntersectP( const Ray& ray, Float tMax = Infinity ) const;
 
         bool Unoccluded( const Interaction& p0, const Interaction& p1 ) const
@@ -73,8 +72,7 @@ namespace pbrto
             return !IntersectP( p0.SpawnRayTo( p1 ), 1 - ShadowEpsilon );
         }
 
-        SampledSpectrum Tr( const Interaction& p0, const Interaction& p1,
-            const SampledWavelengths& lambda ) const;
+        SampledSpectrum::Simd Tr( const Interaction& p0, const Interaction& p1, const SampledWavelengths& lambda ) const;
 
         // Integrator Public Members
         Primitive aggregate;
@@ -101,23 +99,22 @@ namespace pbrto
     // ImageTileIntegrator Definition
     class ImageTileIntegrator : public Integrator
     {
+    protected:
+        // ImageTileIntegrator Protected Members
+        Camera camera;
+        Sampler samplerPrototype;
     public:
         // ImageTileIntegrator Public Methods
-        ImageTileIntegrator( Camera camera, Sampler sampler, Primitive aggregate,
-            std::vector<Light> lights )
+        ImageTileIntegrator( Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights )
             : Integrator( aggregate, lights ), camera( camera ), samplerPrototype( sampler )
         {
         }
 
         void Render( );
 
-        virtual void EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler,
-            ScratchBuffer& scratchBuffer ) = 0;
+        virtual void EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler, ScratchBuffer& scratchBuffer ) = 0;
 
-    protected:
-        // ImageTileIntegrator Protected Members
-        Camera camera;
-        Sampler samplerPrototype;
+    
     };
 
     // RayIntegrator Definition
@@ -125,18 +122,14 @@ namespace pbrto
     {
     public:
         // RayIntegrator Public Methods
-        RayIntegrator( Camera camera, Sampler sampler, Primitive aggregate,
-            std::vector<Light> lights )
+        RayIntegrator( Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights )
             : ImageTileIntegrator( camera, sampler, aggregate, lights )
         {
         }
 
-        void EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler,
-            ScratchBuffer& scratchBuffer ) final;
+        void EvaluatePixelSample( Point2i pPixel, int sampleIndex, Sampler sampler, ScratchBuffer& scratchBuffer ) final;
 
-        virtual SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda,
-            Sampler sampler, ScratchBuffer& scratchBuffer,
-            VisibleSurface* visibleSurface ) const = 0;
+        virtual SampledSpectrum::Simd Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const = 0;
     };
 
     // RandomWalkIntegrator Definition
@@ -144,8 +137,7 @@ namespace pbrto
     {
     public:
         // RandomWalkIntegrator Public Methods
-        RandomWalkIntegrator( int maxDepth, Camera camera, Sampler sampler,
-            Primitive aggregate, std::vector<Light> lights )
+        RandomWalkIntegrator( int maxDepth, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights )
             : RayIntegrator( camera, sampler, aggregate, lights ), maxDepth( maxDepth )
         {
         }
@@ -156,32 +148,32 @@ namespace pbrto
 
         std::string ToString( ) const;
 
-        SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler,
-            ScratchBuffer& scratchBuffer,
-            VisibleSurface* visibleSurface ) const
+        SampledSpectrum::Simd Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const
         {
             return LiRandomWalk( ray, lambda, sampler, scratchBuffer, 0 );
         }
 
     private:
         // RandomWalkIntegrator Private Methods
-        SampledSpectrum LiRandomWalk( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, int depth ) const
+        SampledSpectrum::Simd LiRandomWalk( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, int depth ) const
         {
             // Intersect ray with scene and return if no intersection
             pstdo::optional<ShapeIntersection> si = Intersect( ray );
             if ( !si )
             {
                 // Return emitted light from infinite light sources
-                SampledSpectrum Le( 0.f );
+                SampledSpectrum::Simd Le( 0.f );
                 for ( Light light : infiniteLights )
+                {
                     Le += light.Le( ray, lambda );
+                }
                 return Le;
             }
             SurfaceInteraction& isect = si->intr;
 
             // Get emitted radiance at surface intersection
-            Vector3f wo = -ray.d;
-            SampledSpectrum Le = isect.Le( wo, lambda );
+            Vector3f::Simd wo = -ray.d;
+            SampledSpectrum::Simd Le = isect.Le( wo, lambda );
 
             // Terminate random walk if maximum depth has been reached
             if ( depth == maxDepth )
@@ -194,7 +186,7 @@ namespace pbrto
 
             // Randomly sample direction leaving surface for random walk
             Point2f u = sampler.Get2D( );
-            Vector3f wp = SampleUniformSphere( u );
+            Vector3f::Simd wp = SampleUniformSphere( u );
 
             // Evaluate BSDF at surface for sampled direction
             SampledSpectrum fcos = bsdf.f( wo, wp ) * ScalarAbsDot( wp, isect.shading.n );
@@ -221,7 +213,7 @@ namespace pbrto
         // SimplePathIntegrator Public Methods
         SimplePathIntegrator( int maxDepth, bool sampleLights, bool sampleBSDF, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights );
 
-        SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
+        SampledSpectrum::Simd Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
 
         static std::unique_ptr<SimplePathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
@@ -242,7 +234,7 @@ namespace pbrto
         // PathIntegrator Public Methods
         PathIntegrator( int maxDepth, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const std::string& lightSampleStrategy = "bvh", bool regularize = false );
 
-        SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
+        SampledSpectrum::Simd Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
 
         static std::unique_ptr<PathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
@@ -264,7 +256,7 @@ namespace pbrto
         // SimpleVolPathIntegrator Public Methods
         SimpleVolPathIntegrator( int maxDepth, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights );
 
-        SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
+        SampledSpectrum::Simd Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
 
         static std::unique_ptr<SimpleVolPathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
@@ -291,7 +283,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
+        SampledSpectrum::Simd Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
 
         static std::unique_ptr<VolPathIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
@@ -299,7 +291,7 @@ namespace pbrto
 
     private:
         // VolPathIntegrator Private Methods
-        SampledSpectrum SampleLd( const Interaction& intr, const BSDF* bsdf, SampledWavelengths& lambda, Sampler sampler, SampledSpectrum beta, SampledSpectrum inv_w_u ) const;
+        SampledSpectrum::Simd SampleLd( const Interaction& intr, const BSDF* bsdf, SampledWavelengths& lambda, Sampler sampler, SampledSpectrum::Simd beta, SampledSpectrum::Simd inv_w_u ) const;
 
         
     };
@@ -315,7 +307,7 @@ namespace pbrto
         // AOIntegrator Public Methods
         AOIntegrator( bool cosSample, Float maxDist, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, Spectrum illuminant );
 
-        SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
+        SampledSpectrum::Simd Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
 
         static std::unique_ptr<AOIntegrator> Create( const ParameterDictionary& parameters, Spectrum illuminant, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
@@ -355,7 +347,7 @@ namespace pbrto
         {
         }
 
-        SampledSpectrum Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
+        SampledSpectrum::Simd Li( RayDifferential ray, SampledWavelengths& lambda, Sampler sampler, ScratchBuffer& scratchBuffer, VisibleSurface* visibleSurface ) const;
 
         static std::unique_ptr<BDPTIntegrator> Create( const ParameterDictionary& parameters, Camera camera, Sampler sampler, Primitive aggregate, std::vector<Light> lights, const FileLoc* loc );
 
@@ -420,7 +412,7 @@ namespace pbrto
 
     private:
         // MLTIntegrator Private Methods
-        SampledSpectrum L( ScratchBuffer& scratchBuffer, MLTSampler& sampler, int k, Point2f* pRaster, SampledWavelengths* lambda );
+        SampledSpectrum::Simd L( ScratchBuffer& scratchBuffer, MLTSampler& sampler, int k, Point2f* pRaster, SampledWavelengths* lambda );
 
         static Float c( const SampledSpectrum& L, const SampledWavelengths& lambda )
         {
@@ -464,9 +456,7 @@ namespace pbrto
 
     private:
         // SPPMIntegrator Private Methods
-        SampledSpectrum SampleLd( const SurfaceInteraction& intr, const BSDF& bsdf,
-            SampledWavelengths& lambda, Sampler sampler,
-            LightSampler lightSampler ) const;
+        SampledSpectrum::Simd SampleLd( const SurfaceInteraction& intr, const BSDF& bsdf, SampledWavelengths& lambda, Sampler sampler, LightSampler lightSampler ) const;
 
         
     };

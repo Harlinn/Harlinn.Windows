@@ -3322,7 +3322,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( a.simd, b.simd, Traits::Load( t.values ) );
+        return Traits::Lerp2( a.simd, Traits::Load( b.values ), t.simd );
     }
 
     /// <summary>
@@ -3336,7 +3336,7 @@ namespace Harlinn::Common::Core::Math
     inline U Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( a.simd, Traits::Load( b.values ), t.simd );
+        return Traits::Lerp2( Traits::Load( a.values ), b.simd, t.simd );
     }
 
     /// <summary>
@@ -3350,7 +3350,7 @@ namespace Harlinn::Common::Core::Math
     inline S Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) );
+        return Traits::Lerp2( Traits::Load( a.values ), Traits::Load( b.values ), t.simd );
     }
 
     //
@@ -3366,7 +3366,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( Traits::Load( a.values ), b.simd, t.simd );
+        return Traits::Lerp2( a.simd, b.simd, Traits::Load( t.values ) );
     }
 
     /// <summary>
@@ -3380,7 +3380,7 @@ namespace Harlinn::Common::Core::Math
     inline T Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) );
+        return Traits::Lerp2( a.simd, Traits::Load( b.values ), Traits::Load( t.values ) );
     }
 
     /// <summary>
@@ -3394,7 +3394,7 @@ namespace Harlinn::Common::Core::Math
     inline U Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::Lerp2( Traits::Load( a.values.data( ) ), Traits::Load( b.values.data( ) ), t.simd );
+        return Traits::Lerp2( Traits::Load( a.values ), b.simd, Traits::Load( t.values ) );
     }
 
     /// <summary>

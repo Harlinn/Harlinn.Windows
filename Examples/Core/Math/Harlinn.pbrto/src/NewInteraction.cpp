@@ -59,13 +59,12 @@ namespace pbrto
     }
 
     // SurfaceInteraction Method Definitions
-    PBRT_CPU_GPU void SurfaceInteraction::ComputeDifferentials( const RayDifferential& ray, Camera camera,
-        int samplesPerPixel )
+    void SurfaceInteraction::ComputeDifferentials( const RayDifferential& ray, Camera camera, int samplesPerPixel )
     {
         if ( GetOptions( ).disableTextureFiltering )
         {
             dudx = dudy = dvdx = dvdy = 0;
-            dpdx = dpdy = Vector3f( 0, 0, 0 );
+            dpdx = dpdy = Vector3f::Simd( 0, 0, 0 );
             return;
         }
         if ( ray.hasDifferentials && ScalarDot( n, ray.rxDirection ) != 0 &&
@@ -73,33 +72,40 @@ namespace pbrto
         {
             // Estimate screen-space change in $\pt{}$ using ray differentials
             // Compute auxiliary intersection points with plane, _px_ and _py_
-            Float d = -ScalarDot( n, Vector3f( p( ) ) );
-            Float tx = ( -ScalarDot( n, Vector3f( ray.rxOrigin ) ) - d ) / ScalarDot( n, ray.rxDirection );
+            Point3f::Simd pResult = p( );
+            Float d = -ScalarDot( n, Vector3f( pResult ) );
+            Float tx = ( -ScalarDot( n, Vector3f::Simd( ray.rxOrigin ) ) - d ) / ScalarDot( n, ray.rxDirection );
             NDCHECK( !IsInf( tx ) && !IsNaN( tx ) );
             Point3f px = ray.rxOrigin + tx * ray.rxDirection;
-            Float ty = ( -ScalarDot( n, Vector3f( ray.ryOrigin ) ) - d ) / ScalarDot( n, ray.ryDirection );
+            Float ty = ( -ScalarDot( n, Vector3f::Simd( ray.ryOrigin ) ) - d ) / ScalarDot( n, ray.ryDirection );
             NDCHECK( !IsInf( ty ) && !IsNaN( ty ) );
-            Point3f py = ray.ryOrigin + ty * ray.ryDirection;
+            Point3f::Simd py = ray.ryOrigin + ty * ray.ryDirection;
 
-            dpdx = px - p( );
-            dpdy = py - p( );
+            dpdx = px - pResult;
+            dpdy = py - pResult;
 
         }
         else
         {
             // Approximate screen-space change in $\pt{}$ based on camera projection
-            camera.Approximate_dp_dxy( p( ), n, time, samplesPerPixel, &dpdx, &dpdy );
+            Vector3f tmpdpdx, tmpdpdy;
+            camera.Approximate_dp_dxy( p( ), n, time, samplesPerPixel, &tmpdpdx, &tmpdpdy );
+            dpdx = tmpdpdx; 
+            dpdy = tmpdpdy;
         }
         // Estimate screen-space change in $(u,v)$
         // Compute $\transpose{\XFORM{A}} \XFORM{A}$ and its determinant
-        Float ata00 = ScalarDot( dpdu, dpdu ), ata01 = ScalarDot( dpdu, dpdv );
+        Float ata00 = ScalarDot( dpdu, dpdu ); 
+        Float ata01 = ScalarDot( dpdu, dpdv );
         Float ata11 = ScalarDot( dpdv, dpdv );
         Float invDet = 1 / DifferenceOfProducts( ata00, ata11, ata01, ata01 );
         invDet = IsFinite( invDet ) ? invDet : 0.f;
 
         // Compute $\transpose{\XFORM{A}} \VEC{b}$ for $x$ and $y$
-        Float atb0x = ScalarDot( dpdu, dpdx ), atb1x = ScalarDot( dpdv, dpdx );
-        Float atb0y = ScalarDot( dpdu, dpdy ), atb1y = ScalarDot( dpdv, dpdy );
+        Float atb0x = ScalarDot( dpdu, dpdx ); 
+        Float atb1x = ScalarDot( dpdv, dpdx );
+        Float atb0y = ScalarDot( dpdu, dpdy ); 
+        Float atb1y = ScalarDot( dpdv, dpdy );
 
         // Compute $u$ and $v$ derivatives with respect to $x$ and $y$
         dudx = DifferenceOfProducts( ata11, atb0x, ata01, atb1x ) * invDet;
@@ -114,7 +120,7 @@ namespace pbrto
         dvdy = IsFinite( dvdy ) ? Clamp( dvdy, -1e8f, 1e8f ) : 0.f;
     }
 
-    PBRT_CPU_GPU void SurfaceInteraction::SkipIntersection( RayDifferential* ray, Float t ) const
+    void SurfaceInteraction::SkipIntersection( RayDifferential* ray, Float t ) const
     {
         *( ( Ray* )ray ) = SpawnRay( ray->d );
         if ( ray->hasDifferentials )
@@ -124,42 +130,42 @@ namespace pbrto
         }
     }
 
-    PBRT_CPU_GPU RayDifferential SurfaceInteraction::SpawnRay( const RayDifferential& rayi,
-        const BSDF& bsdf, Vector3f wi, int flags,
-        Float eta ) const
+    RayDifferential SurfaceInteraction::SpawnRay( const RayDifferential& rayi, const BSDF& bsdf, Vector3f::Simd wi, int flags, Float eta ) const
     {
         RayDifferential rd( SpawnRay( wi ) );
         if ( rayi.hasDifferentials )
         {
             // Compute ray differentials for specular reflection or transmission
             // Compute common factors for specular ray differentials
-            Normal3f n = shading.n;
-            Normal3f dndx = shading.dndu * dudx + shading.dndv * dvdx;
-            Normal3f dndy = shading.dndu * dudy + shading.dndv * dvdy;
-            Vector3f dwodx = -rayi.rxDirection - wo, dwody = -rayi.ryDirection - wo;
+            Normal3f::Simd n = shading.n;
+            Normal3f::Simd dndx = shading.dndu * dudx + shading.dndv * dvdx;
+            Normal3f::Simd dndy = shading.dndu * dudy + shading.dndv * dvdy;
+            Vector3f::Simd dwodx = -rayi.rxDirection - wo, dwody = -rayi.ryDirection - wo;
 
             if ( flags == BxDFFlags::SpecularReflection )
             {
                 // Initialize origins of specular differential rays
                 rd.hasDifferentials = true;
-                rd.rxOrigin = p( ) + dpdx;
-                rd.ryOrigin = p( ) + dpdy;
+                Point3f::Simd pResult = p( );
+                rd.rxOrigin = pResult + dpdx;
+                rd.ryOrigin = pResult + dpdy;
 
                 // Compute differential reflected directions
                 Float dwoDotn_dx = ScalarDot( dwodx, n ) + ScalarDot( wo, dndx );
                 Float dwoDotn_dy = ScalarDot( dwody, n ) + ScalarDot( wo, dndy );
                 rd.rxDirection =
-                    wi - dwodx + 2 * Vector3f( ScalarDot( wo, n ) * dndx + dwoDotn_dx * n );
+                    wi - dwodx + 2 * Vector3f::Simd( ScalarDot( wo, n ) * dndx + dwoDotn_dx * n );
                 rd.ryDirection =
-                    wi - dwody + 2 * Vector3f( ScalarDot( wo, n ) * dndy + dwoDotn_dy * n );
+                    wi - dwody + 2 * Vector3f::Simd( ScalarDot( wo, n ) * dndy + dwoDotn_dy * n );
 
             }
             else if ( flags == BxDFFlags::SpecularTransmission )
             {
                 // Initialize origins of specular differential rays
                 rd.hasDifferentials = true;
-                rd.rxOrigin = p( ) + dpdx;
-                rd.ryOrigin = p( ) + dpdy;
+                Point3f::Simd pResult = p( );
+                rd.rxOrigin = pResult + dpdx;
+                rd.ryOrigin = pResult + dpdy;
 
                 // Compute differential transmitted directions
                 // Find oriented surface normal for transmission
@@ -182,11 +188,13 @@ namespace pbrto
             }
         }
         // Squash potentially troublesome differentials
-        if ( ScalarLengthSquared( rd.rxDirection ) > 1e16f || ScalarLengthSquared( rd.ryDirection ) > 1e16f ||
-            ScalarLengthSquared( Vector3f( rd.rxOrigin ) ) > 1e16f ||
-            ScalarLengthSquared( Vector3f( rd.ryOrigin ) ) > 1e16f )
+        if ( ScalarLengthSquared( rd.rxDirection ) > 1e16f || 
+            ScalarLengthSquared( rd.ryDirection ) > 1e16f ||
+            ScalarLengthSquared( rd.rxOrigin ) > 1e16f ||
+            ScalarLengthSquared( rd.ryOrigin ) > 1e16f )
+        {
             rd.hasDifferentials = false;
-
+        }
         return rd;
     }
 
@@ -218,28 +226,25 @@ namespace pbrto
             else
                 BumpMap( UniversalTextureEvaluator( ), displacement, *this, &dpdu, &dpdv );
 
-            Normal3f ns( Normalize( Cross( dpdu, dpdv ) ) );
+            Normal3f::Simd ns( Normalize( Cross( dpdu, dpdv ) ) );
             SetShadingGeometry( ns, dpdu, dpdv, shading.dndu, shading.dndv, false );
         }
 
         // Return BSDF for surface interaction
-        BSDF bsdf =
-            material.GetBSDF( UniversalTextureEvaluator( ), *this, lambda, scratchBuffer );
+        BSDF bsdf = material.GetBSDF( UniversalTextureEvaluator( ), *this, lambda, scratchBuffer );
         if ( bsdf && GetOptions( ).forceDiffuse )
         {
             // Override _bsdf_ with diffuse equivalent
             std::array<Float, 1> ucRho = { sampler.Get1D( ) };
             std::array<Point2f, 1> uRho = { sampler.Get2D( ) };
 
-            SampledSpectrum r = bsdf.rho( wo, ucRho, uRho );
+            SampledSpectrum::Simd r = bsdf.rho( wo, ucRho, uRho );
             bsdf = BSDF( shading.n, shading.dpdu, scratchBuffer.Alloc<DiffuseBxDF>( r ) );
         }
         return bsdf;
     }
 
-    BSSRDF SurfaceInteraction::GetBSSRDF( const RayDifferential& ray,
-        SampledWavelengths& lambda, Camera camera,
-        ScratchBuffer& scratchBuffer )
+    BSSRDF SurfaceInteraction::GetBSSRDF( const RayDifferential& ray, SampledWavelengths& lambda, Camera camera, ScratchBuffer& scratchBuffer )
     {
         // Resolve _MixMaterial_ if necessary
         while ( material.Is<MixMaterial>( ) )
@@ -251,10 +256,9 @@ namespace pbrto
         return material.GetBSSRDF( UniversalTextureEvaluator( ), *this, lambda, scratchBuffer );
     }
 
-    PBRT_CPU_GPU SampledSpectrum SurfaceInteraction::Le( Vector3f w,
-        const SampledWavelengths& lambda ) const
+    SampledSpectrum::Simd SurfaceInteraction::Le( Vector3f::Simd w, const SampledWavelengths& lambda ) const
     {
-        return areaLight ? areaLight.L( p( ), n, uv, w, lambda ) : SampledSpectrum( 0.f );
+        return areaLight ? areaLight.L( p( ), n, uv, w, lambda ) : SampledSpectrum::Simd( 0.f );
     }
 
     std::string SurfaceInteraction::ToString( ) const

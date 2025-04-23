@@ -330,22 +330,27 @@ namespace pbrto
         {
             // Remap provided pixel coordinates before reading channel
             if ( !RemapPixelCoords( &p, resolution, wrapMode ) )
+            {
                 return 0;
+            }
 
             switch ( format )
             {
                 case PixelFormat::U256:
-                {  // Return _U256_-encoded pixel channel value
+                {  
+                    // Return _U256_-encoded pixel channel value
                     Float r;
                     encoding.ToLinear( { &p8[ PixelOffset( p ) + c ], 1 }, { &r, 1 } );
                     return r;
                 }
                 case PixelFormat::Half:
-                {  // Return _Half_-encoded pixel channel value
+                {  
+                    // Return _Half_-encoded pixel channel value
                     return Float( p16[ PixelOffset( p ) + c ] );
                 }
                 case PixelFormat::Float:
-                {  // Return _Float_-encoded pixel channel value
+                {  
+                    // Return _Float_-encoded pixel channel value
                     return p32[ PixelOffset( p ) + c ];
                 }
                 default:

@@ -138,11 +138,12 @@ namespace pbrto
     }
 
     // Via Jim Arvo's SphTri.C
-    PBRT_CPU_GPU Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p,
-        Vector3f w )
+    Point2f InvertSphericalTriangleSample( const pstdo::array<Point3f, 3>& v, Point3f p, Vector3f w )
     {
         // Compute vectors _a_, _b_, and _c_ to spherical triangle vertices
-        Vector3f::Simd a( v[ 0 ] - p ), b( v[ 1 ] - p ), c( v[ 2 ] - p );
+        Vector3f::Simd a( v[ 0 ] - p ); 
+        Vector3f::Simd b( v[ 1 ] - p ); 
+        Vector3f::Simd c( v[ 2 ] - p );
         NCHECK_GT( ScalarLengthSquared( a ), 0 );
         NCHECK_GT( ScalarLengthSquared( b ), 0 );
         NCHECK_GT( ScalarLengthSquared( c ), 0 );
@@ -151,9 +152,13 @@ namespace pbrto
         c = Normalize( c );
 
         // Compute normalized cross products of all direction pairs
-        Vector3f::Simd n_ab = Cross( a, b ), n_bc = Cross( b, c ), n_ca = Cross( c, a );
+        Vector3f::Simd n_ab = Cross( a, b ); 
+        Vector3f::Simd n_bc = Cross( b, c );
+        Vector3f::Simd n_ca = Cross( c, a );
         if ( ScalarLengthSquared( n_ab ) == 0 || ScalarLengthSquared( n_bc ) == 0 || ScalarLengthSquared( n_ca ) == 0 )
+        {
             return {};
+        }
         n_ab = Normalize( n_ab );
         n_bc = Normalize( n_bc );
         n_ca = Normalize( n_ca );
@@ -166,19 +171,24 @@ namespace pbrto
         // Find vertex $\VEC{c'}$ along $\VEC{a}\VEC{c}$ arc for $\w{}$
         Vector3f::Simd cp = Normalize( Cross( Cross( b, w ), Cross( c, a ) ) );
         if ( ScalarDot( cp, a + c ) < 0 )
+        {
             cp = -cp;
-
+        }
         // Invert uniform area sampling to find _u0_
         Float u0;
         if ( ScalarDot( a, cp ) > 0.99999847691f /* 0.1 degrees */ )
+        {
             u0 = 0;
+        }
         else
         {
             // Compute area $A'$ of subtriangle
             Vector3f::Simd n_cpb = Cross( cp, b ), n_acp = Cross( a, cp );
             NCHECK_RARE( 1e-5, ScalarLengthSquared( n_cpb ) == 0 || ScalarLengthSquared( n_acp ) == 0 );
             if ( ScalarLengthSquared( n_cpb ) == 0 || ScalarLengthSquared( n_acp ) == 0 )
+            {
                 return Point2f( 0.5, 0.5 );
+            }
             n_cpb = Normalize( n_cpb );
             n_acp = Normalize( n_acp );
             Float Ap = alpha + ScalarAngleBetween( n_ab, n_cpb ) + ScalarAngleBetween( n_acp, -n_cpb ) - Pi;
@@ -193,8 +203,7 @@ namespace pbrto
         return Point2f( Clamp( u0, 0, 1 ), Clamp( u1, 0, 1 ) );
     }
 
-    PBRT_CPU_GPU Point3f SampleSphericalRectangle( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey,
-        Point2f u, Float* pdf )
+    Point3f SampleSphericalRectangle( Point3f pRef, Point3f s, Vector3f ex, Vector3f ey, Point2f u, Float* pdf )
     {
         // Compute local reference frame and transform rectangle coordinates
         Float exl = ScalarLength( ex ), eyl = ScalarLength( ey );
@@ -212,8 +221,11 @@ namespace pbrto
         Float x1 = x0 + exl, y1 = y0 + eyl;
 
         // Find plane normals to rectangle edges and compute internal angles
-        Vector3f::Simd v00( x0, y0, z0 ), v01( x0, y1, z0 );
-        Vector3f::Simd v10( x1, y0, z0 ), v11( x1, y1, z0 );
+        Vector3f::Simd v00( x0, y0, z0 ); 
+        Vector3f::Simd v01( x0, y1, z0 );
+        Vector3f::Simd v10( x1, y0, z0 );
+        Vector3f::Simd v11( x1, y1, z0 );
+
         Vector3f::Simd n0 = Normalize( Cross( v00, v10 ) ), n1 = Normalize( Cross( v10, v11 ) );
         Vector3f::Simd n2 = Normalize( Cross( v11, v01 ) ), n3 = Normalize( Cross( v01, v00 ) );
         Float g0 = ScalarAngleBetween( -n0, n1 ), g1 = ScalarAngleBetween( -n1, n2 );
@@ -241,7 +253,7 @@ namespace pbrto
         SinCos( au, &sinAu, &cosAu );
 
         Float fu = ( cosAu * b0 - b1 ) / sinAu;
-        Float cu = pstdo::copysign( 1 / Math::Sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
+        Float cu = CopySign( 1 / Math::Sqrt( Sqr( fu ) + Sqr( b0 ) ), fu );
         cu = Clamp( cu, -OneMinusEpsilon, OneMinusEpsilon );  // avoid NaNs
 
         // Find _xu_ along $x$ edge for spherical rectangle sample
@@ -387,7 +399,7 @@ namespace pbrto
         return u;
     }
 
-    PBRT_CPU_GPU Vector3f SampleHenyeyGreenstein( Vector3f wo, Float g, Point2f u, Float* pdf )
+    Vector3f::Simd SampleHenyeyGreenstein( Vector3f::Simd wo, Float g, Point2f u, Float* pdf )
     {
         // When g \approx -1 and u[0] \approx 0 or with g \approx 1 and u[0]
         // \approx 1, the computation of cosTheta below is unstable and can
@@ -408,7 +420,7 @@ namespace pbrto
         Float sinTheta = SafeSqrt( 1 - Sqr( cosTheta ) );
         Float phi = 2 * Pi * u[ 1 ];
         Frame wFrame = Frame::FromZ( wo );
-        Vector3f wi = wFrame.FromLocal( SphericalDirection( sinTheta, cosTheta, phi ) );
+        Vector3f::Simd wi = wFrame.FromLocal( SphericalDirection( sinTheta, cosTheta, phi ) );
 
         if ( pdf )
             *pdf = HenyeyGreenstein( cosTheta, g );
