@@ -1968,7 +1968,7 @@ namespace Harlinn::Common::Core::Math
             return Simd( Traits::Load( values ) );
         }
 
-        operator Simd( ) const noexcept
+        explicit operator Simd( ) const noexcept
         {
             return ToSimd( );
         }
